@@ -4,7 +4,7 @@ import {
   getAjnaSidebarPrimaryButtonActions,
 } from 'features/ajna/borrow/helpers'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
-import { AjnaBorrowPanel } from 'features/ajna/common/types'
+import { AjnaBorrowPanel, AjnaEarnPanel } from 'features/ajna/common/types'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -15,7 +15,7 @@ export interface AjnaFormContentProps {
   txHandler: () => void
   isAllowanceLoading: boolean
   dpmAddress?: string
-  uiDropdown: AjnaBorrowPanel // TODO is this common?
+  uiDropdown: AjnaBorrowPanel | AjnaEarnPanel
   resolvedId?: string
   isSimulationLoading?: boolean
   isFormValid: boolean
@@ -42,14 +42,8 @@ export function AjnaFormContent({
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { flow, product, isOwner },
-    steps: {
-      currentStep: castedCurrentStep,
-      editingStep,
-      setNextStep,
-      setStep,
-      isStepWithTransaction,
-    },
+    environment: { flow, product, isOwner, quoteToken, collateralToken },
+    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction },
     tx: {
       isTxError,
       isTxSuccess,
@@ -59,9 +53,6 @@ export function AjnaFormContent({
       setTxDetails,
     },
   } = useAjnaProductContext()
-
-  // TODO remove it once earn context available
-  const currentStep = product === 'earn' ? 'setup' : castedCurrentStep
 
   const {
     isPrimaryButtonDisabled,
@@ -108,7 +99,7 @@ export function AjnaFormContent({
   })
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(`ajna.${product}.common.form.title.${currentStep}`),
+    title: t(`ajna.${product}.common.form.title.${currentStep}`, { quoteToken, collateralToken }),
     ...(flow === 'manage' && {
       dropdown: {
         forcePanel: uiDropdown,

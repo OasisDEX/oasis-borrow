@@ -2440,7 +2440,10 @@
         "ajna-faq": "Ajna FAQ",
         "form": {
           "title": {
-            "setup": "Lending ETH against USDC"
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Lending {{collateralToken}} against {{quoteToken}}",
+            "manage": "Adjust your position",
+            "transaction": "Confirm your Ajna position open details"
           }
         },
         "headline": {

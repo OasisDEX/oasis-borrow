@@ -1,33 +1,25 @@
 import BigNumber from 'bignumber.js'
 import { FlowSidebar } from 'components/FlowSidebar'
 import { ethers } from 'ethers'
-import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
-import { AjnaBorrowAction, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaBorrowAction, AjnaEarnAction, AjnaStatusStep } from 'features/ajna/common/types'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 import React, { ReactNode, useEffect } from 'react'
 
-// TODO should accept earn teams as well
 interface AjnaFormWrapperProps {
-  action?: AjnaBorrowAction
+  action?: AjnaBorrowAction | AjnaEarnAction
   depositAmount?: BigNumber
   paybackAmount?: BigNumber
-  updateState: <K extends keyof AjnaBorrowFormState, V extends AjnaBorrowFormState[K]>(
-    key: K,
-    value: V,
-  ) => void
+  updateState: (key: 'dpmAddress', value: string) => void
   children: ({
-    txHandler,
     isAllowanceLoading,
     currentStep,
     dpmProxy,
     collateralToken,
     quoteToken,
   }: {
-    txHandler: () => void
     isAllowanceLoading: boolean
     currentStep: AjnaStatusStep
     dpmProxy?: string
@@ -47,7 +39,6 @@ export function AjnaFormWrapper({
   children,
 }: AjnaFormWrapperProps) {
   const { walletAddress } = useAccount()
-  const txHandler = useAjnaTxHandler()
   const {
     environment: { dpmProxy, collateralToken, quoteToken },
     steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
@@ -84,7 +75,6 @@ export function AjnaFormWrapper({
     <>
       {!isExternalStep ? (
         children({
-          txHandler,
           isAllowanceLoading: flowState.isLoading,
           currentStep,
           dpmProxy,

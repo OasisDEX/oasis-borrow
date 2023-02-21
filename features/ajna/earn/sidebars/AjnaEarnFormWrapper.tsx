@@ -1,10 +1,11 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
+import { AjnaFormContentRisk } from 'features/ajna/common/components/AjnaFormContentRisk'
 import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
+import { useAjnaEarnContext } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
+import { useAjnaEarnTxHandler } from 'features/ajna/earn/useAjnaEarnTxHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -12,25 +13,25 @@ export function AjnaEarnFormWrapper() {
   const { t } = useTranslation()
   const {
     form: {
-      state: { action, depositAmount, paybackAmount, uiDropdown },
+      state: { action, depositAmount, uiDropdown },
       updateState,
       dispatch,
     },
     position: { resolvedId, isSimulationLoading },
     validation: { isFormValid },
-  } = useAjnaBorrowContext()
+  } = useAjnaEarnContext()
+  const txHandler = useAjnaEarnTxHandler()
 
   return (
     <AjnaFormWrapper
       action={action}
       depositAmount={depositAmount}
-      paybackAmount={paybackAmount}
       updateState={updateState}
       uiDropdown={uiDropdown}
       resolvedId={resolvedId}
       isSimulationLoading={isSimulationLoading}
     >
-      {({ txHandler, isAllowanceLoading, currentStep, dpmProxy, collateralToken, quoteToken }) => (
+      {({ isAllowanceLoading, currentStep, dpmProxy, collateralToken, quoteToken }) => (
         <AjnaFormContent
           uiDropdown={uiDropdown}
           dpmAddress={dpmProxy}
@@ -41,37 +42,39 @@ export function AjnaEarnFormWrapper() {
           resolvedId={resolvedId}
           dropdownItems={[
             {
-              label: t('system.manage-collateral-token', {
-                token: collateralToken,
-              }),
-              panel: 'collateral',
-              shortLabel: collateralToken,
+              label: t('adjust'),
+              panel: 'adjust',
+              shortLabel: t('adjust'),
               icon: getToken(collateralToken).iconCircle,
               action: () => {
                 dispatch({ type: 'reset' })
-                updateState('uiDropdown', 'collateral')
-                updateState('uiPill', 'deposit')
+                updateState('uiDropdown', 'adjust')
               },
             },
             {
-              label: t('system.manage-debt-token', {
-                token: quoteToken,
-              }),
-              panel: 'quote',
-              shortLabel: quoteToken,
+              label: t('deposit'),
+              panel: 'deposit',
+              shortLabel: t('deposit'),
               icon: getToken(quoteToken).iconCircle,
               action: () => {
                 dispatch({ type: 'reset' })
-                updateState('uiDropdown', 'quote')
-                updateState('uiPill', 'generate')
+                updateState('uiDropdown', 'deposit')
+              },
+            },
+            {
+              label: t('withdraw'),
+              panel: 'withdraw',
+              shortLabel: t('withdraw'),
+              icon: getToken(quoteToken).iconCircle,
+              action: () => {
+                dispatch({ type: 'reset' })
+                updateState('uiDropdown', 'withdraw')
               },
             },
           ]}
         >
-          {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
-          {/*{currentStep === 'setup' && <AjnaEarnFormContentDeposit />}*/}
-          {/*TODO use conditional rendering once earn context available*/}
-          <AjnaEarnFormContentDeposit />
+          {currentStep === 'risk' && <AjnaFormContentRisk />}
+          {currentStep === 'setup' && <AjnaEarnFormContentDeposit />}
           {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
         </AjnaFormContent>
       )}

@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Image, Text } from 'theme-ui'
 
-export function AjnaBorrowFormContentRisk() {
+export function AjnaFormContentRisk() {
   const { t } = useTranslation()
 
   return (

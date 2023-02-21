@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
+import {
+  AjnaBorrowAction,
+  AjnaBorrowPanel,
+  AjnaFormActionsReset,
+  AjnaFormActionsUpdateDeposit,
+} from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
@@ -18,11 +23,6 @@ export interface AjnaBorrowFormState {
   uiPill: Exclude<AjnaBorrowAction, 'open'>
 }
 
-interface AjnaBorrowFormActionsUpdateDeposit {
-  type: 'update-deposit'
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-}
 interface AjnaBorrowFormActionsUpdateWithdraw {
   type: 'update-withdraw'
   withdrawAmount?: BigNumber
@@ -38,17 +38,14 @@ interface AjnaBorrowFormActionsUpdatePayback {
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
 }
-interface AjnaBorrowFormActionsReset {
-  type: 'reset'
-}
 
 export type AjnaBorrowFormAction = ReductoActions<
   AjnaBorrowFormState,
-  | AjnaBorrowFormActionsUpdateDeposit
+  | AjnaFormActionsUpdateDeposit
   | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsUpdateGenerate
   | AjnaBorrowFormActionsUpdatePayback
-  | AjnaBorrowFormActionsReset
+  | AjnaFormActionsReset
 >
 
 export const ajnaBorrowReset = {

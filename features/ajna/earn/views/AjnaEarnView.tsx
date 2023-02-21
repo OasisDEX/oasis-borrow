@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaEarnContext } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { AjnaEarnOverviewWrapper } from 'features/ajna/earn/overview/AjnaEarnOverviewWrapper'
 import { AjnaEarnFormWrapper } from 'features/ajna/earn/sidebars/AjnaEarnFormWrapper'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
@@ -18,7 +18,7 @@ export function AjnaEarnView() {
   const { contextIsLoaded, walletAddress } = useAccount()
   const {
     position: { resolvedId },
-  } = useAjnaBorrowContext()
+  } = useAjnaEarnContext()
   const {
     environment: { collateralPrice, collateralToken, flow, owner, product, quotePrice, quoteToken },
   } = useAjnaProductContext()

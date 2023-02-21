@@ -6,30 +6,26 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaPoolPairs } from 'features/ajna/common/types'
+import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
 import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
 
-interface AjnaTxHandlerInput {
-  formState: AjnaBorrowFormState
-  collateralToken: string
-  quoteToken: string
-  context: Context
-  position: AjnaPosition
-}
-
-export async function getAjnaParameters({
-  formState: { action, depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress },
-  rpcProvider,
+function getCommonDependencies<P>({
   collateralToken,
   quoteToken,
+  rpcProvider,
   context,
-  position,
-}: AjnaTxHandlerInput & {
+  dpmAddress,
+}: {
+  collateralToken: string
+  quoteToken: string
   rpcProvider: ethers.providers.Provider
-}): Promise<AjnaActionData> {
+  context: Context
+  dpmAddress: string
+}) {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const defaultPromise = Promise.resolve({} as AjnaActionData)
+  const defaultPromise = Promise.resolve({} as AjnaActionData<P>)
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
@@ -52,6 +48,38 @@ export async function getAjnaParameters({
     collateralTokenPrecision,
   }
 
+  return {
+    defaultPromise,
+    dependencies,
+    commonPayload,
+  }
+}
+
+interface AjnaTxHandlerInput<S, P> {
+  formState: S
+  collateralToken: string
+  quoteToken: string
+  context: Context
+  position: P
+}
+
+export async function getAjnaBorrowParameters({
+  formState: { action, depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress },
+  rpcProvider,
+  collateralToken,
+  quoteToken,
+  context,
+  position,
+}: AjnaTxHandlerInput<AjnaBorrowFormState, AjnaPosition> & {
+  rpcProvider: ethers.providers.Provider
+}): Promise<AjnaActionData<AjnaPosition>> {
+  const { defaultPromise, dependencies, commonPayload } = getCommonDependencies<AjnaPosition>({
+    collateralToken,
+    quoteToken,
+    rpcProvider,
+    context,
+    dpmAddress,
+  })
   // TODO hardcoded for now, but will be moved eventually to library
   const price = new BigNumber(16821273)
 
@@ -122,6 +150,75 @@ export async function getAjnaParameters({
           ...commonPayload,
           quoteAmount: paybackAmount,
           collateralAmount: withdrawAmount || zero,
+          position,
+        },
+        dependencies,
+      )
+    }
+    default:
+      return defaultPromise
+  }
+}
+
+export async function getAjnaEarnParameters({
+  formState: { action, depositAmount, withdrawAmount, dpmAddress },
+  rpcProvider,
+  collateralToken,
+  quoteToken,
+  context,
+  position,
+}: AjnaTxHandlerInput<AjnaEarnFormState, AjnaPosition> & {
+  rpcProvider: ethers.providers.Provider
+}): Promise<AjnaActionData<AjnaPosition>> {
+  const { defaultPromise, dependencies, commonPayload } = getCommonDependencies<AjnaPosition>({
+    collateralToken,
+    quoteToken,
+    rpcProvider,
+    context,
+    dpmAddress,
+  })
+  // TODO hardcoded for now, but will be moved eventually to library
+  const price = new BigNumber(16821273)
+
+  // TODO adjust actions for earn
+  switch (action) {
+    case 'open':
+      if (!depositAmount) {
+        return defaultPromise
+      }
+      return strategies.ajna.open(
+        {
+          ...commonPayload,
+          quoteAmount: zero,
+          collateralAmount: depositAmount,
+          price,
+        },
+        dependencies,
+      )
+    case 'deposit': {
+      if (!depositAmount) {
+        return defaultPromise
+      }
+      return strategies.ajna.depositBorrow(
+        {
+          ...commonPayload,
+          quoteAmount: zero,
+          collateralAmount: depositAmount,
+          price,
+          position,
+        },
+        dependencies,
+      )
+    }
+    case 'withdraw': {
+      if (!withdrawAmount) {
+        return defaultPromise
+      }
+      return strategies.ajna.paybackWithdraw(
+        {
+          ...commonPayload,
+          quoteAmount: zero,
+          collateralAmount: withdrawAmount,
           position,
         },
         dependencies,

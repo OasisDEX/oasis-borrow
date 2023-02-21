@@ -2,9 +2,10 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
-import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { useAjnaBorrowTxHandler } from 'features/ajna/borrow/useAjnaBorrowTxHandler'
 import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
+import { AjnaFormContentRisk } from 'features/ajna/common/components/AjnaFormContentRisk'
 import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -20,6 +21,7 @@ export function AjnaBorrowFormWrapper() {
     position: { resolvedId, isSimulationLoading },
     validation: { isFormValid },
   } = useAjnaBorrowContext()
+  const txHandler = useAjnaBorrowTxHandler()
 
   return (
     <AjnaFormWrapper
@@ -31,7 +33,7 @@ export function AjnaBorrowFormWrapper() {
       resolvedId={resolvedId}
       isSimulationLoading={isSimulationLoading}
     >
-      {({ txHandler, isAllowanceLoading, currentStep, dpmProxy, collateralToken, quoteToken }) => (
+      {({ isAllowanceLoading, currentStep, dpmProxy, collateralToken, quoteToken }) => (
         <AjnaFormContent
           uiDropdown={uiDropdown}
           dpmAddress={dpmProxy}
@@ -69,7 +71,7 @@ export function AjnaBorrowFormWrapper() {
             },
           ]}
         >
-          {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
+          {currentStep === 'risk' && <AjnaFormContentRisk />}
           {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
           {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
           {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}

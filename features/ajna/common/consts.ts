@@ -39,8 +39,8 @@ export const steps: {
     manage: [],
   },
   earn: {
-    open: [],
-    manage: [],
+    open: ['risk', 'setup', 'dpm', 'transaction'],
+    manage: ['manage', 'dpm', 'transaction'],
   },
 }
 

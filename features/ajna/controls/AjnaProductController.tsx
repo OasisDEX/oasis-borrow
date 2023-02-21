@@ -8,6 +8,7 @@ import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnContextProvider } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { AjnaEarnView } from 'features/ajna/earn/views/AjnaEarnView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -142,9 +143,9 @@ export function AjnaProductController({
                         </AjnaBorrowContextProvider>
                       )}
                       {ajnaPosition.meta.product === 'earn' && (
-                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
+                        <AjnaEarnContextProvider position={ajnaPosition.position}>
                           <AjnaEarnView />
-                        </AjnaBorrowContextProvider>
+                        </AjnaEarnContextProvider>
                       )}
                     </AjnaProductContextProvider>
                   ) : (

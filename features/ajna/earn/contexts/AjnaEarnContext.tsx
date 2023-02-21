@@ -1,22 +1,23 @@
 import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
-import { isBorrowFormValid } from 'features/ajna/borrow/contexts/isBorrowFormValid'
-import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { getAjnaBorrowValidations } from 'features/ajna/borrow/validations'
 import { initializeAjnaContext } from 'features/ajna/common/initializeAjnaContext'
 import { AjnaProductPosition } from 'features/ajna/common/types'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { isEarnFormValid } from 'features/ajna/earn/contexts/isEarnFormValid'
+import { useAjnaEarnFormReducto } from 'features/ajna/earn/state/ajnaEarnFormReducto'
+import { zero } from 'helpers/zero'
 import React, { PropsWithChildren, useContext } from 'react'
 
 import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
 
-interface AjnaBorrowContextProviderProps {
+interface AjnaEarnContextProviderProps {
   position: AjnaPosition
 }
 
-interface AjnaBorrowContext {
-  form: ReturnType<typeof useAjnaBorrowFormReducto>
+interface AjnaEarnContext {
+  form: ReturnType<typeof useAjnaEarnFormReducto>
   position: AjnaProductPosition<AjnaPosition>
   validation: {
     errors: ValidationMessagesInput
@@ -25,30 +26,28 @@ interface AjnaBorrowContext {
   }
 }
 
-const ajnaBorrowContext = React.createContext<AjnaBorrowContext | undefined>(undefined)
+const ajnaEarnContext = React.createContext<AjnaEarnContext | undefined>(undefined)
 
-export function useAjnaBorrowContext(): AjnaBorrowContext {
-  const ac = useContext(ajnaBorrowContext)
+export function useAjnaEarnContext(): AjnaEarnContext {
+  const ac = useContext(ajnaEarnContext)
 
   if (!ac) {
-    throw new Error(
-      "AjnaBorrowContext not available! useAjnaBorrowContext can't be used serverside",
-    )
+    throw new Error("AjnaEarnContext not available! useAjnaEarnContext can't be used serverside")
   }
   return ac
 }
 
-export function AjnaBorrowContextProvider({
+export function AjnaEarnContextProvider({
   children,
   position,
-}: PropsWithChildren<AjnaBorrowContextProviderProps>) {
+}: PropsWithChildren<AjnaEarnContextProviderProps>) {
   const {
     environment: { collateralBalance, collateralToken, ethBalance, ethPrice, flow, quoteBalance },
     steps: { currentStep },
     tx: { txDetails },
   } = useAjnaProductContext()
 
-  const form = useAjnaBorrowFormReducto({
+  const form = useAjnaEarnFormReducto({
     action: flow === 'open' ? 'open' : 'deposit',
   })
 
@@ -59,6 +58,7 @@ export function AjnaBorrowContextProvider({
     errors?: AjnaValidationItem[]
     usdValue?: BigNumber
   }) {
+    // TODO define validations for earn
     return getAjnaBorrowValidations({
       collateralBalance,
       collateralToken,
@@ -66,7 +66,7 @@ export function AjnaBorrowContextProvider({
       ethBalance,
       ethPrice,
       gasEstimationUsd: usdValue,
-      paybackAmount: form.state.paybackAmount,
+      paybackAmount: zero,
       quoteBalance,
       simulationErrors: errors,
       simulationWarnings: errors,
@@ -75,10 +75,10 @@ export function AjnaBorrowContextProvider({
   }
 
   function isFormValidCallback({ errors }: { errors: ValidationMessagesInput }) {
-    return isBorrowFormValid({ currentStep, formState: form.state, errors })
+    return isEarnFormValid({ currentStep, formState: form.state, errors })
   }
 
-  const context = initializeAjnaContext<AjnaBorrowContext, AjnaPosition>({
+  const context = initializeAjnaContext<AjnaEarnContext, AjnaPosition>({
     form,
     collateralBalance,
     currentStep,
@@ -89,5 +89,5 @@ export function AjnaBorrowContextProvider({
     isFormValidCallback,
   })
 
-  return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
+  return <ajnaEarnContext.Provider value={context}>{children}</ajnaEarnContext.Provider>
 }
