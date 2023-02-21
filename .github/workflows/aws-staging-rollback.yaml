@@ -59,6 +59,4 @@ jobs:
           ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
       - name: Invalidate CloudFront
-        run:
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }}
-          --paths "/*"
+        run: AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }} --paths "/*"
