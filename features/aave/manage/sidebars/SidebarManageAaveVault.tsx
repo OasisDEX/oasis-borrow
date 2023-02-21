@@ -26,6 +26,7 @@ import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aav
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { getAaveStrategyUrl } from 'helpers/getAaveStrategyUrl'
 import { handleNumericInput } from 'helpers/input'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
@@ -457,6 +458,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
 
 function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
+  console.log('ManageAaveSuccessAdjustPositionStateView')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('manage-earn.aave.vault-form.success-title'),
@@ -487,6 +489,13 @@ function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveSta
 function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
+  console.log(
+    'ManageAaveSuccessClosePositionStateView',
+    `/${state.context.strategyConfig.type.toLocaleLowerCase()}/aave/open/${
+      state.context.strategyConfig.urlSlug
+    }`,
+  )
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('manage-earn.aave.vault-form.success-title'),
     content: (
@@ -506,9 +515,11 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: `/${state.context.strategyConfig.type.toLocaleLowerCase()}/aave/open/${
-        state.context.strategyConfig.urlSlug
-      }`,
+      url: getAaveStrategyUrl({
+        protocol: state.context.strategyConfig.protocol,
+        slug: state.context.strategyConfig.urlSlug,
+        strategyType: state.context.strategyConfig.type,
+      }),
     },
   }
 
