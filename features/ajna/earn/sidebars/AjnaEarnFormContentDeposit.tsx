@@ -20,15 +20,12 @@ export function AjnaEarnFormContentDeposit() {
     validation: { errors, warnings },
   } = useAjnaProductContext('earn')
 
-  console.log(`${depositAmount}`)
-  console.log(`${depositAmountUSD}`)
-
   return (
     <>
       <AjnaFormFieldDeposit
-        resetOnClear
         depositAmount={depositAmount}
         depositAmountUSD={depositAmountUSD}
+        resetOnClear
       />
       <AjnaEarnSlider {...ajnaSliderDefaults} />
       <AjnaEarnSlider {...ajnaSliderLowRange} />
