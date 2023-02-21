@@ -122,7 +122,7 @@ function AllowanceInfoStateView({
     primaryButton: {
       steps: steps,
       isLoading,
-      disabled: !state.can('NEXT_STEP'),
+      disabled: isLoading || !state.can('NEXT_STEP'),
       label: t('approve-allowance'),
       action: () => send('NEXT_STEP'),
     },
