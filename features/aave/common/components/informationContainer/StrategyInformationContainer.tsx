@@ -1,12 +1,13 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
-import BigNumber from 'bignumber.js'
+import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
+import { getSlippage, StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { HasGasEstimation } from 'helpers/form'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { VaultChangesInformationContainer } from '../../../../../components/vault/VaultChangesInformation'
-import { HasGasEstimation } from '../../../../../helpers/form'
-import { zero } from '../../../../../helpers/zero'
-import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { FeesInformation } from './FeesInformation'
 import { LtvInformation } from './LtvInformation'
 import { MultiplyInformation } from './MultiplyInformation'
@@ -26,50 +27,68 @@ type OpenAaveInformationContainerProps = {
         collateral: string
         deposit: string
       }
-      collateralPrice?: BigNumber
-      tokenPrice?: BigNumber
+      balance?: StrategyTokenBalance
       estimatedGasPrice?: HasGasEstimation
-      strategy?: IPositionTransition
+      transition?: IPositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
+      strategyConfig: IStrategyConfig
+      getSlippageFrom: 'strategyConfig' | 'userSettings'
     }
   }
+  changeSlippageSource: (from: 'strategyConfig' | 'userSettings') => void
 }
 
-export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
+export function StrategyInformationContainer({
+  state,
+  changeSlippageSource,
+}: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { strategy, currentPosition } = state.context
+  const { transition, currentPosition, balance } = state.context
 
-  const simulationHasSwap = strategy?.simulation.swap.toTokenAmount.gt(zero)
+  const simulationHasSwap = transition?.simulation.swap.toTokenAmount.gt(zero)
 
-  return strategy && currentPosition ? (
+  return transition && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
-      {simulationHasSwap && (
-        <TransactionTokenAmount {...state.context} transactionParameters={strategy} />
+      {simulationHasSwap && balance && (
+        <TransactionTokenAmount
+          {...state.context}
+          transactionParameters={transition}
+          balance={balance}
+        />
       )}
-      {simulationHasSwap && <PriceImpact {...state.context} transactionParameters={strategy} />}
-      {simulationHasSwap && <SlippageInformation {...state.context.userSettings!} />}
+      {simulationHasSwap && balance && (
+        <PriceImpact {...state.context} transactionParameters={transition} balance={balance} />
+      )}
+      {simulationHasSwap && (
+        <SlippageInformation
+          slippage={getSlippage(state.context)}
+          isStrategyHasSlippage={state.context.strategyConfig.defaultSlippage !== undefined}
+          getSlippageFrom={state.context.getSlippageFrom}
+          changeSlippage={changeSlippageSource}
+        />
+      )}
       <MultiplyInformation
         {...state.context}
-        transactionParameters={strategy}
+        transactionParameters={transition}
         currentPosition={currentPosition}
       />
       <OutstandingDebtInformation
         currentPosition={currentPosition}
-        newPosition={strategy.simulation.position}
+        newPosition={transition.simulation.position}
       />
       <TotalCollateralInformation
         currentPosition={currentPosition}
-        newPosition={strategy.simulation.position}
+        newPosition={transition.simulation.position}
       />
       <LtvInformation
         {...state.context}
-        transactionParameters={strategy}
+        transactionParameters={transition}
         currentPosition={currentPosition}
       />
       <FeesInformation
-        swap={strategy.simulation.swap}
+        swap={transition.simulation.swap}
         estimatedGasPrice={state.context.estimatedGasPrice}
       />
     </VaultChangesInformationContainer>

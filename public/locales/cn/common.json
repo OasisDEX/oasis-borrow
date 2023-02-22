@@ -1300,7 +1300,10 @@
     "third-party-fees": "第三方协议手续费",
     "oasis-fee": "Oasis 手续费",
     "ltv": "LTV",
-    "outstanding-debt": "Outstanding debt"
+    "outstanding-debt": "Outstanding debt",
+    "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
+    "slippage-from-settings": "Use slippage from settings",
+    "slippage-from-strategy": "Use slippage from strategy"
   },
   "vault-information": "金库信息",
   "vault-banners": {
@@ -1851,7 +1854,8 @@
   "open-earn": {
     "product-header": {
       "token-pair-list": {
-        "aave-steth-eth": "AAVE stETH 质押杠杆"
+        "aave-steth-eth": "AAVE stETH 质押杠杆",
+        "aave-wsteth-eth": "Aave wstETH 质押杠杆"
       },
       "current-yield": "当前收益率",
       "90-day-avg-yield": "90 天平均收益率",

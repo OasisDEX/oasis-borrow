@@ -1,14 +1,14 @@
 import { Box, Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Flex, SxStyleProp, useThemeUI } from 'theme-ui'
 
 export interface SliderValuePickerProps {
-  sliderPercentageFill: BigNumber
+  sliderPercentageFill?: BigNumber
   leftBoundry: BigNumber
-  leftBoundryFormatter: (input: BigNumber) => string | JSX.Element
+  leftBoundryFormatter: (input: BigNumber) => ReactNode
   rightBoundry: BigNumber
-  rightBoundryFormatter: (input: BigNumber) => string | JSX.Element
+  rightBoundryFormatter: (input: BigNumber) => ReactNode
   onChange: (input: BigNumber) => void
   minBoundry: BigNumber
   maxBoundry: BigNumber
@@ -18,9 +18,12 @@ export interface SliderValuePickerProps {
   leftBoundryStyling?: SxStyleProp
   rightBoundryStyling?: SxStyleProp
   step: number
-  leftLabel?: string | JSX.Element
-  rightLabel?: string | JSX.Element
+  leftLabel?: ReactNode
+  leftBottomLabel?: ReactNode
+  rightLabel?: ReactNode
+  rightBottomLabel?: ReactNode
   direction?: 'rtl' | 'ltr'
+  colorfulRanges?: string
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -67,7 +70,10 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       </Flex>
       <Box my={1}>
         <Slider
-          sx={{ background, direction: props.direction || 'ltr' }}
+          sx={{
+            background: props.colorfulRanges || background,
+            direction: props.direction || 'ltr',
+          }}
           disabled={props.disabled}
           step={props.step}
           min={props.minBoundry?.toNumber()}
@@ -78,6 +84,24 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           }}
         />
       </Box>
+      {props.leftBottomLabel && props.rightBottomLabel && (
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            fontWeight: 'semiBold',
+            color: 'neutral80',
+            alignItems: 'flex-end',
+          }}
+        >
+          <Text as="span" sx={{ fontWeight: 'medium' }}>
+            {props.leftBottomLabel}
+          </Text>
+          <Text as="span" sx={{ fontWeight: 'medium' }}>
+            {props.rightBottomLabel}
+          </Text>
+        </Flex>
+      )}
     </Grid>
   )
 }

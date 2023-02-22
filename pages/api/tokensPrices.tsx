@@ -1,8 +1,7 @@
 import { withSentry } from '@sentry/nextjs'
+import { cacheObject } from 'helpers/api/cacheObject'
+import { tokenTickers } from 'helpers/api/tokenTickers'
 import { NextApiRequest, NextApiResponse } from 'next'
-
-import { cacheObject } from '../../helpers/api/cacheObject'
-import { tokenTickers } from '../../helpers/api/tokenTickers'
 
 const getTicker = cacheObject(tokenTickers, 2 * 60)
 

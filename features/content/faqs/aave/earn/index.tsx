@@ -1,10 +1,16 @@
 import { TranslatedContent } from 'features/content/index'
+import { useScrollToTop } from 'helpers/useScrollToTop'
 import React from 'react'
 
-import { useScrollToTop } from '../../../../../helpers/useScrollToTop'
-import en from './en.mdx'
+import enV2 from './en_v2.mdx'
+import enV3 from './en_v3.mdx'
 
-export const AaveEarnFaq = () => {
+export const AaveEarnFaqV2 = () => {
   useScrollToTop()
-  return <TranslatedContent content={{ en /* es, pt */ }} />
+  return <TranslatedContent content={{ en: enV2 /* es, pt */ }} />
+}
+
+export const AaveEarnFaqV3 = () => {
+  useScrollToTop()
+  return <TranslatedContent content={{ en: enV3 /* es, pt */ }} />
 }

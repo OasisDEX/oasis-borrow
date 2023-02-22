@@ -28,7 +28,7 @@ export interface TokenConfig {
   background: string
   digitsInstant?: number
   safeCollRatio?: number
-  protocol: 'maker' | 'aave'
+  protocol: 'maker' | 'aaveV2' | 'aaveV3'
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -36,7 +36,8 @@ export type CoinTag = ElementOf<typeof COIN_TAGS>
 
 export enum ProtocolLongNames {
   maker = 'Maker',
-  aave = 'Aave V2',
+  aaveV2 = 'Aave V2',
+  aaveV3 = 'Aave V3',
 }
 
 export const tokens: TokenConfig[] = [
@@ -646,6 +647,7 @@ export const tokens: TokenConfig[] = [
     icon: 'wsteth_circle_color',
     iconCircle: 'wsteth_circle_color',
     iconColor: 'wsteth_circle_color',
+    coinbaseTicker: 'coinbase-wrapped-staked-eth',
     coinGeckoTicker: 'wrapped-steth',
     coinGeckoId: 'wrapped-steth',
     color: '#ff077d',
@@ -704,11 +706,10 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
   },
   {
     symbol: 'stETHusdc',
-    // copied from above, used as a placeholder for now
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -721,7 +722,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
   },
   {
     symbol: 'ethusdc',
@@ -737,11 +738,10 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_ETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
   },
   {
     symbol: 'wBTCusdc',
-    // copied from above, used as a placeholder for now
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -754,7 +754,23 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_WBTC.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_WBTC_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
+  },
+  {
+    symbol: 'wstETHeth',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'WSTETH / USDC',
+    icon: 'aave_wsteth_usdc',
+    iconCircle: 'aave_wsteth_usdc',
+    iconColor: 'aave_wsteth_usdc',
+    color: '#E2F7F9',
+    background: 'linear-gradient(160.47deg, #E2F7F9 0.35%, #D3F3F5 99.18%), #000000',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_v3_stETH.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v3.gif'),
+    tags: [],
+    protocol: 'aaveV3',
   },
   {
     symbol: 'borrow-against-ETH',
@@ -786,6 +802,27 @@ export const tokens: TokenConfig[] = [
     background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.gif'),
+    rootToken: 'ETH',
+    tags: [],
+    protocol: 'maker',
+  },
+  {
+    symbol: 'CBETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'Coinbase Wrapped Staked ETH',
+    icon: 'cbeth_circle_color',
+    iconCircle: 'cbeth_circle_color',
+    iconColor: 'cbeth_circle_color',
+    //TODO: replace with values provided by design team - so far content is duplicated from ETH
+    color: '#667FE3',
+    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
+    coinbaseTicker: 'cbeth',
+    coinGeckoTicker: 'coinbase-wrapped-staked-eth',
+    coinpaprikaTicker: 'cbeth-coinbase-wrapped-staked-eth',
     rootToken: 'ETH',
     tags: [],
     protocol: 'maker',

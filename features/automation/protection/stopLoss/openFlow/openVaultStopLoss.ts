@@ -1,4 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import {
+  AutomationBotRemoveTriggersData,
+  removeAutomationBotAggregatorTriggers,
+} from 'blockchain/calls/automationBotAggregator'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
@@ -14,11 +19,13 @@ import {
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
+import { notRequiredStopLossMetadata } from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -59,6 +66,7 @@ export function applyOpenVaultStopLoss<S>(state: S, change: OpenVaultStopLossCha
 
 export function getDataForStopLoss(
   props: {
+    id?: BigNumber
     token: string
     priceInfo: PriceInfo
     ilkData: IlkData
@@ -79,6 +87,7 @@ export function getDataForStopLoss(
   feature: 'borrow' | 'multiply',
 ) {
   const {
+    id,
     token,
     priceInfo: { nextCollateralPrice, currentEthPrice, currentCollateralPrice },
     ilkData,
@@ -138,13 +147,15 @@ export function getDataForStopLoss(
     max: sliderMax,
   })
 
+  const collateralActive = stopLossCloseType === 'collateral'
+
   const stopLossSidebarProps: SidebarAdjustStopLossEditingStageProps = {
     executionPrice,
     errors: [],
     warnings: [],
     stopLossState: {
       stopLossLevel,
-      collateralActive: stopLossCloseType === 'collateral',
+      collateralActive,
       currentForm: 'add',
     } as StopLossFormChange,
     isEditing: true,
@@ -152,11 +163,19 @@ export function getDataForStopLoss(
   }
 
   const maxToken = getMaxToken({
-    stopLossLevel: stopLossLevel,
+    stopLossLevel,
     lockedCollateral: lockedCollateral || zero,
     liquidationRatio,
     liquidationPrice: afterLiquidationPrice,
     debt: debt || zero,
+  })
+
+  const preparedAddStopLossTriggerData = prepareAddStopLossTriggerData({
+    id: id || zero,
+    owner: proxyAddress!,
+    isCloseToCollateral: collateralActive,
+    stopLossLevel,
+    replacedTriggerId: 0,
   })
 
   function getOpenVaultStopLossMetadata(): StopLossMetadata {
@@ -170,12 +189,15 @@ export function getDataForStopLoss(
         getMaxToken: () => maxToken,
         getRightBoundary: () => afterNewLiquidationPrice,
         getSliderPercentageFill: () => sliderPercentageFill,
+        prepareAddStopLossTriggerData: () => preparedAddStopLossTriggerData,
       },
       settings: {
         sliderStep: 1,
       },
       translations: {
         ratioParamTranslationKey: 'system.collateral-ratio',
+        stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-below',
+        bannerStrategiesKey: 'protection.stop-loss-or-auto-sell',
       },
       validation: {
         getAddErrors: () => ({}),
@@ -191,7 +213,13 @@ export function getDataForStopLoss(
         sliderMin,
         triggerMaxToken: zero,
         dynamicStopLossPrice: zero,
+        removeTxData: {} as AutomationBotRemoveTriggersData,
       },
+      contracts: {
+        addTrigger: addAutomationBotTrigger,
+        removeTrigger: removeAutomationBotAggregatorTriggers,
+      },
+      ...notRequiredStopLossMetadata,
     }
   }
 
@@ -214,6 +242,7 @@ export function getDataForStopLoss(
       owner: proxyAddress,
       token,
       vaultType: feature,
+      debtToken: 'DAI',
     } as AutomationPositionData,
     commonData: {
       controller: '0x0',

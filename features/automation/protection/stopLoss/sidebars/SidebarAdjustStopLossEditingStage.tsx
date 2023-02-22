@@ -1,4 +1,3 @@
-import { Box } from '@theme-ui/components'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -24,17 +23,18 @@ import {
 } from 'features/automation/common/consts'
 import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { StopLossCommonOrderInformation } from 'features/automation/protection/common/controls/StopLossCommonOrderInformation'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 interface SetDownsideProtectionInformationProps {
   executionPrice: BigNumber
@@ -45,17 +45,14 @@ interface SetDownsideProtectionInformationProps {
 
 export function SetDownsideProtectionInformation({
   executionPrice,
-  ethPrice,
   isCollateralActive,
   isOpenFlow,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: { token },
     metadata: {
       stopLossMetadata: {
         methods: { getMaxToken },
-        values: { collateralDuringLiquidation },
       },
     },
   } = useAutomationContext()
@@ -63,48 +60,14 @@ export function SetDownsideProtectionInformation({
 
   const afterMaxToken = getMaxToken(stopLossState)
 
-  const savingCompareToLiquidation = afterMaxToken.minus(collateralDuringLiquidation)
-
-  const maxTokenOrDai = isCollateralActive
-    ? `${formatAmount(afterMaxToken, token)} ${token}`
-    : `${formatAmount(afterMaxToken.multipliedBy(executionPrice), 'USD')} DAI`
-
-  const savingTokenOrDai = isCollateralActive
-    ? `${formatAmount(savingCompareToLiquidation, token)} ${token}`
-    : `${formatAmount(savingCompareToLiquidation.multipliedBy(executionPrice), 'USD')} DAI`
-
-  const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
-  const closeVaultGasPrice = new BigNumber(200) // gwei
-  const estimatedFeesWhenSlTriggered = formatFiatBalance(
-    closeVaultGasEstimation
-      .multipliedBy(closeVaultGasPrice)
-      .multipliedBy(ethPrice)
-      .dividedBy(new BigNumber(10).pow(9)),
-  )
-
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
-      <VaultChangesInformationItem
-        label={`${t('protection.estimated-to-receive')}`}
-        value={
-          <Flex>
-            {t('protection.up-to')} {maxTokenOrDai}
-          </Flex>
-        }
+      <StopLossCommonOrderInformation
+        afterMaxToken={afterMaxToken}
+        isCollateralActive={isCollateralActive}
+        executionPrice={executionPrice}
       />
-      <VaultChangesInformationItem
-        label={`${t('protection.saving-comp-to-liquidation')}`}
-        value={
-          <Flex>
-            {t('protection.up-to')} {savingTokenOrDai}
-          </Flex>
-        }
-      />
-      <VaultChangesInformationItem
-        label={`${t('protection.estimated-fees-on-trigger', { token })}`}
-        value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
-        tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
-      />
+
       {!isOpenFlow && (
         <VaultChangesInformationItem
           label={`${t('protection.max-cost')}`}
@@ -145,7 +108,7 @@ export function SidebarAdjustStopLossEditingStage({
         values: { sliderMin, sliderMax, resetData },
       },
     },
-    positionData: { id, ilk, token, debt, positionRatio },
+    positionData: { id, ilk, token, debt, positionRatio, debtToken },
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
@@ -153,10 +116,10 @@ export function SidebarAdjustStopLossEditingStage({
     (value) =>
       trackingEvents.automation.inputChange(
         AutomationEventIds.MoveSlider,
-        id ? Pages.StopLoss : Pages.OpenVault,
+        !id.isZero() ? Pages.StopLoss : Pages.OpenVault,
         CommonAnalyticsSections.Form,
         {
-          vaultId: id ? id.toString() : 'n/a',
+          vaultId: !id.isZero() ? id.toString() : 'n/a',
           ilk: ilk,
           collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
@@ -180,8 +143,11 @@ export function SidebarAdjustStopLossEditingStage({
   if (isVaultEmpty) {
     return (
       <SidebarFormInfo
-        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
-        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
+        title={t('automation.closed-vault-not-existing-trigger-header', { feature, debtToken })}
+        description={t('automation.closed-vault-not-existing-trigger-description', {
+          feature,
+          debtToken,
+        })}
       />
     )
   }
@@ -204,10 +170,10 @@ export function SidebarAdjustStopLossEditingStage({
                 })
                 trackingEvents.automation.buttonClick(
                   AutomationEventIds.CloseToX,
-                  Pages.StopLoss,
+                  !id.isZero() ? Pages.StopLoss : Pages.OpenVault,
                   CommonAnalyticsSections.Form,
                   {
-                    vaultId: id.toString(),
+                    vaultId: !id.isZero() ? id.toString() : 'n/a',
                     ilk: ilk,
                     closeTo: optionName as CloseVaultTo,
                   },
@@ -294,10 +260,7 @@ export function SidebarAdjustStopLossEditingStage({
             </Text>
             <Text as="p" variant="paragraph3">
               {t('protection.guarantee-factors')}{' '}
-              <AppLink
-                href="https://kb.oasis.app/help/stop-loss-protection"
-                sx={{ fontWeight: 'body' }}
-              >
+              <AppLink href="https://kb.oasis.app/help/automation" sx={{ fontWeight: 'body' }}>
                 {t('protection.learn-more-about-automation')}
               </AppLink>
             </Text>

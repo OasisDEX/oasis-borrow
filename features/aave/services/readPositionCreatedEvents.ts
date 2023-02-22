@@ -1,13 +1,13 @@
+import positionCreatedAbi from 'blockchain/abi/position-created.json'
+import { Context } from 'blockchain/network'
+import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { utils } from 'ethers'
+import { LendingProtocol } from 'lendingProtocols'
 import { combineLatest, from, Observable } from 'rxjs'
-import { filter, map, startWith, switchMap } from 'rxjs/operators'
-
-import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
-import { Context } from '../../../blockchain/network'
-import { getTokenSymbolFromAddress } from '../../../blockchain/tokensMetadata'
-import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
-import { TypedEvent } from '../../../types/ethers-contracts/commons'
-import { PositionCreated as PositionCreatedContract } from '../../../types/ethers-contracts/PositionCreated'
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { TypedEvent } from 'types/ethers-contracts/commons'
+import { PositionCreated as PositionCreatedContract } from 'types/ethers-contracts/PositionCreated'
 
 type PositionCreatedChainEvent = {
   collateralToken: string // address
@@ -21,7 +21,7 @@ export type PositionCreated = {
   collateralTokenSymbol: string
   debtTokenSymbol: string
   positionType: 'Borrow' | 'Multiply' | 'Earn'
-  protocol: string
+  protocol: LendingProtocol
   proxyAddress: string
 }
 
@@ -37,12 +37,15 @@ function getPositionCreatedEventForProxyAddress$(context: Context, proxyAddress:
         address: proxyAddress,
         topics: [utils.id('CreatePosition(address,string,string,address,address)')],
       },
-      16183119,
+      context.accountGuard.genesisBlock,
     ),
   )
 }
 
-function mapEvent(positionCreatedEvents: Array<TypedEvent<Array<any>>>[], context: Context) {
+function mapEvent(
+  positionCreatedEvents: Array<TypedEvent<Array<any>>>[],
+  context: Context,
+): Array<PositionCreated> {
   return positionCreatedEvents
     .flatMap((events) => events)
     .filter((e) => e.event === 'CreatePosition')
@@ -55,8 +58,31 @@ function mapEvent(positionCreatedEvents: Array<TypedEvent<Array<any>>>[], contex
           positionCreatedFromChain.collateralToken,
         ),
         debtTokenSymbol: getTokenSymbolFromAddress(context, positionCreatedFromChain.debtToken),
+        protocol: extractLendingProtocolFromPositionCreatedEvent(positionCreatedFromChain),
       }
     })
+}
+
+function extractLendingProtocolFromPositionCreatedEvent(
+  positionCreatedChainEvent: PositionCreatedChainEvent,
+): LendingProtocol {
+  switch (positionCreatedChainEvent.protocol) {
+    case 'AAVE':
+    case 'AaveV2':
+      return LendingProtocol.AaveV2
+    case 'AAVE_V3':
+      return LendingProtocol.AaveV3
+    case 'Ajna':
+      return 'Ajna' as LendingProtocol
+    // TODO we will need proper handling for Ajna, filtered for now
+    // return LendingProtocol.Ajna
+    default:
+      throw new Error(
+        `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
+          positionCreatedChainEvent,
+        )}`,
+      )
+  }
 }
 
 export function getLastCreatedPositionForProxy$(
@@ -80,6 +106,7 @@ export function getLastCreatedPositionForProxy$(
           positionCreatedFromChain.collateralToken,
         ),
         debtTokenSymbol: getTokenSymbolFromAddress(context, positionCreatedFromChain.debtToken),
+        protocol: extractLendingProtocolFromPositionCreatedEvent(positionCreatedFromChain),
       }
     }),
   )
@@ -105,6 +132,7 @@ export function createReadPositionCreatedEvents$(
       )
     }),
     startWith([]),
+    shareReplay(1),
   )
 }
 

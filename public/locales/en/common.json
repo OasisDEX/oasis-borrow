@@ -41,9 +41,15 @@
   "all": "All",
   "all-assets": "All Assets",
   "amount": "Amount",
+  "amount-to-lend": "Amount to Lend",
+  "amount-to-remaining-deposit": "Amount of Remaining Deposit",
+  "net-apy": "Net APY",
+  "lending-price": "Lending Price",
+  "max-ltv-to-lend-at": "Max LTV to lend at",
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
   "back": "Back",
+  "go-back": "Go back",
   "ok": "OK",
   "back-to-editing": "Back to editing",
   "view-vault-link": "<0>View Vault -></0>",
@@ -89,6 +95,13 @@
   "unfollow": "Unfollow",
   "loading": "Loading",
   "following": "Following",
+  "followed-vaults-limit": "Follow Limit Reached",
+  "safer": "Safer",
+  "riskier": "Riskier",
+  "max-ltv": "Max LTV",
+  "total-value-locked": "Total value locked",
+  "position-apy": "Position APY",
+  "build-your-position": "Build your position",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -137,18 +150,18 @@
       "welcome-screen": {
         "header": "Create your Smart DeFi account",
         "create-button": "Create Smart DeFi account",
-        "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>",
+        "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>.",
         "retry-create-button": "Retry Create Smart DeFi account",
         "create-order-summary-heading": "Creating your Smart DeFi account"
       },
       "proxy-creating-screen": {
         "header": "Create your Smart DeFi account",
         "button": "Creating Smart DeFi account",
-        "paragraph": "Read more in the the <1>knowledge base</1>"
+        "paragraph": "Read more in the the <1>knowledge base</1>."
       },
       "proxy-created-screen": {
         "header": "Account successfully created",
-        "paragraph": "Your account has been successfully created. <1>Read more in the Knowledge Base</1>\""
+        "paragraph": "Your account has been successfully created, <1>read more in the Knowledge Base</1>."
       },
       "bullet-points": [
         "Multiple Aave positions with the same wallet",
@@ -193,7 +206,11 @@
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
+        "7-day-net-apy": "7 day net APY",
+        "90-day-net-apy": "90 day net APY",
+        "action": "",
         "activity": "Activity",
+        "annual-fee": "Annual fee",
         "asset": "Vault",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
@@ -203,14 +220,20 @@
         "earnings-to-date": "Earnings to date",
         "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
+        "liquidity-avaliable": "Liquidity avaliable",
         "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
+        "max-ltv": "Max LTV",
+        "min-ltv": "Min LTV",
+        "min-position-size": "Min. position size",
         "net-usd-value": "Net value",
         "net-value": "Net value",
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
         "protection": "Protection",
+        "protocol": "Protocol",
         "status": "Status",
+        "tvl": "TVL",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
       },
@@ -406,6 +429,7 @@
     "updated": "updated"
   },
   "active-triggers": "active triggers",
+  "i-understand": "I understand ",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -449,7 +473,7 @@
           "tabLabel": "Multiply on Oasis",
           "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
           "tabParaLinkContent": "See all Multiply collateral types →",
-          "aaveTabParaContent": "We've launched multiply functionality for Aave.",
+          "aaveTabParaContent": "We've launched Multiply for Aave.",
           "aaveTabParaLinkContent": "Read more →"
         },
         "earn": {
@@ -656,9 +680,10 @@
       "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
       "current-stop-loss-coll-ratio": "The current Stop-Loss Collateral Ratio is:",
       "stop-loss-coll-ratio-desc": "The Stop-Loss Collateral Ratio is the trigger point for executing the Stop-Loss on this Vault based on the Collateral Ratio at the next OSM price. Should the next OSM price take the current Vault Collateralisation Ratio below the Stop-Loss Collateral Ratio, then the Vault will be automatically closed.",
+      "stop-loss-ltv-desc": "The Stop-Loss Loan to Value (LTV) is the trigger point for executing the Stop-Loss for this vault based on it's LTV. If the Vault's LTV is equal to or higher than the Trigger LTV, then the stop-loss protection will execute and the vault will be automatically closed.",
       "dynamic-stop-price": "Dynamic Stop price",
       "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
-      "dynamic-stop-loss-price-desc": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss Collateralisation Ratio. The reason this price is dynamic is that the Stop-Loss trigger is based on a collateralisation ratio, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
+      "dynamic-stop-loss-price-desc": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss {{ratioParam}}. The reason this price is dynamic is that the Stop-Loss trigger is based on a {{ratioParam}}, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
       "current-dynamic-stop-loss-price": "The current Dynamic Stop-Loss Price is:",
       "max-token-on-stop-loss-trigger": "Est. {{token}} on Stop-Loss trigger",
       "max-token-on-stop-loss-trigger-desc": "The estimated {{token}} on Stop-Loss trigger is the approximate amount of {{token}} you can expect to get returned to the wallet when the Vault has been closed because of Stop-Loss. It is very difficult to give a perfect amount as it depends on several factors at the time of the Stop-Loss trigger, such as market price, available liquidity and gas costs. This calculation assumes a 2% difference from Trigger Price to Market Price. The amount saved compared to liquidation is based on the assumption of not paying a Liquidation Penalty, currently set to {{liquidationPenalty}}.",
@@ -690,7 +715,7 @@
     "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed.",
     "pnl": "PnL {{value}} {{token}}",
     "ratio-history": "Ratio history",
-    "position-eth-debt": "Position ETH Debt",
+    "position-debt": "Position {{debtToken}} Debt",
     "liquidation-price-ratio": "Liquidation price ratio",
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
@@ -698,7 +723,8 @@
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
-    "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH."
+    "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}.",
+    "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it below your Stop-Loss Loan to Value"
   },
   "aave-position-modal": {
     "liquidation-price": {
@@ -846,40 +872,52 @@
   "send-to": "Send to",
   "sent": "Sent",
   "seo": {
-    "contact": {
-      "description": "Send us feedback, questions, or suggestions.",
-      "title": "Contact"
+    "owner": {
+      "title": "Owner - Oasis.app",
+      "description": "Page not found, sorry."
     },
-    "dai": {
-      "description": "A short introduction to Dai, the smarter digital currency.",
-      "title": "Dai"
+    "404": {
+      "title": "Page not found 🥹 - Oasis.app",
+      "description": "Page not found, sorry."
+    },
+    "contact": {
+      "title": "Contact - Oasis.app",
+      "description": "Send us feedback, questions, or suggestions."
     },
     "default": {
-      "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral",
-      "title": "Oasis.app"
+      "title": "Deploy your crypto into DeFi - Oasis.app",
+      "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+    },
+    "dai": {
+      "title": "Dai - Oasis.app",
+      "description": "A short introduction to Dai, the smarter digital currency."
     },
     "support": {
-      "description": "All the answers to the most common questions.",
-      "title": "FAQs"
+      "title": "FAQs - Oasis.app",
+      "description": "All the answers to the most common questions."
     },
     "careers": {
-      "title": "Careers",
+      "title": "Careers - Oasis.app",
       "description": "We believe in talent. Join us to build the next generation of DeFi."
     },
     "about": {
-      "title": "About Us",
+      "title": "About Us - Oasis.app",
       "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
     },
     "referrals": {
-      "title": "Refer a friend and earn Dai",
+      "title": "Refer a friend and earn Dai - Oasis.app",
       "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
     },
     "brand-assets": {
-      "title": "Brand assets",
+      "title": "Brand assets - Oasis.app",
       "description": "Find here the Oasis.app Logo and graphics."
     },
+    "assets": {
+      "title": "Assets - Oasis.app",
+      "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+    },
     "security": {
-      "title": "Security",
+      "title": "Security - Oasis.app",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     },
     "discover": {
@@ -888,8 +926,27 @@
     },
     "ajna": {
       "title": "Oasis.app × Ajna",
-      "description": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
-    }
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+    },
+    "ajnaProductPage": {
+      "title": "{{product}} - Oasis.app × Ajna",
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+    },
+    "multiply": {
+      "title": "Multiply - Oasis.app",
+      "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset."
+    },
+    "earn": {
+      "title": "Earn - Oasis.app",
+      "description": "Put your crypto assets to work today. Start generating the best yields."
+    },
+    "borrow": {
+      "title": "Borrow - Oasis.app",
+      "description": "Borrow Dai against your favorite crypto assets. Use the Dai however you like. Browse the featured, or select an asset to view our products."
+    },
+    "title-single-token": "{{token}} - {{product}}",
+    "title-product-w-tokens": "{{token1}}/{{token2}} - {{protocol}} - {{product}}",
+    "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}"
   },
   "set-allowance-for": "Set Allowance for {{token}}",
   "setting-allowance-for": "Setting Allowance for {{token}}",
@@ -929,11 +986,15 @@
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {
+    "adjust-position": "Adjust position",
     "asset": "Asset",
+    "vault": "Vault",
     "available-to-withdraw": "Available to Withdraw",
     "total-exposure": "Total {{token}} exposure",
     "exposure": "exposure",
     "total-collateral": "Total collateral",
+    "max-transaction-cost": "Max transaction cost",
+    "debt": "Debt",
     "multiple": "Multiple",
     "est-break-even": "Est. break-even",
     "est-break-even-value": "{{days}} days",
@@ -946,6 +1007,7 @@
     "collateral-locked": "Collateral Locked",
     "collateral-ratio": "Collateral Ratio",
     "collateralization-ratio": "Collateralization Ratio",
+    "go-to-position": "Go to position",
     "dai": "Dai",
     "dai-available": "Dai Available",
     "dai-debt": "Dai Debt",
@@ -999,6 +1061,7 @@
     "manage-debt-token": "Manage debt ({{token}})",
     "manage-collateral": "Manage collateral",
     "manage-debt": "Manage debt",
+    "manage-liquidity": "Manage liquidity ({{token}})",
     "close-position": "Close position",
     "actions": {
       "common": {
@@ -1039,7 +1102,8 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} below {{value}}"
+        "footnote-below": "{{amount}} below {{value}}",
+        "footnote-above": "{{amount}} above {{value}}"
       },
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"
@@ -1191,7 +1255,10 @@
     "oasis-fee": "Oasis fee",
     "ltv": "LTV",
     "outstanding-debt": "Outstanding debt",
-    "loan-to-value": "Loan to Value"
+    "loan-to-value": "Loan to Value",
+    "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
+    "slippage-from-settings": "Use slippage from settings",
+    "slippage-from-strategy": "Use slippage from strategy"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -1316,8 +1383,8 @@
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
   "open-vault-deployment-confirming": "Vault created. Waiting for confirmations {{openVaultConfirmations}}/{{safeConfirmations}}",
   "set-up-stop-loss-tx": "Set up Stop-Loss transaction",
-  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the Vault and another to set up the Stop-Loss.",
-  "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
+  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the {{type}} and another to set up the Stop-Loss.",
+  "open-vault-two-tx-first-step-title": "Step 1/2: {{type}} being created",
   "open-vault-two-tx-second-step-title": "Step 2/2: Stop-Loss setup transaction",
   "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
   "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is completed",
@@ -1370,7 +1437,7 @@
       "proxy-progress": "Read more on smart proxy in the <1>Knowledge Base</1>.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-      "commonAllowance": "Select a maximum allowance amount for your Smart DeFi Account. Your Smart Defi Account will be able to interact with up to:",
+      "commonAllowance": "Select a maximum allowance amount for your Smart DeFi Account. Your Smart Defi Account will be able to interact with up to: {{allowanceAmountInfo}}",
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
@@ -1444,11 +1511,12 @@
     "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
     "dynamic-stop-loss": "Dynamic Stop-Loss",
     "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
+    "stop-loss-ltv": "Stop-Loss Loan to Value",
     "total-cost": "Total transaction cost",
     "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on Stop-Loss trigger",
-    "zero-debt-heading": "You need to Generate DAI before you can set up Automated Protection",
-    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic Stop-Loss or Auto-Sell Strategy on your vault based on the collateralization ratio. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
+    "zero-debt-heading": "You need to Generate {{debtToken}} before you can set up Automated Protection",
+    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic {{bannerStrategiesKey}} Strategy on your vault based on the {{ratioParamTranslationKey}}. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
     "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop-Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
@@ -1470,10 +1538,10 @@
     "stop-loss-triggered": "Stop-Loss triggered",
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
     "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop Loss event on the right.",
-    "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
+    "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your {{ratioParam}}.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
-    "sl-triggered-gas-estimation": "This fee represents the expected Gas Cost based on the current price of ETH and an assumed Gas Price of 200 GWEI.",
+    "sl-triggered-gas-estimation": "This fee represents the expected Gas Cost based on the current price of ETH and an assumed Gas Price of 50 GWEI.",
     "stop-loss-on": "Stop-Loss On",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
     "closed-vault-existing-sl-header": "Your vault is closed but stop-loss is still active",
@@ -1490,7 +1558,8 @@
     "unable-to-access-protection": "Unable to access Protection",
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
     "stop-loss-something": "Stop-Loss {{value}}",
-    "current-stop-loss-something": "The current Stop-Loss {{value}} is:"
+    "current-stop-loss-something": "The current Stop-Loss {{value}} is:",
+    "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1550,6 +1619,10 @@
         "title": "stETH/ETH Aave",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
       },
+      "wstETHeth": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
+      },
       "stETHusdc": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
@@ -1588,6 +1661,7 @@
     },
     "aave": {
       "stETHeth": "Get up to {{value}} ETH exposure to stETH",
+      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH",
       "borrow-against-ETH": "Borrow up to ${{value}}"
     }
   },
@@ -1619,7 +1693,7 @@
       "title": "Oasis Multiply",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset.",
       "link": "Learn more about Multiply ->",
-      "aaveDescription": "We've launched multiply functionality for Aave.",
+      "aaveDescription": "We've launched Multiply for Aave.",
       "aaveLink": "Read more →"
     },
     "borrow": {
@@ -1928,7 +2002,8 @@
     "update-trigger": "Update {{feature}}",
     "cancel-trigger": "Cancel {{feature}}",
     "trigger-executed-banner-title": "{{feature}} triggered",
-    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
+    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the full summary of the {{feature}} event on the right.",
+    "trigger-executed-banner-short-description": "Your {{feature}} Protection was triggered on this Position. Find out more about how Stop-Loss Protection works <0>here</0>.",
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
     "trigger-executed": "Your {{feature}} was triggered",
@@ -1936,8 +2011,8 @@
     "confirmation-text": "Confirm your {{feature}} setup",
     "closed-vault-existing-trigger-header": "Your vault is closed but {{feature}} is still active",
     "closed-vault-existing-trigger-description": "You can cancel your existing {{feature}} here or deposit into your vault in overview tab",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up {{feature}}",
-    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab",
+    "closed-vault-not-existing-trigger-header": "You need to generate {{debtToken}} before you can set up {{feature}}",
+    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate {{debtToken}} in overview tab",
     "validation": {
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-more-debt-than-max-for-stop-loss": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20M DAI",
@@ -2000,7 +2075,7 @@
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
-    "banner": "We've launched multiply functionality for Aave. Read more here",
+    "banner": "New: Earn up to 9.9x stETH Yield on Oasis Earn. Read more here",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",
@@ -2115,7 +2190,8 @@
     "aave": {
       "product-header": {
         "token-pair-list": {
-          "aave-steth-eth": "Aave stETH yield multiple"
+          "aave-steth-eth": "Aave stETH yield multiple",
+          "aave-wsteth-eth": "Aave wstETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",
@@ -2281,16 +2357,133 @@
       "collaterals-you-can-borrow": "Collaterals you can borrow",
       "annual-variable-rates": "Annual variable rates"
     },
+    "risk": {
+      "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
+      "bullet-points": [
+        "Its a new DeFi protocol.",
+        "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
+      ]
+    },
+    "history": {
+      "title": "History is coming soon",
+      "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
+    },
     "borrow": {
-      "open": {
+      "common": {
         "headline": {
-          "header": "Borrow {{collateralToken}} against {{quoteToken}}",
           "current-market-price": "Current Market Price"
         },
+        "overview": {
+          "liquidation-price": "Liquidation Price",
+          "below-current-price": "{{belowCurrentPrice}} below current price",
+          "loan-to-value": "Loan to value",
+          "collateral-locked": "Collateral locked",
+          "position-debt": "Position debt"
+        },
+        "footer": {
+          "annual-net-borrow-cost": "Annual net borrow cost",
+          "available-to-borrow": "Available to borrow",
+          "available-to-withdraw": "Available to withdraw"
+        },
+        "banners": {
+          "tokens": {
+            "title": "This positions earns AJNA tokens",
+            "description": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You wallet will automatically get AJNA token rewards.",
+            "button": "Read about AJNA token rewards"
+          }
+        },
         "form": {
-          "title": "Configure your Ajna Position"
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          }
+        }
+      },
+      "open": {
+        "select": {
+          "heading": {
+            "pre": "Borrow against your",
+            "post": "exposure on Ajna"
+          },
+          "intro": "Select the crypto asset you want to borrow against your {{token}}"
+        },
+        "headline": {
+          "header": "Borrow {{quoteToken}} against {{collateralToken}}"
+        },
+        "form": {
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
+        }
+      },
+      "manage": {
+        "headline": {
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
         }
       }
+    },
+    "earn": {
+      "common": {
+        "ajna-faq": "Ajna FAQ",
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          }
+        },
+        "headline": {
+          "current-yield": "Current yield",
+          "90-day-avg": "90 Day Avg",
+          "current-market-price": "Current Market Price"
+        }
+      },
+      "open": {
+        "select": {
+          "heading": {
+            "pre": "Lend",
+            "post": "to Earn on Ajna"
+          },
+          "intro": "Select the crypto asset you want to earn for lending your {{token}}"
+        },
+        "headline": {
+          "header": "Lend {{collateralToken}} against {{quoteToken}}"
+        },
+        "form": {
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
+          "max-ltv-to-lend-at": "Max LTV to lend at",
+          "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
+        },
+        "simulation": {
+          "header1": "Duration",
+          "header2": "Earnings after fees",
+          "header3": "Net value",
+          "rowlabel1": "Projected earnings per day",
+          "rowlabel2": "Projected earnings per 30d",
+          "rowlabel3": "Projected earnings for 1 year",
+          "footnote1": "*Past performance is not indicative of future results."
+        }
+      },
+      "manage": {
+        "headline": {
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
+        },
+        "overview": {
+          "early-withdrawal-period": "Early withdrawal period",
+          "early-withdrawal-penalty": "Early withdrawal penalty"
+        },
+        "form": {
+          "adjust-lending-price-bucket": "Adjust lending price bucket"
+        }
+      }
+    },
+    "validations": {
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+      "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet",
+      "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
+      "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
+      "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited."
     }
   }
 }

@@ -23,10 +23,10 @@ import React from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
-  const checksumAddress = getAddress(address.toLocaleLowerCase())
   const { context$, followedList$ } = useAppContext()
   const { walletAddress } = useAccount()
   const [contextData, contextError] = useObservable(context$)
+  const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))
 
   const isOwner = address === walletAddress
@@ -37,16 +37,16 @@ export function FollowedTable({ address }: { address: string }) {
         value={[contextData, followedListData]}
         customLoader={<PositionTableLoadingState />}
       >
-        {([context, followedList]) => {
-          const borrowPositions = getMakerBorrowPositions(followedList)
-          const multiplyPositions = getMakerMultiplyPositions(followedList)
-          const earnPositions = getMakerEarnPositions(followedList)
+        {([context, followedMakerPositions]) => {
+          const borrowPositions = getMakerBorrowPositions(followedMakerPositions)
+          const multiplyPositions = getMakerMultiplyPositions(followedMakerPositions)
+          const earnPositions = getMakerEarnPositions(followedMakerPositions)
 
-          return followedList.length ? (
+          return followedMakerPositions.length ? (
             <DiscoverTableContainer
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-followed-positions`, {
                 address: formatAddress(address),
-              })} (${followedList.length})`}
+              })} (${followedMakerPositions.length})`}
             >
               {borrowPositions.length > 0 && (
                 <>
@@ -58,7 +58,10 @@ export function FollowedTable({ address }: { address: string }) {
                     skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                     {...(!!walletAddress && {
-                      follow: { followerAddress: walletAddress, chainId: context.chainId },
+                      follow: {
+                        followerAddress: walletAddress,
+                        chainId: context.chainId,
+                      },
                     })}
                   />
                 </>
@@ -73,7 +76,10 @@ export function FollowedTable({ address }: { address: string }) {
                     skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                     {...(!!walletAddress && {
-                      follow: { followerAddress: walletAddress, chainId: context.chainId },
+                      follow: {
+                        followerAddress: walletAddress,
+                        chainId: context.chainId,
+                      },
                     })}
                   />
                 </>
@@ -88,7 +94,10 @@ export function FollowedTable({ address }: { address: string }) {
                     skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                     {...(!!walletAddress && {
-                      follow: { followerAddress: walletAddress, chainId: context.chainId },
+                      follow: {
+                        followerAddress: walletAddress,
+                        chainId: context.chainId,
+                      },
                     })}
                   />
                 </>

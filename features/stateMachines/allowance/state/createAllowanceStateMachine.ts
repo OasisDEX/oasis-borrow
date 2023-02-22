@@ -1,11 +1,13 @@
 import { TxMeta } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import {
+  TransactionStateMachine,
+  TransactionStateMachineResultEvents,
+} from 'features/stateMachines/transaction'
 import { ActorRefFrom, assign, createMachine, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
-
-import { maxUint256 } from '../../../../blockchain/calls/erc20'
-import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
-import { TransactionStateMachine, TransactionStateMachineResultEvents } from '../../transaction'
 
 export type AllowanceType = 'unlimited' | 'custom' | 'minimum'
 export interface AllowanceStateMachineContext {
@@ -43,7 +45,12 @@ export interface AllowanceTxMeta extends TxMeta {
   amount: BigNumber
 }
 
-export type AllowanceStateMachineResponseEvent = { type: 'ALLOWANCE_SUCCESS' }
+export type AllowanceStateMachineResponseEvent = {
+  type: 'ALLOWANCE_SUCCESS'
+  amount: BigNumber
+  token: string
+  spender: string
+}
 
 export type AllowanceStateMachineEvent =
   | AllowanceStateMachineResponseEvent
@@ -52,6 +59,13 @@ export type AllowanceStateMachineEvent =
   | { type: 'BACK' }
   | { type: 'CONTINUE' }
   | { type: 'SET_ALLOWANCE'; amount?: BigNumber; allowanceType: AllowanceType }
+  | {
+      type: 'SET_ALLOWANCE_CONTEXT' | 'RESET_ALLOWANCE_CONTEXT'
+      minimumAmount: BigNumber
+      token: string
+      spender: string
+      allowanceType: AllowanceType
+    }
   | TransactionStateMachineResultEvents
 
 export function createAllowanceStateMachine(
@@ -78,6 +92,9 @@ export function createAllowanceStateMachine(
               target: 'txInProgress',
             },
             SET_ALLOWANCE: {
+              actions: ['updateContext'],
+            },
+            SET_ALLOWANCE_CONTEXT: {
               actions: ['updateContext'],
             },
           },
@@ -114,6 +131,12 @@ export function createAllowanceStateMachine(
           },
         },
       },
+      on: {
+        RESET_ALLOWANCE_CONTEXT: {
+          actions: ['updateContext'],
+          target: 'idle',
+        },
+      },
     },
     {
       guards: {
@@ -138,7 +161,12 @@ export function createAllowanceStateMachine(
           }
           return undefined
         }),
-        sendAllowanceSetEvent: sendParent({ type: 'ALLOWANCE_SUCCESS' }),
+        sendAllowanceSetEvent: sendParent((context) => ({
+          type: 'ALLOWANCE_SUCCESS',
+          amount: getEffectiveAllowanceAmount(context),
+          token: context.token,
+          spender: context.spender,
+        })),
       },
     },
   )

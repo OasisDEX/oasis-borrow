@@ -1,10 +1,13 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { BigNumber } from 'bignumber.js'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
+import { LendingProtocol } from 'lendingProtocols'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 
-import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
-import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
 export enum ProxyType {
@@ -14,14 +17,20 @@ export enum ProxyType {
 
 export type ProductType = 'Multiply' | 'Earn' | 'Borrow'
 
+export type ManagePositionAvailableActions =
+  | 'adjust'
+  | 'manage-debt'
+  | 'manage-collateral'
+  | 'close'
+
 export interface IStrategyConfig {
   name: string
   urlSlug: string
   proxyType: ProxyType
   viewComponents: {
     headerOpen: AaveHeader
-    headerManage: AaveHeader
-    headerView: AaveHeader
+    headerManage: ManageAaveHeader
+    headerView: ManageAaveHeader
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
@@ -30,6 +39,7 @@ export interface IStrategyConfig {
     sidebarTitle: string
     sidebarButton: string
   }
+  availableActions: ManagePositionAvailableActions[]
   tokens: {
     collateral: string
     debt: string
@@ -40,19 +50,25 @@ export interface IStrategyConfig {
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
   type: ProductType
+  protocol: LendingProtocol
   featureToggle?: Feature
+  defaultSlippage?: BigNumber
 }
-
 export type AaveHeaderProps = {
   strategyConfig: IStrategyConfig
 }
 
+export type ManageAaveHeaderProps = AaveHeaderProps & {
+  positionId: PositionId
+}
+
 export type ManageSectionComponentProps = {
-  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveState: AaveV2ReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
+type ManageAaveHeader = (props: ManageAaveHeaderProps) => JSX.Element
 type SimulateSection = (props: AaveMultiplyManageComponentProps) => JSX.Element
 type VaultDetails = (
   props: ManageSectionComponentProps &

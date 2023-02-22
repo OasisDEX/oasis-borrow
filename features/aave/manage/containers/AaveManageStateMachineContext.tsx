@@ -1,10 +1,9 @@
 import { useInterpret } from '@xstate/react'
+import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { ManageAaveStateMachine } from 'features/aave/manage/state'
+import { PositionId } from 'features/aave/types'
 import { env } from 'process'
 import React from 'react'
-
-import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
-import { PositionId } from '../../types'
-import { ManageAaveStateMachine } from '../state'
 
 export const defaultManageTokenInputValues = {
   // defaults for the manage collateral/debt are set here
@@ -35,6 +34,7 @@ function setupManageAaveStateContext({
       manageTokenInput: defaultManageTokenInputValues,
       positionCreatedBy: positionCreatedBy,
       positionId: positionId,
+      getSlippageFrom: strategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()

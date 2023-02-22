@@ -1,29 +1,33 @@
 import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { MessageCard } from 'components/MessageCard'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
+import { BaseAaveEvent, BaseViewProps } from 'features/aave/common/BaseAaveContext'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
-import { ManageAaveEvent } from 'features/aave/manage/state'
+import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
+import { formatPercent } from 'helpers/formatters/format'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
-import { SliderValuePicker } from '../../../../components/dumb/SliderValuePicker'
-import { MessageCard } from '../../../../components/MessageCard'
-import { SidebarSection, SidebarSectionProps } from '../../../../components/sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
-import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
-import { formatPercent } from '../../../../helpers/formatters/format'
-import { one, zero } from '../../../../helpers/zero'
-import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
-import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents =
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | ({
-      type: 'RESET_RISK_RATIO'
-    } & ManageAaveEvent)
+  | (
+      | {
+          type: 'RESET_RISK_RATIO'
+        }
+      | BaseAaveEvent
+    )
 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
@@ -33,6 +37,7 @@ export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   onChainPosition?: IPosition
   dropdownConfig?: SidebarSectionHeaderDropdown
   title: string
+  automation?: ManageAaveAutomation
   noSidebar?: boolean
 }
 
@@ -53,9 +58,11 @@ type BoundaryConfig = {
   translationKey: string
   valueExtractor: ({
     oracleAssetPrice,
+    oraclesPricesRatio,
     ltv,
   }: {
     oracleAssetPrice: BigNumber
+    oraclesPricesRatio: BigNumber
     ltv: BigNumber
   }) => BigNumber
   formatter: (qty: BigNumber) => TokenDisplay
@@ -87,11 +94,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     dropdownConfig,
     title,
     noSidebar,
+    automation,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
-    const simulation = state.context.strategy?.simulation
+    const simulation = state.context.transition?.simulation
     const targetPosition = simulation?.position
+
+    const strategyInfo = state.context.strategyInfo
 
     const maxRisk =
       targetPosition?.category.maxLoanToValue || onChainPosition?.category.maxLoanToValue || zero
@@ -110,7 +120,10 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       ? getLiquidationPriceAccountingForPrecision(onChainPosition)
       : zero
 
-    const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
+    const oracleAssetPrice = strategyInfo?.oracleAssetPrice.collateral || zero
+    const oraclePriceCollateralToDebt = strategyInfo
+      ? strategyInfo.oracleAssetPrice.collateral.div(strategyInfo.oracleAssetPrice.debt)
+      : zero
 
     const priceMovementUntilLiquidationPercent = (
       (targetPosition
@@ -124,7 +137,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       targetPosition &&
       priceMovementUntilLiquidationPercent.lte(warningPriceMovementPercentThreshold)
 
-    const collateralToken = state.context.strategyInfo?.collateralToken
+    const collateralToken = state.context.strategyInfo?.tokens.collateral
 
     const debtToken = state.context.tokens.debt
 
@@ -139,6 +152,11 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       state.context.userInput.riskRatio?.loanToValue ||
       onChainPosition?.riskRatio.loanToValue ||
       state.context.defaultRiskRatio?.loanToValue
+
+    const stopLossError =
+      automation?.stopLoss.isStopLossEnabled &&
+      automation?.stopLoss.stopLossLevel &&
+      sliderValue?.gte(automation?.stopLoss.stopLossLevel)
 
     const sidebarContent = (
       <Grid gap={3}>
@@ -162,7 +180,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           rightBoundry={
             sliderValue
               ? viewConfig.rightBoundary.valueExtractor({
-                  oracleAssetPrice,
+                  oracleAssetPrice: oracleAssetPrice,
+                  oraclesPricesRatio: oraclePriceCollateralToDebt,
                   ltv: sliderValue,
                 })
               : one
@@ -176,14 +195,17 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           }}
           rightLabel={t(viewConfig.rightBoundary.translationKey)}
           onChange={(ltv) => {
-            send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
+            send({
+              type: 'SET_RISK_RATIO',
+              riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV),
+            })
           }}
           minBoundry={minRisk}
           maxBoundry={maxRisk}
           lastValue={sliderValue || zero}
           disabled={viewLocked || !maxRisk}
           disabledVisually={viewLocked || !maxRisk}
-          step={0.01}
+          step={0.001}
           sliderPercentageFill={
             maxRisk && sliderValue
               ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
@@ -218,6 +240,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             </WithArrow>
           </Link>
         )}
+        {stopLossError && <StopLossAaveErrorMessage />}
         {showWarring ? (
           <MessageCard
             messages={[t('manage-earn-vault.has-asset-already')]}
@@ -225,7 +248,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             withBullet={false}
           />
         ) : (
-          state.context.strategy &&
+          state.context.transition &&
           hasUserInteracted(state) && (
             <MessageCard
               messages={[
@@ -252,7 +275,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             />
           )
         )}
-        {hasUserInteracted(state) && <StrategyInformationContainer state={state} />}
+        {hasUserInteracted(state) && (
+          <StrategyInformationContainer
+            state={state}
+            changeSlippageSource={(from) => {
+              send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+            }}
+          />
+        )}
       </Grid>
     )
     if (noSidebar) {
@@ -264,7 +294,9 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       content: sidebarContent,
       primaryButton: {
         ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
+        disabled: viewLocked || primaryButton.disabled || !state.context.transition,
+        // TODO validation suppressed for testing trigger execution
+        // || stopLossError,
       },
       textButton, // this is going back button, no need to block it
       dropdown: dropdownConfig,

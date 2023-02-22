@@ -1,25 +1,27 @@
 import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { ActorRefFrom, EventObject, Sender } from 'xstate'
-
-import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
-import { TxMetaKind } from '../../../blockchain/calls/txMeta'
-import { Context } from '../../../blockchain/network'
-import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
-import { HasGasEstimation } from '../../../helpers/form'
-import { zero } from '../../../helpers/zero'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { Context } from 'blockchain/network'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import {
   AllowanceStateMachine,
   AllowanceStateMachineResponseEvent,
-} from '../../stateMachines/allowance'
-import { TransactionStateMachineResultEvents } from '../../stateMachines/transaction'
-import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
-import { UserSettingsState } from '../../userSettings/userSettings'
-import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
-import { AaveProtocolData } from '../manage/services'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
+} from 'features/stateMachines/allowance'
+import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
+import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
+import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
+import { HasGasEstimation } from 'helpers/form'
+import { zero } from 'helpers/zero'
+import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
+import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
-type UserInput = {
+import { IStrategyConfig } from './StrategyConfigTypes'
+
+export type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
 }
@@ -30,9 +32,13 @@ export type ManageTokenInput = {
 }
 
 export type IStrategyInfo = {
-  oracleAssetPrice: BigNumber
+  oracleAssetPrice: {
+    collateral: BigNumber
+    debt: BigNumber
+    deposit: BigNumber
+  }
   liquidationBonus: BigNumber
-  collateralToken: string
+  tokens: IStrategyConfig['tokens']
 }
 
 export type StrategyTokenAllowance = {
@@ -67,6 +73,12 @@ export type UpdateTokenActionValueType = {
   manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
 }
 
+type AaveOpenPositionWithStopLossEvents =
+  | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
+  | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
+  | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
+  | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
+
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
@@ -84,11 +96,14 @@ export type BaseAaveEvent =
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
   | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
   | { type: 'UPDATE_ALLOWANCE'; allowance: StrategyTokenAllowance }
+  | { type: 'USE_SLIPPAGE'; getSlippageFrom: 'userSettings' | 'strategyConfig' }
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
+  | AaveOpenPositionWithStopLossEvents
 
 export interface BaseAaveContext {
+  strategyConfig: IStrategyConfig
   userInput: UserInput
   manageTokenInput?: ManageTokenInput
   tokens: {
@@ -101,13 +116,25 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  strategy?: IPositionTransition
+  transition?: IPositionTransition
   estimatedGasPrice?: HasGasEstimation
+  /**
+   * @deprecated no idea what token it is. use **balance.__token__.balance** instead
+   */
   tokenBalance?: BigNumber
   allowance?: StrategyTokenAllowance
   balance?: StrategyTokenBalance
+  /**
+   * @deprecated no idea what token it is 🤦‍. use **balance.{}.price** instead
+   */
   tokenPrice?: BigNumber
+  /**
+   * @deprecated use **balance.collateral.price** instead
+   */
   collateralPrice?: BigNumber
+  /**
+   * @deprecated use **balance.debt.price** instead
+   */
   debtPrice?: BigNumber
   auxiliaryAmount?: BigNumber
   connectedProxyAddress?: string
@@ -121,6 +148,11 @@ export interface BaseAaveContext {
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
+  stopLossLevel?: BigNumber
+  collateralActive?: boolean
+  stopLossTxData?: AutomationAddTriggerData
+  stopLossSkipped?: boolean
+  getSlippageFrom: 'userSettings' | 'strategyConfig'
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
@@ -135,8 +167,8 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
   const { token, amount } = getTxTokenAndAmount(context)
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.strategy!.transaction.calls as any,
-    operationName: context.strategy!.transaction.operationName,
+    calls: context.transition!.transaction.calls as any,
+    operationName: context.transition!.transaction.operationName,
     proxyAddress: context.effectiveProxyAddress!,
     token,
     amount,
@@ -178,5 +210,17 @@ export function isAllowanceNeeded(context: BaseAaveContext): boolean {
     (context.userInput.amount || context.manageTokenInput?.manageTokenActionValue || zero).gt(
       allowance || zero,
     )
+  )
+}
+
+export function getSlippage(
+  context: Pick<BaseAaveContext, 'getSlippageFrom' | 'userSettings' | 'strategyConfig'>,
+) {
+  if (context.getSlippageFrom === 'userSettings') {
+    return context.userSettings?.slippage || SLIPPAGE_DEFAULT
+  }
+
+  return (
+    context.strategyConfig.defaultSlippage || context.userSettings?.slippage || SLIPPAGE_DEFAULT
   )
 }

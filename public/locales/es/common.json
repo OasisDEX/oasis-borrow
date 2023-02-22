@@ -785,7 +785,10 @@
     "third-party-fees": "Tasas de protocolos de terceros",
     "oasis-fee": "Tasa de Oasis",
     "ltv": "LTV",
-    "outstanding-debt": "Outstanding debt"
+    "outstanding-debt": "Outstanding debt",
+    "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
+    "slippage-from-settings": "Use slippage from settings",
+    "slippage-from-strategy": "Use slippage from strategy"
   },
   "vault-actions": {
     "deposit": "Deposita",
@@ -1303,7 +1306,8 @@
     "aave": {
       "product-header": {
         "token-pair-list": {
-          "aave-steth-eth": "AAVE stETH yield multiple"
+          "aave-steth-eth": "AAVE stETH yield multiple",
+          "aave-wsteth-eth": "Aave wstETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",

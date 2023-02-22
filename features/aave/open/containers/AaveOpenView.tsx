@@ -1,16 +1,19 @@
 import { useActor } from '@xstate/react'
+import { PageSEOTags } from 'components/HeadTags'
 import { TabBar } from 'components/TabBar'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
+import { SidebarOpenAaveVault } from 'features/aave/open/sidebars/SidebarOpenAaveVault'
+import { OpenAaveStateMachine } from 'features/aave/open/state'
+import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
+import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
+import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
 
-import { AavePositionAlreadyOpenedNotice } from '../../../notices/VaultsNoticesView'
-import { useAaveContext } from '../../AaveContextProvider'
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
-import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
-import { OpenAaveStateMachine } from '../state'
 import {
   OpenAaveStateMachineContextProvider,
   useOpenAaveStateMachineContext,
@@ -40,7 +43,7 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
       tokenPrice={state.context.tokenPrice}
       debtPrice={state.context.debtPrice}
       nextPosition={
-        hasUserInteracted(state) ? state.context.strategy?.simulation.position : undefined
+        hasUserInteracted(state) ? state.context.transition?.simulation.position : undefined
       }
     />
   )
@@ -49,8 +52,11 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
   const { t } = useTranslation()
   const { stateMachine } = useOpenAaveStateMachineContext()
-  const [, send] = useActor(stateMachine)
+  const [state, send] = useActor(stateMachine)
   const PositionInfo = strategyConfig.viewComponents.positionInfo
+
+  const { automationContextProps } = getAaveStopLossData(state.context, send)
+
   return (
     <TabBar
       variant="underline"
@@ -62,8 +68,13 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
             <Grid variant="vaultContainer">
               <Box>
                 <SimulateSectionComponent config={strategyConfig} />
+                <Box sx={{ mt: 5 }}></Box>
               </Box>
-              <Box>{<SidebarOpenAaveVault />}</Box>
+              <Box>
+                <AutomationContextInput {...automationContextProps}>
+                  <SidebarOpenAaveVault />
+                </AutomationContextInput>
+              </Box>
             </Grid>
           ),
         },
@@ -106,6 +117,22 @@ function AaveOpenContainer({
 }
 
 export function AaveOpenView({ config }: { config: IStrategyConfig }) {
-  const { aaveStateMachine } = useAaveContext()
-  return <AaveOpenContainer aaveStateMachine={aaveStateMachine} config={config} />
+  const { aaveStateMachine } = useAaveContext(config.protocol)
+  const { t } = useTranslation()
+  return (
+    <>
+      <PageSEOTags
+        title="seo.title-product-w-tokens"
+        titleParams={{
+          product: t(`seo.${config.type.toLocaleLowerCase()}.title`),
+          protocol: config.protocol,
+          token1: config.tokens.collateral,
+          token2: config.tokens.debt,
+        }}
+        description="seo.multiply.description"
+        url={`/${config.type.toLocaleLowerCase()}`}
+      />
+      <AaveOpenContainer aaveStateMachine={aaveStateMachine} config={config} />
+    </>
+  )
 }

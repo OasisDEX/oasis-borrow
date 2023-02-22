@@ -4,12 +4,19 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
-import * as aaveLendingPool from './abi/aave-lending-pool.json'
-import * as aavePriceOracle from './abi/aave-price-oracle.json'
-import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
+import * as aaveV2LendingPool from './abi/aave-v2-lending-pool.json'
+import * as aaveV2PriceOracle from './abi/aave-v2-price-oracle.json'
+import * as aaveV2ProtocolDataProvider from './abi/aave-v2-protocol-data-provider.json'
+import * as aaveV3Oracle from './abi/aave-v3-oracle.json'
+import * as aaveV3PoolDataProvider from './abi/aave-v3-pool-data-provider.json'
+import * as aaveV3Pool from './abi/aave-v3-pool.json'
 import * as accountFactory from './abi/account-factory.json'
 import * as accountGuard from './abi/account-guard.json'
+import * as ajnaPoolInfo from './abi/ajna-pool-info.json'
+import * as ajnaPool from './abi/ajna-pool.json'
+import * as ajnaProxyActions from './abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
+import * as automationBotV2 from './abi/automation-bot-v2.json'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
 import * as chainLinkPriceOracle from './abi/chainlink-price-oracle.json'
@@ -54,8 +61,12 @@ import { default as mainnetAddresses } from './addresses/mainnet.json'
 const clientId =
   Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 
-export function contractDesc(abi: Abi[], address: string): ContractDesc {
-  return { abi, address }
+export function contractDesc(
+  abi: Abi[],
+  address: string,
+  genesisBlock = 0,
+): ContractDesc & { genesisBlock: number } {
+  return { abi, address, genesisBlock }
 }
 
 const infuraProjectId =
@@ -139,6 +150,11 @@ export const ilksNotSupportedOnGoerli = [
   ...cropJoinIlks,
 ] as const
 
+const ACCOUNT_GUARD_FACTORY_GENESIS = {
+  mainnet: 16183119,
+  goerli: 8420373,
+}
+
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
@@ -185,6 +201,7 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
   automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
+  automationBotV2: contractDesc(automationBotV2, '0x8061c24823094E51e57A4a5cF8bEd3CCf09d316F'),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
     '0x5f1d184204775fBB351C4b2C61a2fD4aAbd3fB76',
@@ -232,15 +249,15 @@ const protoMain = {
   aaveTokens: {
     STETH: mainnetAddresses['STETH'],
   } as Record<string, string>,
-  aaveProtocolDataProvider: contractDesc(
-    aaveProtocolDataProvider,
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_PROTOCOL_DATA_PROVIDER,
+    mainnetAddresses.AAVE_V2_PROTOCOL_DATA_PROVIDER,
   ),
-  aavePriceOracle: contractDesc(
-    aavePriceOracle,
+  aaveV2PriceOracle: contractDesc(
+    aaveV2PriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_PRICE_ORACLE,
+    mainnetAddresses.AAVE_V2_PRICE_ORACLE,
   ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(
@@ -250,11 +267,32 @@ const protoMain = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(aaveV2LendingPool, mainnetAddresses.AAVE_V2_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
-  accountFactory: contractDesc(accountFactory, mainnetAddresses.ACCOUNT_FACTORY),
-  accountGuard: contractDesc(accountGuard, mainnetAddresses.ACCOUNT_GUARD),
+  accountFactory: contractDesc(
+    accountFactory,
+    mainnetAddresses.ACCOUNT_FACTORY,
+    ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
+  ),
+  accountGuard: contractDesc(
+    accountGuard,
+    mainnetAddresses.ACCOUNT_GUARD,
+    ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
+  ),
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnetAddresses.AAVE_V3_ORACLE),
+  aaveV3PoolDataProvider: contractDesc(
+    aaveV3PoolDataProvider,
+    mainnetAddresses.AAVE_V3_POOL_DATA_PROVIDER,
+  ),
+  // TODO ajna addresses to be updated
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0xD2D5e508C82EFc205cAFA4Ad969a4395Babce026'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2b639Cc84e1Ad3aA92D4Ee7d2755A6ABEf300D72'),
+  ajnaPoolPairs: {
+    'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
+    'ETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
+  },
 }
 
 export type NetworkConfig = typeof protoMain
@@ -309,6 +347,7 @@ const kovan: NetworkConfig = {
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  automationBotV2: contractDesc(automationBotV2, '0x0'),
   automationBotAggregator: contractDesc(automationBotAggregator, '0x'), //TODO address ŁW
   serviceRegistry: '0x', // TODO: add address
   guniResolver: '0x',
@@ -337,13 +376,13 @@ const kovan: NetworkConfig = {
   aaveTokens: {
     STETH: mainnetAddresses['STETH'],
   },
-  aaveProtocolDataProvider: contractDesc(
-    aaveProtocolDataProvider,
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x0',
   ),
-  aavePriceOracle: contractDesc(
-    aavePriceOracle,
+  aaveV2PriceOracle: contractDesc(
+    aaveV2PriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x',
   ),
@@ -351,7 +390,7 @@ const kovan: NetworkConfig = {
     USDCUSD: contractDesc(chainLinkPriceOracle, '0x'),
     ETHUSD: contractDesc(chainLinkPriceOracle, '0x'),
   },
-  aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
+  aaveV2LendingPool: contractDesc(aaveV2LendingPool, '0x'),
   operationExecutor: contractDesc(
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
@@ -359,6 +398,15 @@ const kovan: NetworkConfig = {
   swapAddress: main.swapAddress,
   accountFactory: contractDesc(accountFactory, '0x0'),
   accountGuard: contractDesc(accountGuard, '0x0'),
+  aaveV3Pool: contractDesc(aaveV3Pool, '0x0'),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, '0x0'),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, '0x0'),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x0'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x0'),
+  ajnaPoolPairs: {
+    'WBTC-USDC': contractDesc(ajnaPool, '0x0'),
+    'ETH-USDC': contractDesc(ajnaPool, '0x0'),
+  },
 }
 
 const goerli: NetworkConfig = {
@@ -417,6 +465,7 @@ const goerli: NetworkConfig = {
   guniResolver: '0x',
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
+  automationBotV2: contractDesc(automationBotV2, '0x0'),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
     '0xeb3c922A805FAEEac8f311E1AdF34fBC518099ab',
@@ -443,15 +492,15 @@ const goerli: NetworkConfig = {
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
   aaveTokens: {},
-  aaveProtocolDataProvider: contractDesc(
-    aaveProtocolDataProvider,
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    goerliAddresses.AAVE_PROTOCOL_DATA_PROVIDER,
+    goerliAddresses.AAVE_V2_PROTOCOL_DATA_PROVIDER,
   ),
-  aavePriceOracle: contractDesc(
-    aavePriceOracle,
+  aaveV2PriceOracle: contractDesc(
+    aaveV2PriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    goerliAddresses.AAVE_PRICE_ORACLE,
+    goerliAddresses.AAVE_V2_PRICE_ORACLE,
   ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(
@@ -461,11 +510,31 @@ const goerli: NetworkConfig = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(aaveV2LendingPool, goerliAddresses.AAVE_V2_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
-  accountFactory: contractDesc(accountFactory, goerliAddresses.ACCOUNT_FACTORY),
-  accountGuard: contractDesc(accountGuard, goerliAddresses.ACCOUNT_GUARD),
+  accountFactory: contractDesc(
+    accountFactory,
+    goerliAddresses.ACCOUNT_FACTORY,
+    ACCOUNT_GUARD_FACTORY_GENESIS.goerli,
+  ),
+  accountGuard: contractDesc(
+    accountGuard,
+    goerliAddresses.ACCOUNT_GUARD,
+    ACCOUNT_GUARD_FACTORY_GENESIS.goerli,
+  ),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerliAddresses.AAVE_V3_POOL),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, goerliAddresses.AAVE_V3_ORACLE),
+  aaveV3PoolDataProvider: contractDesc(
+    aaveV3PoolDataProvider,
+    goerliAddresses.AAVE_V3_POOL_DATA_PROVIDER,
+  ),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x32DA971821E6d88FCcD9861EbaCF8590553A2aA8'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2010D2d932b467928313F86653b28E22A9d6889b'),
+  ajnaPoolPairs: {
+    'WBTC-USDC': contractDesc(ajnaPool, '0xcCbD19488f4e63319c2f11e156ccfA26Ce99c657'),
+    'ETH-USDC': contractDesc(ajnaPool, '0xEb39B597a4d1588ac7F50D2897AfD25CED7947EE'),
+  },
 }
 
 const hardhat: NetworkConfig = {
@@ -476,17 +545,6 @@ const hardhat: NetworkConfig = {
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
-  /* dssMultiplyProxyActions: contractDesc(
-    dssMultiplyProxyActions,
-    getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
-      '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
-  ),
-  // guniProxyActions: contractDesc(guniProxyActions, '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25'),
-  defaultExchange: contractDesc(
-    exchange,
-    getConfig()?.publicRuntimeConfig?.exchangeAddress ||
-      '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',
-  ), */
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'

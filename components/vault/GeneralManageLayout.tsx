@@ -2,7 +2,7 @@ import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
-import { FollowButtonControlProps } from 'features/follow/common/FollowButtonControl'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
@@ -31,7 +31,12 @@ export function GeneralManageLayout({
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
-      <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} followButton={followButton} />
+      <GuniVaultHeader
+        token={ilkData.token}
+        ilk={ilkData.ilk}
+        followButton={followButton}
+        shareButton
+      />
     ) : (
       <DefaultVaultHeadline
         header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
@@ -39,6 +44,7 @@ export function GeneralManageLayout({
         priceInfo={priceInfo}
         colRatio={colRatioPercnentage}
         followButton={followButton}
+        shareButton
       />
     )
 

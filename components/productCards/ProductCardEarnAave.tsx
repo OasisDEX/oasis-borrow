@@ -2,12 +2,14 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useSimulationYields } from 'helpers/useSimulationYields'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -16,6 +18,7 @@ import { ProductCardsLoader } from './ProductCardsWrapper'
 
 type ProductCardEarnAaveProps = {
   cardData: TokenMetadataType
+  strategy: IStrategyConfig
 }
 
 const aaveEarnCalcValueBasis = {
@@ -23,21 +26,31 @@ const aaveEarnCalcValueBasis = {
   token: 'ETH',
 }
 
-export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
+export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$ } = useAaveContext()
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
+
+  const { earnCollateralsReserveData, aaveAvailableLiquidityInUSDC$ } = useAaveContext(
+    strategy.protocol,
+  )
+  const [aaveReserveState, aaveReserveStateError] = useObservable(
+    earnCollateralsReserveData[strategy.tokens.collateral],
+  )
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )
   const maximumMultiple =
-    aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
+    strategy.name === 'wstETHeth'
+      ? new RiskRatio(new BigNumber(9.99), RiskRatio.TYPE.MULITPLE)
+      : aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
   const simulationYields = useSimulationYields({
     amount: aaveEarnCalcValueBasis.amount,
     riskRatio: maximumMultiple,
     fields: ['7Days', '90Days'],
+    strategy: strategy,
   })
+
+  const protocolVersion = strategy.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
 
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
@@ -99,7 +112,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               },
             ]}
             button={{
-              link: `/earn/aave/open/${cardData.symbol}`,
+              link: `/earn/aave/${protocolVersion}/open/${cardData.symbol}`,
               text: t('nav.earn'),
             }}
             background={cardData.background}

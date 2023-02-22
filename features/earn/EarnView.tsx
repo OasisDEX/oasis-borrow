@@ -1,4 +1,3 @@
-import { getTokens } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { ProductCardEarnAave } from 'components/productCards/ProductCardEarnAave'
 import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
@@ -8,16 +7,17 @@ import {
   ProductCardsWrapper,
 } from 'components/productCards/ProductCardsWrapper'
 import { ProductHeader } from 'components/ProductHeader'
+import { aaveStrategiesList } from 'features/aave/strategyConfig'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { mapStrategyToToken } from 'helpers/mapStrategyToToken'
 import { useObservable } from 'helpers/observableHook'
 import { supportedEarnIlks } from 'helpers/productCards'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { aaveStrategiesList } from '../aave/strategyConfig'
 
 export function EarnView() {
   const { t } = useTranslation()
@@ -26,8 +26,13 @@ export function EarnView() {
     productCardsData$(supportedEarnIlks),
   )
   const daiSavingsRate = useFeatureToggle('DaiSavingsRate')
-  const aaveEarnStrategies = getTokens(aaveStrategiesList('Earn').map(({ name }) => name))
 
+  const aaveEarnV2Strategies = aaveStrategiesList('Earn', LendingProtocol.AaveV2).map(
+    mapStrategyToToken,
+  )
+  const aaveEarnV3Strategies = aaveStrategiesList('Earn', LendingProtocol.AaveV3).map(
+    mapStrategyToToken,
+  )
   return (
     <Grid
       sx={{
@@ -49,9 +54,15 @@ export function EarnView() {
         <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
           {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
-              {aaveEarnStrategies.map((cardData) => (
-                <ProductCardEarnAave key={cardData.symbol} cardData={cardData} />
-              ))}
+              {[...aaveEarnV3Strategies, ...aaveEarnV2Strategies].map(
+                ({ strategy, tokenConfig }) => (
+                  <ProductCardEarnAave
+                    key={tokenConfig.symbol}
+                    cardData={tokenConfig}
+                    strategy={strategy}
+                  />
+                ),
+              )}
               {/* TODO move logic regarding dsr to productCardsData$ */}
               {daiSavingsRate && <ProductCardEarnDsr />}
               {_productCardsIlksData.map((cardData) => (

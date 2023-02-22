@@ -1,4 +1,4 @@
-import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { ManageAaveContext } from 'features/aave/manage/state'
 import { getAutomationAavePositionData } from 'features/automation/common/context/getAutomationAavePositionData'
@@ -11,7 +11,7 @@ import React, { PropsWithChildren, useMemo } from 'react'
 
 export interface AaveManageVaultState {
   address: string
-  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveState: AaveV2ReserveConfigurationData
   strategyConfig: IStrategyConfig
   context: ManageAaveContext
 }
@@ -39,7 +39,7 @@ export function AaveAutomationContext({
 
   const defaultStopLossTriggerData = {
     ...defaultStopLossData,
-    isToCollateral: true,
+    isToCollateral: false,
   }
 
   return (

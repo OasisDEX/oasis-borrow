@@ -73,7 +73,11 @@ export const protocolAutomations = {
   [VaultProtocol.Aave]: [AutomationFeatures.STOP_LOSS],
 }
 
-export const aaveTokenPairsAllowedAutomation = [['ETH', 'USDC']]
+export const aaveTokenPairsAllowedAutomation = [
+  ['ETH', 'USDC'],
+  ['WBTC', 'USDC'],
+  ['STETH', 'USDC'],
+]
 
 export const vaultIdsThatAutoBuyTriggerShouldBeRecreated = [
   10804,

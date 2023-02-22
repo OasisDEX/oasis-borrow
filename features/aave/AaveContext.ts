@@ -1,34 +1,18 @@
-import BigNumber from 'bignumber.js'
-import {
-  createAaveOracleAssetPriceData$,
-  createConvertToAaveOracleAssetPrice$,
-} from 'blockchain/aave/oracleAssetPriceData'
-import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
-import {
-  getAaveReserveConfigurationData,
-  getAaveReserveData,
-} from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
+import { getAaveV2AssetsPrices } from 'blockchain/aave'
 import { observe } from 'blockchain/calls/observe'
-import { getGasEstimation$, getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
-import { GraphQLClient } from 'graphql-request'
+import { TokenBalances } from 'blockchain/tokens'
+import { AppContext } from 'components/AppContext'
+import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
+import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { LendingProtocol } from 'lendingProtocols'
+import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
 import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
-import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { Observable } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
-import { TokenBalances } from '../../blockchain/tokens'
-import { UserDpmAccount } from '../../blockchain/userDpmProxies'
-import { AppContext } from '../../components/AppContext'
-import { getAllowanceStateMachine } from '../stateMachines/allowance'
-import {
-  getCreateDPMAccountTransactionMachine,
-  getDPMAccountStateMachine,
-} from '../stateMachines/dpmAccount'
-import { transactionContextService } from '../stateMachines/transaction'
-import { getAaveStEthYield } from './common'
-import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
+import { getAaveStEthYield, IStrategyConfig } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -36,116 +20,84 @@ import {
   getOpenAaveParametersMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
-import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
-import { createAavePrepareReserveData$ } from './helpers/aavePrepareReserveData'
-import { getProxiesRelatedWithPosition$ } from './helpers/getProxiesRelatedWithPosition'
+import { getCommonPartsFromAppContext } from './getCommonPartsFromAppContext'
 import {
-  getManageAavePositionStateMachineServices,
   getManageAaveStateMachine,
+  getManageAaveV2PositionStateMachineServices,
 } from './manage/services'
-import {
-  getOpenAavePositionStateMachineServices,
-  getOpenAaveStateMachine,
-  getOperationExecutorTransactionMachine,
-} from './open/services'
+import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
-import { supportedTokens } from './strategyConfig'
-import { PositionId } from './types'
+import { getSupportedTokens } from './strategyConfig'
 
-export function setupAaveContext({
-  userSettings$,
-  connectedContext$,
-  proxyAddress$,
-  txHelpers$,
-  gasPrice$,
-  daiEthTokenPrice$,
-  balance$,
-  onEveryBlock$,
-  context$,
-  aaveUserAccountData$,
-  tokenPriceUSD$,
-  allowance$,
-  aaveAvailableLiquidityInUSDC$,
-  userDpmProxies$,
-  userDpmProxy$,
-  proxyConsumed$,
-  aaveProtocolData$,
-  strategyConfig$,
-}: AppContext) {
-  const chainlinkUSDCUSDOraclePrice$ = memoize(
-    observe(onEveryBlock$, context$, getChainlinkOraclePrice('USDCUSD'), () => 'true'),
-  )
+export function setupAaveV2Context(appContext: AppContext) {
+  const {
+    userSettings$,
+    txHelpers$,
+    balance$,
+    onEveryBlock$,
+    context$,
+    tokenPriceUSD$,
+    proxyConsumed$,
+    strategyConfig$,
+    protocols,
+    connectedContext$,
+    commonTransactionServices,
+    chainContext$,
+  } = appContext
 
-  const chainLinkETHUSDOraclePrice$ = memoize(
-    observe(onEveryBlock$, context$, getChainlinkOraclePrice('ETHUSD'), () => 'true'),
-  )
+  const {
+    allowanceForAccount$,
+    allowanceStateMachine,
+    dpmAccountStateMachine,
+    gasEstimation$,
+    operationExecutorTransactionMachine,
+    proxyForAccount$,
+    proxyStateMachine,
+    proxiesRelatedWithPosition$,
+    unconsumedDpmProxyForConnectedAccount$,
+    disconnectedGraphQLClient$,
+    chainlinkUSDCUSDOraclePrice$,
+    chainLinkETHUSDOraclePrice$,
+  } = getCommonPartsFromAppContext(appContext)
 
-  const contextForAddress$ = connectedContext$.pipe(
-    distinctUntilKeyChanged('account'),
-    shareReplay(1),
-  )
-  const disconnectedGraphQLClient$ = context$.pipe(
-    distinctUntilKeyChanged('cacheApi'),
-    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
-  )
+  const {
+    aaveUserAccountData$,
+    aaveAvailableLiquidityInUSDC$,
+    aaveProtocolData$,
+    aaveReserveConfigurationData$,
+    wrappedGetAaveReserveData$,
+    convertToAaveOracleAssetPrice$,
+    aaveOracleAssetPriceData$,
+    getAaveReserveData$,
+  } = protocols[LendingProtocol.AaveV2]
+
   const aaveSthEthYieldsQuery = memoize(
     curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
-  const wrappedGetAaveReserveData$ = memoize(
-    curry(createAavePrepareReserveData$)(
-      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
-    ),
-  )
-  const aaveReserveConfigurationData$ = observe(
-    onEveryBlock$,
-    context$,
-    getAaveReserveConfigurationData,
-    ({ token }) => token,
-  )
-  const aaveOracleAssetPriceData$ = memoize(
-    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
-  )
-  const convertToAaveOracleAssetPrice$ = memoize(
-    curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
-    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
-  )
 
-  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
-  const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
-    switchMap(({ account }) => proxyAddress$(account)),
-  )
+  const earnCollateralsReserveData = {
+    STETH: aaveReserveConfigurationData$({ token: 'STETH' }),
+  } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
 
-  const proxiesRelatedWithPosition$ = memoize(
-    curry(getProxiesRelatedWithPosition$)(proxyAddress$, userDpmProxy$),
-    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
-  )
-
-  const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
-
-  const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
-    (token: string, spender: string) =>
-      contextForAddress$.pipe(switchMap(({ account }) => allowance$(token, account, spender))),
-    (token, spender) => `${token}-${spender}`,
-  )
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
       balance$,
       aaveOracleAssetPriceData$,
       chainLinkETHUSDOraclePrice$,
-      supportedTokens,
+      getSupportedTokens(LendingProtocol.AaveV2),
     ),
   )
 
-  const tokenBalances$: Observable<TokenBalances | undefined> = context$.pipe(
+  const tokenBalances$: Observable<TokenBalances> = context$.pipe(
     switchMap(({ account }) => {
-      if (!account) return of(undefined)
       return aaveSupportedTokenBalances$(account)
     }),
   )
 
   const strategyInfo$ = memoize(
     curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
   const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$)
@@ -153,49 +105,7 @@ export function setupAaveContext({
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
 
-  const commonTransactionServices = transactionContextService(context$)
-
-  const allowanceStateMachine = getAllowanceStateMachine(
-    txHelpers$,
-    connectedContext$,
-    commonTransactionServices,
-  )
-
-  const proxyStateMachine = getOpenProxyStateMachine(
-    contextForAddress$,
-    txHelpers$,
-    proxyForAccount$,
-    gasEstimation$,
-  )
-
-  const dpmAccountTransactionMachine = getCreateDPMAccountTransactionMachine(
-    txHelpers$,
-    connectedContext$,
-    commonTransactionServices,
-  )
-  const dpmAccountStateMachine = getDPMAccountStateMachine(
-    txHelpers$,
-    gasEstimation$,
-    dpmAccountTransactionMachine,
-  )
-
-  const operationExecutorTransactionMachine = curry(getOperationExecutorTransactionMachine)(
-    txHelpers$,
-    contextForAddress$,
-    commonTransactionServices,
-  )
-
-  const getAvailableDPMProxy: (
-    walletAddress: string,
-  ) => Observable<UserDpmAccount | undefined> = memoize(
-    curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
-  )
-
-  const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
-    switchMap(({ account }) => getAvailableDPMProxy(account)),
-  )
-
-  const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
+  const openAaveStateMachineServices = getOpenAaveV2PositionStateMachineServices(
     context$,
     txHelpers$,
     tokenBalances$,
@@ -211,7 +121,13 @@ export function setupAaveContext({
     aaveReserveConfigurationData$,
   )
 
-  const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
+  const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
+  const manageAaveStateMachineServices = getManageAaveV2PositionStateMachineServices(
     context$,
     txHelpers$,
     tokenBalances$,
@@ -231,6 +147,7 @@ export function setupAaveContext({
     dpmAccountStateMachine,
     allowanceStateMachine,
     operationExecutorTransactionMachine,
+    stopLossTransactionStateMachine,
   )
 
   const aaveManageStateMachine = getManageAaveStateMachine(
@@ -242,14 +159,7 @@ export function setupAaveContext({
     depositBorrowAaveMachine,
   )
 
-  const getAaveReserveData$ = observe(
-    onEveryBlock$,
-    context$,
-    getAaveReserveData,
-    (args) => args.token,
-  )
-
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices, (args) =>
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV2AssetsPrices, (args) =>
     args.tokens.join(''),
   )
 
@@ -259,6 +169,8 @@ export function setupAaveContext({
     // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
+
+  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
   return {
     aaveStateMachine,
@@ -273,13 +185,14 @@ export function setupAaveContext({
     getAaveAssetsPrices$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-    aaveSTETHReserveConfigurationData,
+    earnCollateralsReserveData,
     aaveAvailableLiquidityInUSDC$,
     aaveOracleAssetPriceData$,
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
+    aaveHistory$,
   }
 }
 
-export type AaveContext = ReturnType<typeof setupAaveContext>
+export type AaveContext = ReturnType<typeof setupAaveV2Context>

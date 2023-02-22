@@ -4,6 +4,7 @@ import { Box, Grid, SxStyleProp } from 'theme-ui'
 interface SkeletonProps {
   cols?: number
   count?: number
+  dark?: boolean
   doughnut?: string | number
   gap?: string | number
   width?: string | number
@@ -12,6 +13,7 @@ interface SkeletonProps {
 }
 
 function SkeletonLine({
+  dark,
   doughnut,
   width = '100%',
   height = 3,
@@ -24,7 +26,7 @@ function SkeletonLine({
         width,
         height,
         borderRadius: doughnut ? 'ellipse' : 'medium',
-        backgroundColor: '#e6e9eb',
+        backgroundColor: dark ? '#dae1e4' : '#e6e9eb',
         overflow: 'hidden',
         ...sx,
         '&::after': {
@@ -34,8 +36,9 @@ function SkeletonLine({
           left: 0,
           width: '300%',
           height: '100%',
-          backgroundImage:
-            'linear-gradient(90deg, #e6e9eb 0%, #f8f7f9 33.3%, #f8f7f9 66.6%, #e6e9eb 100%)',
+          backgroundImage: dark
+            ? 'linear-gradient(90deg, #dae1e4 0%, #ecf2f5 33.3%, #ecf2f5 66.6%, #dae1e4 100%)'
+            : 'linear-gradient(90deg, #e6e9eb 0%, #f8f7f9 33.3%, #f8f7f9 66.6%, #e6e9eb 100%)',
           transform: 'translateX(-100%)',
           animation: 'gradient 1.5s infinite',
           animationFillMode: 'forwards',
@@ -69,11 +72,19 @@ function SkeletonLine({
   )
 }
 
-export function Skeleton({ cols = 1, count = 1, gap = 3, ...rest }: SkeletonProps) {
+export function Skeleton({ cols = 1, count = 1, gap = 3, width = '100%', ...rest }: SkeletonProps) {
+  const isPercentageWidth = typeof width === 'string' && width.endsWith('%')
+
   return (
-    <Grid gap={gap} sx={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+    <Grid
+      gap={gap}
+      sx={{
+        width: isPercentageWidth ? '100%' : width,
+        gridTemplateColumns: `repeat(${cols}, ${isPercentageWidth ? '1fr' : width})`,
+      }}
+    >
       {[...Array(count)].map((_item, i) => (
-        <SkeletonLine key={i} {...rest} />
+        <SkeletonLine key={i} width={width} {...rest} />
       ))}
     </Grid>
   )

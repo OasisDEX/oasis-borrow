@@ -1,58 +1,92 @@
-import React from 'react'
+import {
+  DetailsSectionNotification,
+  DetailsSectionNotificationItem,
+} from 'components/DetailsSectionNotification'
+import React, { PropsWithChildren, ReactNode, useState } from 'react'
 import { Box, Card, Flex, Heading } from 'theme-ui'
 
 import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
 
+type DetailsSectionButtons = (ButtonWithAction | ButtonWithActions)[]
+
 interface DetailsSectionProps {
-  title?: string | JSX.Element
   badge?: boolean
-  buttons?: (ButtonWithAction | ButtonWithActions)[]
-  content: string | JSX.Element
-  footer?: string | JSX.Element
+  buttons?: DetailsSectionButtons
+  content: ReactNode
+  footer?: ReactNode
+  title?: ReactNode
+  notifications?: DetailsSectionNotificationItem[]
 }
 
-export function DetailsSection({ title, badge, buttons, content, footer }: DetailsSectionProps) {
+export function DetailsSection({
+  badge,
+  buttons,
+  content,
+  footer,
+  notifications,
+  title,
+}: DetailsSectionProps) {
+  const [openedNotifications, setOpenedNotifications] = useState<number>(notifications?.length || 0)
+
   return (
-    <Card
-      sx={{
-        p: 0,
-        border: 'lightMuted',
-      }}
-    >
-      {title && typeof title === 'string' && (
-        <TitleWrapper title={title} badge={badge} buttons={buttons} />
+    <Box>
+      {notifications && (
+        <DetailsSectionNotification
+          notifications={notifications}
+          onClose={(opened) => setOpenedNotifications(opened)}
+        />
       )}
-      {title && typeof title !== 'string' && title}
-      <Box
+      <Card
         sx={{
-          px: [3, null, '24px'],
-          py: '24px',
+          p: 0,
+          border: 'lightMuted',
+          ...(openedNotifications > 0 && {
+            borderTop: 'none',
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+          }),
         }}
       >
-        {content}
-      </Box>
-      {footer && (
+        {title && typeof title === 'string' && (
+          <DetailsSectionTitle badge={badge} buttons={buttons}>
+            {title}
+          </DetailsSectionTitle>
+        )}
+        {title && typeof title !== 'string' && title}
         <Box
           sx={{
-            p: [3, null, '24px'],
-            borderTop: 'lightMuted',
+            px: [3, null, '24px'],
+            py: '24px',
           }}
         >
-          {footer}
+          {content}
         </Box>
-      )}
-    </Card>
+        {footer && (
+          <Box
+            sx={{
+              p: [3, null, '24px'],
+              borderTop: 'lightMuted',
+            }}
+          >
+            {footer}
+          </Box>
+        )}
+      </Card>
+    </Box>
   )
 }
-
-interface TitleWrapperProps {
-  title: string
+interface DetailsSectionTitleProps {
   badge?: boolean
-  buttons?: (ButtonWithAction | ButtonWithActions)[]
+  buttons?: DetailsSectionButtons
+  children: ReactNode
 }
 
-function TitleWrapper({ title, badge, buttons }: TitleWrapperProps) {
+export function DetailsSectionTitle({
+  badge,
+  buttons,
+  children,
+}: PropsWithChildren<DetailsSectionTitleProps>) {
   return (
     <Flex
       sx={{
@@ -70,9 +104,13 @@ function TitleWrapper({ title, badge, buttons }: TitleWrapperProps) {
           height: '40px',
         }}
       >
-        <Heading as="p" variant="boldParagraph2">
-          {title}
-        </Heading>
+        {typeof children === 'string' ? (
+          <Heading as="p" variant="boldParagraph2">
+            {children}
+          </Heading>
+        ) : (
+          children
+        )}
         {badge !== undefined && <VaultTabTag isEnabled={badge} />}
       </Flex>
       {buttons && (

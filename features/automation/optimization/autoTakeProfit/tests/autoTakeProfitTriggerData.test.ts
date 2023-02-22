@@ -1,7 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { Result } from 'ethers/lib/utils'
 
 import {
   AutoTakeProfitFormChange,
@@ -70,18 +69,23 @@ describe('autoTakeProfit Form Change tests', () => {
       const triggers = [
         {
           triggerId: idOne,
-          result: ['', 7, new BigNumber(1), new BigNumber(4)],
+          result: {
+            triggerType: 7,
+            executionPrice: new BigNumber(1),
+            maxBaseFeeInGwei: new BigNumber(4),
+          },
         },
         {
           triggerId: Math.random(),
-          result: ['', 7, new BigNumber(4), new BigNumber(6)],
+          result: {
+            triggerType: 7,
+            executionPrice: new BigNumber(4),
+            maxBaseFeeInGwei: new BigNumber(6),
+          },
         },
-      ] as {
-        triggerId: number
-        result: Result
-      }[]
+      ]
 
-      const [, triggerType, executionPrice, maxBaseFeeInGwei] = triggers[0].result
+      const { triggerType, executionPrice, maxBaseFeeInGwei } = triggers[0].result
       const expectedResult = {
         executionPrice: new BigNumber(executionPrice.toString()).div(new BigNumber(10).pow(18)),
         isToCollateral: triggerType === TriggerType.AutoTakeProfitToCollateral,

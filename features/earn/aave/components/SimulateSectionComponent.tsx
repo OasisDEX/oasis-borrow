@@ -1,29 +1,29 @@
 import { IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
+import { getFee } from 'actions/aave'
 import BigNumber from 'bignumber.js'
+import { Banner, bannerGradientPresets } from 'components/Banner'
+import { DetailsSection } from 'components/DetailsSection'
+import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { SimulateTitle } from 'components/SimulateTitle'
+import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
-import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
-import { Box } from 'theme-ui'
-
-import { Banner, bannerGradientPresets } from '../../../../components/Banner'
-import { DetailsSection } from '../../../../components/DetailsSection'
-import { DetailsSectionContentTable } from '../../../../components/DetailsSectionContentTable'
-import { DetailsSectionFooterItemWrapper } from '../../../../components/DetailsSectionFooterItem'
-import { ContentFooterItemsEarnSimulate } from '../../../../components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { HasGasEstimation } from '../../../../helpers/form'
-import { formatCryptoBalance } from '../../../../helpers/formatters/format'
-import { useHash } from '../../../../helpers/useHash'
-import { zero } from '../../../../helpers/zero'
-import { getFee } from '../../../aave/oasisActionsLibWrapper'
-import { AaveSimulateTitle } from '../../../aave/open/components/AaveSimulateTitle'
-import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import {
   calculateSimulation,
   CalculateSimulationResult,
   Simulation,
-} from '../../../aave/open/services'
+} from 'features/aave/open/services'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
+import { HasGasEstimation } from 'helpers/form'
+import { formatCryptoBalance } from 'helpers/formatters/format'
+import { useHash } from 'helpers/useHash'
+import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
+import React, { useEffect, useState } from 'react'
+import { Box } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
@@ -35,12 +35,14 @@ function mapSimulation(simulation?: Simulation): string[] {
 
 function SimulationSection({
   strategy,
+  transition,
   token,
   userInputAmount,
   gasPrice,
   defaultRiskRatio,
 }: {
-  strategy?: IPositionTransition
+  strategy: IStrategyConfig
+  transition?: IPositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
@@ -48,14 +50,14 @@ function SimulationSection({
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
-  const { aaveSthEthYieldsQuery } = useAaveContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext(strategy.protocol)
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = userInputAmount || new BigNumber(100)
 
-  const swapFee = (strategy?.simulation.swap && getFee(strategy?.simulation.swap)) || zero
+  const swapFee = (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
   const gasFee = gasPrice?.gasEstimationEth || zero
   const fees = swapFee.plus(gasFee)
-  const riskRatio = strategy?.simulation.position.riskRatio || defaultRiskRatio
+  const riskRatio = transition?.simulation.position.riskRatio || defaultRiskRatio
 
   useEffect(() => {
     aaveSthEthYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
@@ -71,7 +73,7 @@ function SimulationSection({
   return (
     <>
       <DetailsSection
-        title={<AaveSimulateTitle token={token} depositAmount={amount} />}
+        title={<SimulateTitle token={token} depositAmount={amount} />}
         content={
           <>
             <DetailsSectionContentTable
@@ -124,7 +126,8 @@ export function SimulateSectionComponent() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const simulationSectionProps = useSelector(stateMachine, (state) => {
     return {
-      strategy: state.context.strategy,
+      strategy: state.context.strategyConfig,
+      transition: state.context.transition,
       token: state.context.tokens.debt,
       userInputAmount: state.context.userInput.amount,
       gasPrice: state.context.estimatedGasPrice,

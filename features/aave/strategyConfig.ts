@@ -1,23 +1,24 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
-import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
-import { zero } from 'helpers/zero'
-
-import { AaveEarnFaq } from '../content/faqs/aave/earn'
-import { AaveMultiplyFaq } from '../content/faqs/aave/multiply'
+import { AaveEarnFaqV2, AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
+import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import {
   AavePositionHeaderNoDetails,
   headerWithDetails,
-} from '../earn/aave/components/AavePositionHeader'
-import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
-import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectionComponent'
-import { adjustRiskSliderConfig as earnAdjustRiskSliderConfig } from '../earn/aave/riskSliderConfig'
-import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
-import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
+} from 'features/earn/aave/components/AavePositionHeader'
+import { ManageSectionComponent } from 'features/earn/aave/components/ManageSectionComponent'
+import { SimulateSectionComponent } from 'features/earn/aave/components/SimulateSectionComponent'
+import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
+import { adjustRiskSliders } from 'features/earn/aave/riskSliderConfig'
+import { AaveMultiplyManageComponent } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
+import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/multiply/aave/riskSliderConfig'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+
+import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { IStrategyConfig, ProductType, ProxyType } from './common/StrategyConfigTypes'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
@@ -28,22 +29,57 @@ export enum ManageDebtActionsEnum {
   PAYBACK_DEBT = 'payback-debt',
 }
 
+const allActionsAvailable: ManagePositionAvailableActions[] = [
+  'adjust',
+  'manage-debt',
+  'manage-collateral',
+  'close',
+]
+
 const supportedAaveBorrowCollateralTokens = ['ETH']
 
 export const strategies: Array<IStrategyConfig> = [
   {
-    urlSlug: 'stETHeth',
-    name: 'stETHeth',
+    urlSlug: 'wstETHeth',
+    name: 'wstETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
-      headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
+      headerOpen: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
       headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
-      adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
-      positionInfo: AaveEarnFaq,
+      adjustRiskView: adjustRiskView(adjustRiskSliders.wstethEth),
+      positionInfo: AaveEarnFaqV3,
+      sidebarTitle: 'open-earn.aave.vault-form.title',
+      sidebarButton: 'open-earn.aave.vault-form.open-btn',
+    },
+    tokens: {
+      collateral: 'WSTETH',
+      debt: 'ETH',
+      deposit: 'ETH',
+    },
+    riskRatios: adjustRiskSliders.wstethEth.riskRatios,
+    type: 'Earn',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3EarnWSTETH' as const,
+    availableActions: ['close'],
+    defaultSlippage: new BigNumber(0.001),
+  },
+  {
+    urlSlug: 'stETHeth',
+    name: 'stETHeth',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: headerWithDetails(adjustRiskSliders.stethEth.riskRatios.minimum),
+      headerManage: AavePositionHeaderNoDetails,
+      headerView: AavePositionHeaderNoDetails,
+      simulateSection: SimulateSectionComponent,
+      vaultDetailsManage: ManageSectionComponent,
+      vaultDetailsView: ViewPositionSectionComponent,
+      adjustRiskView: adjustRiskView(adjustRiskSliders.stethEth),
+      positionInfo: AaveEarnFaqV2,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
@@ -52,8 +88,10 @@ export const strategies: Array<IStrategyConfig> = [
       debt: 'ETH',
       deposit: 'ETH',
     },
-    riskRatios: earnAdjustRiskSliderConfig.riskRatios,
+    riskRatios: adjustRiskSliders.stethEth.riskRatios,
     type: 'Earn',
+    protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'ethusdc',
@@ -78,6 +116,8 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
+    protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'stETHusdc',
@@ -102,6 +142,8 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
+    protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'wBTCusdc',
@@ -126,6 +168,8 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
+    protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
@@ -151,27 +195,38 @@ export const strategies: Array<IStrategyConfig> = [
         deposit: collateral,
       },
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-      featureToggle: 'AaveBorrow' as Feature,
-      type: 'Borrow' as ProductType,
+      featureToggle: 'AaveBorrow' as const,
+      type: 'Borrow' as const,
+      protocol: LendingProtocol.AaveV2,
+      availableActions: allActionsAvailable,
     }
   }),
 ]
 
-export function aaveStrategiesList(filterProduct?: IStrategyConfig['type']): IStrategyConfig[] {
+export function aaveStrategiesList(
+  filterProduct?: IStrategyConfig['type'],
+  filterProtocol?: IStrategyConfig['protocol'],
+): IStrategyConfig[] {
   return Object.values(strategies)
     .filter(({ featureToggle }) => (featureToggle ? getFeatureToggle(featureToggle) : true))
     .filter(({ type }) => (filterProduct ? type === filterProduct : true))
+    .filter(({ protocol }) => (filterProtocol ? protocol === filterProtocol : true))
 }
 
 export function getAaveStrategy(strategyName: IStrategyConfig['name']) {
   return Object.values(strategies).filter(({ name }) => strategyName === name)
 }
 
-export function loadStrategyFromUrl(slug: string, positionType: string): IStrategyConfig {
+export function loadStrategyFromUrl(
+  slug: string,
+  protocol: string,
+  positionType: string,
+): IStrategyConfig {
   const strategy = strategies.find(
     (s) =>
       s.urlSlug.toUpperCase() === slug.toUpperCase() &&
-      s.type.toUpperCase() === positionType.toUpperCase(),
+      s.type.toUpperCase() === positionType.toUpperCase() &&
+      s.protocol.toUpperCase() === protocol.toUpperCase(),
   )
   if (!strategy) {
     throw new Error(`Strategy not found for slug: ${slug}`)
@@ -192,19 +247,22 @@ export function loadStrategyFromTokens(
   return strategy
 }
 
-export const supportedTokens = Array.from(
-  new Set(
-    Object.values(strategies)
-      .map((strategy) => Object.values(strategy.tokens))
-      .flatMap((tokens) => tokens),
-  ),
-)
+export function getSupportedTokens(protocol: LendingProtocol) {
+  return Array.from(
+    new Set(
+      Object.values(strategies)
+        .filter(({ protocol: p }) => p === protocol)
+        .map((strategy) => Object.values(strategy.tokens))
+        .flatMap((tokens) => tokens),
+    ),
+  )
+}
 
 export function convertDefaultRiskRatioToActualRiskRatio(
   defaultRiskRatio: IStrategyConfig['riskRatios']['default'],
   ltv?: BigNumber,
 ) {
   return defaultRiskRatio === 'slightlyLessThanMaxRisk'
-    ? new RiskRatio(ltv?.times('0.999') || zero, RiskRatio.TYPE.LTV)
+    ? new RiskRatio(ltv?.times('0.99') || zero, RiskRatio.TYPE.LTV)
     : defaultRiskRatio
 }

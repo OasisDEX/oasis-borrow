@@ -1,18 +1,21 @@
+import { getTokens } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
+import { ProductCardMultiplyMaker } from 'components/productCards/ProductCardMultiplyMaker'
+import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
+import { ProductHeader } from 'components/ProductHeader'
 import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { multiplyPageCardsData, productCardsConfig } from 'helpers/productCards'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
-import { ProductCardMultiplyMaker } from '../../components/productCards/ProductCardMultiplyMaker'
-import { ProductCardsFilter } from '../../components/productCards/ProductCardsFilter'
-import { ProductHeader } from '../../components/ProductHeader'
-import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
-
 export function MultiplyView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
-  const aaveMultiplyStrategies = aaveStrategiesList('Multiply')
+  const aaveMultiplyStrategies = getTokens(
+    aaveStrategiesList('Multiply', LendingProtocol.AaveV2).map(({ name }) => name),
+  )
 
   return (
     <Grid

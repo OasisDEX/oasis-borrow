@@ -21,10 +21,13 @@ export type Feature =
   | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
   | 'AaveBorrow'
+  | 'AaveV3EarnWSTETH'
   | 'FollowVaults'
   | 'AaveProtection'
+  | 'AaveProtectionWrite'
   | 'Ajna'
   | 'DaiSavingsRate'
+  | 'FollowAAVEVaults'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -44,10 +47,13 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: true,
   AaveBorrow: false,
-  FollowVaults: false,
+  AaveV3EarnWSTETH: true,
+  FollowVaults: true,
   AaveProtection: false,
+  AaveProtectionWrite: false,
   Ajna: false,
   DaiSavingsRate: true,
+  FollowAAVEVaults: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

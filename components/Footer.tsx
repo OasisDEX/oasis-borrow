@@ -8,8 +8,8 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
+import { FooterBackground } from 'theme/FooterBackground'
 
-import { FooterBackground } from '../theme/FooterBackground'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
@@ -21,7 +21,7 @@ const ROUTES = {
   CONTACT: 'https://kb.oasis.app/help/contact-us',
   TWITTER: 'https://twitter.com/oasisdotapp',
   DISCORD: 'https://discord.gg/Kc2bBB59GC',
-  BUG_BOUNTY: 'https://immunefi.com/bounty/oasis/',
+  BUG_BOUNTY: 'https://immunefi.com/bounty/oasisapp/',
 }
 
 const FOOTER_SECTIONS = [

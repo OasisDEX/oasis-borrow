@@ -1,43 +1,57 @@
+import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/oasis-actions'
+import { OpenAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { ethNullAddress } from 'blockchain/config'
-import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
-import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
-import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
-import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
-
-import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
-import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
   callOperationExecutorWithDsProxy,
   OperationExecutorTxMeta,
-} from '../../../../blockchain/calls/operationExecutor'
-import { ContextConnected } from '../../../../blockchain/network'
-import { allDefined } from '../../../../helpers/allDefined'
-import { zero } from '../../../../helpers/zero'
-import { AllowanceStateMachine } from '../../../stateMachines/allowance'
-import { createDPMAccountStateMachine } from '../../../stateMachines/dpmAccount'
-import {
-  DMPAccountStateMachineResultEvents,
-  DPMAccountStateMachine,
-} from '../../../stateMachines/dpmAccount/state/createDPMAccountStateMachine'
-import { ProxyResultEvent, ProxyStateMachine } from '../../../stateMachines/proxy/state'
-import { TransactionStateMachine } from '../../../stateMachines/transaction'
-import {
-  TransactionParametersStateMachine,
-  TransactionParametersStateMachineEvent,
-} from '../../../stateMachines/transactionParameters'
+} from 'blockchain/calls/operationExecutor'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { ethNullAddress } from 'blockchain/config'
+import { ContextConnected } from 'blockchain/network'
+import { AutomationTxData } from 'components/AppContext'
 import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
+  getSlippage,
   isAllowanceNeeded,
-} from '../../common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
-import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
+} from 'features/aave/common/BaseAaveContext'
+import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { isUserWalletConnected } from 'features/aave/helpers'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
+import {
+  AutomationAddTriggerData,
+  AutomationAddTriggerTxDef,
+} from 'features/automation/common/txDefinitions'
+import { aaveOffsetFromMaxDuringOpenFLow } from 'features/automation/metadata/aave/stopLossMetadata'
+import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
+import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
+import {
+  DMPAccountStateMachineResultEvents,
+  DPMAccountStateMachine,
+} from 'features/stateMachines/dpmAccount/'
+import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
+import {
+  TransactionParametersStateMachine,
+  TransactionParametersStateMachineEvent,
+} from 'features/stateMachines/transactionParameters'
+import { allDefined } from 'helpers/allDefined'
+import { canOpenPosition } from 'helpers/canOpenPosition'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
+import { pure } from 'xstate/lib/actions'
+import { MachineOptionsFrom } from 'xstate/lib/types'
 
 export const totalStepsMap = {
   base: 2,
@@ -50,11 +64,11 @@ export interface OpenAaveContext extends BaseAaveContext {
   refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
+  refStopLossMachine?: ActorRefFrom<TransactionStateMachine<AutomationTxData>>
   hasOpenedPosition?: boolean
-  strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
   blockSettingCalculatedAddresses?: boolean
-  reserveConfig?: AaveReserveConfigurationData
+  reserveConfig?: AaveV2ReserveConfigurationData
 }
 
 function getTransactionDef(context: OpenAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -71,7 +85,7 @@ export type OpenAaveEvent =
   | { type: 'SET_AMOUNT'; amount?: BigNumber }
   | { type: 'NEXT_STEP' }
   | { type: 'UPDATE_META_INFO'; hasOpenedPosition: boolean }
-  | { type: 'RESERVE_CONFIG_UPDATED'; reserveConfig: AaveReserveConfigurationData }
+  | { type: 'RESERVE_CONFIG_UPDATED'; reserveConfig: AaveV2ReserveConfigurationData }
   | BaseAaveEvent
   | ProxyResultEvent
   | DMPAccountStateMachineResultEvents
@@ -85,6 +99,10 @@ export function createOpenAaveStateMachine(
     transactionParameters: OperationExecutorTxMeta,
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
+  stopLossStateMachine: (
+    txData: AutomationAddTriggerData,
+    addTriggerDef: AutomationAddTriggerTxDef,
+  ) => TransactionStateMachine<AutomationTxData>,
 ) {
   /** @xstate-layout N4IgpgJg5mDOIC5QHsAOYB2BBAhgNzAGUAXHYsAWRwGMALASwzADoAbZHCRqAYgGEA8gDkhAUT4AVUQBEA+oKFSAGhPkAJLEIDiMgNoAGALqJQqZLHrF6yDCZAAPRAFoAzABZ9zAGxuAjAA4AVgB2N2CATn99F18AGhAAT2d-f19vQJcvQMjfcLcPfwBfQvi0TFwCEjJKGgYmZkhLbmYIMAAjZABXDGpuHntYUnJmHAAzcgAnAApA-X0ASh4y7HwiIZq6RhZGqwwoFvaunu4DYyQQMwsrGztHBBd-L29gwK9fACZ9d+DfOff4pIIJwZYLMQK+F7hQLvFwvLxeIolEDLCprapUTb1HZ9QiiVRYCgCACqilOdkuTRu5zuCOY7mCCNhuQZgUCbgByXebmY73evlec38wWivl8xVK6BWlXWGLq2y4u14YhUskIUgACmTzhTrrZqYhRcF3nSfi4YQ99I8XIEOUC8i5mBCvKa8uF9G9ERLyqsquRZVsGgq+srVGrRJrfGdTOZKXrQHdfNanuFeXyvOEvNa3P9Es4IqC8pngsXWSlWeLkZLUb6NnLA009jwJAAlTSELCSACSwlk6qwrYoeNEzcIsmb4lEnYAanojOSY7rbohhU9-Bb-Hl-N99C9bU4gsahXzfD4XOEYvo3BWUT6ZbUA6gJsh7Ak+BMwGQ+urmwIlABNeRxywKRpC1aMrmsOMHANfQ8mYUIvndI19FFIU918Nx-DBeF8h+S8QUya8q1vdF73qWAwGIRUKE6VgrFQVgWFaDpul6RsBnWEZxjAaZZgWJZiOlUjMRYCiqO4Gi6PoBimMOViTjnbUF0gpcEBhflvBcFwUK3D53g3Pc3GdZg3FmE83BTNwHlmK8kRvIS-TI0TKOo2j6MYngiXVaRgNEVUW18rQAM7IQADEBDAi5lKpeNEE+GJvG+QJUkvN1wmCPdgi3ZgUzNS13RTA8iO9BzawDMTXKkmTPO83zZEHCQsFkELwsinUVP1NTvjSAJYMzTMvi5TLstyz4onTfTwWKqU0UckTmAqiS3OkjzcVUZtO0IABpMdgO7Nroqgu4uWCB1cjPMI2QeKIXGG41RvyiagjFOzBNmsryJcpaqo88c1rHTadtbCR9sU8DY1U94fGNLNj15WEUPZXMgSy+6YU+KGzVMwJpurO95sWvZJPcsAm1bIR2y7Hs+wHIcRzHCdp1nKMoogmLoLUtdQSyIJUmFT4jKRwEnFRnL1PS3JXi5cJcZIua60JqBiZW0mQ388MDrZqDha8HceSNNMIgRXcOcTN4ctmdwdzZDwPll0r-U+8SieW6qACEOx2iQBFkGROxB7RNYhzqze5TNYUeD4D1ePdjcdDcvH0qGM0vF6vRmmtHZYd88HoMAAHdg1EFUw01MHWeD2KEETLTmC5xN7VRnNATNQ8MiiNkISCGIcdekr3qz5gc7zwvGw9vgvZ9v2A60IPF06-xTLBXlTOhyIIhtZGzRyiF3TPRe1yMtPK37zOnKHsBc4LvoAopjsQep-sCTp0dxz4ScZ1A8v2vZhM13Cbw8Jshcl1t8cItouTLzZChVKKETzuHtgPc+xB7CdgwOqJ8UB3ywFgDwCANgWCMDwMgAA1iwYgEwcAYFgDQXUc8OpVw+AlDCAQo5vDdCbQE8IAEMkXtpAI0IZZ9wzvjOsKC0EYOQFguAuCeJPgmMwBiZBRjIAmAAW2YBQqhNDqB0O-odVSGFsw8kvO8Vk6V3SPE3lwnwJo8jFlOomLc7xEFn3mig0KOB6CsE6O+Hg44Wx-nob-RAIQniYUThEHc7xwjnltB8XWddWSnT3rCHCrjREBg8V4nxfjx6T19tIf2IVZ76K1qpU6oJPhugRJbdM0J4koQdPCE8UMrRZSyBk4ScoeDfk7O-V+jNP7BKOogGIxo3i8ndNEzCO50KmW5BZGJkRE7Zg7l0+WWxPK4mbKqPEM9Rx8A0NoZm85ykhxhJ4E8TCMimUlrdZGTgMKwjru6FeBQsimQ2R9Um-0PYABlNDvxGYYtkoIjSZgzBeXSGVHkYShjyN01ooRvHyC44ReNulbO-L+ACWBpDSD+oM9+TMv4sx-qMhAKZPB8mLN8GI6UET+HmbSTCHxQjCicUI9OmLNlMH4MIMQkgZDyGEMoVQRzNA6DJWcyuHNXhpDCM6UUusUxZVhcLDCbITIpliY8Lk+l9C9yRBgZArR4DnHskg+a7BODcFlfPKuTguRYXBOePKnymQaucOmbk0RYRmLZEKV03zB7Yj2MwegEBGIOoYRzcIPUYiZFhBkT4vwHnC0FvBd02ZQh+DdPkXuPK5Y-PrIqA4LFjh7FjSE+4jwTK0rgcGlJQs8z1tCHxTM2RUhTQxSWsNQYI22q4NWpS5yq7giwieeE1SgH9VjhufWKQrJdsXka0N59w1QBrZSz4dIlX10ZayVtdpF1HksVEMxlSN3zUfM+V875PyjvBo602sEAHgjMdEbIrIvjeqBDEzwkKMIbj5OlLKtli0O3PorZWMlI3RrADuyGUK67njMbyDhKq9zaSeDCVkUtk74a8DehWX0XY-VkpWti26x1yuOj3OxvxKkxDeBm5wrJwlhGtE6TCKbSPlXI0rV2jE2AcBHbRl9cbjpQyeFpeGVlXjOiGo8xjbLLQpBPEKcsfboMEyE3BmNdHX0JkiM0pKKULKwX-U4dKDpRrPJ8FkdKAn6jD2vkO8T9rjPSYNFZsEwDVXnthPErCcwXjFjXTECJJHdPWrrO50e+wo1Gak7W5kQGkoC1SLyZlyMIQOiyjXLGZjszfFc9nS+I9vNpcpUY405ioawWCzZ1COVLK9QhMlFFFXNGoPQZg7BFrauGOsvBXkrJerqosrafIngLr+uiV2ncvXsneN8Uhnz6WLKBHglZHLGF0wMi8Lac8u2PDdrmBhDt6KoPxayfYQgnRqDUBkchzq55PBGtMpEPwaTYK2m4TyBEfgQhQiNTEir72nXXW8H4IIHLIginQlDNI56IgpFSuV4ohQgA */
   return createMachine(
@@ -178,10 +196,19 @@ export function createOpenAaveStateMachine(
             editing: {
               entry: ['resetCurrentStep', 'setTotalSteps', 'calculateEffectiveProxyAddress'],
               on: {
-                SET_AMOUNT: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: ['setAmount', 'calculateAuxiliaryAmount'],
-                },
+                SET_AMOUNT: [
+                  {
+                    target: '#openAaveStateMachine.background.debouncing',
+                    // only call library greater-than-zero amount
+                    cond: 'userInputtedAmountGreaterThanZero',
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                  // fall through to this next one if the amount is zero
+                  // (e.g. user is halfway through typing  "0.002")
+                  {
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                ],
                 SET_RISK_RATIO: {
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: 'setRiskRatio',
@@ -204,6 +231,11 @@ export function createOpenAaveStateMachine(
                   {
                     target: 'allowanceSetting',
                     cond: 'isAllowanceNeeded',
+                    actions: 'incrementCurrentStep',
+                  },
+                  {
+                    target: 'optionalStopLoss',
+                    cond: 'canSetupStopLoss',
                     actions: 'incrementCurrentStep',
                   },
                   {
@@ -239,7 +271,25 @@ export function createOpenAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
+                  actions: ['updateAllowance'],
                   target: 'editing',
+                },
+              },
+            },
+            optionalStopLoss: {
+              entry: 'updateStopLossInitialState',
+              on: {
+                NEXT_STEP: {
+                  target: 'reviewing',
+                  actions: 'incrementCurrentStep',
+                },
+                SET_STOP_LOSS_SKIPPED: {
+                  target: 'reviewing',
+                  actions: ['updateContext', 'incrementCurrentStep'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                  actions: 'decrementCurrentStep',
                 },
               },
             },
@@ -263,9 +313,15 @@ export function createOpenAaveStateMachine(
                 'disableChangingAddresses',
               ],
               on: {
-                TRANSACTION_COMPLETED: {
-                  target: 'txSuccess',
-                },
+                TRANSACTION_COMPLETED: [
+                  {
+                    cond: 'isStopLossSet',
+                    target: 'txStopLoss',
+                  },
+                  {
+                    target: 'txSuccess',
+                  },
+                ],
                 TRANSACTION_FAILED: {
                   target: 'txFailure',
                   actions: ['updateContext'],
@@ -283,8 +339,38 @@ export function createOpenAaveStateMachine(
                 },
               },
             },
-            txSuccess: {
+            stopLossTxFailure: {
               entry: ['killTransactionMachine'],
+              on: {
+                RETRY: {
+                  target: 'txStopLossInProgress',
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+              },
+            },
+            txStopLoss: {
+              on: {
+                NEXT_STEP: {
+                  target: 'txStopLossInProgress',
+                },
+              },
+            },
+            txStopLossInProgress: {
+              entry: ['spawnStopLossStateMachine'],
+              on: {
+                TRANSACTION_COMPLETED: {
+                  target: 'txSuccess',
+                },
+                TRANSACTION_FAILED: {
+                  target: 'stopLossTxFailure',
+                  actions: ['updateContext'],
+                },
+              },
+            },
+            txSuccess: {
+              entry: ['killTransactionMachine', 'killStopLossStateMachine'],
               type: 'final',
             },
           },
@@ -309,6 +395,10 @@ export function createOpenAaveStateMachine(
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
         },
+        USE_SLIPPAGE: {
+          target: ['background.debouncing'],
+          actions: 'updateContext',
+        },
         UPDATE_STRATEGY_INFO: {
           actions: 'updateContext',
         },
@@ -327,20 +417,44 @@ export function createOpenAaveStateMachine(
         RESERVE_CONFIG_UPDATED: {
           actions: ['updateContext', 'setDefaultRiskRatio'],
         },
+        SET_STOP_LOSS_LEVEL: {
+          actions: 'updateContext',
+        },
+        SET_COLLATERAL_ACTIVE: {
+          actions: 'updateContext',
+        },
+        SET_STOP_LOSS_TX_DATA: {
+          actions: 'updateContext',
+        },
+        SET_STOP_LOSS_SKIPPED: {
+          actions: 'updateContext',
+        },
       },
     },
     {
       guards: {
+        userInputtedAmountGreaterThanZero: (context, event) => {
+          return !!(event.amount && event.amount.gt(0))
+        },
         shouldCreateDpmProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
-        validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
-          allDefined(userInput, effectiveProxyAddress, strategy),
-        canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
-          allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
-          tokenBalance!.gte(userInput.amount!),
+        validTransactionParameters: ({ userInput, effectiveProxyAddress, transition }) =>
+          allDefined(userInput, effectiveProxyAddress, transition),
+        canOpenPosition,
+        canSetupStopLoss: ({
+          strategyConfig,
+          tokenBalance,
+          userInput,
+          effectiveProxyAddress,
+          hasOpenedPosition,
+        }) =>
+          useFeatureToggle('AaveProtectionWrite') &&
+          strategyConfig.type === 'Multiply' &&
+          canOpenPosition({ userInput, hasOpenedPosition, tokenBalance, effectiveProxyAddress }),
         isAllowanceNeeded,
+        isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => !stopLossSkipped && !!stopLossLevel,
       },
       actions: {
         setRiskRatio: assign((context, event) => {
@@ -370,11 +484,16 @@ export function createOpenAaveStateMachine(
         setTotalSteps: assign((context) => {
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
+          const optionalStopLoss =
+            useFeatureToggle('AaveProtectionWrite') && context.strategyConfig.type === 'Multiply'
+              ? 1
+              : 0
 
           const totalSteps =
             totalStepsMap.base +
             totalStepsMap.proxySteps(proxy) +
-            totalStepsMap.allowanceSteps(allowance)
+            totalStepsMap.allowanceSteps(allowance) +
+            optionalStopLoss
           return {
             totalSteps: totalSteps,
           }
@@ -384,7 +503,7 @@ export function createOpenAaveStateMachine(
             ...context.userInput,
             amount: event.amount,
           },
-          strategy: event.amount ? context.strategy : undefined,
+          strategy: event.amount && event.amount.gt(zero) ? context.transition : undefined,
         })),
         calculateAuxiliaryAmount: assign((context) => {
           return {
@@ -399,6 +518,7 @@ export function createOpenAaveStateMachine(
         })),
         decrementCurrentStep: assign((context) => ({
           currentStep: context.currentStep - 1,
+          stopLossSkipped: false,
         })),
         eventConfirmRiskRatio: ({ userInput }) => {
           userInput.amount &&
@@ -449,9 +569,21 @@ export function createOpenAaveStateMachine(
             'transactionMachine',
           ),
         })),
+        spawnStopLossStateMachine: assign((context) => ({
+          refStopLossMachine: spawn(
+            stopLossStateMachine(context.stopLossTxData!, addAutomationBotTriggerV2),
+            'stopLoss',
+          ),
+        })),
         killTransactionMachine: pure((context) => {
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
+          }
+          return undefined
+        }),
+        killStopLossStateMachine: pure((context) => {
+          if (context.refStopLossMachine && context.refStopLossMachine.stop) {
+            context.refStopLossMachine.stop()
           }
           return undefined
         }),
@@ -465,16 +597,17 @@ export function createOpenAaveStateMachine(
                   context.userInput.riskRatio ||
                   context.defaultRiskRatio ||
                   new RiskRatio(zero, RiskRatio.TYPE.LTV),
-                // ethNullAddress just for the simulation, theres a guard for that
+                // ethNullAddress just for the simulation, there is a guard for that
                 proxyAddress: context.effectiveProxyAddress! || ethNullAddress,
                 collateralToken: context.strategyConfig.tokens.collateral,
                 debtToken: context.tokens.debt,
                 depositToken: context.tokens.deposit,
                 token: context.tokens.deposit,
                 context: context.web3Context!,
-                slippage: context.userSettings!.slippage,
+                slippage: getSlippage(context),
                 proxyType: context.strategyConfig.proxyType,
                 positionType: context.strategyConfig.type,
+                protocol: context.strategyConfig.protocol,
               },
             }
           },
@@ -512,9 +645,12 @@ export function createOpenAaveStateMachine(
 
           const contextConnected = (context.web3Context as any) as ContextConnected | undefined
 
+          const protocolVersion =
+            context.strategyConfig.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
+
           const address = shouldUseDpmProxy
-            ? `/aave/${context.userDpmAccount?.vaultId}`
-            : `/aave/${contextConnected?.account}`
+            ? `/aave/${protocolVersion}/${context.userDpmAccount?.vaultId}`
+            : `/aave/${protocolVersion}/${contextConnected?.account}`
 
           return {
             effectiveProxyAddress: proxyAddressToUse,
@@ -533,10 +669,23 @@ export function createOpenAaveStateMachine(
           }
         }),
         setFallbackTokenPrice: assign((context, event) => {
+          // fallback if we don't have the tokenPrice - happens if no
+          // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
+          let fallbackPrice: BigNumber
+          switch (true) {
+            case context.tokens.deposit === context.tokens.collateral:
+              fallbackPrice = event.collateralPrice
+              break
+            case context.tokens.deposit === context.tokens.debt:
+              fallbackPrice = event.debtPrice
+              break
+            default:
+              throw new Error(
+                `could not set fallback price for deposit token ${context.tokens.deposit}`,
+              )
+          }
           return {
-            // fallback if we dont have the tokenPrice - happens if no
-            // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
-            tokenPrice: context.tokenPrice ? context.tokenPrice : event.collateralPrice,
+            tokenPrice: context.tokenPrice ? context.tokenPrice : fallbackPrice,
           }
         }),
         resetWalletValues: assign((context) => {
@@ -551,6 +700,58 @@ export function createOpenAaveStateMachine(
         disableChangingAddresses: assign((_) => {
           return {
             blockSettingCalculatedAddresses: true,
+          }
+        }),
+        updateAllowance: assign((context, event) => {
+          const result = Object.entries(context.tokens).find(([_, token]) => event.token === token)
+          if (result === undefined) {
+            return {}
+          }
+
+          const [type] = result
+
+          if (context.allowance === undefined) {
+            return {
+              allowance: {
+                collateral: zero,
+                debt: zero,
+                deposit: zero,
+                [type]: event.amount,
+              },
+            }
+          }
+          return {
+            allowance: {
+              ...context.allowance,
+              [type]: event.amount,
+            },
+          }
+        }),
+        updateStopLossInitialState: assign((context) => {
+          const {
+            proxyAddress,
+            debtTokenAddress,
+            collateralTokenAddress,
+          } = extractStopLossDataInput(context)
+          const stopLossLevel = context
+            .reserveConfig!.liquidationThreshold.minus(aaveOffsetFromMaxDuringOpenFLow)
+            .times(100)
+
+          return {
+            stopLossLevel,
+            stopLossTxData: {
+              ...prepareStopLossTriggerDataV2(
+                proxyAddress!,
+                TriggerType.AaveStopLossToDebt,
+                false,
+                stopLossLevel,
+                debtTokenAddress!,
+                collateralTokenAddress!,
+              ),
+              replacedTriggerIds: [0],
+              replacedTriggersData: ['0x'],
+              kind: TxMetaKind.addTrigger,
+            } as AutomationAddTriggerData,
           }
         }),
       },

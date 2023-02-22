@@ -1,8 +1,8 @@
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import {
-  AutomationBotAddAggregatorTriggerData,
+  AutomationBotRemoveTriggersData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
@@ -11,18 +11,25 @@ import {
   AutomationTxHandlerAnalytics,
   getAutomationFeatureTxHandlers,
 } from 'features/automation/common/state/automationFeatureTxHandlers'
+import {
+  addTransactionMap,
+  AutomationAddTriggerData,
+  AutomationRemoveTriggerData,
+} from 'features/automation/common/txDefinitions'
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import { AutomationContracts } from 'features/automation/metadata/types'
 import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { addTransactionMap, TX_DATA_CHANGE } from 'helpers/gasEstimate'
-import { ReactElement, useEffect } from 'react'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { ReactElement, useEffect, useMemo } from 'react'
 
 export interface AddAndRemoveTxHandler {
   callOnSuccess?: () => void
 }
 
 interface AddAndRemoveTriggerControlProps {
-  addTxData: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
+  addTxData: AutomationAddTriggerData
+  removeTxData?: AutomationRemoveTriggerData
   isActiveFlag: boolean
   isAddForm: boolean
   isEditing: boolean
@@ -39,10 +46,13 @@ interface AddAndRemoveTriggerControlProps {
     textButtonHandler: () => void,
   ) => ReactElement
   analytics: AutomationTxHandlerAnalytics
+  // TODO contracts prop is optional until we will have metadata for all auto features
+  contracts?: AutomationContracts
 }
 
 export function AddAndRemoveTriggerControl({
   addTxData,
+  removeTxData: _removeTxData,
   children,
   isActiveFlag,
   isAddForm,
@@ -56,6 +66,7 @@ export function AddAndRemoveTriggerControl({
   triggersId,
   txHelpers,
   analytics,
+  contracts,
 }: AddAndRemoveTriggerControlProps) {
   const { uiChanges } = useAppContext()
   const {
@@ -63,7 +74,20 @@ export function AddAndRemoveTriggerControl({
     positionData: { id, ilk, owner, positionRatio },
   } = useAutomationContext()
 
-  const { removeTxData, textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({
+  // TODO it won't be necessary anymore when we will have matadata for all auto features
+  const removeTxData = useMemo(
+    () =>
+      _removeTxData ||
+      ({
+        removeAllowance: shouldRemoveAllowance,
+        proxyAddress: owner,
+        triggersId,
+        kind: TxMetaKind.removeTriggers,
+      } as AutomationBotRemoveTriggersData),
+    [shouldRemoveAllowance, owner, triggersId],
+  )
+
+  const { textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({
     addTxData,
     ethMarketPrice,
     isAddForm,
@@ -80,21 +104,23 @@ export function AddAndRemoveTriggerControl({
     ilk,
     positionRatio,
     analytics,
+    contracts,
+    removeTxData,
   })
 
   useEffect(() => {
     if (isActiveFlag && isEditing && stage !== 'txSuccess' && stage !== 'txInProgress') {
       if (isAddForm) {
         uiChanges.publish(TX_DATA_CHANGE, {
-          type: 'add-trigger',
-          transaction: addTransactionMap[publishType],
+          type: 'tx-data',
+          transaction: contracts ? contracts.addTrigger : addTransactionMap[publishType],
           data: addTxData,
         })
       }
       if (isRemoveForm) {
         uiChanges.publish(TX_DATA_CHANGE, {
-          type: 'remove-triggers',
-          transaction: removeAutomationBotAggregatorTriggers,
+          type: 'tx-data',
+          transaction: contracts ? contracts.removeTrigger : removeAutomationBotAggregatorTriggers,
           data: removeTxData,
         })
       }

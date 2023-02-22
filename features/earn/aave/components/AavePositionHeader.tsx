@@ -1,34 +1,40 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { AaveStEthYieldsResponse } from 'features/aave/common'
+import { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/common/StrategyConfigTypes'
+import { createFollowButton } from 'features/aave/helpers/createFollowButton'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { PreparedAaveTotalValueLocked } from 'lendingProtocols/aave-v2/pipelines'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-
-import { useAaveContext } from '../../../aave/AaveContextProvider'
-import { AaveStEthYieldsResponse } from '../../../aave/common'
-import { AaveHeaderProps, IStrategyConfig } from '../../../aave/common/StrategyConfigTypes'
-import { PreparedAaveTotalValueLocked } from '../../../aave/helpers/aavePrepareAaveTotalValueLocked'
 
 const tokenPairList = {
   stETHeth: {
     translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
     tokenList: ['AAVE', 'STETH', 'ETH'],
   },
+  wstETHeth: {
+    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
+    tokenList: ['AAVE', 'WSTETH', 'ETH'],
+  },
 } as Record<string, { translationKey: string; tokenList: string[] }>
 
 function AavePositionHeader({
   maxRisk,
-  strategyName,
+  strategy,
   aaveTVL,
   minimumRiskRatio,
 }: {
   maxRisk?: IRiskRatio
-  strategyName: string
+  strategy: IStrategyConfig
   aaveTVL?: PreparedAaveTotalValueLocked
   minimumRiskRatio: IRiskRatio
 }) {
@@ -37,7 +43,7 @@ function AavePositionHeader({
   const [minYields, setMinYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
   const [maxYields, setMaxYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
 
-  const { aaveSthEthYieldsQuery } = useAaveContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext(strategy.protocol)
 
   useEffect(() => {
     async function fetchYields() {
@@ -110,8 +116,8 @@ function AavePositionHeader({
 
   return (
     <VaultHeadline
-      header={t(tokenPairList[strategyName].translationKey)}
-      token={tokenPairList[strategyName].tokenList}
+      header={t(tokenPairList[strategy.name].translationKey)}
+      token={tokenPairList[strategy.name].tokenList}
       details={headlineDetails}
       loading={!aaveTVL?.totalValueLocked}
     />
@@ -124,7 +130,9 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }: {
     strategyConfig: IStrategyConfig
   }) {
-    const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext()
+    const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext(
+      strategyConfig.protocol,
+    )
     const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
     const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(
       aaveReserveConfigurationData$({ token: strategyConfig.tokens.collateral }),
@@ -139,7 +147,7 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
           {([_tvlState, _aaveReserveConfigData]) => (
             <AavePositionHeader
               maxRisk={new RiskRatio(_aaveReserveConfigData.ltv, RiskRatio.TYPE.LTV)}
-              strategyName={strategyConfig.name}
+              strategy={strategyConfig}
               aaveTVL={_tvlState}
               minimumRiskRatio={minimumRiskRatio}
             />
@@ -150,10 +158,21 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }
 }
 
-export function AavePositionHeaderNoDetails({ strategyConfig }: AaveHeaderProps) {
+export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: ManageAaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.name]
+  const { protocol } = strategyConfig
+  const followButton: FollowButtonControlProps | undefined = createFollowButton(
+    positionId,
+    protocol.toLowerCase() as Protocol,
+  )
   return (
-    <VaultHeadline header={t(tokenData.translationKey)} token={tokenData.tokenList} details={[]} />
+    <VaultHeadline
+      header={t(tokenData.translationKey)}
+      token={tokenData.tokenList}
+      details={[]}
+      followButton={followButton}
+      shareButton
+    />
   )
 }

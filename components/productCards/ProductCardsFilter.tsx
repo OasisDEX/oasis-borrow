@@ -1,13 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getTokens } from 'blockchain/tokensMetadata'
+import { getTokens, TokenConfig } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { AaveContextProvider, isAaveContextAvailable } from 'features/aave/AaveContextProvider'
-import React, { useState } from 'react'
-import { Box, Button, Flex, Text } from 'theme-ui'
-
-import { IStrategyConfig } from '../../features/aave/common/StrategyConfigTypes'
-import { WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import {
   ilkToEntryToken,
   IlkTokenMap,
@@ -15,9 +12,11 @@ import {
   ProductCardData,
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
-} from '../../helpers/productCards'
-import { useAppContext } from '../AppContextProvider'
+} from 'helpers/productCards'
+import React, { useState } from 'react'
+import { Box, Button, Flex, Text } from 'theme-ui'
 import { ProductCardBorrowAave } from './ProductCardBorrowAave'
+
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardsSelect } from './ProductCardsSelect'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
@@ -70,7 +69,6 @@ export function ProductCardsFilter({
     setHover(filter)
   }
 
-  // TODO: No way to filter strategies in strategy config by protocol yet
   const aaveStrategies = otherStrategies
   const aaveStrategyTokens = getTokens(aaveStrategies.map(({ name }) => name))
   const aaveStrategyConfigPlusTokenMeta = aaveStrategies.map((strategy, index) => ({
@@ -134,7 +132,7 @@ export function ProductCardsFilter({
                 {aaveStrategyConfigPlusTokenMeta
                   .filter(({ protocol, name }) => {
                     return (
-                      protocol === 'aave' &&
+                      protocol === 'aaveV2' &&
                       (name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()) ||
                         currentFilter.toLocaleUpperCase() === 'FEATURED')
                     )
