@@ -133,13 +133,13 @@ export function AjnaProductController({
                       flow={flow}
                       id={id}
                       owner={ajnaPosition.meta.user}
-                      product={'earn'}
+                      product={ajnaPosition.meta.product}
                       quoteBalance={quoteBalance}
                       quotePrice={tokenPriceUSD[ajnaPosition.meta.quoteToken]}
                       quoteToken={ajnaPosition.meta.quoteToken}
                       steps={steps[ajnaPosition.meta.product][flow]}
                     >
-                      {/* {ajnaPosition.meta.product === 'borrow' && (
+                      {ajnaPosition.meta.product === 'borrow' && (
                         <AjnaProductContextProvider
                           formDefaults={{
                             action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
@@ -151,18 +151,18 @@ export function AjnaProductController({
                           <AjnaBorrowPositionController />
                         </AjnaProductContextProvider>
                       )}
-                      {ajnaPosition.meta.product === 'earn' && ( */}
+                      {ajnaPosition.meta.product === 'earn' && (
                         <AjnaProductContextProvider
                           formDefaults={{
                             action: flow === 'open' ? 'open-earn' : 'deposit-earn',
                           }}
                           formReducto={useAjnaEarnFormReducto}
                           position={ajnaPositionToAjnaEarnPosition(ajnaPosition.position)}
-                          product={'earn'}
+                          product={ajnaPosition.meta.product}
                         >
                           <AjnaEarnPositionController />
                         </AjnaProductContextProvider>
-                      {/* )} */}
+                      )}
                     </AjnaGeneralContextProvider>
                   ) : (
                     <></>

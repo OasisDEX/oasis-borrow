@@ -12,7 +12,7 @@ import React from 'react'
 export function AjnaEarnOverviewOpen() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken },
+    environment: { quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -22,7 +22,7 @@ export function AjnaEarnOverviewOpen() {
 
   return (
     <DetailsSection
-      title={<SimulateTitle token={collateralToken} depositAmount={depositAmount} />}
+      title={<SimulateTitle token={quoteToken} depositAmount={depositAmount} />}
       content={
         <>
           {/* TODO: use data from useAjnaEarnContext once available */}

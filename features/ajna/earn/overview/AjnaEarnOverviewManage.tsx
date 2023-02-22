@@ -10,17 +10,17 @@ import React from 'react'
 export function AjnaEarnOverviewManage() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken },
+    environment: { quoteToken },
   } = useAjnaGeneralContext()
 
   return (
     <DetailsSection
       title={t('system.overview')}
-      content={<DetailsSectionContentCardWrapper>Test</DetailsSectionContentCardWrapper>}
+      content={<DetailsSectionContentCardWrapper>Manage Earn Content Cards</DetailsSectionContentCardWrapper>}
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
-            collateralToken={collateralToken}
+            quoteToken={quoteToken}
             availableToWithdraw={new BigNumber(4.5)}
             earlyWithdrawalPenalty={new BigNumber(2)}
             earlyWithdrawalPeriod={new Date(new Date().getTime() + 10000000)}

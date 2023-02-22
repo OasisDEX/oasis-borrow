@@ -6,7 +6,7 @@ import React from 'react'
 import { timeAgo } from 'utils/timeAgo'
 
 interface ContentFooterItemsEarnOpenProps {
-  collateralToken: string
+  quoteToken: string
   availableToWithdraw: BigNumber
   afterAvailableToWithdraw?: BigNumber
   earlyWithdrawalPenalty: BigNumber
@@ -14,7 +14,7 @@ interface ContentFooterItemsEarnOpenProps {
 }
 
 export function ContentFooterItemsEarnManage({
-  collateralToken,
+  quoteToken,
   availableToWithdraw,
   afterAvailableToWithdraw,
   earlyWithdrawalPeriod,
@@ -23,15 +23,15 @@ export function ContentFooterItemsEarnManage({
   const { t } = useTranslation()
 
   const formatted = {
-    availableToWithdraw: `${formatAmount(availableToWithdraw, collateralToken)} ${collateralToken}`,
+    availableToWithdraw: `${formatAmount(availableToWithdraw, quoteToken)} ${quoteToken}`,
     afterAvailableToWithdraw:
       afterAvailableToWithdraw &&
-      `${formatAmount(afterAvailableToWithdraw, collateralToken)} ${collateralToken}`,
+      `${formatAmount(afterAvailableToWithdraw, quoteToken)} ${quoteToken}`,
     earlyWithdrawalPeriod: timeAgo({ to: earlyWithdrawalPeriod }),
     earlyWithdrawalPenalty: `${formatAmount(
       earlyWithdrawalPenalty,
-      collateralToken,
-    )} ${collateralToken}`,
+      quoteToken,
+    )} ${quoteToken}`,
   }
 
   return (
