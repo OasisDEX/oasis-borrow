@@ -1060,7 +1060,7 @@
     "manage-debt-token": "Manage debt ({{token}})",
     "manage-collateral": "Manage collateral",
     "manage-debt": "Manage debt",
-    "manage-Manage Liquidity": "Manage Liquidity",
+    "manage-liquidity": "Manage liquidity ({{token}})",
     "close-position": "Close position",
     "actions": {
       "common": {
@@ -2411,11 +2411,27 @@
       },
       "manage": {
         "headline": {
-          "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
         }
       }
     },
     "earn": {
+      "common": {
+        "ajna-faq": "Ajna FAQ",
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          }
+        },
+        "headline": {
+          "current-yield": "Current yield",
+          "90-day-avg": "90 Day Avg",
+          "current-market-price": "Current Market Price"
+        }
+      },
       "open": {
         "select": {
           "heading": {
@@ -2430,7 +2446,7 @@
         "form": {
           "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
           "max-ltv-to-lend-at": "Max LTV to lend at",
-          "max-lending-price": "Max {{quoteToken}}/{{collateralToken}} lending price"
+          "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
         },
         "simulation": {
           "header1": "Duration",
@@ -2442,18 +2458,16 @@
           "footnote1": "*Past performance is not indicative of future results."
         }
       },
-      "common": {
-        "ajna-faq": "Ajna FAQ",
-        "form": {
-          "title": {
-            "risk": "Things to know before opening an Ajna position",
-            "setup": "Lending ETH against USDC"
-          }
-        },
+      "manage": {
         "headline": {
-          "current-yield": "Current yield",
-          "90-day-avg": "90 Day Avg",
-          "current-market-price": "Current Market Price"
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
+        },
+        "overview": {
+          "early-withdrawal-period": "Early withdrawal period",
+          "early-withdrawal-penalty": "Early withdrawal penalty"
+        },
+        "form": {
+          "adjust-lending-price-bucket": "Adjust lending price bucket"
         }
       }
     },
