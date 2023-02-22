@@ -1,4 +1,5 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Card, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 type HomepagePromoBlockProps = {
   background: string
