@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
+import { Skeleton } from 'components/Skeleton'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
@@ -11,6 +12,7 @@ import { WithArrow } from './WithArrow'
 export type ChangeVariantType = 'positive' | 'negative'
 
 export interface DetailsSectionContentCardChangePillProps {
+  isLoading?: boolean
   value?: string
   variant: ChangeVariantType
 }
@@ -22,15 +24,15 @@ interface DetailsSectionContentCardLinkProps {
 }
 
 export interface ContentCardProps {
-  title: string
-  value?: string
-  unit?: string
   change?: DetailsSectionContentCardChangePillProps
+  customBackground?: string
+  customUnitStyle?: SystemStyleObject
   footnote?: string
   link?: DetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
-  customBackground?: string
-  customUnitStyle?: SystemStyleObject
+  title: string
+  unit?: string
+  value?: string
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
@@ -40,29 +42,42 @@ export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantT
 }
 
 export function DetailsSectionContentCardChangePill({
+  isLoading,
   value,
   variant,
 }: DetailsSectionContentCardChangePillProps) {
   return (
-    <Text
-      as="p"
-      variant="paragraph4"
-      sx={{
-        px: 3,
-        py: 1,
-        ...(variant === 'positive' && {
-          color: 'success100',
-          backgroundColor: 'success10',
-        }),
-        ...(variant === 'negative' && {
-          color: 'critical100',
-          backgroundColor: 'critical10',
-        }),
-        borderRadius: 'mediumLarge',
-      }}
-    >
-      {value}
-    </Text>
+    <>
+      {isLoading && (
+        <Skeleton
+          color={variant}
+          {...(!value && { width: '128px' })}
+          height="28px"
+          sx={{ mb: value ? '-28px' : 0, borderRadius: 'mediumLarge' }}
+        />
+      )}
+      {value && (
+        <Text
+          as="p"
+          variant="paragraph4"
+          sx={{
+            px: 3,
+            py: 1,
+            ...(variant === 'positive' && {
+              color: 'success100',
+              backgroundColor: 'success10',
+            }),
+            ...(variant === 'negative' && {
+              color: 'critical100',
+              backgroundColor: 'critical10',
+            }),
+            borderRadius: 'mediumLarge',
+          }}
+        >
+          {value}
+        </Text>
+      )}
+    </>
   )
 }
 

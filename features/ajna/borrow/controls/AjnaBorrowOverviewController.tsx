@@ -20,6 +20,7 @@ export function AjnaBorrowOverviewController() {
   } = useAjnaGeneralContext()
   const {
     position: {
+      isSimulationLoading,
       currentPosition: { position, simulation },
     },
   } = useAjnaProductContext('borrow')
@@ -31,6 +32,7 @@ export function AjnaBorrowOverviewController() {
         content={
           <DetailsSectionContentCardWrapper>
             <ContentCardLiquidationPrice
+              isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
               liquidationPrice={position.liquidationPrice}
@@ -40,16 +42,19 @@ export function AjnaBorrowOverviewController() {
                 .dividedBy(collateralPrice)}
             />
             <ContentCardLoanToValue
+              isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
             />
             <ContentCardCollateralLocked
+              isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               collateralLocked={position.collateralAmount}
               collateralLockedUSD={position.collateralAmount.times(collateralPrice)}
               afterCollateralLocked={simulation?.collateralAmount}
             />
             <ContentCardPositionDebt
+              isLoading={isSimulationLoading}
               quoteToken={quoteToken}
               positionDebt={position.debtAmount}
               positionDebtUSD={position.debtAmount.times(quotePrice)}
