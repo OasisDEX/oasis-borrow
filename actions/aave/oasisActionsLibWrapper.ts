@@ -201,6 +201,7 @@ export async function getAdjustAaveParameters({
   currentPosition,
   proxyType,
   positionType,
+  protocol,
 }: AdjustAaveParameters): Promise<IPositionTransition> {
   try {
     checkContext(context, 'adjust position')
@@ -217,18 +218,21 @@ export async function getAdjustAaveParameters({
       precision: currentPosition.debt.precision,
     }
 
-    type adjustParameters = Parameters<typeof strategies.aave.v2.adjust>
+    type strategyArguments = Parameters<typeof strategies.aave.v2.adjust>[0] &
+      Parameters<typeof strategies.aave.v3.adjust>[0]
+    type strategyDependencies = Parameters<typeof strategies.aave.v2.adjust>[1] &
+      Parameters<typeof strategies.aave.v3.adjust>[1]
 
-    const stratArgs: adjustParameters[0] = {
+    const args: strategyArguments = {
       slippage,
-      multiple: riskRatio.multiple,
+      multiple: riskRatio,
       debtToken: debtToken,
       collateralToken: collateralToken,
       positionType,
     }
 
-    const stratDeps: adjustParameters[1] = {
-      addresses: getAddressesFromContext(context) as AAVEStrategyAddresses,
+    const stratDeps: strategyDependencies = {
+      addresses: getAddressesFromContext(context),
       currentPosition,
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
@@ -237,7 +241,14 @@ export async function getAdjustAaveParameters({
       isDPMProxy: proxyType === ProxyType.DpmProxy,
     }
 
-    return strategies.aave.v2.adjust(stratArgs, stratDeps)
+    switch (protocol) {
+      case LendingProtocol.AaveV2:
+        return await strategies.aave.v2.adjust(args, stratDeps)
+      case LendingProtocol.AaveV3:
+        return await strategies.aave.v3.adjust(args, stratDeps)
+      default:
+        throw new Error('Protocol not supported')
+    }
   } catch (e) {
     console.error(e)
     throw e

@@ -50,7 +50,7 @@
     "@oasisdex/automation": "1.4.0",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
-    "@oasisdex/oasis-actions": "0.2.14",
+    "@oasisdex/oasis-actions": "0.2.8-alpha.5",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
