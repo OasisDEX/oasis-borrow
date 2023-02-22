@@ -28,10 +28,7 @@ export function ContentFooterItemsEarnManage({
       afterAvailableToWithdraw &&
       `${formatAmount(afterAvailableToWithdraw, quoteToken)} ${quoteToken}`,
     earlyWithdrawalPeriod: timeAgo({ to: earlyWithdrawalPeriod }),
-    earlyWithdrawalPenalty: `${formatAmount(
-      earlyWithdrawalPenalty,
-      quoteToken,
-    )} ${quoteToken}`,
+    earlyWithdrawalPenalty: `${formatAmount(earlyWithdrawalPenalty, quoteToken)} ${quoteToken}`,
   }
 
   return (

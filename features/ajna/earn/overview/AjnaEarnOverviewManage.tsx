@@ -16,7 +16,11 @@ export function AjnaEarnOverviewManage() {
   return (
     <DetailsSection
       title={t('system.overview')}
-      content={<DetailsSectionContentCardWrapper>Manage Earn Content Cards</DetailsSectionContentCardWrapper>}
+      content={
+        <DetailsSectionContentCardWrapper>
+          Manage Earn Content Cards
+        </DetailsSectionContentCardWrapper>
+      }
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
