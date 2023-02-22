@@ -23,7 +23,7 @@ export type UseFlowStateCBParamsType = {
 }
 export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 
-type UseFlowStateProps = {
+export type UseFlowStateProps = {
   amount?: BigNumber
   token?: string
   existingProxy?: string

@@ -1,5 +1,5 @@
+import { AjnaProductController } from 'features/ajna/common/controls/AjnaProductController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
-import { AjnaProductController } from 'features/ajna/controls/AjnaProductController'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
