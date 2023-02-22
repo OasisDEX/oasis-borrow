@@ -1,4 +1,3 @@
-import { getTokens } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import { ProductCardMultiplyMaker } from 'components/productCards/ProductCardMultiplyMaker'
 import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
@@ -13,9 +12,7 @@ import { Grid, Text } from 'theme-ui'
 export function MultiplyView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
-  const aaveMultiplyStrategies = getTokens(
-    aaveStrategiesList('Multiply', LendingProtocol.AaveV2).map(({ name }) => name),
-  )
+  const aaveMultiplyStrategies = aaveStrategiesList('Multiply', LendingProtocol.AaveV2)
 
   return (
     <Grid
