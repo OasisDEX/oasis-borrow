@@ -1,7 +1,7 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import React from 'react'
-import { Box, Text } from 'theme-ui'
+import { Box, SxStyleProp, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {
   primaryText: string
@@ -9,6 +9,7 @@ type HomePageHeadlineProps = {
   maxWidth?: string
   ctaURL?: string
   ctaLabel?: string
+  sx?: SxStyleProp
 }
 
 export const HomepageHeadline = ({
@@ -17,8 +18,9 @@ export const HomepageHeadline = ({
   ctaURL,
   ctaLabel,
   maxWidth = '700px',
+  sx,
 }: HomePageHeadlineProps) => (
-  <Box sx={{ maxWidth }}>
+  <Box sx={{ maxWidth, ...sx }}>
     <Text variant="header3" sx={{ color: 'primary100' }}>
       {primaryText}
       <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>

@@ -445,12 +445,43 @@ export function HomepageView() {
             stats go here
           </Text>
         </HomepagePromoBlock.Big>
-        <HomepageHeadline
-          primaryText="Your funds, your choice: "
-          secondaryText="park your capital and stay in full control all the time, with no exceptions"
-          ctaURL={EXTERNAL_LINKS.HELP}
-          ctaLabel="Know more about security"
-        />
+        <Grid columns={['2fr 1fr']} sx={{ mt: 7, position: 'relative' }}>
+          <Box sx={{ pt: '100px', pb: '300px' }}>
+            <HomepageHeadline
+              primaryText="Your funds, your choice: "
+              secondaryText="park your capital and stay in full control all the time, with no exceptions"
+              ctaURL={EXTERNAL_LINKS.HELP}
+              ctaLabel="Know more about security"
+              sx={{ position: 'sticky', top: 'calc(50% - 90px)' }}
+            />
+          </Box>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <HomepagePromoBlock
+              title="All assets are self custodied on Oasis.app"
+              background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+              image={staticFilesRuntimeUrl('/static/img/homepage/12_1_oasis_app.svg')}
+              height="330px"
+              sx={{ pb: 0, mb: 7 }}
+              imageSx={{ mb: 0 }}
+            />
+            <HomepagePromoBlock
+              title="Always verifiable on chain via a block explorer"
+              background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+              image={staticFilesRuntimeUrl('/static/img/homepage/12_2_verifiable_on_chain.svg')}
+              height="330px"
+              sx={{ pb: 0, mb: 7 }}
+              imageSx={{ mb: 0 }}
+            />
+            <HomepagePromoBlock
+              title="No black boxes, just smart contracts"
+              background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+              image={staticFilesRuntimeUrl('/static/img/homepage/12_3_no_black_boxes.svg')}
+              height="330px"
+              sx={{ pb: 0, mb: 7 }}
+              imageSx={{ mb: 0 }}
+            />
+          </Flex>
+        </Grid>
       </Box>
       <Box>
         <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>

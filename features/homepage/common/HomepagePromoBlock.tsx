@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Card, Flex, Image, SxProps, Text } from 'theme-ui'
+import { Card, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 type HomepagePromoBlockProps = {
   background: string
   title: string | ReactNode
@@ -7,7 +7,8 @@ type HomepagePromoBlockProps = {
   height?: string
   image?: string
   bottomTitle?: boolean
-  sx?: SxProps
+  sx?: SxStyleProp
+  imageSx?: SxStyleProp
 }
 
 const HomepagePromoBlock = ({
@@ -18,6 +19,7 @@ const HomepagePromoBlock = ({
   image,
   bottomTitle,
   sx,
+  imageSx,
 }: HomepagePromoBlockProps) => (
   <Card
     sx={{
@@ -49,6 +51,7 @@ const HomepagePromoBlock = ({
             mt: !bottomTitle ? 0 : 3,
             userSelect: 'none',
             pointerEvents: 'none',
+            ...imageSx,
           }}
         />
       )}
