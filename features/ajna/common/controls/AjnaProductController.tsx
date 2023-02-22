@@ -131,7 +131,9 @@ export function AjnaProductController({
                       <PageSEOTags
                         title="seo.title-product-w-tokens"
                         titleParams={{
-                          product: t(`seo.ajnaProductPage.title`, { product: startCase(ajnaPosition.meta.product) }),
+                          product: t(`seo.ajnaProductPage.title`, {
+                            product: startCase(ajnaPosition.meta.product),
+                          }),
                           protocol: 'Ajna',
                           token1: ajnaPosition.meta.collateralToken,
                           token2: ajnaPosition.meta.quoteToken,
