@@ -53,6 +53,7 @@
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/oasis-actions": "0.2.7",
+    "@oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.8-earn-poc",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
