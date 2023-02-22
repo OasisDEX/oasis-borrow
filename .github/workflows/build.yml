@@ -6,14 +6,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
           node-version: 16
 
       - name: Cache YARN dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
@@ -38,10 +38,10 @@ jobs:
 #  test-e2e:
 #    runs-on: ubuntu-latest
 #    steps:
-#      - uses: actions/checkout@v1
+#      - uses: actions/checkout@v3
 #
 #      - name: Cache YARN dependencies
-#        uses: actions/cache@v1
+#        uses: actions/cache@v3
 #        with:
 #          path: node_modules
 #          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
