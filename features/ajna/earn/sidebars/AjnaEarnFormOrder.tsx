@@ -11,7 +11,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
   //   environment: { collateralToken, quoteToken },
   // } = useAjnaGeneralContext()
   const {
-    position: { /* cachedPosition, */ currentPosition },
+    position: { /* cachedPosition, currentPosition */ isSimulationLoading },
   } = useAjnaProductContext('earn')
 
   // const { positionData, simulationData } = resolveIfCachedPosition({
@@ -20,7 +20,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
   //   currentPosition,
   // })
 
-  const isLoading = !cached && currentPosition.simulation === undefined
+  const isLoading = !cached && isSimulationLoading
   // const formatted = {
   //   amountToLend: formatCryptoBalance(positionData.collateralAmount),
   //   maxLtv: formatDecimalAsPercent(positionData.riskRatio.loanToValue),

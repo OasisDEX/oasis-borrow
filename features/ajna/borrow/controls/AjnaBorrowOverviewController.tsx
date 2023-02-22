@@ -65,6 +65,7 @@ export function AjnaBorrowOverviewController() {
         footer={
           <DetailsSectionFooterItemWrapper>
             <ContentFooterItemsBorrow
+              isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
               cost={position.pool.rate}
