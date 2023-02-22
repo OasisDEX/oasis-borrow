@@ -24,7 +24,7 @@ export function ValidationMessages({
   const { t } = useTranslation()
 
   const messagesWithTranslations = messages.map((message) =>
-    t(`${translationRootKey}.${kebabCase(message)}`, additionalData),
+    t(`${translationRootKey}.${kebabCase(message)}`, additionalData || {}),
   )
 
   return (

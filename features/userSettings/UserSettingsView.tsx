@@ -150,6 +150,7 @@ function SlippageSettingsForm() {
           <Link
             href="https://kb.oasis.app/help/frequently-asked-questions#h_8073651997861662481520644"
             passHref
+            legacyBehavior
           >
             <ThemeLink target="_self" sx={{ mt: -1, fontWeight: 400 }}>
               {t('user-settings.slippage-limit.read-more')}

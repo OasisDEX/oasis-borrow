@@ -1,6 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink, AppLinkProps } from 'components/Links'
 import { StatefulTooltip } from 'components/Tooltip'
 import { checkIfVaultEmptyAndProtectionActive } from 'helpers/functions'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { WithChildren } from 'helpers/types'
 import { TFunction } from 'i18next'
 import _ from 'lodash'
@@ -8,9 +10,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
-import { AppLink, AppLinkProps } from '../Links'
-
-function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element | string }) {
+function DumbHeader({ label, tooltip }: { label: string; tooltip?: TranslateStringType }) {
   return (
     <Flex sx={{ alignItems: 'center' }}>
       <Text sx={{ fontSize: 1, color: 'neutral80', fontWeight: 'semiBold' }}>{label}</Text>

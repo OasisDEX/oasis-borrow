@@ -1,3 +1,4 @@
+import { TranslateStringType } from 'helpers/translateStringType'
 import { useHash } from 'helpers/useHash'
 import React, { useEffect } from 'react'
 import ReactSelect from 'react-select'
@@ -9,7 +10,7 @@ import { VaultTabTag } from './vault/VaultTabTag'
 
 export type TabSection = {
   value: string
-  label: JSX.Element | string
+  label: JSX.Element | TranslateStringType
   tag?: {
     include: boolean
     active: boolean
