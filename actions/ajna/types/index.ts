@@ -1,3 +1,5 @@
+import { Strategy } from '@oasis-actions-poc/src/types/common'
+
 export interface AjnaTxData {
   data: string
   to: string
@@ -9,15 +11,4 @@ export interface AjnaValidationItem {
   data?: { [key: string]: string }
 }
 
-export interface AjnaSimulationData<P> {
-  position: P
-  swap: any[]
-  errors: AjnaValidationItem[]
-  warnings: AjnaValidationItem[]
-}
-
-// TODO use Strategy<AjnaPosition> from library once exported
-export interface AjnaActionData<P> {
-  simulation: AjnaSimulationData<P>
-  tx: AjnaTxData
-}
+export type AjnaSimulationData<P> = Strategy<P>['simulation']
