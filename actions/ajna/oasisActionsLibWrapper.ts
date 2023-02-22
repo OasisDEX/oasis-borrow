@@ -64,6 +64,7 @@ export async function getAjnaParameters<P>({
       const { depositAmount, generateAmount } = state
 
       if (depositAmount) {
+        // @ts-ignore
         return strategies.ajna.open(
           {
             ...commonPayload,
@@ -79,6 +80,7 @@ export async function getAjnaParameters<P>({
       const { depositAmount, generateAmount } = state
 
       if (depositAmount) {
+        // @ts-ignore
         return strategies.ajna.depositBorrow(
           {
             ...commonPayload,
@@ -95,6 +97,7 @@ export async function getAjnaParameters<P>({
       const { depositAmount, generateAmount } = state
 
       if (generateAmount) {
+        // @ts-ignore
         return strategies.ajna.depositBorrow(
           {
             ...commonPayload,
@@ -111,6 +114,7 @@ export async function getAjnaParameters<P>({
       const { paybackAmount, withdrawAmount } = state
 
       if (paybackAmount) {
+        // @ts-ignore
         return strategies.ajna.paybackWithdraw(
           {
             ...commonPayload,
@@ -126,6 +130,7 @@ export async function getAjnaParameters<P>({
       const { paybackAmount, withdrawAmount } = state
 
       if (withdrawAmount) {
+        // @ts-ignore
         return strategies.ajna.paybackWithdraw(
           {
             ...commonPayload,
