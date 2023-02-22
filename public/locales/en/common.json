@@ -1036,6 +1036,7 @@
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
+    "max-loan-to-value": "Max Loan To Value",
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day net APY",
     "ninety-day-average": "90 day net APY",
@@ -1633,7 +1634,12 @@
       "wBTCusdc": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
-      }
+      },
+      "borrow-against-ETH": {
+        "title": "AAVE ETH",
+        "description": "A position to borrow against your ETH in AAVE"
+      },
+      "tokens-for-borrowing": "Tokens for Borrowing"
     },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
@@ -1655,7 +1661,8 @@
     },
     "aave": {
       "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH"
+      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH",
+      "borrow-against-ETH": "Borrow up to ${{value}}"
     }
   },
   "product-card-title": {

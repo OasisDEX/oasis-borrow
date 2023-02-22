@@ -174,7 +174,7 @@ export const strategies: Array<IStrategyConfig> = [
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
     return {
-      name: `borrow-${collateral}`,
+      name: `borrow-against-${collateral}`,
       urlSlug: collateral,
       proxyType: ProxyType.DpmProxy,
       viewComponents: {
