@@ -1,24 +1,26 @@
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
-import { AjnaBorrowFormFieldGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
-import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import {
+  AjnaFormFieldDeposit,
+  AjnaFormFieldGenerate,
+} from 'features/ajna/common/sidebars/AjnaFormFields'
 import React from 'react'
 
 export function AjnaBorrowFormContentDeposit() {
   const {
     form: {
-      state: { depositAmount, depositAmountUSD },
+      dispatch,
+      state: { depositAmount },
     },
   } = useAjnaProductContext('borrow')
 
   return (
     <>
-      <AjnaFormFieldDeposit
-        depositAmount={depositAmount}
-        depositAmountUSD={depositAmountUSD}
-        resetOnClear
+      <AjnaFormFieldDeposit dispatchAmount={dispatch} resetOnClear />
+      <AjnaFormFieldGenerate
+        dispatchAmount={dispatch}
+        isDisabled={!depositAmount || depositAmount?.lte(0)}
       />
-      <AjnaBorrowFormFieldGenerate isDisabled={!depositAmount || depositAmount?.lte(0)} />
       {depositAmount && <AjnaBorrowFormContentSummary />}
     </>
   )

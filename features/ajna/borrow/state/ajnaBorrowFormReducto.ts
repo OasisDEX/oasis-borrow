@@ -1,5 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
+import {
+  AjnaFormActionsReset,
+  AjnaFormActionsUpdateDeposit,
+  AjnaFormActionsUpdateDpm,
+  AjnaFormActionsUpdateGenerate,
+  AjnaFormActionsUpdatePayback,
+  AjnaFormActionsUpdateWithdraw,
+} from 'features/ajna/common/state/ajnaFormReductoActions'
 import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
@@ -18,42 +26,14 @@ export interface AjnaBorrowFormState {
   uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
 }
 
-interface AjnaBorrowFormActionsUpdateDeposit {
-  type: 'update-deposit'
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-}
-interface AjnaBorrowFormActionsUpdateWithdraw {
-  type: 'update-withdraw'
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-}
-interface AjnaBorrowFormActionsUpdateGenerate {
-  type: 'update-generate'
-  generateAmount?: BigNumber
-  generateAmountUSD?: BigNumber
-}
-interface AjnaBorrowFormActionsUpdatePayback {
-  type: 'update-payback'
-  paybackAmount?: BigNumber
-  paybackAmountUSD?: BigNumber
-}
-interface AjnaBorrowFormActionsUpdateDpm {
-  type: 'update-dpm'
-  dpmAddress: string
-}
-interface AjnaBorrowFormActionsReset {
-  type: 'reset'
-}
-
 export type AjnaBorrowFormAction = ReductoActions<
   AjnaBorrowFormState,
-  | AjnaBorrowFormActionsUpdateDeposit
-  | AjnaBorrowFormActionsUpdateWithdraw
-  | AjnaBorrowFormActionsUpdateGenerate
-  | AjnaBorrowFormActionsUpdatePayback
-  | AjnaBorrowFormActionsUpdateDpm
-  | AjnaBorrowFormActionsReset
+  | AjnaFormActionsUpdateDeposit
+  | AjnaFormActionsUpdateGenerate
+  | AjnaFormActionsUpdatePayback
+  | AjnaFormActionsUpdateWithdraw
+  | AjnaFormActionsUpdateDpm
+  | AjnaFormActionsReset
 >
 
 export const ajnaBorrowReset = {

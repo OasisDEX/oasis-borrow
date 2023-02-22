@@ -1,7 +1,7 @@
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
 import { AjnaValidationMessages } from 'features/ajna/common/components/AjnaValidationMessages'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormFieldDeposit } from 'features/ajna/common/sidebars/AjnaFormFields'
 import {
   AjnaEarnSlider,
   ajnaSliderDefaults,
@@ -15,18 +15,14 @@ export function AjnaEarnFormContentDeposit() {
   const {
     form: {
       dispatch,
-      state: { depositAmount, depositAmountUSD },
+      state: { depositAmount },
     },
     validation: { errors, warnings },
   } = useAjnaProductContext('earn')
 
   return (
     <>
-      <AjnaFormFieldDeposit
-        depositAmount={depositAmount}
-        depositAmountUSD={depositAmountUSD}
-        resetOnClear
-      />
+      <AjnaFormFieldDeposit dispatchAmount={dispatch} resetOnClear />
       <AjnaEarnSlider {...ajnaSliderDefaults} />
       <AjnaEarnSlider {...ajnaSliderLowRange} />
       <AjnaEarnSlider {...ajnaSliderHighRange} />
