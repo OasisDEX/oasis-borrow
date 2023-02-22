@@ -60,6 +60,7 @@ export async function getAjnaParameters({
       if (!depositAmount) {
         return defaultPromise
       }
+      // @ts-ignore
       return strategies.ajna.open(
         {
           ...commonPayload,
@@ -73,6 +74,7 @@ export async function getAjnaParameters({
       if (!depositAmount) {
         return defaultPromise
       }
+      // @ts-ignore
       return strategies.ajna.depositBorrow(
         {
           ...commonPayload,
@@ -88,6 +90,7 @@ export async function getAjnaParameters({
       if (!withdrawAmount) {
         return defaultPromise
       }
+      // @ts-ignore
       return strategies.ajna.paybackWithdraw(
         {
           ...commonPayload,
@@ -102,6 +105,7 @@ export async function getAjnaParameters({
       if (!generateAmount) {
         return defaultPromise
       }
+      // @ts-ignore
       return strategies.ajna.depositBorrow(
         {
           ...commonPayload,
@@ -117,6 +121,7 @@ export async function getAjnaParameters({
       if (!paybackAmount) {
         return defaultPromise
       }
+      // @ts-ignore
       return strategies.ajna.paybackWithdraw(
         {
           ...commonPayload,
