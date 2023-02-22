@@ -2457,6 +2457,9 @@
       "manage": {
         "headline": {
           "header": "Ajna {{quoteToken}}/{{collateralToken}} #{{id}}"
+        },
+        "form": {
+          "adjust-lending-price-bucket": "Adjust lending price bucket"
         }
       }
     },
