@@ -3,6 +3,7 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { getAaveStrategy } from 'features/aave/strategyConfig'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -25,11 +26,15 @@ const aaveEarnCalcValueBasis = {
 export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) {
   const { t } = useTranslation()
   const {
-    aaveSTETHReserveConfigurationData,
+    aaveReserveConfigurationData$,
     aaveAvailableLiquidityInUSDC$,
     getAaveAssetsPrices$,
   } = useAaveContext()
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
+  const [strategy] = getAaveStrategy(cardData.symbol)
+
+  const [aaveReserveState, aaveReserveStateError] = useObservable(
+    aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
+  )
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )

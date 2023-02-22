@@ -786,7 +786,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_ETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
   },
   {
     symbol: 'RETH',
