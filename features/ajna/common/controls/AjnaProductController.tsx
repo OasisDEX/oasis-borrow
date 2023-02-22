@@ -1,5 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { AjnaBorrowPositionController } from 'features/ajna/borrow/controls/AjnaBorrowPositionController'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
@@ -19,6 +20,8 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { startCase } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { useMemo } from 'react'
@@ -52,6 +55,7 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
+  const { t } = useTranslation()
   const { push } = useRouter()
   const { ajnaPosition$, balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
@@ -123,47 +127,60 @@ export function AjnaProductController({
               >
                 {([ajnaPosition, [collateralBalance, quoteBalance, ethBalance], tokenPriceUSD]) =>
                   ajnaPosition ? (
-                    <AjnaGeneralContextProvider
-                      collateralBalance={collateralBalance}
-                      collateralPrice={tokenPriceUSD[ajnaPosition.meta.collateralToken]}
-                      collateralToken={ajnaPosition.meta.collateralToken}
-                      {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
-                      ethBalance={ethBalance}
-                      ethPrice={tokenPriceUSD.ETH}
-                      flow={flow}
-                      id={id}
-                      owner={ajnaPosition.meta.user}
-                      product={ajnaPosition.meta.product}
-                      quoteBalance={quoteBalance}
-                      quotePrice={tokenPriceUSD[ajnaPosition.meta.quoteToken]}
-                      quoteToken={ajnaPosition.meta.quoteToken}
-                      steps={steps[ajnaPosition.meta.product][flow]}
-                    >
-                      {ajnaPosition.meta.product === 'borrow' && (
-                        <AjnaProductContextProvider
-                          formDefaults={{
-                            action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
-                          }}
-                          formReducto={useAjnaBorrowFormReducto}
-                          position={ajnaPosition.position}
-                          product={ajnaPosition.meta.product}
-                        >
-                          <AjnaBorrowPositionController />
-                        </AjnaProductContextProvider>
-                      )}
-                      {ajnaPosition.meta.product === 'earn' && (
-                        <AjnaProductContextProvider
-                          formDefaults={{
-                            action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                          }}
-                          formReducto={useAjnaEarnFormReducto}
-                          position={ajnaPositionToAjnaEarnPosition(ajnaPosition.position)}
-                          product={ajnaPosition.meta.product}
-                        >
-                          <AjnaEarnPositionController />
-                        </AjnaProductContextProvider>
-                      )}
-                    </AjnaGeneralContextProvider>
+                    <>
+                      <PageSEOTags
+                        title="seo.title-product-w-tokens"
+                        titleParams={{
+                          product: t(`seo.ajnaProductPage.title`, { product: startCase(ajnaPosition.meta.product) }),
+                          protocol: 'Ajna',
+                          token1: ajnaPosition.meta.collateralToken,
+                          token2: ajnaPosition.meta.quoteToken,
+                        }}
+                        description="seo.multiply.description"
+                        url={document.location.pathname}
+                      />
+                      <AjnaGeneralContextProvider
+                        collateralBalance={collateralBalance}
+                        collateralPrice={tokenPriceUSD[ajnaPosition.meta.collateralToken]}
+                        collateralToken={ajnaPosition.meta.collateralToken}
+                        {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
+                        ethBalance={ethBalance}
+                        ethPrice={tokenPriceUSD.ETH}
+                        flow={flow}
+                        id={id}
+                        owner={ajnaPosition.meta.user}
+                        product={ajnaPosition.meta.product}
+                        quoteBalance={quoteBalance}
+                        quotePrice={tokenPriceUSD[ajnaPosition.meta.quoteToken]}
+                        quoteToken={ajnaPosition.meta.quoteToken}
+                        steps={steps[ajnaPosition.meta.product][flow]}
+                      >
+                        {ajnaPosition.meta.product === 'borrow' && (
+                          <AjnaProductContextProvider
+                            formDefaults={{
+                              action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
+                            }}
+                            formReducto={useAjnaBorrowFormReducto}
+                            position={ajnaPosition.position}
+                            product={ajnaPosition.meta.product}
+                          >
+                            <AjnaBorrowPositionController />
+                          </AjnaProductContextProvider>
+                        )}
+                        {ajnaPosition.meta.product === 'earn' && (
+                          <AjnaProductContextProvider
+                            formDefaults={{
+                              action: flow === 'open' ? 'open-earn' : 'deposit-earn',
+                            }}
+                            formReducto={useAjnaEarnFormReducto}
+                            position={ajnaPositionToAjnaEarnPosition(ajnaPosition.position)}
+                            product={ajnaPosition.meta.product}
+                          >
+                            <AjnaEarnPositionController />
+                          </AjnaProductContextProvider>
+                        )}
+                      </AjnaGeneralContextProvider>
+                    </>
                   ) : (
                     <></>
                   )
