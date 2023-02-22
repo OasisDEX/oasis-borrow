@@ -294,9 +294,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       content: sidebarContent,
       primaryButton: {
         ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.transition,
-        // TODO validation suppressed for testing trigger execution
-        // || stopLossError,
+        disabled:
+          viewLocked || primaryButton.disabled || !state.context.transition || stopLossError,
       },
       textButton, // this is going back button, no need to block it
       dropdown: dropdownConfig,
