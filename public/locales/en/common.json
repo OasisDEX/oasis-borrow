@@ -2458,6 +2458,10 @@
         "headline": {
           "header": "Ajna {{quoteToken}}/{{collateralToken}} #{{id}}"
         },
+        "overview": {
+          "early-withdrawal-period": "Early withdrawal period",
+          "early-withdrawal-penalty": "Early withdrawal penalty"
+        },
         "form": {
           "adjust-lending-price-bucket": "Adjust lending price bucket"
         }

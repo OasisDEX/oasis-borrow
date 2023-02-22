@@ -4,17 +4,17 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ContentFooterItemsEarnProps {
+interface ContentFooterItemsEarnOpenProps {
   estimatedBreakEven?: number
   totalValueLocked?: BigNumber
   apy?: BigNumber
 }
 
-export function ContentFooterItemsEarn({
+export function ContentFooterItemsEarnOpen({
   estimatedBreakEven,
   totalValueLocked,
   apy,
-}: ContentFooterItemsEarnProps) {
+}: ContentFooterItemsEarnOpenProps) {
   const { t } = useTranslation()
 
   const formatted = {
