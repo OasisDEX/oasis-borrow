@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import { ModalProps, useModal } from 'helpers/modalHook'
+import { TranslateStringType } from 'helpers/translateStringType'
 import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
@@ -24,11 +25,11 @@ interface DetailsSectionContentCardLinkProps {
 export interface ContentCardProps {
   title: string
   value?: string
-  unit?: string
+  unit?: TranslateStringType
   change?: DetailsSectionContentCardChangePillProps
-  footnote?: string
+  footnote?: TranslateStringType
   link?: DetailsSectionContentCardLinkProps
-  modal?: string | JSX.Element
+  modal?: TranslateStringType | JSX.Element
   customBackground?: string
   customUnitStyle?: SystemStyleObject
 }

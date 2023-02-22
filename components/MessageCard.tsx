@@ -1,8 +1,9 @@
+import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { Card, Flex, Grid, Text } from 'theme-ui'
 
 interface NoticeCardProps {
-  messages: (string | JSX.Element)[]
+  messages: (TranslateStringType | JSX.Element)[]
   type: 'error' | 'warning' | 'ok'
   withBullet?: boolean
   handleClick?: () => void
