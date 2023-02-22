@@ -1,22 +1,26 @@
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import {
-  AjnaBorrowFormFieldPayback,
-  AjnaBorrowFormFieldWithdraw,
-} from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
+  AjnaFormFieldPayback,
+  AjnaFormFieldWithdraw,
+} from 'features/ajna/common/sidebars/AjnaFormFields'
 import React from 'react'
 
 export function AjnaBorrowFormContentWithdraw() {
   const {
     form: {
+      dispatch,
       state: { withdrawAmount },
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <>
-      <AjnaBorrowFormFieldWithdraw resetOnClear />
-      <AjnaBorrowFormFieldPayback isDisabled={!withdrawAmount || withdrawAmount?.lte(0)} />
+      <AjnaFormFieldWithdraw dispatchAmount={dispatch} resetOnClear />
+      <AjnaFormFieldPayback
+        dispatchAmount={dispatch}
+        isDisabled={!withdrawAmount || withdrawAmount?.lte(0)}
+      />
       {withdrawAmount && <AjnaBorrowFormContentSummary />}
     </>
   )

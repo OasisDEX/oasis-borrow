@@ -1,8 +1,7 @@
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
-import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaValidationMessages } from 'features/ajna/common/components/AjnaValidationMessages'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormFieldDeposit } from 'features/ajna/common/sidebars/AjnaFormFields'
 import {
   AjnaEarnSlider,
   ajnaSliderDefaults,
@@ -16,25 +15,14 @@ export function AjnaEarnFormContentDeposit() {
   const {
     form: {
       dispatch,
-      state: { depositAmount, depositAmountUSD },
+      state: { depositAmount },
     },
     validation: { errors, warnings },
-  } = useAjnaBorrowContext() // TODO use earn context when available
-  const {
-    environment: { collateralBalance, collateralToken, collateralPrice },
-  } = useAjnaProductContext()
+  } = useAjnaProductContext('earn')
 
   return (
     <>
-      <AjnaFormFieldDeposit
-        resetOnClear
-        collateralToken={collateralToken}
-        collateralBalance={collateralBalance}
-        collateralPrice={collateralPrice}
-        depositAmount={depositAmount}
-        depositAmountUSD={depositAmountUSD}
-        dispatch={dispatch}
-      />
+      <AjnaFormFieldDeposit dispatchAmount={dispatch} resetOnClear />
       <AjnaEarnSlider {...ajnaSliderDefaults} />
       <AjnaEarnSlider {...ajnaSliderLowRange} />
       <AjnaEarnSlider {...ajnaSliderHighRange} />

@@ -1,8 +1,8 @@
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { resolveIfCachedPosition } from 'features/ajna/common/helpers'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { resolveIfCachedPosition } from 'features/ajna/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -16,10 +16,10 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
 
   const {
     environment: { collateralToken, quoteToken },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
   const {
     position: { cachedPosition, currentPosition },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,
