@@ -1,17 +1,13 @@
 import BigNumber from 'bignumber.js'
 
-import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
+import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
+import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
 
-export interface AjnaEarnPosition extends Omit<AjnaPosition, 'debtAmount'> {
-  price: BigNumber
-}
-
-export function ajnaPositionToAjnaEarnPosition(position: AjnaPosition): AjnaEarnPosition {
+export function ajnaPositionToAjnaEarnPosition(position: AjnaPosition): AjnaEarn {
   const earnPosition = {
     ...position,
     price: new BigNumber(20000),
   }
 
-  // @ts-ignore
-  return earnPosition as AjnaEarnPosition
+  return (earnPosition as unknown) as AjnaEarn
 }

@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { zero } from '../../../helpers/zero'
 
 interface ContentCardMultipleProps {
   multiple?: BigNumber

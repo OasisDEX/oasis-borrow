@@ -1,11 +1,11 @@
 import { BigNumber } from 'bignumber.js'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { ProductCardData, productCardsConfig } from 'helpers/productCards'
+import { roundToThousand } from 'helpers/roundToThousand'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
-import { ProductCardData, productCardsConfig } from '../../helpers/productCards'
-import { roundToThousand } from '../../helpers/roundToThousand'
-import { one, zero } from '../../helpers/zero'
 import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 
 function personaliseCardData({

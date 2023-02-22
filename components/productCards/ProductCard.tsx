@@ -1,19 +1,19 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ProtocolLongNames, TokenMetadataType } from 'blockchain/tokensMetadata'
+import { FloatingLabel } from 'components/FloatingLabel'
+import { AppLink } from 'components/Links'
 import { ProductCardLabels } from 'components/ProductCardLabels'
+import { WithArrow } from 'components/WithArrow'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { useWindowSize } from 'helpers/useWindowSize'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
-
-import { FloatingLabel } from '../FloatingLabel'
-import { AppLink } from '../Links'
-import { WithArrow } from '../WithArrow'
 
 function InactiveCard() {
   return (
@@ -214,7 +214,7 @@ export interface ProductCardProps {
   button: { link: string; text: string; onClick?: () => void }
   background: string
   isFull: boolean
-  floatingLabelText?: string
+  floatingLabelText?: TranslateStringType
   inactive?: boolean
   labels?: { title: string; value: ReactNode }[]
   protocol?: TokenMetadataType['protocol']

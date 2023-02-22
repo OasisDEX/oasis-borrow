@@ -1,5 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { AjnaActionData, AjnaTxData, getAjnaParameters } from 'actions/ajna'
+import { AjnaTxData, getAjnaParameters } from 'actions/ajna'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
@@ -14,6 +14,8 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
+
+import { Strategy } from '@oasis-actions-poc/src/types/common'
 
 export interface OasisActionCallData extends AjnaTxData {
   kind: TxMetaKind.libraryCall
@@ -41,7 +43,7 @@ export function useAjnaTxHandler(): () => void {
 
   const [txData, setTxData] = useState<AjnaTxData>()
   const [cancelablePromise, setCancelablePromise] = useState<
-    CancelablePromise<AjnaActionData<typeof position>>
+    CancelablePromise<Strategy<typeof position>>
   >()
 
   const { dpmAddress } = state
@@ -59,7 +61,7 @@ export function useAjnaTxHandler(): () => void {
     () => {
       if (context && !isExternalStep) {
         const promise = cancelable(
-          getAjnaParameters<typeof position>({
+          getAjnaParameters({
             collateralToken,
             context,
             position,
