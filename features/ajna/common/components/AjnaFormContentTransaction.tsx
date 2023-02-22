@@ -1,12 +1,17 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-export function AjnaBorrowFormContentTransaction() {
+interface AjnaFormContentTransactionProps {
+  orderInfo: ({ cached }: { cached?: boolean }) => ReactElement
+}
+
+export function AjnaFormContentTransaction({
+  orderInfo: OrderInfo,
+}: AjnaFormContentTransactionProps) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken },
@@ -20,7 +25,7 @@ export function AjnaBorrowFormContentTransaction() {
           <Text as="p" variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
             {t('ajna.borrow.open.form.confirm', { collateralToken, quoteToken })}
           </Text>
-          <AjnaBorrowFormOrder />
+          <OrderInfo />
         </>
       )}
       {isTxInProgress && (
@@ -34,7 +39,7 @@ export function AjnaBorrowFormContentTransaction() {
       )}
       {isTxSuccess && (
         <>
-          <AjnaBorrowFormOrder cached />
+          <OrderInfo cached />
           <VaultChangesWithADelayCard />
         </>
       )}

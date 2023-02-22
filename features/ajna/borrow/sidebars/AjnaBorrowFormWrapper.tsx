@@ -2,10 +2,11 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
-import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaBorrowTxHandler } from 'features/ajna/borrow/useAjnaBorrowTxHandler'
 import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
 import { AjnaFormContentRisk } from 'features/ajna/common/components/AjnaFormContentRisk'
+import { AjnaFormContentTransaction } from 'features/ajna/common/components/AjnaFormContentTransaction'
 import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -74,7 +75,9 @@ export function AjnaBorrowFormWrapper() {
           {currentStep === 'risk' && <AjnaFormContentRisk />}
           {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
           {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
-          {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
+          {currentStep === 'transaction' && (
+            <AjnaFormContentTransaction orderInfo={AjnaBorrowFormOrder} />
+          )}
         </AjnaFormContent>
       )}
     </AjnaFormWrapper>

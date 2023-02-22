@@ -1,10 +1,11 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
 import { AjnaFormContentRisk } from 'features/ajna/common/components/AjnaFormContentRisk'
+import { AjnaFormContentTransaction } from 'features/ajna/common/components/AjnaFormContentTransaction'
 import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
 import { useAjnaEarnContext } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
+import { AjnaEarnFormOrder } from 'features/ajna/earn/sidebars/AjnaEarnFormOrder'
 import { useAjnaEarnTxHandler } from 'features/ajna/earn/useAjnaEarnTxHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -75,7 +76,9 @@ export function AjnaEarnFormWrapper() {
         >
           {currentStep === 'risk' && <AjnaFormContentRisk />}
           {currentStep === 'setup' && <AjnaEarnFormContentDeposit />}
-          {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
+          {currentStep === 'transaction' && (
+            <AjnaFormContentTransaction orderInfo={AjnaEarnFormOrder} />
+          )}
         </AjnaFormContent>
       )}
     </AjnaFormWrapper>
