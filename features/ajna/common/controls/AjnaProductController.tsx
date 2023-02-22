@@ -136,7 +136,7 @@ export function AjnaProductController({
                           token1: ajnaPosition.meta.collateralToken,
                           token2: ajnaPosition.meta.quoteToken,
                         }}
-                        description="seo.multiply.description"
+                        description="seo.ajna.description"
                         url={document.location.pathname}
                       />
                       <AjnaGeneralContextProvider
