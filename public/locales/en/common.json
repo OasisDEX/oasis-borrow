@@ -926,7 +926,11 @@
     },
     "ajna": {
       "title": "Oasis.app × Ajna",
-      "description": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+    },
+    "ajnaProductPage": {
+      "title": "{{product}} - Oasis.app × Ajna",
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
     },
     "multiply": {
       "title": "Multiply - Oasis.app",
