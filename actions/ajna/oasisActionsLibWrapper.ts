@@ -135,7 +135,6 @@ export async function getAjnaParameters({
     }
     case 'open-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
-      console.log('price', price)
       if (!depositAmount || !price) return defaultPromise
 
       return strategies.ajna.earn.open(
