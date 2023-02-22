@@ -544,7 +544,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'http://localhost:3001/v1',
+  cacheApi: mainnetCacheUrl,
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'

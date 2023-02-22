@@ -60,6 +60,7 @@ export type AaveHeaderProps = {
 
 export type ManageAaveHeaderProps = AaveHeaderProps & {
   positionId: PositionId
+  proxyAddress: string
 }
 
 export type ManageSectionComponentProps = {

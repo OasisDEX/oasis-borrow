@@ -158,13 +158,19 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }
 }
 
-export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: ManageAaveHeaderProps) {
+export function AavePositionHeaderNoDetails({
+  strategyConfig,
+  positionId,
+  proxyAddress,
+}: ManageAaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.name]
   const { protocol } = strategyConfig
   const followButton: FollowButtonControlProps | undefined = createFollowButton(
     positionId,
     protocol.toLowerCase() as Protocol,
+    proxyAddress,
+    strategyConfig.name,
   )
   return (
     <VaultHeadline

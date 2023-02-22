@@ -25,6 +25,8 @@ export type FollowButtonControlProps = {
   sx?: SxStyleProp
   vaultId: BigNumber
   protocol: Protocol
+  proxy?: string
+  strategy?: string
 }
 
 export function FollowButtonControl({
@@ -34,6 +36,8 @@ export function FollowButtonControl({
   sx,
   vaultId,
   protocol,
+  proxy,
+  strategy,
 }: FollowButtonControlProps) {
   const { uiChanges } = useAppContext()
   const [isFollowing, setIsFollowing] = useState(false)
@@ -94,7 +98,14 @@ export function FollowButtonControl({
 
   async function followVault(jwtToken: string) {
     try {
-      const followedVaults = await followVaultUsingApi(vaultId, chainId, protocol, jwtToken)
+      const followedVaults = await followVaultUsingApi(
+        vaultId,
+        chainId,
+        protocol,
+        jwtToken,
+        proxy,
+        strategy,
+      )
       handleGetFollowedVaults(followedVaults)
       setIsFollowing(true)
     } catch (e) {

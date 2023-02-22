@@ -73,11 +73,17 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
   return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
 }
 
-export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeaderProps) {
+export function AaveManageHeader({
+  strategyConfig,
+  positionId,
+  proxyAddress,
+}: ManageAaveHeaderProps) {
   const { protocol } = strategyConfig
   const followButton: FollowButtonControlProps | undefined = createFollowButton(
     positionId,
     protocol.toLowerCase() as Protocol,
+    proxyAddress,
+    strategyConfig.name,
   )
 
   return (

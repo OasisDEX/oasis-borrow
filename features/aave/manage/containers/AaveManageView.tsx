@@ -16,7 +16,7 @@ import { Box, Container } from 'theme-ui'
 import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
-  address: string
+  proxyAddress: string
   strategyConfig: IStrategyConfig
 }
 
@@ -24,12 +24,12 @@ function AaveManageContainer({
   strategyConfig,
   aaveReserveState,
   aaveReserveDataDebtToken,
-  address,
+  proxyAddress,
 }: {
   aaveReserveState: AaveV2ReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
   strategyConfig: IStrategyConfig
-  address: string
+  proxyAddress: string
 }) {
   const Header = strategyConfig.viewComponents.headerManage
   const { stateMachine } = useManageAaveStateMachineContext()
@@ -42,7 +42,7 @@ function AaveManageContainer({
   return (
     <AaveAutomationContext
       aaveManageVault={{
-        address,
+        proxyAddress: proxyAddress,
         aaveReserveState,
         strategyConfig,
         context: state.context,
@@ -52,7 +52,11 @@ function AaveManageContainer({
         <Box mb={4}>
           <AavePositionNoticesView />
         </Box>
-        <Header strategyConfig={strategyConfig} positionId={state.context.positionId} />
+        <Header
+          strategyConfig={strategyConfig}
+          positionId={state.context.positionId}
+          proxyAddress={proxyAddress}
+        />
         <AaveManageTabBar
           strategyConfig={strategyConfig}
           aaveReserveState={aaveReserveState}
@@ -65,7 +69,7 @@ function AaveManageContainer({
 }
 
 export function AaveManagePositionView({
-  address,
+  proxyAddress,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
   const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
@@ -89,7 +93,7 @@ export function AaveManagePositionView({
               strategyConfig={strategyConfig}
               aaveReserveState={_aaveReserveState}
               aaveReserveDataDebtToken={_aaveReserveDataDebt}
-              address={address}
+              proxyAddress={proxyAddress}
             />
           )
         }}

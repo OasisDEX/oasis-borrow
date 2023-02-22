@@ -51,7 +51,9 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
   handleUnsupportedProtocol(req, res)
   handleUnsupportedNetwork(req, res)
   validateAaveMandatoryFields(req, res)
-  const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
+  const { vault_id, vault_chain_id, protocol, proxy, strategy } = usersWhoFollowVaultsSchema.parse(
+    req.body,
+  )
   const user = getUserFromRequest(req)
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
@@ -62,10 +64,13 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
     vault_id,
     vault_chain_id,
     protocol: protocol as Protocol,
+    proxy: proxy || null,
+    strategy: strategy || null,
   }
   const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
     where: { user_address: usersAddressWhoJustFollowedVaultLowercased },
   })
+  console.log('allVaultsFollowedByUser', allVaultsFollowedByUser)
 
   if (allVaultsFollowedByUser.length < LIMIT_OF_FOLLOWED_VAULTS) {
     await prisma.usersWhoFollowVaults.create({

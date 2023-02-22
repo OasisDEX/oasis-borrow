@@ -5,7 +5,12 @@ import { FollowButtonControlProps } from 'features/follow/controllers/FollowButt
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
-export function createFollowButton(positionId: PositionId, protocol: Protocol) {
+export function createFollowButton(
+  positionId: PositionId,
+  protocol: Protocol,
+  proxy: string,
+  strategy: string,
+) {
   const followAaveVaultsEnabled = useFeatureToggle('FollowAAVEVaults')
   const { walletAddress: connectedWalletAddress, chainId } = useAccount()
 
@@ -16,6 +21,8 @@ export function createFollowButton(positionId: PositionId, protocol: Protocol) {
           followerAddress: connectedWalletAddress,
           vaultId: new BigNumber(positionId.vaultId),
           protocol: protocol,
+          proxy,
+          strategy,
         }
       : undefined
   return followButton

@@ -9,6 +9,8 @@ export async function followVaultUsingApi(
   chainId: number,
   protocol: Protocol,
   token: string,
+  proxy?: string,
+  strategy?: string,
 ): Promise<UsersWhoFollowVaults[]> {
   return fetch(`${basePath}/api/follow`, {
     method: 'POST',
@@ -20,6 +22,8 @@ export async function followVaultUsingApi(
       vault_id: parseInt(vaultId.toFixed(0)),
       vault_chain_id: chainId,
       protocol,
+      proxy,
+      strategy,
     }),
   })
     .then((resp) => {

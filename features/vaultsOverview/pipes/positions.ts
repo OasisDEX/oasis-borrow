@@ -1,4 +1,3 @@
-
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
@@ -338,13 +337,12 @@ export function createAavePosition$(
     switchMap(
       ([dpmProxiesData, fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition, context]) => {
         // if we have a DS proxy make a fake position created event so we can read any position out below
-        tap(() =>{
-          console.log('dpmProxiesData' )
-          console.log(dpmProxiesData )
+        tap(() => {
+          console.log('dpmProxiesData')
+          console.log(dpmProxiesData)
           console.log('fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition')
           console.log(fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition)
-        }
-        )
+        })
         const userProxiesData = [
           ...dpmProxiesData,
           ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition.map((fakeEvent) => {
@@ -357,8 +355,12 @@ export function createAavePosition$(
         ]
         return readPositionCreatedEvents$(walletAddress).pipe(
           map((positionCreatedEvents) => {
-            tap(() => { console.log('userProxiesData', userProxiesData)})
-            tap(() => { console.log('positionCreatedEvents', positionCreatedEvents)})
+            tap(() => {
+              console.log('userProxiesData', userProxiesData)
+            })
+            tap(() => {
+              console.log('positionCreatedEvents', positionCreatedEvents)
+            })
             return [
               ...positionCreatedEvents,
               ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition,
@@ -369,7 +371,9 @@ export function createAavePosition$(
               positionCreatedEvents
                 .filter((event) => sumAaveArray.includes(event.protocol))
                 .map((pce) => {
-                  tap(() => { console.log('pce', pce)})
+                  tap(() => {
+                    console.log('pce', pce)
+                  })
                   const userProxy = userProxiesData.find(
                     (userProxy) => userProxy.proxy === pce.proxyAddress,
                   )
