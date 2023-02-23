@@ -4,7 +4,7 @@ import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneral
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) {
   return predefinedSteps.reduce((prev, curr) => {
@@ -68,6 +68,7 @@ export function AjnaEarnSlider() {
   } = useAjnaGeneralContext()
 
   const { min, max, maxLtv, htp, lup, momp } = ajnaSliderDefaults
+  const resolvedValue = (price || htp).decimalPlaces(2)
 
   const predefinedSteps = useMemo(() => generateSteps(min, max), [min, max])
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
@@ -87,13 +88,18 @@ export function AjnaEarnSlider() {
     updateState('price', newValue.decimalPlaces(2))
   }
 
+  // TODO ideally we should initialize reducto with htp value
+  useEffect(() => {
+    updateState('price', resolvedValue)
+  }, [])
+
   return (
     <SliderValuePicker
-      lastValue={price || htp}
+      lastValue={resolvedValue}
       minBoundry={min}
       maxBoundry={max}
       step={1}
-      leftBoundry={price || htp}
+      leftBoundry={resolvedValue}
       rightBoundry={maxLtv}
       leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
       rightBoundryFormatter={(v) => `${t('max-ltv')} ${formatDecimalAsPercent(v)}`}
