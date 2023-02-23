@@ -23,15 +23,15 @@ import React from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
-  // FIXME ŁW prevent react hook error when fetching aave positions 
-  const { context$, followedMakerVaults$ /*, followedAavePositions$*/ } = useAppContext()
+  // FIXME ŁW prevent react hook error when fetching aave positions
+  const { context$, followedMakerVaults$, followedAavePositions$ } = useAppContext()
   const { walletAddress } = useAccount()
   const [contextData, contextError] = useObservable(context$)
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [followedMakerVaultsData, followedMakerVaultsError] = useObservable(
     followedMakerVaults$(checksumAddress),
   )
-  // const [followedAavePositionsData, followedAavePositionsError] = useObservable(followedAavePositions$(checksumAddress))
+  const [followedAavePositionsData, followedAavePositionsError] = useObservable(followedAavePositions$(checksumAddress))
   const isOwner = address === walletAddress
 
   return (
@@ -45,6 +45,7 @@ export function FollowedTable({ address }: { address: string }) {
         {([context, followedMakerPositions /*, followedAavePositions*/]) => {
           const borrowPositions = getMakerBorrowPositions(followedMakerPositions)
           const multiplyPositions = getMakerMultiplyPositions(followedMakerPositions)
+          // FIXME  ŁW prevent react hook error when fetching aave positions
           // const multiplyPositions = useMemo(() => {
           //   return [
           //     ...getMakerMultiplyPositions(followedMakerPositions),

@@ -23,7 +23,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { AaveProtocolData as AaveProtocolDataV2 } from 'lendingProtocols/aave-v2/pipelines'
 import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap, tap } from 'rxjs/operators'
+import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { Position } from './positionsOverviewSummary'
 
@@ -316,24 +316,28 @@ export function createFollowedAavePositions$(
 ): Observable<AavePosition[]> {
   return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
     switchMap(([_, context, followedVaults]) =>
-    
-    followedVaults.length === 0
-    ? of([]) : 
-    combineLatest(
-        followedVaults
-        .filter((vault) => vault.vault_chain_id === context.chainId)
-        .filter((vault) => vault.protocol === LendingProtocol.AaveV2.toLowerCase() || vault.protocol === LendingProtocol.AaveV3.toLowerCase())
-        .map((followedVault) =>
-        createAavePositionGivenFollowRecord(followedVault),
-      ),
+      followedVaults.length === 0
+        ? of([])
+        : combineLatest(
+            followedVaults
+              .filter((vault) => vault.vault_chain_id === context.chainId)
+              .filter(
+                (vault) =>
+                  vault.protocol === LendingProtocol.AaveV2.toLowerCase() ||
+                  vault.protocol === LendingProtocol.AaveV3.toLowerCase(),
+              )
+              .map((followedVault) => createAavePositionGivenFollowRecord(followedVault)),
+          ),
     ),
-    )
+    shareReplay(1),
   )
 }
 
-export function createAavePositionGivenFollowRecord(followRecord: UsersWhoFollowVaults): AavePosition{
+export function createAavePositionGivenFollowRecord(
+  followRecord: UsersWhoFollowVaults,
+): AavePosition {
   // TODO ŁW, probably will need  observables: BuildPositionArgs too
-  const positionId : PositionId = {
+  const positionId: PositionId = {
     vaultId: followRecord.vault_id,
     walletAddress: followRecord.proxy !== null ? followRecord.proxy : undefined,
   }
@@ -348,20 +352,20 @@ export function createAavePositionGivenFollowRecord(followRecord: UsersWhoFollow
   )
 
   return {
-    token: strategyConfig ? strategyConfig?.tokens.collateral : '' ,
+    token: strategyConfig ? strategyConfig?.tokens.collateral : '',
     title: strategyConfig ? strategyConfig?.name : '',
     url: `/aave/${followRecord.protocol}/${positionId}`,
     id: followRecord.vault_id.toString(),
     netValue: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
     multiple: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
     liquidationPrice: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
-    fundingCost:  one, //TODO ŁW - get this from   observables: BuildPositionArgs,,
-    contentsUsd:  one, //TODO ŁW - get this from   observables: BuildPositionArgs,
+    fundingCost: one, //TODO ŁW - get this from   observables: BuildPositionArgs,,
+    contentsUsd: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
     isOwner: proxiesRelatedWithPosition?.walletAddress === followRecord.user_address,
-    lockedCollateral:  one, //TODO ŁW - get this from   observables: BuildPositionArgs,
+    lockedCollateral: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
     type: strategyConfig ? productTypeToPositionTypeMap[strategyConfig.type] : 'multiply',
     liquidity: one, //TODO ŁW - get this from   observables: BuildPositionArgs,,
-    stopLossData: undefined //TODO ŁW - get this from   observables: BuildPositionArgs,
+    stopLossData: undefined, //TODO ŁW - get this from   observables: BuildPositionArgs,
   }
 }
 
