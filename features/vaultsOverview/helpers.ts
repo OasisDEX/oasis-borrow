@@ -1,3 +1,4 @@
+import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -9,6 +10,7 @@ import { AavePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 
 export const positionsTableTooltips = [
   'collateralLocked',
@@ -233,4 +235,8 @@ export function getDsrPosition({
   ]
 
   return netValue.gt(zero) ? dsrPosition : []
+}
+
+export function protocolToLendingProtocol(protocol: Protocol): LendingProtocol {
+  return protocol === Protocol.aavev2 ? LendingProtocol.AaveV2 : LendingProtocol.AaveV3
 }

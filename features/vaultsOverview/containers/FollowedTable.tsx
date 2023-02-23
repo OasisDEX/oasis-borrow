@@ -23,23 +23,35 @@ import React from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
-  const { context$, followedList$ } = useAppContext()
+  // FIXME ŁW prevent react hook error when fetching aave positions 
+  const { context$, followedMakerVaults$ /*, followedAavePositions$*/ } = useAppContext()
   const { walletAddress } = useAccount()
   const [contextData, contextError] = useObservable(context$)
   const checksumAddress = getAddress(address.toLocaleLowerCase())
-  const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))
-
+  const [followedMakerVaultsData, followedMakerVaultsError] = useObservable(
+    followedMakerVaults$(checksumAddress),
+  )
+  // const [followedAavePositionsData, followedAavePositionsError] = useObservable(followedAavePositions$(checksumAddress))
   const isOwner = address === walletAddress
 
   return (
-    <WithErrorHandler error={[contextError, followedListError]}>
+    <WithErrorHandler
+      error={[contextError, followedMakerVaultsError /*, followedAavePositionsError*/]}
+    >
       <WithLoadingIndicator
-        value={[contextData, followedListData]}
+        value={[contextData, followedMakerVaultsData /*, followedAavePositionsData*/]}
         customLoader={<PositionTableLoadingState />}
       >
-        {([context, followedMakerPositions]) => {
+        {([context, followedMakerPositions /*, followedAavePositions*/]) => {
           const borrowPositions = getMakerBorrowPositions(followedMakerPositions)
           const multiplyPositions = getMakerMultiplyPositions(followedMakerPositions)
+          // const multiplyPositions = useMemo(() => {
+          //   return [
+          //     ...getMakerMultiplyPositions(followedMakerPositions),
+          //     ...getAaveMultiplyPositions(followedAavePositions),
+          //   ]
+          // }, [followedMakerPositions, followedAavePositions])
+
           const earnPositions = getMakerEarnPositions(followedMakerPositions)
 
           return followedMakerPositions.length ? (

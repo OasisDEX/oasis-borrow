@@ -46,6 +46,7 @@ function validateAaveMandatoryFields(req: NextApiRequest, res: NextApiResponse) 
       return res.status(400).json({ error: 'Proxy and strategy are mandatory for Aave v3' })
     }
   }
+  // TODO ŁW shall we validate if strategy exists for given proxy?
 }
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
   handleUnsupportedProtocol(req, res)

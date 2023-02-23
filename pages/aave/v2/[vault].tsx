@@ -37,6 +37,7 @@ function WithStrategy(positionId: PositionId) {
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
+  // TODO use proxiesRelatedWithPosition$ 
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
@@ -58,7 +59,7 @@ function WithStrategy(positionId: PositionId) {
                 token2: _strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
-              url={`/aave/v3/${positionId}`}
+              url={`/aave/v2/${positionId}`} // TODO ŁW should it be v2 or v3 ?
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />

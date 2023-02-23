@@ -87,11 +87,11 @@ export function createMakerVaultsFromIds$(
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   context$: Observable<Context>,
   cdpIdResolvers: CdpIdsResolver[],
-  address: string,
+  followerAddress: string,
 ): Observable<VaultWithType[]> {
-  return combineLatest(refreshInterval, context$, followedVaults$(address)).pipe(
+  return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
     switchMap(([_, context, followedVaults]) =>
-      combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
+      combineLatest(cdpIdResolvers.map((resolver) => resolver(followerAddress))).pipe(
         switchMap(() =>
           followedVaults.length === 0
             ? of([])

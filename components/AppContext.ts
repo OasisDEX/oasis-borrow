@@ -282,6 +282,7 @@ import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
   createAavePosition$,
+  createFollowedAavePositions$,
   createMakerPositions$,
   createPositions$,
 } from 'features/vaultsOverview/pipes/positions'
@@ -1343,6 +1344,9 @@ export function setupAppContext() {
     ]),
   )
 
+  const followedAavePositions$ = memoize(
+    curry(createFollowedAavePositions$)(onEveryBlock$,chainContext$, allFollowedPositions$)
+  )
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(makerPositionsList$, aavePositions$, dsr$),
   )
@@ -1483,7 +1487,8 @@ export function setupAppContext() {
     strategyConfig$,
     readPositionCreatedEvents$,
     ownersPositionsList$,
-    followedList$: followedMakerVaults$,
+    followedMakerVaults$,
+    followedAavePositions$,
     protocols,
     commonTransactionServices,
     gasEstimation$,

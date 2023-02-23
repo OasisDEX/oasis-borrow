@@ -537,6 +537,7 @@ const goerli: NetworkConfig = {
   },
 }
 
+// const localhostCacheApi = 'http://localhost:3001/v1'
 const hardhat: NetworkConfig = {
   ...protoMain,
   id: '2137',
