@@ -48,33 +48,37 @@ export function DetailsSectionContentCardChangePill({
 }: DetailsSectionContentCardChangePillProps) {
   return (
     <>
-      {isLoading && (
-        <Skeleton
-          {...(!value && { width: '128px' })}
-          height="28px"
-          sx={{ mb: value ? '-28px' : 0, borderRadius: 'mediumLarge' }}
-        />
-      )}
-      {value && (
-        <Text
-          as="p"
-          variant="paragraph4"
-          sx={{
-            px: 3,
-            py: 1,
-            ...(variant === 'positive' && {
-              color: 'success100',
-              backgroundColor: 'success10',
-            }),
-            ...(variant === 'negative' && {
-              color: 'critical100',
-              backgroundColor: 'critical10',
-            }),
-            borderRadius: 'mediumLarge',
-          }}
-        >
-          {value}
-        </Text>
+      {(value || isLoading) && (
+        <>
+          <Skeleton
+            {...(!value && { width: '128px' })}
+            height="28px"
+            sx={{ mb: '-28px', borderRadius: 'mediumLarge' }}
+          />
+          <Text
+            as="p"
+            variant="paragraph4"
+            sx={{
+              position: 'relative',
+              px: 3,
+              py: 1,
+              height: '28px',
+              ...(variant === 'positive' && {
+                color: 'success100',
+                backgroundColor: 'success10',
+              }),
+              ...(variant === 'negative' && {
+                color: 'critical100',
+                backgroundColor: 'critical10',
+              }),
+              borderRadius: 'mediumLarge',
+              opacity: isLoading ? 0 : 1,
+              transition: '200ms opacity',
+            }}
+          >
+            {value}
+          </Text>
+        </>
       )}
     </>
   )
