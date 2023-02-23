@@ -18,14 +18,23 @@ interface AjnaFormField<D> {
   resetOnClear?: boolean
 }
 
+interface AjnaFormFieldDepositProps<D> extends AjnaFormField<D> {
+  token: string
+  tokenPrice: BigNumber
+  tokenBalance: BigNumber
+}
+
 export function AjnaFormFieldDeposit({
+  token,
+  tokenPrice,
+  tokenBalance,
   dispatchAmount,
   isDisabled,
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdateDeposit>) {
+}: AjnaFormFieldDepositProps<AjnaFormActionsUpdateDeposit>) {
   const { t } = useTranslation()
   const {
-    environment: { collateralBalance, collateralPrice, collateralToken, product },
+    environment: { product },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -34,29 +43,29 @@ export function AjnaFormFieldDeposit({
   return 'depositAmount' in state && 'depositAmountUSD' in state ? (
     <VaultActionInput
       action="Deposit"
-      currencyCode={collateralToken}
-      tokenUsdPrice={collateralPrice}
+      currencyCode={token}
+      tokenUsdPrice={tokenPrice}
       amount={state.depositAmount}
       auxiliaryAmount={state.depositAmountUSD}
       hasAuxiliary={true}
       hasError={false}
       disabled={isDisabled}
       showMax={true}
-      maxAmount={collateralBalance}
-      maxAuxiliaryAmount={collateralBalance.times(collateralPrice)}
+      maxAmount={tokenBalance}
+      maxAuxiliaryAmount={tokenBalance.times(tokenPrice)}
       maxAmountLabel={t('balance')}
       onChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-deposit',
           depositAmount: n,
-          depositAmountUSD: n?.times(collateralPrice),
+          depositAmountUSD: n?.times(tokenPrice),
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-deposit',
-          depositAmount: n?.dividedBy(collateralPrice),
+          depositAmount: n?.dividedBy(tokenPrice),
           depositAmountUSD: n,
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
@@ -64,8 +73,8 @@ export function AjnaFormFieldDeposit({
       onSetMax={() => {
         dispatchAmount({
           type: 'update-deposit',
-          depositAmount: collateralBalance,
-          depositAmountUSD: collateralBalance.times(collateralPrice),
+          depositAmount: tokenBalance,
+          depositAmountUSD: tokenBalance.times(tokenPrice),
         })
       }}
     />
