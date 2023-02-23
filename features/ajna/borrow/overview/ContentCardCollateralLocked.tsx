@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardCollateralLockedProps {
+  isLoading?: boolean
   collateralToken: string
   collateralLocked: BigNumber
   afterCollateralLocked?: BigNumber
@@ -17,6 +18,7 @@ interface ContentCardCollateralLockedProps {
 }
 
 export function ContentCardCollateralLocked({
+  isLoading,
   collateralToken,
   collateralLocked,
   afterCollateralLocked,
@@ -37,17 +39,18 @@ export function ContentCardCollateralLocked({
     title: t('ajna.borrow.common.overview.collateral-locked'),
     value: formatted.collateralLocked,
     unit: collateralToken,
+    change: {
+      isLoading,
+      value:
+        afterCollateralLocked &&
+        `${formatted.afterCollateralLocked} ${t('system.cards.common.after')}`,
+      variant: changeVariant,
+    },
   }
 
   if (!collateralLocked.isZero()) {
     contentCardSettings.footnote = formatted.collateralLockedUSD
   }
-
-  if (afterCollateralLocked !== undefined)
-    contentCardSettings.change = {
-      value: `${formatted.afterCollateralLocked} ${t('system.cards.common.after')}`,
-      variant: changeVariant,
-    }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

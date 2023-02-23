@@ -44,7 +44,6 @@
     "@makerdao/dai-ui-icons": "^0.0.59",
     "@makerdao/dai-ui-icons-branding": "^0.0.66",
     "@makerdao/dai-ui-theme-casual": "^0.0.60",
-    "@myetherwallet/mewconnect-connector": "^0.1.8",
     "@next/font": "^13.1.6",
     "@next/mdx": "^12.0.4",
     "@oasisdex/automation": "1.4.0",

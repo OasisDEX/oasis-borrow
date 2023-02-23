@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardLiquidationPriceProps {
+  isLoading?: boolean
   collateralToken: string
   quoteToken: string
   liquidationPrice: BigNumber
@@ -18,6 +19,7 @@ interface ContentCardLiquidationPriceProps {
 }
 
 export function ContentCardLiquidationPrice({
+  isLoading,
   collateralToken,
   quoteToken,
   liquidationPrice,
@@ -37,6 +39,15 @@ export function ContentCardLiquidationPrice({
     title: t('ajna.borrow.common.overview.liquidation-price'),
     value: `${formatted.liquidationPrice}`,
     unit: `${collateralToken}/${quoteToken}`,
+    change: {
+      isLoading,
+      value:
+        afterLiquidationPrice &&
+        `${formatted.afterLiquidationPrice} ${collateralToken}/${quoteToken} ${t(
+          'system.cards.common.after',
+        )}`,
+      variant: changeVariant,
+    },
   }
 
   if (!liquidationPrice.isZero()) {
@@ -44,14 +55,6 @@ export function ContentCardLiquidationPrice({
       belowCurrentPrice: formatted.belowCurrentPrice,
     })
   }
-
-  if (afterLiquidationPrice !== undefined)
-    contentCardSettings.change = {
-      value: `${formatted.afterLiquidationPrice} ${collateralToken}/${quoteToken} ${t(
-        'system.cards.common.after',
-      )}`,
-      variant: changeVariant,
-    }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
