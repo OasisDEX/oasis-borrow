@@ -50,7 +50,6 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
         })),
     [context?.ajnaPoolPairs],
   )
-  console.log(options)
   const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const defaultOption = options.filter((option) => option.value === defaultOptionValue)[0]
   const [selected, setSelected] = useState<HeaderSelectorOption>(defaultOption)
