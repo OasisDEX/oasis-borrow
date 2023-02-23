@@ -34,11 +34,12 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
   const [context] = useObservable(context$)
   const [hash] = useHash()
   const ref = useRef<HTMLDivElement>(null)
+  const isEarnProduct = product === 'earn'
   const options = useMemo(
     () =>
       uniq(
         [...(context ? Object.keys(context.ajnaPoolPairs) : []), ...ajnaComingSoonPools].map(
-          (pool) => pool.split('-')[0],
+          (pool) => pool.split('-')[isEarnProduct ? 1 : 0],
         ),
       )
         .sort()
@@ -49,6 +50,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
         })),
     [context?.ajnaPoolPairs],
   )
+  console.log(options)
   const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const defaultOption = options.filter((option) => option.value === defaultOptionValue)[0]
   const [selected, setSelected] = useState<HeaderSelectorOption>(defaultOption)
@@ -60,60 +62,72 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
       ...(context
         ? Object.keys(context.ajnaPoolPairs)
             .map((pool) => pool.split('-'))
-            .filter(([collateral]) => collateral === selected.value)
-            .map(([, quote]) => ({
-              asset: <DiscoverTableDataCellAsset asset={quote} icon={getToken(quote).iconCircle} />,
-              ...filterPoolData({
-                data: ajnaPoolDummyData,
-                pair: `${selected.value}-${quote}`,
-                product,
-              }),
-              protocol: (
-                <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
-                  Ajna
-                </DiscoverTableDataCellProtocol>
-              ),
-              action: (
-                <AppLink href={`/ajna/${product}/${selected.label}-${quote}`}>
-                  <Button className="discover-action" variant="tertiary">
-                    {t(`nav.${product}`)}
-                  </Button>
-                </AppLink>
-              ),
-            }))
+            .filter((pool) => pool[isEarnProduct ? 1 : 0] === selected.value)
+            .map((pool) => {
+              const token = pool[isEarnProduct ? 0 : 1]
+              const pair = pool.join('-')
+
+              return {
+                asset: (
+                  <DiscoverTableDataCellAsset asset={token} icon={getToken(token).iconCircle} />
+                ),
+                ...filterPoolData({
+                  data: ajnaPoolDummyData,
+                  pair,
+                  product,
+                }),
+                protocol: (
+                  <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
+                    Ajna
+                  </DiscoverTableDataCellProtocol>
+                ),
+                action: (
+                  <AppLink href={`/ajna/${product}/${pair}`}>
+                    <Button className="discover-action" variant="tertiary">
+                      {t(`nav.${product}`)}
+                    </Button>
+                  </AppLink>
+                ),
+              }
+            })
         : []),
       ...ajnaComingSoonPools
         .filter((pool) => !Object.keys(context?.ajnaPoolPairs || []).includes(pool))
         .map((pool) => pool.split('-'))
-        .filter(([collateral]) => collateral === selected.value)
-        .map(([, quote]) => ({
-          asset: (
-            <DiscoverTableDataCellInactive>
-              <DiscoverTableDataCellAsset
-                asset={quote}
-                icon={getToken(quote).iconCircle}
-                inactive={`(${t('coming-soon')})`}
-              />
-            </DiscoverTableDataCellInactive>
-          ),
-          ...filterPoolData({
-            data: ajnaPoolDummyData,
-            pair: `${selected.value}-${quote}`,
-            product,
-          }),
-          protocol: (
-            <DiscoverTableDataCellInactive>
-              <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
-                Ajna
-              </DiscoverTableDataCellProtocol>
-            </DiscoverTableDataCellInactive>
-          ),
-          action: (
-            <Button className="discover-action" variant="tertiary" disabled={true}>
-              {t('coming-soon')}
-            </Button>
-          ),
-        })),
+        .filter((pool) => pool[isEarnProduct ? 1 : 0] === selected.value)
+        .map((pool) => {
+          const token = pool[isEarnProduct ? 0 : 1]
+          const pair = pool.join('-')
+  
+          return {
+            asset: (
+              <DiscoverTableDataCellInactive>
+                <DiscoverTableDataCellAsset
+                  asset={token}
+                  icon={getToken(token).iconCircle}
+                  inactive={`(${t('coming-soon')})`}
+                />
+              </DiscoverTableDataCellInactive>
+            ),
+            ...filterPoolData({
+              data: ajnaPoolDummyData,
+              pair,
+              product,
+            }),
+            protocol: (
+              <DiscoverTableDataCellInactive>
+                <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
+                  Ajna
+                </DiscoverTableDataCellProtocol>
+              </DiscoverTableDataCellInactive>
+            ),
+            action: (
+              <Button className="discover-action" variant="tertiary" disabled={true}>
+                {t('coming-soon')}
+              </Button>
+            ),
+          }
+        }),
     ])
   }, [selected, context?.ajnaPoolPairs])
 
