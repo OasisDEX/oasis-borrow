@@ -1,6 +1,5 @@
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { MewConnectConnector } from '@myetherwallet/mewconnect-connector'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
 import {
   ConnectionKind,
@@ -21,23 +20,24 @@ import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSe
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
 import { AppLink } from 'components/Links'
 import { dsrLink } from 'components/productCards/ProductCardEarnDsr'
+import { SwitchNetworkModal, SwitchNetworkModalType } from 'components/SwitchNetworkModal'
+import { Tooltip, useTooltip } from 'components/Tooltip'
 import { redirectState$ } from 'features/router/redirectState'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { isTouchDevice } from 'helpers/isTouchDevice'
+import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { UserWalletIconName } from 'theme/icons'
 import { assert } from 'ts-essentials'
-
-import { useModal } from '../../helpers/modalHook'
-import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
 
 export const AUTO_CONNECT = 'autoConnect'
 
@@ -122,9 +122,7 @@ export async function getConnector(
         dAppId: 'e0ac7d6b-a19b-4f61-928d-fb97b15c424a',
       })
     case 'myetherwallet':
-      return new MewConnectConnector({
-        url: rpcUrls[network],
-      })
+      throw new Error('MyEtherWallet is not supported right now')
     case 'gnosisSafe':
       return new SafeAppConnector()
     case 'magicLink':
@@ -166,48 +164,100 @@ function ConnectWalletButton({
   connect,
   description,
   missingInjectedWallet,
+  isSupported,
 }: {
   isConnecting: boolean
   iconName: string
   description: string
   connect?: () => void
   missingInjectedWallet: boolean
+  isSupported: boolean
 }) {
+  const { t } = useTranslation()
+  const { tooltipOpen, setTooltipOpen } = useTooltip()
+
+  const handleMouseEnter = useMemo(
+    () => (!isTouchDevice && !isSupported ? () => setTooltipOpen(true) : undefined),
+    [isTouchDevice, isSupported],
+  )
+
+  const handleMouseLeave = useMemo(
+    () => (!isTouchDevice && !isSupported ? () => setTooltipOpen(false) : undefined),
+    [isTouchDevice, isSupported],
+  )
+
+  const handleClick = useCallback(() => {
+    if (isSupported) {
+      connect && connect()
+    } else {
+      setTooltipOpen(true)
+    }
+  }, [connect, isSupported])
+
   return (
     <ConnectWalletButtonWrapper {...{ missingInjectedWallet }}>
-      <Button
-        variant="square"
-        sx={{
-          cursor: 'pointer',
-          textAlign: 'center',
-          width: '100%',
-          '&:hover .connect-wallet-arrow': {
-            transform: 'translateX(5px)',
-            opacity: '1',
-          },
-        }}
-        onClick={connect}
-      >
-        <Flex sx={{ alignItems: 'center' }}>
-          <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
-            {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}
+      <Box sx={{ position: 'relative' }}>
+        {tooltipOpen && (
+          <Tooltip
+            sx={{
+              transform: 'translateY(-100%)',
+              right: ['0', '-8px'],
+              top: '16px',
+              px: '16px',
+              py: '8px',
+              borderRadius: '8px',
+              border: 'none',
+              maxWidth: '480px',
+            }}
+          >
+            <Text sx={{ fontSize: 2 }}>{t('connect-wallet-out-of-support')}</Text>
+          </Tooltip>
+        )}
+        <Button
+          variant="square"
+          sx={{
+            cursor: 'pointer',
+            textAlign: 'center',
+            width: '100%',
+            '&:hover .connect-wallet-arrow': {
+              transform: 'translateX(5px)',
+              opacity: '1',
+            },
+            ...(!isSupported
+              ? {
+                  opacity: '0.5',
+                  '&:hover .connect-wallet-arrow': {},
+                  '&:hover .connect-wallet-tooltip': {
+                    opacity: '1',
+                  },
+                }
+              : {}),
+          }}
+          onClick={handleClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Flex sx={{ alignItems: 'center' }}>
+            <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
+              {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}
+            </Flex>
+            <Flex sx={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Box>{description}</Box>
+              <Box
+                className="connect-wallet-arrow"
+                sx={{
+                  ml: 1,
+                  opacity: '0',
+                  transform: 'translateX(0px)',
+                  transition: 'opacity ease-in 0.2s, transform ease-in 0.3s',
+                }}
+              >
+                <Icon sx={{ position: 'relative', top: '3px' }} name="arrow_right" />
+              </Box>
+            </Flex>
           </Flex>
-          <Flex sx={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Box>{description}</Box>
-            <Box
-              className="connect-wallet-arrow"
-              sx={{
-                ml: 1,
-                opacity: '0',
-                transform: 'translateX(0px)',
-                transition: 'opacity ease-in 0.2s, transform ease-in 0.3s',
-              }}
-            >
-              <Icon sx={{ position: 'relative', top: '3px' }} name="arrow_right" />
-            </Box>
-          </Flex>
-        </Flex>
-      </Button>
+        </Button>
+      </Box>
     </ConnectWalletButtonWrapper>
   )
 }
@@ -520,6 +570,7 @@ export function ConnectWallet() {
                         switchNetworkModal,
                       }),
                 missingInjectedWallet,
+                isSupported: isSupportedWalletKind(walletKind),
               }}
             />
           )
@@ -661,4 +712,8 @@ export function WithWalletConnection({ children }: WithChildren) {
   }, [web3Context?.status])
 
   return children
+}
+
+function isSupportedWalletKind(walletKind: WalletKind): boolean {
+  return walletKind !== 'myetherwallet'
 }
