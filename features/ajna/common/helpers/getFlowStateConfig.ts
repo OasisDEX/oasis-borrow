@@ -19,9 +19,14 @@ export function getFlowStateConfig({
   const { action } = state
 
   switch (action) {
+    case 'open-earn':
+    case 'deposit-earn':
+      return {
+        amount: state.depositAmount,
+        token: quoteToken,
+      }
     case 'open-borrow':
     case 'deposit-borrow':
-    case 'deposit-earn':
       return {
         amount: state.depositAmount,
         token: collateralToken,

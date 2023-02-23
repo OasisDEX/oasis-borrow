@@ -4,7 +4,9 @@ import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProduct
 import { AjnaFormContentRisk } from 'features/ajna/common/sidebars/AjnaFormContentRisk'
 import { AjnaFormContentTransaction } from 'features/ajna/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/common/views/AjnaFormView'
-import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
+import { AjnaEarnFormContentManage } from 'features/ajna/earn/sidebars/AjnaEarnFormContentManage'
+import { AjnaEarnFormContentOpen } from 'features/ajna/earn/sidebars/AjnaEarnFormContentOpen'
+import { AjnaEarnFormOrder } from 'features/ajna/earn/sidebars/AjnaEarnFormOrder'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -59,9 +61,11 @@ export function AjnaEarnFormController() {
       })}
     >
       {currentStep === 'risk' && <AjnaFormContentRisk />}
-      {currentStep === 'setup' && <AjnaEarnFormContentDeposit />}
-      {currentStep === 'manage' && 'Manage form'}
-      {currentStep === 'transaction' && <AjnaFormContentTransaction />}
+      {currentStep === 'setup' && <AjnaEarnFormContentOpen />}
+      {currentStep === 'manage' && <AjnaEarnFormContentManage />}
+      {currentStep === 'transaction' && (
+        <AjnaFormContentTransaction orderInformation={AjnaEarnFormOrder} />
+      )}
     </AjnaFormView>
   )
 }

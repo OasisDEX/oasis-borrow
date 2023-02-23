@@ -1,4 +1,5 @@
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import {
   AjnaFormFieldDeposit,
@@ -13,6 +14,9 @@ export function AjnaBorrowFormContentGenerate() {
       state: { generateAmount },
     },
   } = useAjnaProductContext('borrow')
+  const {
+    environment: { collateralBalance, collateralPrice, collateralToken },
+  } = useAjnaGeneralContext()
 
   return (
     <>
@@ -20,6 +24,9 @@ export function AjnaBorrowFormContentGenerate() {
       <AjnaFormFieldDeposit
         dispatchAmount={dispatch}
         isDisabled={!generateAmount || generateAmount?.lte(0)}
+        token={collateralToken}
+        tokenPrice={collateralPrice}
+        tokenBalance={collateralBalance}
       />
       {generateAmount && <AjnaBorrowFormContentSummary />}
     </>

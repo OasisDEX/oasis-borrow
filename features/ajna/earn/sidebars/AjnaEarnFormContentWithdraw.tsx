@@ -1,18 +1,18 @@
 import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
-import { AjnaFormFieldDeposit } from 'features/ajna/common/sidebars/AjnaFormFields'
+import { AjnaFormFieldWithdraw } from 'features/ajna/common/sidebars/AjnaFormFields'
 import { AjnaEarnSlider } from 'features/ajna/earn/components/AjnaEarnSlider'
 import { AjnaEarnFormContentSummary } from 'features/ajna/earn/sidebars/AjnaEarnFormContentSummary'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function AjnaEarnFormContentDeposit() {
+export function AjnaEarnFormContentWithdraw() {
   const { t } = useTranslation()
   const {
     form: {
       dispatch,
-      state: { depositAmount },
+      state: { withdrawAmount },
     },
   } = useAjnaProductContext('earn')
   const {
@@ -21,7 +21,7 @@ export function AjnaEarnFormContentDeposit() {
 
   return (
     <>
-      <AjnaFormFieldDeposit
+      <AjnaFormFieldWithdraw
         dispatchAmount={dispatch}
         token={quoteToken}
         tokenPrice={quotePrice}
@@ -31,7 +31,7 @@ export function AjnaEarnFormContentDeposit() {
       <PillAccordion title={t('ajna.earn.manage.form.adjust-lending-price-bucket')}>
         <AjnaEarnSlider />
       </PillAccordion>
-      {depositAmount && <AjnaEarnFormContentSummary />}
+      {withdrawAmount && <AjnaEarnFormContentSummary />}
     </>
   )
 }

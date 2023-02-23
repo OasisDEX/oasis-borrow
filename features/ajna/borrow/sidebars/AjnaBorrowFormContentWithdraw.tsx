@@ -1,4 +1,5 @@
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import {
   AjnaFormFieldPayback,
@@ -13,10 +14,19 @@ export function AjnaBorrowFormContentWithdraw() {
       state: { withdrawAmount },
     },
   } = useAjnaProductContext('borrow')
+  const {
+    environment: { collateralBalance, collateralPrice, collateralToken },
+  } = useAjnaGeneralContext()
 
   return (
     <>
-      <AjnaFormFieldWithdraw dispatchAmount={dispatch} resetOnClear />
+      <AjnaFormFieldWithdraw
+        dispatchAmount={dispatch}
+        tokenBalance={collateralBalance}
+        token={collateralToken}
+        tokenPrice={collateralPrice}
+        resetOnClear
+      />
       <AjnaFormFieldPayback
         dispatchAmount={dispatch}
         isDisabled={!withdrawAmount || withdrawAmount?.lte(0)}

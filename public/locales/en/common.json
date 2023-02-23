@@ -1036,6 +1036,7 @@
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
+    "max-loan-to-value": "Max Loan To Value",
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day net APY",
     "ninety-day-average": "90 day net APY",
@@ -1060,7 +1061,7 @@
     "manage-debt-token": "Manage debt ({{token}})",
     "manage-collateral": "Manage collateral",
     "manage-debt": "Manage debt",
-    "manage-Manage Liquidity": "Manage Liquidity",
+    "manage-liquidity": "Manage liquidity ({{token}})",
     "close-position": "Close position",
     "actions": {
       "common": {
@@ -1633,7 +1634,12 @@
       "wBTCusdc": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
-      }
+      },
+      "borrow-against-ETH": {
+        "title": "AAVE ETH",
+        "description": "A position to borrow against your ETH in AAVE"
+      },
+      "tokens-for-borrowing": "Tokens for Borrowing"
     },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
@@ -1655,7 +1661,8 @@
     },
     "aave": {
       "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH"
+      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH",
+      "borrow-against-ETH": "Borrow up to ${{value}}"
     }
   },
   "product-card-title": {
@@ -2411,11 +2418,27 @@
       },
       "manage": {
         "headline": {
-          "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
         }
       }
     },
     "earn": {
+      "common": {
+        "ajna-faq": "Ajna FAQ",
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          }
+        },
+        "headline": {
+          "current-yield": "Current yield",
+          "90-day-avg": "90 Day Avg",
+          "current-market-price": "Current Market Price"
+        }
+      },
       "open": {
         "select": {
           "heading": {
@@ -2425,12 +2448,12 @@
           "intro": "Select the crypto asset you want to earn for lending your {{token}}"
         },
         "headline": {
-          "header": "Lend {{collateralToken}} against {{quoteToken}}"
+          "header": "Lend {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
           "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
           "max-ltv-to-lend-at": "Max LTV to lend at",
-          "max-lending-price": "Max {{quoteToken}}/{{collateralToken}} lending price"
+          "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
         },
         "simulation": {
           "header1": "Duration",
@@ -2442,18 +2465,16 @@
           "footnote1": "*Past performance is not indicative of future results."
         }
       },
-      "common": {
-        "ajna-faq": "Ajna FAQ",
-        "form": {
-          "title": {
-            "risk": "Things to know before opening an Ajna position",
-            "setup": "Lending ETH against USDC"
-          }
-        },
+      "manage": {
         "headline": {
-          "current-yield": "Current yield",
-          "90-day-avg": "90 Day Avg",
-          "current-market-price": "Current Market Price"
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
+        },
+        "overview": {
+          "early-withdrawal-period": "Early withdrawal period",
+          "early-withdrawal-penalty": "Early withdrawal penalty"
+        },
+        "form": {
+          "adjust-lending-price-bucket": "Adjust lending price bucket"
         }
       }
     },

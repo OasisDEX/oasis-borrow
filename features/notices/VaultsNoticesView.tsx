@@ -13,6 +13,7 @@ import {
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
@@ -26,8 +27,8 @@ import { VaultNoticesState } from './vaultsNotices'
 
 type VaultNoticeProps = {
   status?: JSX.Element
-  header: JSX.Element | string
-  subheader?: JSX.Element | string | false
+  header: JSX.Element | TranslateStringType
+  subheader?: JSX.Element | TranslateStringType | false
   withClose?: boolean
 }
 
