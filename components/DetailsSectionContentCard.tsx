@@ -50,7 +50,6 @@ export function DetailsSectionContentCardChangePill({
     <>
       {isLoading && (
         <Skeleton
-          color={variant}
           {...(!value && { width: '128px' })}
           height="28px"
           sx={{ mb: value ? '-28px' : 0, borderRadius: 'mediumLarge' }}
