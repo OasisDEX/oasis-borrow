@@ -9,12 +9,14 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardLoanToValueProps {
+  isLoading?: boolean
   loanToValue: BigNumber
   afterLoanToValue?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
 export function ContentCardLoanToValue({
+  isLoading,
   loanToValue,
   afterLoanToValue,
   changeVariant = 'positive',
@@ -29,13 +31,12 @@ export function ContentCardLoanToValue({
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.borrow.common.overview.loan-to-value'),
     value: `${formatted.loanToValue}`,
-  }
-
-  if (afterLoanToValue !== undefined)
-    contentCardSettings.change = {
-      value: `${formatted.afterLoanToValue} ${t('system.cards.common.after')}`,
+    change: {
+      isLoading,
+      value: afterLoanToValue && `${formatted.afterLoanToValue} ${t('system.cards.common.after')}`,
       variant: changeVariant,
-    }
+    },
+  }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

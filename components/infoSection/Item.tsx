@@ -27,7 +27,7 @@ export interface ItemProps {
 }
 
 export function InfoSectionLoadingState() {
-  return <Skeleton width="88px" height="12px" dark />
+  return <Skeleton width="88px" height="12px" color="dark" />
 }
 
 // TODO: Add tooltip and loading state
