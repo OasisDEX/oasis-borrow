@@ -98,7 +98,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
         .map((pool) => {
           const token = pool[isEarnProduct ? 0 : 1]
           const pair = pool.join('-')
-  
+
           return {
             asset: (
               <DiscoverTableDataCellInactive>
