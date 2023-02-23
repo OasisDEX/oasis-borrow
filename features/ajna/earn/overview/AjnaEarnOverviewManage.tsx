@@ -3,6 +3,8 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { ContentCardCurrentEarnings } from 'features/ajna/earn/overview/ContentCardCurrentEarnings'
+import { ContentCardTokensDeposited } from 'features/ajna/earn/overview/ContentCardTokensDeposited'
 import { ContentFooterItemsEarnManage } from 'features/ajna/earn/overview/ContentFooterItemsEarnManage'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -10,7 +12,7 @@ import React from 'react'
 export function AjnaEarnOverviewManage() {
   const { t } = useTranslation()
   const {
-    environment: { quoteToken },
+    environment: { quoteToken, quotePrice },
   } = useAjnaGeneralContext()
 
   return (
@@ -18,7 +20,16 @@ export function AjnaEarnOverviewManage() {
       title={t('system.overview')}
       content={
         <DetailsSectionContentCardWrapper>
-          Manage Earn Content Cards
+          <ContentCardCurrentEarnings
+            quoteToken={quoteToken}
+            currentEarnings={new BigNumber(0.56)}
+            netPnL={new BigNumber(12.35)}
+          />
+          <ContentCardTokensDeposited
+            quoteToken={quoteToken}
+            tokensDeposited={new BigNumber(25)}
+            tokensDepositedUSD={new BigNumber(25).times(quotePrice)}
+          />
         </DetailsSectionContentCardWrapper>
       }
       footer={
