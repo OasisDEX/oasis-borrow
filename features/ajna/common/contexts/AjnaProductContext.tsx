@@ -9,7 +9,6 @@ import {
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaValidation } from 'features/ajna/common/validation'
-import { AjnaEarnPosition } from 'features/ajna/earn/fakePosition'
 import {
   AjnaEarnFormState,
   useAjnaEarnFormReducto,
@@ -26,7 +25,8 @@ import React, {
   useState,
 } from 'react'
 
-import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
+import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
+import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
 
 interface AjnaProductContextProviderPropsWithBorrow {
   formReducto: typeof useAjnaBorrowFormReducto
@@ -37,7 +37,7 @@ interface AjnaProductContextProviderPropsWithBorrow {
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
   formDefaults: Partial<AjnaEarnFormState>
-  position: AjnaEarnPosition
+  position: AjnaEarn
   product: 'earn'
 }
 interface AjnaProductContextProviderPropsWithMultiply {
@@ -62,11 +62,9 @@ interface AjnaProductContextPosition<P> {
   currentPosition: AjnaPositionSet<P>
   isSimulationLoading?: boolean
   resolvedId?: string
-  setCachedPosition: (positionSet: AjnaPositionSet<AjnaPosition | AjnaEarnPosition>) => void
+  setCachedPosition: (positionSet: AjnaPositionSet<AjnaPosition | AjnaEarn>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<
-    SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarnPosition> | undefined>
-  >
+  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarn> | undefined>>
 }
 
 interface AjnaProductContext<P, F> {
@@ -84,7 +82,7 @@ type AjnaProductContextWithBorrow = AjnaProductContext<
   ReturnType<typeof useAjnaBorrowFormReducto>
 >
 type AjnaProductContextWithEarn = AjnaProductContext<
-  AjnaEarnPosition,
+  AjnaEarn,
   ReturnType<typeof useAjnaEarnFormReducto>
 >
 

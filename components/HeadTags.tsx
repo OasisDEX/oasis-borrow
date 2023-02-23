@@ -74,12 +74,12 @@ export function PageSEOTags({
         {networkParameter ? { hardhat: '👷 ', goerli: '🌲 ' }[networkParameter] : ''}
         {titleParams ? t(title, titleParams) : t(title)}
       </title>
-      <meta property="og:title" content={t(title)} />
-      <meta property="twitter:title" content={t(title)} />
+      <meta property="og:title" content={t(title)!} />
+      <meta property="twitter:title" content={t(title)!} />
 
-      <meta name="description" content={t(description)} />
-      <meta property="og:description" content={t(description)} />
-      <meta property="twitter:description" content={t(description)} />
+      <meta name="description" content={t(description)!} />
+      <meta property="og:description" content={t(description)!} />
+      <meta property="twitter:description" content={t(description)!} />
 
       <meta name="robots" content="index, follow" />
       <meta

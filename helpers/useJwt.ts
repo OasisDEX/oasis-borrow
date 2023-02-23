@@ -1,5 +1,4 @@
-import jwt from 'express-jwt'
+import { expressjwt } from 'express-jwt'
+import { config } from 'server/config'
 
-import { config } from '../server/config'
-
-export const userJwt = jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] })
+export const userJwt = expressjwt({ secret: config.userJWTSecret, algorithms: ['HS512'] })

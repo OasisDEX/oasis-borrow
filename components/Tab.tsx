@@ -1,3 +1,4 @@
+import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { Button } from 'theme-ui'
 
@@ -6,7 +7,7 @@ import { VaultTabTag } from './vault/VaultTabTag'
 export type TabVariant = 'large' | 'medium' | 'small' | 'underline'
 
 interface TabProps {
-  label: string | JSX.Element
+  label: TranslateStringType | JSX.Element
   value: string
   variant: TabVariant
   selected?: boolean
