@@ -139,8 +139,8 @@ export function getAjnaValidation({
   const localErrors: { [key: string]: boolean } = {
     hasInsufficientEthFundsForTx: ethFundsForTxValidator({ txError }),
   }
-  const borrowOrMultiply = ['borrow', 'multiply'].includes(product)
-  const depositBalance = borrowOrMultiply ? collateralBalance : quoteBalance
+  const isEarnProduct = product === 'earn'
+  const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
 
   if ('depositAmount' in state)
     localErrors.depositAmountExceedsCollateralBalance = !!state.depositAmount?.gt(depositBalance)

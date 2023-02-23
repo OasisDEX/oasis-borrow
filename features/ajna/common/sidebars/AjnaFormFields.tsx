@@ -18,7 +18,7 @@ interface AjnaFormField<D> {
   resetOnClear?: boolean
 }
 
-interface AjnaFormFieldDepositProps<D> extends AjnaFormField<D> {
+interface AjnaFormFieldExtended<D> extends AjnaFormField<D> {
   token: string
   tokenPrice: BigNumber
   tokenBalance: BigNumber
@@ -31,7 +31,7 @@ export function AjnaFormFieldDeposit({
   dispatchAmount,
   isDisabled,
   resetOnClear,
-}: AjnaFormFieldDepositProps<AjnaFormActionsUpdateDeposit>) {
+}: AjnaFormFieldExtended<AjnaFormActionsUpdateDeposit>) {
   const { t } = useTranslation()
   const {
     environment: { product },
@@ -179,12 +179,14 @@ export function AjnaFormFieldPayback({
 }
 
 export function AjnaFormFieldWithdraw({
+  token,
+  tokenPrice,
   dispatchAmount,
   isDisabled,
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdateWithdraw>) {
+}: AjnaFormFieldExtended<AjnaFormActionsUpdateWithdraw>) {
   const {
-    environment: { collateralPrice, collateralToken, product },
+    environment: { product },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -193,8 +195,8 @@ export function AjnaFormFieldWithdraw({
   return 'withdrawAmount' in state && 'withdrawAmountUSD' in state ? (
     <VaultActionInput
       action="Withdraw"
-      currencyCode={collateralToken}
-      tokenUsdPrice={collateralPrice}
+      currencyCode={token}
+      tokenUsdPrice={tokenPrice}
       amount={state.withdrawAmount}
       auxiliaryAmount={state.withdrawAmountUSD}
       hasAuxiliary={true}
@@ -204,14 +206,14 @@ export function AjnaFormFieldWithdraw({
         dispatchAmount({
           type: 'update-withdraw',
           withdrawAmount: n,
-          withdrawAmountUSD: n?.times(collateralPrice),
+          withdrawAmountUSD: n?.times(tokenPrice),
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-withdraw',
-          withdrawAmount: n?.dividedBy(collateralPrice),
+          withdrawAmount: n?.dividedBy(tokenPrice),
           withdrawAmountUSD: n,
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
