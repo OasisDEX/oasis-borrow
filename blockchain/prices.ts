@@ -60,11 +60,22 @@ export function createGasPrice$(
           maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
           maxPriorityFeePerGas: minersTip,
         } as GasPriceParams
+        console.log(`===========`)
+        console.log(`block number ${(block as any).number}`)
+        console.log(`raw web baseFeePerGas ${new BigNumber((block as any).baseFeePerGas)}`)
+        console.log(`===== estimated prices =====`)
+        console.log(`gasFees.maxFeePerGas ${gasFees.maxFeePerGas}`)
+        console.log(`gasFees.maxPriorityFeePerGas ${gasFees.maxPriorityFeePerGas}`)
         if (blockNative.maxFeePerGas.gt(0)) {
           gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
           gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
             blockNative.maxPriorityFeePerGas,
           )
+          console.log(`===== blockNative prices =====`)
+          console.log(`gasFees.maxFeePerGas ${gasFees.maxFeePerGas}`)
+          console.log(`gasFees.maxPriorityFeePerGas ${gasFees.maxPriorityFeePerGas}`)
+        } else {
+          console.log('no  could not estimate blockNative prices')
         }
         return gasFees
       },
