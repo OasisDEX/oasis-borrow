@@ -13,7 +13,7 @@ import React from 'react'
 export function AjnaEarnFormController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, flow },
+    environment: { flow, quoteToken },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -45,14 +45,14 @@ export function AjnaEarnFormController() {
             },
             {
               label: t('system.manage-liquidity', {
-                token: collateralToken,
+                token: quoteToken,
               }),
-              panel: 'collateral',
-              shortLabel: collateralToken,
-              icon: getToken(collateralToken).iconCircle,
+              panel: 'liquidity',
+              shortLabel: quoteToken,
+              icon: getToken(quoteToken).iconCircle,
               action: () => {
                 dispatch({ type: 'reset' })
-                updateState('uiDropdown', 'collateral')
+                updateState('uiDropdown', 'liquidity')
                 updateState('uiPill', 'deposit-earn')
               },
             },
