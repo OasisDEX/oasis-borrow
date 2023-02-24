@@ -10,6 +10,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentPositionLendingPriceProps {
+  isLoading?: boolean
   collateralToken: string
   quoteToken: string
   positionLendingPrice: BigNumber
@@ -19,6 +20,7 @@ interface ContentPositionLendingPriceProps {
 }
 
 export function ContentPositionLendingPrice({
+  isLoading,
   collateralToken,
   quoteToken,
   positionLendingPrice,
@@ -44,14 +46,13 @@ export function ContentPositionLendingPrice({
     title: t('ajna.earn.manage.overview.position-lending-price'),
     value: formatted.positionLendingPrice,
     unit: `${quoteToken}/${collateralToken}`,
+    change: {
+      isLoading,
+      value: afterPositionLendingPrice && `${formatted.afterPositionLendingPrice} ${t('system.cards.common.after')}`,
+      variant: changeVariant,
+    },
     footnote: formatted.relationToMarketPrice,
   }
-
-  if (afterPositionLendingPrice !== undefined)
-    contentCardSettings.change = {
-      value: `${formatted.afterPositionLendingPrice} ${t('system.cards.common.after')}`,
-      variant: changeVariant,
-    }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

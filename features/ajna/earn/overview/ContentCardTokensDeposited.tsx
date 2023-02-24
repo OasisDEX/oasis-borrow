@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardCurrentEarningsProps {
+  isLoading?: boolean
   quoteToken: string
   tokensDeposited: BigNumber
   afterTokensDeposited?: BigNumber
@@ -17,6 +18,7 @@ interface ContentCardCurrentEarningsProps {
 }
 
 export function ContentCardTokensDeposited({
+  isLoading,
   quoteToken,
   tokensDeposited,
   afterTokensDeposited,
@@ -36,17 +38,16 @@ export function ContentCardTokensDeposited({
     title: t('ajna.earn.manage.overview.tokens-deposited'),
     value: formatted.tokensDeposited,
     unit: quoteToken,
+    change: {
+      isLoading,
+      value: afterTokensDeposited && `${formatted.afterTokensDeposited} ${t('system.cards.common.after')}`,
+      variant: changeVariant,
+    }
   }
 
   if (!tokensDepositedUSD.isZero()) {
     contentCardSettings.footnote = formatted.tokensDepositedUSD
   }
-
-  if (afterTokensDeposited !== undefined)
-    contentCardSettings.change = {
-      value: `${formatted.afterTokensDeposited} ${t('system.cards.common.after')}`,
-      variant: changeVariant,
-    }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardCurrentEarningsProps {
+  isLoading?: boolean
   quoteToken: string
   currentEarnings: BigNumber
   afterCurrentEarnings?: BigNumber
@@ -17,6 +18,7 @@ interface ContentCardCurrentEarningsProps {
 }
 
 export function ContentCardCurrentEarnings({
+  isLoading,
   quoteToken,
   currentEarnings,
   afterCurrentEarnings,
@@ -36,6 +38,13 @@ export function ContentCardCurrentEarnings({
     title: t('ajna.earn.manage.overview.current-earnings'),
     value: formatted.currentEarnings,
     unit: quoteToken,
+    change: {
+      isLoading,
+      value:
+        afterCurrentEarnings &&
+        `${formatted.afterCurrentEarnings} ${t('system.cards.common.after')}`,
+      variant: changeVariant,
+    },
   }
 
   if (!netPnL.isZero()) {
@@ -43,12 +52,6 @@ export function ContentCardCurrentEarnings({
       netPnL: formatted.netPnL,
     })
   }
-
-  if (afterCurrentEarnings !== undefined)
-    contentCardSettings.change = {
-      value: `${formatted.afterCurrentEarnings} ${t('system.cards.common.after')}`,
-      variant: changeVariant,
-    }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
