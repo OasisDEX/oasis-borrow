@@ -92,7 +92,7 @@ export function AjnaRewardCard({
           sx={{
             background: ['unset', gradient],
             p: 4,
-            pb: [4, '22px'],
+            pb: [4, banner.footer ? '22px' : 4],
             mt: [0, '22px'],
             pt: [0, 4],
             border: 'none',
@@ -109,7 +109,7 @@ export function AjnaRewardCard({
             <Text as="p" variant="paragraph2" sx={{ color: 'neutral80', mb: [4, '21px'] }}>
               {banner.subValue}
             </Text>
-            <Button sx={{ mb: [0, '19px'], fontSize: 1, pl: '24px', pr: 4 }}>
+            <Button sx={{ mb: [0, banner.footer ? '19px' : 0], fontSize: 1, pl: '24px', pr: 4 }}>
               <WithArrow gap={1} sx={{ color: 'inherit' }}>
                 {t(banner.button.title)}
               </WithArrow>
