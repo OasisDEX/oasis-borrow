@@ -4,15 +4,17 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { ContentCardCurrentEarnings } from 'features/ajna/earn/overview/ContentCardCurrentEarnings'
+import { ContentCardMaxLendingLTV } from 'features/ajna/earn/overview/ContentCardMaxLendingLTV'
 import { ContentCardTokensDeposited } from 'features/ajna/earn/overview/ContentCardTokensDeposited'
 import { ContentFooterItemsEarnManage } from 'features/ajna/earn/overview/ContentFooterItemsEarnManage'
+import { ContentPositionLendingPrice } from 'features/ajna/earn/overview/ContentPositionLendingPrice'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaEarnOverviewManage() {
   const { t } = useTranslation()
   const {
-    environment: { quoteToken, quotePrice },
+    environment: { collateralToken, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
 
   return (
@@ -29,6 +31,17 @@ export function AjnaEarnOverviewManage() {
             quoteToken={quoteToken}
             tokensDeposited={new BigNumber(25)}
             tokensDepositedUSD={new BigNumber(25).times(quotePrice)}
+          />
+          <ContentCardMaxLendingLTV
+            quoteToken={quoteToken}
+            maxLendingPercentage={new BigNumber(65)}
+            maxLendingQuote={new BigNumber(120000000)}
+          />
+          <ContentPositionLendingPrice
+            collateralToken={collateralToken}
+            quoteToken={quoteToken}
+            positionLendingPrice={new BigNumber(0.332)}
+            relationToMarketPrice={new BigNumber(-10)}
           />
         </DetailsSectionContentCardWrapper>
       }

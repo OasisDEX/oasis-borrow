@@ -2473,12 +2473,14 @@
           "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
         },
         "overview": {
+          "above-market-price": "{{amount}}% above market price",
+          "below-market-price": "{{amount}}% below market price",
           "current-earnings": "Current earnings",
           "early-withdrawal-penalty": "Early withdrawal penalty",
           "early-withdrawal-period": "Early withdrawal period",
           "max-lending-ltv": "Max lending LTV ",
           "net-pnl": "Net PnL: {{netPnL}}",
-          "position-lending-price": "Position lending price ",
+          "position-lending-price": "Position lending price",
           "tokens-deposited": "Tokens deposited"
         },
         "form": {
