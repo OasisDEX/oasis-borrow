@@ -74,10 +74,7 @@ export function getAjnaPosition$(
             provider: context.rpcProvider,
           },
         ),
-        meta: {
-          ...meta,
-          product: 'earn',
-        },
+        meta,
       }
     }),
     distinctUntilChanged(isEqual),
