@@ -18,7 +18,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     environment: { collateralToken, quoteToken },
   } = useAjnaGeneralContext()
   const {
-    position: { cachedPosition, currentPosition },
+    position: { cachedPosition, currentPosition, isSimulationLoading },
   } = useAjnaProductContext('borrow')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
@@ -27,7 +27,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     currentPosition,
   })
 
-  const isLoading = !cached && currentPosition.simulation === undefined
+  const isLoading = !cached && isSimulationLoading
   const formatted = {
     collateralLocked: formatCryptoBalance(positionData.collateralAmount),
     debt: formatCryptoBalance(positionData.debtAmount),

@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentFooterItemsBorrowProps {
+  isLoading?: boolean
   collateralToken: string
   quoteToken: string
   cost: BigNumber
@@ -17,6 +18,7 @@ interface ContentFooterItemsBorrowProps {
 }
 
 export function ContentFooterItemsBorrow({
+  isLoading,
   collateralToken,
   quoteToken,
   cost,
@@ -47,22 +49,24 @@ export function ContentFooterItemsBorrow({
       <DetailsSectionFooterItem
         title={t('ajna.borrow.common.footer.available-to-borrow')}
         value={`${formatted.availableToBorrow} ${collateralToken}`}
-        {...(afterAvailableToBorrow && {
-          change: {
-            value: `${formatted.afterAvailableToBorrow} ${t('system.cards.common.after')}`,
-            variant: changeVariant,
-          },
-        })}
+        change={{
+          isLoading,
+          value:
+            afterAvailableToBorrow &&
+            `${formatted.afterAvailableToBorrow} ${t('system.cards.common.after')}`,
+          variant: changeVariant,
+        }}
       />
       <DetailsSectionFooterItem
         title={t('ajna.borrow.common.footer.available-to-withdraw')}
         value={`${formatted.availableToWithdraw} ${quoteToken}`}
-        {...(afterAvailableToWithdraw && {
-          change: {
-            value: `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,
-            variant: changeVariant,
-          },
-        })}
+        change={{
+          isLoading,
+          value:
+            afterAvailableToWithdraw &&
+            `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,
+          variant: changeVariant,
+        }}
       />
     </>
   )
