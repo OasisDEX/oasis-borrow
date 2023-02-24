@@ -2484,6 +2484,31 @@
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited."
+    },
+    "rewards": {
+      "page-title": "Your Ajna token rewards",
+      "page-description": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
+      "cards": {
+        "mining": {
+          "title": "$AJNA Liquidity Mining Rewards",
+          "list-1": "Rewards Earn Positions only",
+          "list-2": "Earn a Proportional % of pool interest generated",
+          "link": "Learn more about Ajna Liquidity Mining Rewards",
+          "banner": {
+            "title": "$AJNA Liquidity mining rewards on 4 positions"
+          }
+        },
+        "token": {
+          "title": "$AJNA Token Rewards",
+          "list-1": "Rewards exclusive to Oasis.app users only!",
+          "list-2": "Rewards for Borrowing, Lending and Multiplying",
+          "link": "Learn more about Ajna Token Rewards",
+          "banner": {
+            "title": "Your $AJNA token rewards on 4 positions"
+          }
+        },
+        "button": "Claim AJNA Tokens"
+      }
     }
   }
 }
