@@ -109,8 +109,11 @@ export function AjnaRewardCard({
             <Text as="p" variant="paragraph2" sx={{ color: 'neutral80', mb: [4, '21px'] }}>
               {banner.subValue}
             </Text>
-            <Button sx={{ mb: [0, banner.footer ? '19px' : 0], fontSize: 1, pl: '24px', pr: 4 }}>
-              <WithArrow gap={1} sx={{ color: 'inherit', fontSize: 'inherit' }}>
+            <Button sx={{ mb: [0, banner.footer ? '19px' : 0], fontSize: 1, p: 0 }}>
+              <WithArrow
+                gap={1}
+                sx={{ color: 'inherit', fontSize: 'inherit', p: 2, pl: '24px', pr: '36px' }}
+              >
                 {t(banner.button.title)}
               </WithArrow>
             </Button>
