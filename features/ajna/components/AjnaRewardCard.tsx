@@ -110,7 +110,7 @@ export function AjnaRewardCard({
               {banner.subValue}
             </Text>
             <Button sx={{ mb: [0, banner.footer ? '19px' : 0], fontSize: 1, pl: '24px', pr: 4 }}>
-              <WithArrow gap={1} sx={{ color: 'inherit' }}>
+              <WithArrow gap={1} sx={{ color: 'inherit', fontSize: 'inherit' }}>
                 {t(banner.button.title)}
               </WithArrow>
             </Button>
