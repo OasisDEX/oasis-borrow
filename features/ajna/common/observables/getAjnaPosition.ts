@@ -74,7 +74,10 @@ export function getAjnaPosition$(
             provider: context.rpcProvider,
           },
         ),
-        meta,
+        meta: {
+          ...meta,
+          product: (meta.product as string).toLowerCase() as AjnaProduct,
+        },
       }
     }),
     distinctUntilChanged(isEqual),
