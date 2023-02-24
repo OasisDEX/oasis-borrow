@@ -48,7 +48,9 @@ export function ContentPositionLendingPrice({
     unit: `${quoteToken}/${collateralToken}`,
     change: {
       isLoading,
-      value: afterPositionLendingPrice && `${formatted.afterPositionLendingPrice} ${t('system.cards.common.after')}`,
+      value:
+        afterPositionLendingPrice &&
+        `${formatted.afterPositionLendingPrice} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
     footnote: formatted.relationToMarketPrice,

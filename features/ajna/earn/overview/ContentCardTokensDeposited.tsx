@@ -40,9 +40,11 @@ export function ContentCardTokensDeposited({
     unit: quoteToken,
     change: {
       isLoading,
-      value: afterTokensDeposited && `${formatted.afterTokensDeposited} ${t('system.cards.common.after')}`,
+      value:
+        afterTokensDeposited &&
+        `${formatted.afterTokensDeposited} ${t('system.cards.common.after')}`,
       variant: changeVariant,
-    }
+    },
   }
 
   if (!tokensDepositedUSD.isZero()) {
