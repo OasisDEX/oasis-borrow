@@ -1,6 +1,7 @@
-import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormContentSummary } from 'features/ajna/common/sidebars/AjnaFormContentSummary'
 import {
   AjnaFormFieldDeposit,
   AjnaFormFieldGenerate,
@@ -28,7 +29,11 @@ export function AjnaBorrowFormContentGenerate() {
         tokenPrice={collateralPrice}
         tokenBalance={collateralBalance}
       />
-      {generateAmount && <AjnaBorrowFormContentSummary />}
+      {generateAmount && (
+        <AjnaFormContentSummary>
+          <AjnaBorrowFormOrder />
+        </AjnaFormContentSummary>
+      )}
     </>
   )
 }

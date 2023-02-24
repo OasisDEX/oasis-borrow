@@ -1,6 +1,7 @@
-import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormContentSummary } from 'features/ajna/common/sidebars/AjnaFormContentSummary'
 import {
   AjnaFormFieldPayback,
   AjnaFormFieldWithdraw,
@@ -31,7 +32,11 @@ export function AjnaBorrowFormContentWithdraw() {
         dispatchAmount={dispatch}
         isDisabled={!withdrawAmount || withdrawAmount?.lte(0)}
       />
-      {withdrawAmount && <AjnaBorrowFormContentSummary />}
+      {withdrawAmount && (
+        <AjnaFormContentSummary>
+          <AjnaBorrowFormOrder />
+        </AjnaFormContentSummary>
+      )}
     </>
   )
 }
