@@ -22,7 +22,7 @@ export function AjnaBorrowOverviewController() {
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
-    },
+  },
   } = useAjnaProductContext('borrow')
 
   return (
