@@ -9,14 +9,14 @@ import React from 'react'
 
 export function AjnaBorrowFormContentPayback() {
   const {
+    environment: { collateralBalance, collateralPrice, collateralToken },
+  } = useAjnaGeneralContext()
+  const {
     form: {
       dispatch,
       state: { paybackAmount },
     },
   } = useAjnaProductContext('borrow')
-  const {
-    environment: { collateralBalance, collateralPrice, collateralToken },
-  } = useAjnaGeneralContext()
 
   return (
     <>

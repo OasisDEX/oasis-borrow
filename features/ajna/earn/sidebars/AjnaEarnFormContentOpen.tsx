@@ -9,15 +9,15 @@ import React from 'react'
 
 export function AjnaEarnFormContentOpen() {
   const {
+    environment: { quoteBalance, quotePrice, quoteToken },
+  } = useAjnaGeneralContext()
+  const {
     form: {
       dispatch,
       state: { depositAmount },
     },
     validation: { errors, warnings },
   } = useAjnaProductContext('earn')
-  const {
-    environment: { quoteBalance, quotePrice, quoteToken },
-  } = useAjnaGeneralContext()
 
   return (
     <>
