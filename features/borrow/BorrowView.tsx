@@ -1,6 +1,7 @@
 import { ProductCardBorrow } from 'components/productCards/ProductCardBorrow'
 import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
 import { ProductHeader } from 'components/ProductHeader'
+import { aaveStrategiesList } from 'features/aave/strategyConfig'
 import { borrowPageCardsData, productCardsConfig } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -9,6 +10,7 @@ import { Grid } from 'theme-ui'
 export function BorrowView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
+  const aaveBorrowStrategies = aaveStrategiesList('Borrow')
 
   return (
     <Grid
@@ -32,7 +34,7 @@ export function BorrowView() {
         selectedFilter={tab}
         makerProductCardComponent={ProductCardBorrow}
         filterCardsFunction={borrowPageCardsData}
-        otherStrategies={[]}
+        otherStrategies={aaveBorrowStrategies}
       />
     </Grid>
   )

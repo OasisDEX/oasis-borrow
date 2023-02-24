@@ -10,6 +10,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 import { ProductCardBorrow } from './ProductCardBorrow'
+import { ProductCardBorrowAave } from './ProductCardBorrowAave'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
 import { ProductCardEarnMaker } from './ProductCardEarnMaker'
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
@@ -35,6 +36,7 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
   const [productCardsData, productCardsDataError] = useObservable(
     productCardsData$(props.strategies.maker),
   )
+
   const aaveStrategyCards = getTokens(props.strategies.aave ?? [])
 
   return (
@@ -45,6 +47,13 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
             {aaveStrategyCards.map((tokenData) => {
               const aaveStrategy = getAaveStrategy(tokenData.symbol)[0]
               switch (aaveStrategy.type) {
+                case 'Borrow':
+                  return (
+                    <ProductCardBorrowAave
+                      cardData={tokenData}
+                      key={`ProductCardBorrowAave_${tokenData.symbol}`}
+                    />
+                  )
                 case 'Multiply':
                   return (
                     <ProductCardMultiplyAave

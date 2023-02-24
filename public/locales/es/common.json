@@ -64,6 +64,7 @@
   "connect-email": "Conéctese con su correo electrónico",
   "connect-error": "Por favor, autorice a este sitio web a acceder a su cuenta Ethereum.",
   "connect-wallet": "Conecte su cartera",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "Ver productos",
   "connect-wallet-button": "Conecte su cartera",
   "connect-with": "{{ connectionKind }}",

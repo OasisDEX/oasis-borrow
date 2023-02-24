@@ -256,7 +256,7 @@ export function HomepageView() {
                     <BorrowProductCardsContainer
                       strategies={{
                         maker: productCardsConfig.landing.featuredIlkCards['borrow'],
-                        aave: [],
+                        aave: productCardsConfig.landing.featuredAaveCards['borrow'],
                       }}
                     />
                   }

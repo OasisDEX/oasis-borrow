@@ -1,7 +1,8 @@
 import { PillAccordion } from 'components/PillAccordion'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import { AjnaFormFieldDeposit } from 'features/ajna/common/sidebars/AjnaFormFields'
-import { AjnaEarnSlider, ajnaSliderDefaults } from 'features/ajna/earn/components/AjnaEarnSlider'
+import { AjnaEarnSlider } from 'features/ajna/earn/components/AjnaEarnSlider'
 import { AjnaEarnFormContentSummary } from 'features/ajna/earn/sidebars/AjnaEarnFormContentSummary'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -14,12 +15,21 @@ export function AjnaEarnFormContentDeposit() {
       state: { depositAmount },
     },
   } = useAjnaProductContext('earn')
+  const {
+    environment: { quoteBalance, quotePrice, quoteToken },
+  } = useAjnaGeneralContext()
 
   return (
     <>
-      <AjnaFormFieldDeposit dispatchAmount={dispatch} resetOnClear />
+      <AjnaFormFieldDeposit
+        dispatchAmount={dispatch}
+        token={quoteToken}
+        tokenPrice={quotePrice}
+        tokenBalance={quoteBalance}
+        resetOnClear
+      />
       <PillAccordion title={t('ajna.earn.manage.form.adjust-lending-price-bucket')}>
-        <AjnaEarnSlider {...ajnaSliderDefaults} />
+        <AjnaEarnSlider />
       </PillAccordion>
       {depositAmount && <AjnaEarnFormContentSummary />}
     </>

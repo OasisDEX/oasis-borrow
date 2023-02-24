@@ -2,20 +2,21 @@ import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { ReactNode, useState } from 'react'
 import React from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 export interface DropDownValue {
-  label?: string
+  label?: TranslateStringType
   value: string | ReactNode
   secondaryValue?: string
 }
 
 export interface ItemProps {
-  label?: string
+  label?: TranslateStringType
   labelColorPrimary?: boolean
-  subLabel?: string
+  subLabel?: TranslateStringType
   value?: string | BigNumber | ReactNode
   // Select element type if you wish to render custom components within a dropdown
   dropDownElementType?: 'element' | 'default'
@@ -26,7 +27,7 @@ export interface ItemProps {
 }
 
 export function InfoSectionLoadingState() {
-  return <Skeleton width="88px" height="12px" dark />
+  return <Skeleton width="88px" height="12px" color="dark" />
 }
 
 // TODO: Add tooltip and loading state

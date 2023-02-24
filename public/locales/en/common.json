@@ -86,6 +86,7 @@
   "connect-email": "Connect with email",
   "connect-error": "Please authorize this website to access your Ethereum account.",
   "connect-wallet": "Connect a wallet",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "See products",
   "connect-wallet-button": "Connect Wallet",
   "connect-with": "{{ connectionKind }}",
@@ -1036,6 +1037,7 @@
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
+    "max-loan-to-value": "Max Loan To Value",
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day net APY",
     "ninety-day-average": "90 day net APY",
@@ -1633,7 +1635,12 @@
       "wBTCusdc": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
-      }
+      },
+      "borrow-against-ETH": {
+        "title": "AAVE ETH",
+        "description": "A position to borrow against your ETH in AAVE"
+      },
+      "tokens-for-borrowing": "Tokens for Borrowing"
     },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
@@ -1655,7 +1662,8 @@
     },
     "aave": {
       "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH"
+      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH",
+      "borrow-against-ETH": "Borrow up to ${{value}}"
     }
   },
   "product-card-title": {
@@ -2441,7 +2449,7 @@
           "intro": "Select the crypto asset you want to earn for lending your {{token}}"
         },
         "headline": {
-          "header": "Lend {{collateralToken}} against {{quoteToken}}"
+          "header": "Lend {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
           "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
@@ -2477,6 +2485,31 @@
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited."
+    },
+    "rewards": {
+      "page-title": "Your Ajna token rewards",
+      "page-description": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
+      "cards": {
+        "mining": {
+          "title": "$AJNA Liquidity Mining Rewards",
+          "list-1": "Rewards Earn Positions only",
+          "list-2": "Earn a Proportional % of pool interest generated",
+          "link": "Learn more about Ajna Liquidity Mining Rewards",
+          "banner": {
+            "title": "$AJNA Liquidity mining rewards on 4 positions"
+          }
+        },
+        "token": {
+          "title": "$AJNA Token Rewards",
+          "list-1": "Rewards exclusive to Oasis.app users only!",
+          "list-2": "Rewards for Borrowing, Lending and Multiplying",
+          "link": "Learn more about Ajna Token Rewards",
+          "banner": {
+            "title": "Your $AJNA token rewards on 4 positions"
+          }
+        },
+        "button": "Claim AJNA Tokens"
+      }
     }
   }
 }

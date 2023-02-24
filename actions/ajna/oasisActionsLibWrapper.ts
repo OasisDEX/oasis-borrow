@@ -1,24 +1,25 @@
-import { strategies } from '@oasisdex/oasis-actions'
-import { AjnaActionData } from 'actions/ajna/types'
+import { strategies } from '@oasis-actions-poc'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaPoolPairs } from 'features/ajna/common/types'
-import { AjnaEarnPosition } from 'features/ajna/earn/fakePosition'
+import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
-import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
+import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
+import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
+import { Strategy } from '@oasis-actions-poc/src/types/common'
 
 interface AjnaTxHandlerInput {
   collateralToken: string
   context: Context
-  position: AjnaPosition | AjnaEarnPosition
+  position: AjnaPosition | AjnaEarn
   quoteToken: string
   state: AjnaFormState
 }
 
-export async function getAjnaParameters<P>({
+export async function getAjnaParameters({
   collateralToken,
   context,
   position,
@@ -27,9 +28,9 @@ export async function getAjnaParameters<P>({
   state,
 }: AjnaTxHandlerInput & {
   rpcProvider: ethers.providers.Provider
-}): Promise<AjnaActionData<P>> {
+}): Promise<Strategy<AjnaPosition | AjnaEarn>> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const defaultPromise = Promise.resolve({} as AjnaActionData<P>)
+  const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarn>)
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
@@ -55,7 +56,7 @@ export async function getAjnaParameters<P>({
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
-  const price = new BigNumber(16821273)
+  const borrowPrice = new BigNumber(16821273)
 
   // intentionally allowed for fallthrough; if none of conditions are met, just go to default return
   /* eslint-disable no-fallthrough */
@@ -64,13 +65,12 @@ export async function getAjnaParameters<P>({
       const { depositAmount, generateAmount } = state
 
       if (depositAmount) {
-        // @ts-ignore
-        return strategies.ajna.open(
+        return strategies.ajna.borrow.open(
           {
             ...commonPayload,
             quoteAmount: generateAmount || zero,
             collateralAmount: depositAmount,
-            price,
+            price: borrowPrice,
           },
           dependencies,
         )
@@ -80,13 +80,12 @@ export async function getAjnaParameters<P>({
       const { depositAmount, generateAmount } = state
 
       if (depositAmount) {
-        // @ts-ignore
-        return strategies.ajna.depositBorrow(
+        return strategies.ajna.borrow.depositBorrow(
           {
             ...commonPayload,
             quoteAmount: generateAmount || zero,
             collateralAmount: depositAmount,
-            price,
+            price: borrowPrice,
             position: position as AjnaPosition,
           },
           dependencies,
@@ -97,13 +96,12 @@ export async function getAjnaParameters<P>({
       const { depositAmount, generateAmount } = state
 
       if (generateAmount) {
-        // @ts-ignore
-        return strategies.ajna.depositBorrow(
+        return strategies.ajna.borrow.depositBorrow(
           {
             ...commonPayload,
             quoteAmount: generateAmount,
             collateralAmount: depositAmount || zero,
-            price,
+            price: borrowPrice,
             position: position as AjnaPosition,
           },
           dependencies,
@@ -114,8 +112,7 @@ export async function getAjnaParameters<P>({
       const { paybackAmount, withdrawAmount } = state
 
       if (paybackAmount) {
-        // @ts-ignore
-        return strategies.ajna.paybackWithdraw(
+        return strategies.ajna.borrow.paybackWithdraw(
           {
             ...commonPayload,
             quoteAmount: paybackAmount,
@@ -128,9 +125,7 @@ export async function getAjnaParameters<P>({
     }
     case 'withdraw-borrow': {
       const { paybackAmount, withdrawAmount } = state
-
       if (withdrawAmount) {
-        // @ts-ignore
         return strategies.ajna.paybackWithdraw(
           {
             ...commonPayload,
@@ -142,22 +137,22 @@ export async function getAjnaParameters<P>({
         )
       }
     }
-    // Earn example
-    // case 'withdraw-earn': {
-    //   const { price, withdrawAmount } = state as AjnaEarnFormState
-    //
-    //   if (withdrawAmount) {
-    //     return strategies.ajna.paybackWithdraw(
-    //       {
-    //         ...commonPayload,
-    //         price,
-    //         collateralAmount: withdrawAmount,
-    //         position: position as AjnaEarnPosition,
-    //       },
-    //       dependencies,
-    //     )
-    //   }
-    // }
+    case 'open-earn': {
+      const { price, depositAmount } = state as AjnaEarnFormState
+
+      if (depositAmount && price) {
+        return strategies.ajna.earn.open(
+          {
+            ...commonPayload,
+            price,
+            quoteAmount: depositAmount,
+            isStakingNft: false,
+            // position: position as AjnaEarn, // TODO currently not requried by interface, but will be
+          },
+          dependencies,
+        )
+      }
+    }
     default:
       return defaultPromise
   }

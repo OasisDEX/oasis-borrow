@@ -1,10 +1,23 @@
 import React from 'react'
 import { Box, Grid, SxStyleProp } from 'theme-ui'
 
+type SkeletonColorTheme = 'default' | 'dark' | 'positive' | 'negative'
+
+type SkeletonColorThemes = {
+  [key in SkeletonColorTheme]: [string, string]
+}
+
+const skeletonColorTheme: SkeletonColorThemes = {
+  dark: ['#dae1e4', '#ecf2f5'],
+  default: ['#e6e9eb', '#f8f7f9'],
+  negative: ['#ffeee9', '#fff9f7'],
+  positive: ['#e7fcfa', '#f7fefd'],
+}
+
 interface SkeletonProps {
   cols?: number
   count?: number
-  dark?: boolean
+  color?: SkeletonColorTheme
   doughnut?: string | number
   gap?: string | number
   width?: string | number
@@ -13,12 +26,14 @@ interface SkeletonProps {
 }
 
 function SkeletonLine({
-  dark,
+  color = 'default',
   doughnut,
   width = '100%',
   height = 3,
   sx,
 }: Omit<SkeletonProps, 'cols' | 'count' | 'gap'>) {
+  const theme = skeletonColorTheme[color]
+
   return (
     <Box
       sx={{
@@ -26,7 +41,7 @@ function SkeletonLine({
         width,
         height,
         borderRadius: doughnut ? 'ellipse' : 'medium',
-        backgroundColor: dark ? '#dae1e4' : '#e6e9eb',
+        backgroundColor: theme[0],
         overflow: 'hidden',
         ...sx,
         '&::after': {
@@ -36,9 +51,7 @@ function SkeletonLine({
           left: 0,
           width: '300%',
           height: '100%',
-          backgroundImage: dark
-            ? 'linear-gradient(90deg, #dae1e4 0%, #ecf2f5 33.3%, #ecf2f5 66.6%, #dae1e4 100%)'
-            : 'linear-gradient(90deg, #e6e9eb 0%, #f8f7f9 33.3%, #f8f7f9 66.6%, #e6e9eb 100%)',
+          backgroundImage: `linear-gradient(90deg, ${theme[0]} 0%, ${theme[1]} 33.3%, ${theme[1]} 66.6%, ${theme[0]} 100%)`,
           transform: 'translateX(-100%)',
           animation: 'gradient 1.5s infinite',
           animationFillMode: 'forwards',

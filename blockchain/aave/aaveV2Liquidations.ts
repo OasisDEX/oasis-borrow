@@ -1,9 +1,8 @@
 import { getNetworkId } from '@oasisdex/web3-context'
+import { Context, NetworkIds } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { AaveV2LendingPool } from 'types/web3-v1-contracts/aave-v2-lending-pool'
-
-import { Context, NetworkIds } from '../network'
 
 // TODO probably we would like to set here a block numbers of our aave deployment
 const aaveV2LendingPoolGenesisBlockMainnet = 11362579
@@ -43,7 +42,7 @@ export function getAaveV2PositionLiquidation$(
     switchMap(async ({ aaveV2LendingPool, contract }) => {
       const aaveLendingPoolContract = contract<AaveV2LendingPool>(aaveV2LendingPool)
 
-      const contractCalls = Promise.all<Web3ContractEvent[], Web3ContractEvent[]>([
+      const contractCalls = Promise.all<Web3ContractEvent[]>([
         aaveLendingPoolContract.getPastEvents('LiquidationCall', {
           filter: { user: proxyAddress },
           fromBlock: genesisBlock,

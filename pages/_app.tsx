@@ -22,6 +22,7 @@ import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
 import { loadFeatureToggles } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { appWithTranslation, i18n } from 'next-i18next'
@@ -50,9 +51,6 @@ function getLibrary(provider: any, connector: AbstractConnector | undefined): We
   const readOnlyEnhancedProvider = readOnlyEnhanceProvider(provider, chainIdPromise)
   return new Web3(readOnlyEnhancedProvider)
 }
-
-const FTPolarFontBold = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Bold')
-const FTPolarFontMedium = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Medium')
 
 const globalStyles = `
   html,
@@ -83,26 +81,8 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
-
-  @font-face {
-    font-family: 'FT Polar Trial';
-    src: url('${FTPolarFontMedium}.woff2') format('woff2'),
-        url('${FTPolarFontMedium}.woff') format('woff'),
-        url('${FTPolarFontMedium}.ttf') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'FT Polar Trial';
-    src: url('${FTPolarFontBold}.woff2') format('woff2'),
-        url('${FTPolarFontBold}.woff') format('woff'),
-        url('${FTPolarFontBold}.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
+  ${FTPolarBold.style.fontFamily}
+  ${FTPolarMedium.style.fontFamily}
 `
 
 // extending Component with static properties that can be attached to it

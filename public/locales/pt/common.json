@@ -52,6 +52,7 @@
   "connect-email": "Conecte-se com e-mail",
   "connect-error": "Por favor, autorize o site acessar sua conta Ethereum.",
   "connect-wallet": "Conecte uma carteira",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "connect-wallet-button": "Conectar carteira",
   "connect-with": "{{ connectionKind }}",
   "connect-install-metamask": "Instalar Metamask",
