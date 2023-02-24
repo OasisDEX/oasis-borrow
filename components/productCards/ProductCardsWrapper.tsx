@@ -6,14 +6,18 @@ import { useTheme } from 'theme/useThemeUI'
 
 interface ProductCardWrapperProps {
   children: Array<ReactNode>
+  desktopWidthOfCard?: number
   sx?: SxStyleProp
 }
 
-export function ProductCardsWrapper({ children, sx }: ProductCardWrapperProps) {
+export function ProductCardsWrapper({
+  children,
+  sx,
+  desktopWidthOfCard = 378,
+}: ProductCardWrapperProps) {
   const { theme } = useTheme()
   const childrenLength = children.flat().filter(Boolean).length
   const gapSpace = theme.space[4]
-  const desktopWidthOfCard = 378
   const desktopWidthOfGrid = (childrenLength - 1) * gapSpace + childrenLength * desktopWidthOfCard
 
   return (
