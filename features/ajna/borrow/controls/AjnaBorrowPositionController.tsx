@@ -24,7 +24,7 @@ export function AjnaBorrowPositionController() {
           label: t('ajna.borrow.common.headline.current-market-price', { collateralToken }),
           value: `${formatCryptoBalance(
             collateralPrice.dividedBy(quotePrice),
-          )} ${collateralPrice}/${quoteToken}`,
+          )} ${collateralToken}/${quoteToken}`,
         },
       ]}
       tabs={{
