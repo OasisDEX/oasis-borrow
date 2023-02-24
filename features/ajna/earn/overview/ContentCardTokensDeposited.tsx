@@ -28,7 +28,7 @@ export function ContentCardTokensDeposited({
   const formatted = {
     tokensDeposited: formatAmount(tokensDeposited, quoteToken),
     afterTokensDeposited:
-    afterTokensDeposited && `${formatAmount(afterTokensDeposited, quoteToken)} ${quoteToken}`,
+      afterTokensDeposited && `${formatAmount(afterTokensDeposited, quoteToken)} ${quoteToken}`,
     tokensDepositedUSD: `$${formatAmount(tokensDepositedUSD, 'USD')}`,
   }
 
