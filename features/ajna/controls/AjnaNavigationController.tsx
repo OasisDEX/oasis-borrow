@@ -160,7 +160,7 @@ export function AjnaNavigationController() {
       links={[
         {
           label: 'Ajna Tokens',
-          link: '/ajna/tokens',
+          link: '/ajna/rewards',
         },
         ...(isConnected && !isViewBelowXl
           ? [
