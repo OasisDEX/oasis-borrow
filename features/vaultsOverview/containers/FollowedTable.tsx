@@ -8,6 +8,7 @@ import { PositionTableEmptyState } from 'features/vaultsOverview/components/Posi
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
   followTableSkippedHeaders,
+  getAaveMultiplyPositions,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
@@ -19,7 +20,7 @@ import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
@@ -31,7 +32,7 @@ export function FollowedTable({ address }: { address: string }) {
   const [followedMakerVaultsData, followedMakerVaultsError] = useObservable(
     followedMakerVaults$(checksumAddress),
   )
-  const [followedAavePositionsData, followedAavePositionsError] = useObservable(followedAavePositions$(checksumAddress))
+  // const [followedAavePositionsData, followedAavePositionsError] = useObservable(followedAavePositions$(checksumAddress))
   const isOwner = address === walletAddress
 
   return (
