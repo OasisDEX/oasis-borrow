@@ -1,5 +1,5 @@
-import { getNetworkId } from '@oasisdex/web3-context'
 import { Context, NetworkIds } from 'blockchain/network'
+import { getNetworkId } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { AaveV2LendingPool } from 'types/web3-v1-contracts/aave-v2-lending-pool'

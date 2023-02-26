@@ -1,5 +1,4 @@
 import { TriggerType } from '@oasisdex/automation'
-import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context, every5Seconds$ } from 'blockchain/network'
@@ -22,6 +21,7 @@ import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { getNetworkId } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'

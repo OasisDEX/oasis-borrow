@@ -1,7 +1,7 @@
-import { ContractDesc } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
+import { ContractDesc } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'

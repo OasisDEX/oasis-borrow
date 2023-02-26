@@ -28,6 +28,7 @@ export type Feature =
   | 'Ajna'
   | 'DaiSavingsRate'
   | 'FollowAAVEVaults'
+  | 'UseBlocknativeOnboard'
   | 'GoerliButton'
   | '🌞'
 
@@ -56,6 +57,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   Ajna: false,
   DaiSavingsRate: true,
   FollowAAVEVaults: false,
+  UseBlocknativeOnboard: true,
   // Added for gnosis safe testing
   GoerliButton: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.

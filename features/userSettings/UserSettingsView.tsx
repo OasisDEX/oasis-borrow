@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useConnectWallet } from '@web3-onboard/react'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import {
@@ -14,9 +15,10 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import {
   Box,
@@ -319,6 +321,19 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
   const { socket } = useNotificationSocket()
+  const useBlocknativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
+  const [{ wallet }, , disconnectWallet] = useConnectWallet()
+
+  const disconnectCallback = useCallback(async () => {
+    socket?.disconnect()
+    console.log(`Disconnecting wallet...`)
+    console.log(`Current wallet from onboard: ${wallet?.label}`)
+    if (useBlocknativeOnBoard && wallet) {
+      console.log(`Disconnecting wallet ${wallet.label}...`)
+      await disconnectWallet(wallet)
+    }
+    disconnect(web3Context)
+  }, [disconnectWallet, socket, useBlocknativeOnBoard, wallet, web3Context])
 
   return (
     <Box sx={sx}>
@@ -339,9 +354,8 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
           display: 'flex',
           alignItems: 'center',
         }}
-        onClick={() => {
-          socket?.disconnect()
-          disconnect(web3Context)
+        onClick={async () => {
+          await disconnectCallback()
         }}
       >
         <Icon name="sign_out" color="primary60" size="auto" width={20} />

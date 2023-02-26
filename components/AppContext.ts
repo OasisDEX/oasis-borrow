@@ -1,5 +1,4 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
-import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
@@ -289,6 +288,7 @@ import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positio
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createPositionsList$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
+import { createWeb3Context$ } from 'features/web3Context'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
 import {
@@ -556,7 +556,7 @@ export function setupAppContext() {
 
   const connectedContext$ = createContextConnected$(context$)
 
-  combineLatest(account$, connectedContext$)
+  combineLatest([account$, connectedContext$])
     .pipe(
       mergeMap(([account, network]) => {
         return of({

@@ -1,7 +1,6 @@
 import { Result } from '@ethersproject/abi'
 import { TriggerType } from '@oasisdex/automation'
 import { decodeTriggerDataAsJson } from '@oasisdex/automation'
-import { getNetworkId } from '@oasisdex/web3-context'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -34,6 +33,7 @@ import {
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { getNetworkId } from 'features/web3Context'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'

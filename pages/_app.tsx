@@ -1,6 +1,7 @@
 import { CacheProvider, Global } from '@emotion/core'
 // @ts-ignore
 import { MDXProvider } from '@mdx-js/react'
+import { Web3OnboardProvider } from '@web3-onboard/react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { adRollPixelScript } from 'analytics/adroll'
@@ -19,6 +20,7 @@ import { NotificationSocketProvider } from 'components/NotificationSocketProvide
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
+import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
@@ -139,7 +141,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
       }
       mount.current = true
     }
-  }, [router.isReady])
+  }, [router])
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
@@ -155,7 +157,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
-  }, [])
+  }, [router.events])
 
   return (
     <>
@@ -179,24 +181,27 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                   <HeadTags />
                   {seoTags}
                   <SetupWeb3Context>
-                    <SharedUIProvider>
-                      <GasEstimationContextProvider>
-                        <NotificationSocketProvider>
-                          <WithFollowVaults>
-                            <Layout {...layoutProps}>
-                              <Component {...pageProps} />
-                              <CookieBanner setValue={setValue} value={value} />
-                            </Layout>
-                          </WithFollowVaults>
-                        </NotificationSocketProvider>
-                      </GasEstimationContextProvider>
-                    </SharedUIProvider>
+                    <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+                      <SharedUIProvider>
+                        <GasEstimationContextProvider>
+                          <NotificationSocketProvider>
+                            <WithFollowVaults>
+                              <Layout {...layoutProps}>
+                                <Component {...pageProps} />
+                                <CookieBanner setValue={setValue} value={value} />
+                              </Layout>
+                            </WithFollowVaults>
+                          </NotificationSocketProvider>
+                        </GasEstimationContextProvider>
+                      </SharedUIProvider>
+                    </Web3OnboardProvider>
                   </SetupWeb3Context>
                 </ModalProvider>
               </AppContextProvider>
             </Web3ReactProvider>
           </MDXProvider>
         </CacheProvider>
+        //{' '}
       </ThemeProvider>
     </>
   )
