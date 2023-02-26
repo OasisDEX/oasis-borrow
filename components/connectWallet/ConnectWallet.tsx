@@ -178,12 +178,12 @@ function ConnectWalletButton({
 
   const handleMouseEnter = useMemo(
     () => (!isTouchDevice && !isSupported ? () => setTooltipOpen(true) : undefined),
-    [isTouchDevice, isSupported],
+    [isSupported, setTooltipOpen],
   )
 
   const handleMouseLeave = useMemo(
     () => (!isTouchDevice && !isSupported ? () => setTooltipOpen(false) : undefined),
-    [isTouchDevice, isSupported],
+    [isSupported, setTooltipOpen],
   )
 
   const handleClick = useCallback(() => {
@@ -192,7 +192,7 @@ function ConnectWalletButton({
     } else {
       setTooltipOpen(true)
     }
-  }, [connect, isSupported])
+  }, [connect, isSupported, setTooltipOpen])
 
   return (
     <ConnectWalletButtonWrapper {...{ missingInjectedWallet }}>
@@ -451,7 +451,7 @@ export function ConnectWallet() {
       }
     })
     return () => subscription.unsubscribe()
-  }, [])
+  }, [redirectState$, replace, web3Context$])
 
   useEffect(() => {
     if (web3Context?.status === 'error') {
@@ -462,7 +462,8 @@ export function ConnectWallet() {
         switchNetworkModal('userNetwork')
       }
     }
-  }, [web3Context?.status])
+    // eslint-disable-next-line
+  }, [switchNetworkModal, web3Context?.status])
 
   if (!web3Context) {
     return null
@@ -679,9 +680,9 @@ export function WithConnection({ children }: WithChildren) {
     if (web3Context && web3Context.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)
     }
-  }, [web3Context?.status])
+  }, [replace, web3Context, web3Context?.status])
 
-  useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
+  useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [web3Context$])
 
   return children
 }
@@ -709,7 +710,7 @@ export function WithWalletConnection({ children }: WithChildren) {
         replace(`/connect`, getCustomNetworkParameter()),
       )
     }
-  }, [web3Context?.status])
+  }, [replace, web3Context, web3Context$, web3Context?.status])
 
   return children
 }

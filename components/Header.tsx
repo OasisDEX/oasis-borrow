@@ -6,6 +6,7 @@ import { AppLink } from 'components/Links'
 import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { LANDING_PILLS } from 'content/landing'
+import { ConnectButton } from 'features/connect'
 import { DISCOVER_URL } from 'features/discover/helpers'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
@@ -788,13 +789,14 @@ function MobileMenu() {
 }
 
 function DisconnectedHeader() {
+  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
-            <ConnectWalletButton />
+            {useBlockNative ? <ConnectButton /> : <ConnectWalletButton />}
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}
             />

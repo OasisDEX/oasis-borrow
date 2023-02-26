@@ -28,6 +28,7 @@ export type Feature =
   | 'Ajna'
   | 'DaiSavingsRate'
   | 'FollowAAVEVaults'
+  | 'UseBlocknativeOnboard'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -54,6 +55,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   Ajna: false,
   DaiSavingsRate: true,
   FollowAAVEVaults: false,
+  UseBlocknativeOnboard: true,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
