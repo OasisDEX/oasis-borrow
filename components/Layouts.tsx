@@ -71,7 +71,7 @@ export function WithAnnouncementLayout({
           <Announcement
             text="Welcome to the new Oasis.app. We are thrilled to have you here."
             discordLink={EXTERNAL_LINKS.DISCORD}
-            link={EXTERNAL_LINKS.VARIOUS.MERKLING}
+            link={EXTERNAL_LINKS.ETHEREUM_ORG_MERKLING}
             linkText="Check blog post"
           />
         </Container>

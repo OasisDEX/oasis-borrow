@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -31,7 +32,7 @@ export function ReferralLayout({ children }: WithChildren) {
             <Text variant="paragraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
               {t('ref.intro-1')}{' '}
               <AppLink
-                href={`https://kb.oasis.app/help/a-step-by-step-guide-to-refer-a-friend`}
+                href={EXTERNAL_LINKS.KB.REFER_A_FRIEND}
                 target="_blank"
                 sx={{
                   fontSize: 3,
@@ -56,7 +57,7 @@ export function ReferralLayout({ children }: WithChildren) {
             <AppLink
               variant="inText"
               target="_blank"
-              href="https://kb.oasis.app/help/a-step-by-step-guide-to-refer-a-friend"
+              href={EXTERNAL_LINKS.KB.REFER_A_FRIEND}
               sx={{
                 pt: '8px',
                 fontSize: 2,
@@ -78,7 +79,7 @@ export function ReferralLayout({ children }: WithChildren) {
             <AppLink
               variant="inText"
               target="_blank"
-              href="https://kb.oasis.app/help"
+              href={EXTERNAL_LINKS.KB.HELP}
               sx={{
                 pt: '8px',
                 fontSize: 2,

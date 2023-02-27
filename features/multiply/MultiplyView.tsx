@@ -3,6 +3,7 @@ import { ProductCardMultiplyMaker } from 'components/productCards/ProductCardMul
 import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
 import { ProductHeader } from 'components/ProductHeader'
 import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { multiplyPageCardsData, productCardsConfig } from 'helpers/productCards'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -26,7 +27,7 @@ export function MultiplyView() {
         title={t('product-page.multiply.title')}
         description={t('product-page.multiply.description')}
         link={{
-          href: 'https://kb.oasis.app/help/what-is-multiply',
+          href: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
           text: t('product-page.multiply.link'),
         }}
         scrollToId={tab}
@@ -42,7 +43,7 @@ export function MultiplyView() {
       >
         {t('product-page.multiply.aaveDescription')}{' '}
         <AppLink
-          href="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
+          href={EXTERNAL_LINKS.BLOG.MULTIPLY_FOR_AAVE}
           sx={{ fontSize: 4, fontWeight: 'body' }}
         >
           {t('product-page.multiply.aaveLink')}

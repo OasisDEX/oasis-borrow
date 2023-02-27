@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading, Text } from 'theme-ui'
@@ -47,7 +48,7 @@ export function VaultInformation({ items }: VaultInformationProps) {
           <VaultInformationItem key={item.text} text={item.text} value={item.value} />
         ))}
       </DefinitionList>
-      <AppLink href="https://kb.oasis.app/help">
+      <AppLink href={EXTERNAL_LINKS.KB.HELP}>
         <WithArrow sx={{ color: 'interactive100', fontSize: 1, mt: 3 }}>
           {t('learn-more-at-oasis')}
         </WithArrow>

@@ -31,6 +31,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
@@ -215,10 +216,7 @@ export function SidebarAutoSellAddEditingStage({
               execCollRatio: autoSellState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
             })}{' '}
-        <AppLink
-          href="https://kb.oasis.app/help/setting-up-auto-sell-for-your-vault"
-          sx={{ fontSize: 2 }}
-        >
+        <AppLink href={EXTERNAL_LINKS.KB.SETTING_AUTO_SELL} sx={{ fontSize: 2 }}>
           {t('here')}.
         </AppLink>
       </Text>{' '}

@@ -254,7 +254,7 @@ export function HomepageView() {
         >
           <HomePageBanner
             heading={t('ref.banner')}
-            link="https://blog.oasis.app/expanding-earn-with-aave-v3/"
+            link={EXTERNAL_LINKS.BLOG.EXPANDING_EARN_AAVE_V3}
           />
         </Flex>
       )}
@@ -295,10 +295,7 @@ export function HomepageView() {
                       </AppLink>
                       <Box sx={{ mt: 3 }}>
                         {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
-                        <AppLink
-                          href="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
-                          variant="inText"
-                        >
+                        <AppLink href={EXTERNAL_LINKS.BLOG.MULTIPLY_FOR_AAVE} variant="inText">
                           {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
                         </AppLink>
                       </Box>
@@ -524,7 +521,7 @@ export function HomepageView() {
               primaryText={t('landing.why-oasis.sub-headers.security.primary')}
               secondaryText={t('landing.why-oasis.sub-headers.security.secondary')}
               ctaLabel={t('landing.why-oasis.sub-headers.security.cta')}
-              ctaURL={EXTERNAL_LINKS.HELP}
+              ctaURL={EXTERNAL_LINKS.KB.HELP}
               sx={{ alignSelf: 'center' }}
             />
             <Box>
@@ -588,15 +585,15 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.learn.deep-dive')}
             links={[
               {
-                href: 'https://kb.oasis.app/help/getting-started',
+                href: EXTERNAL_LINKS.KB.GETTING_STARTED,
                 text: t('landing.info-cards.learn.get-started'),
               },
               {
-                href: 'https://kb.oasis.app/help/tutorials',
+                href: EXTERNAL_LINKS.KB.TUTORIALS,
                 text: t('landing.info-cards.learn.tutorials'),
               },
               {
-                href: 'https://kb.oasis.app/help/borrow',
+                href: EXTERNAL_LINKS.KB.BORROW,
                 text: t('landing.info-cards.learn.key-concepts'),
               },
             ]}
@@ -608,7 +605,7 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.support.contact-whenever')}
             links={[
               {
-                href: `${EXTERNAL_LINKS.HELP}/frequently-asked-questions`,
+                href: `${EXTERNAL_LINKS.KB.HELP}/frequently-asked-questions`,
                 text: t('landing.info-cards.support.faq'),
               },
               {

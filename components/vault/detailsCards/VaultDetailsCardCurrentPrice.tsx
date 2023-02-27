@@ -1,3 +1,4 @@
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans } from 'next-i18next'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -39,7 +40,7 @@ export function VaultDetailsCardCurrentPriceModal({
             i18nKey="manage-multiply-vault.card.more-info-oracles"
             components={[
               <AppLink
-                href="https://kb.oasis.app/help/the-oracle-security-module"
+                href={EXTERNAL_LINKS.KB.ORACLE_SECURITY}
                 withAccountPrefix={false}
                 target="_blank"
                 sx={{

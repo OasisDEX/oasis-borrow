@@ -36,8 +36,6 @@ export function PageSEONoFollow() {
   )
 }
 
-const APP_URL = 'https://oasis.app'
-
 export function PageSEOTags({
   title,
   titleParams,
@@ -92,8 +90,8 @@ export function PageSEOTags({
         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
       />
 
-      <meta property="og:url" content={`${APP_URL}${url}`} />
-      <link rel="canonical" href={`${APP_URL}${url}`} />
+      <meta property="og:url" content={`${INTERNAL_LINKS.appUrl}${url}`} />
+      <link rel="canonical" href={`${INTERNAL_LINKS.appUrl}${url}`} />
 
       <meta
         property="og:image"

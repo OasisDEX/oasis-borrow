@@ -33,10 +33,10 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.resources',
     links: [
-      { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG, target: '_self' },
+      { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG.MAIN, target: '_self' },
       // add link
-      { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.HELP, target: '_blank' },
-      { labelKey: 'nav.contact', url: EXTERNAL_LINKS.CONTACT, target: '_blank' },
+      { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.KB.HELP, target: '_blank' },
+      { labelKey: 'nav.contact', url: EXTERNAL_LINKS.KB.CONTACT, target: '_blank' },
       { labelKey: 'nav.bug-bounty', url: EXTERNAL_LINKS.BUG_BOUNTY, target: '_blank' },
       { labelKey: 'nav.referrals', url: INTERNAL_LINKS.referrals },
       { labelKey: 'nav.brand-assets', url: INTERNAL_LINKS.brand },

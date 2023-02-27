@@ -4,7 +4,7 @@ import {
   AdjustRiskViewConfig,
   richFormattedBoundary,
 } from 'features/aave/common/components/SidebarAdjustRiskView'
-import { externalLinks } from 'helpers/externalLinks'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatBigNumber } from 'helpers/formatters/format'
 
 const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
@@ -19,7 +19,7 @@ const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
     translationKey: 'open-earn.aave.vault-form.configure-multiple.current-price',
   },
   link: {
-    url: externalLinks.stethHistory,
+    url: EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY,
     textTranslationKey: 'open-earn.aave.vault-form.configure-multiple.historical-ratio',
   },
   riskRatios: {
@@ -40,7 +40,7 @@ const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
     translationKey: 'open-earn.aave.vault-form.configure-multiple.current-price',
   },
   link: {
-    url: externalLinks.stethHistory,
+    url: EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY,
     textTranslationKey: 'open-earn.aave.vault-form.configure-multiple.historical-ratio',
   },
   riskRatios: {
