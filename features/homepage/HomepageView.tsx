@@ -30,6 +30,7 @@ import { slideInAnimation } from 'theme/animations'
 
 import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
+import { OasisStats } from './OasisStats'
 
 interface PillProps {
   label: string
@@ -94,11 +95,14 @@ function StatCell({ label, value }: { label: string; value: string }) {
   )
 }
 
-function Stats({ sx }: { sx?: SxProps }) {
+function ManagedVolumeStats({
+  sx,
+  oasisStatsValue,
+}: {
+  sx?: SxProps
+  oasisStatsValue?: OasisStats
+}) {
   const { t } = useTranslation()
-  const { getOasisStats$ } = useAppContext()
-
-  const [oasisStatsValue] = useObservable(getOasisStats$())
 
   if (!oasisStatsValue) {
     return null
@@ -122,8 +126,65 @@ function Stats({ sx }: { sx?: SxProps }) {
   )
 }
 
+function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
+  const { t } = useTranslation()
+
+  if (!oasisStatsValue) {
+    return null
+  }
+  return (
+    <HomepagePromoBlock.Big
+      background="linear-gradient(90.65deg, #FCF1FE 1.31%, #FFF1F6 99.99%)"
+      height="128px"
+      sx={{ mt: 3, pt: 4 }}
+    >
+      <Grid columns={['1fr 1fr 1fr 1fr']}>
+        <Box>
+          <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+            {t('landing.why-oasis.stats-labels.vaults-automated')}
+          </Text>
+          <Text variant="header4" sx={{ textAlign: 'center' }}>
+            {oasisStatsValue.vaultsWithActiveTrigger}
+          </Text>
+        </Box>
+        <Box>
+          <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+            {t('landing.why-oasis.stats-labels.collateral-automated')}
+          </Text>
+          <Text variant="header4" sx={{ textAlign: 'center' }}>
+            $
+            {formatAsShorthandNumbers(
+              new BigNumber(oasisStatsValue.lockedCollateralActiveTrigger),
+              2,
+            )}
+          </Text>
+        </Box>
+        <Box>
+          <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+            {t('landing.why-oasis.stats-labels.actions-executed')}
+          </Text>
+          <Text variant="header4" sx={{ textAlign: 'center' }}>
+            {oasisStatsValue.executedTriggersLast90Days}
+          </Text>
+        </Box>
+        <Box>
+          <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+            {t('landing.why-oasis.stats-labels.success-rate')}
+          </Text>
+          <Text variant="header4" sx={{ textAlign: 'center' }}>
+            {oasisStatsValue.triggersSuccessRate}%
+          </Text>
+        </Box>
+      </Grid>
+    </HomepagePromoBlock.Big>
+  )
+}
+
 export function HomepageView() {
   const { t } = useTranslation()
+  const { getOasisStats$ } = useAppContext()
+
+  const [oasisStatsValue] = useObservable(getOasisStats$())
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const notificationsEnabled = useFeatureToggle('Notifications')
@@ -207,19 +268,8 @@ export function HomepageView() {
         heading="landing.hero.maker.headline"
         subheading={<Trans i18nKey="landing.hero.maker.subheader" components={[<br />]} />}
       />
-
-      <Pills
-        sx={{
-          mb: 5,
-        }}
-      />
-
-      <Stats
-        sx={{
-          mb: 6,
-        }}
-      />
-
+      <Pills sx={{ mb: 5 }} />
+      <ManagedVolumeStats sx={{ mb: 6 }} oasisStatsValue={oasisStatsValue} />
       <Box
         sx={{
           width: '100%',
@@ -452,46 +502,7 @@ export function HomepageView() {
             </Flex>
           </HomepagePromoBlock.Big>
         </Grid>
-        <HomepagePromoBlock.Big
-          background="linear-gradient(90.65deg, #FCF1FE 1.31%, #FFF1F6 99.99%)"
-          height="128px"
-          sx={{ mt: 3, pt: 4 }}
-        >
-          <Grid columns={['1fr 1fr 1fr 1fr']}>
-            <Box>
-              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                {t('landing.why-oasis.stats-labels.vaults-automated')}
-              </Text>
-              <Text variant="header4" sx={{ textAlign: 'center' }}>
-                150
-              </Text>
-            </Box>
-            <Box>
-              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                {t('landing.why-oasis.stats-labels.collateral-automated')}
-              </Text>
-              <Text variant="header4" sx={{ textAlign: 'center' }}>
-                $95.3M
-              </Text>
-            </Box>
-            <Box>
-              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                {t('landing.why-oasis.stats-labels.actions-executed')}
-              </Text>
-              <Text variant="header4" sx={{ textAlign: 'center' }}>
-                42
-              </Text>
-            </Box>
-            <Box>
-              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                {t('landing.why-oasis.stats-labels.success-rate')}
-              </Text>
-              <Text variant="header4" sx={{ textAlign: 'center' }}>
-                100.00%
-              </Text>
-            </Box>
-          </Grid>
-        </HomepagePromoBlock.Big>
+        <WhyOasisStats oasisStatsValue={oasisStatsValue} />
         <Box
           sx={{
             mt: 7,
