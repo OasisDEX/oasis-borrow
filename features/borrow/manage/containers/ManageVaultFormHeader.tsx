@@ -2,11 +2,14 @@ import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { WithArrow } from 'components/WithArrow'
+import {
+  ManageStandardBorrowVaultState,
+  ManageVaultEditingStage,
+} from 'features/borrow/manage/pipes/manageVault'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
-
-import { ManageStandardBorrowVaultState, ManageVaultEditingStage } from '../pipes/manageVault'
 
 function ManageVaultEditingController({
   stage,
