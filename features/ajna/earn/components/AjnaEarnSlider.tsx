@@ -58,14 +58,14 @@ export const ajnaSliderDefaults = {
 export function AjnaEarnSlider() {
   const { t } = useTranslation()
   const {
+    environment: { collateralToken, quoteToken },
+  } = useAjnaGeneralContext()
+  const {
     form: {
       state: { price },
       updateState,
     },
   } = useAjnaProductContext('earn')
-  const {
-    environment: { collateralToken, quoteToken },
-  } = useAjnaGeneralContext()
 
   const { min, max, maxLtv, htp, lup, momp } = ajnaSliderDefaults
   const resolvedValue = (price || htp).decimalPlaces(2)

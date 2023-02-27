@@ -13,7 +13,6 @@ import React from 'react'
 
 export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
-
   const {
     environment: { collateralToken, quoteToken },
     tx: { isTxSuccess, txDetails },

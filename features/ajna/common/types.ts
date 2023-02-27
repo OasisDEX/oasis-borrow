@@ -19,7 +19,7 @@ export type AjnaBorrowAction =
 export type AjnaBorrowPanel = 'collateral' | 'quote'
 
 export type AjnaEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn'
-export type AjnaEarnPanel = 'adjust' | 'collateral'
+export type AjnaEarnPanel = 'adjust' | 'liquidity'
 
 export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction'
 export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>

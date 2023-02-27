@@ -25,12 +25,12 @@ interface AjnaFormFieldExtended<D> extends AjnaFormField<D> {
 }
 
 export function AjnaFormFieldDeposit({
-  token,
-  tokenPrice,
-  tokenBalance,
   dispatchAmount,
   isDisabled,
   resetOnClear,
+  token,
+  tokenBalance,
+  tokenPrice,
 }: AjnaFormFieldExtended<AjnaFormActionsUpdateDeposit>) {
   const { t } = useTranslation()
   const {
@@ -179,11 +179,11 @@ export function AjnaFormFieldPayback({
 }
 
 export function AjnaFormFieldWithdraw({
-  token,
-  tokenPrice,
   dispatchAmount,
   isDisabled,
   resetOnClear,
+  token,
+  tokenPrice,
 }: AjnaFormFieldExtended<AjnaFormActionsUpdateWithdraw>) {
   const {
     environment: { product },
