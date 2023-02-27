@@ -217,7 +217,7 @@ export function HomepageView() {
   useEffect(() => {
     const body = document.querySelectorAll('body')[0]
     if (!body) return
-    const eventHandler = (event: Event) => {
+    const eventHandler = (_event: Event) => {
       // no memo, these are not expensive calculations
       const scrollingBlockElementRect = scrollingBlockRef.current?.getBoundingClientRect()
       const scrollingGridElementRect = scrollingGridRef.current?.getBoundingClientRect()
