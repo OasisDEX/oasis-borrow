@@ -47,7 +47,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     afterAvailableToWithdraw:
       simulationData?.collateralAvailable &&
       formatAmount(simulationData.collateralAvailable, collateralToken),
-    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails?.txCost, 'USD')}` : '-',
+    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
   return (
