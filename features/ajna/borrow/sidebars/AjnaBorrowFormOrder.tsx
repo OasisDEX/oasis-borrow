@@ -90,7 +90,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           secondaryValue: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
           isLoading,
         },
-        isTxSuccess && formatted.totalCost
+        isTxSuccess && cached
           ? {
               label: t('system.total-cost'),
               value: formatted.totalCost,

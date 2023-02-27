@@ -70,7 +70,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
         //   secondaryValue: formatted.afterMaxLtv,
         //   isLoading,
         // },
-        // isTxSuccess && formatted.totalCost
+        // isTxSuccess && cached
         //   ? {
         //     label: t('system.total-cost'),
         //     value: formatted.totalCost,
