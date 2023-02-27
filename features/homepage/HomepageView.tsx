@@ -24,7 +24,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
@@ -134,6 +134,7 @@ export function HomepageView() {
   const [userReferral] = useObservable(userReferral$)
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
+  const [scrollPercentage, setScrollPercentage] = useState(0)
 
   const router = useRouter()
 
@@ -146,6 +147,49 @@ export function HomepageView() {
       }
     }
   }, [checkReferralLocal, router.isReady])
+
+  const scrollingTextRef = useRef<HTMLDivElement>(null)
+  const scrollingGridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const body = document.querySelectorAll('body')[0]
+    if (!body) return
+    const eventHandler = (event: Event) => {
+      const startPositionOffset = 100 // margins
+      const endPositionOffset = 300 // margins
+      const scrollingTextElementRect = scrollingTextRef.current?.getBoundingClientRect()
+      const scrollingGridElementRect = scrollingGridRef.current?.getBoundingClientRect()
+      const scrollingTextPositionTop = scrollingTextElementRect?.top || 0
+      const scrollingGridPositionTop = scrollingGridElementRect?.top || 0
+      const scrollingTextHeight = scrollingTextElementRect?.height || 0
+      const scrollingGridHeight = scrollingGridElementRect?.height || 0
+      const currentPositionsDiff =
+        Math.abs(scrollingGridPositionTop - scrollingTextPositionTop) - startPositionOffset
+      const endPositionsDiff =
+        scrollingGridHeight - scrollingTextHeight - endPositionOffset - startPositionOffset
+      const tempScrollPercentage = (currentPositionsDiff / endPositionsDiff) * 100
+      // console.log(
+      //   JSON.stringify(
+      //     {
+      //       bodyScrollTop,
+      //       bodyHeight,
+      //       scrollingTextPositionTop,
+      //       scrollingGridPositionTop,
+      //       currentPositionsDiff,
+      //       endPositionsDiff,
+      //       scrollPercentage,
+      //     },
+      //     null,
+      //     2,
+      //   ),
+      // )
+      setScrollPercentage(tempScrollPercentage)
+    }
+    body.addEventListener('scroll', eventHandler)
+    return () => {
+      body.removeEventListener('scroll', eventHandler)
+    }
+  }, [])
 
   return (
     <Box
@@ -292,7 +336,7 @@ export function HomepageView() {
         />
       </Box>
       <Box>
-        <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
+        <Text variant="header3" sx={{ textAlign: 'center', mt: 6, mb: 6 }}>
           Why use Oasis.app
         </Text>
         <HomepageHeadline
@@ -439,13 +483,44 @@ export function HomepageView() {
         <HomepagePromoBlock.Big
           background="linear-gradient(90.65deg, #FCF1FE 1.31%, #FFF1F6 99.99%)"
           height="128px"
-          sx={{ mt: 3 }}
+          sx={{ mt: 3, pt: 4 }}
         >
-          <Text variant="header3" sx={{ textAlign: 'center' }}>
-            stats go here
-          </Text>
+          <Grid columns={['1fr 1fr 1fr 1fr']}>
+            <Box>
+              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+                Vaults automated
+              </Text>
+              <Text variant="header4" sx={{ textAlign: 'center' }}>
+                150
+              </Text>
+            </Box>
+            <Box>
+              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+                Total Collateral Automated
+              </Text>
+              <Text variant="header4" sx={{ textAlign: 'center' }}>
+                $95.3M
+              </Text>
+            </Box>
+            <Box>
+              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+                Executed last 90 days
+              </Text>
+              <Text variant="header4" sx={{ textAlign: 'center' }}>
+                42
+              </Text>
+            </Box>
+            <Box>
+              <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+                Success Rate last 90 days
+              </Text>
+              <Text variant="header4" sx={{ textAlign: 'center' }}>
+                100.00%
+              </Text>
+            </Box>
+          </Grid>
         </HomepagePromoBlock.Big>
-        <Grid columns={['2fr 1fr']} sx={{ mt: 7, position: 'relative' }}>
+        <Grid columns={['2fr 1fr']} sx={{ mt: 7, position: 'relative' }} ref={scrollingGridRef}>
           <Box sx={{ pt: '100px', pb: '300px' }}>
             <HomepageHeadline
               primaryText="Your funds, your choice: "
@@ -453,6 +528,7 @@ export function HomepageView() {
               ctaURL={EXTERNAL_LINKS.HELP}
               ctaLabel="Know more about security"
               sx={{ position: 'sticky', top: 'calc(50% - 90px)' }}
+              wrapperRef={scrollingTextRef}
             />
           </Box>
           <Flex sx={{ flexDirection: 'column' }}>
@@ -461,7 +537,12 @@ export function HomepageView() {
               background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
               image={staticFilesRuntimeUrl('/static/img/homepage/12_1_oasis_app.svg')}
               height="330px"
-              sx={{ pb: 0, mb: 7 }}
+              sx={{
+                pb: 0,
+                mb: 7,
+                opacity: scrollPercentage >= 0 && scrollPercentage < 33.3 ? 1 : 0,
+                position: 'sticky',
+              }}
               imageSx={{ mb: 0 }}
             />
             <HomepagePromoBlock
@@ -469,7 +550,12 @@ export function HomepageView() {
               background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
               image={staticFilesRuntimeUrl('/static/img/homepage/12_2_verifiable_on_chain.svg')}
               height="330px"
-              sx={{ pb: 0, mb: 7 }}
+              sx={{
+                pb: 0,
+                mb: 7,
+                opacity: scrollPercentage >= 33.3 && scrollPercentage < 66.6 ? 1 : 0,
+                position: 'sticky',
+              }}
               imageSx={{ mb: 0 }}
             />
             <HomepagePromoBlock
@@ -477,7 +563,12 @@ export function HomepageView() {
               background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
               image={staticFilesRuntimeUrl('/static/img/homepage/12_3_no_black_boxes.svg')}
               height="330px"
-              sx={{ pb: 0, mb: 7 }}
+              sx={{
+                pb: 0,
+                mb: 7,
+                opacity: scrollPercentage >= 66.6 && scrollPercentage <= 100 ? 1 : 0,
+                position: 'sticky',
+              }}
               imageSx={{ mb: 0 }}
             />
           </Flex>

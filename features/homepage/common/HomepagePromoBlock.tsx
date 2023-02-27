@@ -28,6 +28,7 @@ const HomepagePromoBlock = ({
       height,
       width,
       background,
+      transition: '0.2s opacity ease-in-out',
       ...sx,
     }}
   >
