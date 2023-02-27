@@ -135,6 +135,8 @@ export function HomepageView() {
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
   const [scrollPercentage, setScrollPercentage] = useState(0)
+  const controlPointsHeight = 2000
+  const controlPointsBlockHeight = 330
 
   const router = useRouter()
 
@@ -148,41 +150,21 @@ export function HomepageView() {
     }
   }, [checkReferralLocal, router.isReady])
 
-  const scrollingTextRef = useRef<HTMLDivElement>(null)
+  const scrollingBlockRef = useRef<HTMLDivElement>(null)
   const scrollingGridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const body = document.querySelectorAll('body')[0]
     if (!body) return
     const eventHandler = (event: Event) => {
-      const startPositionOffset = 100 // margins
-      const endPositionOffset = 300 // margins
-      const scrollingTextElementRect = scrollingTextRef.current?.getBoundingClientRect()
+      // no memo, these are not expensive calculations
+      const scrollingBlockElementRect = scrollingBlockRef.current?.getBoundingClientRect()
       const scrollingGridElementRect = scrollingGridRef.current?.getBoundingClientRect()
-      const scrollingTextPositionTop = scrollingTextElementRect?.top || 0
+      const scrollingBlockPositionTop = scrollingBlockElementRect?.top || 0
       const scrollingGridPositionTop = scrollingGridElementRect?.top || 0
-      const scrollingTextHeight = scrollingTextElementRect?.height || 0
-      const scrollingGridHeight = scrollingGridElementRect?.height || 0
-      const currentPositionsDiff =
-        Math.abs(scrollingGridPositionTop - scrollingTextPositionTop) - startPositionOffset
-      const endPositionsDiff =
-        scrollingGridHeight - scrollingTextHeight - endPositionOffset - startPositionOffset
+      const currentPositionsDiff = Math.abs(scrollingGridPositionTop - scrollingBlockPositionTop)
+      const endPositionsDiff = controlPointsHeight - controlPointsBlockHeight
       const tempScrollPercentage = (currentPositionsDiff / endPositionsDiff) * 100
-      // console.log(
-      //   JSON.stringify(
-      //     {
-      //       bodyScrollTop,
-      //       bodyHeight,
-      //       scrollingTextPositionTop,
-      //       scrollingGridPositionTop,
-      //       currentPositionsDiff,
-      //       endPositionsDiff,
-      //       scrollPercentage,
-      //     },
-      //     null,
-      //     2,
-      //   ),
-      // )
       setScrollPercentage(tempScrollPercentage)
     }
     body.addEventListener('scroll', eventHandler)
@@ -520,59 +502,73 @@ export function HomepageView() {
             </Box>
           </Grid>
         </HomepagePromoBlock.Big>
-        <Grid columns={['2fr 1fr']} sx={{ mt: 7, position: 'relative' }} ref={scrollingGridRef}>
-          <Box sx={{ pt: '100px', pb: '300px' }}>
+        <Box
+          sx={{
+            mt: 7,
+            position: 'relative',
+            height: controlPointsHeight,
+          }}
+          ref={scrollingGridRef}
+        >
+          <Grid
+            columns={['2fr 1fr']}
+            sx={{
+              position: 'sticky',
+              top: 'calc(50% - 165px)',
+              height: `${controlPointsBlockHeight}px`,
+            }}
+            ref={scrollingBlockRef}
+          >
             <HomepageHeadline
               primaryText="Your funds, your choice: "
               secondaryText="park your capital and stay in full control all the time, with no exceptions"
               ctaURL={EXTERNAL_LINKS.HELP}
               ctaLabel="Know more about security"
-              sx={{ position: 'sticky', top: 'calc(50% - 90px)' }}
-              wrapperRef={scrollingTextRef}
+              sx={{ alignSelf: 'center' }}
             />
-          </Box>
-          <Flex sx={{ flexDirection: 'column' }}>
-            <HomepagePromoBlock
-              title="All assets are self custodied on Oasis.app"
-              background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
-              image={staticFilesRuntimeUrl('/static/img/homepage/12_1_oasis_app.svg')}
-              height="330px"
-              sx={{
-                pb: 0,
-                mb: 7,
-                opacity: scrollPercentage >= 0 && scrollPercentage < 33.3 ? 1 : 0,
-                position: 'sticky',
-              }}
-              imageSx={{ mb: 0 }}
-            />
-            <HomepagePromoBlock
-              title="Always verifiable on chain via a block explorer"
-              background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
-              image={staticFilesRuntimeUrl('/static/img/homepage/12_2_verifiable_on_chain.svg')}
-              height="330px"
-              sx={{
-                pb: 0,
-                mb: 7,
-                opacity: scrollPercentage >= 33.3 && scrollPercentage < 66.6 ? 1 : 0,
-                position: 'sticky',
-              }}
-              imageSx={{ mb: 0 }}
-            />
-            <HomepagePromoBlock
-              title="No black boxes, just smart contracts"
-              background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
-              image={staticFilesRuntimeUrl('/static/img/homepage/12_3_no_black_boxes.svg')}
-              height="330px"
-              sx={{
-                pb: 0,
-                mb: 7,
-                opacity: scrollPercentage >= 66.6 && scrollPercentage <= 100 ? 1 : 0,
-                position: 'sticky',
-              }}
-              imageSx={{ mb: 0 }}
-            />
-          </Flex>
-        </Grid>
+            <Box>
+              <HomepagePromoBlock
+                title="All assets are self custodied on Oasis.app"
+                background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+                image={staticFilesRuntimeUrl('/static/img/homepage/12_1_oasis_app.svg')}
+                height={`${controlPointsBlockHeight}px`}
+                sx={{
+                  pb: 0,
+                  opacity: scrollPercentage >= 0 && scrollPercentage < 20 ? 1 : 0,
+                  position: 'absolute',
+                  top: 0,
+                }}
+                imageSx={{ mb: 0 }}
+              />
+              <HomepagePromoBlock
+                title="Always verifiable on chain via a block explorer"
+                background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+                image={staticFilesRuntimeUrl('/static/img/homepage/12_2_verifiable_on_chain.svg')}
+                height={`${controlPointsBlockHeight}px`}
+                sx={{
+                  pb: 0,
+                  opacity: scrollPercentage >= 20 && scrollPercentage < 80 ? 1 : 0,
+                  position: 'absolute',
+                  top: 0,
+                }}
+                imageSx={{ mb: 0 }}
+              />
+              <HomepagePromoBlock
+                title="No black boxes, just smart contracts"
+                background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+                image={staticFilesRuntimeUrl('/static/img/homepage/12_3_no_black_boxes.svg')}
+                height={`${controlPointsBlockHeight}px`}
+                sx={{
+                  pb: 0,
+                  opacity: scrollPercentage >= 80 && scrollPercentage <= 100 ? 1 : 0,
+                  position: 'absolute',
+                  top: 0,
+                }}
+                imageSx={{ mb: 0 }}
+              />
+            </Box>
+          </Grid>
+        </Box>
       </Box>
       <Box>
         <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
