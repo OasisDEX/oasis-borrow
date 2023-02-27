@@ -70,9 +70,22 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
         //   secondaryValue: formatted.afterMaxLtv,
         //   isLoading,
         // },
+        // isTxSuccess && cached
+        //   ? {
+        //     label: t('system.total-cost'),
+        //     value: formatted.totalCost,
+        //     isLoading,
+        //   }
+        //   : {
+        //     label: t('system.max-transaction-cost'),
+        //     value: <GasEstimation />,
+        //     isLoading,
+        //   },
+        // TODO remove once condition above will be uncommented
         {
           label: t('system.max-transaction-cost'),
           value: <GasEstimation />,
+          isLoading,
         },
       ]}
     />

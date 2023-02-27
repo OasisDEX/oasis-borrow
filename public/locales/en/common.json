@@ -1104,6 +1104,7 @@
     "auto-take-profit": "Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
+    "total-cost": "Total transaction cost",
     "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
