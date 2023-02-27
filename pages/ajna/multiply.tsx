@@ -1,14 +1,28 @@
+import { AnimatedWrapper } from 'components/AnimatedWrapper'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PageSEOTags } from 'components/HeadTags'
-import { ajnaProducts } from 'features/ajna/common/consts'
-import { AjnaProductController } from 'features/ajna/common/controls/AjnaProductController'
-import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
-import { AjnaProduct } from 'features/ajna/common/types'
-import { GetServerSidePropsContext, GetStaticProps } from 'next'
+import { AjnaLayout, AjnaWrapper } from 'features/ajna/common/layout'
+import { AjnaHeader } from 'features/ajna/components/AjnaHeader'
+import { GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 function AjnaMultiplySelectorPage() {
-  return <>Multiply</>
+  const { t } = useTranslation()
+
+  return (
+    <WithConnection>
+      <AjnaWrapper>
+        <AnimatedWrapper>
+          <AjnaHeader
+            title={t('ajna.multiply.coming-soon.title')}
+            intro={t('ajna.multiply.coming-soon.intro')}
+          />
+        </AnimatedWrapper>
+      </AjnaWrapper>
+    </WithConnection>
+  )
 }
 
 AjnaMultiplySelectorPage.layout = AjnaLayout
