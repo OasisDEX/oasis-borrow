@@ -2504,7 +2504,7 @@
     },
     "rewards": {
       "title": "Your Ajna token rewards",
-      "intro": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
+      "intro": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more.",
       "cards": {
         "mining": {
           "title": "$AJNA Liquidity Mining Rewards",

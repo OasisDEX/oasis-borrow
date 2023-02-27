@@ -1,4 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
@@ -8,6 +9,7 @@ import { ajnaPoolDummyData } from 'features/ajna/common/content'
 import { filterPoolData } from 'features/ajna/common/helpers/filterPoolData'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
+import { AjnaHeader } from 'features/ajna/components/AjnaHeader'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
 import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
 import {
@@ -22,7 +24,7 @@ import { useHash } from 'helpers/useHash'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Button, Heading, Text } from 'theme-ui'
+import { Box, Button } from 'theme-ui'
 
 interface AjnaSelectorControllerProps {
   product: AjnaProduct
@@ -134,27 +136,27 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
     <WithConnection>
       <WithTermsOfService>
         <AjnaWrapper>
-          <Box sx={{ width: '100%' }}>
-            <Box sx={{ mb: 5, textAlign: 'center' }}>
-              <Heading ref={ref} variant="header2" sx={{ position: 'relative', mb: 3, zIndex: 2 }}>
-                {t(`ajna.${product}.open.select.heading.pre`)}
-                <HeaderSelector
-                  defaultOption={defaultOption}
-                  gradient={['#f154db', '#974eea']}
-                  options={options}
-                  parentRef={ref}
-                  onChange={setSelected}
-                />
-                {t(`ajna.${product}.open.select.heading.post`)}
-              </Heading>
-              <Text variant="paragraph2" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
-                {t(`ajna.${product}.open.select.intro`, { token: selected.value })}
-              </Text>
-            </Box>
+          <AnimatedWrapper>
+            <AjnaHeader
+              title={
+                <Box ref={ref} sx={{ position: 'relative', mb: 3, zIndex: 2 }}>
+                  {t(`ajna.${product}.open.select.heading.pre`)}
+                  <HeaderSelector
+                    defaultOption={defaultOption}
+                    gradient={['#f154db', '#974eea']}
+                    options={options}
+                    parentRef={ref}
+                    onChange={setSelected}
+                  />
+                  {t(`ajna.${product}.open.select.heading.post`)}
+                </Box>
+              }
+              intro={t(`ajna.${product}.open.select.intro`, { token: selected.value })}
+            />
             <DiscoverTableContainer tableOnly>
               {rows.length > 0 && <DiscoverResponsiveTable rows={rows} skip={['icon']} />}
             </DiscoverTableContainer>
-          </Box>
+          </AnimatedWrapper>
         </AjnaWrapper>
       </WithTermsOfService>
     </WithConnection>
