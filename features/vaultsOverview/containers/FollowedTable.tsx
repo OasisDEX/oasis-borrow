@@ -8,6 +8,7 @@ import { PositionTableEmptyState } from 'features/vaultsOverview/components/Posi
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
   followTableSkippedHeaders,
+  getAaveMultiplyPositions,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
@@ -31,35 +32,35 @@ export function FollowedTable({ address }: { address: string }) {
   const [followedMakerVaultsData, followedMakerVaultsError] = useObservable(
     useMemo(() => followedMakerVaults$(checksumAddress), [checksumAddress]),
   )
-  const [followedAavePositionsData, followedAavePositionsError] = useObservable(followedAavePositions$(checksumAddress))
+  const [followedAavePositionsData, followedAavePositionsError] = useObservable(
+    followedAavePositions$(checksumAddress),
+  )
   const isOwner = address === walletAddress
 
   const multiplyPositions = useMemo(() => {
-    return followedMakerVaultsData /*&& followedAavePositionsData */
+    return followedMakerVaultsData && followedAavePositionsData
       ? [
           ...getMakerMultiplyPositions(followedMakerVaultsData),
-          // ...getAaveMultiplyPositions(followedAavePositionsData),
+          ...getAaveMultiplyPositions(followedAavePositionsData),
         ]
       : []
-  }, [followedMakerVaultsData /*, followedAavePositionsData*/])
-  console.log('multiply')
+  }, [followedMakerVaultsData, followedAavePositionsData])
+  console.log('multiply positions')
   console.log(multiplyPositions)
+  console.log('followed aave positions data')
   console.log(followedAavePositionsData)
+  console.log('followed aave positions error')
   console.log(followedAavePositionsError)
+  console.log('multiply positions aave')
+  console.log(multiplyPositions[1])
   return (
-    <WithErrorHandler
-      error={[contextError, followedMakerVaultsError /*, followedAavePositionsError*/]}
-    >
+    <WithErrorHandler error={[contextError, followedMakerVaultsError, followedAavePositionsError]}>
       <WithLoadingIndicator
         value={[contextData, followedMakerVaultsData]}
         customLoader={<PositionTableLoadingState />}
       >
         {([context, followedMakerPositions /*, followedAavePositions*/]) => {
           const borrowPositions = getMakerBorrowPositions(followedMakerPositions)
-          // const multiplyPositions = getMakerMultiplyPositions(followedMakerPositions)
-          // FIXME  ŁW prevent react hook error when fetching aave positions
-
-
           const earnPositions = getMakerEarnPositions(followedMakerPositions)
 
           return followedMakerPositions.length ? (
