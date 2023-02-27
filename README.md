@@ -76,22 +76,6 @@ You can run the current staging site, (found at <https://staging.oasis.app>) alo
 
 It will pull an additional docker container with the current staging site and will make it available at <http://0.0.0.0:3000>
 
-### Storybook
-
-We utilise storybook for visualising some of our UI components in isolation. This makes development
-easier for UI work as next.js is very compute heavy when re-rendering changes in development mode.
-
-```sh
-yarn storybook
-```
-
-Stories should be viewable at <http://localhost:6006> A live version of storybook on parity with the
-staging environment can be found by navigating to <https://storybook.oasis.app>.
-
-For specific deployments, users can navigate to
-[https://storybook.oasis.app/<COMMIT_HASH>/index.html](https://storybook.oasis.app/<COMMIT_HASH>/index.html])
-where the `<COMMIT_HASH>` is the shortened commit hash of the branch/commit that has been pushed.
-
 <br>
 
 ### Configuration
