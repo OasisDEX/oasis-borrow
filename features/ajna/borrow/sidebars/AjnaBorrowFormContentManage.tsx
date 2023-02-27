@@ -1,9 +1,9 @@
 import { ActionPills } from 'components/ActionPills'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentGenerate'
 import { AjnaBorrowFormContentPayback } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentPayback'
 import { AjnaBorrowFormContentWithdraw } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentWithdraw'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -15,7 +15,7 @@ export function AjnaBorrowFormContentManage() {
       state: { uiDropdown, uiPill },
       updateState,
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <>
@@ -25,21 +25,21 @@ export function AjnaBorrowFormContentManage() {
           ? {
               items: [
                 {
-                  id: 'deposit',
+                  id: 'deposit-borrow',
                   label: t('vault-actions.deposit'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'deposit')
-                    updateState('action', 'deposit')
+                    updateState('uiPill', 'deposit-borrow')
+                    updateState('action', 'deposit-borrow')
                   },
                 },
                 {
-                  id: 'withdraw',
+                  id: 'withdraw-borrow',
                   label: t('vault-actions.withdraw'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'withdraw')
-                    updateState('action', 'withdraw')
+                    updateState('uiPill', 'withdraw-borrow')
+                    updateState('action', 'withdraw-borrow')
                   },
                 },
               ],
@@ -47,21 +47,21 @@ export function AjnaBorrowFormContentManage() {
           : {
               items: [
                 {
-                  id: 'generate',
+                  id: 'generate-borrow',
                   label: t('vault-actions.generate'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'generate')
-                    updateState('action', 'generate')
+                    updateState('uiPill', 'generate-borrow')
+                    updateState('action', 'generate-borrow')
                   },
                 },
                 {
-                  id: 'payback',
+                  id: 'payback-borrow',
                   label: t('vault-actions.payback'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'payback')
-                    updateState('action', 'payback')
+                    updateState('uiPill', 'payback-borrow')
+                    updateState('action', 'payback-borrow')
                   },
                 },
               ],
@@ -69,10 +69,10 @@ export function AjnaBorrowFormContentManage() {
       />
       {
         {
-          deposit: <AjnaBorrowFormContentDeposit />,
-          withdraw: <AjnaBorrowFormContentWithdraw />,
-          generate: <AjnaBorrowFormContentGenerate />,
-          payback: <AjnaBorrowFormContentPayback />,
+          'deposit-borrow': <AjnaBorrowFormContentDeposit />,
+          'withdraw-borrow': <AjnaBorrowFormContentWithdraw />,
+          'generate-borrow': <AjnaBorrowFormContentGenerate />,
+          'payback-borrow': <AjnaBorrowFormContentPayback />,
         }[uiPill]
       }
     </>

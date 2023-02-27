@@ -1,50 +1,41 @@
-import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
-import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
-import {
-  AjnaEarnSlider,
-  ajnaSliderDefaults,
-  ajnaSliderHighRange,
-  ajnaSliderLowRange,
-} from 'features/ajna/earn/components/AjnaEarnSlider'
+import { PillAccordion } from 'components/PillAccordion'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormContentSummary } from 'features/ajna/common/sidebars/AjnaFormContentSummary'
+import { AjnaFormFieldDeposit } from 'features/ajna/common/sidebars/AjnaFormFields'
+import { AjnaEarnSlider } from 'features/ajna/earn/components/AjnaEarnSlider'
 import { AjnaEarnFormOrder } from 'features/ajna/earn/sidebars/AjnaEarnFormOrder'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaEarnFormContentDeposit() {
+  const { t } = useTranslation()
+  const {
+    environment: { quoteBalance, quotePrice, quoteToken },
+  } = useAjnaGeneralContext()
   const {
     form: {
       dispatch,
-      state: { depositAmount, depositAmountUSD },
+      state: { depositAmount },
     },
-    validation: { errors, warnings },
-  } = useAjnaBorrowContext() // TODO use earn context when available
-  const {
-    environment: { collateralBalance, collateralToken, collateralPrice },
-  } = useAjnaProductContext()
+  } = useAjnaProductContext('earn')
 
   return (
     <>
       <AjnaFormFieldDeposit
+        dispatchAmount={dispatch}
         resetOnClear
-        collateralToken={collateralToken}
-        collateralBalance={collateralBalance}
-        collateralPrice={collateralPrice}
-        depositAmount={depositAmount}
-        depositAmountUSD={depositAmountUSD}
-        dispatch={dispatch}
+        token={quoteToken}
+        tokenBalance={quoteBalance}
+        tokenPrice={quotePrice}
       />
-      <AjnaEarnSlider {...ajnaSliderDefaults} />
-      <AjnaEarnSlider {...ajnaSliderLowRange} />
-      <AjnaEarnSlider {...ajnaSliderHighRange} />
+      <PillAccordion title={t('ajna.earn.manage.form.adjust-lending-price-bucket')}>
+        <AjnaEarnSlider />
+      </PillAccordion>
       {depositAmount && (
-        <>
-          <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaValidationMessages {...errors} />
-          <AjnaValidationMessages {...warnings} />
+        <AjnaFormContentSummary>
           <AjnaEarnFormOrder />
-        </>
+        </AjnaFormContentSummary>
       )}
     </>
   )

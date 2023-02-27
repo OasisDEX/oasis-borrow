@@ -119,7 +119,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
         }}
       >
         <Input
-          placeholder={t('newsletter.placeholder')}
+          placeholder={t('newsletter.placeholder') as string}
           sx={{
             bg: 'neutral10',
             borderRadius: 'inherit',

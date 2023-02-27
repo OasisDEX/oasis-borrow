@@ -1,34 +1,42 @@
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
-import { AjnaBorrowFormFieldGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
-import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormContentSummary } from 'features/ajna/common/sidebars/AjnaFormContentSummary'
+import {
+  AjnaFormFieldDeposit,
+  AjnaFormFieldGenerate,
+} from 'features/ajna/common/sidebars/AjnaFormFields'
 import React from 'react'
 
 export function AjnaBorrowFormContentDeposit() {
   const {
-    form: {
-      state: { depositAmount, depositAmountUSD },
-      dispatch,
-    },
-  } = useAjnaBorrowContext()
-  const {
     environment: { collateralBalance, collateralPrice, collateralToken },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
+  const {
+    form: {
+      dispatch,
+      state: { depositAmount },
+    },
+  } = useAjnaProductContext('borrow')
 
   return (
     <>
       <AjnaFormFieldDeposit
-        dispatch={dispatch}
-        collateralToken={collateralToken}
-        collateralBalance={collateralBalance}
-        collateralPrice={collateralPrice}
-        depositAmount={depositAmount}
-        depositAmountUSD={depositAmountUSD}
+        dispatchAmount={dispatch}
+        token={collateralToken}
+        tokenPrice={collateralPrice}
+        tokenBalance={collateralBalance}
         resetOnClear
       />
-      <AjnaBorrowFormFieldGenerate isDisabled={!depositAmount || depositAmount?.lte(0)} />
-      {depositAmount && <AjnaBorrowFormContentSummary />}
+      <AjnaFormFieldGenerate
+        dispatchAmount={dispatch}
+        isDisabled={!depositAmount || depositAmount?.lte(0)}
+      />
+      {depositAmount && (
+        <AjnaFormContentSummary>
+          <AjnaBorrowFormOrder />
+        </AjnaFormContentSummary>
+      )}
     </>
   )
 }

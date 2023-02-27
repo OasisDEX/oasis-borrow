@@ -36,7 +36,8 @@ export function VaultWarnings({
   if (!warningMessages.length) return null
 
   function applyWarningMessageTranslation(message: VaultWarningMessage) {
-    const translate = (key: string, args?: Dictionary<any>) => t(`vault-warnings.${key}`, args)
+    const translate = (key: string, args?: Dictionary<any>) =>
+      t(`vault-warnings.${key}`, args || {})
     switch (message) {
       case 'potentialGenerateAmountLessThanDebtFloor':
         return translate('potential-generate-amount-less-than-debt-floor', {

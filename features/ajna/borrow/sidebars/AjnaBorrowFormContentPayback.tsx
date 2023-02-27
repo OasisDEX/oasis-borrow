@@ -1,23 +1,39 @@
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormContentSummary } from 'features/ajna/common/sidebars/AjnaFormContentSummary'
 import {
-  AjnaBorrowFormFieldPayback,
-  AjnaBorrowFormFieldWithdraw,
-} from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
+  AjnaFormFieldPayback,
+  AjnaFormFieldWithdraw,
+} from 'features/ajna/common/sidebars/AjnaFormFields'
 import React from 'react'
 
 export function AjnaBorrowFormContentPayback() {
   const {
+    environment: { collateralBalance, collateralPrice, collateralToken },
+  } = useAjnaGeneralContext()
+  const {
     form: {
+      dispatch,
       state: { paybackAmount },
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <>
-      <AjnaBorrowFormFieldPayback resetOnClear />
-      <AjnaBorrowFormFieldWithdraw isDisabled={!paybackAmount || paybackAmount?.lte(0)} />
-      {paybackAmount && <AjnaBorrowFormContentSummary />}
+      <AjnaFormFieldPayback dispatchAmount={dispatch} resetOnClear />
+      <AjnaFormFieldWithdraw
+        dispatchAmount={dispatch}
+        isDisabled={!paybackAmount || paybackAmount?.lte(0)}
+        tokenBalance={collateralBalance}
+        token={collateralToken}
+        tokenPrice={collateralPrice}
+      />
+      {paybackAmount && (
+        <AjnaFormContentSummary>
+          <AjnaBorrowFormOrder />
+        </AjnaFormContentSummary>
+      )}
     </>
   )
 }

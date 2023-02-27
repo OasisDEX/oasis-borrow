@@ -19,6 +19,7 @@ import { protocolToLendingProtocol } from 'features/vaultsOverview/helpers'
 import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
+import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { LendingProtocol } from 'lendingProtocols'
 import { AaveProtocolData as AaveProtocolDataV2 } from 'lendingProtocols/aave-v2/pipelines'
 import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
@@ -240,12 +241,7 @@ function buildAaveViewModel(
         return {
           token: collateralToken,
           title: title,
-          url: `/aave/${
-            {
-              [LendingProtocol.AaveV2]: 'v2',
-              [LendingProtocol.AaveV3]: 'v3',
-            }[protocol]
-          }/${positionId}`,
+          url: `/aave/${mapAaveProtocol(protocol)}/${positionId}`,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,

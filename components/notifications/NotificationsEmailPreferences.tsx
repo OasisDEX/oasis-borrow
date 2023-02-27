@@ -135,7 +135,7 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
                     mb: 2,
                     maxHeight: '38px',
                   }}
-                  placeholder={t('notifications.enable-notifications-email-placeholder')}
+                  placeholder={t('notifications.enable-notifications-email-placeholder') as string}
                   onChange={handleOnChange}
                   value={email}
                 />

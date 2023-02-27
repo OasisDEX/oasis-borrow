@@ -1,8 +1,8 @@
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { resolveIfCachedPosition } from 'features/ajna/common/helpers'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { resolveIfCachedPosition } from 'features/ajna/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -13,13 +13,13 @@ import React from 'react'
 
 export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
-
   const {
     environment: { collateralToken, quoteToken },
-  } = useAjnaProductContext()
+    tx: { isTxSuccess, txDetails },
+  } = useAjnaGeneralContext()
   const {
-    position: { cachedPosition, currentPosition },
-  } = useAjnaBorrowContext()
+    position: { cachedPosition, currentPosition, isSimulationLoading },
+  } = useAjnaProductContext('borrow')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,
@@ -27,7 +27,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     currentPosition,
   })
 
-  const isLoading = !cached && currentPosition.simulation === undefined
+  const isLoading = !cached && isSimulationLoading
   const formatted = {
     collateralLocked: formatCryptoBalance(positionData.collateralAmount),
     debt: formatCryptoBalance(positionData.debtAmount),
@@ -47,6 +47,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     afterAvailableToWithdraw:
       simulationData?.collateralAvailable &&
       formatAmount(simulationData.collateralAvailable, collateralToken),
+    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
   return (
@@ -89,10 +90,17 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           secondaryValue: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
           isLoading,
         },
-        {
-          label: t('system.max-transaction-cost'),
-          value: <GasEstimation />,
-        },
+        isTxSuccess && cached
+          ? {
+              label: t('system.total-cost'),
+              value: formatted.totalCost,
+              isLoading,
+            }
+          : {
+              label: t('system.max-transaction-cost'),
+              value: <GasEstimation />,
+              isLoading,
+            },
       ]}
     />
   )

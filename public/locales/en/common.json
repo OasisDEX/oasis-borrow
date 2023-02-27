@@ -86,6 +86,7 @@
   "connect-email": "Connect with email",
   "connect-error": "Please authorize this website to access your Ethereum account.",
   "connect-wallet": "Connect a wallet",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "See products",
   "connect-wallet-button": "Connect Wallet",
   "connect-with": "{{ connectionKind }}",
@@ -926,7 +927,11 @@
     },
     "ajna": {
       "title": "Oasis.app × Ajna",
-      "description": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+    },
+    "ajnaProductPage": {
+      "title": "{{product}} - Oasis.app × Ajna",
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
     },
     "multiply": {
       "title": "Multiply - Oasis.app",
@@ -982,6 +987,7 @@
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {
+    "adjust-position": "Adjust position",
     "asset": "Asset",
     "vault": "Vault",
     "available-to-withdraw": "Available to Withdraw",
@@ -1031,6 +1037,7 @@
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
+    "max-loan-to-value": "Max Loan To Value",
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day net APY",
     "ninety-day-average": "90 day net APY",
@@ -1046,6 +1053,7 @@
     "auto-take-profit": "Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
+    "total-cost": "Total transaction cost",
     "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
@@ -1055,6 +1063,7 @@
     "manage-debt-token": "Manage debt ({{token}})",
     "manage-collateral": "Manage collateral",
     "manage-debt": "Manage debt",
+    "manage-liquidity": "Manage liquidity ({{token}})",
     "close-position": "Close position",
     "actions": {
       "common": {
@@ -1627,7 +1636,12 @@
       "wBTCusdc": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
-      }
+      },
+      "borrow-against-ETH": {
+        "title": "AAVE ETH",
+        "description": "A position to borrow against your ETH in AAVE"
+      },
+      "tokens-for-borrowing": "Tokens for Borrowing"
     },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
@@ -1649,7 +1663,8 @@
     },
     "aave": {
       "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH"
+      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH",
+      "borrow-against-ETH": "Borrow up to ${{value}}"
     }
   },
   "product-card-title": {
@@ -2385,6 +2400,9 @@
             "setup": "Configure your Ajna Position",
             "manage": "Manage your Ajna Position",
             "transaction": "Confirm your Ajna Position"
+          },
+          "transaction": {
+            "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
           }
         }
       },
@@ -2398,18 +2416,34 @@
         },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
-        },
-        "form": {
-          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
         }
       },
       "manage": {
         "headline": {
-          "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
         }
       }
     },
     "earn": {
+      "common": {
+        "headline": {
+          "current-yield": "Current yield",
+          "90-day-avg": "90 Day Avg",
+          "current-market-price": "Current Market Price"
+        },
+        "ajna-faq": "Ajna FAQ",
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          },
+          "transaction": {
+            "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
+          }
+        }
+      },
       "open": {
         "select": {
           "heading": {
@@ -2419,12 +2453,12 @@
           "intro": "Select the crypto asset you want to earn for lending your {{token}}"
         },
         "headline": {
-          "header": "Lend {{collateralToken}} against {{quoteToken}}"
+          "header": "Lend {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
           "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
           "max-ltv-to-lend-at": "Max LTV to lend at",
-          "max-lending-price": "Max {{quoteToken}}/{{collateralToken}} lending price"
+          "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
         },
         "simulation": {
           "header1": "Duration",
@@ -2436,17 +2470,23 @@
           "footnote1": "*Past performance is not indicative of future results."
         }
       },
-      "common": {
-        "ajna-faq": "Ajna FAQ",
-        "form": {
-          "title": {
-            "setup": "Lending ETH against USDC"
-          }
-        },
+      "manage": {
         "headline": {
-          "current-yield": "Current yield",
-          "90-day-avg": "90 Day Avg",
-          "current-market-price": "Current Market Price"
+          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
+        },
+        "overview": {
+          "above-market-price": "{{amount}}% above market price",
+          "below-market-price": "{{amount}}% below market price",
+          "current-earnings": "Current earnings",
+          "early-withdrawal-penalty": "Early withdrawal penalty",
+          "early-withdrawal-period": "Early withdrawal period",
+          "max-lending-ltv": "Max lending LTV ",
+          "net-pnl": "Net PnL: {{netPnL}}",
+          "position-lending-price": "Position lending price",
+          "tokens-deposited": "Tokens deposited"
+        },
+        "form": {
+          "adjust-lending-price-bucket": "Adjust lending price bucket"
         }
       }
     },
@@ -2456,6 +2496,31 @@
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited."
+    },
+    "rewards": {
+      "page-title": "Your Ajna token rewards",
+      "page-description": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
+      "cards": {
+        "mining": {
+          "title": "$AJNA Liquidity Mining Rewards",
+          "list-1": "Rewards Earn Positions only",
+          "list-2": "Earn a Proportional % of pool interest generated",
+          "link": "Learn more about Ajna Liquidity Mining Rewards",
+          "banner": {
+            "title": "$AJNA Liquidity mining rewards on 4 positions"
+          }
+        },
+        "token": {
+          "title": "$AJNA Token Rewards",
+          "list-1": "Rewards exclusive to Oasis.app users only!",
+          "list-2": "Rewards for Borrowing, Lending and Multiplying",
+          "link": "Learn more about Ajna Token Rewards",
+          "banner": {
+            "title": "Your $AJNA token rewards on 4 positions"
+          }
+        },
+        "button": "Claim AJNA Tokens"
+      }
     }
   }
 }
