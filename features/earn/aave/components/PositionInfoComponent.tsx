@@ -13,7 +13,6 @@ import {
 import { AppLink } from 'components/Links'
 import { ManageSectionModal } from 'features/aave/manage/components'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { externalLinks } from 'helpers/externalLinks'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines/aaveV2PrepareReserveData'

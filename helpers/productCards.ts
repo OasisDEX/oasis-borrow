@@ -15,8 +15,8 @@ import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
-import { EXTERNAL_LINKS } from './applicationLinks'
 
+import { EXTERNAL_LINKS } from './applicationLinks'
 import { zero } from './zero'
 
 export interface ProductCardData {
