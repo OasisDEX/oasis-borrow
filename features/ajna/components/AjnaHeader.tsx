@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { Box, Text } from 'theme-ui'
+import { Box, Heading, Text } from 'theme-ui'
 
 interface AjnaHeaderProps {
   intro?: ReactNode
@@ -14,9 +14,9 @@ export function AjnaHeader({ intro, title }: AjnaHeaderProps) {
         textAlign: 'center',
       }}
     >
-      <Text as="h1" variant="header2">
+      <Heading as="h1" variant="header2">
         {title}
-      </Text>
+      </Heading>
       {intro && (
         <Text
           as="p"

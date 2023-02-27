@@ -2503,8 +2503,8 @@
       "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited."
     },
     "rewards": {
-      "page-title": "Your Ajna token rewards",
-      "page-description": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
+      "title": "Your Ajna token rewards",
+      "intro": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
       "cards": {
         "mining": {
           "title": "$AJNA Liquidity Mining Rewards",
