@@ -13,13 +13,12 @@ import React from 'react'
 
 export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
-
-  const {
-    environment: { collateralToken, quoteToken },
-  } = useAjnaGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
   } = useAjnaProductContext('borrow')
+  const {
+    environment: { collateralToken, quoteToken },
+  } = useAjnaGeneralContext()
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

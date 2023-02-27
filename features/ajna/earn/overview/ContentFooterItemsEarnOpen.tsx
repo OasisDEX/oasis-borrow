@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { timeAgo } from 'utils'
 
 interface ContentFooterItemsEarnOpenProps {
-  estimatedBreakEven?: number
-  totalValueLocked?: BigNumber
-  apy?: BigNumber
+  estimatedBreakEven: Date
+  totalValueLocked: BigNumber
+  apy: BigNumber
 }
 
 export function ContentFooterItemsEarnOpen({
@@ -18,8 +19,8 @@ export function ContentFooterItemsEarnOpen({
   const { t } = useTranslation()
 
   const formatted = {
-    estimatedBreakEven: estimatedBreakEven ? `${estimatedBreakEven} days` : '-', // TODO years etc.
-    totalValueLocked: totalValueLocked ? `$${formatAmount(totalValueLocked, 'USD')}` : '-',
+    estimatedBreakEven: timeAgo({ to: estimatedBreakEven }),
+    totalValueLocked: totalValueLocked ? `$${formatCryptoBalance(totalValueLocked)}` : '-',
     apy: apy ? `${formatPercent(apy, { precision: 2 })}` : '-',
   }
 
