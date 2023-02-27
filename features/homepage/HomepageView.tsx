@@ -319,52 +319,52 @@ export function HomepageView() {
       </Box>
       <Box>
         <Text variant="header3" sx={{ textAlign: 'center', mt: 6, mb: 6 }}>
-          Why use Oasis.app
+          {t('landing.why-oasis.main-header')}
         </Text>
         <HomepageHeadline
-          primaryText="Earn long term sustainable yields to compound your crypto capital: "
-          secondaryText="Oasis Earn"
+          primaryText={t('landing.why-oasis.sub-headers.earn.primary')}
+          secondaryText={t('landing.why-oasis.sub-headers.earn.secondary')}
+          ctaLabel={t('landing.why-oasis.sub-headers.earn.cta')}
           ctaURL={INTERNAL_LINKS.earn}
-          ctaLabel="Open position"
         />
         <Grid columns={3} sx={{ mt: 5, mb: 7 }}>
           <HomepagePromoBlock
-            title="Earn on the crypto assets you already own"
+            title={t('landing.why-oasis.image-labels.1-earn-on-assets')}
             background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
             image={staticFilesRuntimeUrl('/static/img/homepage/1_earn_on_assets.svg')}
           />
           <HomepagePromoBlock
-            title="More predictable payoff with transparancy on fees and net APY’s"
+            title={t('landing.why-oasis.image-labels.2-predictable-payoff')}
             background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
             image={staticFilesRuntimeUrl('/static/img/homepage/2_predictable_payoff.svg')}
           />
           <HomepagePromoBlock
-            title="Simple to use management tools and analytics"
+            title={t('landing.why-oasis.image-labels.3-simple-management-tools')}
             background="linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)"
             image={staticFilesRuntimeUrl('/static/img/homepage/3_simple_management_tools.svg')}
           />
         </Grid>
         <HomepageHeadline
-          primaryText="Get the most out your crypto without selling: "
-          secondaryText="Oasis Borrow"
+          primaryText={t('landing.why-oasis.sub-headers.borrow.primary')}
+          secondaryText={t('landing.why-oasis.sub-headers.borrow.secondary')}
+          ctaLabel={t('landing.why-oasis.sub-headers.borrow.cta')}
           ctaURL={INTERNAL_LINKS.borrow}
-          ctaLabel="Open position"
         />
         <Grid columns={3} sx={{ mt: 5 }}>
           <HomepagePromoBlock
-            title="Low borrowing costs"
+            title={t('landing.why-oasis.image-labels.4-low-borrowing-cost')}
             background="linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%)"
             image={staticFilesRuntimeUrl('/static/img/homepage/4_low_borrowing_cost.svg')}
             height="360px"
           />
           <HomepagePromoBlock
-            title="Ample liquidity from multiple Protocols"
+            title={t('landing.why-oasis.image-labels.5-ample-liquidity')}
             background="linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)"
             image={staticFilesRuntimeUrl('/static/img/homepage/5_ample_liquidity.svg')}
             height="360px"
           />
           <HomepagePromoBlock
-            title="Available for top tier crypto collateral"
+            title={t('landing.why-oasis.image-labels.6-top-tier-collateral')}
             background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
             image={staticFilesRuntimeUrl('/static/img/homepage/6_top_tier_collateral.svg')}
             height="360px"
@@ -372,38 +372,29 @@ export function HomepageView() {
         </Grid>
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 7 }}>
           <HomepageHeadline
-            primaryText="Optimize your risk & reward with one click: "
-            secondaryText="Oasis Multiply"
+            primaryText={t('landing.why-oasis.sub-headers.multiply.primary')}
+            secondaryText={t('landing.why-oasis.sub-headers.multiply.secondary')}
+            ctaLabel={t('landing.why-oasis.sub-headers.multiply.cta')}
             ctaURL={INTERNAL_LINKS.multiply}
-            ctaLabel="Open position"
           />
           <HomepagePromoBlock
-            title="Take advantage of market volatility"
+            title={t('landing.why-oasis.image-labels.7-market-volatility-advantage')}
             background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
             image={staticFilesRuntimeUrl('/static/img/homepage/7_market_volatility_advantage.svg')}
           />
         </Flex>
         <Grid columns={['1fr 2fr']} sx={{ mt: 3, mb: 7 }}>
           <HomepagePromoBlock
-            title="Reduce the anxiety of liquidation with stop loss automation"
+            title={t('landing.why-oasis.image-labels.8-reduce-anxiety')}
             background="linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF"
             image={staticFilesRuntimeUrl('/static/img/homepage/8_reduce_anxiety.svg')}
           />
           <HomepagePromoBlock
             title={
-              <>
-                Increase the potential{' '}
-                <Text as="span" color="neutral80">
-                  profit
-                </Text>{' '}
-                and{' '}
-                <Text as="span" color="neutral80">
-                  payoff
-                </Text>{' '}
-                of your
-                <br />
-                crypto asset position
-              </>
+              <Trans
+                i18nKey="landing.why-oasis.image-labels.9-profit-and-payoff"
+                components={[<Text as="span" color="neutral80" />]}
+              />
             }
             background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
             image={staticFilesRuntimeUrl('/static/img/homepage/9_profit_and_payoff.svg')}
@@ -411,8 +402,8 @@ export function HomepageView() {
           />
         </Grid>
         <HomepageHeadline
-          primaryText="Advanced automation tools can manage your positions for you: "
-          secondaryText="set and forget with confidence"
+          primaryText={t('landing.why-oasis.sub-headers.automation.primary')}
+          secondaryText={t('landing.why-oasis.sub-headers.automation.secondary')}
           maxWidth="860px"
         />
         <Grid columns={2} sx={{ mt: 5 }}>
@@ -425,8 +416,7 @@ export function HomepageView() {
               }}
             >
               <Text variant="header5" sx={{ my: '20px', mx: '12px' }}>
-                Get peace of mind with protection against liquidation and capital losses with
-                Stop-Loss and Auto-Sell.
+                {t('landing.why-oasis.image-labels.10-peace-of-mind')}
               </Text>
               <Image
                 src={staticFilesRuntimeUrl('/static/img/homepage/10_peace_of_mind.svg')}
@@ -457,7 +447,7 @@ export function HomepageView() {
                 }}
               />
               <Text variant="header5" sx={{ mb: 3, mx: '12px', textAlign: 'center' }}>
-                Make position management less of a hassle with automated Buys, Sells and Take Profit
+                {t('landing.why-oasis.image-labels.11-no-hassle')}
               </Text>
             </Flex>
           </HomepagePromoBlock.Big>
@@ -470,7 +460,7 @@ export function HomepageView() {
           <Grid columns={['1fr 1fr 1fr 1fr']}>
             <Box>
               <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                Vaults automated
+                {t('landing.why-oasis.stats-labels.vaults-automated')}
               </Text>
               <Text variant="header4" sx={{ textAlign: 'center' }}>
                 150
@@ -478,7 +468,7 @@ export function HomepageView() {
             </Box>
             <Box>
               <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                Total Collateral Automated
+                {t('landing.why-oasis.stats-labels.collateral-automated')}
               </Text>
               <Text variant="header4" sx={{ textAlign: 'center' }}>
                 $95.3M
@@ -486,7 +476,7 @@ export function HomepageView() {
             </Box>
             <Box>
               <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                Executed last 90 days
+                {t('landing.why-oasis.stats-labels.actions-executed')}
               </Text>
               <Text variant="header4" sx={{ textAlign: 'center' }}>
                 42
@@ -494,7 +484,7 @@ export function HomepageView() {
             </Box>
             <Box>
               <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-                Success Rate last 90 days
+                {t('landing.why-oasis.stats-labels.success-rate')}
               </Text>
               <Text variant="header4" sx={{ textAlign: 'center' }}>
                 100.00%
@@ -520,15 +510,15 @@ export function HomepageView() {
             ref={scrollingBlockRef}
           >
             <HomepageHeadline
-              primaryText="Your funds, your choice: "
-              secondaryText="park your capital and stay in full control all the time, with no exceptions"
+              primaryText={t('landing.why-oasis.sub-headers.security.primary')}
+              secondaryText={t('landing.why-oasis.sub-headers.security.secondary')}
+              ctaLabel={t('landing.why-oasis.sub-headers.security.cta')}
               ctaURL={EXTERNAL_LINKS.HELP}
-              ctaLabel="Know more about security"
               sx={{ alignSelf: 'center' }}
             />
             <Box>
               <HomepagePromoBlock
-                title="All assets are self custodied on Oasis.app"
+                title={t('landing.why-oasis.image-labels.12-1-oasis-app')}
                 background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
                 image={staticFilesRuntimeUrl('/static/img/homepage/12_1_oasis_app.svg')}
                 height={`${controlPointsBlockHeight}px`}
@@ -541,7 +531,7 @@ export function HomepageView() {
                 imageSx={{ mb: 0 }}
               />
               <HomepagePromoBlock
-                title="Always verifiable on chain via a block explorer"
+                title={t('landing.why-oasis.image-labels.12-2-verifiable-on-chain')}
                 background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
                 image={staticFilesRuntimeUrl('/static/img/homepage/12_2_verifiable_on_chain.svg')}
                 height={`${controlPointsBlockHeight}px`}
@@ -554,7 +544,7 @@ export function HomepageView() {
                 imageSx={{ mb: 0 }}
               />
               <HomepagePromoBlock
-                title="No black boxes, just smart contracts"
+                title={t('landing.why-oasis.image-labels.12-3-no-black-boxes')}
                 background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
                 image={staticFilesRuntimeUrl('/static/img/homepage/12_3_no_black_boxes.svg')}
                 height={`${controlPointsBlockHeight}px`}

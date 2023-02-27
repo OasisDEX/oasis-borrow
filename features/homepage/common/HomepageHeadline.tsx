@@ -1,6 +1,7 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import React, { LegacyRef } from 'react'
+import { TranslateStringType } from 'helpers/translateStringType'
+import React from 'react'
 import { Box, SxStyleProp, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {
@@ -8,7 +9,7 @@ type HomePageHeadlineProps = {
   secondaryText: string
   maxWidth?: string
   ctaURL?: string
-  ctaLabel?: string
+  ctaLabel?: TranslateStringType
   sx?: SxStyleProp
 }
 
