@@ -153,6 +153,7 @@ export function AjnaProductContextProvider({
         txError: txDetails?.txError,
       }),
     [
+      currentStep,
       collateralBalance.toNumber(),
       collateralToken,
       ethBalance.toNumber(),
