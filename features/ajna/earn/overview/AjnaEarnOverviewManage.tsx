@@ -46,7 +46,7 @@ export function AjnaEarnOverviewManage() {
             isLoading={isSimulationLoading}
             collateralToken={collateralToken}
             quoteToken={quoteToken}
-            positionLendingPrice={new BigNumber(23506.30)}
+            positionLendingPrice={new BigNumber(23506.3)}
             relationToMarketPrice={new BigNumber(-10)}
           />
         </DetailsSectionContentCardWrapper>
