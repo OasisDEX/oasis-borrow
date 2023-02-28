@@ -4,7 +4,7 @@ import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopL
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
+import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { ReserveConfigurationData } from 'lendingProtocols/common'
 import { memoize } from 'lodash'
@@ -75,7 +75,7 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
   } = protocols[LendingProtocol.AaveV3]
 
   const aaveEarnYieldsQuery = memoize(
-    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+    curry(getAaveWstEthYield)(disconnectedGraphQLClient$, moment()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
