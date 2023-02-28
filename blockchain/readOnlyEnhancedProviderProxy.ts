@@ -52,7 +52,6 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
   const handler = {
     get: (target: any, name: string) => {
       if (name === 'sendAsync') {
-        // eslint-disable-next-line func-style
         const sendAsyncMaybeReadOnly = async (
           payload: JSONRPCRequestPayload,
           callback: (error: Error | null, result?: JsonRpcResponse) => void,
@@ -71,7 +70,6 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         }
         return sendAsyncMaybeReadOnly
       } else if (name === 'request') {
-        // eslint-disable-next-line func-style
         const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
