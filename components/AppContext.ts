@@ -1345,7 +1345,8 @@ export function setupAppContext() {
   )
 // TODO ŁW Pass remaining observables
   const followedAavePositions$ = memoize(
-    curry(createFollowedAavePositions$)(onEveryBlock$,chainContext$, allFollowedPositions$)
+    curry(createFollowedAavePositions$)(onEveryBlock$,chainContext$, aaveV2, aaveV3, allFollowedPositions$,
+    )
   )
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(makerPositionsList$, aavePositions$, dsr$),

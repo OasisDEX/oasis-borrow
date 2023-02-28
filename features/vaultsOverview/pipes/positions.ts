@@ -141,13 +141,6 @@ type BuildPositionArgs = {
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
 
-// function buildAaveViewModelForFollowedPosition(
-//   proxyAddress: string,
-//   vaultId: number,
-//   protocolVersion: LendingProtocol.AaveV2 | LendingProtocol.AaveV3,
-//   userDpmProxy$: (walletAddress: string) => Observable<UserDpmAccount | undefined>,
-// )
-
 function buildAaveViewModel(
   positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
   positionId: string,
@@ -304,15 +297,15 @@ const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
 export function createFollowedAavePositions$(
   refreshInterval: Observable<number>,
   context$: Observable<Context>,
+  aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
+  aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
-  followerAddress: string,
-  // environment: CreatePositionEnvironmentPropsType,
-  // aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
-  // aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
+  followerAddress: string,  
   ): Observable<AavePosition[]> {
-    // console.log(environment)
-    // console.log(aaveV2)
-    // console.log(aaveV3)
+    console.log('aaveV2')
+    console.log(aaveV2)
+    console.log('aaveV3')
+    console.log(aaveV3)
     // Todo łw create object od BuildPositionArgs from the environment observables like in createAavePosition$
     // observables: BuildPositionArgs, //TODO ŁW get remaining data from this type
   return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
@@ -350,42 +343,6 @@ export function createFollowedAavePositions$(
     shareReplay(1),
   )
 }
-
-// export function createAavePositionGivenFollowRecord(
-//   followRecord: UsersWhoFollowVaults,
-// ): AavePosition {
-//   // TODO ŁW, probably will need  observables: BuildPositionArgs too
-//   const positionId: PositionId = {
-//     vaultId: followRecord.vault_id,
-//     walletAddress: followRecord.proxy !== null ? followRecord.proxy : undefined,
-//   }
-
-//   const { strategyConfig$, proxiesRelatedWithPosition$ } = useAaveContext(
-//     protocolToLendingProtocol(followRecord.protocol),
-//   )
-//   // FIXME these observables break everything
-//   const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId))
-//   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
-//     proxiesRelatedWithPosition$(positionId),
-//   )
-
-//   return {
-// token: strategyConfig ? strategyConfig?.tokens.collateral : '',
-// title: strategyConfig ? strategyConfig?.name : '',
-// url: `/aave/${followRecord.protocol}/${positionId}`,
-// id: followRecord.vault_id.toString(),
-// netValue: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
-// multiple: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
-// liquidationPrice: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
-// fundingCost: one, //TODO ŁW - get this from   observables: BuildPositionArgs,,
-// contentsUsd: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
-// isOwner: proxiesRelatedWithPosition?.walletAddress === followRecord.user_address,
-// lockedCollateral: one, //TODO ŁW - get this from   observables: BuildPositionArgs,
-// type: strategyConfig ? productTypeToPositionTypeMap[strategyConfig.type] : 'multiply',
-// liquidity: one, //TODO ŁW - get this from   observables: BuildPositionArgs,,
-// stopLossData: undefined, //TODO ŁW - get this from   observables: BuildPositionArgs,
-//   }
-// }
 
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
