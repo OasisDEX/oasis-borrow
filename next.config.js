@@ -165,7 +165,7 @@ const conf = withBundleAnalyzer(
             { key: 'X-Frame-Options', value: 'ALLOW' },
             { key: 'X-XSS-Protection', value: '1; mode=block' },
             { key: 'Referrer-Policy', value: 'same-origin' },
-            { key: 'Access-Control-Allow-Origin', value: 'https://gnosis-safe.io' },
+            { key: 'Access-Control-Allow-Origin', value: 'https://app.safe.global' },
           ],
         },
       ]
