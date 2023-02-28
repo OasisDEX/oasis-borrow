@@ -76,7 +76,7 @@ export function getAjnaPosition$(
         ),
         meta: {
           ...meta,
-          product: (meta.product as string).toLowerCase() as AjnaProduct,
+          product: '(meta.product as string).toLowerCase() as AjnaProduct',
         },
       }
     }),
