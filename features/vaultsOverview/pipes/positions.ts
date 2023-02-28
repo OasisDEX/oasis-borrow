@@ -306,8 +306,15 @@ export function createFollowedAavePositions$(
   context$: Observable<Context>,
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
   followerAddress: string,
-  // observables: BuildPositionArgs, TODO ŁW get remaining data from this type
-): Observable<AavePosition[]> {
+  // environment: CreatePositionEnvironmentPropsType,
+  // aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
+  // aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
+  ): Observable<AavePosition[]> {
+    // console.log(environment)
+    // console.log(aaveV2)
+    // console.log(aaveV3)
+    // Todo łw create object od BuildPositionArgs from the environment observables like in createAavePosition$
+    // observables: BuildPositionArgs, //TODO ŁW get remaining data from this type
   return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
     switchMap(([_, context, followedVaults]) => {
       console.log('followedVaults before filter:', followedVaults)
@@ -319,22 +326,26 @@ export function createFollowedAavePositions$(
         ? of([])
         : combineLatest(
             filteredVaults.map((followedAaveVault) =>
-              of({
-                token: followedAaveVault.strategy,
-                title: followedAaveVault.strategy,
-                contentsUsd: new BigNumber(0),
-                url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${followedAaveVault.vault_id}/`,
-                netValue: one,
-                multiple: one,
-                liquidationPrice: one,
-                fundingCost: one,
-                isOwner: false,
-                lockedCollateral: one,
-                type: 'multiply',
-                liquidity: one,
-              }),
+              buildFollowedAavePosition(followedAaveVault),
             ),
           )
+
+      function buildFollowedAavePosition(followedAaveVault: UsersWhoFollowVaults): Observable<{ token: string | null; title: string | null; contentsUsd: BigNumber; url: string; netValue: BigNumber; multiple: BigNumber; liquidationPrice: BigNumber; fundingCost: BigNumber; isOwner: boolean; lockedCollateral: BigNumber; type: string; liquidity: BigNumber }> {
+        return of({
+          token: followedAaveVault.strategy,
+          title: followedAaveVault.strategy,
+          contentsUsd: new BigNumber(0),
+          url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${followedAaveVault.vault_id}/`,
+          netValue: one,
+          multiple: one,
+          liquidationPrice: one,
+          fundingCost: one,
+          isOwner: false,
+          lockedCollateral: one,
+          type: 'multiply',
+          liquidity: one,
+        })
+      }
     }),
     shareReplay(1),
   )
