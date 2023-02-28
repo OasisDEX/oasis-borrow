@@ -1,3 +1,4 @@
+import { AppLink } from 'components/Links'
 import React, { ReactNode } from 'react'
 import { Box, Text } from 'theme-ui'
 
@@ -18,6 +19,7 @@ export interface NavigationMenuPanelType {
     label: string
     link: string
   }
+  link?: string
   links: NavigationMenuPanelLink[]
   otherAssets?: NavigationMenuPanelAsset[]
 }
@@ -30,6 +32,7 @@ type NavigationMenuPanelProps = NavigationMenuPanelType & {
 export function NavigationMenuPanel({
   currentPanel,
   label,
+  link,
   isPanelOpen,
   onMouseEnter,
 }: NavigationMenuPanelProps) {
@@ -39,6 +42,7 @@ export function NavigationMenuPanel({
       sx={{
         p: 1,
         flexShrink: 0,
+        cursor: 'default',
       }}
       onMouseEnter={(e) => {
         const target = e.target as HTMLDivElement
@@ -46,19 +50,43 @@ export function NavigationMenuPanel({
         onMouseEnter(target.offsetLeft + target.offsetWidth / 2)
       }}
     >
-      <Text
-        as="span"
-        sx={{
-          fontSize: 2,
-          fontWeight: 'semiBold',
-          color: isPanelOpen && currentPanel === label ? 'primary100' : 'neutral80',
-          whiteSpace: 'nowrap',
-          cursor: 'default',
-          transition: 'color 200ms',
-        }}
-      >
-        {label}
-      </Text>
+      {link ? (
+        <AppLink href={link}>
+          <NavigationMenuPanelLabel
+            currentPanel={currentPanel}
+            label={label}
+            isPanelOpen={isPanelOpen}
+          />
+        </AppLink>
+      ) : (
+        <NavigationMenuPanelLabel
+          currentPanel={currentPanel}
+          label={label}
+          isPanelOpen={isPanelOpen}
+        />
+      )}
     </Box>
+  )
+}
+
+export function NavigationMenuPanelLabel({
+  currentPanel,
+  label,
+  isPanelOpen,
+}: Pick<NavigationMenuPanelProps, 'currentPanel' | 'label' | 'isPanelOpen'>) {
+  return (
+    <Text
+      as="span"
+      sx={{
+        fontSize: 2,
+        fontWeight: 'semiBold',
+        color: isPanelOpen && currentPanel === label ? 'primary100' : 'neutral80',
+        whiteSpace: 'nowrap',
+        cursor: 'inherit',
+        transition: 'color 200ms',
+      }}
+    >
+      {label}
+    </Text>
   )
 }

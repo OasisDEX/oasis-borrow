@@ -57,6 +57,7 @@ export function AjnaNavigationController() {
       panels={[
         {
           label: 'Borrow',
+          link: '/ajna/borrow',
           description: 'Borrow against your favorite crypto assets.',
           learn: {
             label: 'Learn more about Borrow',
@@ -100,6 +101,7 @@ export function AjnaNavigationController() {
         },
         {
           label: 'Multiply',
+          link: '/ajna/multiply',
           description: 'Multiply your exposure to your favorite crypto assets.',
           learn: {
             label: 'Learn more about Multiply',
@@ -126,6 +128,7 @@ export function AjnaNavigationController() {
         },
         {
           label: 'Earn',
+          link: '/ajna/earn',
           description: 'Put your crypto assets to work today.',
           learn: {
             label: 'Learn more about Earn',
