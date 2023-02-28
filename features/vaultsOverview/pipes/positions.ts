@@ -299,6 +299,7 @@ export function createFollowedAavePositions$(
   context$: Observable<Context>,
   aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
   aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
+  environment: CreatePositionEnvironmentPropsType,
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
   followerAddress: string,  
   ): Observable<AavePosition[]> {

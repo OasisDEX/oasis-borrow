@@ -1343,10 +1343,21 @@ export function setupAppContext() {
       standardCdps$,
     ]),
   )
-// TODO ŁW Pass remaining observables
+  // TODO ŁW Pass remaining observables
   const followedAavePositions$ = memoize(
-    curry(createFollowedAavePositions$)(onEveryBlock$,chainContext$, aaveV2, aaveV3, allFollowedPositions$,
-    )
+    curry(createFollowedAavePositions$)(
+      onEveryBlock$,
+      chainContext$,
+      aaveV2,
+      aaveV3
+      ,
+      {
+        tickerPrices$: tokenPriceUSD$,
+        context$,
+        automationTriggersData$,
+        readPositionCreatedEvents$,
+      },      allFollowedPositions$,
+    ),
   )
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(makerPositionsList$, aavePositions$, dsr$),
