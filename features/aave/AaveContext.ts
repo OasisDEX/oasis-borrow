@@ -5,6 +5,7 @@ import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { LendingProtocol } from 'lendingProtocols'
+import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
 import { memoize } from 'lodash'
 import moment from 'moment'
@@ -12,7 +13,7 @@ import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { getAaveStEthYield, IStrategyConfig } from './common'
+import { IStrategyConfig } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -71,7 +72,7 @@ export function setupAaveV2Context(appContext: AppContext) {
     getAaveReserveData$,
   } = protocols[LendingProtocol.AaveV2]
 
-  const aaveSthEthYieldsQuery = memoize(
+  const aaveEarnYieldsQuery = memoize(
     curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
@@ -178,7 +179,7 @@ export function setupAaveV2Context(appContext: AppContext) {
     aaveTotalValueLocked$,
     aaveReserveConfigurationData$,
     wrappedGetAaveReserveData$,
-    aaveSthEthYieldsQuery,
+    aaveEarnYieldsQuery,
     aaveProtocolData$,
     strategyConfig$,
     proxiesRelatedWithPosition$,

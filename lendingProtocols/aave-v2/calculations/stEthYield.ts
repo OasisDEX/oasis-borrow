@@ -1,20 +1,14 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
+import {
+  AaveYieldsResponse,
+  FilterYieldFieldsType,
+  yieldsDateFormat,
+} from 'lendingProtocols/common/yields'
 import moment from 'moment/moment'
 import { Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
-
-export type FilterYieldFieldsType =
-  | '7Days'
-  | '7DaysOffset'
-  | '30Days'
-  | '90Days'
-  | '90DaysOffset'
-  | '1Year'
-  | 'Inception'
-
-const yieldsDateFormat = 'YYYY-MM-DD'
 
 const aaveStEthYield = gql`
   mutation stEthYields(
@@ -128,22 +122,12 @@ const aaveStEthYield = gql`
   }
 `
 
-export interface AaveStEthYieldsResponse {
-  annualisedYield7days?: BigNumber
-  annualisedYield7daysOffset?: BigNumber
-  annualisedYield30days?: BigNumber
-  annualisedYield90days?: BigNumber
-  annualisedYield90daysOffset?: BigNumber
-  annualisedYield1Year?: BigNumber
-  annualisedYieldSinceInception?: BigNumber
-}
-
 export async function getAaveStEthYield(
   client: Observable<GraphQLClient>,
   currentDate: moment.Moment,
   riskRatio: IRiskRatio,
   fields: FilterYieldFieldsType[],
-): Promise<AaveStEthYieldsResponse> {
+): Promise<AaveYieldsResponse> {
   const currentDateGuarded = currentDate.clone()
   const reserveAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   const getClient = await client.pipe(first()).toPromise()
