@@ -27,6 +27,8 @@ export function ConnectButton() {
         })
         web3Context.connect(connector, 'injected')
       }
+    } else if (web3Context?.status === 'connected') {
+      web3Context.deactivate()
     }
   }, [wallet, web3Context])
 

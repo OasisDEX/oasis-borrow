@@ -8734,6 +8734,14 @@
     "@web3-onboard/common" "^2.2.3"
     rxjs "^7.5.2"
 
+"@web3-onboard/mew-wallet@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/mew-wallet/-/mew-wallet-2.0.0.tgz#34fb86cfd89efcf87552944a47ba77481e194f00"
+  integrity sha512-VgQbWaP99cdTGLs+px3QjTetn/n4XA5/u9NkV+xQk2aB2+7eIabPwSC05vj1Qc8dsUF/H9L1vhDPiNmpipC9mQ==
+  dependencies:
+    "@web3-onboard/common" "^2.2.3"
+    lodash.uniqby "^4.7.0"
+
 "@web3-onboard/portis@^2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@web3-onboard/portis/-/portis-2.1.3.tgz#997ef4941aa247e1a02fe24b2f03dc8b7cc13cfb"
