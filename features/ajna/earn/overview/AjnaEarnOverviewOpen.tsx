@@ -44,8 +44,8 @@ export function AjnaEarnOverviewOpen() {
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnOpen
-            estimatedBreakEven={25}
-            totalValueLocked={new BigNumber(2137)}
+            estimatedBreakEven={new Date(new Date().getTime() + 1000000000)}
+            totalValueLocked={new BigNumber(221421424137)}
             apy={new BigNumber(12)}
           />
         </DetailsSectionFooterItemWrapper>

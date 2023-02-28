@@ -1053,6 +1053,7 @@
     "auto-take-profit": "Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
+    "total-cost": "Total transaction cost",
     "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
@@ -2399,6 +2400,9 @@
             "setup": "Configure your Ajna Position",
             "manage": "Manage your Ajna Position",
             "transaction": "Confirm your Ajna Position"
+          },
+          "transaction": {
+            "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
           }
         }
       },
@@ -2412,9 +2416,6 @@
         },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
-        },
-        "form": {
-          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
         }
       },
       "manage": {
@@ -2425,6 +2426,11 @@
     },
     "earn": {
       "common": {
+        "headline": {
+          "current-yield": "Current yield",
+          "90-day-avg": "90 Day Avg",
+          "current-market-price": "Current Market Price"
+        },
         "ajna-faq": "Ajna FAQ",
         "form": {
           "title": {
@@ -2432,12 +2438,10 @@
             "setup": "Configure your Ajna Position",
             "manage": "Manage your Ajna Position",
             "transaction": "Confirm your Ajna Position"
+          },
+          "transaction": {
+            "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
           }
-        },
-        "headline": {
-          "current-yield": "Current yield",
-          "90-day-avg": "90 Day Avg",
-          "current-market-price": "Current Market Price"
         }
       },
       "open": {
@@ -2471,8 +2475,15 @@
           "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
         },
         "overview": {
+          "above-market-price": "{{amount}}% above market price",
+          "below-market-price": "{{amount}}% below market price",
+          "current-earnings": "Current earnings",
+          "early-withdrawal-penalty": "Early withdrawal penalty",
           "early-withdrawal-period": "Early withdrawal period",
-          "early-withdrawal-penalty": "Early withdrawal penalty"
+          "max-lending-ltv": "Max lending LTV ",
+          "net-pnl": "Net PnL: {{netPnL}}",
+          "position-lending-price": "Position lending price",
+          "tokens-deposited": "Tokens deposited"
         },
         "form": {
           "adjust-lending-price-bucket": "Adjust lending price bucket"
