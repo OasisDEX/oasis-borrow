@@ -21,6 +21,7 @@ export function ContentFooterItemsEarnManage({
   earlyWithdrawalPenalty,
 }: ContentFooterItemsEarnOpenProps) {
   const { t } = useTranslation()
+  const now = new Date()
 
   const formatted = {
     availableToWithdraw: `${formatAmount(availableToWithdraw, quoteToken)} ${quoteToken}`,
@@ -37,14 +38,20 @@ export function ContentFooterItemsEarnManage({
         title={t('system.available-to-withdraw')}
         value={formatted.availableToWithdraw}
       />
-      <DetailsSectionFooterItem
-        title={t('ajna.earn.manage.overview.early-withdrawal-period')}
-        value={formatted.earlyWithdrawalPeriod}
-      />
-      <DetailsSectionFooterItem
-        title={t('ajna.earn.manage.overview.early-withdrawal-penalty')}
-        value={formatted.earlyWithdrawalPenalty}
-      />
+      {now > earlyWithdrawalPeriod ? (
+        <DetailsSectionFooterItem
+          title={t('ajna.earn.manage.overview.early-withdrawal-period')}
+          value={t('ajna.earn.manage.overview.early-withdrawal-ended', { earlyWithdrawalPeriod: formatted.earlyWithdrawalPeriod })}
+        />
+      ) : (
+        <DetailsSectionFooterItem
+          title={t('ajna.earn.manage.overview.early-withdrawal-penalty')}
+          value={t('ajna.earn.manage.overview.early-withdrawal-ends-in', {
+            earlyWithdrawalPenalty: formatted.earlyWithdrawalPenalty,
+            earlyWithdrawalPeriod: formatted.earlyWithdrawalPeriod,
+          })}
+        />
+      )}
     </>
   )
 }
