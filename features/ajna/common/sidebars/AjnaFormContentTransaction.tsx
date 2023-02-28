@@ -14,7 +14,7 @@ export function AjnaFormContentTransaction({
 }: AjnaFormContentTransactionProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralToken, product, quoteToken },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxInProgress, isTxSuccess },
   } = useAjnaGeneralContext()
 
@@ -23,7 +23,7 @@ export function AjnaFormContentTransaction({
       {(!isTxStarted || isTxWaitingForApproval || isTxError) && (
         <>
           <Text as="p" variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
-            {t('ajna.borrow.open.form.confirm', { collateralToken, quoteToken })}
+            {t(`ajna.${product}.common.form.transaction.confirm`, { collateralToken, quoteToken })}
           </Text>
           <OrderInformation />
         </>

@@ -19,7 +19,7 @@ export function AjnaEarnFormContentManage() {
   return (
     <>
       {uiDropdown === 'adjust' && <AjnaEarnFormContentAdjust />}
-      {uiDropdown === 'collateral' && (
+      {uiDropdown === 'liquidity' && (
         <>
           <ActionPills
             active={uiPill}

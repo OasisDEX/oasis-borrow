@@ -196,7 +196,7 @@ export function DetailsSectionContentCard({
           </Text>
         )}
       </Text>
-      {change && (
+      {(change?.value || change?.isLoading) && (
         <Box sx={{ maxWidth: '100%', pt: 2, ...cursorStyle }} {...hightlightableItemEvents}>
           <DetailsSectionContentCardChangePill {...change} />
         </Box>

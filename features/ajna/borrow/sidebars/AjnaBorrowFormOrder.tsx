@@ -13,9 +13,9 @@ import React from 'react'
 
 export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
-
   const {
     environment: { collateralToken, quoteToken },
+    tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
@@ -47,6 +47,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     afterAvailableToWithdraw:
       simulationData?.collateralAvailable &&
       formatAmount(simulationData.collateralAvailable, collateralToken),
+    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
   return (
@@ -89,10 +90,17 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           secondaryValue: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
           isLoading,
         },
-        {
-          label: t('system.max-transaction-cost'),
-          value: <GasEstimation />,
-        },
+        isTxSuccess && cached
+          ? {
+              label: t('system.total-cost'),
+              value: formatted.totalCost,
+              isLoading,
+            }
+          : {
+              label: t('system.max-transaction-cost'),
+              value: <GasEstimation />,
+              isLoading,
+            },
       ]}
     />
   )
