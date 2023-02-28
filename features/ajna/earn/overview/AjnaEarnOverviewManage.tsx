@@ -19,10 +19,12 @@ export function AjnaEarnOverviewManage() {
   } = useAjnaGeneralContext()
   const {
     position: { isSimulationLoading },
+    notifications,
   } = useAjnaProductContext('earn')
 
   return (
     <DetailsSection
+      notifications={notifications}
       title={t('system.overview')}
       content={
         <DetailsSectionContentCardWrapper>

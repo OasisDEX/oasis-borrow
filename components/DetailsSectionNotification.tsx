@@ -21,7 +21,7 @@ export interface DetailsSectionNotificationItem {
   link?: (DetailsSectionNotificationWithAction | DetailsSectionNotificationWithUrl) & {
     label: string
   }
-  message?: string
+  message?: string | null
   title: string
   type?: DetailsSectionNotificationType
 }
@@ -102,9 +102,11 @@ export function DetailsSectionNotification({
                 <Text as="p" variant="boldParagraph2" sx={{ color: 'neutral10' }}>
                   {title}
                 </Text>
-                <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
-                  {message}
-                </Text>
+                {message && (
+                  <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
+                    {message}
+                  </Text>
+                )}
               </Box>
               {(link || closable) && (
                 <Flex
