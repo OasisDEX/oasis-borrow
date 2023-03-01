@@ -11,6 +11,7 @@ import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
   SwapWidgetState,
 } from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
@@ -265,7 +266,7 @@ function UserDesktopMenu() {
           {t('my-positions')} {!!amountOfPositions && `(${amountOfPositions})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
-        {/* <Box>
+        <Box>
           <Button
             variant="menuButtonRound"
             onClick={() => {
@@ -275,6 +276,7 @@ function UserDesktopMenu() {
               })
             }}
             sx={{
+              display: 'none', // remove after uniswap widget is fixed
               mr: 2,
               position: 'relative',
               '&, :focus': {
@@ -289,6 +291,7 @@ function UserDesktopMenu() {
               <Icon
                 name="new_beacon"
                 sx={{
+                  display: 'none', // remove after uniswap widget is fixed
                   position: 'absolute',
                   top: '-3px',
                   right: '-3px',
@@ -304,8 +307,12 @@ function UserDesktopMenu() {
               color={widgetOpen ? 'primary100' : 'inherit'}
             />
           </Button>
-          <UniswapWidgetShowHide />
-        </Box> */}
+          <UniswapWidgetShowHide
+            sx={{
+              display: 'none', // remove after uniswap widget is fixed
+            }}
+          />
+        </Box>
 
         {!shouldHideSettings && (
           <ButtonDropdown
@@ -379,7 +386,7 @@ function ConnectedHeader() {
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
               <PositionsButton sx={{ mr: 2 }} />
-              {/* <Button
+              <Button
                 variant="menuButtonRound"
                 onClick={() => {
                   uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
@@ -387,6 +394,7 @@ function ConnectedHeader() {
                   })
                 }}
                 sx={{
+                  display: 'none', // remove after uniswap widget is fixed
                   mr: 2,
                   '&, :focus': {
                     outline: widgetOpen ? '1px solid' : null,
@@ -402,9 +410,10 @@ function ConnectedHeader() {
                   width="20"
                   color={widgetOpen ? 'primary100' : 'inherit'}
                 />
-              </Button> */}
+              </Button>
               <UniswapWidgetShowHide
                 sxWrapper={{
+                  display: 'none', // remove after uniswap widget is fixed
                   position: 'fixed',
                   top: '50%',
                   left: '50%',
