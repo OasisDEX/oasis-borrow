@@ -109,7 +109,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.4",
     "react-lottie": "^1.2.3",
-    "react-redux": "8.0.1",
+    "react-redux": "8.0.5",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.1",
     "release-it": "^14.12.1",

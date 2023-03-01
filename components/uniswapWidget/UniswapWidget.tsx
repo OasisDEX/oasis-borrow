@@ -400,7 +400,7 @@ export function UniswapWidget(props: { token?: string }) {
       )}
       <SwapWidget
         /* @ts-ignore */
-        provider={web3Provider}
+        // provider={web3Provider}
         theme={widgetTheme}
         tokenList={tokenList.tokens}
         convenienceFee={20}
