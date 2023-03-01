@@ -3,7 +3,7 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { getAaveStrategy } from 'features/aave/strategyConfig'
+import { getAaveStrategyByName } from 'features/aave/strategyConfig'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -30,7 +30,7 @@ export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) 
     aaveAvailableLiquidityInUSDC$,
     getAaveAssetsPrices$,
   } = useAaveContext()
-  const [strategy] = getAaveStrategy(cardData.symbol)
+  const [strategy] = getAaveStrategyByName(cardData.symbol)
 
   const [aaveReserveState, aaveReserveStateError] = useObservable(
     aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),

@@ -7,6 +7,10 @@ import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { ProtocolsServices } from 'components/AppContext'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import {
+  getAaveStrategyByName as getAaveStrategiesByName,
+  strategies,
+} from 'features/aave/strategyConfig'
 import { positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -17,7 +21,6 @@ import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { protocolToLendingProtocol } from 'features/vaultsOverview/helpers'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
-import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { AaveProtocolData as AaveProtocolDataV2 } from 'lendingProtocols/aave-v2/pipelines'
@@ -318,38 +321,44 @@ export function createFollowedAavePositions$(
   console.log(aaveV2)
   console.log('aaveV3')
   console.log(aaveV3)
-  const { tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } = environment
+  const { tickerPrices$ /*, readPositionCreatedEvents$, automationTriggersData$*/ } = environment
   // Todo łw create object od BuildPositionArgs from the environment observables like in createAavePosition$
   // observables: BuildPositionArgs, //TODO ŁW get remaining data from this type
   return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
     switchMap(([_, context, followedVaults]) => {
-
       console.log('followedVaults before filter:', followedVaults)
       const filteredVaults = followedVaults
         .filter((vault) => vault.vault_chain_id === context.chainId)
         .filter((vault) => vault.protocol === 'aavev2' || vault.protocol === 'aavev3')
       console.log('followedVaults after filter:', filteredVaults)
-      const tokens = filteredVaults.map((vault: { strategy: string | null }) => vault.strategy).filter((token) => token !== null) as string[]
-      console.log('tokens:', tokens)
-      const tickers = tickerPrices$(tokens).pipe(
-        map((tickerPrices) => {
-          const result: { [key: string]: BigNumber } = {}
-          tokens.forEach((token, index) => {
-            result[token] = tickerPrices[index]
-          })
-          return result
-        })
-      ).subscribe((prices) => {
-        console.log('token prices:', prices)
-      })
+      // const tokens = filteredVaults
+      //   .map((vault: { strategy: string | null }) => vault.strategy)
+      //   .filter((token) => token !== null) as string[]
+      // console.log('tokens:', tokens)
+      // const tickers = tickerPrices$(tokens)
+      //   .pipe(
+      //     map((tickerPrices) => {
+      //       const result: { [key: string]: BigNumber } = {}
+      //       tokens.forEach((token, index) => {
+      //         result[token] = tickerPrices[index]
+      //       })
+      //       return result
+      //     }),
+      //   )
+      //   .subscribe((prices) => {
+      //     console.log('token prices:', prices)
+      //   })
 
       console.log('tickers')
-      console.log(tickers)
-      
+      // console.log(tickers)
+
       return filteredVaults.length === 0
         ? of([])
         : combineLatest(
-            filteredVaults.map((followedAaveVault) => buildFollowedAavePosition(followedAaveVault)),
+            filteredVaults.map((followedAaveVault: UsersWhoFollowVaults) => {
+              // TODO let's try first get all required tokens for this vault
+              return buildFollowedAavePosition(followedAaveVault)
+            }),
           )
 
       function buildFollowedAavePosition(
@@ -368,18 +377,33 @@ export function createFollowedAavePositions$(
         type: string
         liquidity: BigNumber
       }> {
-        // FIXME invalid hook call
-        // const positionCreated = useObservable(readPositionCreatedEvents$(followedAaveVault.proxy || ''))
         // console.log('positionCreated')
         // console.log(positionCreated)
-        const resolvedAaveServices = resolveAaveServices(aaveV2, aaveV3, protocolToLendingProtocol(followedAaveVault.protocol))
+        const resolvedAaveServices = resolveAaveServices(
+          aaveV2,
+          aaveV3,
+          protocolToLendingProtocol(followedAaveVault.protocol),
+        )
         console.log('resolvedAaveServices')
         console.log(resolvedAaveServices)
-        
-        // protocol === LendingProtocol.AaveV2
+        const strategyName = followedAaveVault.strategy ? followedAaveVault.strategy : ''
+        const strategiesWithCurrentToken = getAaveStrategiesByName(strategyName)
+        console.log('strategiesWithCurrentToken')
+        console.log(strategiesWithCurrentToken)
+        const currentStrategy = strategiesWithCurrentToken[0]
+        // ŁW is it possible to have 2 strategies with exactly same name need to pick one by proxy ????
+        // const currentStrategy = strategiesWithCurrentToken.find(strategy => strategy. === followedAaveVault.protocol)
+        const {
+          collateral: collateralTokenSymbol,
+          deposit: debtTokenSymbol,
+        } = currentStrategy.tokens
+        const proxyAddress = followedAaveVault.proxy ? followedAaveVault.proxy : ''
+        // TODO ŁW combineObservables, get protocaldata and so on
+        // const protocolData === LendingProtocol.AaveV2
         // ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
-        // : aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-        
+        // : aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
+        console.log('protocolData')
+        // console.log(protocolData)
         return of({
           token: followedAaveVault.strategy,
           title: followedAaveVault.strategy,

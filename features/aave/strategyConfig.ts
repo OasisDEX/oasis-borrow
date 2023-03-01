@@ -213,7 +213,7 @@ export function aaveStrategiesList(
     .filter(({ protocol }) => (filterProtocol ? protocol === filterProtocol : true))
 }
 
-export function getAaveStrategy(strategyName: IStrategyConfig['name']) {
+export function getAaveStrategyByName(strategyName: IStrategyConfig['name']) {
   return Object.values(strategies).filter(({ name }) => strategyName === name)
 }
 

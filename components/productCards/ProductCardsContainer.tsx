@@ -1,7 +1,7 @@
 import { getTokens } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
-import { getAaveStrategy } from 'features/aave/strategyConfig'
+import { getAaveStrategyByName } from 'features/aave/strategyConfig'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -45,7 +45,7 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
         {([_productCardsData]) => (
           <ProductCardsWrapper>
             {aaveStrategyCards.map((tokenData) => {
-              const aaveStrategy = getAaveStrategy(tokenData.symbol)[0]
+              const aaveStrategy = getAaveStrategyByName(tokenData.symbol)[0]
               switch (aaveStrategy.type) {
                 case 'Borrow':
                   return (
