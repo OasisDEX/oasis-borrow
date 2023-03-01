@@ -22,7 +22,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Box } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {
@@ -50,9 +50,9 @@ function SimulationSection({
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
-  const { aaveSthEthYieldsQuery } = useAaveContext(strategy.protocol)
+  const { aaveEarnYieldsQuery } = useAaveContext(strategy.protocol)
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
-  const amount = userInputAmount || new BigNumber(100)
+  const amount = useMemo(() => userInputAmount || new BigNumber(100), [userInputAmount])
 
   const swapFee = (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
   const gasFee = gasPrice?.gasEstimationEth || zero
@@ -60,7 +60,7 @@ function SimulationSection({
   const riskRatio = transition?.simulation.position.riskRatio || defaultRiskRatio
 
   useEffect(() => {
-    aaveSthEthYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
+    aaveEarnYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
       .then((yields) => {
         const simulation = calculateSimulation({ amount, yields, token, fees })
         setSimulation(simulation)
@@ -68,7 +68,7 @@ function SimulationSection({
       .catch((e) => {
         console.error('unable to get yields', e)
       })
-  }, [amount.toString(), fees.toString(), riskRatio.multiple.toString()])
+  }, [aaveEarnYieldsQuery, amount, fees, riskRatio, token])
 
   return (
     <>
