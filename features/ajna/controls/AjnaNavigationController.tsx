@@ -2,7 +2,6 @@ import { ConnectWalletButton } from 'components/navigation/content/ConnectWallet
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { MyPositionsOrb } from 'components/navigation/content/MyPositionsOrb'
 import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
-import { SwapOrb } from 'components/navigation/content/SwapOrb'
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
@@ -178,7 +177,7 @@ export function AjnaNavigationController() {
         isConnected ? (
           <>
             {isViewBelowXl && <MyPositionsOrb />}
-            <SwapOrb />
+            {/* <SwapOrb /> */}
             <NotificationsOrb />
             {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>
