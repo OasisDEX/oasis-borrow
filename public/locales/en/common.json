@@ -2479,6 +2479,8 @@
           "below-market-price": "{{amount}}% below market price",
           "current-earnings": "Current earnings",
           "early-withdrawal-penalty": "Early withdrawal penalty",
+          "early-withdrawal-ended": "Ended {{earlyWithdrawalPeriod}}",
+          "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
           "early-withdrawal-period": "Early withdrawal period",
           "max-lending-ltv": "Max lending LTV ",
           "net-pnl": "Net PnL: {{netPnL}}",
