@@ -29,6 +29,28 @@ type NavigationMenuPanelProps = NavigationMenuPanelType & {
   onMouseEnter(center: number): void
 }
 
+function NavigationMenuPanelLabel({
+  currentPanel,
+  label,
+  isPanelOpen,
+}: Pick<NavigationMenuPanelProps, 'currentPanel' | 'label' | 'isPanelOpen'>) {
+  return (
+    <Text
+      as="span"
+      sx={{
+        fontSize: 2,
+        fontWeight: 'semiBold',
+        color: isPanelOpen && currentPanel === label ? 'primary100' : 'neutral80',
+        whiteSpace: 'nowrap',
+        cursor: 'inherit',
+        transition: 'color 200ms',
+      }}
+    >
+      {label}
+    </Text>
+  )
+}
+
 export function NavigationMenuPanel({
   currentPanel,
   label,
@@ -66,27 +88,5 @@ export function NavigationMenuPanel({
         />
       )}
     </Box>
-  )
-}
-
-export function NavigationMenuPanelLabel({
-  currentPanel,
-  label,
-  isPanelOpen,
-}: Pick<NavigationMenuPanelProps, 'currentPanel' | 'label' | 'isPanelOpen'>) {
-  return (
-    <Text
-      as="span"
-      sx={{
-        fontSize: 2,
-        fontWeight: 'semiBold',
-        color: isPanelOpen && currentPanel === label ? 'primary100' : 'neutral80',
-        whiteSpace: 'nowrap',
-        cursor: 'inherit',
-        transition: 'color 200ms',
-      }}
-    >
-      {label}
-    </Text>
   )
 }
