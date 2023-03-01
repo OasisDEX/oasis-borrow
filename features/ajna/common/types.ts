@@ -1,10 +1,7 @@
-import { AjnaSimulationData } from 'actions/ajna'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
-import { Dispatch, SetStateAction } from 'react'
 
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
@@ -40,25 +37,12 @@ export type AjnaPoolData = {
   }
 }
 
-export interface AjnaPositionSet<P> {
-  position: P
-  simulation?: P
-}
+export type AjnaBorrowUpdateState = (
+  key: keyof AjnaBorrowFormState,
+  value: AjnaBorrowFormState[keyof AjnaBorrowFormState],
+) => void
 
-export interface AjnaProductPosition<P> {
-  cachedPosition?: AjnaPositionSet<P>
-  currentPosition: AjnaPositionSet<P>
-  isSimulationLoading?: boolean
-  resolvedId?: string
-  setCachedPosition: Dispatch<SetStateAction<AjnaPositionSet<P> | undefined>>
-  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<P> | undefined>>
-}
-
-export interface AjnaProductValidation {
-  validation: {
-    errors: ValidationMessagesInput
-    isFormValid: boolean
-    warnings: ValidationMessagesInput
-  }
-}
+export type AjnaEarnUpdateState = (
+  key: keyof AjnaEarnFormState,
+  value: AjnaEarnFormState[keyof AjnaEarnFormState],
+) => void

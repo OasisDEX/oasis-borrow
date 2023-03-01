@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { kebabCase } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
@@ -19,10 +20,16 @@ export interface DetailsSectionNotificationItem {
   closable?: boolean
   icon?: string
   link?: (DetailsSectionNotificationWithAction | DetailsSectionNotificationWithUrl) & {
-    label: string
+    translationKey: string
   }
-  message?: string
-  title: string
+  message?: {
+    translationKey: string
+    params?: { [key: string]: string }
+  }
+  title: {
+    translationKey: string
+    params?: { [key: string]: string }
+  }
   type?: DetailsSectionNotificationType
 }
 
@@ -46,10 +53,10 @@ export function DetailsSectionNotification({
   notifications,
 }: DetailsSectionNotificationProps) {
   const [closedNotifications, setClosedNotifications] = useState<number[]>([])
-
+  const { t } = useTranslation()
   notifications.forEach(({ title }, i) => {
     if (
-      sessionStorage.getItem(getSessionStorageKey(title)) === 'true' &&
+      sessionStorage.getItem(getSessionStorageKey(title.translationKey)) === 'true' &&
       !closedNotifications.includes(i)
     )
       setClosedNotifications((prev) => [...prev, i])
@@ -71,7 +78,7 @@ export function DetailsSectionNotification({
       }}
     >
       {notifications.map(({ closable, icon, link, message, title, type = 'notice' }, i) => (
-        <Fragment key={getSessionStorageKey(title)}>
+        <Fragment key={getSessionStorageKey(title.translationKey)}>
           {!closedNotifications.includes(i) && (
             <Flex
               as="li"
@@ -100,11 +107,13 @@ export function DetailsSectionNotification({
               )}
               <Box>
                 <Text as="p" variant="boldParagraph2" sx={{ color: 'neutral10' }}>
-                  {title}
+                  {t(title.translationKey, title.params || {})}
                 </Text>
-                <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
-                  {message}
-                </Text>
+                {message && (
+                  <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
+                    {t(message.translationKey, message.params || {})}
+                  </Text>
+                )}
               </Box>
               {(link || closable) && (
                 <Flex
@@ -120,7 +129,7 @@ export function DetailsSectionNotification({
                     <>
                       {link.url && (
                         <AppLink href={link.url} sx={{ color: 'neutral10' }}>
-                          {link.label}
+                          {link.translationKey}
                         </AppLink>
                       )}
                       {link.action && (
@@ -129,7 +138,7 @@ export function DetailsSectionNotification({
                           sx={{ p: 0, color: 'neutral10' }}
                           onClick={link.action}
                         >
-                          {link.label}
+                          {t(link.translationKey)}
                         </Button>
                       )}
                     </>
@@ -139,7 +148,7 @@ export function DetailsSectionNotification({
                       variant="unStyled"
                       sx={{ mr: 2, p: 0, lineHeight: 0 }}
                       onClick={() => {
-                        sessionStorage.setItem(getSessionStorageKey(title), 'true')
+                        sessionStorage.setItem(getSessionStorageKey(title.translationKey), 'true')
                         setClosedNotifications((prev) => [...prev, i])
                       }}
                     >
