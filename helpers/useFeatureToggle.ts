@@ -28,6 +28,7 @@ export type Feature =
   | 'Ajna'
   | 'DaiSavingsRate'
   | 'FollowAAVEVaults'
+  | 'GoerliButton'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -54,6 +55,8 @@ const configuredFeatures: Record<Feature, boolean> = {
   Ajna: false,
   DaiSavingsRate: true,
   FollowAAVEVaults: false,
+  // Added for gnosis safe testing
+  GoerliButton: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
