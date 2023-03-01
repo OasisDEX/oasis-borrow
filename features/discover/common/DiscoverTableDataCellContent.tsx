@@ -15,7 +15,6 @@ import {
 } from 'features/follow/common/ShareButton'
 import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React, { PropsWithChildren } from 'react'
@@ -34,7 +33,6 @@ export function DiscoverTableDataCellContent({
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
 }) {
-  const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { i18n, t } = useTranslation()
   const primitives = Object.keys(row)
     .filter((item) => typeof row[item] === 'string' || typeof row[item] === 'number')
@@ -90,7 +88,7 @@ export function DiscoverTableDataCellContent({
               {t('view')}
             </Button>
           </AppLink>
-          {followVaultsEnabled && (
+          {!row.skipShareButton && (
             <AppLink
               href={getTwitterShareUrl({
                 text: twitterSharePositionText,
