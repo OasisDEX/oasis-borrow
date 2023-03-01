@@ -14,8 +14,10 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { protocolToLendingProtocol } from 'features/vaultsOverview/helpers'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
+import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { AaveProtocolData as AaveProtocolDataV2 } from 'lendingProtocols/aave-v2/pipelines'
@@ -149,11 +151,7 @@ function buildAaveViewModel(
   observables: BuildPositionArgs,
 ): Observable<AavePosition> {
   const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol } = positionCreatedEvent
-  const aaveServiceMap = {
-    [LendingProtocol.AaveV2]: observables.aaveV2,
-    [LendingProtocol.AaveV3]: observables.aaveV3,
-  }
-  const resolvedAaveServices = aaveServiceMap[protocol]
+  const resolvedAaveServices = resolveAaveServices(observables.aaveV2, observables.aaveV3, protocol)
   console.log('resolvedAaaveServices')
   console.log(resolvedAaveServices)
   return combineLatest(
@@ -253,6 +251,19 @@ type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCrea
   fakePositionCreatedEvtForDsProxyUsers?: boolean
 }
 
+function resolveAaveServices(
+  aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
+  aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
+  protocol: LendingProtocol,
+) {
+  const aaveServiceMap = {
+    [LendingProtocol.AaveV2]: aaveV2,
+    [LendingProtocol.AaveV3]: aaveV3,
+  }
+  const resolvedAaveServices = aaveServiceMap[protocol]
+  return resolvedAaveServices
+}
+
 function getStethEthAaveV2DsProxyEarnPosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
   aaveProtocolData$: (
@@ -301,35 +312,66 @@ export function createFollowedAavePositions$(
   aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
   environment: CreatePositionEnvironmentPropsType,
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
-  followerAddress: string,  
-  ): Observable<AavePosition[]> {
-    console.log('aaveV2')
-    console.log(aaveV2)
-    console.log('aaveV3')
-    console.log(aaveV3)
-    // Todo łw create object od BuildPositionArgs from the environment observables like in createAavePosition$
-    // observables: BuildPositionArgs, //TODO ŁW get remaining data from this type
+  followerAddress: string,
+): Observable<AavePosition[]> {
+  console.log('aaveV2')
+  console.log(aaveV2)
+  console.log('aaveV3')
+  console.log(aaveV3)
+  const { tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } = environment
+  // Todo łw create object od BuildPositionArgs from the environment observables like in createAavePosition$
+  // observables: BuildPositionArgs, //TODO ŁW get remaining data from this type
   return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
     switchMap(([_, context, followedVaults]) => {
+
       console.log('followedVaults before filter:', followedVaults)
       const filteredVaults = followedVaults
         .filter((vault) => vault.vault_chain_id === context.chainId)
         .filter((vault) => vault.protocol === 'aavev2' || vault.protocol === 'aavev3')
       console.log('followedVaults after filter:', filteredVaults)
+      const tokens = filteredVaults.map((vault: { strategy: string | null }) => vault.strategy)
+      console.log('tokens:', tokens)
       return filteredVaults.length === 0
         ? of([])
         : combineLatest(
-            filteredVaults.map((followedAaveVault) =>
-              buildFollowedAavePosition(followedAaveVault),
-            ),
+            filteredVaults.map((followedAaveVault) => buildFollowedAavePosition(followedAaveVault)),
           )
 
-      function buildFollowedAavePosition(followedAaveVault: UsersWhoFollowVaults): Observable<{ token: string | null; title: string | null; contentsUsd: BigNumber; url: string; netValue: BigNumber; multiple: BigNumber; liquidationPrice: BigNumber; fundingCost: BigNumber; isOwner: boolean; lockedCollateral: BigNumber; type: string; liquidity: BigNumber }> {
+      function buildFollowedAavePosition(
+        followedAaveVault: UsersWhoFollowVaults,
+      ): Observable<{
+        token: string | null
+        title: string | null
+        contentsUsd: BigNumber
+        url: string
+        netValue: BigNumber
+        multiple: BigNumber
+        liquidationPrice: BigNumber
+        fundingCost: BigNumber
+        isOwner: boolean
+        lockedCollateral: BigNumber
+        type: string
+        liquidity: BigNumber
+      }> {
+        // FIXME invalid hook call
+        // const positionCreated = useObservable(readPositionCreatedEvents$(followedAaveVault.proxy || ''))
+        // console.log('positionCreated')
+        // console.log(positionCreated)
+        const resolvedAaveServices = resolveAaveServices(aaveV2, aaveV3, protocolToLendingProtocol(followedAaveVault.protocol))
+        console.log('resolvedAaveServices')
+        console.log(resolvedAaveServices)
+        
+        // protocol === LendingProtocol.AaveV2
+        // ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
+        // : aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+        
         return of({
           token: followedAaveVault.strategy,
           title: followedAaveVault.strategy,
           contentsUsd: new BigNumber(0),
-          url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${followedAaveVault.vault_id}/`,
+          url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${
+            followedAaveVault.vault_id
+          }/`,
           netValue: one,
           multiple: one,
           liquidationPrice: one,
