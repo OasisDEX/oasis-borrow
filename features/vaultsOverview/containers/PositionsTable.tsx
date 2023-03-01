@@ -42,22 +42,41 @@ export function PositionsTable({ address }: { address: string }) {
         customLoader={<PositionTableLoadingState />}
       >
         {([ownersPositionsList]) => {
-          const dsrPosition = getDsrPosition({ dsr: ownersPositionsList.dsrPosition, address })
+          const dsrPosition = getDsrPosition({
+            dsr: ownersPositionsList.dsrPosition,
+            address,
+            skipShareButton: true,
+          })
           const combinedPositionsData = [
             ...ownersPositionsList.makerPositions,
             ...ownersPositionsList.aavePositions,
             ...dsrPosition,
           ]
-          const borrowPositions = getMakerBorrowPositions(ownersPositionsList.makerPositions)
+          const borrowPositions = getMakerBorrowPositions({
+            positions: ownersPositionsList.makerPositions,
+            skipShareButton: true,
+          })
           const multiplyPositions = useMemo(() => {
             return [
-              ...getMakerMultiplyPositions(ownersPositionsList.makerPositions),
-              ...getAaveMultiplyPositions(ownersPositionsList.aavePositions),
+              ...getMakerMultiplyPositions({
+                positions: ownersPositionsList.makerPositions,
+                skipShareButton: true,
+              }),
+              ...getAaveMultiplyPositions({
+                positions: ownersPositionsList.aavePositions,
+                skipShareButton: true,
+              }),
             ]
           }, [ownersPositionsList])
           const earnPositions = [
-            ...getMakerEarnPositions(ownersPositionsList.makerPositions),
-            ...getAaveEarnPositions(ownersPositionsList.aavePositions),
+            ...getMakerEarnPositions({
+              positions: ownersPositionsList.makerPositions,
+              skipShareButton: true,
+            }),
+            ...getAaveEarnPositions({
+              positions: ownersPositionsList.aavePositions,
+              skipShareButton: true,
+            }),
             ...dsrPosition,
           ]
 

@@ -40,8 +40,8 @@ export function FollowedTable({ address }: { address: string }) {
   const multiplyPositions = useMemo(() => {
     return followedMakerVaultsData && followedAavePositionsData
       ? [
-          ...getMakerMultiplyPositions(followedMakerVaultsData),
-          ...getAaveMultiplyPositions(followedAavePositionsData),
+          ...getMakerMultiplyPositions({ positions: followedMakerVaultsData }),
+          ...getAaveMultiplyPositions({ positions: followedAavePositionsData }),
         ]
       : []
   }, [followedMakerVaultsData, followedAavePositionsData])
@@ -59,9 +59,10 @@ export function FollowedTable({ address }: { address: string }) {
         value={[contextData, followedMakerVaultsData]}
         customLoader={<PositionTableLoadingState />}
       >
-        {([context, followedMakerPositions /*, followedAavePositions*/]) => {
-          const borrowPositions = getMakerBorrowPositions(followedMakerPositions)
-          const earnPositions = getMakerEarnPositions(followedMakerPositions)
+        {([context, followedMakerPositions,/*, followedAavePositions*/]) => {
+          const borrowPositions = getMakerBorrowPositions({ positions: followedMakerPositions })
+          // const multiplyPositions = getMakerMultiplyPositions({ positions: followedMakerPositions })
+          const earnPositions = getMakerEarnPositions({ positions: followedMakerPositions })
 
           return followedMakerPositions.length ? (
             <DiscoverTableContainer

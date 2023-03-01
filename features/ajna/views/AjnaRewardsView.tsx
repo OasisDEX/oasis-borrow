@@ -1,10 +1,10 @@
+import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
 import { AjnaHaveSomeQuestions } from 'features/ajna/components/AjnaHaveSomeQuestions'
+import { AjnaHeader } from 'features/ajna/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/components/AjnaRewardCard'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Text } from 'theme-ui'
-import { slideInAnimation } from 'theme/animations'
 
 const rewardCards = [
   {
@@ -14,7 +14,7 @@ const rewardCards = [
     link: { title: 'ajna.rewards.cards.mining.link', href: '/' },
     banner: {
       title: 'ajna.rewards.cards.mining.banner.title',
-      value: '42.00 AJNA',
+      value: '42.00',
       subValue: '$80.20',
       button: {
         title: 'ajna.rewards.cards.button',
@@ -29,7 +29,7 @@ const rewardCards = [
     link: { title: 'ajna.rewards.cards.token.link', href: '/' },
     banner: {
       title: 'ajna.rewards.cards.token.banner.title',
-      value: '42.00 AJNA',
+      value: '42.00',
       subValue: '$80.20',
       button: {
         title: 'ajna.rewards.cards.button',
@@ -43,39 +43,14 @@ export function AjnaRewardsView() {
   const { t } = useTranslation()
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        ...slideInAnimation,
-        position: 'relative',
-        animationDuration: '0.4s',
-        animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
-      }}
-    >
-      <Flex
-        sx={{
-          flexDirection: 'column',
-          alignItems: 'center',
-          mb: 3,
-        }}
-      >
-        <Text as="p" variant="header2" sx={{ mt: [3, 3, 5], mb: 3, textAlign: 'center' }}>
-          {t('ajna.rewards.page-title')}
-        </Text>
-        <Text
-          as="p"
-          variant="paragraph2"
-          sx={{ mb: [5, '48px'], color: 'neutral80', maxWidth: '740px', textAlign: 'center' }}
-        >
-          {t('ajna.rewards.page-description')}
-        </Text>
-      </Flex>
-      <ProductCardsWrapper desktopWidthOfCard={444}>
+    <AnimatedWrapper>
+      <AjnaHeader title={t('ajna.rewards.title')} intro={t('ajna.rewards.intro')} />
+      <ProductCardsWrapper gap={24} desktopWidthOfCard={448} sx={{ mt: 5 }}>
         {rewardCards.map((rewardCard, idx) => (
           <AjnaRewardCard key={idx} {...rewardCard} />
         ))}
       </ProductCardsWrapper>
       <AjnaHaveSomeQuestions />
-    </Box>
+    </AnimatedWrapper>
   )
 }

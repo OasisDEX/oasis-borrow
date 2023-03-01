@@ -1,5 +1,7 @@
 import { AjnaSimulationData } from 'actions/ajna'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
 import {
@@ -7,6 +9,7 @@ import {
   useAjnaBorrowFormReducto,
 } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { getAjnaNotifications } from 'features/ajna/common/notifications'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaValidation } from 'features/ajna/common/validation'
 import {
@@ -75,6 +78,7 @@ interface AjnaProductContext<P, F> {
     isFormValid: boolean
     warnings: ValidationMessagesInput
   }
+  notifications: DetailsSectionNotificationItem[]
 }
 
 type AjnaProductContextWithBorrow = AjnaProductContext<
@@ -119,7 +123,14 @@ export function AjnaProductContextProvider({
   const { positionIdFromDpmProxy$ } = useAppContext()
 
   const {
-    environment: { collateralBalance, collateralToken, ethBalance, ethPrice, quoteBalance },
+    environment: {
+      collateralBalance,
+      collateralToken,
+      quoteToken,
+      ethBalance,
+      ethPrice,
+      quoteBalance,
+    },
     steps: { currentStep },
     tx: { txDetails },
   } = useAjnaGeneralContext()
@@ -166,6 +177,31 @@ export function AjnaProductContextProvider({
     ],
   )
 
+  // TODO we will probably need resolver of these params per product
+  // should be based on position not form state
+  const resolvedNotificationsParams = useMemo(
+    () => ({
+      price: new BigNumber(18000),
+      htp: new BigNumber(19000),
+      // in general momp should be always above htp but here set below to force all notification to popup
+      momp: new BigNumber(17000),
+    }),
+    [],
+  )
+
+  const notifications = useMemo(
+    () =>
+      getAjnaNotifications({
+        params: resolvedNotificationsParams,
+        product,
+        quoteToken,
+        collateralToken,
+        dispatch: form.dispatch,
+        updateState: form.updateState,
+      }),
+    [quoteToken, collateralToken, resolvedNotificationsParams],
+  )
+
   const [context, setContext] = useState<AjnaProductContext<typeof position, typeof form>>({
     form,
     position: {
@@ -178,6 +214,7 @@ export function AjnaProductContextProvider({
       setSimulation,
     },
     validation,
+    notifications,
   })
 
   useEffect(() => {
@@ -195,6 +232,7 @@ export function AjnaProductContextProvider({
         resolvedId: positionIdFromDpmProxyData,
       },
       validation,
+      notifications,
     }))
   }, [
     cachedPosition,
@@ -210,6 +248,7 @@ export function AjnaProductContextProvider({
     simulation,
     txDetails,
     validation,
+    notifications,
     walletAddress,
   ])
 

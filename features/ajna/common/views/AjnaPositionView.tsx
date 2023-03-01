@@ -4,6 +4,7 @@ import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { getAjnaHeadlineProps } from 'features/ajna/common/helpers/getAjnaHeadlineProps'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -25,7 +26,16 @@ export function AjnaPositionView({
   const { t } = useTranslation()
   const { contextIsLoaded, walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, id, owner, product, quoteToken },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      flow,
+      id,
+      owner,
+      product,
+      quotePrice,
+      quoteToken,
+    },
   } = useAjnaGeneralContext()
 
   return (
@@ -39,7 +49,15 @@ export function AjnaPositionView({
         header=""
         {...getAjnaHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
         {...(flow === 'manage' && { shareButton: true })}
-        details={headlineDetails || []}
+        details={[
+          ...(headlineDetails || []),
+          {
+            label: t('ajna.borrow.common.headline.current-market-price', { collateralToken }),
+            value: `${formatCryptoBalance(
+              collateralPrice.dividedBy(quotePrice),
+            )} ${collateralToken}/${quoteToken}`,
+          },
+        ]}
       />
       <TabBar
         variant="underline"

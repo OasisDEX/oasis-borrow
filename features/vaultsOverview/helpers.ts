@@ -25,8 +25,28 @@ export const positionsTableTooltips = [
   'variable',
   'vaultDebt',
 ]
-export const positionsTableSkippedHeaders = ['icon', 'ilk', 'liquidityToken', 'url']
+export const positionsTableSkippedHeaders = [
+  'icon',
+  'ilk',
+  'liquidityToken',
+  'skipShareButton',
+  'url',
+]
 export const followTableSkippedHeaders = ['icon', 'ilk', 'protection', 'liquidityToken', 'url']
+
+interface GetMakerPositionParams {
+  positions: MakerPositionDetails[]
+  skipShareButton?: boolean
+}
+interface GetAavePositionParams {
+  positions: AavePosition[]
+  skipShareButton?: boolean
+}
+interface GetDsrPositionParams {
+  address: string
+  dsr?: Dsr
+  skipShareButton?: boolean
+}
 
 function getFundingCost({
   debt,
@@ -88,7 +108,10 @@ function getAavePositionOfType(position: AavePosition[]) {
   )
 }
 
-export function getMakerBorrowPositions(positions: MakerPositionDetails[]): DiscoverTableRowData[] {
+export function getMakerBorrowPositions({
+  positions,
+  skipShareButton,
+}: GetMakerPositionParams): DiscoverTableRowData[] {
   return getMakerPositionOfType(positions).borrow.map(
     ({
       atRiskLevelDanger,
@@ -116,13 +139,15 @@ export function getMakerBorrowPositions(positions: MakerPositionDetails[]): Disc
       variable: stabilityFee.times(100).toNumber(),
       ...(isOwner && { protection: getProtection({ stopLossData, autoSellData }) }),
       cdpId: id.toNumber(),
+      ...(skipShareButton && { skipShareButton }),
     }),
   )
 }
 
-export function getMakerMultiplyPositions(
-  positions: MakerPositionDetails[],
-): DiscoverTableRowData[] {
+export function getMakerMultiplyPositions({
+  positions,
+  skipShareButton,
+}: GetMakerPositionParams): DiscoverTableRowData[] {
   return getMakerPositionOfType(positions).multiply.map(
     ({
       autoSellData,
@@ -145,11 +170,15 @@ export function getMakerMultiplyPositions(
       fundingCost: getFundingCost({ debt, stabilityFee, value }).toNumber(),
       ...(isOwner && { protection: getProtection({ stopLossData, autoSellData }) }),
       cdpId: id.toNumber(),
+      ...(skipShareButton && { skipShareButton }),
     }),
   )
 }
 
-export function getMakerEarnPositions(positions: MakerPositionDetails[]): DiscoverTableRowData[] {
+export function getMakerEarnPositions({
+  positions,
+  skipShareButton,
+}: GetMakerPositionParams): DiscoverTableRowData[] {
   return getMakerPositionOfType(positions).earn.map(
     ({ debt, history, id, ilk, ilkDebtAvailable, lockedCollateralUSD, token, value }) => {
       return {
@@ -160,12 +189,16 @@ export function getMakerEarnPositions(positions: MakerPositionDetails[]): Discov
         liquidity: ilkDebtAvailable.toNumber(),
         protection: -1,
         cdpId: id.toNumber(),
+        ...(skipShareButton && { skipShareButton }),
       }
     },
   )
 }
 
-export function getAaveMultiplyPositions(positions: AavePosition[]): DiscoverTableRowData[] {
+export function getAaveMultiplyPositions({
+  positions,
+  skipShareButton,
+}: GetAavePositionParams): DiscoverTableRowData[] {
   return getAavePositionOfType(positions).multiply.map(
     ({
       fundingCost,
@@ -191,12 +224,16 @@ export function getAaveMultiplyPositions(positions: AavePosition[]): DiscoverTab
         ...(isOwner && { protection: getProtection({ stopLossData: stopLossData! }) }),
         cdpId: id,
         url,
+        ...(skipShareButton && { skipShareButton }),
       }
     },
   )
 }
 
-export function getAaveEarnPositions(positions: AavePosition[]): DiscoverTableRowData[] {
+export function getAaveEarnPositions({
+  positions,
+  skipShareButton,
+}: GetAavePositionParams): DiscoverTableRowData[] {
   return getAavePositionOfType(positions).earn.map(
     ({ id, liquidity, netValue, title, token, url }) => {
       return {
@@ -209,6 +246,7 @@ export function getAaveEarnPositions(positions: AavePosition[]): DiscoverTableRo
         protection: -1,
         cdpId: id,
         url,
+        ...(skipShareButton && { skipShareButton }),
       }
     },
   )
@@ -217,10 +255,8 @@ export function getAaveEarnPositions(positions: AavePosition[]): DiscoverTableRo
 export function getDsrPosition({
   address,
   dsr,
-}: {
-  address: string
-  dsr?: Dsr
-}): DiscoverTableRowData[] {
+  skipShareButton,
+}: GetDsrPositionParams): DiscoverTableRowData[] {
   const netValue =
     dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
 
@@ -233,6 +269,7 @@ export function getDsrPosition({
       liquidity: 'Unlimited',
       protection: -1,
       url: `/earn/dsr/${address}`,
+      ...(skipShareButton && { skipShareButton }),
     },
   ]
 

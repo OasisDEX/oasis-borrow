@@ -7,6 +7,8 @@ import {
 import { discoverPagesMeta } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import { DiscoverView } from 'features/discover/views/DiscoverView'
+import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -14,7 +16,11 @@ import React from 'react'
 function DiscoverPage({ kind }: { kind: DiscoverPages }) {
   return (
     <WithConnection>
-      <DiscoverView kind={kind} />
+      <WithTermsOfService>
+        <WithWalletAssociatedRisk>
+          <DiscoverView kind={kind} />
+        </WithWalletAssociatedRisk>
+      </WithTermsOfService>
     </WithConnection>
   )
 }
