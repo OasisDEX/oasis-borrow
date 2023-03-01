@@ -276,6 +276,7 @@ function UserDesktopMenu() {
               })
             }}
             sx={{
+              display: 'none', // remove after uniswap widget is fixed
               mr: 2,
               position: 'relative',
               '&, :focus': {
@@ -290,6 +291,7 @@ function UserDesktopMenu() {
               <Icon
                 name="new_beacon"
                 sx={{
+                  display: 'none', // remove after uniswap widget is fixed
                   position: 'absolute',
                   top: '-3px',
                   right: '-3px',
@@ -305,7 +307,11 @@ function UserDesktopMenu() {
               color={widgetOpen ? 'primary100' : 'inherit'}
             />
           </Button>
-          <UniswapWidgetShowHide />
+          <UniswapWidgetShowHide
+            sx={{
+              display: 'none', // remove after uniswap widget is fixed
+            }}
+          />
         </Box>
 
         {!shouldHideSettings && (
@@ -388,6 +394,7 @@ function ConnectedHeader() {
                   })
                 }}
                 sx={{
+                  display: 'none', // remove after uniswap widget is fixed
                   mr: 2,
                   '&, :focus': {
                     outline: widgetOpen ? '1px solid' : null,
@@ -406,6 +413,7 @@ function ConnectedHeader() {
               </Button>
               <UniswapWidgetShowHide
                 sxWrapper={{
+                  display: 'none', // remove after uniswap widget is fixed
                   position: 'fixed',
                   top: '50%',
                   left: '50%',
