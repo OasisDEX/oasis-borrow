@@ -2489,7 +2489,25 @@
         },
         "form": {
           "adjust-lending-price-bucket": "Adjust lending price bucket"
+        },
+        "notifications": {
+          "deposit-is-not-withdrawable": {
+            "title": "Warning your selected price is too close to market price",
+            "message": "In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}",
+            "label": "Adjust lending price"
+          },
+          "earning-no-apy": {
+            "title": "Warning your position is not earning any yield",
+            "message": "Your lending position is below the minimum yield bearing price",
+            "label": "Adjust lending price"
+          }
         }
+      }
+    },
+    "multiply": {
+      "coming-soon": {
+        "title": "Ajna Multiply coming soon",
+        "intro": "We’re busy building Multiply for Ajna and will be releasing it shortly. For now you can Borrow and Earn on Ajna."
       }
     },
     "validations": {
@@ -2497,11 +2515,13 @@
       "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet",
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
-      "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited."
+      "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited.",
+      "earning-no-apy": "You will be lending without earning any yield",
+      "deposit-is-not-withdrawable": "You cannot set price bucket above MOMP TBD"
     },
     "rewards": {
-      "page-title": "Your Ajna token rewards",
-      "page-description": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
+      "title": "Your Ajna token rewards",
+      "intro": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more.",
       "cards": {
         "mining": {
           "title": "$AJNA Liquidity Mining Rewards",

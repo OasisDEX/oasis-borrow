@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -31,7 +32,7 @@ export function AjnaRewardCard({
   const { t } = useTranslation()
 
   return (
-    <Card p={4} sx={{ height: '100%' }}>
+    <Card p={4} sx={{ height: '100%', borderRadius: 'large' }}>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Flex
           sx={{
@@ -39,17 +40,17 @@ export function AjnaRewardCard({
             height: '100px',
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: '50%',
+            mb: [3, '24px'],
+            borderRadius: 'ellipse',
             background: gradient,
-            mb: [3, '21px'],
           }}
         >
           <Image src={staticFilesRuntimeUrl(image)} />
         </Flex>
         <Heading
           sx={{
-            fontSize: [3, 5],
             mb: 3,
+            fontSize: [3, 5],
             fontWeight: ['regular', 'semiBold'],
             color: ['neutral80', 'primary100'],
           }}
@@ -59,17 +60,19 @@ export function AjnaRewardCard({
         <Box
           as="ul"
           sx={{
+            display: ['none', 'flex'],
             flexDirection: 'column',
+            rowGap: 1,
             p: 0,
             mb: 3,
             listStylePosition: 'inside',
-            display: ['none', 'flex'],
           }}
         >
           {list.map((item) => (
-            <Box
-              as="li"
+            <Text
               key={item}
+              as="li"
+              variant="paragraph3"
               sx={{
                 alignItems: 'flex-start',
                 display: 'list-item',
@@ -77,39 +80,41 @@ export function AjnaRewardCard({
                 wordWrap: 'break-word',
               }}
             >
-              <Text as="span" variant="paragraph3" color="inherit">
-                {t(item)}
-              </Text>
-            </Box>
+              {t(item)}
+            </Text>
           ))}
         </Box>
         <AppLink href={link.href} sx={{ display: ['none', 'block'] }}>
-          <WithArrow gap={1} sx={{ color: 'inherit' }}>
+          <WithArrow gap={1} sx={{ ...getAjnaWithArrowColorScheme() }}>
             {t(link.title)}
           </WithArrow>
         </AppLink>
         <Card
           sx={{
-            background: ['unset', gradient],
+            width: '100%',
+            mt: [0, '24px'],
             p: 4,
-            pb: [4, banner.footer ? '22px' : 4],
-            mt: [0, '22px'],
+            pb: [4, banner.footer ? '24px' : 4],
             pt: [0, 4],
             border: 'none',
-            width: '100%',
+            borderRadius: 'large',
+            background: ['none', gradient],
           }}
         >
           <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-            <Heading sx={{ fontSize: 2, mb: 2, display: ['none', 'block'] }}>
+            <Heading variant="boldParagraph3" sx={{ display: ['none', 'block'] }}>
               {t(banner.title)}
             </Heading>
-            <Text as="p" sx={{ fontSize: '28px', fontWeight: 'medium' }}>
-              {banner.value}
+            <Text as="p" sx={{ color: 'primary100', fontSize: '36px', fontWeight: 'semiBold' }}>
+              {banner.value}{' '}
+              <Text as="small" sx={{ fontSize: '28px' }}>
+                AJNA
+              </Text>
             </Text>
-            <Text as="p" variant="paragraph2" sx={{ color: 'neutral80', mb: [4, '21px'] }}>
+            <Text as="p" variant="paragraph2" sx={{ color: 'neutral80', mb: [4, '24px'] }}>
               {banner.subValue}
             </Text>
-            <Button sx={{ mb: [0, banner.footer ? '19px' : 0], fontSize: 1, p: 0 }}>
+            <Button sx={{ mb: [0, banner.footer ? 3 : 0], fontSize: 1, p: 0 }}>
               <WithArrow
                 gap={1}
                 sx={{ color: 'inherit', fontSize: 'inherit', p: 2, pl: '24px', pr: '36px' }}
