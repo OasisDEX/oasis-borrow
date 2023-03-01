@@ -2504,6 +2504,12 @@
         }
       }
     },
+    "multiply": {
+      "coming-soon": {
+        "title": "Ajna Multiply coming soon",
+        "intro": "We’re busy building Multiply for Ajna and will be releasing it shortly. For now you can Borrow and Earn on Ajna."
+      }
+    },
     "validations": {
       "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
       "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet",
@@ -2514,8 +2520,8 @@
       "deposit-is-not-withdrawable": "You cannot set price bucket above MOMP TBD"
     },
     "rewards": {
-      "page-title": "Your Ajna token rewards",
-      "page-description": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more",
+      "title": "Your Ajna token rewards",
+      "intro": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more.",
       "cards": {
         "mining": {
           "title": "$AJNA Liquidity Mining Rewards",
