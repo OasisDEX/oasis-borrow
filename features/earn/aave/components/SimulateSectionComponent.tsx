@@ -68,7 +68,8 @@ function SimulationSection({
       .catch((e) => {
         console.error('unable to get yields', e)
       })
-  }, [aaveEarnYieldsQuery, amount, fees, riskRatio, token])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount])
 
   return (
     <>
