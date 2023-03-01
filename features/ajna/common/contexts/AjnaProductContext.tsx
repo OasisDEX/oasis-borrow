@@ -18,7 +18,6 @@ import {
 } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { useTranslation } from 'next-i18next'
 import React, {
   Dispatch,
   PropsWithChildren,
@@ -122,7 +121,6 @@ export function AjnaProductContextProvider({
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
   const { positionIdFromDpmProxy$ } = useAppContext()
-  const { t } = useTranslation()
 
   const {
     environment: {
@@ -198,7 +196,6 @@ export function AjnaProductContextProvider({
         product,
         quoteToken,
         collateralToken,
-        t,
         dispatch: form.dispatch,
         updateState: form.updateState,
       }),

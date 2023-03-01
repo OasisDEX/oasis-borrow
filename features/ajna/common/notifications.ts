@@ -3,7 +3,6 @@ import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotific
 import { AjnaBorrowFormAction } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaBorrowUpdateState, AjnaEarnUpdateState, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaEarnFormAction } from 'features/ajna/earn/state/ajnaEarnFormReducto'
-import { TFunction } from 'next-i18next'
 import { Dispatch } from 'react'
 
 type DepositIsNotWithdrawableParams = {
@@ -16,7 +15,6 @@ type EarningNoApyParams = {
 }
 
 type NotificationCallbackWithParams<P> = (
-  t: TFunction,
   params: P,
   action?: () => void,
 ) => DetailsSectionNotificationItem
@@ -25,25 +23,34 @@ const ajnaNotifications: {
   depositIsNotWithdrawable: NotificationCallbackWithParams<DepositIsNotWithdrawableParams>
   earningNoApy: NotificationCallbackWithParams<EarningNoApyParams>
 } = {
-  depositIsNotWithdrawable: (t, { message, action }) => ({
-    title: t('ajna.earn.manage.notifications.deposit-is-not-withdrawable.title'),
-    message: t('ajna.earn.manage.notifications.deposit-is-not-withdrawable.message', message),
+  depositIsNotWithdrawable: ({ action, message }) => ({
+    title: {
+      translationKey: 'ajna.earn.manage.notifications.deposit-is-not-withdrawable.title',
+    },
+    message: {
+      translationKey: 'ajna.earn.manage.notifications.deposit-is-not-withdrawable.message',
+      params: message,
+    },
     icon: 'coins_cross',
     type: 'error',
     closable: true,
     link: {
-      label: t('ajna.earn.manage.notifications.deposit-is-not-withdrawable.label'),
+      translationKey: 'ajna.earn.manage.notifications.deposit-is-not-withdrawable.label',
       action,
     },
   }),
-  earningNoApy: (t, { action }) => ({
-    title: t('ajna.earn.manage.notifications.earning-no-apy.title'),
-    message: t('ajna.earn.manage.notifications.earning-no-apy.message'),
+  earningNoApy: ({ action }) => ({
+    title: {
+      translationKey: 'ajna.earn.manage.notifications.earning-no-apy.title',
+    },
+    message: {
+      translationKey: 'ajna.earn.manage.notifications.earning-no-apy.message',
+    },
     icon: 'coins_cross',
     type: 'warning',
     closable: true,
     link: {
-      label: t('ajna.earn.manage.notifications.earning-no-apy.label'),
+      translationKey: 'ajna.earn.manage.notifications.earning-no-apy.label',
       action,
     },
   }),
@@ -71,7 +78,6 @@ export function getAjnaNotifications({
   dispatch,
   updateState,
   product,
-  t,
 }: {
   params: NotificationParams
   collateralToken: string
@@ -79,7 +85,6 @@ export function getAjnaNotifications({
   dispatch: Dispatch<AjnaBorrowFormAction> | Dispatch<AjnaEarnFormAction>
   updateState: AjnaBorrowUpdateState | AjnaEarnUpdateState
   product: AjnaProduct
-  t: TFunction
 }) {
   const notifications: DetailsSectionNotificationItem[] = []
 
@@ -100,14 +105,14 @@ export function getAjnaNotifications({
 
       if (depositIsNotWithdrawable) {
         notifications.push(
-          ajnaNotifications.depositIsNotWithdrawable(t, {
+          ajnaNotifications.depositIsNotWithdrawable({
             message: { collateralToken, quoteToken },
             action: moveToAdjust,
           }),
         )
       }
       if (earningNoApy) {
-        notifications.push(ajnaNotifications.earningNoApy(t, { action: moveToAdjust }))
+        notifications.push(ajnaNotifications.earningNoApy({ action: moveToAdjust }))
       }
 
       break
