@@ -329,8 +329,23 @@ export function createFollowedAavePositions$(
         .filter((vault) => vault.vault_chain_id === context.chainId)
         .filter((vault) => vault.protocol === 'aavev2' || vault.protocol === 'aavev3')
       console.log('followedVaults after filter:', filteredVaults)
-      const tokens = filteredVaults.map((vault: { strategy: string | null }) => vault.strategy)
+      const tokens = filteredVaults.map((vault: { strategy: string | null }) => vault.strategy).filter((token) => token !== null) as string[]
       console.log('tokens:', tokens)
+      const tickers = tickerPrices$(tokens).pipe(
+        map((tickerPrices) => {
+          const result: { [key: string]: BigNumber } = {}
+          tokens.forEach((token, index) => {
+            result[token] = tickerPrices[index]
+          })
+          return result
+        })
+      ).subscribe((prices) => {
+        console.log('token prices:', prices)
+      })
+
+      console.log('tickers')
+      console.log(tickers)
+      
       return filteredVaults.length === 0
         ? of([])
         : combineLatest(
