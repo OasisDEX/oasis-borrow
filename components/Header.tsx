@@ -9,11 +9,6 @@ import { LANDING_PILLS } from 'content/landing'
 import { DISCOVER_URL } from 'features/discover/helpers'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-  SwapWidgetState,
-} from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { getShouldHideHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
@@ -22,7 +17,6 @@ import { WithChildren } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
@@ -34,7 +28,6 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
-import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
 function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -217,26 +210,17 @@ function ButtonDropdown({
 
 function UserDesktopMenu() {
   const { t } = useTranslation()
-  const { accountData$, context$, web3Context$, uiChanges } = useAppContext()
+  const { accountData$, context$, web3Context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const { amountOfPositions } = useAccount()
-  const [exchangeOnboarded] = useOnboarding('Exchange')
-  const [exchangeOpened, setExchangeOpened] = useState(false)
-  const [widgetUiChanges] = useObservable(
-    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
-  )
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
   // TODO: Update this once the the notifications pannel is available
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
-
-  const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
-
-  const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
   const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
 
@@ -266,54 +250,6 @@ function UserDesktopMenu() {
           {t('my-positions')} {!!amountOfPositions && `(${amountOfPositions})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
-        <Box>
-          <Button
-            variant="menuButtonRound"
-            onClick={() => {
-              setExchangeOpened(true)
-              uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
-                type: 'open',
-              })
-            }}
-            sx={{
-              display: 'none', // remove after uniswap widget is fixed
-              mr: 2,
-              position: 'relative',
-              '&, :focus': {
-                outline: widgetOpen ? '1px solid' : null,
-                outlineColor: 'primary100',
-              },
-              color: 'neutral80',
-              ':hover': { color: 'primary100' },
-            }}
-          >
-            {showNewUniswapWidgetBeacon && (
-              <Icon
-                name="new_beacon"
-                sx={{
-                  display: 'none', // remove after uniswap widget is fixed
-                  position: 'absolute',
-                  top: '-3px',
-                  right: '-3px',
-                }}
-                size="auto"
-                width={22}
-              />
-            )}
-            <Icon
-              name="exchange"
-              size="auto"
-              width="20"
-              color={widgetOpen ? 'primary100' : 'inherit'}
-            />
-          </Button>
-          <UniswapWidgetShowHide
-            sx={{
-              display: 'none', // remove after uniswap widget is fixed
-            }}
-          />
-        </Box>
-
         {!shouldHideSettings && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
@@ -354,14 +290,7 @@ const LINKS = {
 }
 
 function ConnectedHeader() {
-  const { uiChanges } = useAppContext()
   const onMobile = useOnMobile()
-
-  const [widgetUiChanges] = useObservable(
-    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
-  )
-
-  const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
   return (
     <>
@@ -386,42 +315,6 @@ function ConnectedHeader() {
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
               <PositionsButton sx={{ mr: 2 }} />
-              <Button
-                variant="menuButtonRound"
-                onClick={() => {
-                  uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
-                    type: 'open',
-                  })
-                }}
-                sx={{
-                  display: 'none', // remove after uniswap widget is fixed
-                  mr: 2,
-                  '&, :focus': {
-                    outline: widgetOpen ? '1px solid' : null,
-                    outlineColor: 'primary100',
-                  },
-                  color: 'neutral80',
-                  ':hover': { color: 'primary100' },
-                }}
-              >
-                <Icon
-                  name="exchange"
-                  size="auto"
-                  width="20"
-                  color={widgetOpen ? 'primary100' : 'inherit'}
-                />
-              </Button>
-              <UniswapWidgetShowHide
-                sxWrapper={{
-                  display: 'none', // remove after uniswap widget is fixed
-                  position: 'fixed',
-                  top: '50%',
-                  left: '50%',
-                  right: 'unset',
-                  bottom: 'unset',
-                  transform: 'translateX(-50%) translateY(-50%)',
-                }}
-              />
               <MobileMenu />
             </Flex>
             <WalletPanelMobile />
