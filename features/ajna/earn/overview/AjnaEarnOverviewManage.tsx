@@ -29,26 +29,24 @@ export function AjnaEarnOverviewManage() {
           <ContentCardCurrentEarnings
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
-            currentEarnings={new BigNumber(0.56)}
+            currentEarnings={new BigNumber(190)}
             netPnL={new BigNumber(12.35)}
           />
           <ContentCardTokensDeposited
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
-            tokensDeposited={new BigNumber(25)}
-            tokensDepositedUSD={new BigNumber(25).times(quotePrice)}
+            tokensDeposited={new BigNumber(5250)}
+            tokensDepositedUSD={new BigNumber(5250).times(quotePrice)}
           />
           <ContentCardMaxLendingLTV
             isLoading={isSimulationLoading}
-            quoteToken={quoteToken}
             maxLendingPercentage={new BigNumber(65)}
-            maxLendingQuote={new BigNumber(120000000)}
           />
           <ContentPositionLendingPrice
             isLoading={isSimulationLoading}
             collateralToken={collateralToken}
             quoteToken={quoteToken}
-            positionLendingPrice={new BigNumber(0.332)}
+            positionLendingPrice={new BigNumber(23506.3)}
             relationToMarketPrice={new BigNumber(-10)}
           />
         </DetailsSectionContentCardWrapper>
@@ -57,7 +55,7 @@ export function AjnaEarnOverviewManage() {
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
             quoteToken={quoteToken}
-            availableToWithdraw={new BigNumber(4.5)}
+            availableToWithdraw={new BigNumber(2750)}
             earlyWithdrawalPenalty={new BigNumber(2)}
             earlyWithdrawalPeriod={new Date(new Date().getTime() + 10000000)}
           />
