@@ -432,36 +432,55 @@ export function createFollowedAavePositions$(
             console.log(tickerForDebtToken)
             const { position } = currentProtocolData[0] // TODO ŁW there might be multiple positions with the same proxy addres !?
             // const { debtTokenBalance, collateralTokenBalance } = position
+            console.log('position')
+            console.log(position)
+            // Values in position are always zeros, whic is else than expected :(
+            console.log('position.collateral.normalisedAmount')
+            console.log(position.collateral.normalisedAmount.toFixed(2))
+            console.log('position.debt.normalisedAmount')
+            console.log(position.debt.normalisedAmount.toFixed(2))
+            console.log('position.oraclePriceForCollateralDebtExchangeRate')
+            console.log(position.oraclePriceForCollateralDebtExchangeRate.toFixed(2))
+
             const netValueInDebtToken = amountFromPrecision(
               position.collateral.normalisedAmount
                 .times(position.oraclePriceForCollateralDebtExchangeRate)
                 .minus(position.debt.normalisedAmount),
               new BigNumber(18),
             )
+            console.log('netValueInDebtToken')
+            console.log(netValueInDebtToken.toFixed(2))
+            console.log('tickerForDebtToken[position.debt.symbol]')
+            console.log(tickerForDebtToken[position.debt.symbol].toFixed(2)) //this is ok
             const netValueUsd = netValueInDebtToken.times(tickerForDebtToken[position.debt.symbol])
             console.log('netValueUsd')
-            console.log(netValueUsd)
+            console.log(netValueUsd.toFixed(2))
             return netValueUsd
           }),
         )
         console.log('netValueUSD')
         console.log(netValueUSD$)
-        return of({
-          token: followedAaveVault.strategy,
-          title: followedAaveVault.strategy,
-          contentsUsd: new BigNumber(0),
-          url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${
-            followedAaveVault.vault_id
-          }/`,
-          netValue: one,
-          multiple: one,
-          liquidationPrice: one,
-          fundingCost: one,
-          isOwner: false,
-          lockedCollateral: one,
-          type: 'multiply',
-          liquidity: one,
-        })
+        return combineLatest(netValueUSD$).pipe(
+          map(([netValueUsd]) => {
+            
+            return {
+              token: followedAaveVault.strategy,
+              title: followedAaveVault.strategy,
+              contentsUsd: new BigNumber(0),
+              url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${
+                followedAaveVault.vault_id
+              }/`,
+              netValue: netValueUsd,
+              multiple: one,
+              liquidationPrice: one,
+              fundingCost: one,
+              isOwner: false,
+              lockedCollateral: one,
+              type: 'multiply',
+              liquidity: one,
+            }
+          }),
+        )
       }
     }),
     shareReplay(1),
