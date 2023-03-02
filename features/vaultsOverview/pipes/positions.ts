@@ -402,8 +402,21 @@ export function createFollowedAavePositions$(
         // const protocolData === LendingProtocol.AaveV2
         // ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
         // : aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
-        console.log('protocolData')
-        // console.log(protocolData)
+        const aaveV2ProtocolData$ = combineLatest(
+          aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+        )
+        console.log('aaveV2ProtocolData')
+        console.log(aaveV2ProtocolData$)
+
+        const aaveV3ProtocolData$ = combineLatest(
+          aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+        )
+        console.log('aaveV3ProtocolData')
+        console.log(aaveV3ProtocolData$)
+        const tickerForDebtToken$ = tickerPrices$([debtTokenSymbol])
+        console.log('tickerForDebtToken$')
+        console.log(tickerForDebtToken$)
+        
         return of({
           token: followedAaveVault.strategy,
           title: followedAaveVault.strategy,
