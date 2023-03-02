@@ -6,7 +6,6 @@ import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneral
 import { AjnaPositionView } from 'features/ajna/common/views/AjnaPositionView'
 import { AjnaEarnFormController } from 'features/ajna/earn/controls/AjnaEarnFormController'
 import { AjnaEarnOverviewController } from 'features/ajna/earn/controls/AjnaEarnOverviewController'
-import { formatCryptoBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid } from 'theme-ui'
@@ -14,7 +13,7 @@ import { Grid } from 'theme-ui'
 export function AjnaEarnPositionController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
+    environment: { collateralToken },
   } = useAjnaGeneralContext()
 
   return (
@@ -28,12 +27,6 @@ export function AjnaEarnPositionController() {
         {
           label: t('ajna.earn.common.headline.90-day-avg', { collateralToken }),
           value: '8.92',
-        },
-        {
-          label: t('ajna.borrow.common.headline.current-market-price', { collateralToken }),
-          value: `${formatCryptoBalance(
-            quotePrice.dividedBy(collateralPrice),
-          )} ${quoteToken}/${collateralToken}`,
         },
       ]}
       tabs={{

@@ -4,25 +4,21 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardMaxLendingLTVProps {
   isLoading?: boolean
-  quoteToken: string
   maxLendingPercentage: BigNumber
   afterMaxLendingPercentage?: BigNumber
-  maxLendingQuote: BigNumber
   changeVariant?: ChangeVariantType
 }
 
 export function ContentCardMaxLendingLTV({
   isLoading,
-  quoteToken,
   maxLendingPercentage,
   afterMaxLendingPercentage,
-  maxLendingQuote,
   changeVariant = 'positive',
 }: ContentCardMaxLendingLTVProps) {
   const { t } = useTranslation()
@@ -31,7 +27,6 @@ export function ContentCardMaxLendingLTV({
     maxLendingPercentage: formatPercent(maxLendingPercentage, { precision: 2 }),
     afterMaxLendingPercentage:
       afterMaxLendingPercentage && formatPercent(afterMaxLendingPercentage, { precision: 2 }),
-    maxLendingQuote: `$${formatAmount(maxLendingQuote, quoteToken)} ${quoteToken}`,
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -44,10 +39,6 @@ export function ContentCardMaxLendingLTV({
         `${formatted.afterMaxLendingPercentage} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
-  }
-
-  if (!maxLendingQuote.isZero()) {
-    contentCardSettings.footnote = formatted.maxLendingQuote
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

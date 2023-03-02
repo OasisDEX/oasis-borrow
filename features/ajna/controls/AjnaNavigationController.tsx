@@ -2,7 +2,6 @@ import { ConnectWalletButton } from 'components/navigation/content/ConnectWallet
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { MyPositionsOrb } from 'components/navigation/content/MyPositionsOrb'
 import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
-import { SwapOrb } from 'components/navigation/content/SwapOrb'
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
@@ -57,6 +56,7 @@ export function AjnaNavigationController() {
       panels={[
         {
           label: 'Borrow',
+          link: '/ajna/borrow',
           description: 'Borrow against your favorite crypto assets.',
           learn: {
             label: 'Learn more about Borrow',
@@ -100,6 +100,7 @@ export function AjnaNavigationController() {
         },
         {
           label: 'Multiply',
+          link: '/ajna/multiply',
           description: 'Multiply your exposure to your favorite crypto assets.',
           learn: {
             label: 'Learn more about Multiply',
@@ -126,6 +127,7 @@ export function AjnaNavigationController() {
         },
         {
           label: 'Earn',
+          link: '/ajna/earn',
           description: 'Put your crypto assets to work today.',
           learn: {
             label: 'Learn more about Earn',
@@ -175,7 +177,7 @@ export function AjnaNavigationController() {
         isConnected ? (
           <>
             {isViewBelowXl && <MyPositionsOrb />}
-            <SwapOrb />
+            {/* <SwapOrb /> */}
             <NotificationsOrb />
             {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>

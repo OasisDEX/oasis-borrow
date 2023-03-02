@@ -45,7 +45,7 @@ export function ContentPositionLendingPrice({
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.earn.manage.overview.position-lending-price'),
     value: formatted.positionLendingPrice,
-    unit: `${quoteToken}/${collateralToken}`,
+    unit: `${collateralToken}/${quoteToken}`,
     change: {
       isLoading,
       value:

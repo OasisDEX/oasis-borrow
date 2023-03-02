@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { AssetPill } from 'components/AssetPill'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
@@ -17,7 +18,6 @@ import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
-import { slideInAnimation } from 'theme/animations'
 
 const benefitCardsAnja = [
   {
@@ -54,15 +54,7 @@ export function AjnaHomepageView() {
   const [context] = useObservable(context$)
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        ...slideInAnimation,
-        position: 'relative',
-        animationDuration: '0.4s',
-        animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
-      }}
-    >
+    <AnimatedWrapper>
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{
@@ -277,6 +269,6 @@ export function AjnaHomepageView() {
         }
       />
       <AjnaHaveSomeQuestions />
-    </Box>
+    </AnimatedWrapper>
   )
 }
