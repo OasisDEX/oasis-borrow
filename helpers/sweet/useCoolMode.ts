@@ -61,6 +61,7 @@ const getContainer = () => {
 
 let instanceCounter = 0
 
+const assetRoot = '/static/img/team/cool_team/'
 const images = [
   '010 Chris _ CEO.png',
   '010 Soren _ Director.png',
@@ -92,7 +93,7 @@ const images = [
   '090 Gabriel _ Customer Care.png',
   '095 Hannah _ Finance Manager.png',
   '100 Alicia _ Marketing.png',
-].map((fileName) => `/static/img/cool_team/${fileName}`)
+].map((fileName) => assetRoot + fileName)
 
 function makeElementCool(element: HTMLElement): () => void {
   instanceCounter++
@@ -215,11 +216,24 @@ function makeElementCool(element: HTMLElement): () => void {
   const tapHandler = (e: MouseEvent | TouchEvent) => {
     updateMousePosition(e)
     autoAddParticle = true
+    void audioPlayer.play().then(() => {
+      console.log('🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺')
+      console.log('🎺 🎺 🎺 🎺 🎺 🎺 HAARHEEH 🎺 🎺 🎺 🎺 🎺 🎺')
+      console.log('🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺🎺  🎺')
+    })
+    audioPlayer.setAttribute('loop', '')
   }
 
   const disableAutoAddParticle = () => {
     autoAddParticle = false
+    audioPlayer.removeAttribute('loop')
   }
+
+  const audioPlayer = document.createElement('audio')
+  audioPlayer.setAttribute('src', assetRoot + 'HAARHEEH.m4a')
+  audioPlayer.volume = 0.1
+
+  getContainer().appendChild(audioPlayer)
 
   element.addEventListener(move, updateMousePosition, { passive: true })
   element.addEventListener(tap, tapHandler, { passive: true })
