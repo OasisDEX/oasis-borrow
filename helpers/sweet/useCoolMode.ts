@@ -61,7 +61,7 @@ const getContainer = () => {
 
 let instanceCounter = 0
 
-const assetRoot = '/static/img/team/cool_team/'
+const assetRoot = '/static/img/cool_team/'
 const images = [
   '010 Chris _ CEO.png',
   '010 Soren _ Director.png',
