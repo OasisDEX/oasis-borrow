@@ -316,8 +316,6 @@ export function UniswapWidget(props: { token?: string }) {
     return <AppSpinner />
   }
 
-  console.log('main.wrapper', main.wrapper)
-
   return (
     <Box
       sx={{
