@@ -38,9 +38,9 @@ export function FollowedTable({ address }: { address: string }) {
         customLoader={<PositionTableLoadingState />}
       >
         {([context, followedMakerPositions]) => {
-          const borrowPositions = getMakerBorrowPositions(followedMakerPositions)
-          const multiplyPositions = getMakerMultiplyPositions(followedMakerPositions)
-          const earnPositions = getMakerEarnPositions(followedMakerPositions)
+          const borrowPositions = getMakerBorrowPositions({ positions: followedMakerPositions })
+          const multiplyPositions = getMakerMultiplyPositions({ positions: followedMakerPositions })
+          const earnPositions = getMakerEarnPositions({ positions: followedMakerPositions })
 
           return followedMakerPositions.length ? (
             <DiscoverTableContainer

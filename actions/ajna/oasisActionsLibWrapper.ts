@@ -4,7 +4,7 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaPoolPairs } from 'features/ajna/common/types'
-import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
+import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
 import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'

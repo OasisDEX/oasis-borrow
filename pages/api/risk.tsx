@@ -4,7 +4,6 @@ import { apply } from 'helpers/apply'
 import { NextApiHandler } from 'next'
 import { userJwt } from 'server/jwt'
 
-// eslint-disable-next-line func-style
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
     case 'POST':

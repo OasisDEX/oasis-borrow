@@ -4,9 +4,11 @@ import { AppLink } from 'components/Links'
 import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
+import { default as NextLink } from 'next/link'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 import { FooterBackground } from 'theme/FooterBackground'
@@ -162,6 +164,7 @@ function SocialWithLogo() {
 
 export function Footer() {
   const { t } = useTranslation()
+  const goerliButton = useFeatureToggle('GoerliButton')
 
   return (
     <Box as="footer" sx={{ position: 'relative' }}>
@@ -194,6 +197,11 @@ export function Footer() {
           <Box sx={{ display: ['none', 'none', 'flex'], width: '100%' }}>
             <NewsletterSection small />
           </Box>
+          {goerliButton && (
+            <NextLink href="?network=goerli" target="_self">
+              Move to goerli
+            </NextLink>
+          )}
         </Grid>
         <Flex sx={{ display: ['flex', 'flex', 'none'], mt: 5 }}>
           <NewsletterSection small />

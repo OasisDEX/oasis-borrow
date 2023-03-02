@@ -101,7 +101,6 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
 
     // start polling
     const token = await new Promise<string | null>((resolve) => {
-      // eslint-disable-next-line func-style
       let returnValue = (val: string | null) => resolve(val) // CAUTION: this function is reassigned later
       const interval = setInterval(async () => {
         try {

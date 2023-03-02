@@ -114,7 +114,7 @@ function createEventTypeHistory$(
 }
 
 export function createDsrHistory$(context: Context, proxyAddress: string): Observable<DsrEvent[]> {
-  // 8600000 is 2019-09-22 on mainnet and 2018-09-04 on kovan
+  // 8600000 is 2019-09-22 on mainnet
   const fromBlock = 8600000
   const depositEvents$ = createEventTypeHistory$(
     context,
