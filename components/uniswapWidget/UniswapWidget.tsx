@@ -1,9 +1,10 @@
 import '@uniswap/widgets/fonts.css'
 
-import { SwapWidget } from '@uniswap/widgets'
+import { SwapWidget, Theme as UniswapWidgetTheme } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { tokenList } from 'components/uniswapWidget/tokenList'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
@@ -15,7 +16,7 @@ import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
 const { colors, radii } = theme
 
-const widgetTheme = {
+const widgetTheme: UniswapWidgetTheme = {
   accent: colors.primary100,
   primary: colors.primary100,
   container: colors.neutral10,
@@ -26,7 +27,11 @@ const widgetTheme = {
   success: colors.success10,
   error: colors.critical10,
   tokenColorExtraction: false,
-  borderRadius: radii.mediumLarge,
+  borderRadius: {
+    small: radii.mediumLarge,
+    medium: radii.mediumLarge,
+    large: radii.mediumLarge,
+  },
   fontFamily: 'Inter',
 }
 
@@ -40,6 +45,7 @@ const cssPaths = (() => {
 
   return {
     main: {
+      wrapper: ` > div`,
       swapBtn: `${main} > div:nth-of-type(2) > div > button`,
       token1Btn: `${main} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button`,
       token2Btn: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
@@ -307,8 +313,10 @@ export function UniswapWidget(props: { token?: string }) {
   const { main, tokenSel, settings } = cssPaths
 
   if (!web3Provider) {
-    return null
+    return <AppSpinner />
   }
+
+  console.log('main.wrapper', main.wrapper)
 
   return (
     <Box
@@ -316,6 +324,9 @@ export function UniswapWidget(props: { token?: string }) {
         position: 'relative',
         overflow: 'hidden',
         '.subhead': { fontWeight: 'medium' },
+        [main.wrapper]: {
+          border: 'none',
+        },
         [main.swapBtn]: {
           border: '3px solid',
           borderColor: 'neutral20',
@@ -400,7 +411,6 @@ export function UniswapWidget(props: { token?: string }) {
       )}
       <SwapWidget
         /* @ts-ignore */
-        // provider={web3Provider}
         theme={widgetTheme}
         tokenList={tokenList.tokens}
         convenienceFee={20}
