@@ -64,7 +64,7 @@ export const strategies: Array<IStrategyConfig> = [
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3EarnWSTETH' as const,
-    availableActions: ['close'],
+    availableActions: ['adjust', 'close'],
     defaultSlippage: new BigNumber(0.001),
   },
   {

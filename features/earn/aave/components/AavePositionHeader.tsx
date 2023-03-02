@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useAaveEarnYields } from 'features/aave/common/hooks'
 import { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/common/StrategyConfigTypes'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
@@ -12,9 +13,8 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { PreparedAaveTotalValueLocked } from 'lendingProtocols/aave-v2/pipelines'
-import { AaveYieldsResponse } from 'lendingProtocols/common'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 const tokenPairList = {
   stETHeth: {
@@ -40,29 +40,13 @@ function AavePositionHeader({
 }) {
   const { t } = useTranslation()
 
-  const [minYields, setMinYields] = useState<AaveYieldsResponse | undefined>(undefined)
-  const [maxYields, setMaxYields] = useState<AaveYieldsResponse | undefined>(undefined)
-
-  const { aaveEarnYieldsQuery } = useAaveContext(strategy.protocol)
-
-  useEffect(() => {
-    async function fetchYields() {
-      return await aaveEarnYieldsQuery(minimumRiskRatio, ['7Days'])
-    }
-    void fetchYields().then(setMinYields)
-  }, [aaveEarnYieldsQuery, minimumRiskRatio])
-
-  useEffect(() => {
-    async function fetchYields() {
-      return await aaveEarnYieldsQuery(maxRisk || minimumRiskRatio, [
-        '7Days',
-        '7DaysOffset',
-        '90Days',
-        '90DaysOffset',
-      ])
-    }
-    void fetchYields().then(setMaxYields)
-  }, [aaveEarnYieldsQuery, maxRisk, minimumRiskRatio])
+  const minYields = useAaveEarnYields(minimumRiskRatio, strategy.protocol, ['7Days'])
+  const maxYields = useAaveEarnYields(maxRisk || minimumRiskRatio, strategy.protocol, [
+    '7Days',
+    '7DaysOffset',
+    '90Days',
+    '90DaysOffset',
+  ])
 
   const headlineDetails = []
   if (minYields && maxYields) {
