@@ -9,7 +9,6 @@ import { ProtocolsServices } from 'components/AppContext'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import {
   getAaveStrategyByName as getAaveStrategiesByName,
-  strategies,
 } from 'features/aave/strategyConfig'
 import { positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
@@ -416,7 +415,37 @@ export function createFollowedAavePositions$(
         const tickerForDebtToken$ = tickerPrices$([debtTokenSymbol])
         console.log('tickerForDebtToken$')
         console.log(tickerForDebtToken$)
-        
+        const currentProtocolData$ =
+          followedAaveVault.protocol === 'aavev2' ? aaveV2ProtocolData$ : aaveV3ProtocolData$
+        const aaveReserveData$ = resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol)
+        // const availableAaveLiquidity = resolvedAaveServices.aaveAvailableLiquidityInUSDC$(debtTokenSymbol)
+        console.log('aaveReserveData')
+        const netValueUSD$ = combineLatest(
+          currentProtocolData$,
+          tickerForDebtToken$,
+          aaveReserveData$,
+        ).pipe(
+          map(([currentProtocolData, tickerForDebtToken]) => {
+            console.log('currentProtocolData')
+            console.log(currentProtocolData)
+            console.log('tickerForDebtToken')
+            console.log(tickerForDebtToken)
+            const { position } = currentProtocolData[0] // TODO ŁW there might be multiple positions with the same proxy addres !?
+            // const { debtTokenBalance, collateralTokenBalance } = position
+            const netValueInDebtToken = amountFromPrecision(
+              position.collateral.normalisedAmount
+                .times(position.oraclePriceForCollateralDebtExchangeRate)
+                .minus(position.debt.normalisedAmount),
+              new BigNumber(18),
+            )
+            const netValueUsd = netValueInDebtToken.times(tickerForDebtToken[position.debt.symbol])
+            console.log('netValueUsd')
+            console.log(netValueUsd)
+            return netValueUsd
+          }),
+        )
+        console.log('netValueUSD')
+        console.log(netValueUSD$)
         return of({
           token: followedAaveVault.strategy,
           title: followedAaveVault.strategy,
