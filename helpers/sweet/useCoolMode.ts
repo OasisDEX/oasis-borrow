@@ -274,7 +274,10 @@ function makeElementCool(element: HTMLElement): () => void {
 
   function loopButton() {
     if (enabled) {
-      if (button.top + button.element.offsetHeight >= document.documentElement.clientHeight) {
+      if (
+        button.top + button.element.offsetHeight + 10 >= // prevent flashing scrollbar in chrome
+        document.documentElement.clientHeight
+      ) {
         vDirection = -1
       }
 
