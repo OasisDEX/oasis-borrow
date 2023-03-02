@@ -1,6 +1,6 @@
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
+import { useSimulationYields } from 'features/aave/common/hooks/useSimulationYields'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { useSimulationYields } from 'helpers/useSimulationYields'
 import { AaveProtocolData, PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 import React from 'react'
 
@@ -25,6 +25,7 @@ export function ViewPositionSectionComponent({
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
     strategy: strategyConfig,
+    token: strategyConfig.tokens.deposit,
   })
 
   return (
