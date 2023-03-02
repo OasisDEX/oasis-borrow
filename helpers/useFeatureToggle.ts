@@ -28,6 +28,7 @@ export type Feature =
   | 'Ajna'
   | 'DaiSavingsRate'
   | 'FollowAAVEVaults'
+  | 'GoerliButton'
   | 'UseBlocknativeOnboard'
 
 const configuredFeatures: Record<Feature, boolean> = {
@@ -55,6 +56,8 @@ const configuredFeatures: Record<Feature, boolean> = {
   Ajna: false,
   DaiSavingsRate: true,
   FollowAAVEVaults: false,
+  // Added for gnosis safe testing
+  GoerliButton: false,
   UseBlocknativeOnboard: true,
 }
 

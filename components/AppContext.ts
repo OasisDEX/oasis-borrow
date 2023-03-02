@@ -138,8 +138,8 @@ import { createTransactionManager } from 'features/account/transactionManager'
 import {
   getAjnaPosition$,
   GetAjnaPositionIdentification,
-} from 'features/ajna/common/observables/getAjnaPosition'
-import { getDpmPositionData$ } from 'features/ajna/common/observables/getDpmPositionData'
+} from 'features/ajna/positions/common/observables/getAjnaPosition'
+import { getDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTO_BUY_FORM_CHANGE,

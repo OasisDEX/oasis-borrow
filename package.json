@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "6.3.0",
+  "version": "7.0.1",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=18.x"
@@ -50,7 +50,7 @@
     "@oasisdex/automation": "1.4.0",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
-    "@oasisdex/oasis-actions": "0.2.14",
+    "@oasisdex/oasis-actions": "0.2.15",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
@@ -60,7 +60,8 @@
     "@typechain/ethers-v5": "^6.0.5",
     "@typechain/web3-v1": "^2.0.0",
     "@typeform/embed-react": "^1.13.0",
-    "@uniswap/widgets": "^1.1.0",
+    "@uniswap/v3-sdk": "3.9.0",
+    "@uniswap/widgets": "^2.43.2",
     "@web3-onboard/coinbase": "^2.2.0",
     "@web3-onboard/core": "^2.15.2",
     "@web3-onboard/gnosis": "^2.1.6",
@@ -98,6 +99,7 @@
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "i18next": "^22.4.2",
+    "jotai-immer": "^0.2.0",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "mixpanel": "^0.13.0",
@@ -120,7 +122,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.4",
     "react-lottie": "^1.2.3",
-    "react-redux": "8.0.1",
+    "react-redux": "8.0.5",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.1",
     "release-it": "^14.12.1",
