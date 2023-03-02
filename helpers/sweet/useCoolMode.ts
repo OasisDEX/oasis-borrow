@@ -212,8 +212,11 @@ function makeElementCool(element: HTMLElement): () => void {
       mouseY = e.clientY
     }
   }
-
+  let enabled = true
   const tapHandler = (e: MouseEvent | TouchEvent) => {
+    if (!enabled) {
+      return
+    }
     updateMousePosition(e)
     autoAddParticle = true
     void audioPlayer.play().then(() => {
@@ -222,6 +225,7 @@ function makeElementCool(element: HTMLElement): () => void {
       console.log('🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺🎺  🎺')
     })
     audioPlayer.setAttribute('loop', '')
+    document.body.appendChild(buttonElement)
   }
 
   const disableAutoAddParticle = () => {
@@ -229,11 +233,72 @@ function makeElementCool(element: HTMLElement): () => void {
     audioPlayer.removeAttribute('loop')
   }
 
+  // audio
   const audioPlayer = document.createElement('audio')
   audioPlayer.setAttribute('src', assetRoot + 'HAARHEEH.m4a')
   audioPlayer.volume = 0.1
-
   getContainer().appendChild(audioPlayer)
+
+  // button
+  const buttonElement = document.createElement('button')
+  buttonElement.innerHTML = 'Disable'
+  buttonElement.setAttribute(
+    'style',
+    ['position:absolute;top:0px', 'font-size: 5em', 'z-index: 1000'].join(';'),
+  )
+  const button = {
+    top: 0,
+    left: 0,
+    element: buttonElement,
+  }
+  buttonElement.addEventListener('click', () => {
+    enabled = false
+    let count = 10
+    const countdown = setInterval(() => {
+      const emojies = `😊 Enabling in ${count} `
+      buttonElement.innerHTML = emojies
+      count--
+    }, 500)
+    setTimeout(() => {
+      clearInterval(countdown)
+      enabled = true
+      buttonElement.innerHTML = 'Disable'
+    }, 5000)
+  })
+
+  let vDirection = 1
+  let hDirection = 1
+  const buttonSpeed = 7
+
+  function loopButton() {
+    if (enabled) {
+      if (button.top + button.element.offsetHeight >= document.documentElement.clientHeight) {
+        vDirection = -1
+      }
+
+      if (button.top <= 0) {
+        vDirection = 1
+      }
+
+      if (button.left + button.element.offsetWidth >= document.documentElement.clientWidth) {
+        hDirection = -1
+      }
+
+      if (button.left <= 0) {
+        hDirection = 1
+      }
+
+      button.top = button.top + buttonSpeed * vDirection
+      button.left = button.left + buttonSpeed * hDirection
+
+      buttonElement.style.top = `${button.top}px`
+      buttonElement.style.left = `${button.left}px`
+    }
+
+    requestAnimationFrame(loopButton)
+  }
+
+  loopButton()
 
   element.addEventListener(move, updateMousePosition, { passive: true })
   element.addEventListener(tap, tapHandler, { passive: true })
