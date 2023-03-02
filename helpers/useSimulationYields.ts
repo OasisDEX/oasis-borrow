@@ -1,11 +1,10 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { IStrategyConfig } from 'features/aave/common'
 import { calculateSimulation } from 'features/aave/open/services'
+import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/common'
 import { useEffect, useState } from 'react'
-
-import { AaveStEthYieldsResponse, FilterYieldFieldsType } from '../features/aave/common'
-import { IStrategyConfig } from '../features/aave/common/StrategyConfigTypes'
 
 type useSimulationYieldsParams = {
   amount?: BigNumber
@@ -21,14 +20,14 @@ export function useSimulationYields({
   strategy,
 }: useSimulationYieldsParams) {
   const [simulations, setSimulations] = useState<
-    ReturnType<typeof calculateSimulation> & { yields: AaveStEthYieldsResponse }
+    ReturnType<typeof calculateSimulation> & { yields: AaveYieldsResponse }
   >()
-  const { aaveSthEthYieldsQuery } = useAaveContext(strategy.protocol)
+  const { aaveEarnYieldsQuery } = useAaveContext(strategy.protocol)
 
   useEffect(() => {
     if (riskRatio && amount && !simulations) {
       void (async () => {
-        const yields = await aaveSthEthYieldsQuery(riskRatio, fields)
+        const yields = await aaveEarnYieldsQuery(riskRatio, fields)
         setSimulations({
           ...calculateSimulation({
             amount,
@@ -39,6 +38,6 @@ export function useSimulationYields({
         })
       })()
     }
-  }, [amount, riskRatio])
+  }, [aaveEarnYieldsQuery, amount, fields, riskRatio, simulations])
   return simulations
 }
