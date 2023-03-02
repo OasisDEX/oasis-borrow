@@ -1,13 +1,14 @@
-import { Box, SxStyleProp } from 'theme-ui'
-import { useAppContext } from '../AppContextProvider'
-import { useOutsideElementClickHandler } from '../../helpers/useOutsideElementClickHandler'
+import { useAppContext } from 'components/AppContextProvider'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   SwapWidgetState,
-} from '../../features/uniswapWidget/SwapWidgetChange'
-import { useObservable } from '../../helpers/observableHook'
+} from 'features/uniswapWidget/SwapWidgetChange'
+import { useObservable } from 'helpers/observableHook'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useEffect } from 'react'
+import { Box, SxStyleProp } from 'theme-ui'
+
 import { UniswapWidgetNoSsr } from './UniswapWidgetNoSsr'
 
 export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
