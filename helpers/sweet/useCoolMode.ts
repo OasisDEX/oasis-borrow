@@ -252,18 +252,20 @@ function makeElementCool(element: HTMLElement): () => void {
     element: buttonElement,
   }
   buttonElement.addEventListener('click', () => {
-    enabled = false
-    let count = 10
-    const countdown = setInterval(() => {
-      const emojies = `😊 Enabling in ${count} `
-      buttonElement.innerHTML = emojies
-      count--
-    }, 500)
-    setTimeout(() => {
-      clearInterval(countdown)
-      enabled = true
-      buttonElement.innerHTML = 'Disable'
-    }, 5000)
+    if (enabled) {
+      enabled = false
+      let count = 10
+      const countdown = setInterval(() => {
+        const emojies = `😊 Enabling in ${count} `
+        buttonElement.innerHTML = emojies
+        count--
+        if (count === -1) {
+          clearInterval(countdown)
+          enabled = true
+          buttonElement.innerHTML = 'Disable'
+        }
+      }, 500)
+    }
   })
 
   let vDirection = 1
