@@ -1,4 +1,5 @@
 import { UsersWhoFollowVaults } from '@prisma/client'
+import { getOnChainPosition } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
@@ -7,9 +8,7 @@ import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { ProtocolsServices } from 'components/AppContext'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import {
-  getAaveStrategyByName as getAaveStrategiesByName,
-} from 'features/aave/strategyConfig'
+import { getAaveStrategyByName as getAaveStrategiesByName } from 'features/aave/strategyConfig'
 import { positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -378,6 +377,7 @@ export function createFollowedAavePositions$(
       }> {
         // console.log('positionCreated')
         // console.log(positionCreated)
+        // TODO ŁW use             getOnChainPosition({
         const resolvedAaveServices = resolveAaveServices(
           aaveV2,
           aaveV3,
@@ -419,50 +419,105 @@ export function createFollowedAavePositions$(
           followedAaveVault.protocol === 'aavev2' ? aaveV2ProtocolData$ : aaveV3ProtocolData$
         const aaveReserveData$ = resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol)
         // const availableAaveLiquidity = resolvedAaveServices.aaveAvailableLiquidityInUSDC$(debtTokenSymbol)
-        console.log('aaveReserveData')
-        const netValueUSD$ = combineLatest(
-          currentProtocolData$,
-          tickerForDebtToken$,
-          aaveReserveData$,
-        ).pipe(
-          map(([currentProtocolData, tickerForDebtToken]) => {
-            console.log('currentProtocolData')
-            console.log(currentProtocolData)
-            console.log('tickerForDebtToken')
-            console.log(tickerForDebtToken)
-            const { position } = currentProtocolData[0] // TODO ŁW there might be multiple positions with the same proxy addres !?
-            // const { debtTokenBalance, collateralTokenBalance } = position
-            console.log('position')
-            console.log(position)
-            // Values in position are always zeros, whic is else than expected :(
-            console.log('position.collateral.normalisedAmount')
-            console.log(position.collateral.normalisedAmount.toFixed(2))
-            console.log('position.debt.normalisedAmount')
-            console.log(position.debt.normalisedAmount.toFixed(2))
-            console.log('position.oraclePriceForCollateralDebtExchangeRate')
-            console.log(position.oraclePriceForCollateralDebtExchangeRate.toFixed(2))
 
-            const netValueInDebtToken = amountFromPrecision(
-              position.collateral.normalisedAmount
-                .times(position.oraclePriceForCollateralDebtExchangeRate)
-                .minus(position.debt.normalisedAmount),
-              new BigNumber(18),
-            )
-            console.log('netValueInDebtToken')
-            console.log(netValueInDebtToken.toFixed(2))
-            console.log('tickerForDebtToken[position.debt.symbol]')
-            console.log(tickerForDebtToken[position.debt.symbol].toFixed(2)) //this is ok
-            const netValueUsd = netValueInDebtToken.times(tickerForDebtToken[position.debt.symbol])
-            console.log('netValueUsd')
-            console.log(netValueUsd.toFixed(2))
-            return netValueUsd
-          }),
-        )
-        console.log('netValueUSD')
-        console.log(netValueUSD$)
-        return combineLatest(netValueUSD$).pipe(
-          map(([netValueUsd]) => {
-            
+        // console.log('aaveReserveData')
+        // const netValueUSD$ = combineLatest(
+        //   currentProtocolData$,
+        //   tickerForDebtToken$,
+        //   aaveReserveData$,
+        //   ).pipe(
+        //     map(async ([currentProtocolData, tickerForDebtToken]) => {
+        //       console.log('currentProtocolData')
+        //       console.log(currentProtocolData)
+        // const position = getOnChainPosition({
+        //   context,
+        //   collateralToken: collateralTokenSymbol,
+        //   debtToken: debtTokenSymbol,
+        //   proxyAddress,
+        //   protocol: protocolToLendingProtocol(followedAaveVault.protocol),
+        // }).then((position) => {
+        //   console.log('position')
+        //   console.log(position)
+        //   return position
+        // })
+
+        //     console.log('tickerForDebtToken')
+        //     console.log(tickerForDebtToken)
+        //     console.log('position')
+        //     console.log(position)
+        //     // Values in position are always zeros, whic hi
+        //     console.log('position.collateral.normalisedAmount')
+        //     console.log((await position).collateral.normalisedAmount.toFixed(2))
+        //     console.log('position.debt.normalisedAmount')
+        //     console.log((await position).debt.normalisedAmount.toFixed(2))
+        //     console.log('position.oraclePriceForCollateralDebtExchangeRate')
+        //     console.log((await position).oraclePriceForCollateralDebtExchangeRate.toFixed(2))
+
+        //     const netValueInDebtToken = amountFromPrecision(
+        //       (await position).collateral.normalisedAmount
+        //         .times((await position).oraclePriceForCollateralDebtExchangeRate)
+        //         .minus((await position).debt.normalisedAmount),
+        //       new BigNumber(18),
+        //     )
+        //     console.log('netValueInDebtToken')
+        //     console.log(netValueInDebtToken.toFixed(2))
+        //     console.log('tickerForDebtToken[position.debt.symbol]')
+        //     console.log(tickerForDebtToken[(await position).debt.symbol].toFixed(2)) //this is ok
+        //     const netValueUsd = netValueInDebtToken.times(tickerForDebtToken[(await position).debt.symbol])
+        //     console.log('netValueUsd')
+        //     console.log(netValueUsd.toFixed(2))
+        //     return netValueUsd
+        //   }),
+        // )
+        // console.log('netValueUSD')
+        // console.log(netValueUSD$)
+        return combineLatest(currentProtocolData$, tickerForDebtToken$).pipe(
+          map(([currentProtocolData, tickerForDebtToken]) => {
+            const { position, netValueUsd } = getOnChainPosition({
+              context,
+              collateralToken: collateralTokenSymbol,
+              debtToken: debtTokenSymbol,
+              proxyAddress,
+              protocol: protocolToLendingProtocol(followedAaveVault.protocol),
+            })
+              .then((position) => {
+                console.log('position')
+                console.log(position)
+                console.log('tickerForDebtToken')
+                console.log(tickerForDebtToken)
+                console.log('position')
+                console.log(position)
+                // Values in position are always zeros, whic hi
+                console.log('position.collateral.normalisedAmount')
+                console.log(position.collateral.normalisedAmount.toFixed(2))
+                console.log('position.debt.normalisedAmount')
+                console.log(position.debt.normalisedAmount.toFixed(2))
+                console.log('position.oraclePriceForCollateralDebtExchangeRate')
+                console.log(position.oraclePriceForCollateralDebtExchangeRate.toFixed(2))
+
+                const netValueInDebtToken = amountFromPrecision(
+                  position.collateral.normalisedAmount
+                    .times(position.oraclePriceForCollateralDebtExchangeRate)
+                    .minus(position.debt.normalisedAmount),
+                  new BigNumber(18),
+                )
+                console.log('netValueInDebtToken')
+                console.log(netValueInDebtToken.toFixed(2))
+                console.log('tickerForDebtToken[position.debt.symbol]')
+                console.log(tickerForDebtToken[position.debt.symbol].toFixed(2)) //this is ok
+                const netValueUsd = netValueInDebtToken.times(
+                  tickerForDebtToken[position.debt.symbol],
+                )
+                console.log('netValueUsd')
+                console.log(netValueUsd.toFixed(2))
+
+                return { position, netValueUsd }
+              })
+              .catch((error) => {
+                console.log('getOnChainPosition error')
+                console.log(error)
+              })
+
             return {
               token: followedAaveVault.strategy,
               title: followedAaveVault.strategy,

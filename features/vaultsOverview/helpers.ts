@@ -217,7 +217,7 @@ export function getAaveMultiplyPositions({
       return {
         icon: getToken(token).iconCircle,
         asset: title,
-        netUSDValue: netValue.toNumber(),
+        netUSDValue: netValue?.toNumber(),
         currentMultiple: multiple.toNumber(),
         liquidationPrice: liquidationPrice.toNumber(),
         fundingCost: fundingCost.toNumber(),
