@@ -9,7 +9,7 @@ import { formatBigNumber } from 'helpers/formatters/format'
 
 const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
-    return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
+    return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'STETH/ETH' })
   },
   rightBoundary: {
     valueExtractor: (data) => data?.oracleAssetPrice,
@@ -30,7 +30,7 @@ const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
 
 const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
-    return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'WSTETH/ETH' })
+    return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'WSTETH/ETH' })
   },
   rightBoundary: {
     valueExtractor: (data) => data?.oraclesPricesRatio,
