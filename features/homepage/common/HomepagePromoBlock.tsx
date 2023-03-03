@@ -4,8 +4,8 @@ import { Card, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 type HomepagePromoBlockProps = {
   background: string
   title: string | ReactNode
-  width?: string
-  height?: string
+  width?: string | string[]
+  height?: string | string[]
   image?: string
   bottomTitle?: boolean
   sx?: SxStyleProp
@@ -15,8 +15,8 @@ type HomepagePromoBlockProps = {
 const HomepagePromoBlock = ({
   background,
   title,
-  height = '390px',
-  width = '390px',
+  height,
+  width = ['100%', 'auto'],
   image,
   bottomTitle,
   sx,
@@ -29,6 +29,8 @@ const HomepagePromoBlock = ({
       width,
       background,
       transition: '0.2s opacity ease-in-out',
+      maxHeight: '390px',
+      overflow: 'hidden',
       ...sx,
     }}
   >
@@ -48,7 +50,7 @@ const HomepagePromoBlock = ({
         <Image
           src={image}
           sx={{
-            mx: 3,
+            mx: [2, 3],
             mb: !bottomTitle ? 3 : 0,
             mt: !bottomTitle ? 0 : 3,
             userSelect: 'none',

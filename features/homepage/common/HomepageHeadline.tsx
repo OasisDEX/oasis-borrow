@@ -29,8 +29,8 @@ export const HomepageHeadline = ({
       </Text>
     </Text>
     {ctaURL && ctaLabel && (
-      <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive100', mt: 4 }}>
-        <AppLink href={ctaURL} internalInNewTab>
+      <WithArrow gap={1} sx={{ fontSize: 2, color: 'interactive100', mt: 3 }}>
+        <AppLink href={ctaURL} internalInNewTab sx={{ fontSize: 4 }}>
           {ctaLabel}
         </AppLink>
       </WithArrow>

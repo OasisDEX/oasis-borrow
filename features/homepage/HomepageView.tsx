@@ -12,7 +12,6 @@ import {
 } from 'components/productCards/ProductCardsContainer'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
-import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -22,11 +21,13 @@ import { productCardsConfig } from 'helpers/productCards'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
+import { debounce } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
@@ -135,11 +136,11 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
   return (
     <HomepagePromoBlock.Big
       background="linear-gradient(90.65deg, #FCF1FE 1.31%, #FFF1F6 99.99%)"
-      height="128px"
+      height={['auto ', '128px']}
       sx={{ mt: 3, pt: 4 }}
     >
-      <Grid columns={['1fr 1fr 1fr 1fr']}>
-        <Box>
+      <Grid columns={['1fr', '1fr 1fr 1fr 1fr']}>
+        <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.why-oasis.stats-labels.vaults-automated')}
           </Text>
@@ -147,7 +148,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
             {oasisStatsValue.vaultsWithActiveTrigger}
           </Text>
         </Box>
-        <Box>
+        <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.why-oasis.stats-labels.collateral-automated')}
           </Text>
@@ -159,7 +160,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
             )}
           </Text>
         </Box>
-        <Box>
+        <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.why-oasis.stats-labels.actions-executed')}
           </Text>
@@ -167,7 +168,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
             {oasisStatsValue.executedTriggersLast90Days}
           </Text>
         </Box>
-        <Box>
+        <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.why-oasis.stats-labels.success-rate')}
           </Text>
@@ -213,10 +214,12 @@ export function HomepageView() {
 
   const scrollingBlockRef = useRef<HTMLDivElement>(null)
   const scrollingGridRef = useRef<HTMLDivElement>(null)
+  const isMobileView = useOnMobile()
+  console.log('isMobileView', isMobileView)
 
   useEffect(() => {
     const body = document.querySelectorAll('body')[0]
-    if (!body) return
+    if (!body || isMobileView) return
     const eventHandler = (_event: Event) => {
       // no memo, these are not expensive calculations
       const scrollingBlockElementRect = scrollingBlockRef.current?.getBoundingClientRect()
@@ -228,11 +231,12 @@ export function HomepageView() {
       const tempScrollPercentage = (currentPositionsDiff / endPositionsDiff) * 100
       setScrollPercentage(tempScrollPercentage)
     }
-    body.addEventListener('scroll', eventHandler)
+
+    body.addEventListener('scroll', debounce(eventHandler, 50))
     return () => {
-      body.removeEventListener('scroll', eventHandler)
+      body.removeEventListener('scroll', debounce(eventHandler, 50))
     }
-  }, [])
+  }, [isMobileView])
 
   return (
     <Box
@@ -365,7 +369,7 @@ export function HomepageView() {
         />
       </Box>
       <Box>
-        <Text variant="header3" sx={{ textAlign: 'center', mt: 6, mb: 6 }}>
+        <Text variant="header2" sx={{ textAlign: 'center', mt: 6, mb: 6 }}>
           {t('landing.why-oasis.main-header')}
         </Text>
         <HomepageHeadline
@@ -374,7 +378,7 @@ export function HomepageView() {
           ctaLabel={t('landing.why-oasis.sub-headers.earn.cta')}
           ctaURL={INTERNAL_LINKS.earn}
         />
-        <Grid columns={3} sx={{ mt: 5, mb: 7 }}>
+        <Grid columns={[1, 3]} sx={{ mt: 5, mb: 7 }}>
           <HomepagePromoBlock
             title={t('landing.why-oasis.image-labels.1-earn-on-assets')}
             background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
@@ -396,8 +400,9 @@ export function HomepageView() {
           secondaryText={t('landing.why-oasis.sub-headers.borrow.secondary')}
           ctaLabel={t('landing.why-oasis.sub-headers.borrow.cta')}
           ctaURL={INTERNAL_LINKS.borrow}
+          maxWidth={'100%'}
         />
-        <Grid columns={3} sx={{ mt: 5 }}>
+        <Grid columns={[1, 3]} sx={{ mt: 5 }}>
           <HomepagePromoBlock
             title={t('landing.why-oasis.image-labels.4-low-borrowing-cost')}
             background="linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%)"
@@ -417,52 +422,93 @@ export function HomepageView() {
             height="360px"
           />
         </Grid>
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 7 }}>
-          <HomepageHeadline
-            primaryText={t('landing.why-oasis.sub-headers.multiply.primary')}
-            secondaryText={t('landing.why-oasis.sub-headers.multiply.secondary')}
-            ctaLabel={t('landing.why-oasis.sub-headers.multiply.cta')}
-            ctaURL={INTERNAL_LINKS.multiply}
-          />
-          <HomepagePromoBlock
-            title={t('landing.why-oasis.image-labels.7-market-volatility-advantage')}
-            background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
-            image={staticFilesRuntimeUrl('/static/img/homepage/7_market_volatility_advantage.svg')}
-          />
-        </Flex>
-        <Grid columns={['1fr 2fr']} sx={{ mt: 3, mb: 7 }}>
-          <HomepagePromoBlock
-            title={t('landing.why-oasis.image-labels.8-reduce-anxiety')}
-            background="linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF"
-            image={staticFilesRuntimeUrl('/static/img/homepage/8_reduce_anxiety.svg')}
-          />
-          <HomepagePromoBlock
-            title={
-              <Trans
-                i18nKey="landing.why-oasis.image-labels.9-profit-and-payoff"
-                components={[<Text as="span" color="neutral80" />]}
+        {!isMobileView ? (
+          <>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 7 }}>
+              <HomepageHeadline
+                primaryText={t('landing.why-oasis.sub-headers.multiply.primary')}
+                secondaryText={t('landing.why-oasis.sub-headers.multiply.secondary')}
+                ctaLabel={t('landing.why-oasis.sub-headers.multiply.cta')}
+                ctaURL={INTERNAL_LINKS.multiply}
               />
-            }
-            background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
-            image={staticFilesRuntimeUrl('/static/img/homepage/9_profit_and_payoff.svg')}
-            width="100%"
-          />
-        </Grid>
+              <HomepagePromoBlock
+                title={t('landing.why-oasis.image-labels.7-market-volatility-advantage')}
+                background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
+                image={staticFilesRuntimeUrl(
+                  '/static/img/homepage/7_market_volatility_advantage.svg',
+                )}
+              />
+            </Flex>
+            <Grid columns={['1fr 2fr']} sx={{ mt: 3, mb: 7 }}>
+              <HomepagePromoBlock
+                title={t('landing.why-oasis.image-labels.8-reduce-anxiety')}
+                background="linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF"
+                image={staticFilesRuntimeUrl('/static/img/homepage/8_reduce_anxiety.svg')}
+              />
+              <HomepagePromoBlock
+                title={
+                  <Trans
+                    i18nKey="landing.why-oasis.image-labels.9-profit-and-payoff"
+                    components={[<Text as="span" color="neutral80" />]}
+                  />
+                }
+                background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+                image={staticFilesRuntimeUrl('/static/img/homepage/9_profit_and_payoff.svg')}
+                width="100%"
+              />
+            </Grid>
+          </>
+        ) : (
+          <Grid columns={1} sx={{ mt: 3, my: 7 }}>
+            <HomepageHeadline
+              primaryText={t('landing.why-oasis.sub-headers.multiply.primary')}
+              secondaryText={t('landing.why-oasis.sub-headers.multiply.secondary')}
+              ctaLabel={t('landing.why-oasis.sub-headers.multiply.cta')}
+              ctaURL={INTERNAL_LINKS.multiply}
+              sx={{ mt: 2, mb: 5 }}
+            />
+            <HomepagePromoBlock
+              title={t('landing.why-oasis.image-labels.7-market-volatility-advantage')}
+              background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
+              image={staticFilesRuntimeUrl(
+                '/static/img/homepage/7_market_volatility_advantage.svg',
+              )}
+            />
+            <HomepagePromoBlock
+              title={t('landing.why-oasis.image-labels.8-reduce-anxiety')}
+              background="linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF"
+              image={staticFilesRuntimeUrl('/static/img/homepage/8_reduce_anxiety.svg')}
+            />
+            <HomepagePromoBlock
+              title={
+                <Trans
+                  i18nKey="landing.why-oasis.image-labels.9-profit-and-payoff"
+                  components={[<Text as="span" color="neutral80" />]}
+                />
+              }
+              background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+              image={staticFilesRuntimeUrl('/static/img/homepage/9_profit_and_payoff_MOBILE.svg')}
+            />
+          </Grid>
+        )}
         <HomepageHeadline
           primaryText={t('landing.why-oasis.sub-headers.automation.primary')}
           secondaryText={t('landing.why-oasis.sub-headers.automation.secondary')}
           maxWidth="860px"
         />
-        <Grid columns={2} sx={{ mt: 5 }}>
-          <HomepagePromoBlock.Big background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)">
+        <Grid columns={[1, 2]} sx={{ mt: 5 }}>
+          <HomepagePromoBlock.Big
+            height={['460px', '100%']}
+            background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
+          >
             <Flex
               sx={{
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                height: '100%',
+                flexDirection: ['column', 'row'],
               }}
             >
-              <Text variant="header5" sx={{ my: '20px', mx: '12px' }}>
+              <Text variant="header5" sx={{ my: [3, '20px'], mx: [0, '12px'] }}>
                 {t('landing.why-oasis.image-labels.10-peace-of-mind')}
               </Text>
               <Image
@@ -476,7 +522,10 @@ export function HomepageView() {
               />
             </Flex>
           </HomepagePromoBlock.Big>
-          <HomepagePromoBlock.Big background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF">
+          <HomepagePromoBlock.Big
+            height={['320px', '100%']}
+            background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+          >
             <Flex
               sx={{
                 alignItems: 'center',
@@ -493,7 +542,7 @@ export function HomepageView() {
                   pointerEvents: 'none',
                 }}
               />
-              <Text variant="header5" sx={{ mb: 3, mx: '12px', textAlign: 'center' }}>
+              <Text variant="header5" sx={{ mb: 3, mx: [0, '12px'], textAlign: 'center' }}>
                 {t('landing.why-oasis.image-labels.11-no-hassle')}
               </Text>
             </Flex>
@@ -504,17 +553,21 @@ export function HomepageView() {
           sx={{
             mt: 7,
             position: 'relative',
-            height: controlPointsHeight,
+            height: !isMobileView ? controlPointsHeight : undefined,
           }}
           ref={scrollingGridRef}
         >
           <Grid
-            columns={['2fr 1fr']}
-            sx={{
-              position: 'sticky',
-              top: 'calc(50% - 165px)',
-              height: `${controlPointsBlockHeight}px`,
-            }}
+            columns={['1fr', '2fr 1fr']}
+            sx={
+              !isMobileView
+                ? {
+                    position: 'sticky',
+                    top: 'calc(50% - 165px)',
+                    height: `${controlPointsBlockHeight}px`,
+                  }
+                : {}
+            }
             ref={scrollingBlockRef}
           >
             <HomepageHeadline
@@ -522,7 +575,7 @@ export function HomepageView() {
               secondaryText={t('landing.why-oasis.sub-headers.security.secondary')}
               ctaLabel={t('landing.why-oasis.sub-headers.security.cta')}
               ctaURL={EXTERNAL_LINKS.KB.HELP}
-              sx={{ alignSelf: 'center' }}
+              sx={{ alignSelf: 'center', mb: [5, 0] }}
             />
             <Box>
               <HomepagePromoBlock
@@ -530,12 +583,16 @@ export function HomepageView() {
                 background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
                 image={staticFilesRuntimeUrl('/static/img/homepage/12_1_oasis_app.svg')}
                 height={`${controlPointsBlockHeight}px`}
-                sx={{
-                  pb: 0,
-                  opacity: scrollPercentage >= 0 && scrollPercentage < 20 ? 1 : 0,
-                  position: 'absolute',
-                  top: 0,
-                }}
+                sx={
+                  !isMobileView
+                    ? {
+                        pb: 0,
+                        opacity: scrollPercentage >= 0 && scrollPercentage < 25 ? 1 : 0,
+                        position: 'absolute',
+                        top: 0,
+                      }
+                    : { pb: 0, mb: 3 }
+                }
                 imageSx={{ mb: 0 }}
               />
               <HomepagePromoBlock
@@ -543,12 +600,16 @@ export function HomepageView() {
                 background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
                 image={staticFilesRuntimeUrl('/static/img/homepage/12_2_verifiable_on_chain.svg')}
                 height={`${controlPointsBlockHeight}px`}
-                sx={{
-                  pb: 0,
-                  opacity: scrollPercentage >= 20 && scrollPercentage < 80 ? 1 : 0,
-                  position: 'absolute',
-                  top: 0,
-                }}
+                sx={
+                  !isMobileView
+                    ? {
+                        pb: 0,
+                        opacity: scrollPercentage >= 25 && scrollPercentage < 75 ? 1 : 0,
+                        position: 'absolute',
+                        top: 0,
+                      }
+                    : { pb: 0, mb: 3 }
+                }
                 imageSx={{ mb: 0 }}
               />
               <HomepagePromoBlock
@@ -556,19 +617,23 @@ export function HomepageView() {
                 background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
                 image={staticFilesRuntimeUrl('/static/img/homepage/12_3_no_black_boxes.svg')}
                 height={`${controlPointsBlockHeight}px`}
-                sx={{
-                  pb: 0,
-                  opacity: scrollPercentage >= 80 && scrollPercentage <= 100 ? 1 : 0,
-                  position: 'absolute',
-                  top: 0,
-                }}
+                sx={
+                  !isMobileView
+                    ? {
+                        pb: 0,
+                        opacity: scrollPercentage >= 75 && scrollPercentage <= 100 ? 1 : 0,
+                        position: 'absolute',
+                        top: 0,
+                      }
+                    : { pb: 0, mb: 3 }
+                }
                 imageSx={{ mb: 0 }}
               />
             </Box>
           </Grid>
         </Box>
       </Box>
-      <Box>
+      <Box sx={{ mb: 6 }}>
         <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
           {t('landing.info-cards.have-some-questions')}
         </Text>
@@ -626,74 +691,6 @@ export function HomepageView() {
           />
         </Grid>
       </Box>
-      <Box>
-        <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
-          {t('landing.info-cards.get-started')}
-        </Text>
-        <Grid
-          gap={4}
-          sx={{
-            maxWidth: '944px',
-            margin: 'auto',
-            gridTemplateColumns: ['1fr', '379px 1fr'],
-            gridTemplateAreas: [
-              'none',
-              `"left topRight"
-            "left bottomRight"`,
-            ],
-          }}
-        >
-          <InfoCard
-            title={t('landing.info-cards.multiply.multiply')}
-            subtitle={t('landing.info-cards.multiply.subtitle')}
-            links={[
-              {
-                href: INTERNAL_LINKS.multiply,
-                text: t('landing.info-cards.multiply.open-vault'),
-              },
-            ]}
-            backgroundGradient="linear-gradient(141.11deg, #EBFAFF 0.79%, #EBF2FF 98.94%), linear-gradient(127.5deg, #EEE1F9 0%, #FFECE8 56.77%, #DDFFF7 100%)"
-            backgroundImage="/static/img/info_cards/pills.png"
-            sx={{
-              gridArea: [null, 'left'],
-              backgroundSize: ['70%, cover', '300px, cover'],
-            }}
-          />
-          <InfoCard
-            sx={{
-              gridArea: [null, 'topRight'],
-            }}
-            title={t('landing.info-cards.borrow.borrow-dai')}
-            subtitle={t('landing.info-cards.borrow.choose-your-preferred-token')}
-            links={[
-              {
-                href: INTERNAL_LINKS.borrow,
-                text: t('landing.info-cards.borrow.open-vault'),
-              },
-            ]}
-            backgroundGradient="linear-gradient(98.21deg, #FFFBE8 2.63%, #FFF0E8 99.63%), linear-gradient(127.5deg, #E4F9C9 0%, #E8FFF5 49.48%, #F9E1EB 100%)"
-            backgroundImage="/static/img/info_cards/dai.png"
-          />
-          <InfoCard
-            sx={{
-              gridArea: [null, 'bottomRight'],
-            }}
-            title={t('landing.info-cards.manage.manage-your-vault')}
-            subtitle={t('landing.info-cards.manage.make-actions')}
-            links={[
-              {
-                href: INTERNAL_LINKS.connect,
-                text: t('landing.info-cards.manage.connect-your-wallet'),
-              },
-            ]}
-            backgroundGradient="linear-gradient(127.5deg, #E8EAFF 0%, #EEF0FF 0%, #FFF3FA 100%), linear-gradient(127.5deg, #DDFFF7 0%, #E8EAFF 61.98%, #F9E1EF 100%)"
-            backgroundImage="/static/img/info_cards/safe.png"
-          />
-        </Grid>
-      </Box>
-      <Flex mb={4} mt={7} sx={{ justifyContent: 'center' }}>
-        <NewsletterSection />
-      </Flex>
     </Box>
   )
 }

@@ -526,22 +526,6 @@
         "discord": "Discord",
         "contact-us": "Contact us",
         "twitter": "Twitter"
-      },
-      "get-started": "Get started with Oasis.app",
-      "multiply": {
-        "multiply": "Multiply your assets",
-        "subtitle": "In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral.",
-        "open-vault": "Open vault"
-      },
-      "borrow": {
-        "borrow-dai": "Borrow Dai",
-        "choose-your-preferred-token": "Choose your preferred token as collateral and open a Maker vault to get DAI",
-        "open-vault": "Open vault"
-      },
-      "manage": {
-        "manage-your-vault": "Manage your vault",
-        "make-actions": "Make actions on your vault whenever you want",
-        "connect-your-wallet": "Connect your wallet"
       }
     },
     "cookie-banner": {
@@ -569,7 +553,7 @@
           "cta": "Open position"
         },
         "borrow": {
-          "primary": "Get the most out your crypto without selling: ",
+          "primary": "Get the most out of your crypto without selling: ",
           "secondary": "Oasis Borrow",
           "cta": "Open position"
         },
