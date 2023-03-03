@@ -40,9 +40,7 @@ interface AjnaPositionWithMeta {
 }
 
 export const getEarnData: GetEarnData = async (proxy: string) => {
-  const response = await fetch(
-    `/api/subgraph?proxy=${proxy}&url=https://api.thegraph.com/subgraphs/name/halaprix/gajna`,
-  ).then((res) => res.json())
+  const response = await fetch(`/api/subgraph?proxy=${proxy}`).then((res) => res.json())
 
   if (response.account) {
     const earnPosition = response.account.earnPositions[0]

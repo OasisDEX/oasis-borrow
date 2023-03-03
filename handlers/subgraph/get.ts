@@ -1,5 +1,6 @@
 import { gql, request } from 'graphql-request'
 import { NextApiRequest, NextApiResponse } from 'next'
+import getConfig from 'next/config'
 import * as z from 'zod'
 
 const getEarnData = gql`
@@ -18,13 +19,14 @@ const getEarnData = gql`
 
 const querySchema = z.object({
   proxy: z.string(),
-  url: z.string(),
 })
 
 export async function get(req: NextApiRequest, res: NextApiResponse) {
-  const { proxy, url } = querySchema.parse(req.query)
+  const ajnaSubgraphUrl = getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl
+  const { proxy } = querySchema.parse(req.query)
+
   try {
-    const response = await request(url, getEarnData, { proxy })
+    const response = await request(ajnaSubgraphUrl, getEarnData, { proxy })
     return res.status(200).json(response)
   } catch (error) {
     return res.status(404).json(error)
