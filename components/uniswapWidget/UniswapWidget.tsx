@@ -316,6 +316,7 @@ export function UniswapWidget(props: { token?: string }) {
     '.subhead': { fontWeight: 'medium' },
     [main.wrapper]: {
       border: 'none',
+      py: 3,
     },
     [main.swapBtn]: {
       border: '3px solid',
