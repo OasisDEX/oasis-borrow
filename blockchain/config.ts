@@ -419,7 +419,7 @@ const goerli: NetworkConfig = {
     goerliAddresses.AAVE_V3_POOL_DATA_PROVIDER,
   ),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x32DA971821E6d88FCcD9861EbaCF8590553A2aA8'),
-  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2010D2d932b467928313F86653b28E22A9d6889b'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x81A81fA15Cf15869F311F410D4cD4A9138D6bE9B'),
   ajnaPoolPairs: {
     'WBTC-USDC': contractDesc(ajnaPool, '0xcCbD19488f4e63319c2f11e156ccfA26Ce99c657'),
     'ETH-USDC': contractDesc(ajnaPool, '0xEb39B597a4d1588ac7F50D2897AfD25CED7947EE'),

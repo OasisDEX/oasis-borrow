@@ -11,7 +11,6 @@ import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/conte
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
-import { ajnaPositionToAjnaEarnPosition } from 'features/ajna/positions/earn/fakePosition'
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -26,6 +25,9 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
+
+import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
+import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
 
 interface AjnaProductControllerOpenFlow {
   collateralToken: string
@@ -163,7 +165,7 @@ export function AjnaProductController({
                               action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
                             }}
                             formReducto={useAjnaBorrowFormReducto}
-                            position={ajnaPosition.position}
+                            position={ajnaPosition.position as AjnaPosition}
                             product={ajnaPosition.meta.product}
                           >
                             <AjnaBorrowPositionController />
@@ -173,9 +175,10 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
+                              price: (ajnaPosition.position as AjnaEarn).pool.highestThresholdPrice,
                             }}
                             formReducto={useAjnaEarnFormReducto}
-                            position={ajnaPositionToAjnaEarnPosition(ajnaPosition.position)}
+                            position={ajnaPosition.position as AjnaEarn}
                             product={ajnaPosition.meta.product}
                           >
                             <AjnaEarnPositionController />

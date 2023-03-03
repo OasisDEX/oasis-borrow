@@ -3184,10 +3184,10 @@
     safe-buffer "^5.1.1"
     util.promisify "^1.0.0"
 
-"@oasis-actions-poc@npm:@oasisdex/oasis-actions@0.2.8-earn-poc":
-  version "0.2.8-earn-poc"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.8-earn-poc.tgz#1d062f14d1885fdb05f71ff5884250d3c305e306"
-  integrity sha512-5aahSYk4jZcoZlNpdKt570E8oWQz3v5nKdxx4RohLQr2aJDCOkReTTUTplhlWiomOQ+reYrbxsMrq4mvMw7pzQ==
+"@oasis-actions-poc@npm:@oasisdex/oasis-actions@0.2.15-ajna-earn-6":
+  version "0.2.15-ajna-earn-6"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.15-ajna-earn-6.tgz#3946b85671d9755f1667c33a9ae773afa231a0ff"
+  integrity sha512-cCIe/lyCDRlp1czmMU6l5DkWEcNfq+IHibw8kBDuGyKikTbr7zWRWcBmuLd4bT4cDEYug/Duf8AF0Sg0EvYsQA==
   dependencies:
     bignumber.js "^9.0.1"
     ethers "^5.6.2"

@@ -4,7 +4,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) {
   return predefinedSteps.reduce((prev, curr) => {
@@ -12,14 +12,41 @@ function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) 
   })
 }
 
-function generateSteps(min: BigNumber, max: BigNumber) {
-  const steps = [min]
+function getMinMaxAndRange({
+  htp,
+  momp,
+  offset,
+}: {
+  htp: BigNumber
+  momp: BigNumber
+  offset: number
+}) {
+  const htpMinRange = [htp]
+  const htpNearMompRange = [htp]
 
-  while (steps[steps.length - 1].lte(max)) {
-    steps.push(steps[steps.length - 1].times(1.005))
+  for (let i = 0; i < offset; i++) {
+    htpMinRange.push(htpMinRange[i].div(1.005))
   }
 
-  return steps
+  while (htpNearMompRange[htpNearMompRange.length - 1].lt(momp)) {
+    htpNearMompRange.push(htpNearMompRange[htpNearMompRange.length - 1].times(1.005))
+  }
+
+  const nearMompMaxRange = [htpNearMompRange[htpNearMompRange.length - 1]]
+
+  for (let i = 0; i < offset; i++) {
+    nearMompMaxRange.push(nearMompMaxRange[i].times(1.005))
+  }
+
+  const range = [...new Set([...htpMinRange, ...htpNearMompRange, ...nearMompMaxRange])].sort(
+    (a, b) => a.toNumber() - b.toNumber(),
+  )
+
+  return {
+    min: range[0],
+    max: range[range.length - 1],
+    range,
+  }
 }
 
 function convertSliderValuesToPercents(value: BigNumber, min: BigNumber, max: BigNumber) {
@@ -46,13 +73,8 @@ function convertSliderThresholds({
   }
 }
 
-export const ajnaSliderDefaults = {
-  min: new BigNumber(17775.14558),
-  max: new BigNumber(35732.36916),
+const ajnaSliderDefaults = {
   maxLtv: new BigNumber(0.65),
-  htp: new BigNumber(20035.42911),
-  lup: new BigNumber(23038.19116),
-  momp: new BigNumber(28979.25513),
 }
 
 export function AjnaEarnSlider() {
@@ -65,33 +87,45 @@ export function AjnaEarnSlider() {
       state: { price },
       updateState,
     },
+    position: {
+      currentPosition: {
+        position: {
+          pool: { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice },
+        },
+      },
+    },
   } = useAjnaProductContext('earn')
 
-  const { min, max, maxLtv, htp, lup, momp } = ajnaSliderDefaults
-  const resolvedValue = (price || htp).decimalPlaces(2)
+  const { maxLtv } = ajnaSliderDefaults
+  const resolvedValue = (price || highestThresholdPrice).decimalPlaces(2)
 
-  const predefinedSteps = useMemo(() => generateSteps(min, max), [min, max])
+  const { min, max, range } = useMemo(
+    () =>
+      getMinMaxAndRange({
+        htp: highestThresholdPrice,
+        momp: mostOptimisticMatchingPrice,
+        // for now set default to 20, but we might need dynamic offset depends on htp and momp value
+        offset: 20,
+      }),
+    [highestThresholdPrice.toString(), mostOptimisticMatchingPrice.toString()],
+  )
+
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
     () =>
       convertSliderThresholds({
         min,
         max,
-        htp,
-        lup,
-        momp,
+        htp: highestThresholdPrice,
+        lup: lowestUtilizedPrice,
+        momp: mostOptimisticMatchingPrice,
       }),
-    [min, max, htp, lup, momp],
+    [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
   )
 
   function handleChange(v: BigNumber) {
-    const newValue = snapToPredefinedValues(v, predefinedSteps)
+    const newValue = snapToPredefinedValues(v, range)
     updateState('price', newValue.decimalPlaces(2))
   }
-
-  // TODO ideally we should initialize reducto with htp value
-  useEffect(() => {
-    updateState('price', resolvedValue)
-  }, [])
 
   return (
     <SliderValuePicker

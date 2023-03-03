@@ -4,6 +4,7 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaPoolPairs } from 'features/ajna/common/types'
+import { getEarnData } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
@@ -147,9 +148,38 @@ export async function getAjnaParameters({
             price,
             quoteAmount: depositAmount,
             isStakingNft: false,
-            // position: position as AjnaEarn, // TODO currently not requried by interface, but will be
           },
-          dependencies,
+          { ...dependencies, getEarnData },
+        )
+      }
+    }
+    case 'deposit-earn': {
+      const { price, depositAmount } = state as AjnaEarnFormState
+
+      if (price) {
+        return strategies.ajna.earn.depositAndAdjust(
+          {
+            ...commonPayload,
+            price,
+            quoteAmount: depositAmount || zero,
+            position: position as AjnaEarn,
+          },
+          { ...dependencies, getEarnData },
+        )
+      }
+    }
+    case 'withdraw-earn': {
+      const { price, withdrawAmount } = state as AjnaEarnFormState
+
+      if (price) {
+        return strategies.ajna.earn.withdrawAndAdjust(
+          {
+            ...commonPayload,
+            price,
+            quoteAmount: withdrawAmount || zero,
+            position: position as AjnaEarn,
+          },
+          { ...dependencies, getEarnData },
         )
       }
     }
