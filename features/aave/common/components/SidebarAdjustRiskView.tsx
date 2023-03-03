@@ -1,45 +1,19 @@
-import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { transitionHasMinConfigurableRiskRatio } from 'actions/aave/oasisActionsLibWrapper'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
-import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
-import { BaseAaveEvent, BaseViewProps } from 'features/aave/common/BaseAaveContext'
+import { SecondaryInputProps } from 'features/aave/common/StrategyConfigTypes'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
-import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
-
-import { StrategyInformationContainer } from './informationContainer'
-
-type RaisedEvents =
-  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | (
-      | {
-          type: 'RESET_RISK_RATIO'
-        }
-      | BaseAaveEvent
-    )
-
-export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
-  primaryButton: SidebarSectionFooterButtonSettings
-  textButton: SidebarSectionFooterButtonSettings
-  viewLocked?: boolean // locks whole view
-  showWarring?: boolean // displays warning
-  onChainPosition?: IPosition
-  dropdownConfig?: SidebarSectionHeaderDropdown
-  title: string
-  automation?: ManageAaveAutomation
-  noSidebar?: boolean
-}
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (
@@ -86,19 +60,18 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     state,
     send,
     isLoading,
-    primaryButton,
-    textButton,
     viewLocked = false,
     showWarring = false,
     onChainPosition,
-    dropdownConfig,
-    title,
-    noSidebar,
-    automation,
-  }: AdjustRiskViewProps) {
+    stopLossError,
+  }: SecondaryInputProps) {
     const { t } = useTranslation()
+    const transition = state.context.transition
+    const positionTransitionHasMinConfigurableRisk = transitionHasMinConfigurableRiskRatio(
+      transition,
+    )
 
-    const simulation = state.context.transition?.simulation
+    const simulation = transition?.simulation
     const targetPosition = simulation?.position
 
     const strategyInfo = state.context.strategyInfo
@@ -106,13 +79,12 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     const maxRisk =
       targetPosition?.category.maxLoanToValue || onChainPosition?.category.maxLoanToValue || zero
 
-    const minRisk =
-      (simulation?.minConfigurableRiskRatio &&
-        BigNumber.max(
-          simulation?.minConfigurableRiskRatio.loanToValue,
+    const minRisk = positionTransitionHasMinConfigurableRisk
+      ? BigNumber.max(
+          transition?.simulation?.minConfigurableRiskRatio.loanToValue,
           viewConfig.riskRatios.minimum.loanToValue,
-        )) ||
-      viewConfig.riskRatios.minimum.loanToValue
+        )
+      : viewConfig.riskRatios.minimum.loanToValue
 
     const liquidationPrice = targetPosition
       ? getLiquidationPriceAccountingForPrecision(targetPosition)
@@ -152,11 +124,6 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       state.context.userInput.riskRatio?.loanToValue ||
       onChainPosition?.riskRatio.loanToValue ||
       state.context.defaultRiskRatio?.loanToValue
-
-    const stopLossError =
-      automation?.stopLoss.isStopLossEnabled &&
-      automation?.stopLoss.stopLossLevel &&
-      sliderValue?.gte(automation?.stopLoss.stopLossLevel)
 
     const sidebarContent = (
       <Grid gap={3}>
@@ -273,33 +240,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             />
           )
         )}
-        {hasUserInteracted(state) && (
-          <StrategyInformationContainer
-            state={state}
-            changeSlippageSource={(from) => {
-              send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-            }}
-          />
-        )}
       </Grid>
     )
-    if (noSidebar) {
-      return sidebarContent
-    }
-
-    const sidebarSectionProps: SidebarSectionProps = {
-      title,
-      content: sidebarContent,
-      primaryButton: {
-        ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.transition,
-        // TODO validation suppressed for testing trigger execution
-        // || stopLossError,
-      },
-      textButton, // this is going back button, no need to block it
-      dropdown: dropdownConfig,
-    }
-
-    return <SidebarSection {...sidebarSectionProps} />
+    return sidebarContent
   }
 }

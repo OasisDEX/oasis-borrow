@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/oasis-actions'
-import { OpenAaveParameters } from 'actions/aave'
+import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
@@ -63,7 +63,9 @@ export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
-  refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
+  refParametersMachine?:
+    | ActorRefFrom<TransactionParametersStateMachine<OpenMultiplyAaveParameters>>
+    | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
   refStopLossMachine?: ActorRefFrom<TransactionStateMachine<AutomationTxData>>
   hasOpenedPosition?: boolean
   positionRelativeAddress?: string
@@ -91,7 +93,10 @@ export type OpenAaveEvent =
   | DMPAccountStateMachineResultEvents
 
 export function createOpenAaveStateMachine(
-  transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
+  openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
+  openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<
+    OpenAaveDepositBorrowParameters
+  >,
   proxyStateMachine: ProxyStateMachine,
   dmpAccountStateMachine: DPMAccountStateMachine,
   allowanceStateMachine: AllowanceStateMachine,
@@ -209,6 +214,10 @@ export function createOpenAaveStateMachine(
                     actions: ['setAmount', 'calculateAuxiliaryAmount'],
                   },
                 ],
+                SET_DEBT: {
+                  target: '#openAaveStateMachine.background.debouncing',
+                  actions: ['setDebt'],
+                },
                 SET_RISK_RATIO: {
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: 'setRiskRatio',
@@ -449,10 +458,17 @@ export function createOpenAaveStateMachine(
           userInput,
           effectiveProxyAddress,
           hasOpenedPosition,
+          transition,
         }) =>
           useFeatureToggle('AaveProtectionWrite') &&
           strategyConfig.type === 'Multiply' &&
-          canOpenPosition({ userInput, hasOpenedPosition, tokenBalance, effectiveProxyAddress }),
+          canOpenPosition({
+            userInput,
+            hasOpenedPosition,
+            tokenBalance,
+            effectiveProxyAddress,
+            transition,
+          }),
         isAllowanceNeeded,
         isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => !stopLossSkipped && !!stopLossLevel,
       },
@@ -504,6 +520,13 @@ export function createOpenAaveStateMachine(
             amount: event.amount,
           },
           strategy: event.amount && event.amount.gt(zero) ? context.transition : undefined,
+        })),
+        setDebt: assign((context, event) => ({
+          userInput: {
+            ...context.userInput,
+            debtAmount: event.debt,
+          },
+          transition: event.debt ? context.transition : undefined,
         })),
         calculateAuxiliaryAmount: assign((context) => {
           return {
@@ -557,9 +580,20 @@ export function createOpenAaveStateMachine(
           }
           return undefined
         }),
-        spawnParametersMachine: assign((_) => ({
-          refParametersMachine: spawn(transactionParametersMachine, 'transactionParameters'),
-        })),
+        spawnParametersMachine: assign((context) => {
+          if (context.strategyConfig.type === 'Borrow') {
+            return {
+              refParametersMachine: spawn(
+                openDepositBorrowTransactionParametersMachine,
+                'transactionParameters',
+              ),
+            }
+          } else {
+            return {
+              refParametersMachine: spawn(openMultiplyParametersMachine, 'transactionParameters'),
+            }
+          }
+        }),
         spawnTransactionMachine: assign((context) => ({
           refTransactionMachine: spawn(
             transactionStateMachine(
@@ -588,27 +622,46 @@ export function createOpenAaveStateMachine(
           return undefined
         }),
         requestParameters: send(
-          (context): TransactionParametersStateMachineEvent<OpenAaveParameters> => {
-            return {
-              type: 'VARIABLES_RECEIVED',
-              parameters: {
-                amount: context.userInput.amount!,
-                riskRatio:
-                  context.userInput.riskRatio ||
-                  context.defaultRiskRatio ||
-                  new RiskRatio(zero, RiskRatio.TYPE.LTV),
-                // ethNullAddress just for the simulation, there is a guard for that
-                proxyAddress: context.effectiveProxyAddress! || ethNullAddress,
-                collateralToken: context.strategyConfig.tokens.collateral,
-                debtToken: context.tokens.debt,
-                depositToken: context.tokens.deposit,
-                token: context.tokens.deposit,
-                context: context.web3Context!,
-                slippage: getSlippage(context),
-                proxyType: context.strategyConfig.proxyType,
-                positionType: context.strategyConfig.type,
-                protocol: context.strategyConfig.protocol,
-              },
+          (
+            context,
+          ): TransactionParametersStateMachineEvent<
+            OpenMultiplyAaveParameters | OpenAaveDepositBorrowParameters
+          > => {
+            const baseParams = {
+              // ethNullAddress just for the simulation, there is a guard for that
+              proxyAddress: context.effectiveProxyAddress! || ethNullAddress,
+              collateralToken: context.strategyConfig.tokens.collateral,
+              debtToken: context.tokens.debt,
+              depositToken: context.tokens.deposit,
+              token: context.tokens.deposit,
+              context: context.web3Context!,
+              slippage: getSlippage(context),
+              proxyType: context.strategyConfig.proxyType,
+              positionType: context.strategyConfig.type,
+              protocol: context.strategyConfig.protocol,
+            }
+            if (context.strategyConfig.type === 'Borrow') {
+              return {
+                type: 'VARIABLES_RECEIVED',
+                parameters: {
+                  ...baseParams,
+                  amount: context.userInput.amount!,
+                  collateralAmount: context.userInput.amount!,
+                  borrowAmount: context.userInput.debtAmount || zero,
+                } as OpenAaveDepositBorrowParameters,
+              }
+            } else {
+              return {
+                type: 'VARIABLES_RECEIVED',
+                parameters: {
+                  ...baseParams,
+                  amount: context.userInput.amount!,
+                  riskRatio:
+                    context.userInput.riskRatio ||
+                    context.defaultRiskRatio ||
+                    new RiskRatio(zero, RiskRatio.TYPE.LTV),
+                } as OpenMultiplyAaveParameters,
+              }
             }
           },
           { to: (context) => context.refParametersMachine! },

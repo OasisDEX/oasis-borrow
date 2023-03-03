@@ -2171,6 +2171,7 @@
         "adjust-risk": "Adjust Risk",
         "deposit": "Deposit ETH",
         "title": "Your Earn position",
+        "manage-title": "Manage Earn position",
         "close-title": "Close position to ETH",
         "close-position": "Close position",
         "close-position-to": "Close position to {{token}}",
@@ -2227,11 +2228,17 @@
       "open-btn": "Open Multiply position"
     }
   },
-  "sidebar-titles": {
-    "open-earn-position": "Open Earn position",
-    "manage-earn-position": "Manage Earn position",
-    "open-multiply-position": "Open Multiply position",
-    "manage-multiply-position": "Manage Multiply position"
+  "manage-multiply": {
+    "sidebar": {
+      "title": "Manage Multiply position",
+      "open-btn": "Manage Multiply position"
+    }
+  },
+  "open-borrow": {
+    "sidebar": {
+      "title": "Open Borrow position",
+      "open-btn": "Open Borrow position"
+    }
   },
   "manage-position": "Manage position",
   "view-position": "View Position",

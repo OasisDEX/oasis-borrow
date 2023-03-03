@@ -1,5 +1,6 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { AaveBorrowManageComponent } from 'features/borrow/aave/AaveBorrowManageComponent'
 import { AaveEarnFaqV2, AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import {
@@ -19,6 +20,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
+import { DebtInput } from './open/components/DebtInput'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
@@ -36,7 +38,7 @@ const allActionsAvailable: ManagePositionAvailableActions[] = [
   'close',
 ]
 
-const supportedAaveBorrowCollateralTokens = ['ETH']
+const supportedAaveBorrowCollateralTokens = ['ETH', 'WBTC']
 
 export const strategies: Array<IStrategyConfig> = [
   {
@@ -50,7 +52,7 @@ export const strategies: Array<IStrategyConfig> = [
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
-      adjustRiskView: adjustRiskView(adjustRiskSliders.wstethEth),
+      secondaryInput: adjustRiskView(adjustRiskSliders.wstethEth),
       positionInfo: AaveEarnFaqV3,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
@@ -78,7 +80,7 @@ export const strategies: Array<IStrategyConfig> = [
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
-      adjustRiskView: adjustRiskView(adjustRiskSliders.stethEth),
+      secondaryInput: adjustRiskView(adjustRiskSliders.stethEth),
       positionInfo: AaveEarnFaqV2,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
@@ -104,7 +106,7 @@ export const strategies: Array<IStrategyConfig> = [
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
-      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -130,7 +132,7 @@ export const strategies: Array<IStrategyConfig> = [
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
-      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -156,7 +158,7 @@ export const strategies: Array<IStrategyConfig> = [
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
-      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -181,13 +183,13 @@ export const strategies: Array<IStrategyConfig> = [
         headerOpen: AaveOpenHeader,
         headerManage: AaveManageHeader,
         headerView: AaveManageHeader,
-        simulateSection: AaveMultiplyManageComponent,
-        vaultDetailsManage: AaveMultiplyManageComponent,
-        vaultDetailsView: AaveMultiplyManageComponent,
-        adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        simulateSection: AaveBorrowManageComponent,
+        vaultDetailsManage: AaveBorrowManageComponent,
+        vaultDetailsView: AaveBorrowManageComponent,
+        secondaryInput: DebtInput,
         positionInfo: AaveMultiplyFaq,
-        sidebarTitle: 'open-multiply.sidebar.title',
-        sidebarButton: 'open-multiply.sidebar.open-btn',
+        sidebarTitle: 'open-borrow.sidebar.title',
+        sidebarButton: 'open-borrow.sidebar.open-btn',
       },
       tokens: {
         collateral: collateral,

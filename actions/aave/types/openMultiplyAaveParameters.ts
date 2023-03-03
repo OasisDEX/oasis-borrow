@@ -4,7 +4,7 @@ import { Context } from 'blockchain/network'
 import { ProxyType } from 'features/aave/common'
 import { LendingProtocol } from 'lendingProtocols'
 
-export interface OpenAaveParameters {
+export interface OpenMultiplyAaveParameters {
   context: Context
   amount: BigNumber
   collateralToken: string

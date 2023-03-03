@@ -1,4 +1,5 @@
-import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
+import { transitionHasSwap } from 'actions/aave/oasisActionsLibWrapper'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
 import { getSlippage, StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
@@ -29,7 +30,7 @@ type OpenAaveInformationContainerProps = {
       }
       balance?: StrategyTokenBalance
       estimatedGasPrice?: HasGasEstimation
-      transition?: IPositionTransition
+      transition?: IPositionTransition | ISimplePositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
       strategyConfig: IStrategyConfig
@@ -47,7 +48,8 @@ export function StrategyInformationContainer({
 
   const { transition, currentPosition, balance } = state.context
 
-  const simulationHasSwap = transition?.simulation.swap.toTokenAmount.gt(zero)
+  const simulationHasSwap =
+    transitionHasSwap(transition) && transition?.simulation.swap?.toTokenAmount.gt(zero)
 
   return transition && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
@@ -87,10 +89,15 @@ export function StrategyInformationContainer({
         transactionParameters={transition}
         currentPosition={currentPosition}
       />
-      <FeesInformation
-        swap={transition.simulation.swap}
-        estimatedGasPrice={state.context.estimatedGasPrice}
-      />
+      {simulationHasSwap && (
+        <FeesInformation
+          swap={transition.simulation.swap}
+          estimatedGasPrice={state.context.estimatedGasPrice}
+        />
+      )}
+      {!simulationHasSwap && (
+        <FeesInformation estimatedGasPrice={state.context.estimatedGasPrice} />
+      )}
     </VaultChangesInformationContainer>
   ) : (
     <></>
