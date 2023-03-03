@@ -1,5 +1,6 @@
+import { IPosition } from '@oasisdex/oasis-actions'
 import { UsersWhoFollowVaults } from '@prisma/client'
-import { getOnChainPosition } from 'actions/aave'
+// import { getOnChainPosition } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
@@ -21,7 +22,7 @@ import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { AaveProtocolData as AaveProtocolDataV2 } from 'lendingProtocols/aave-v2/pipelines'
+import { AaveProtocolData as AaveProtocolDataV2, PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
@@ -176,56 +177,7 @@ function buildAaveViewModel(
       ([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity, triggersData]) => {
         const { position } = protocolData as AaveProtocolDataV2 | AaveProtocolDataV3
 
-        const isDebtZero = position.debt.amount.isZero()
-
-        const oracleCollateralTokenPriceInEth = assetPrices[0]
-        const oracleDebtTokenPriceInEth = assetPrices[1]
-
-        const collateralToken = positionCreatedEvent.collateralTokenSymbol
-        const debtToken = positionCreatedEvent.debtTokenSymbol
-
-        const collateralNotWei = amountFromPrecision(
-          position.collateral.amount,
-          new BigNumber(position.collateral.precision),
-        )
-        const debtNotWei = amountFromPrecision(
-          position.debt.amount,
-          new BigNumber(position.debt.precision),
-        )
-
-        const netValueInEthAccordingToOracle = collateralNotWei
-          .times(oracleCollateralTokenPriceInEth)
-          .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
-
-        const liquidationPrice = !isDebtZero
-          ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
-          : zero
-
-        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
-
-        const fundingCost = !isDebtZero
-          ? debtNotWei
-              .times(oracleDebtTokenPriceInEth)
-              .div(netValueInEthAccordingToOracle)
-              .multipliedBy(variableBorrowRate)
-              .times(100)
-          : zero
-
-        // Todo: move to lib
-        const netValueInDebtToken = amountFromPrecision(
-          position.collateral.normalisedAmount
-            .times(position.oraclePriceForCollateralDebtExchangeRate)
-            .minus(position.debt.normalisedAmount),
-          new BigNumber(18),
-        )
-
-        const netValueUsd = netValueInDebtToken.times(tickerPrices[position.debt.symbol])
-
-        const isOwner = context.status === 'connected' && context.account === walletAddress
-
-        const title = `${collateralToken}/${debtToken} Aave ${
-          protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
-        }`
+        const { collateralToken, title, netValueUsd, liquidationPrice, fundingCost, isOwner, collateralNotWei } = loadAavePositionDetails(position, assetPrices, positionCreatedEvent.collateralTokenSymbol, positionCreatedEvent.debtTokenSymbol, preparedAaveReserve, tickerPrices, context, walletAddress, protocol)
 
         return {
           token: collateralToken,
@@ -250,6 +202,55 @@ function buildAaveViewModel(
 
 type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCreated & {
   fakePositionCreatedEvtForDsProxyUsers?: boolean
+}
+
+function loadAavePositionDetails(position: IPosition, assetPrices: BigNumber[], collateralToken: string, debtToken: string, preparedAaveReserve: PreparedAaveReserveData, tickerPrices: Tickers, context: Context, walletAddress: string, protocol: LendingProtocol) {
+  const isDebtZero = position.debt.amount.isZero()
+
+  const oracleCollateralTokenPriceInEth = assetPrices[0]
+  const oracleDebtTokenPriceInEth = assetPrices[1]
+
+  const collateralNotWei = amountFromPrecision(
+    position.collateral.amount,
+    new BigNumber(position.collateral.precision)
+  )
+  const debtNotWei = amountFromPrecision(
+    position.debt.amount,
+    new BigNumber(position.debt.precision)
+  )
+
+  const netValueInEthAccordingToOracle = collateralNotWei
+    .times(oracleCollateralTokenPriceInEth)
+    .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
+
+  const liquidationPrice = !isDebtZero
+    ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
+    : zero
+
+  const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+
+  const fundingCost = !isDebtZero
+    ? debtNotWei
+      .times(oracleDebtTokenPriceInEth)
+      .div(netValueInEthAccordingToOracle)
+      .multipliedBy(variableBorrowRate)
+      .times(100)
+    : zero
+
+  // Todo: move to lib
+  const netValueInDebtToken = amountFromPrecision(
+    position.collateral.normalisedAmount
+      .times(position.oraclePriceForCollateralDebtExchangeRate)
+      .minus(position.debt.normalisedAmount),
+    new BigNumber(18)
+  )
+
+  const netValueUsd = netValueInDebtToken.times(tickerPrices[position.debt.symbol])
+
+  const isOwner = context.status === 'connected' && context.account === walletAddress
+
+  const title = `${collateralToken}/${debtToken} Aave ${protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'}`
+  return { collateralToken, title, netValueUsd, liquidationPrice, fundingCost, isOwner, collateralNotWei }
 }
 
 function resolveAaveServices(
@@ -417,7 +418,7 @@ export function createFollowedAavePositions$(
         console.log(tickerForDebtToken$)
         const currentProtocolData$ =
           followedAaveVault.protocol === 'aavev2' ? aaveV2ProtocolData$ : aaveV3ProtocolData$
-        const aaveReserveData$ = resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol)
+        // const aaveReserveData$ = resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol)
         // const availableAaveLiquidity = resolvedAaveServices.aaveAvailableLiquidityInUSDC$(debtTokenSymbol)
 
         // console.log('aaveReserveData')
@@ -471,53 +472,56 @@ export function createFollowedAavePositions$(
         // )
         // console.log('netValueUSD')
         // console.log(netValueUSD$)
+
+        // const { position, netValueUsd } = getOnChainPosition({
+        //   context,
+        //   collateralToken: collateralTokenSymbol,
+        //   debtToken: debtTokenSymbol,
+        //   proxyAddress,
+        //   protocol: protocolToLendingProtocol(followedAaveVault.protocol),
+        // })
+        //   .then((position) => {
+        //     console.log('position')
+        //     console.log(position)
+        //     console.log('tickerForDebtToken')
+        //     console.log(tickerForDebtToken)
+        //     console.log('position')
+        //     console.log(position)
+        //     // Values in position are always zeros, whic hi
+        //     console.log('position.collateral.normalisedAmount')
+        //     console.log(position.collateral.normalisedAmount.toFixed(2))
+        //     console.log('position.debt.normalisedAmount')
+        //     console.log(position.debt.normalisedAmount.toFixed(2))
+        //     console.log('position.oraclePriceForCollateralDebtExchangeRate')
+        //     console.log(position.oraclePriceForCollateralDebtExchangeRate.toFixed(2))
+
+        //     const netValueInDebtToken = amountFromPrecision(
+        //       position.collateral.normalisedAmount
+        //         .times(position.oraclePriceForCollateralDebtExchangeRate)
+        //         .minus(position.debt.normalisedAmount),
+        //       new BigNumber(18),
+        //     )
+        //     console.log('netValueInDebtToken')
+        //     console.log(netValueInDebtToken.toFixed(2))
+        //     console.log('tickerForDebtToken[position.debt.symbol]')
+        //     // console.log(tickerForDebtToken[position.debt.symbol].toFixed(2)) //this is ok
+        //     // const netValueUsd = netValueInDebtToken.times(
+        //     //   tickerForDebtToken[position.debt.symbol],
+        //     // )
+        //     console.log('netValueUsd')
+        //     console.log(netValueUsd.toFixed(2))
+
+        //     console.log('multiple')
+        //     console.log(position.riskRatio.multiple)
+
+        //     return { position, netValueUsd }
+        //   })
+        //   .catch((error) => {
+        //     console.log('getOnChainPosition error')
+        //     console.log(error)
+        //   })
         return combineLatest(currentProtocolData$, tickerForDebtToken$).pipe(
-          map(([currentProtocolData, tickerForDebtToken]) => {
-            const { position, netValueUsd } = getOnChainPosition({
-              context,
-              collateralToken: collateralTokenSymbol,
-              debtToken: debtTokenSymbol,
-              proxyAddress,
-              protocol: protocolToLendingProtocol(followedAaveVault.protocol),
-            })
-              .then((position) => {
-                console.log('position')
-                console.log(position)
-                console.log('tickerForDebtToken')
-                console.log(tickerForDebtToken)
-                console.log('position')
-                console.log(position)
-                // Values in position are always zeros, whic hi
-                console.log('position.collateral.normalisedAmount')
-                console.log(position.collateral.normalisedAmount.toFixed(2))
-                console.log('position.debt.normalisedAmount')
-                console.log(position.debt.normalisedAmount.toFixed(2))
-                console.log('position.oraclePriceForCollateralDebtExchangeRate')
-                console.log(position.oraclePriceForCollateralDebtExchangeRate.toFixed(2))
-
-                const netValueInDebtToken = amountFromPrecision(
-                  position.collateral.normalisedAmount
-                    .times(position.oraclePriceForCollateralDebtExchangeRate)
-                    .minus(position.debt.normalisedAmount),
-                  new BigNumber(18),
-                )
-                console.log('netValueInDebtToken')
-                console.log(netValueInDebtToken.toFixed(2))
-                console.log('tickerForDebtToken[position.debt.symbol]')
-                console.log(tickerForDebtToken[position.debt.symbol].toFixed(2)) //this is ok
-                const netValueUsd = netValueInDebtToken.times(
-                  tickerForDebtToken[position.debt.symbol],
-                )
-                console.log('netValueUsd')
-                console.log(netValueUsd.toFixed(2))
-
-                return { position, netValueUsd }
-              })
-              .catch((error) => {
-                console.log('getOnChainPosition error')
-                console.log(error)
-              })
-
+          map((/*[currentProtocolData, tickerForDebtToken]*/) => {
             return {
               token: followedAaveVault.strategy,
               title: followedAaveVault.strategy,
@@ -525,7 +529,8 @@ export function createFollowedAavePositions$(
               url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${
                 followedAaveVault.vault_id
               }/`,
-              netValue: netValueUsd,
+              netValue: one,
+              // netValue: netValueUsd,
               multiple: one,
               liquidationPrice: one,
               fundingCost: one,
