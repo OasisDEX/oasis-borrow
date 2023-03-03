@@ -1,18 +1,17 @@
 import '@uniswap/widgets/fonts.css'
 
-import { SwapWidget, Theme as UniswapWidgetTheme } from '@uniswap/widgets'
+import { SwapWidget, SwapWidgetSkeleton, Theme as UniswapWidgetTheme } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { tokenList } from 'components/uniswapWidget/tokenList'
-import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { keyBy } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useRef } from 'react'
 import { theme } from 'theme'
-import { Box, Button, Flex, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Image, SxProps, Text } from 'theme-ui'
 
 const { colors, radii } = theme
 
@@ -300,6 +299,7 @@ const tokenToTokenAddress = keyBy(tokenList.tokens, 'symbol')
 
 export function UniswapWidget(props: { token?: string }) {
   const { web3ContextConnected$ } = useAppContext()
+  const widgetWrapperRef = useRef(null)
 
   const requestTokenAddress = props.token && tokenToTokenAddress[props.token]?.address
 
@@ -312,56 +312,58 @@ export function UniswapWidget(props: { token?: string }) {
 
   const { main, tokenSel, settings } = cssPaths
 
+  const wrapperCss: SxProps['sx'] = {
+    '.subhead': { fontWeight: 'medium' },
+    [main.wrapper]: {
+      border: 'none',
+    },
+    [main.swapBtn]: {
+      border: '3px solid',
+      borderColor: 'neutral20',
+      ':hover': { borderColor: 'primary100', bg: 'neutral10' },
+    },
+    [main.token1Btn + '[color="interactive100"], ' + main.token2Btn + '[color="interactive100"]']: {
+      border: '1px solid',
+      borderColor: 'neutral20',
+      ':hover': { borderColor: 'primary100', bg: 'neutral10' },
+    },
+    [tokenSel.hoverAppended]: { display: 'none' },
+    [tokenSel.option]: {
+      bg: 'transparent',
+      ':hover': { bg: 'neutral20' },
+      borderRadius: '8px',
+      '.subhead': { fontWeight: 'semiBold' },
+    },
+    [tokenSel.search]: {
+      borderColor: 'neutral20',
+      borderRadius: 'medium',
+      ':hover': { bg: 'neutral10' },
+      ':focus': { borderColor: 'primary100' },
+      '::placeholder': { color: 'neutral80' },
+    },
+    [tokenSel.scrollbar]: {
+      '::-webkit-scrollbar-thumb': {
+        background: scrollbarBg('#A8A9B1'),
+        backgroundClip: 'padding-box',
+      },
+    },
+    [settings.tooltip]: {
+      display: 'block',
+    },
+  }
+
   if (!web3Provider) {
-    return <AppSpinner />
+    return (
+      <Box sx={wrapperCss}>
+        <SwapWidgetSkeleton theme={widgetTheme} width={420} />
+      </Box>
+    )
   }
 
   return (
     <Box
-      sx={{
-        position: 'relative',
-        overflow: 'hidden',
-        '.subhead': { fontWeight: 'medium' },
-        [main.wrapper]: {
-          border: 'none',
-        },
-        [main.swapBtn]: {
-          border: '3px solid',
-          borderColor: 'neutral20',
-          ':hover': { borderColor: 'primary100', bg: 'neutral10' },
-        },
-        [main.token1Btn +
-        '[color="interactive100"], ' +
-        main.token2Btn +
-        '[color="interactive100"]']: {
-          border: '1px solid',
-          borderColor: 'neutral20',
-          ':hover': { borderColor: 'primary100', bg: 'neutral10' },
-        },
-        [tokenSel.hoverAppended]: { display: 'none' },
-        [tokenSel.option]: {
-          bg: 'transparent',
-          ':hover': { bg: 'neutral20' },
-          borderRadius: '8px',
-          '.subhead': { fontWeight: 'semiBold' },
-        },
-        [tokenSel.search]: {
-          borderColor: 'neutral20',
-          borderRadius: 'medium',
-          ':hover': { bg: 'neutral10' },
-          ':focus': { borderColor: 'primary100' },
-          '::placeholder': { color: 'neutral80' },
-        },
-        [tokenSel.scrollbar]: {
-          '::-webkit-scrollbar-thumb': {
-            background: scrollbarBg('#A8A9B1'),
-            backgroundClip: 'padding-box',
-          },
-        },
-        [settings.tooltip]: {
-          display: 'block',
-        },
-      }}
+      sx={wrapperCss}
+      ref={widgetWrapperRef}
       css={`
         ${main.token1Btn} > div > div, ${main.token2Btn} > div > div {
           font-size: 18px !important;
@@ -414,7 +416,9 @@ export function UniswapWidget(props: { token?: string }) {
         convenienceFee={20}
         convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
         defaultInputTokenAddress={requestTokenAddress}
-        width="100%"
+        width={420}
+        hideConnectionUI
+        dialog={widgetWrapperRef.current}
       />
     </Box>
   )
