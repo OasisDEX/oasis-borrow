@@ -52,19 +52,10 @@ function SimulationSection({
   const amount = useMemo(() => userInputAmount || new BigNumber(100), [userInputAmount])
 
   const fees = useMemo(() => {
-    const swapFee = (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
+    const swapFee = (transitionHasSwap(transition) && getFee(transition?.simulation.swap)) || zero
     const gasFee = gasPrice?.gasEstimationEth || zero
     return swapFee.plus(gasFee)
   }, [transition, gasPrice])
-
-
-  const swapFee = transitionHasSwap(transition)
-    ? (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
-    : zero
-
-  const gasFee = gasPrice?.gasEstimationEth || zero
-  const fees = swapFee.plus(gasFee)
-  const riskRatio = transition?.simulation.position.riskRatio || defaultRiskRatio
 
   const riskRatio = useMemo(() => transition?.simulation.position.riskRatio || defaultRiskRatio, [
     defaultRiskRatio,
