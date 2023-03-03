@@ -99,7 +99,7 @@ export function getAjnaPosition$(
         provider: context.rpcProvider,
       }
 
-      const resolvedPosition = {
+      const positionPerProduct = {
         borrow: async () => views.ajna.getPosition(commonPayload, commonDependency),
         earn: async () =>
           pocViews.ajna.getEarnPosition(commonPayload, {
@@ -110,7 +110,7 @@ export function getAjnaPosition$(
       }
 
       return {
-        position: await resolvedPosition[resolvedProduct](),
+        position: await positionPerProduct[resolvedProduct](),
         meta: {
           ...meta,
           product: resolvedProduct,
