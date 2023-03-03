@@ -4,7 +4,7 @@
     "es6": true
   },
   "extends": ["typestrict"],
-  "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports", "deprecation", "no-relative-import-paths"],
+  "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports", "deprecation", "no-relative-import-paths", "react-hooks"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json",
@@ -34,7 +34,6 @@
         ]
       }
     ],
-    "func-style": ["error", "declaration"],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-useless-constructor": "error",
     "accessor-pairs": "error",
@@ -186,7 +185,9 @@
       "warn",
       { "allowSameFolder": true }
     ],
-    "deprecation/deprecation": "warn" // or "error" to have stricter rule
+    "deprecation/deprecation": "warn", // or "error" to have stricter rule
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "overrides": [
     {

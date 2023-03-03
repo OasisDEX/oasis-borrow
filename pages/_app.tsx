@@ -3,6 +3,10 @@ import { CacheProvider, Global } from '@emotion/core'
 import { MDXProvider } from '@mdx-js/react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
+import { adRollPixelScript } from 'analytics/adroll'
+import { trackingEvents } from 'analytics/analytics'
+import { LOCALSTORAGE_KEY } from 'analytics/common'
+import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
@@ -15,9 +19,12 @@ import { NotificationSocketProvider } from 'components/NotificationSocketProvide
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
+import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { loadFeatureToggles } from 'helpers/useFeatureToggle'
+import { useLocalStorage } from 'helpers/useLocalStorage'
 import { appWithTranslation, i18n } from 'next-i18next'
+import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -26,14 +33,6 @@ import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
-
-import { adRollPixelScript } from '../analytics/adroll'
-import { trackingEvents } from '../analytics/analytics'
-import { LOCALSTORAGE_KEY } from '../analytics/common'
-import { mixpanelInit } from '../analytics/mixpanel'
-import { loadFeatureToggles } from '../helpers/useFeatureToggle'
-import { useLocalStorage } from '../helpers/useLocalStorage'
-import nextI18NextConfig from '../next-i18next.config.js'
 
 if (process.env.NODE_ENV !== 'production') {
   if (typeof window !== 'undefined') {
@@ -50,9 +49,6 @@ function getLibrary(provider: any, connector: AbstractConnector | undefined): We
   const readOnlyEnhancedProvider = readOnlyEnhanceProvider(provider, chainIdPromise)
   return new Web3(readOnlyEnhancedProvider)
 }
-
-const FTPolarFontBold = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Bold')
-const FTPolarFontMedium = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Medium')
 
 const globalStyles = `
   html,
@@ -83,26 +79,8 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
-
-  @font-face {
-    font-family: 'FT Polar Trial';
-    src: url('${FTPolarFontMedium}.woff2') format('woff2'),
-        url('${FTPolarFontMedium}.woff') format('woff'),
-        url('${FTPolarFontMedium}.ttf') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'FT Polar Trial';
-    src: url('${FTPolarFontBold}.woff2') format('woff2'),
-        url('${FTPolarFontBold}.woff') format('woff'),
-        url('${FTPolarFontBold}.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
+  ${FTPolarBold.style.fontFamily}
+  ${FTPolarMedium.style.fontFamily}
 `
 
 // extending Component with static properties that can be attached to it

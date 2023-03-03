@@ -41,7 +41,7 @@ export function TxTranslator({
     [key: string]: any
   }
 }) {
-  const Component = withTranslation()(({ t }: { t: TFunction }) => <>{t(i18nKey, params)}</>)
+  const Component = withTranslation()(({ t }: { t: TFunction }) => <>{t(i18nKey, params || {})}</>)
 
   return <Component />
 }

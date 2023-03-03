@@ -2,13 +2,13 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useSimulationYields } from 'features/aave/common/hooks/useSimulationYields'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useSimulationYields } from 'helpers/useSimulationYields'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -48,6 +48,7 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
     riskRatio: maximumMultiple,
     fields: ['7Days', '90Days'],
     strategy: strategy,
+    token: strategy.tokens.deposit,
   })
 
   const protocolVersion = strategy.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'

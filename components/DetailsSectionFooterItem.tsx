@@ -18,10 +18,10 @@ export function DetailsSectionFooterItemWrapper({ children }: { children: ReactN
     <Flex
       as="ul"
       sx={{
+        gap: 3,
         mt: [0, null, null, -3],
         mb: [0, null, null, -3],
-        px: '12px',
-        py: 0,
+        p: 0,
         flexWrap: 'wrap',
       }}
     >
@@ -43,9 +43,9 @@ export function DetailsSectionFooterItem({
         alignItems: 'flex-start',
         flexDirection: 'column',
         flexBasis: ['100%', null, null, '25%'],
-        p: 3,
-        pl: 0,
-        pr: 4,
+        py: 3,
+        pl: '12px',
+        pr: '28px',
         '&:nth-child(-n+3)': {
           flexGrow: 1,
         },

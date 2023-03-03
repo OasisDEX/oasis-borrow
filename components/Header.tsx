@@ -34,7 +34,7 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
-import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
+import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidgetShowHide'
 
 function Logo({ sx }: { sx?: SxStyleProp }) {
   return (

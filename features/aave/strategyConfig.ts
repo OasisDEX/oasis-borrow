@@ -66,7 +66,7 @@ export const strategies: Array<IStrategyConfig> = [
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3EarnWSTETH' as const,
-    availableActions: ['close'],
+    availableActions: ['adjust', 'close'],
     defaultSlippage: new BigNumber(0.001),
   },
   {
@@ -176,7 +176,7 @@ export const strategies: Array<IStrategyConfig> = [
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
     return {
-      name: `borrow-${collateral}`,
+      name: `borrow-against-${collateral}`,
       urlSlug: collateral,
       proxyType: ProxyType.DpmProxy,
       viewComponents: {

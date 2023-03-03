@@ -286,7 +286,9 @@ export const productCardsConfig: {
       earn: ['DSR', 'GUNIV3DAIUSDC2-A'],
     },
     featuredAaveCards: {
-      borrow: [],
+      borrow: getAaveEnabledStrategies([
+        { strategy: 'borrow-against-ETH', featureToggle: 'AaveBorrow' },
+      ]),
       multiply: getAaveEnabledStrategies([
         { strategy: 'ethusdc' },
         { strategy: 'stETHusdc' },

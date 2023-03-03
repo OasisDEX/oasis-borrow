@@ -15,7 +15,11 @@ if (existsSync(testTsconfigPath)) {
 process.env.TS_NODE_IGNORE = '/^node_modules/((?!pg-packet-stream).)*$/'
 
 module.exports = {
-  require: ['ts-node/register/transpile-only', 'tsconfig-paths/register'],
+  require: [
+    'ts-node/register/transpile-only',
+    'tsconfig-paths/register',
+    'next/dist/build/jest/__mocks__/nextFontMock.js',
+  ],
   extension: ['ts'],
   watchExtensions: ['ts'],
   spec: [

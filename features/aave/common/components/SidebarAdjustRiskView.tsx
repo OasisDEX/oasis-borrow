@@ -134,9 +134,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             if (isLoading()) {
               return '...'
             } else {
-              return onChainPosition
-                ? viewConfig.liquidationPriceFormatter(value)
-                : hasUserInteracted(state)
+              return (onChainPosition || hasUserInteracted(state)) && !value.isNaN()
                 ? viewConfig.liquidationPriceFormatter(value)
                 : '-'
             }

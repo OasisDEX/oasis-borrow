@@ -4,6 +4,7 @@ import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopL
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
+import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { ReserveConfigurationData } from 'lendingProtocols/common'
 import { memoize } from 'lodash'
@@ -13,7 +14,7 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { AaveContext } from './AaveContext'
-import { getAaveStEthYield, IStrategyConfig } from './common'
+import { IStrategyConfig } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -74,8 +75,8 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     getAaveAssetsPrices$,
   } = protocols[LendingProtocol.AaveV3]
 
-  const aaveSthEthYieldsQuery = memoize(
-    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+  const aaveEarnYieldsQuery = memoize(
+    curry(getAaveWstEthYield)(disconnectedGraphQLClient$, moment()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
@@ -181,7 +182,7 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     aaveTotalValueLocked$,
     aaveReserveConfigurationData$,
     wrappedGetAaveReserveData$,
-    aaveSthEthYieldsQuery,
+    aaveEarnYieldsQuery,
     aaveProtocolData$,
     strategyConfig$,
     proxiesRelatedWithPosition$,
