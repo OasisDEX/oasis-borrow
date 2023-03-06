@@ -202,29 +202,46 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       ? '$direct'
       : new URL(initialReferrer).hostname
     : ''
-
-  void fetch(`/api/t`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      browser: upperFirst(name),
-      browserVersion: versionNumber,
-      currentUrl: win.location.href,
-      distinctId: mixpanel.get_distinct_id(),
-      eventBody,
-      eventName,
-      initialReferrer,
-      initialReferringDomain,
-      mobile,
-      os,
-      screenHeight: win.innerHeight,
-      screenWidth: win.innerWidth,
-      userId: mixpanel.get_property('$user_id'),
-    }),
-  })
+  if (!mixpanel.has_opted_out_tracking()) {
+    void fetch(`/api/t`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        browser: upperFirst(name),
+        browserVersion: versionNumber,
+        currentUrl: win.location.href,
+        distinctId: mixpanel.get_distinct_id(),
+        eventBody,
+        eventName,
+        initialReferrer,
+        initialReferringDomain,
+        mobile,
+        os,
+        screenHeight: win.innerHeight,
+        screenWidth: win.innerWidth,
+        userId: mixpanel.get_property('$user_id'),
+      }),
+    })
+  } else {
+    void fetch(`/api/t`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        currentUrl: win.location.href,
+        distinctId: 'not_tracked',
+        eventBody,
+        eventName,
+        initialReferrer,
+        initialReferringDomain,
+      }),
+    })
+  }
 }
 
 export interface MixpanelUserContext {
