@@ -434,7 +434,7 @@ export function createFollowedAavePositions$(
         // TODO Ł figure out how to pass trigger data
         //   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
       }> {
-        // console.log('positionCreated')
+        // console.log('positionCreated') it won't 
         // console.log(positionCreated)
         // TODO ŁW use             getOnChainPosition({
         const resolvedAaveServices = resolveAaveServices(
@@ -457,29 +457,12 @@ export function createFollowedAavePositions$(
         } = currentStrategy.tokens
         const proxyAddress = followedAaveVault.proxy ? followedAaveVault.proxy : ''
         // TODO ŁW combineObservables, get protocaldata and so on
-        const aaveV2ProtocolData$ = combineLatest(
-          aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-        )
-        console.log('aaveV2ProtocolData')
-        console.log(aaveV2ProtocolData$)
 
-        const aaveV3ProtocolData$ = combineLatest(
-          aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-        )
-        console.log('aaveV3ProtocolData')
-        console.log(aaveV3ProtocolData$)
         const tickerForDebtToken$ = tickerPrices$([debtTokenSymbol])
-        console.log('tickerForDebtToken$')
-        console.log(tickerForDebtToken$)
-        // const currentProtocolData$ =
-        //   followedAaveVault.protocol === 'aavev2' ? aaveV2ProtocolData$ : aaveV3ProtocolData$
-        // const aaveReserveData$ = resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol)
-        // const availableAaveLiquidityInUSDC$ = resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
-        //   token: debtTokenSymbol,
-        // })
+
         // TODO
         const protocol = protocolToLendingProtocol(followedAaveVault.protocol)
-        // here try switchMap, and then await getOnChainPosition 
+        // here try switchMap first, and then await getOnChainPosition 
         return combineLatest(
           protocol === LendingProtocol.AaveV2
             ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
