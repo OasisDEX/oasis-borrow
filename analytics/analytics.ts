@@ -255,11 +255,13 @@ export function getMixpanelUserContext(language: string, context?: Context): Mix
 }
 
 export const trackingEvents = {
-  landingPageView: (utmSource: string | null) => {
+  landingPageView: (utm: { [key: string]: string | string[] | undefined }) => {
     const eventBody = {
       product: ProductType.BORROW,
       page: Pages.LandingPage,
-      utm_source: utmSource,
+      utm_source: utm.utmSource ? utm.utmSource : 'direct',
+      utm_medium: utm.utmMedium ? utm.utmMedium : 'none',
+      utm_campaign: utm.utmCampaign ? utm.utmCampaign : 'none',
     }
 
     mixpanelInternalAPI(EventTypes.Pageview, eventBody)

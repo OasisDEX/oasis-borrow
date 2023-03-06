@@ -126,10 +126,13 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     mixpanelInit()
     // track the first page load
     if (router.pathname === '/') {
-      const utmSource = router.query.utm_source
-      if (typeof utmSource === 'string' || !utmSource) {
-        trackingEvents.landingPageView(utmSource || null)
+      const utm: { [key: string]: string | string[] | undefined } = {
+        utmSource: router.query.utm_source,
+        utmMedium: router.query.utm_medium,
+        utmCampaign: router.query.utm_campaign,
       }
+
+      trackingEvents.landingPageView(utm)
     } else {
       trackingEvents.pageView(router.pathname)
     }
