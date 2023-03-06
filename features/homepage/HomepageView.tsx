@@ -197,7 +197,11 @@ export function HomepageView() {
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
   const [scrollPercentage, setScrollPercentage] = useState(0)
+  // Magic number which is the rough height of three HomepagePromoBlocks + margins (search for sub-headers.security)
+  // Why: cause the refs + calculations were singnificantly expensive than this
+  // If you ever add/subtract a block from there this number needs to change
   const controlPointsHeight = 2000
+  // Rough height of the HomepagePromoBlock mentioned above
   const controlPointsBlockHeight = 330
 
   const router = useRouter()
