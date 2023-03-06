@@ -20,4 +20,5 @@ export const subgraphMethodsRecord: { [key in keyof Subgraphs['Ajna' & 'Temp']]:
       }
     }
   `,
+  tempMethod: '',
 }
