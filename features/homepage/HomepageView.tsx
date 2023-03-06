@@ -215,7 +215,6 @@ export function HomepageView() {
   const scrollingBlockRef = useRef<HTMLDivElement>(null)
   const scrollingGridRef = useRef<HTMLDivElement>(null)
   const isMobileView = useOnMobile()
-  console.log('isMobileView', isMobileView)
 
   useEffect(() => {
     const body = document.querySelectorAll('body')[0]
