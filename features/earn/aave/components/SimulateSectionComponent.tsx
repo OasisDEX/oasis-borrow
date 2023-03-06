@@ -1,6 +1,6 @@
-import { IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPositionTransition, IRiskRatio, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
-import { getFee } from 'actions/aave'
+import { getFee, transitionHasSwap } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
@@ -41,7 +41,7 @@ function SimulationSection({
   defaultRiskRatio,
 }: {
   strategy: IStrategyConfig
-  transition?: IPositionTransition
+  transition?: ISimplePositionTransition | IPositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
@@ -52,7 +52,7 @@ function SimulationSection({
   const amount = useMemo(() => userInputAmount || new BigNumber(100), [userInputAmount])
 
   const fees = useMemo(() => {
-    const swapFee = (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
+    const swapFee = (transitionHasSwap(transition) && getFee(transition?.simulation.swap)) || zero
     const gasFee = gasPrice?.gasEstimationEth || zero
     return swapFee.plus(gasFee)
   }, [transition, gasPrice])

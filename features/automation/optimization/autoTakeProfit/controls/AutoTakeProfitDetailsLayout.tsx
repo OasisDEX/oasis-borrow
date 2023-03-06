@@ -17,6 +17,7 @@ import {
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -82,7 +83,7 @@ export function AutoTakeProfitDetailsLayout({
           description={
             <>
               {t('auto-take-profit.banner.content')}{' '}
-              <AppLink href="https://kb.oasis.app/help/take-profit" sx={{ fontSize: 2 }}>
+              <AppLink href={EXTERNAL_LINKS.KB.TAKE_PROFIT} sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
             </>

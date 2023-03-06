@@ -29,6 +29,7 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
@@ -186,7 +187,7 @@ export function SidebarAdjustStopLossEditingStage({
             {t('protection.set-downside-protection-desc', {
               ratioParam: t(ratioParamTranslationKey),
             })}{' '}
-            <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+            <AppLink href={EXTERNAL_LINKS.KB.STOP_LOSS} sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
           </Text>
@@ -260,7 +261,7 @@ export function SidebarAdjustStopLossEditingStage({
             </Text>
             <Text as="p" variant="paragraph3">
               {t('protection.guarantee-factors')}{' '}
-              <AppLink href="https://kb.oasis.app/help/automation" sx={{ fontWeight: 'body' }}>
+              <AppLink href={EXTERNAL_LINKS.KB.AUTOMATION} sx={{ fontWeight: 'body' }}>
                 {t('protection.learn-more-about-automation')}
               </AppLink>
             </Text>

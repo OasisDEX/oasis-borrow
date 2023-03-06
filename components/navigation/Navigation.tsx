@@ -8,6 +8,7 @@ import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMen
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMobileMenu } from 'components/navigation/NavigationMobileMenu'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import React, { ReactNode } from 'react'
@@ -24,7 +25,13 @@ interface NavigationProps {
 
 export const navigationBreakpoints = ['531px', '744px', '1025px', '1279px']
 
-export function Navigation({ actions, brandingLink = '/', links, panels, pill }: NavigationProps) {
+export function Navigation({
+  actions,
+  brandingLink = INTERNAL_LINKS.homepage,
+  links,
+  panels,
+  pill,
+}: NavigationProps) {
   const [isMobileMenuOpen, toggleIsMobileMenuOpen, setIsMobileMenuOpen] = useToggle(false)
   const ref = useOutsideElementClickHandler(() => setIsMobileMenuOpen(false))
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)

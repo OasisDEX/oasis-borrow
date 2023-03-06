@@ -1,4 +1,9 @@
-import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
+import {
+  IPosition,
+  IPositionTransition,
+  IRiskRatio,
+  ISimplePositionTransition,
+} from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -24,6 +29,7 @@ import { IStrategyConfig } from './StrategyConfigTypes'
 export type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
+  debtAmount?: BigNumber
 }
 export type ManageTokenInput = {
   manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
@@ -100,6 +106,7 @@ export type BaseAaveEvent =
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
+  | { type: 'SET_DEBT'; debt: BigNumber }
   | AaveOpenPositionWithStopLossEvents
 
 export interface BaseAaveContext {
@@ -116,7 +123,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  transition?: IPositionTransition
+  transition?: IPositionTransition | ISimplePositionTransition
   estimatedGasPrice?: HasGasEstimation
   /**
    * @deprecated no idea what token it is. use **balance.__token__.balance** instead

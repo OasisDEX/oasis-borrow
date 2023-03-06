@@ -12,6 +12,7 @@ import {
   PositionView,
   TopAssetsAndPositionsViewModal,
 } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
@@ -267,7 +268,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
           i18nKey="vaults-overview.total-assets-subheader"
           components={[
             <AppLink
-              href="https://kb.oasis.app/help/curated-token-list"
+              href={EXTERNAL_LINKS.KB.CURATED_TOKEN_LIST}
               internalInNewTab={true}
               sx={{ fontWeight: 'regular', fontSize: 3 }}
             />,

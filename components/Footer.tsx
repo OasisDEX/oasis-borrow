@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { NewsletterSection } from 'features/newsletter/NewsletterView'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import moment from 'moment'
@@ -19,43 +20,36 @@ const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
 } = getConfig()
 
-const ROUTES = {
-  CONTACT: 'https://kb.oasis.app/help/contact-us',
-  TWITTER: 'https://twitter.com/oasisdotapp',
-  DISCORD: 'https://discord.gg/Kc2bBB59GC',
-  BUG_BOUNTY: 'https://immunefi.com/bounty/oasisapp/',
-}
-
 const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.about',
     links: [
-      { labelKey: 'nav.team', url: '/about' },
-      { labelKey: 'nav.careers', url: '/careers' },
-      { labelKey: 'nav.privacy', url: '/privacy' },
-      { labelKey: 'nav.cookie', url: '/cookie' },
-      { labelKey: 'nav.terms', url: '/terms' },
-      { labelKey: 'nav.security', url: '/security' },
+      { labelKey: 'nav.team', url: INTERNAL_LINKS.about },
+      { labelKey: 'nav.careers', url: INTERNAL_LINKS.careers },
+      { labelKey: 'nav.privacy', url: INTERNAL_LINKS.privacy },
+      { labelKey: 'nav.cookie', url: INTERNAL_LINKS.cookie },
+      { labelKey: 'nav.terms', url: INTERNAL_LINKS.terms },
+      { labelKey: 'nav.security', url: INTERNAL_LINKS.security },
     ],
   },
   {
     titleKey: 'nav.resources',
     links: [
-      { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
+      { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG.MAIN, target: '_self' },
       // add link
-      { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
-      { labelKey: 'nav.contact', url: ROUTES.CONTACT, target: '_blank' },
-      { labelKey: 'nav.bug-bounty', url: ROUTES.BUG_BOUNTY, target: '_blank' },
-      { labelKey: 'nav.referrals', url: '/referrals' },
-      { labelKey: 'nav.brand-assets', url: '/brand' },
+      { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.KB.HELP, target: '_blank' },
+      { labelKey: 'nav.contact', url: EXTERNAL_LINKS.KB.CONTACT, target: '_blank' },
+      { labelKey: 'nav.bug-bounty', url: EXTERNAL_LINKS.BUG_BOUNTY, target: '_blank' },
+      { labelKey: 'nav.referrals', url: INTERNAL_LINKS.referrals },
+      { labelKey: 'nav.brand-assets', url: INTERNAL_LINKS.brand },
     ],
   },
   {
     titleKey: 'nav.products',
     links: [
-      { labelKey: 'nav.borrow', url: '/borrow' },
-      { labelKey: 'nav.multiply', url: '/multiply' },
-      { labelKey: 'nav.earn', url: '/earn' },
+      { labelKey: 'nav.borrow', url: INTERNAL_LINKS.borrow },
+      { labelKey: 'nav.multiply', url: INTERNAL_LINKS.multiply },
+      { labelKey: 'nav.earn', url: INTERNAL_LINKS.earn },
     ],
   },
 ]
@@ -129,7 +123,7 @@ export function TemporaryFooter() {
           <Text>
             Commit:{' '}
             <Link
-              href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
+              href={`${EXTERNAL_LINKS.GITHUB}/commit/${buildHash}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -151,13 +145,13 @@ function SocialWithLogo() {
         sx={{ height: '34px', position: 'relative', top: '-2px' }}
       />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
-        <AppLink href={ROUTES.TWITTER}>
+        <AppLink href={EXTERNAL_LINKS.TWITTER}>
           <Icon name="twitter" size="auto" width="18px" height="16px" />
         </AppLink>
-        <AppLink href={ROUTES.DISCORD} sx={{ mx: 3 }}>
+        <AppLink href={EXTERNAL_LINKS.DISCORD} sx={{ mx: 3 }}>
           <Icon name="discord" size="auto" width="20px" height="23px" />
         </AppLink>
-        <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
+        <AppLink href={EXTERNAL_LINKS.GITHUB}>
           <Icon name="github" size="auto" width="21px" />
         </AppLink>
       </Flex>

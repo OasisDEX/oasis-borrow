@@ -9,24 +9,28 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface FeesInformationProps {
   estimatedGasPrice?: HasGasEstimation
-  swap: Swap
+  swap?: Swap
 }
 
 export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
 
-  const oasisFeeDisplayInDebtToken = swap.tokenFee.isZero()
-    ? '0'
-    : formatAmount(
-        amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
-        swap[swap.collectFeeFrom].symbol,
-      )
+  const oasisFeeDisplay =
+    swap && swap.tokenFee.gt(zero)
+      ? formatAmount(
+          amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
+          swap[swap.collectFeeFrom].symbol,
+        ) +
+        ' ' +
+        swap[swap.collectFeeFrom].symbol
+      : '0'
 
   return (
     <>
@@ -37,7 +41,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol} +`}
+            {`${oasisFeeDisplay} + `}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -54,7 +58,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol}`}
+            value={oasisFeeDisplay}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}

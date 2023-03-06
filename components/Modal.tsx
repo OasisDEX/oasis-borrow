@@ -1,6 +1,7 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useSharedUI } from 'components/SharedUIProvider'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { ModalProps } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
@@ -350,17 +351,14 @@ export function ModalTrezorMetamaskEIP1559() {
           <Trans
             i18nKey="modal-trezor-eip1559-paragraph1"
             components={[
-              <AppLink
-                sx={{ fontSize: 'inherit' }}
-                href="https://github.com/MetaMask/metamask-extension/issues/12130"
-              />,
+              <AppLink sx={{ fontSize: 'inherit' }} href={EXTERNAL_LINKS.METAMASK_12130_ISSUE} />,
             ]}
           />
         </Box>
         <Box>
           <Trans
             i18nKey="modal-trezor-eip1559-paragraph2"
-            components={[<AppLink sx={{ fontSize: 'inherit' }} href="https://legacy.oasis.app/" />]}
+            components={[<AppLink sx={{ fontSize: 'inherit' }} href={EXTERNAL_LINKS.LEGACY_APP} />]}
           />
         </Box>
         <Box>

@@ -18,6 +18,7 @@ import {
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -87,7 +88,7 @@ export function AutoSellDetailsLayout({
           description={[
             <>
               {t('auto-sell.banner.content')}{' '}
-              <AppLink href="https://kb.oasis.app/help/auto-buy-and-auto-sell" sx={{ fontSize: 2 }}>
+              <AppLink href={EXTERNAL_LINKS.KB.AUTO_BUY_SELL} sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
             </>,

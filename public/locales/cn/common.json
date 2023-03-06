@@ -292,22 +292,6 @@
         "discord": "Discord",
         "contact-us": "联系我们",
         "twitter": "Twitter"
-      },
-      "get-started": "开始使用 Oasis.app",
-      "multiply": {
-        "multiply": "增加你的资产",
-        "subtitle": "您可以经由单一的交易开启 Maker 金库并生成 DAI，接着再购买更多的抵押品。",
-        "open-vault": "开启金库"
-      },
-      "borrow": {
-        "borrow-dai": "借贷 Dai",
-        "choose-your-preferred-token": "选择喜爱的代币作为抵押品，接着开启 Maker 金库来获得 DAI",
-        "open-vault": "开启金库"
-      },
-      "manage": {
-        "manage-your-vault": "管理金库",
-        "make-actions": "随时随地操作您的金库",
-        "connect-your-wallet": "连接钱包"
       }
     },
     "cookie-banner": {
@@ -1048,10 +1032,7 @@
   "reset": "重置",
   "finished": "已完成",
   "smart-proxy-desc": "为了关闭金库，你的部分仓位将会出售以支付尚未偿还的债务，剩余的抵押品将会发送到你的钱包地址。",
-  "proxy-advantages": [
-    "让钱包可以与 Maker 协议互动",
-    "有效使用燃料费"
-  ],
+  "proxy-advantages": ["让钱包可以与 Maker 协议互动", "有效使用燃料费"],
   "proxy-waiting-text": "了解更多关于智能代理合约在",
   "proxy-waiting-text-link": "知识中心",
   "creating-proxy-contract": "正在建立你的智能代理合约",
@@ -1062,7 +1043,7 @@
         "create-button": "创建智能 DeFi 帳戶",
         "paragraph": "为了在 Aave 上创建仓位，每个仓位都需要一个智能 DeFi 帳戶。您可以通过开启更多的帐户来管理多个仓位。在<1>知识中心</1>了解更多",
         "retry-create-button": "重新尝试创建智能 DeFi 帳戶",
-        "create-order-summary-heading":"正在创建您的智能 DeFi 帳戶"
+        "create-order-summary-heading": "正在创建您的智能 DeFi 帳戶"
       },
       "proxy-creating-screen": {
         "header": "创建您的智能 DeFi 帳戶",

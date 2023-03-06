@@ -1,4 +1,4 @@
-import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -20,14 +20,14 @@ export interface BaseTransactionParameters {
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: IPositionTransition
+  strategy?: IPositionTransition | ISimplePositionTransition
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; transition?: IPositionTransition }
+  | { type: 'STRATEGY_RECEIVED'; transition?: IPositionTransition | ISimplePositionTransition }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -42,7 +42,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'GAS_ESTIMATION_CHANGED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = IPositionTransition
+export type LibraryCallReturn = IPositionTransition | ISimplePositionTransition
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
