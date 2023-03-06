@@ -76,6 +76,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'deposit-borrow': {
       const { depositAmount, generateAmount } = state
@@ -92,6 +93,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'generate-borrow': {
       const { depositAmount, generateAmount } = state
@@ -108,6 +110,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'payback-borrow': {
       const { paybackAmount, withdrawAmount } = state
@@ -123,9 +126,11 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'withdraw-borrow': {
       const { paybackAmount, withdrawAmount } = state
+
       if (withdrawAmount) {
         return strategies.ajna.paybackWithdraw(
           {
@@ -137,6 +142,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'open-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
@@ -152,6 +158,7 @@ export async function getAjnaParameters({
           { ...dependencies, getEarnData },
         )
       }
+      break
     }
     case 'deposit-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
@@ -167,6 +174,7 @@ export async function getAjnaParameters({
           { ...dependencies, getEarnData },
         )
       }
+      break
     }
     case 'withdraw-earn': {
       const { price, withdrawAmount } = state as AjnaEarnFormState
@@ -182,8 +190,11 @@ export async function getAjnaParameters({
           { ...dependencies, getEarnData },
         )
       }
+      break
     }
     default:
       return defaultPromise
   }
+
+  return defaultPromise
 }
