@@ -127,7 +127,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     // track the first page load
     if (router.pathname === '/') {
       const utmSource = router.query.utm_source
-      if (typeof utmSource === 'string') {
+      if (typeof utmSource === 'string' || !utmSource) {
         trackingEvents.landingPageView(utmSource || null)
       }
     } else {

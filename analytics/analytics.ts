@@ -233,12 +233,9 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        currentUrl: win.location.href,
         distinctId: 'not_tracked',
         eventBody,
         eventName,
-        initialReferrer,
-        initialReferringDomain,
       }),
     })
   }
