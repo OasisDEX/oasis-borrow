@@ -6,8 +6,6 @@ import * as mixpanel from 'mixpanel-browser'
 import { Config, Mixpanel } from 'mixpanel-browser'
 import getConfig from 'next/config'
 
-import { mixpanelInternalAPI } from './analytics'
-
 const env =
   getConfig()?.publicRuntimeConfig.mixpanelEnv === 'production' ||
   process.env.MIXPANEL_ENV === 'production'
