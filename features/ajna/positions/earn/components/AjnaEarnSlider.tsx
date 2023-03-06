@@ -115,9 +115,13 @@ export function AjnaEarnSlider() {
         momp: mostOptimisticMatchingPrice,
         lup: lowestUtilizedPrice,
         // for now set default to 20, but we might need dynamic offset depends on htp and momp value
-        offset: 3,
+        offset: 20,
       }),
-    [highestThresholdPrice.toString(), mostOptimisticMatchingPrice.toString()],
+    [
+      highestThresholdPrice.toString(),
+      mostOptimisticMatchingPrice.toString(),
+      lowestUtilizedPrice.toString(),
+    ],
   )
 
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
@@ -131,8 +135,7 @@ export function AjnaEarnSlider() {
       }),
     [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
   )
-  console.log('lup', lowestUtilizedPrice.toString())
-  console.log('htp', highestThresholdPrice.toString())
+
   function handleChange(v: BigNumber) {
     const newValue = snapToPredefinedValues(v, range)
     updateState('price', newValue.decimalPlaces(2))
