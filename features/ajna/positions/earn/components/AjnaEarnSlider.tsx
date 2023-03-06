@@ -14,33 +14,42 @@ function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) 
 
 function getMinMaxAndRange({
   htp,
+  lup,
   momp,
   offset,
 }: {
   htp: BigNumber
+  lup: BigNumber
   momp: BigNumber
   offset: number
 }) {
-  const htpMinRange = [htp]
-  const htpNearMompRange = [htp]
+  const lupNearHtpRange = [lup]
+
+  while (lupNearHtpRange[lupNearHtpRange.length - 1].gt(htp)) {
+    lupNearHtpRange.push(lupNearHtpRange[lupNearHtpRange.length - 1].div(1.005))
+  }
+
+  const nearHtpMinRange = [lupNearHtpRange[lupNearHtpRange.length - 1]]
 
   for (let i = 0; i < offset; i++) {
-    htpMinRange.push(htpMinRange[i].div(1.005))
+    nearHtpMinRange.push(nearHtpMinRange[i].div(1.005))
   }
 
-  while (htpNearMompRange[htpNearMompRange.length - 1].lt(momp)) {
-    htpNearMompRange.push(htpNearMompRange[htpNearMompRange.length - 1].times(1.005))
+  const lupNearMompRange = [lup]
+
+  while (lupNearMompRange[lupNearMompRange.length - 1].lt(momp)) {
+    lupNearMompRange.push(lupNearMompRange[lupNearMompRange.length - 1].times(1.005))
   }
 
-  const nearMompMaxRange = [htpNearMompRange[htpNearMompRange.length - 1]]
+  const nearMompMaxRange = [lupNearMompRange[lupNearMompRange.length - 1]]
 
   for (let i = 0; i < offset; i++) {
     nearMompMaxRange.push(nearMompMaxRange[i].times(1.005))
   }
 
-  const range = [...new Set([...htpMinRange, ...htpNearMompRange, ...nearMompMaxRange])].sort(
-    (a, b) => a.toNumber() - b.toNumber(),
-  )
+  const range = [
+    ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
+  ].sort((a, b) => a.toNumber() - b.toNumber())
 
   return {
     min: range[0],
@@ -104,8 +113,9 @@ export function AjnaEarnSlider() {
       getMinMaxAndRange({
         htp: highestThresholdPrice,
         momp: mostOptimisticMatchingPrice,
+        lup: lowestUtilizedPrice,
         // for now set default to 20, but we might need dynamic offset depends on htp and momp value
-        offset: 20,
+        offset: 3,
       }),
     [highestThresholdPrice.toString(), mostOptimisticMatchingPrice.toString()],
   )
@@ -121,7 +131,8 @@ export function AjnaEarnSlider() {
       }),
     [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
   )
-
+  console.log('lup', lowestUtilizedPrice.toString())
+  console.log('htp', highestThresholdPrice.toString())
   function handleChange(v: BigNumber) {
     const newValue = snapToPredefinedValues(v, range)
     updateState('price', newValue.decimalPlaces(2))
