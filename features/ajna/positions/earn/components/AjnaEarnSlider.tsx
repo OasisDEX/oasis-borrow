@@ -23,6 +23,7 @@ function getMinMaxAndRange({
   momp: BigNumber
   offset: number
 }) {
+  // Generate ranges from min to lup
   const lupNearHtpRange = [lup]
 
   while (lupNearHtpRange[lupNearHtpRange.length - 1].gt(htp)) {
@@ -35,6 +36,7 @@ function getMinMaxAndRange({
     nearHtpMinRange.push(nearHtpMinRange[i].div(1.005))
   }
 
+  // Generate ranges from lup to max
   const lupNearMompRange = [lup]
 
   while (lupNearMompRange[lupNearMompRange.length - 1].lt(momp)) {
