@@ -11,12 +11,13 @@ let mixpanel: MixpanelType = Mixpanel.init(config.mixpanel.token, config.mixpane
 mixpanel = enableMixpanelDevelopmentMode(mixpanel)
 
 const handler = async function (
-  { body: { eventBody, eventName, ...rest } }: NextApiRequest,
+  { body: { distinctId, eventBody, eventName, ...rest } }: NextApiRequest,
   res: NextApiResponse<{ status: number }>,
 ) {
   try {
     !rest.currentUrl.endsWith('vault-info') && // disables tracking for this particular tab
       mixpanel.track(`${eventName}`, {
+        distinct_id: distinctId,
         ...eventBody,
         ...Object.keys(rest).reduce((a, v) => ({ ...a, [`$${snakeCase(v)}`]: rest[v] }), {}),
       })
