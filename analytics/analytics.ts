@@ -197,7 +197,7 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
 
   const { name, mobile, os, versionNumber } = browserDetect()
   const initialReferrer = mixpanel.get_property('$initial_referrer')
-  const initialReferrerDomain = initialReferrer
+  const initialReferringDomain = initialReferrer
     ? initialReferrer === '$direct'
       ? '$direct'
       : new URL(initialReferrer).hostname
@@ -217,7 +217,7 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       eventBody,
       eventName,
       initialReferrer,
-      initialReferrerDomain,
+      initialReferringDomain,
       mobile,
       os,
       screenHeight: win.innerHeight,
