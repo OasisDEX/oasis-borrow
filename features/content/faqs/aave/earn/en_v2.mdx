@@ -1,7 +1,8 @@
 import { FaqLayout } from '../../FaqLayout'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 
 export default ({ children }) => (
-  <FaqLayout learnMoreUrl="https://kb.oasis.app/help/what-you-should-know-about-steth">
+  <FaqLayout learnMoreUrl={EXTERNAL_LINKS.KB.WHAT_YOU_SHOULD_KNOW_ABOUT_STETH}>
     {children}
   </FaqLayout>
 )
@@ -48,6 +49,7 @@ borrowing cost of ETH is lower than the returns from StETH.
 ##### Where is my capital?
 
 This Earn position uses 3 protocols and the power of
+
 <a href="https://oasis.app" target="_blank">Oasis.app</a> smart contracts: All capital is deposited
 to AAVE v2 protocol and held there for the strategy to work. StETH represents ETH held by Lido,
 which in turn gives it to the node operators that perform the validator duties for Lido.

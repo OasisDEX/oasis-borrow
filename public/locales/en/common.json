@@ -526,22 +526,6 @@
         "discord": "Discord",
         "contact-us": "Contact us",
         "twitter": "Twitter"
-      },
-      "get-started": "Get started with Oasis.app",
-      "multiply": {
-        "multiply": "Multiply your assets",
-        "subtitle": "In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral.",
-        "open-vault": "Open vault"
-      },
-      "borrow": {
-        "borrow-dai": "Borrow Dai",
-        "choose-your-preferred-token": "Choose your preferred token as collateral and open a Maker vault to get DAI",
-        "open-vault": "Open vault"
-      },
-      "manage": {
-        "manage-your-vault": "Manage your vault",
-        "make-actions": "Make actions on your vault whenever you want",
-        "connect-your-wallet": "Connect your wallet"
       }
     },
     "cookie-banner": {
@@ -558,6 +542,57 @@
           "title": "Analytics Cookies",
           "description": "These items help us to understand how the website performs and find where it can be improved."
         }
+      }
+    },
+    "why-oasis": {
+      "main-header": "Why use Oasis.app",
+      "sub-headers": {
+        "earn": {
+          "primary": "Earn long term sustainable yields to compound your crypto capital: ",
+          "secondary": "Oasis Earn",
+          "cta": "Open position"
+        },
+        "borrow": {
+          "primary": "Get the most out of your crypto without selling: ",
+          "secondary": "Oasis Borrow",
+          "cta": "Open position"
+        },
+        "multiply": {
+          "primary": "Optimize your risk & reward with one click: ",
+          "secondary": "Oasis Multiply",
+          "cta": "Open position"
+        },
+        "automation": {
+          "primary": "Advanced automation tools can manage your positions for you: ",
+          "secondary": "set and forget with confidence"
+        },
+        "security": {
+          "primary": "Your funds, your choice: ",
+          "secondary": "park your capital and stay in full control all the time, with no exceptions",
+          "cta": "Know more about security"
+        }
+      },
+      "image-labels": {
+        "1-earn-on-assets": "Earn on the crypto assets you already own",
+        "2-predictable-payoff": "More predictable payoff with transparancy on fees and net APY’s",
+        "3-simple-management-tools": "Simple to use management tools and analytics",
+        "4-low-borrowing-cost": "Low borrowing costs",
+        "5-ample-liquidity": "Ample liquidity from multiple Protocols",
+        "6-top-tier-collateral": "Available for top tier crypto collateral",
+        "7-market-volatility-advantage": "Take advantage of market volatility",
+        "8-reduce-anxiety": "Reduce the anxiety of liquidation with stop loss automation",
+        "9-profit-and-payoff": "Increase the potential <0>profit</0> and <0>payoff</0> of your <br /> crypto asset position",
+        "10-peace-of-mind": "Get peace of mind with protection against liquidation and capital losses with Stop-Loss and Auto-Sell.",
+        "11-no-hassle": "Make position management less of a hassle with automated Buys, Sells and Take Profit",
+        "12-1-oasis-app": "All assets are self custodied on Oasis.app",
+        "12-2-verifiable-on-chain": "Always verifiable on chain via a block explorer",
+        "12-3-no-black-boxes": "No black boxes, just smart contracts"
+      },
+      "stats-labels": {
+        "vaults-automated": "Vaults automated",
+        "collateral-automated": "Total Collateral Automated",
+        "actions-executed": "Executed last 90 days",
+        "success-rate": "Success Rate last 90 days"
       }
     }
   },

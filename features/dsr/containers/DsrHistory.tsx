@@ -3,14 +3,13 @@ import { DefinitionList } from 'components/DefinitionList'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { DsrEvent } from 'features/dsr/helpers/dsrHistory'
 import { VaultHistoryEntry } from 'features/vaultHistory/VaultHistoryEntry'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading } from 'theme-ui'
 
 function DsrHistoryView({ history }: { history?: DsrEvent[] }) {
   const { t } = useTranslation()
-  const etherscan = 'https://etherscan.io'
-  const ethtx = 'https://ethtx.info'
 
   return (
     <Card
@@ -34,8 +33,8 @@ function DsrHistoryView({ history }: { history?: DsrEvent[] }) {
                 // @ts-ignore
                 timestamp: item.timestamp * 1000,
               }}
-              etherscan={{ url: etherscan }}
-              ethtx={{ url: ethtx }}
+              etherscan={{ url: EXTERNAL_LINKS.ETHERSCAN }}
+              ethtx={{ url: EXTERNAL_LINKS.ETHTX }}
               e
               key={idx}
             />

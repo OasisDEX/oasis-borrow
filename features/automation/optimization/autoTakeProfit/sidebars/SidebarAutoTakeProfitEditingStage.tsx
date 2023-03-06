@@ -22,6 +22,7 @@ import {
 import { prepareAutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -118,7 +119,7 @@ export function SidebarAutoTakeProfitEditingStage({
             token,
             executionPrice: autoTakeProfitState.executionPrice.decimalPlaces(2),
           })}
-          <AppLink href="https://kb.oasis.app/help/take-profit" sx={{ fontSize: 2 }}>
+          <AppLink href={EXTERNAL_LINKS.KB.TAKE_PROFIT} sx={{ fontSize: 2 }}>
             {t('here')}.
           </AppLink>
         </Text>

@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -16,7 +17,7 @@ export function DiscoverWrapperWithIntro({ children }: WithChildren) {
         </Heading>
         <Text variant="paragraph1" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
           {t('discover.intro')}{' '}
-          <AppLink href="https://kb.oasis.app/help/learn-more-about-discover">
+          <AppLink href={EXTERNAL_LINKS.KB.DISCOVER}>
             <WithArrow
               sx={{
                 display: 'inline-block',

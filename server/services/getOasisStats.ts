@@ -7,6 +7,9 @@ interface StatsResponse {
   LAST_MONTH_VOLUME_USD: number
   TOTAL_LOCKED_COLLATERAL_USD: number
   LOAD_TIME: number
+  VAULTS_WITH_ACTIVE_TRIGGER: number
+  EXECUTED_TRIGGERS_LAST_90_DAYS: number
+  LOCKED_COLLATERAL_ACTIVE_TRIGGER: number
 }
 
 export function getOasisStats(): Promise<OasisStats | null> {
@@ -32,6 +35,10 @@ export function getOasisStats(): Promise<OasisStats | null> {
             monthlyVolume: rows[0].LAST_MONTH_VOLUME_USD,
             managedOnOasis: rows[0].TOTAL_LOCKED_COLLATERAL_USD,
             medianVaultSize: rows[0].MEDIAN_VAULT_SIZE_USD,
+            vaultsWithActiveTrigger: rows[0].VAULTS_WITH_ACTIVE_TRIGGER,
+            executedTriggersLast90Days: rows[0].EXECUTED_TRIGGERS_LAST_90_DAYS,
+            lockedCollateralActiveTrigger: rows[0].LOCKED_COLLATERAL_ACTIVE_TRIGGER,
+            triggersSuccessRate: 100,
           }
 
           if (!Object.values(data).every((value) => value !== null)) {

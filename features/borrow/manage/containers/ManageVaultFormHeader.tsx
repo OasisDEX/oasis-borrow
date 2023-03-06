@@ -2,11 +2,14 @@ import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { WithArrow } from 'components/WithArrow'
+import {
+  ManageStandardBorrowVaultState,
+  ManageVaultEditingStage,
+} from 'features/borrow/manage/pipes/manageVault'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
-
-import { ManageStandardBorrowVaultState, ManageVaultEditingStage } from '../pipes/manageVault'
 
 function ManageVaultEditingController({
   stage,
@@ -139,12 +142,7 @@ export function ManageVaultFormHeader(
                     : 'vault-form.subtext.proxy'
                 }
                 components={{
-                  1: (
-                    <AppLink
-                      href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                      sx={{ fontSize: 2 }}
-                    />
-                  ),
+                  1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
                   2: (
                     <WithArrow
                       sx={{ display: 'inline', color: 'interactive100', fontWeight: 'body' }}

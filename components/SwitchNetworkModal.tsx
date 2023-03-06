@@ -1,13 +1,14 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { getNetworkId } from '@oasisdex/web3-context'
 import { useWeb3React } from '@web3-react/core'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { ModalProps } from 'helpers/modalHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
-import { ModalProps } from '../helpers/modalHook'
-import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { Modal, ModalCloseIcon } from './Modal'
 
 export type SwitchNetworkModalType = 'injected' | 'appNetwork' | 'userNetwork'
@@ -77,7 +78,7 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
 
   async function handleAppNetworkSwitch() {
     close()
-    await push('/connect')
+    await push(INTERNAL_LINKS.connect)
   }
 
   return (

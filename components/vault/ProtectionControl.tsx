@@ -11,6 +11,7 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -59,7 +60,7 @@ function ZeroDebtProtectionBanner({
           {showLink && (
             <>
               {', '}
-              <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 3 }}>
+              <AppLink href={EXTERNAL_LINKS.KB.STOP_LOSS} sx={{ fontSize: 3 }}>
                 {t('here')}.
               </AppLink>
             </>

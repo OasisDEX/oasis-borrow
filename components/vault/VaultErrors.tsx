@@ -3,6 +3,7 @@ import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -11,7 +12,7 @@ import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const KbLink = (
-  <AppLink sx={{ color: 'critical100' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
+  <AppLink sx={{ color: 'critical100' }} href={EXTERNAL_LINKS.KB.MINIMUM_VAULT_DEBT_DUST} />
 )
 
 interface VaultErrorsProps {

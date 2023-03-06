@@ -19,10 +19,10 @@ import { useAppContext } from 'components/AppContextProvider'
 import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSelection'
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
 import { AppLink } from 'components/Links'
-import { dsrLink } from 'components/productCards/ProductCardEarnDsr'
 import { SwitchNetworkModal, SwitchNetworkModalType } from 'components/SwitchNetworkModal'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { redirectState$ } from 'features/router/redirectState'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { isTouchDevice } from 'helpers/isTouchDevice'
@@ -436,7 +436,7 @@ export function ConnectWallet() {
       if (web3Context.status === 'connected') {
         const url = redirectState$.value
 
-        if (url === dsrLink) {
+        if (url === INTERNAL_LINKS.earnDSR) {
           replace(`${url}/${web3Context.account}`, getCustomNetworkParameter())
           redirectState$.next(undefined)
           return

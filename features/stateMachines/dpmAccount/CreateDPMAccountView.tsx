@@ -8,6 +8,7 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -57,12 +58,7 @@ function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProp
             <Trans
               i18nKey={'dpm.create-flow.welcome-screen.paragraph'}
               components={{
-                1: (
-                  <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
-                    sx={{ fontSize: 2 }}
-                  />
-                ),
+                1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
             />
           </Text>
@@ -120,12 +116,7 @@ function InProgressView({ state }: InternalViewsProps) {
             <Trans
               i18nKey={'dpm.create-flow.proxy-creating-screen.paragraph'}
               components={{
-                1: (
-                  <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
-                    sx={{ fontSize: 2 }}
-                  />
-                ),
+                1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
             />
           </Text>
@@ -167,12 +158,7 @@ function SuccessStateView({ send, state }: InternalViewsProps) {
             <Trans
               i18nKey={'dpm.create-flow.proxy-created-screen.paragraph'}
               components={{
-                1: (
-                  <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
-                    sx={{ fontSize: 2 }}
-                  />
-                ),
+                1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
             />
           </Text>

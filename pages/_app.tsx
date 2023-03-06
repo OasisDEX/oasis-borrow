@@ -19,6 +19,7 @@ import { NotificationSocketProvider } from 'components/NotificationSocketProvide
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { loadFeatureToggles } from 'helpers/useFeatureToggle'
@@ -117,7 +118,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     <PageSEOTags
       title="seo.default.title"
       description="seo.default.description"
-      url={router.pathname || '/'}
+      url={router.pathname || INTERNAL_LINKS.homepage}
     />
   )
 
