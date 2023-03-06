@@ -31,6 +31,43 @@
     "type": "constructor"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "proxyAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "protocol",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "positionType",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "collateralToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "debtToken",
+        "type": "address"
+      }
+    ],
+    "name": "CreatePosition",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "WETH",
     "outputs": [
@@ -41,6 +78,67 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ERC20Pool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountToAdd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "oldPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "addAndMoveQuote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ERC20Pool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountToAdd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "oldPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "addToQuoteMoveAndRestake",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -59,7 +157,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -96,7 +194,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -124,7 +222,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -141,13 +239,13 @@
     ],
     "name": "depositCollateral",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -170,7 +268,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -194,7 +292,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       }
@@ -208,6 +306,62 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ERC20Pool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "moveQuote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ERC20Pool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "debtAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "openPosition",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -239,7 +393,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       }
@@ -252,7 +406,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -264,13 +418,13 @@
     ],
     "name": "repayDebt",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -306,7 +460,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -329,7 +483,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -345,7 +499,13 @@
       }
     ],
     "name": "supplyQuoteMintNftAndStake",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "payable",
     "type": "function"
   },
@@ -357,7 +517,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -380,7 +540,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -403,7 +563,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -421,7 +581,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IAjnaPool",
+        "internalType": "contract ERC20Pool",
         "name": "pool",
         "type": "address"
       },
