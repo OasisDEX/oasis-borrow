@@ -1,6 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import {
+  IPosition,
+  IPositionTransition,
+  ISimplePositionTransition,
+  OPERATION_NAMES,
+} from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
+import { transitionHasSwap } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
@@ -83,8 +89,39 @@ function textButtonReturningToAdjust({
   return {}
 }
 
+/*
+
+if closing to collateral, and there is debt on the position, then we are swapping from collateral to debt:
+
+1. take out collateral
+2. swap as much of it as we need to debt (fee)
+3. pay back the debt
+
+final position amount:
+    collateral in vault - collateral needed for swap from token
+
+if closing to collateral, no debt:
+- then there would be no swap, so no collateral needed for swap (zero)
+- formula the same
+
+if closing to debt, and there is debt on the position, then:
+
+1. withdraw all collateral
+2. swap it all to debt (fee)
+3. pay back debt
+
+final position amount:
+    amount from swap (- minus fee maybe) - debt in position
+
+if closing to debt, with no debt:
+- there will still be a swap
+- there is no debt in position
+- formula is the same
+
+ */
+
 function getAmountReceivedAfterClose(
-  strategy: IPositionTransition | undefined,
+  strategy: IPositionTransition | ISimplePositionTransition | undefined,
   currentPosition: IPosition | undefined,
   isCloseToCollateral: boolean,
 ) {
@@ -92,16 +129,26 @@ function getAmountReceivedAfterClose(
     return zero
   }
 
-  const fee =
-    strategy.simulation.swap.collectFeeFrom === 'targetToken'
-      ? strategy.simulation.swap.tokenFee
-      : zero // fee already accounted for in toTokenAmount
+  const { fee, fromTokenAmount, toTokenAmount } = transitionHasSwap(strategy)
+    ? {
+        fromTokenAmount: strategy.simulation.swap.fromTokenAmount,
+        toTokenAmount: strategy.simulation.swap.toTokenAmount,
+        fee:
+          strategy.simulation.swap.collectFeeFrom === 'targetToken'
+            ? strategy.simulation.swap.tokenFee
+            : zero, // fee already accounted for in toTokenAmount
+      }
+    : {
+        fromTokenAmount: zero,
+        toTokenAmount: zero,
+        fee: zero,
+      }
 
   if (isCloseToCollateral) {
-    return currentPosition.collateral.amount.minus(strategy.simulation.swap.fromTokenAmount)
+    return currentPosition.collateral.amount.minus(fromTokenAmount)
   }
 
-  return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
+  return toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
 }
 
 function BalanceAfterClose({ state }: ManageAaveStateProps) {
@@ -607,24 +654,30 @@ export function SidebarManageAaveVault() {
 
   const dropdownConfig = getDropdownConfig({ state, send })
 
-  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
+  const SecondaryInputComponent = state.context.strategyConfig.viewComponents.secondaryInput
 
   switch (true) {
     case state.matches('frontend.editing'):
       return (
-        <AdjustRiskView
+        <SidebarSection
           title={
             state.context.strategyConfig.type === 'Earn'
-              ? t('sidebar-titles.manage-earn-position')
-              : t('sidebar-titles.manage-multiply-position')
+              ? t('manage-earn.aave.vault-form.manage-title')
+              : t('manage-multiply.sidebar.title')
           }
-          state={state}
-          onChainPosition={state.context.protocolData?.position}
-          isLoading={loading}
-          send={send}
+          content={
+            <SecondaryInputComponent
+              state={state}
+              onChainPosition={state.context.protocolData?.position}
+              isLoading={loading}
+              send={send}
+              viewLocked={isLocked(state)}
+              stopLossError={stopLossError}
+            />
+          }
           primaryButton={{
             isLoading: loading(),
-            disabled: !state.can('ADJUST_POSITION') || isLocked(state),
+            disabled: !state.can('ADJUST_POSITION') || isLocked(state) || !state.context.transition,
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')
@@ -638,14 +691,7 @@ export function SidebarManageAaveVault() {
               send('CLOSE_POSITION')
             },
           }}
-          viewLocked={isLocked(state)}
-          dropdownConfig={dropdownConfig}
-          automation={{
-            stopLoss: {
-              isStopLossEnabled,
-              stopLossLevel,
-            },
-          }}
+          dropdown={dropdownConfig}
         />
       )
     case state.matches('frontend.allowanceSetting'):

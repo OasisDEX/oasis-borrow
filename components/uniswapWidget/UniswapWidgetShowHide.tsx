@@ -42,7 +42,7 @@ export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
           left: 'auto',
           right: '240px',
           bottom: 0,
-          width: '360px',
+          width: '420px',
           transform: 'translateY(calc(100% + 10px))',
           bg: 'neutral10',
           boxShadow: 'elevation',

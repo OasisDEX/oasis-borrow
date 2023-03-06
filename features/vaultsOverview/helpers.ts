@@ -27,10 +27,18 @@ export const positionsTableSkippedHeaders = [
   'icon',
   'ilk',
   'liquidityToken',
+  'sameTab',
   'skipShareButton',
   'url',
 ]
-export const followTableSkippedHeaders = ['icon', 'ilk', 'protection', 'liquidityToken', 'url']
+export const followTableSkippedHeaders = [
+  'icon',
+  'ilk',
+  'liquidityToken',
+  'protection',
+  'sameTab',
+  'url',
+]
 
 interface GetMakerPositionParams {
   positions: MakerPositionDetails[]
@@ -137,6 +145,7 @@ export function getMakerBorrowPositions({
       variable: stabilityFee.times(100).toNumber(),
       ...(isOwner && { protection: getProtection({ stopLossData, autoSellData }) }),
       cdpId: id.toNumber(),
+      sameTab: true,
       ...(skipShareButton && { skipShareButton }),
     }),
   )
@@ -168,6 +177,7 @@ export function getMakerMultiplyPositions({
       fundingCost: getFundingCost({ debt, stabilityFee, value }).toNumber(),
       ...(isOwner && { protection: getProtection({ stopLossData, autoSellData }) }),
       cdpId: id.toNumber(),
+      sameTab: true,
       ...(skipShareButton && { skipShareButton }),
     }),
   )
@@ -187,6 +197,7 @@ export function getMakerEarnPositions({
         liquidity: ilkDebtAvailable.toNumber(),
         protection: -1,
         cdpId: id.toNumber(),
+        sameTab: true,
         ...(skipShareButton && { skipShareButton }),
       }
     },
@@ -220,6 +231,7 @@ export function getAaveMultiplyPositions({
         ...(isOwner && { protection: getProtection({ stopLossData: stopLossData! }) }),
         cdpId: id,
         url,
+        sameTab: true,
         ...(skipShareButton && { skipShareButton }),
       }
     },
@@ -242,6 +254,7 @@ export function getAaveEarnPositions({
         protection: -1,
         cdpId: id,
         url,
+        sameTab: true,
         ...(skipShareButton && { skipShareButton }),
       }
     },
@@ -265,6 +278,7 @@ export function getDsrPosition({
       liquidity: 'Unlimited',
       protection: -1,
       url: `/earn/dsr/${address}`,
+      sameTab: true,
       ...(skipShareButton && { skipShareButton }),
     },
   ]

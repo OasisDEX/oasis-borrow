@@ -3,8 +3,9 @@ import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useCoolMode } from 'helpers/sweet/useCoolMode'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
+import React, { Ref } from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
 import { BackgroundLight } from 'theme/BackgroundLight'
@@ -27,6 +28,7 @@ interface WithAnnouncementLayoutProps extends BasicLayoutProps {
 }
 
 export function BasicLayout({ header, footer, children, sx, variant, bg }: BasicLayoutProps) {
+  const ref = useCoolMode()
   return (
     <Flex
       sx={{
@@ -38,7 +40,12 @@ export function BasicLayout({ header, footer, children, sx, variant, bg }: Basic
     >
       {bg}
       {header}
-      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+      <Container
+        variant={variant || 'appContainer'}
+        sx={{ flex: 2, mb: 5 }}
+        as="main"
+        ref={ref as Ref<HTMLDivElement>}
+      >
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}
@@ -55,6 +62,8 @@ export function WithAnnouncementLayout({
   variant,
   bg,
 }: WithAnnouncementLayoutProps) {
+  const ref = useCoolMode()
+
   return (
     <Flex
       sx={{
@@ -63,6 +72,7 @@ export function WithAnnouncementLayout({
         minHeight: '100%',
         ...sx,
       }}
+      ref={ref as Ref<HTMLDivElement>}
     >
       {bg}
       {header}

@@ -4,6 +4,8 @@ import {
   IPosition,
   IPositionTransition,
   IRiskRatio,
+  ISimplePositionTransition,
+  ISimulatedTransition,
   Position,
   strategies,
   ZERO,
@@ -27,7 +29,8 @@ import {
   CloseAaveParameters,
   GetOnChainPositionParams,
   ManageAaveParameters,
-  OpenAaveParameters,
+  OpenAaveDepositBorrowParameters,
+  OpenMultiplyAaveParameters,
 } from './types/'
 
 // todo: export from oasis-actions
@@ -102,7 +105,7 @@ export async function getOpenTransaction({
   proxyType,
   positionType,
   protocol,
-}: OpenAaveParameters): Promise<IPositionTransition> {
+}: OpenMultiplyAaveParameters): Promise<IPositionTransition> {
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
     precision: getToken(collateralToken).precision,
@@ -201,6 +204,7 @@ export async function getAdjustAaveParameters({
   currentPosition,
   proxyType,
   positionType,
+  protocol,
 }: AdjustAaveParameters): Promise<IPositionTransition> {
   try {
     checkContext(context, 'adjust position')
@@ -217,18 +221,21 @@ export async function getAdjustAaveParameters({
       precision: currentPosition.debt.precision,
     }
 
-    type adjustParameters = Parameters<typeof strategies.aave.v2.adjust>
+    type strategyArguments = Parameters<typeof strategies.aave.v2.adjust>[0] &
+      Parameters<typeof strategies.aave.v3.adjust>[0]
+    type strategyDependencies = Parameters<typeof strategies.aave.v2.adjust>[1] &
+      Parameters<typeof strategies.aave.v3.adjust>[1]
 
-    const stratArgs: adjustParameters[0] = {
+    const args: strategyArguments = {
       slippage,
-      multiple: riskRatio.multiple,
+      multiple: riskRatio,
       debtToken: debtToken,
       collateralToken: collateralToken,
       positionType,
     }
 
-    const stratDeps: adjustParameters[1] = {
-      addresses: getAddressesFromContext(context) as AAVEStrategyAddresses,
+    const stratDeps: strategyDependencies = {
+      addresses: getAddressesFromContext(context),
       currentPosition,
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
@@ -237,7 +244,14 @@ export async function getAdjustAaveParameters({
       isDPMProxy: proxyType === ProxyType.DpmProxy,
     }
 
-    return strategies.aave.v2.adjust(stratArgs, stratDeps)
+    switch (protocol) {
+      case LendingProtocol.AaveV2:
+        return await strategies.aave.v2.adjust(args, stratDeps)
+      case LendingProtocol.AaveV3:
+        return await strategies.aave.v3.adjust(args, stratDeps)
+      default:
+        throw new Error('Protocol not supported')
+    }
   } catch (e) {
     console.error(e)
     throw e
@@ -411,6 +425,49 @@ export async function getCloseAaveParameters({
   }
 }
 
+export async function getOpenDepositBorrowParameters(
+  args: OpenAaveDepositBorrowParameters,
+): Promise<ISimplePositionTransition> {
+  const {
+    context,
+    collateralToken,
+    debtToken,
+    slippage,
+    collateralAmount,
+    borrowAmount,
+    proxyAddress,
+    proxyType,
+  } = args
+  checkContext(context, 'getOpenDepositBorrowParameters')
+
+  const libArgs = {
+    slippage,
+    collateralToken: {
+      symbol: collateralToken,
+      precision: getToken(collateralToken).precision,
+    },
+    debtToken: {
+      symbol: debtToken,
+      precision: getToken(debtToken).precision,
+    },
+    amountCollateralToDepositInBaseUnit: amountToWei(collateralAmount, collateralToken),
+    amountDebtToBorrowInBaseUnit: amountToWei(borrowAmount, debtToken),
+    positionType: 'Borrow' as const,
+  }
+
+  const deps = {
+    addresses: getAddressesFromContext(context),
+    provider: context.rpcProvider,
+    getSwapData: getOneInchCall(context.swapAddress),
+    proxy: proxyAddress,
+    user: context.account,
+    isDPMProxy: proxyType === ProxyType.DpmProxy,
+    proxyAddress,
+  }
+
+  return await strategies.aave.v2.openDepositAndBorrowDebt(libArgs, deps)
+}
+
 export function getEmptyPosition(collateral: string, debt: string) {
   return new Position(
     {
@@ -431,3 +488,21 @@ export function getEmptyPosition(collateral: string, debt: string) {
     },
   )
 }
+
+export function transitionHasSwap(
+  transition?: ISimplePositionTransition,
+): transition is IPositionTransition {
+  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+}
+
+export function transitionHasMinConfigurableRiskRatio(
+  transition?: ISimplePositionTransition,
+): transition is IPositionTransition {
+  return (
+    !!transition &&
+    (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
+  )
+}
+
+// library works with a normalised precision of 18, and is sometimes exposed in the API.
+export const NORMALISED_PRECISION = new BigNumber(18)

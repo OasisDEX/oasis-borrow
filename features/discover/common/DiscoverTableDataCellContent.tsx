@@ -78,7 +78,7 @@ export function DiscoverTableDataCellContent({
         <Flex sx={{ justifyContent: 'flex-end' }}>
           <AppLink
             href={`${row.url || `/${row.cdpId}`}`}
-            internalInNewTab={true}
+            internalInNewTab={!row.sameTab}
             sx={{ flexGrow: [1, null, null, 'initial'] }}
             onClick={() => {
               onPositionClick && onPositionClick(String(row.url || row.cdpId))
