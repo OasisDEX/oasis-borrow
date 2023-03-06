@@ -479,18 +479,28 @@ export function createFollowedAavePositions$(
         // })
         // TODO
         const protocol = protocolToLendingProtocol(followedAaveVault.protocol)
+        // here try switchMap, and then await getOnChainPosition 
         return combineLatest(
           protocol === LendingProtocol.AaveV2
             ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
             : aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-            tickerForDebtToken$,
+          resolvedAaveServices.getAaveAssetsPrices$({
+            tokens: [collateralTokenSymbol, debtTokenSymbol],
+          }),
+          tickerForDebtToken$,
           resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol),
           resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
             token: debtTokenSymbol,
           }),
         ).pipe(
           map(
-            ([protocolData, assetPrices, tickerPrices, preparedAaveReserve, /*liquidity, triggersData*/]) => {
+            ([
+              protocolData,
+              assetPrices,
+              tickerPrices,
+              preparedAaveReserve,
+              liquidity /* triggersData*/,
+            ]) => {
               console.log('protocolData')
               console.log(protocolData)
               console.log('assetPrices')
@@ -499,36 +509,52 @@ export function createFollowedAavePositions$(
               console.log(tickerPrices)
               console.log('preparedAaveReserve')
               console.log(preparedAaveReserve)
-              // console.log('liquidity')
-              // console.log(liquidity)
+              console.log('liquidity')
+              console.log(liquidity)
 
               const { position } = protocolData as AaveProtocolDataV2 | AaveProtocolDataV3
               console.log('position')
               console.log(position)
 
-              // const loadAavePositionArgs = {
-              //   position,
-              //   assetPrices,
-              //   collateralToken: positionCreatedEvent.collateralTokenSymbol,
-              //   debtToken: positionCreatedEvent.debtTokenSymbol,
-              //   preparedAaveReserve,
-              //   tickerPrices,
-              //   context,
-              //   walletAddress,
-              //   protocol,
-              // }
+              const loadAavePositionArgs = {
+                position,
+                assetPrices,
+                collateralToken: collateralTokenSymbol,
+                debtToken: debtTokenSymbol,
+                preparedAaveReserve,
+                tickerPrices,
+                context,
+                walletAddress: context.account? context.account : '',
+                protocol,
+              }
 
-              // const {
-              //   collateralToken,
-              //   title,
-              //   netValueUsd,
-              //   liquidationPrice,
-              //   fundingCost,
-              //   isOwner,
-              //   collateralNotWei,
-              // } = loadAavePositionDetails(
-              //   loadAavePositionArgs
-              // )
+              const {
+                collateralToken,
+                title,
+                netValueUsd,
+                liquidationPrice,
+                fundingCost,
+                isOwner,
+                collateralNotWei,
+              } = loadAavePositionDetails(loadAavePositionArgs)
+
+              console.log('collateralToken')
+              console.log(collateralToken)
+              console.log('title')
+              console.log(title)
+              console.log('netValueUsd')
+              console.log(netValueUsd.toFixed(2))
+              console.log('liquidationPrice')
+              console.log(liquidationPrice.toFixed(2))
+              console.log('fundingCost')
+              console.log(fundingCost.toFixed(2))
+              console.log('isOwner')
+              console.log(isOwner)
+              console.log('collateralNotWei')
+              console.log(collateralNotWei.toFixed(2))
+              const multiple = position.riskRatio.multiple
+              console.log('multiple')
+              console.log(multiple.toFixed(2))
 
               return {
                 token: followedAaveVault.strategy,
