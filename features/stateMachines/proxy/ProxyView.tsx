@@ -50,7 +50,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
+              items={t('proxy-advantages', { returnObjects: true })}
               listStyle={{ my: 2 }}
             />
             <VaultChangesInformationContainer title={t('creating-proxy-contract')}>
