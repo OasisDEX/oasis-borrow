@@ -3,6 +3,7 @@ import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
@@ -16,7 +17,7 @@ function getMinMaxAndRange({
   htp,
   lup,
   momp,
-  offset,
+  offset, // 0 - 1, percentage value
 }: {
   htp: BigNumber
   lup: BigNumber
@@ -32,8 +33,10 @@ function getMinMaxAndRange({
 
   const nearHtpMinRange = [lupNearHtpRange[lupNearHtpRange.length - 1]]
 
-  for (let i = 0; i < offset; i++) {
-    nearHtpMinRange.push(nearHtpMinRange[i].div(1.005))
+  while (
+    nearHtpMinRange[nearHtpMinRange.length - 1].gt(nearHtpMinRange[0].times(one.minus(offset)))
+  ) {
+    nearHtpMinRange.push(nearHtpMinRange[nearHtpMinRange.length - 1].div(1.005))
   }
 
   // Generate ranges from lup to max
@@ -45,8 +48,10 @@ function getMinMaxAndRange({
 
   const nearMompMaxRange = [lupNearMompRange[lupNearMompRange.length - 1]]
 
-  for (let i = 0; i < offset; i++) {
-    nearMompMaxRange.push(nearMompMaxRange[i].times(1.005))
+  while (
+    nearMompMaxRange[nearMompMaxRange.length - 1].lt(nearMompMaxRange[0].times(one.plus(offset)))
+  ) {
+    nearMompMaxRange.push(nearMompMaxRange[nearMompMaxRange.length - 1].times(1.005))
   }
 
   const range = [
@@ -116,8 +121,7 @@ export function AjnaEarnSlider() {
         htp: highestThresholdPrice,
         momp: mostOptimisticMatchingPrice,
         lup: lowestUtilizedPrice,
-        // for now set default to 20, but we might need dynamic offset depends on htp and momp value
-        offset: 20,
+        offset: 0.2, // 20%
       }),
     [
       highestThresholdPrice.toString(),
