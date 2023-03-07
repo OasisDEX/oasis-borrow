@@ -440,8 +440,8 @@
   "landing": {
     "hero": {
       "maker": {
-        "headline": "Deploy your crypto into DeFi",
-        "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+        "headline": "Simple and Secure DeFi",
+        "subheader": "Enter into advanced positions across multiple protocols in just a few clicks so you can Borrow, Multiply and Earn on the assets you hold."
       },
       "ajna": {
         "headline": "Borrow and lend your crypto on Ajna",
@@ -451,7 +451,11 @@
     "stats": {
       "30-day-volume": "30 Day Volume",
       "managed-on-oasis": "Managed on Oasis",
-      "median-vault": "Median Vault"
+      "median-vault": "Median Vault",
+      "vaults-automated": "Vaults automated",
+      "collateral-automated": "Total Collateral Automated",
+      "actions-executed": "Executed last 90 days",
+      "success-rate": "Success Rate last 90 days"
     },
     "cards": {
       "dai": {
@@ -587,12 +591,6 @@
         "12-1-oasis-app": "All assets are self custodied on Oasis.app",
         "12-2-verifiable-on-chain": "Always verifiable on chain via a block explorer",
         "12-3-no-black-boxes": "No black boxes, just smart contracts"
-      },
-      "stats-labels": {
-        "vaults-automated": "Vaults automated",
-        "collateral-automated": "Total Collateral Automated",
-        "actions-executed": "Executed last 90 days",
-        "success-rate": "Success Rate last 90 days"
       }
     }
   },

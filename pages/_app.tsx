@@ -124,6 +124,19 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
 
   useEffect(() => {
     mixpanelInit()
+    // track the first page load
+    if (router.pathname === '/') {
+      const utm: { [key: string]: string | string[] | undefined } = {
+        utmSource: router.query.utm_source,
+        utmMedium: router.query.utm_medium,
+        utmCampaign: router.query.utm_campaign,
+      }
+
+      trackingEvents.landingPageView(utm)
+    } else {
+      trackingEvents.pageView(router.pathname)
+    }
+
     const handleRouteChange = (url: string) => {
       // track events when not in development
       if (process.env.NODE_ENV !== 'development') {
@@ -132,6 +145,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
+
     loadFeatureToggles()
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
