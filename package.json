@@ -46,7 +46,7 @@
     "@mdx-js/react": "^1.6.22",
     "@next/font": "^13.1.6",
     "@next/mdx": "12.0.4",
-    "@oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.15-ajna-earn-7",
+    "@oasis-actions-poc": "npm:@oasisdex/oasis-actions@alpha-ajna",
     "@oasisdex/automation": "1.4.0",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",

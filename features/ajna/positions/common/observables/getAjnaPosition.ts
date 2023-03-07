@@ -1,19 +1,17 @@
 import { views as pocViews } from '@oasis-actions-poc'
 import { views } from '@oasisdex/oasis-actions'
-import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { ethers } from 'ethers'
 import { PositionId } from 'features/aave/types'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { zero } from 'helpers/zero'
+import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
 import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
-import { GetEarnData } from '@oasis-actions-poc/src/views/ajna'
 
 interface AjnaMeta extends Omit<DpmPositionData, 'product'> {
   product: AjnaProduct
@@ -37,25 +35,6 @@ export type GetAjnaPositionIdentification =
 interface AjnaPositionWithMeta {
   position: AjnaPosition | AjnaEarn
   meta: AjnaMeta
-}
-
-export const getEarnData: GetEarnData = async (proxy: string) => {
-  const response = await fetch(`/api/subgraph?proxy=${proxy}`).then((res) => res.json())
-
-  if (response.account) {
-    const earnPosition = response.account.earnPositions[0]
-    return {
-      lps: new BigNumber(earnPosition.lps),
-      priceIndex: new BigNumber(earnPosition.index),
-      nftID: earnPosition.nftID || null,
-    }
-  }
-
-  return {
-    lps: zero,
-    priceIndex: null,
-    nftID: null,
-  }
 }
 
 export function getAjnaPosition$(
@@ -104,7 +83,7 @@ export function getAjnaPosition$(
         earn: async () =>
           pocViews.ajna.getEarnPosition(commonPayload, {
             ...commonDependency,
-            getEarnData,
+            getEarnData: getAjnaEarnData,
           }),
         multiply: async () => views.ajna.getPosition(commonPayload, commonDependency),
       }
