@@ -28,7 +28,6 @@ import {
   PreparedAaveReserveData,
 } from 'lendingProtocols/aave-v2/pipelines'
 import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
-import { memoize } from 'lodash'
 import { combineLatest, from, Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
@@ -388,26 +387,6 @@ export function createFollowedAavePositions$(
         .filter((vault) => vault.vault_chain_id === context.chainId)
         .filter((vault) => vault.protocol === 'aavev2' || vault.protocol === 'aavev3')
       console.log('followedVaults after filter:', filteredVaults)
-      // const tokens = filteredVaults
-      //   .map((vault: { strategy: string | null }) => vault.strategy)
-      //   .filter((token) => token !== null) as string[]
-      // console.log('tokens:', tokens)
-      // const tickers = tickerPrices$(tokens)
-      //   .pipe(
-      //     map((tickerPrices) => {
-      //       const result: { [key: string]: BigNumber } = {}
-      //       tokens.forEach((token, index) => {
-      //         result[token] = tickerPrices[index]
-      //       })
-      //       return result
-      //     }),
-      //   )
-      //   .subscribe((prices) => {
-      //     console.log('token prices:', prices)
-      //   })
-
-      console.log('tickers')
-      // console.log(tickers)
 
       return filteredVaults.length === 0
         ? of([])
@@ -436,7 +415,7 @@ export function createFollowedAavePositions$(
         // TODO Ł figure out how to pass trigger data
         //   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
       }> {
-        // console.log('positionCreated') it won't 
+        // console.log('positionCreated') it won't
         // console.log(positionCreated)
         // TODO ŁW use             getOnChainPosition({
         const resolvedAaveServices = resolveAaveServices(
@@ -464,27 +443,27 @@ export function createFollowedAavePositions$(
 
         // TODO
         const protocol = protocolToLendingProtocol(followedAaveVault.protocol)
-        const getAaveOnChainPosition$ = memoize(
-          (collateralToken: string, debtToken: string, proxyAddress: string) => {
-            return context$.pipe(
-              switchMap((context) => {
-                return from(
-                  getOnChainPosition({
-                    context,
-                    proxyAddress,
-                    collateralToken,
-                    debtToken,
-                    protocol: protocol,
-                  }),
-                )
-              }),
-              shareReplay(1),
-            )
-          },
-          (collateralToken: string, debtToken: string, proxyAddress: string) =>
-            collateralToken + debtToken + proxyAddress,
-        )
-        // here try switchMap first, and then await getOnChainPosition 
+        // const getAaveOnChainPosition$ = memoize(
+        //   (collateralToken: string, debtToken: string, proxyAddress: string) => {
+        //     return context$.pipe(
+        //       switchMap(async (context) => {
+        //         return from(
+        //           getOnChainPosition({
+        //             context,
+        //             proxyAddress,
+        //             collateralToken,
+        //             debtToken,
+        //             protocol,
+        //           }),
+        //         )
+        //       }),
+        //       shareReplay(1),
+        //     )
+        //   },
+        //   (collateralToken: string, debtToken: string, proxyAddress: string) =>
+        //     collateralToken + debtToken + proxyAddress,
+        // )
+        // here try switchMap first, and then await getOnChainPosition
         return combineLatest(
           protocol === LendingProtocol.AaveV2
             ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
@@ -497,7 +476,16 @@ export function createFollowedAavePositions$(
           resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
             token: debtTokenSymbol,
           }),
-          getAaveOnChainPosition$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+          // getAaveOnChainPosition$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+          from(
+            getOnChainPosition({
+              context,
+              proxyAddress,
+              collateralToken: collateralTokenSymbol,
+              debtToken: debtTokenSymbol,
+              protocol,
+            }),
+          ),
         ).pipe(
           map(
             ([
@@ -506,37 +494,22 @@ export function createFollowedAavePositions$(
               tickerPrices,
               preparedAaveReserve,
               liquidity /* triggersData*/,
-              getOnChainPosition,
+              onChainPosition,
             ]) => {
-              console.log('protocolData')
-              console.log(protocolData)
-              console.log('assetPrices')
-              console.log(assetPrices)
-              console.log('tickerPrices')
-              console.log(tickerPrices)
-              console.log('preparedAaveReserve')
-              console.log(preparedAaveReserve)
-              console.log('liquidity')
-              console.log(liquidity)
-
-              const { position } = protocolData as AaveProtocolDataV2 | AaveProtocolDataV3
-              console.log('position')
-              console.log(position)
-              console.log('getOnChainPosition')
-              console.log(getOnChainPosition)
-
               const loadAavePositionArgs = {
-                position,
+                position: onChainPosition,
                 assetPrices,
                 collateralToken: collateralTokenSymbol,
                 debtToken: debtTokenSymbol,
                 preparedAaveReserve,
                 tickerPrices,
                 context,
-                walletAddress: context.account? context.account : '',
+                walletAddress: context.account ? context.account : '',
                 protocol,
               }
-
+              console.log('onChainPosition')
+              console.log(onChainPosition)
+              // FIXME  address im saving in db is not proxy addres but user address this is source of issue
               const {
                 collateralToken,
                 title,
@@ -547,24 +520,6 @@ export function createFollowedAavePositions$(
                 collateralNotWei,
               } = loadAavePositionDetails(loadAavePositionArgs)
 
-              console.log('collateralToken')
-              console.log(collateralToken)
-              console.log('title')
-              console.log(title)
-              console.log('netValueUsd')
-              console.log(netValueUsd.toFixed(2))
-              console.log('liquidationPrice')
-              console.log(liquidationPrice.toFixed(2))
-              console.log('fundingCost')
-              console.log(fundingCost.toFixed(2))
-              console.log('isOwner')
-              console.log(isOwner)
-              console.log('collateralNotWei')
-              console.log(collateralNotWei.toFixed(2))
-              const multiple = position.riskRatio.multiple
-              console.log('multiple')
-              console.log(multiple.toFixed(2))
-
               return {
                 token: followedAaveVault.strategy,
                 title: followedAaveVault.strategy,
@@ -572,20 +527,20 @@ export function createFollowedAavePositions$(
                 url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${
                   followedAaveVault.vault_id
                 }/`,
-                netValue: one,
-                // netValue: netValueUsd,
+                netValue: netValueUsd,
                 multiple: one,
-                liquidationPrice: one,
-                fundingCost: one,
-                isOwner: false,
-                lockedCollateral: one,
+                liquidationPrice,
+                fundingCost,
+                isOwner,
+                lockedCollateral: collateralNotWei,
                 type: 'multiply',
                 liquidity: one,
+                stopLossData: undefined,
               }
             },
           ),
         )
-      }//
+      }
     }),
     shareReplay(1),
   )
