@@ -372,7 +372,7 @@ export function HomepageView() {
         />
       </Box>
       <Box>
-        <Text variant="header2" sx={{ textAlign: 'center', mt: 6, mb: 6 }}>
+        <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
           {t('landing.why-oasis.main-header')}
         </Text>
         <HomepageHeadline
