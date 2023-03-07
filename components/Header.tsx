@@ -6,7 +6,6 @@ import { AppLink } from 'components/Links'
 import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { LANDING_PILLS } from 'content/landing'
-import { DISCOVER_URL } from 'features/discover/helpers'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import {
@@ -15,6 +14,7 @@ import {
   SwapWidgetState,
 } from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getShouldHideHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -26,7 +26,6 @@ import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
-import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
@@ -335,16 +334,6 @@ function UserDesktopMenu() {
 
 function navLinkColor(isActive: boolean) {
   return isActive ? 'primary100' : 'neutral80'
-}
-
-const LINKS = {
-  'dai-wallet': `${getConfig().publicRuntimeConfig.apiHost}/daiwallet`,
-  learn: 'https://kb.oasis.app',
-  blog: 'https://blog.oasis.app',
-  multiply: `/multiply`,
-  borrow: `/borrow`,
-  earn: '/earn',
-  discover: DISCOVER_URL,
 }
 
 function ConnectedHeader() {
@@ -675,10 +664,10 @@ function MobileMenu() {
   const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
 
   const links = [
-    { labelKey: 'nav.multiply', url: LINKS.multiply },
-    { labelKey: 'nav.borrow', url: LINKS.borrow },
-    { labelKey: 'nav.earn', url: LINKS.earn },
-    { labelKey: 'nav.discover', url: LINKS.discover },
+    { labelKey: 'nav.multiply', url: INTERNAL_LINKS.multiply },
+    { labelKey: 'nav.borrow', url: INTERNAL_LINKS.borrow },
+    { labelKey: 'nav.earn', url: INTERNAL_LINKS.earn },
+    { labelKey: 'nav.discover', url: INTERNAL_LINKS.discover },
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -833,25 +822,25 @@ function MainNavigation() {
         <Flex sx={{ ml: 5, zIndex: 1 }}>
           <AppLink
             variant="links.navHeader"
-            href={LINKS.multiply}
+            href={INTERNAL_LINKS.multiply}
             sx={{
               mr: 4,
-              color: navLinkColor(pathname.includes(LINKS.multiply)),
+              color: navLinkColor(pathname.includes(INTERNAL_LINKS.multiply)),
             }}
           >
             {t('nav.multiply')}
           </AppLink>
           <AppLink
             variant="links.navHeader"
-            href={LINKS.borrow}
-            sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.borrow)) }}
+            href={INTERNAL_LINKS.borrow}
+            sx={{ mr: 4, color: navLinkColor(pathname.includes(INTERNAL_LINKS.borrow)) }}
           >
             {t('nav.borrow')}
           </AppLink>
           <AppLink
             variant="links.navHeader"
-            href={LINKS.earn}
-            sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
+            href={INTERNAL_LINKS.earn}
+            sx={{ mr: 4, color: navLinkColor(pathname.includes(INTERNAL_LINKS.earn)) }}
           >
             {t('nav.earn')}
           </AppLink>
@@ -871,9 +860,9 @@ function MainNavigation() {
           <HeaderLink label={t('nav.products')}>
             <HeaderList
               links={[
-                { label: t('nav.multiply'), link: LINKS.multiply },
-                { label: t('nav.borrow'), link: LINKS.borrow },
-                { label: t('nav.earn'), link: LINKS.earn },
+                { label: t('nav.multiply'), link: INTERNAL_LINKS.multiply },
+                { label: t('nav.borrow'), link: INTERNAL_LINKS.borrow },
+                { label: t('nav.earn'), link: INTERNAL_LINKS.earn },
               ]}
             />
           </HeaderLink>
@@ -882,7 +871,7 @@ function MainNavigation() {
           </HeaderLink>
           <HeaderLink
             label={t('nav.discover')}
-            link={LINKS.discover}
+            link={INTERNAL_LINKS.discover}
             onClick={() => {
               trackingEvents.discover.selectedInNavigation(userContext)
             }}

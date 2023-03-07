@@ -16,6 +16,7 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -188,7 +189,7 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     ? {
         label: t('connect-wallet'),
         action: () => {
-          void push(`/connect`, getCustomNetworkParameter())
+          void push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
         },
         steps: undefined,
       }
@@ -276,7 +277,7 @@ function EditingStateViewSidebarPrimaryButton({
     return {
       label: t('connect-wallet'),
       action: () => {
-        void push(`/connect`, getCustomNetworkParameter())
+        void push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
       },
       steps: undefined,
     }

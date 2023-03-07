@@ -1,3 +1,4 @@
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
@@ -35,13 +36,11 @@ export function PageSEONoFollow() {
   )
 }
 
-const APP_URL = 'https://oasis.app'
-
 export function PageSEOTags({
   title,
   titleParams,
   description,
-  url = '/',
+  url = INTERNAL_LINKS.homepage,
   ogImage = 'og_default.png',
   twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
@@ -49,15 +48,15 @@ export function PageSEOTags({
   const { query } = useRouter()
 
   const OGImages = {
-    '/borrow': {
+    [INTERNAL_LINKS.borrow]: {
       ogImage: 'og_borrow.png',
       twitterImage: 'twitter_preview_borrow.png',
     },
-    '/multiply': {
+    [INTERNAL_LINKS.multiply]: {
       ogImage: 'og_multiply.png',
       twitterImage: 'twitter_preview_multiply.png',
     },
-    '/earn': {
+    [INTERNAL_LINKS.earn]: {
       ogImage: 'og_earn.png',
       twitterImage: 'twitter_preview_earn.png',
     },
@@ -91,8 +90,8 @@ export function PageSEOTags({
         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
       />
 
-      <meta property="og:url" content={`${APP_URL}${url}`} />
-      <link rel="canonical" href={`${APP_URL}${url}`} />
+      <meta property="og:url" content={`${INTERNAL_LINKS.appUrl}${url}`} />
+      <link rel="canonical" href={`${INTERNAL_LINKS.appUrl}${url}`} />
 
       <meta
         property="og:image"

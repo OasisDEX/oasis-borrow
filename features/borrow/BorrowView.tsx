@@ -2,6 +2,7 @@ import { ProductCardBorrow } from 'components/productCards/ProductCardBorrow'
 import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
 import { ProductHeader } from 'components/ProductHeader'
 import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { borrowPageCardsData, productCardsConfig } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -24,7 +25,7 @@ export function BorrowView() {
         title={t('product-page.borrow.title')}
         description={t('product-page.borrow.description')}
         link={{
-          href: 'https://kb.oasis.app/help/what-is-oasis-borrow ',
+          href: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
           text: t('product-page.borrow.link'),
         }}
         scrollToId={tab}

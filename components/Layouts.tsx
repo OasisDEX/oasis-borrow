@@ -2,6 +2,7 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useCoolMode } from 'helpers/sweet/useCoolMode'
 import { WithChildren } from 'helpers/types'
 import React, { Ref } from 'react'
@@ -79,8 +80,8 @@ export function WithAnnouncementLayout({
         <Container variant="announcement">
           <Announcement
             text="Welcome to the new Oasis.app. We are thrilled to have you here."
-            discordLink="https://discord.gg/oasisapp"
-            link="https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/"
+            discordLink={EXTERNAL_LINKS.DISCORD}
+            link={EXTERNAL_LINKS.ETHEREUM_ORG_MERKLING}
             linkText="Check blog post"
           />
         </Container>

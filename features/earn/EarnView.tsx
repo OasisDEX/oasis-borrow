@@ -8,6 +8,7 @@ import {
 } from 'components/productCards/ProductCardsWrapper'
 import { ProductHeader } from 'components/ProductHeader'
 import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { mapStrategyToToken } from 'helpers/mapStrategyToToken'
@@ -45,7 +46,7 @@ export function EarnView() {
         title={t('product-page.earn.title')}
         description={t('product-page.earn.description')}
         link={{
-          href: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
+          href: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
           text: t('product-page.earn.link'),
         }}
       />

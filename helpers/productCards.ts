@@ -16,6 +16,7 @@ import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
+import { EXTERNAL_LINKS } from './applicationLinks'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -331,91 +332,73 @@ export const productCardsConfig: {
   } as Record<string, string>,
   descriptionLinks: {
     'ETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: EXTERNAL_LINKS.KB.TOKENS.ETH,
     },
     'ETH-B': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: EXTERNAL_LINKS.KB.TOKENS.ETH,
     },
     'ETH-C': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: EXTERNAL_LINKS.KB.TOKENS.ETH,
     },
     'WSTETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      link: EXTERNAL_LINKS.KB.TOKENS.WSTETH,
     },
     'WSTETH-B': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      link: EXTERNAL_LINKS.KB.TOKENS.WSTETH,
     },
     'WBTC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      link: EXTERNAL_LINKS.KB.TOKENS.WBTC,
     },
     'WBTC-B': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      link: EXTERNAL_LINKS.KB.TOKENS.WBTC,
     },
     'WBTC-C': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      link: EXTERNAL_LINKS.KB.TOKENS.WBTC,
     },
     'RENBTC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
+      link: EXTERNAL_LINKS.KB.TOKENS.RENBTC,
     },
     'LINK-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
+      link: EXTERNAL_LINKS.KB.TOKENS.LINK,
     },
     'MANA-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
+      link: EXTERNAL_LINKS.KB.TOKENS.MANA,
     },
     'MATIC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
+      link: EXTERNAL_LINKS.KB.TOKENS.MATIC,
     },
     'GUSD-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
+      link: EXTERNAL_LINKS.KB.TOKENS.GUSD,
     },
     'YFI-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
+      link: EXTERNAL_LINKS.KB.TOKENS.YFI,
     },
     'GUNIV3DAIUSDC1-A': {
-      link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
+      link: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
     },
     'GUNIV3DAIUSDC2-A': {
-      link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
+      link: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
     },
     'UNIV2USDCETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      link: EXTERNAL_LINKS.KB.TOKENS.UNIV2,
     },
     'UNIV2DAIUSDC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      link: EXTERNAL_LINKS.KB.TOKENS.UNIV2,
     },
     'CRVV1ETHSTETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
+      link: EXTERNAL_LINKS.KB.TOKENS.CRVV1ETHSTETH,
     },
     stETHeth: {
-      link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
+      link: EXTERNAL_LINKS.KB.WHAT_YOU_SHOULD_KNOW_ABOUT_STETH,
     },
     stETHusdc: {
-      link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
+      link: EXTERNAL_LINKS.KB.WHAT_YOU_SHOULD_KNOW_ABOUT_STETH,
     },
     'RETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: EXTERNAL_LINKS.KB.TOKENS.ETH,
     },
     wstETHeth: {
-      link: 'https://kb.oasis.app/help/earn-with-steth-aave-v3-e-mode',
+      link: EXTERNAL_LINKS.KB.STETH_AAVE_V3_EMODE,
     },
   },
 }

@@ -1,6 +1,7 @@
 import { bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { AutomationTriggeredBannerControl } from 'features/automation/common/controls/AutomationTriggeredBannerControl'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -23,10 +24,7 @@ export function StopLossTriggeredBanner({
           i18nKey={descriptionKey}
           values={{ feature }}
           components={[
-            <AppLink
-              sx={{ fontSize: 'inherit' }}
-              href="https://kb.oasis.app/help/how-does-automated-stop-loss-work"
-            />,
+            <AppLink sx={{ fontSize: 'inherit' }} href={EXTERNAL_LINKS.KB.HOW_STOP_LOSS_WORKS} />,
           ]}
         />
       }

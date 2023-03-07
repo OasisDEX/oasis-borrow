@@ -1,6 +1,6 @@
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
-import { DISCOVER_URL } from 'features/discover/helpers'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import React from 'react'
 
 export const discoverPageLayout = MarketingLayout
@@ -11,6 +11,6 @@ export const discoverPageSeoTags = (
   <PageSEOTags
     title="seo.discover.title"
     description="seo.discover.description"
-    url={DISCOVER_URL}
+    url={INTERNAL_LINKS.discover}
   />
 )

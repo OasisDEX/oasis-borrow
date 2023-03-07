@@ -7,6 +7,7 @@ import {
 } from 'features/discover/filters'
 import { discoverBannerIcons, discoverNavigationIconContent } from 'features/discover/icons'
 import { DiscoverFilterType, DiscoverPages } from 'features/discover/types'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 
 export interface DiscoverFiltersListOptions {
   label: string
@@ -58,7 +59,7 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       size: discoverSizeFilter,
     },
     banner: {
-      link: '/multiply',
+      link: INTERNAL_LINKS.multiply,
       icon: discoverBannerIcons[DiscoverPages.HIGHEST_RISK_POSITIONS],
     },
   },
@@ -82,7 +83,7 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       time: discoverTimeFilter,
     },
     banner: {
-      link: '/multiply',
+      link: INTERNAL_LINKS.multiply,
       icon: discoverBannerIcons[DiscoverPages.HIGHEST_MULTIPLY_PNL],
     },
   },
@@ -100,7 +101,7 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       time: discoverTimeFilter,
     },
     banner: {
-      link: '/earn',
+      link: INTERNAL_LINKS.earn,
       icon: discoverBannerIcons[DiscoverPages.MOST_YIELD_EARNED],
     },
   },
@@ -123,7 +124,7 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       size: discoverSizeFilter,
     },
     banner: {
-      link: '/borrow',
+      link: INTERNAL_LINKS.borrow,
       icon: discoverBannerIcons[DiscoverPages.LARGEST_DEBT],
     },
   },

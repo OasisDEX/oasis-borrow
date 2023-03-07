@@ -16,6 +16,7 @@ import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -103,7 +104,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
           description={
             <>
               {t('vault-banners.setup-stop-loss.content', { token: token })}{' '}
-              <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+              <AppLink href={EXTERNAL_LINKS.KB.STOP_LOSS} sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
             </>

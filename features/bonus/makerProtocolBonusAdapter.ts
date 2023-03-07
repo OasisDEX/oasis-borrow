@@ -1,16 +1,17 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { TokenBalanceRawForJoinArgs } from 'blockchain/calls/erc20'
+import { ClaimRewardData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { ContextConnected } from 'blockchain/network'
+import { amountFromPrecision, amountFromRay, amountToRay } from 'blockchain/utils'
+import { TxHelpers } from 'components/AppContext'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap, take } from 'rxjs/operators'
 
-import { TokenBalanceRawForJoinArgs } from '../../blockchain/calls/erc20'
-import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { TxMetaKind } from '../../blockchain/calls/txMeta'
-import { ContextConnected } from '../../blockchain/network'
-import { amountFromPrecision, amountFromRay, amountToRay } from '../../blockchain/utils'
-import { TxHelpers } from '../../components/AppContext'
-import { zero } from '../../helpers/zero'
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 
 function calculateUnclaimedBonusAmount({
@@ -121,8 +122,7 @@ export function createMakerProtocolBonusAdapter(
           }),
           symbol: bonusTokenSymbol,
           name: tokenName,
-          moreInfoLink:
-            'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards/',
+          moreInfoLink: EXTERNAL_LINKS.LIDO_FI_STETH_LIQUIDITY,
           get readableAmount() {
             return this.amountToClaim.toFixed(0) + this.symbol
           },

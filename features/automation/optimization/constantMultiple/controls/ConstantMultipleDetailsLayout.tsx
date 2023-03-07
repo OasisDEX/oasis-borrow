@@ -21,6 +21,7 @@ import {
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -111,10 +112,7 @@ export function ConstantMultipleDetailsLayout({
               description={
                 <>
                   {t('constant-multiple.banner.content')}{' '}
-                  <AppLink
-                    href="https://kb.oasis.app/help/what-is-constant-multiple"
-                    sx={{ fontSize: 2 }}
-                  >
+                  <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_CONSTANT_MULTIPLE} sx={{ fontSize: 2 }}>
                     {t('here')}.
                   </AppLink>
                 </>

@@ -109,7 +109,7 @@
         "create-button": "Crear tu Smart DeFi Account",
         "paragraph": "Para abrir una posicion en AAVE, es necesario una Smart DeFi Account para cada una. Podras gestionar multiples posiciones abriendo mas cuentas. Puedes aprender mas en nuestra <1>knowledge base</1>",
         "retry-create-button": "Intentar crear tu Smart DeFi Account nuevamente",
-        "create-order-summary-heading":"Creando tu Smart DeFi account"
+        "create-order-summary-heading": "Creando tu Smart DeFi account"
       },
       "proxy-creating-screen": {
         "header": "Crear tu Smart DeFi Account",
@@ -334,22 +334,6 @@
         "discord": "Discord",
         "contact-us": "Contáctenos",
         "twitter": "Twitter"
-      },
-      "get-started": "Comience a usar Oasis.app",
-      "multiply": {
-        "multiply": "Multiplique sus activos",
-        "subtitle": "Puede abrir un Vault de Maker, generar Dai y comprar más colateral en una sola transacción.",
-        "open-vault": "Abrir Vault"
-      },
-      "borrow": {
-        "borrow-dai": "Pida un préstamo en Dai",
-        "choose-your-preferred-token": "Elija su token preferido para usar como garantía, y abra un Vault de Maker para obtener Dai",
-        "open-vault": "Abrir Vault"
-      },
-      "manage": {
-        "manage-your-vault": "Administrar su Vault",
-        "make-actions": "Opere en su Vault en cualquier momento",
-        "connect-your-wallet": "Conecte su cartera"
       }
     },
     "cookie-banner": {

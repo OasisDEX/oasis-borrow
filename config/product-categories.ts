@@ -1,12 +1,14 @@
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+
 export type ProductCategory = 'multiply' | 'borrow' | 'earn'
 
 export function getProductCategoryUrl(productCategory: ProductCategory): string {
   switch (productCategory) {
     case 'multiply':
-      return '/multiply'
+      return INTERNAL_LINKS.multiply
     case 'borrow':
-      return '/borrow'
+      return INTERNAL_LINKS.borrow
     case 'earn':
-      return '/earn'
+      return INTERNAL_LINKS.earn
   }
 }
