@@ -67,7 +67,7 @@ function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProp
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('dpm.create-flow.bullet-points', {
+              items={t('dpm.create-flow.bullet-points', {
                 returnObjects: true,
               })}
               listStyle={{ my: 2 }}

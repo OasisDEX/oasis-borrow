@@ -68,7 +68,7 @@ export function VaultProxyContentBox({
         />
       ) : (
         <>
-          <ListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
+          <ListWithIcon items={t('proxy-advantages', { returnObjects: true })} />
           {stage !== 'proxyInProgress' && (
             <Box>
               <Text as="p" sx={{ fontSize: 2, fontWeight: 'semiBold', mb: 3 }}>

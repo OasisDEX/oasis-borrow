@@ -16,7 +16,7 @@ export function AjnaFormContentRisk() {
         icon="checkmark"
         iconSize="14px"
         iconColor="primary100"
-        items={t<string, string[]>('ajna.risk.bullet-points', {
+        items={t('ajna.risk.bullet-points', {
           returnObjects: true,
         })}
         listStyle={{ mt: 2 }}
