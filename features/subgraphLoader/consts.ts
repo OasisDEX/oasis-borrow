@@ -6,7 +6,7 @@ export const subgraphsRecord: SubgraphsRecord = {
   TempGraph: '',
 }
 
-export const subgraphMethodsRecord: { [key in keyof Subgraphs['Ajna' & 'Temp']]: string } = {
+export const subgraphMethodsRecord: { [key in keyof (Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string } = {
   getEarnData: gql`
     query getAccount($dpmProxyAddress: ID!) {
       account(id: $dpmProxyAddress) {

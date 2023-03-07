@@ -1,6 +1,4 @@
-import { subgraphMethodsRecord, subgraphsRecord } from 'features/subgraphLoader/consts'
 import { Subgraphs } from 'features/subgraphLoader/types'
-import request from 'graphql-request'
 import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader {
@@ -14,7 +12,16 @@ export async function loadSubgraph<
   M extends keyof Subgraphs[S],
   P extends Subgraphs[S][M]
 >(subgraph: S, method: M, params: P) {
-  return await request(subgraphsRecord[subgraph], subgraphMethodsRecord[method], params)
+  const response = await fetch(`/api/subgraph`, {
+    method: 'POST',
+    body: JSON.stringify({
+      subgraph,
+      method,
+      params,
+    }),
+  })
+
+  return await response.json()
 }
 
 export function useSubgraphLoader<
@@ -36,16 +43,14 @@ export function useSubgraphLoader<
     }))
 
     loadSubgraph(subgraph, method, params)
-      .then((response) => {
+      .then(({ success, response }) => {
         setState((prev) => ({
           ...prev,
-          isError: false,
+          isError: !success,
           response,
         }))
       })
-      .catch((error) => {
-        console.error(error)
-
+      .catch(() => {
         setState((prev) => ({
           ...prev,
           isError: true,
