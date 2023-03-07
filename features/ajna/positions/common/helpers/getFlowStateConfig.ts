@@ -21,6 +21,12 @@ export function getFlowStateConfig({
   switch (action) {
     case 'open-earn':
     case 'deposit-earn':
+      if (state.uiDropdown === 'adjust') {
+        return {
+          amount: zero,
+          token: 'ETH',
+        }
+      }
       return {
         amount: state.depositAmount,
         token: quoteToken,
