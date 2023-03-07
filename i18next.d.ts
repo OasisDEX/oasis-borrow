@@ -6,9 +6,6 @@ import type {
   InitOptions as OriginalInitOptions,
   TFunction as OriginalTFunction,
 } from 'i18next'
-// import type {
-//   I18n as Originali18n,
-// } from 'next-i18next'
 import { ReportNamespaces } from 'react-i18next';
 
 import engLocales from './public/locales/en/common.json'
