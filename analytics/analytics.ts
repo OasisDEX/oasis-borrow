@@ -202,7 +202,6 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       ? '$direct'
       : new URL(initialReferrer).hostname
     : ''
-
   void fetch(`/api/t`, {
     method: 'POST',
     headers: {
@@ -210,19 +209,21 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      browser: upperFirst(name),
-      browserVersion: versionNumber,
-      currentUrl: win.location.href,
-      distinctId: mixpanel.get_distinct_id(),
       eventBody,
       eventName,
-      initialReferrer,
-      initialReferringDomain,
-      mobile,
-      os,
-      screenHeight: win.innerHeight,
-      screenWidth: win.innerWidth,
-      userId: mixpanel.get_property('$user_id'),
+      distinctId: mixpanel.get_distinct_id(),
+      ...(!mixpanel.has_opted_out_tracking() && {
+        browser: upperFirst(name),
+        browserVersion: versionNumber,
+        currentUrl: win.location.href,
+        initialReferrer,
+        initialReferringDomain,
+        mobile,
+        os,
+        screenHeight: win.innerHeight,
+        screenWidth: win.innerWidth,
+        userId: mixpanel.get_property('$user_id'),
+      }),
     }),
   })
 }
@@ -241,6 +242,18 @@ export function getMixpanelUserContext(language: string, context?: Context): Mix
 }
 
 export const trackingEvents = {
+  landingPageView: (utm: { [key: string]: string | string[] | undefined }) => {
+    const eventBody = {
+      product: ProductType.BORROW,
+      page: Pages.LandingPage,
+      utm_source: utm.utmSource ? utm.utmSource : 'direct',
+      utm_medium: utm.utmMedium ? utm.utmMedium : 'none',
+      utm_campaign: utm.utmCampaign ? utm.utmCampaign : 'none',
+    }
+
+    mixpanelInternalAPI(EventTypes.Pageview, eventBody)
+  },
+
   pageView: (location: string) => {
     const eventBody = {
       product: ProductType.BORROW,
