@@ -211,23 +211,19 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
     body: JSON.stringify({
       eventBody,
       eventName,
-      ...(mixpanel.has_opted_out_tracking()
-        ? {
-            distinctId: 'not_tracked',
-          }
-        : {
-            browser: upperFirst(name),
-            browserVersion: versionNumber,
-            currentUrl: win.location.href,
-            distinctId: mixpanel.get_distinct_id(),
-            initialReferrer,
-            initialReferringDomain,
-            mobile,
-            os,
-            screenHeight: win.innerHeight,
-            screenWidth: win.innerWidth,
-            userId: mixpanel.get_property('$user_id'),
-          }),
+      distinctId: mixpanel.get_distinct_id(),
+      ...(!mixpanel.has_opted_out_tracking() && {
+        browser: upperFirst(name),
+        browserVersion: versionNumber,
+        currentUrl: win.location.href,
+        initialReferrer,
+        initialReferringDomain,
+        mobile,
+        os,
+        screenHeight: win.innerHeight,
+        screenWidth: win.innerWidth,
+        userId: mixpanel.get_property('$user_id'),
+      }),
     }),
   })
 }
