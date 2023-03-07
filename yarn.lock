@@ -3049,10 +3049,10 @@
     ramda "^0.28.0"
     utility-types "^3.10.0"
 
-"@oasisdex/transactions@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.1.0.tgz#c8aebfe79ecc260d939c1091622ea55349621532"
-  integrity sha512-nRxtfDSs4nhzPrt+Zs0Y4w4h7DQk3+DjINU3qQrgvcUV0/MrUW8U0HBPw+guQ259mq/eYsQ6spqtpoAyHaDfnQ==
+"@oasisdex/transactions@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.1.1.tgz#47ef765f5c9b520ec1b9b2cdea49bf0456be9b1d"
+  integrity sha512-BkoKJ/gGyXE/HE32bcAczr6LKl9CqJzdqzDY1OlKFC7U47aV0FGMuLeFROjSECj1E/JoM9GQcChicsqeY1y3Cw==
   dependencies:
     "@types/ramda" "^0.25.38"
     bignumber.js "^9.0.1"

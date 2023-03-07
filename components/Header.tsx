@@ -24,7 +24,6 @@ import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
@@ -608,11 +607,11 @@ function AssetsDropdown() {
 function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
-  const { locales } = i18n.options as InitOptions & { locales: string[] }
+  const { locales } = i18n.options
 
   return (
     <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)} sx={sx}>
-      {locales
+      {(locales as string[])
         .filter((lang) => lang !== i18n.language)
         .map((lang, index) => (
           <Text

@@ -1,5 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import {
+  AfterPillProps,
+  VaultDetailsCard,
+  VaultDetailsCardModal,
+} from 'components/vault/VaultDetails'
 import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
@@ -8,8 +13,6 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
-
-import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
@@ -41,13 +44,15 @@ function VaultDetailsLiquidationModal({
         <Card variant="vaultDetailsCardModal">{`$${formatAmount(liquidationPrice, 'USD')}`}</Card>
         {liquidationPriceCurrentPriceDifference && (
           <Text variant="paragraph3" sx={{ pb: 2 }}>
-            {t(
-              'manage-multiply-vault.card.liquidation-percentage-below',
-              formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              }),
-            )}
+            {t('manage-multiply-vault.card.liquidation-percentage-below', {
+              percentageBelow: formatPercent(
+                liquidationPriceCurrentPriceDifference.times(100).absoluteValue(),
+                {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                },
+              ),
+            })}
           </Text>
         )}
       </Grid>
