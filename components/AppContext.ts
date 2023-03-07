@@ -297,6 +297,7 @@ import {
   TxPayloadChange,
   TxPayloadChangeAction,
 } from 'helpers/gasEstimate'
+import { getGasMultiplier } from 'helpers/getGasMultiplier'
 import {
   createProductCardsData$,
   createProductCardsWithBalance$,
@@ -385,7 +386,7 @@ function createTxHelpers$(
       send: createSendTransaction(send, context),
       sendWithGasEstimation: createSendWithGasConstraints(send, context, gasPrice$),
       estimateGas: <B extends TxData>(def: TransactionDef<B>, args: B): Observable<number> => {
-        return estimateGas(context, def, args)
+        return estimateGas(context, def, args, getGasMultiplier(context))
       },
     })),
   )
