@@ -120,8 +120,11 @@ function ManagedVolumeStats({
         value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
       />
       <StatCell
-        label={t('landing.stats.median-vault')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
+        label={t('landing.stats.collateral-automated')}
+        value={`$${formatAsShorthandNumbers(
+          new BigNumber(oasisStatsValue.lockedCollateralActiveTrigger),
+          2,
+        )}`}
       />
     </Grid>
   )
@@ -142,7 +145,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
       <Grid columns={['1fr', '1fr 1fr 1fr 1fr']}>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-            {t('landing.why-oasis.stats-labels.vaults-automated')}
+            {t('landing.stats.vaults-automated')}
           </Text>
           <Text variant="header4" sx={{ textAlign: 'center' }}>
             {oasisStatsValue.vaultsWithActiveTrigger}
@@ -150,7 +153,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
         </Box>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-            {t('landing.why-oasis.stats-labels.collateral-automated')}
+            {t('landing.stats.collateral-automated')}
           </Text>
           <Text variant="header4" sx={{ textAlign: 'center' }}>
             $
@@ -162,7 +165,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
         </Box>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-            {t('landing.why-oasis.stats-labels.actions-executed')}
+            {t('landing.stats.actions-executed')}
           </Text>
           <Text variant="header4" sx={{ textAlign: 'center' }}>
             {oasisStatsValue.executedTriggersLast90Days}
@@ -170,7 +173,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
         </Box>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
-            {t('landing.why-oasis.stats-labels.success-rate')}
+            {t('landing.stats.success-rate')}
           </Text>
           <Text variant="header4" sx={{ textAlign: 'center' }}>
             {oasisStatsValue.triggersSuccessRate}%
@@ -372,7 +375,7 @@ export function HomepageView() {
         />
       </Box>
       <Box>
-        <Text variant="header2" sx={{ textAlign: 'center', mt: 6, mb: 6 }}>
+        <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
           {t('landing.why-oasis.main-header')}
         </Text>
         <HomepageHeadline
