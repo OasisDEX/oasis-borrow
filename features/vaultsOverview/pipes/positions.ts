@@ -1,5 +1,6 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { UsersWhoFollowVaults } from '@prisma/client'
+import { getOnChainPosition } from 'actions/aave'
 // import { getOnChainPosition } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
@@ -27,7 +28,8 @@ import {
   PreparedAaveReserveData,
 } from 'lendingProtocols/aave-v2/pipelines'
 import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
-import { combineLatest, Observable, of } from 'rxjs'
+import { memoize } from 'lodash'
+import { combineLatest, from, Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { Position } from './positionsOverviewSummary'
@@ -462,6 +464,26 @@ export function createFollowedAavePositions$(
 
         // TODO
         const protocol = protocolToLendingProtocol(followedAaveVault.protocol)
+        const getAaveOnChainPosition$ = memoize(
+          (collateralToken: string, debtToken: string, proxyAddress: string) => {
+            return context$.pipe(
+              switchMap((context) => {
+                return from(
+                  getOnChainPosition({
+                    context,
+                    proxyAddress,
+                    collateralToken,
+                    debtToken,
+                    protocol: protocol,
+                  }),
+                )
+              }),
+              shareReplay(1),
+            )
+          },
+          (collateralToken: string, debtToken: string, proxyAddress: string) =>
+            collateralToken + debtToken + proxyAddress,
+        )
         // here try switchMap first, and then await getOnChainPosition 
         return combineLatest(
           protocol === LendingProtocol.AaveV2
@@ -475,6 +497,7 @@ export function createFollowedAavePositions$(
           resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
             token: debtTokenSymbol,
           }),
+          getAaveOnChainPosition$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
         ).pipe(
           map(
             ([
@@ -483,6 +506,7 @@ export function createFollowedAavePositions$(
               tickerPrices,
               preparedAaveReserve,
               liquidity /* triggersData*/,
+              getOnChainPosition,
             ]) => {
               console.log('protocolData')
               console.log(protocolData)
@@ -498,6 +522,8 @@ export function createFollowedAavePositions$(
               const { position } = protocolData as AaveProtocolDataV2 | AaveProtocolDataV3
               console.log('position')
               console.log(position)
+              console.log('getOnChainPosition')
+              console.log(getOnChainPosition)
 
               const loadAavePositionArgs = {
                 position,
@@ -559,7 +585,7 @@ export function createFollowedAavePositions$(
             },
           ),
         )
-      }
+      }//
     }),
     shareReplay(1),
   )
