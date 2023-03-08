@@ -64,7 +64,7 @@ function WithStrategy(positionId: PositionId) {
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
               <AaveManagePositionView
-                proxyAddress={_proxies.walletAddress}
+                ownerAddress={_proxies.walletAddress}
                 strategyConfig={_strategyConfig}
               />
             </Grid>

@@ -76,7 +76,7 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
 export function AaveManageHeader({
   strategyConfig,
   positionId,
-  proxyAddress,
+  ownerAddress: proxyAddress,
 }: ManageAaveHeaderProps) {
   const { protocol } = strategyConfig
   const followButton: FollowButtonControlProps | undefined = createFollowButton(

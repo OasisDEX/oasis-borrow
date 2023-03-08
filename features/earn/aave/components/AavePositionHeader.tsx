@@ -161,7 +161,7 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
 export function AavePositionHeaderNoDetails({
   strategyConfig,
   positionId,
-  proxyAddress,
+  ownerAddress: proxyAddress,
 }: ManageAaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.name]

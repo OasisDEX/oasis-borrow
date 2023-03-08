@@ -13,6 +13,8 @@ export function createFollowButton(
 ) {
   const followAaveVaultsEnabled = useFeatureToggle('FollowAAVEVaults')
   const { walletAddress: connectedWalletAddress, chainId } = useAccount()
+  console.log('proxy')
+  console.log(proxy)
 
   const followButton: FollowButtonControlProps | undefined =
     chainId && connectedWalletAddress && positionId.vaultId && followAaveVaultsEnabled
@@ -20,7 +22,7 @@ export function createFollowButton(
           chainId,
           followerAddress: connectedWalletAddress,
           vaultId: new BigNumber(positionId.vaultId),
-          protocol: protocol,
+          protocol,
           proxy,
           strategy,
         }

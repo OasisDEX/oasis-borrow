@@ -10,7 +10,7 @@ import { zero } from 'helpers/zero'
 import React, { PropsWithChildren, useMemo } from 'react'
 
 export interface AaveManageVaultState {
-  proxyAddress: string
+  ownerAddress: string
   aaveReserveState: AaveV2ReserveConfigurationData
   strategyConfig: IStrategyConfig
   context: ManageAaveContext
@@ -30,7 +30,7 @@ export function AaveAutomationContext({
 
   const commonData = useMemo(
     () => ({
-      controller: aaveManageVault.proxyAddress,
+      controller: aaveManageVault.ownerAddress,
       nextCollateralPrice: aaveManageVault.context.collateralPrice || zero,
       token: aaveManageVault.context.tokens.collateral,
     }),

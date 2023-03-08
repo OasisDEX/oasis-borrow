@@ -157,7 +157,7 @@ export async function getOnChainPosition({
   protocol,
 }: GetOnChainPositionParams): Promise<IPosition> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
-
+  console.log('proxdyAddress in get on chain position', proxyAddress)
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
     precision: getToken(collateralToken).precision,
