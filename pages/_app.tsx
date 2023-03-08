@@ -29,7 +29,7 @@ import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
@@ -108,7 +108,7 @@ const noOverlayWorkaroundScript = `
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
-
+  const mount = useRef(false)
   const Layout = Component.layout || AppLayout
 
   const layoutProps = Component.layoutProps
@@ -123,7 +123,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
   )
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !mount.current) {
       mixpanelInit()
 
       if (router.pathname === '/') {
@@ -137,6 +137,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
       } else {
         trackingEvents.pageView(router.pathname)
       }
+      mount.current = true
     }
   }, [router.isReady])
 
