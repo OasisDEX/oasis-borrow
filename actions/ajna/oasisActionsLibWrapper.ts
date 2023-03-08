@@ -1,20 +1,19 @@
-import { strategies } from '@oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition, strategies } from '@oasis-actions-poc'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaPoolPairs } from 'features/ajna/common/types'
+import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
-import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
-import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
 import { Strategy } from '@oasis-actions-poc/src/types/common'
 
 interface AjnaTxHandlerInput {
   collateralToken: string
   context: Context
-  position: AjnaPosition | AjnaEarn
+  position: AjnaPosition | AjnaEarnPosition
   quoteToken: string
   state: AjnaFormState
 }
@@ -28,9 +27,9 @@ export async function getAjnaParameters({
   state,
 }: AjnaTxHandlerInput & {
   rpcProvider: ethers.providers.Provider
-}): Promise<Strategy<AjnaPosition | AjnaEarn>> {
+}): Promise<Strategy<AjnaPosition | AjnaEarnPosition>> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarn>)
+  const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarnPosition>)
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
@@ -75,6 +74,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'deposit-borrow': {
       const { depositAmount, generateAmount } = state
@@ -91,6 +91,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'generate-borrow': {
       const { depositAmount, generateAmount } = state
@@ -107,6 +108,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'payback-borrow': {
       const { paybackAmount, withdrawAmount } = state
@@ -122,9 +124,11 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'withdraw-borrow': {
       const { paybackAmount, withdrawAmount } = state
+
       if (withdrawAmount) {
         return strategies.ajna.paybackWithdraw(
           {
@@ -136,6 +140,7 @@ export async function getAjnaParameters({
           dependencies,
         )
       }
+      break
     }
     case 'open-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
@@ -147,13 +152,47 @@ export async function getAjnaParameters({
             price,
             quoteAmount: depositAmount,
             isStakingNft: false,
-            // position: position as AjnaEarn, // TODO currently not requried by interface, but will be
           },
-          dependencies,
+          { ...dependencies, getEarnData: getAjnaEarnData },
         )
       }
+      break
+    }
+    case 'deposit-earn': {
+      const { price, depositAmount } = state as AjnaEarnFormState
+
+      if (price) {
+        return strategies.ajna.earn.depositAndAdjust(
+          {
+            ...commonPayload,
+            price,
+            quoteAmount: depositAmount || zero,
+            position: position as AjnaEarnPosition,
+          },
+          { ...dependencies, getEarnData: getAjnaEarnData },
+        )
+      }
+      break
+    }
+    case 'withdraw-earn': {
+      const { price, withdrawAmount } = state as AjnaEarnFormState
+
+      if (price) {
+        return strategies.ajna.earn.withdrawAndAdjust(
+          {
+            ...commonPayload,
+            price,
+            quoteAmount: withdrawAmount || zero,
+            position: position as AjnaEarnPosition,
+          },
+          { ...dependencies, getEarnData: getAjnaEarnData },
+        )
+      }
+      break
     }
     default:
       return defaultPromise
   }
+
+  return defaultPromise
 }

@@ -2,9 +2,11 @@ import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) {
   return predefinedSteps.reduce((prev, curr) => {
@@ -12,14 +14,56 @@ function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) 
   })
 }
 
-function generateSteps(min: BigNumber, max: BigNumber) {
-  const steps = [min]
+function getMinMaxAndRange({
+  highestThresholdPrice,
+  lowestUtilizedPrice,
+  mostOptimisticMatchingPrice,
+  offset, // 0 - 1, percentage value
+}: {
+  highestThresholdPrice: BigNumber
+  lowestUtilizedPrice: BigNumber
+  mostOptimisticMatchingPrice: BigNumber
+  offset: number
+}) {
+  // Generate ranges from min to lup
+  const lupNearHtpRange = [lowestUtilizedPrice]
 
-  while (steps[steps.length - 1].lte(max)) {
-    steps.push(steps[steps.length - 1].times(1.005))
+  while (lupNearHtpRange[lupNearHtpRange.length - 1].gt(highestThresholdPrice)) {
+    lupNearHtpRange.push(lupNearHtpRange[lupNearHtpRange.length - 1].div(1.005))
   }
 
-  return steps
+  const nearHtpMinRange = [lupNearHtpRange[lupNearHtpRange.length - 1]]
+
+  while (
+    nearHtpMinRange[nearHtpMinRange.length - 1].gt(nearHtpMinRange[0].times(one.minus(offset)))
+  ) {
+    nearHtpMinRange.push(nearHtpMinRange[nearHtpMinRange.length - 1].div(1.005))
+  }
+
+  // Generate ranges from lup to max
+  const lupNearMompRange = [lowestUtilizedPrice]
+
+  while (lupNearMompRange[lupNearMompRange.length - 1].lt(mostOptimisticMatchingPrice)) {
+    lupNearMompRange.push(lupNearMompRange[lupNearMompRange.length - 1].times(1.005))
+  }
+
+  const nearMompMaxRange = [lupNearMompRange[lupNearMompRange.length - 1]]
+
+  while (
+    nearMompMaxRange[nearMompMaxRange.length - 1].lt(nearMompMaxRange[0].times(one.plus(offset)))
+  ) {
+    nearMompMaxRange.push(nearMompMaxRange[nearMompMaxRange.length - 1].times(1.005))
+  }
+
+  const range = [
+    ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
+  ].sort((a, b) => a.toNumber() - b.toNumber())
+
+  return {
+    min: range[0],
+    max: range[range.length - 1],
+    range,
+  }
 }
 
 function convertSliderValuesToPercents(value: BigNumber, min: BigNumber, max: BigNumber) {
@@ -29,30 +73,25 @@ function convertSliderValuesToPercents(value: BigNumber, min: BigNumber, max: Bi
 function convertSliderThresholds({
   min,
   max,
-  htp,
-  lup,
-  momp,
+  highestThresholdPrice,
+  lowestUtilizedPrice,
+  mostOptimisticMatchingPrice,
 }: {
   min: BigNumber
   max: BigNumber
-  htp: BigNumber
-  lup: BigNumber
-  momp: BigNumber
+  highestThresholdPrice: BigNumber
+  lowestUtilizedPrice: BigNumber
+  mostOptimisticMatchingPrice: BigNumber
 }) {
   return {
-    htpPercentage: convertSliderValuesToPercents(htp, min, max),
-    lupPercentage: convertSliderValuesToPercents(lup, min, max),
-    mompPercentage: convertSliderValuesToPercents(momp, min, max),
+    htpPercentage: convertSliderValuesToPercents(highestThresholdPrice, min, max),
+    lupPercentage: convertSliderValuesToPercents(lowestUtilizedPrice, min, max),
+    mompPercentage: convertSliderValuesToPercents(mostOptimisticMatchingPrice, min, max),
   }
 }
 
-export const ajnaSliderDefaults = {
-  min: new BigNumber(17775.14558),
-  max: new BigNumber(35732.36916),
+const ajnaSliderDefaults = {
   maxLtv: new BigNumber(0.65),
-  htp: new BigNumber(20035.42911),
-  lup: new BigNumber(23038.19116),
-  momp: new BigNumber(28979.25513),
 }
 
 export function AjnaEarnSlider() {
@@ -65,33 +104,49 @@ export function AjnaEarnSlider() {
       state: { price },
       updateState,
     },
+    position: {
+      currentPosition: {
+        position: {
+          pool: { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice },
+        },
+      },
+    },
   } = useAjnaProductContext('earn')
 
-  const { min, max, maxLtv, htp, lup, momp } = ajnaSliderDefaults
-  const resolvedValue = (price || htp).decimalPlaces(2)
+  const { maxLtv } = ajnaSliderDefaults
+  const resolvedValue = (price || highestThresholdPrice).decimalPlaces(2)
 
-  const predefinedSteps = useMemo(() => generateSteps(min, max), [min, max])
+  const { min, max, range } = useMemo(
+    () =>
+      getMinMaxAndRange({
+        highestThresholdPrice,
+        mostOptimisticMatchingPrice,
+        lowestUtilizedPrice,
+        offset: AJNA_LUP_MOMP_OFFSET,
+      }),
+    [
+      highestThresholdPrice.toString(),
+      mostOptimisticMatchingPrice.toString(),
+      lowestUtilizedPrice.toString(),
+    ],
+  )
+
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
     () =>
       convertSliderThresholds({
         min,
         max,
-        htp,
-        lup,
-        momp,
+        highestThresholdPrice,
+        lowestUtilizedPrice,
+        mostOptimisticMatchingPrice,
       }),
-    [min, max, htp, lup, momp],
+    [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
   )
 
   function handleChange(v: BigNumber) {
-    const newValue = snapToPredefinedValues(v, predefinedSteps)
+    const newValue = snapToPredefinedValues(v, range)
     updateState('price', newValue.decimalPlaces(2))
   }
-
-  // TODO ideally we should initialize reducto with htp value
-  useEffect(() => {
-    updateState('price', resolvedValue)
-  }, [])
 
   return (
     <SliderValuePicker

@@ -95,7 +95,7 @@ function isFormValid({
       }
     }
     case 'earn': {
-      const { action, depositAmount, withdrawAmount } = state as AjnaEarnFormState
+      const { action, depositAmount, withdrawAmount, price } = state as AjnaEarnFormState
 
       switch (currentStep) {
         case 'setup':
@@ -103,7 +103,7 @@ function isFormValid({
           switch (action) {
             case 'open-earn':
             case 'deposit-earn':
-              return !!depositAmount?.gt(0)
+              return !!depositAmount?.gt(0) || !!price?.gt(0)
             case 'withdraw-earn':
               return !!withdrawAmount?.gt(0)
             default:

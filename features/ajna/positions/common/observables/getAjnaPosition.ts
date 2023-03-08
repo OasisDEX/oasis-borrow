@@ -1,14 +1,14 @@
+import { AjnaEarnPosition, AjnaPosition, views as pocViews } from '@oasis-actions-poc'
 import { views } from '@oasisdex/oasis-actions'
 import { Context } from 'blockchain/network'
 import { ethers } from 'ethers'
 import { PositionId } from 'features/aave/types'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
-
-import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
 
 interface AjnaMeta extends Omit<DpmPositionData, 'product'> {
   product: AjnaProduct
@@ -30,7 +30,7 @@ export type GetAjnaPositionIdentification =
   | GetAjnaPositionIdentificationWithoutPosition
 
 interface AjnaPositionWithMeta {
-  position: AjnaPosition
+  position: AjnaPosition | AjnaEarnPosition
   meta: AjnaMeta
 }
 
@@ -52,7 +52,7 @@ export function getAjnaPosition$(
         ? (dpmPositionData as DpmPositionData)
         : {
             collateralToken,
-            product,
+            product: product as AjnaProduct,
             protocol: 'Ajna',
             proxy: ethers.constants.AddressZero,
             quoteToken,
@@ -60,23 +60,36 @@ export function getAjnaPosition$(
             vaultId: '0',
           }
 
+      const resolvedProduct = (meta.product as string).toLowerCase() as AjnaProduct
+
+      const commonPayload = {
+        proxyAddress: meta.proxy,
+        poolAddress:
+          context.ajnaPoolPairs[
+            `${meta.collateralToken}-${meta.quoteToken}` as keyof typeof context.ajnaPoolPairs
+          ].address,
+      }
+
+      const commonDependency = {
+        poolInfoAddress: context.ajnaPoolInfo.address,
+        provider: context.rpcProvider,
+      }
+
+      const positionPerProduct = {
+        borrow: async () => views.ajna.getPosition(commonPayload, commonDependency),
+        earn: async () =>
+          pocViews.ajna.getEarnPosition(commonPayload, {
+            ...commonDependency,
+            getEarnData: getAjnaEarnData,
+          }),
+        multiply: async () => views.ajna.getPosition(commonPayload, commonDependency),
+      }
+
       return {
-        position: await views.ajna.getPosition(
-          {
-            proxyAddress: meta.proxy,
-            poolAddress:
-              context.ajnaPoolPairs[
-                `${meta.collateralToken}-${meta.quoteToken}` as keyof typeof context.ajnaPoolPairs
-              ].address,
-          },
-          {
-            poolInfoAddress: context.ajnaPoolInfo.address,
-            provider: context.rpcProvider,
-          },
-        ),
+        position: await positionPerProduct[resolvedProduct](),
         meta: {
           ...meta,
-          product: (meta.product as string).toLowerCase() as AjnaProduct,
+          product: resolvedProduct,
         },
       }
     }),
