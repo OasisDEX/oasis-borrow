@@ -8,7 +8,6 @@ export async function tokenTickers() {
     getCoinbaseTickers(),
     getCoingeckoTickers(),
   ])
-  const mergedTickers = results.reduce((acc, el) => ({ ...acc, ...el }), {})
-
-  return mergedTickers
+  // Merge prices from all services into one tickers blob
+  return results.reduce((acc, el) => ({ ...acc, ...el }), {})
 }

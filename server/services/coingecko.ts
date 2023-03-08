@@ -1,14 +1,16 @@
 import axios from 'axios'
-import { tokens } from 'blockchain/tokensMetadata'
-import { PriceServiceResponse } from 'helpers/types'
+import { TokenConfig, tokens } from 'blockchain/tokensMetadata'
+import { PriceServiceResponse, RequiredField } from 'helpers/types'
 
 interface CoingeckoApiResponse {
   [id: string]: { usd: number }
 }
 
 const requiredTickers = tokens
-  .filter((token) => token.coinGeckoTicker)
-  .map((token) => token.coinGeckoTicker) as string[]
+  .filter(
+    (token): token is RequiredField<TokenConfig, 'coinGeckoTicker'> => !!token.coinGeckoTicker,
+  )
+  .map((token) => token.coinGeckoTicker)
 
 async function fetchTicker(ticker: string): Promise<{ data: CoingeckoApiResponse }> {
   return axios({
@@ -25,19 +27,20 @@ async function fetchTicker(ticker: string): Promise<{ data: CoingeckoApiResponse
 export async function getCoingeckoTickers(): Promise<PriceServiceResponse> {
   const result = await Promise.allSettled(requiredTickers.map((ticker) => fetchTicker(ticker)))
 
-  const mappedResult = result
-    .filter((res) => res.status === 'fulfilled')
-    .map(
-      (res, index) =>
-        (res as PromiseFulfilledResult<{ data: CoingeckoApiResponse }>).value.data[
-          requiredTickers[index]
-        ],
-    )
-
-  return mappedResult.reduce((acc, res, idx) => {
-    return {
-      ...acc,
-      [requiredTickers[idx]]: res.usd,
-    }
-  }, {})
+  // Need to map over all results to ensure ticker order is preserved
+  return result
+    .map((res, idx) => ({
+      ...(res.status === 'fulfilled' ? { ...res.value.data[requiredTickers[idx]] } : {}),
+      ticker: requiredTickers[idx],
+    }))
+    .reduce((acc, res) => {
+      // If the price is not available, we don't want to add it to the result
+      if (!res.usd) {
+        return acc
+      }
+      return {
+        ...acc,
+        [res.ticker]: res.usd,
+      }
+    }, {})
 }
