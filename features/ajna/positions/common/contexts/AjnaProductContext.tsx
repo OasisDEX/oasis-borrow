@@ -1,3 +1,4 @@
+import { AjnaEarnPosition, AjnaPosition } from '@oasis-actions-poc'
 import { AjnaSimulationData } from 'actions/ajna'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
@@ -28,9 +29,6 @@ import React, {
   useState,
 } from 'react'
 
-import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
-import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
-
 interface AjnaProductContextProviderPropsWithBorrow {
   formReducto: typeof useAjnaBorrowFormReducto
   formDefaults: Partial<AjnaBorrowFormState>
@@ -40,7 +38,7 @@ interface AjnaProductContextProviderPropsWithBorrow {
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
   formDefaults: Partial<AjnaEarnFormState>
-  position: AjnaEarn
+  position: AjnaEarnPosition
   product: 'earn'
 }
 interface AjnaProductContextProviderPropsWithMultiply {
@@ -65,9 +63,11 @@ interface AjnaProductContextPosition<P> {
   currentPosition: AjnaPositionSet<P>
   isSimulationLoading?: boolean
   resolvedId?: string
-  setCachedPosition: (positionSet: AjnaPositionSet<AjnaPosition | AjnaEarn>) => void
+  setCachedPosition: (positionSet: AjnaPositionSet<AjnaPosition | AjnaEarnPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarn> | undefined>>
+  setSimulation: Dispatch<
+    SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarnPosition> | undefined>
+  >
 }
 
 interface AjnaProductContext<P, F> {
@@ -86,7 +86,7 @@ type AjnaProductContextWithBorrow = AjnaProductContext<
   ReturnType<typeof useAjnaBorrowFormReducto>
 >
 type AjnaProductContextWithEarn = AjnaProductContext<
-  AjnaEarn,
+  AjnaEarnPosition,
   ReturnType<typeof useAjnaEarnFormReducto>
 >
 

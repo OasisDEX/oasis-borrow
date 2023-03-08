@@ -2,18 +2,12 @@ import { NetworkIds } from 'blockchain/network'
 import { subgraphMethodsRecord, subgraphsRecord } from 'features/subgraphLoader/consts'
 import request from 'graphql-request'
 import { NextApiHandler, NextApiRequest } from 'next'
-import * as z from 'zod'
 
-const querySchema = z.object({
-  network: z.string(),
-})
-
-async function get({ req: { body, query } }: { req: NextApiRequest }) {
+async function get({ req: { body } }: { req: NextApiRequest }) {
   try {
-    const { network } = querySchema.parse(query)
-    const { subgraph, method, params } = JSON.parse(body)
+    const { subgraph, method, params, networkId } = JSON.parse(body)
     const response = await request(
-      subgraphsRecord[subgraph as keyof typeof subgraphsRecord][Number(network) as NetworkIds],
+      subgraphsRecord[subgraph as keyof typeof subgraphsRecord][Number(networkId) as NetworkIds],
       subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord],
       params,
     )
