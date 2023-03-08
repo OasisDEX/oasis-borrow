@@ -159,7 +159,7 @@ export function AjnaProductContextProvider({
         product,
         quoteBalance,
         simulationErrors: simulation?.errors,
-        simulationWarnings: simulation?.errors,
+        simulationWarnings: simulation?.warnings,
         state,
         txError: txDetails?.txError,
       }),
