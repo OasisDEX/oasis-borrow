@@ -1,3 +1,5 @@
+import { getNetworkId } from '@oasisdex/web3-context'
+import { NetworkIds } from 'blockchain/network'
 import { Subgraphs } from 'features/subgraphLoader/types'
 import { useEffect, useState } from 'react'
 
@@ -12,12 +14,14 @@ export async function loadSubgraph<
   M extends keyof Subgraphs[S],
   P extends Subgraphs[S][M]
 >(subgraph: S, method: M, params: P) {
+  const networkId = getNetworkId() as NetworkIds
   const response = await fetch(`/api/subgraph`, {
     method: 'POST',
     body: JSON.stringify({
       subgraph,
       method,
       params,
+      networkId,
     }),
   })
 

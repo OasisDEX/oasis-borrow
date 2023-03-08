@@ -1,3 +1,4 @@
+import { AjnaEarnPosition, AjnaPosition } from '@oasis-actions-poc'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PageSEOTags } from 'components/HeadTags'
@@ -25,9 +26,6 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
-
-import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
-import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
 
 interface AjnaProductControllerOpenFlow {
   collateralToken: string
@@ -175,12 +173,12 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                              price: (ajnaPosition.position as AjnaEarn).pool.highestThresholdPrice.decimalPlaces(
+                              price: (ajnaPosition.position as AjnaEarnPosition).pool.highestThresholdPrice.decimalPlaces(
                                 2,
                               ),
                             }}
                             formReducto={useAjnaEarnFormReducto}
-                            position={ajnaPosition.position as AjnaEarn}
+                            position={ajnaPosition.position as AjnaEarnPosition}
                             product={ajnaPosition.meta.product}
                           >
                             <AjnaEarnPositionController />

@@ -1,4 +1,4 @@
-import { strategies } from '@oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition, strategies } from '@oasis-actions-poc'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -8,14 +8,12 @@ import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEar
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
-import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
-import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
 import { Strategy } from '@oasis-actions-poc/src/types/common'
 
 interface AjnaTxHandlerInput {
   collateralToken: string
   context: Context
-  position: AjnaPosition | AjnaEarn
+  position: AjnaPosition | AjnaEarnPosition
   quoteToken: string
   state: AjnaFormState
 }
@@ -29,9 +27,9 @@ export async function getAjnaParameters({
   state,
 }: AjnaTxHandlerInput & {
   rpcProvider: ethers.providers.Provider
-}): Promise<Strategy<AjnaPosition | AjnaEarn>> {
+}): Promise<Strategy<AjnaPosition | AjnaEarnPosition>> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarn>)
+  const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarnPosition>)
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
@@ -169,7 +167,7 @@ export async function getAjnaParameters({
             ...commonPayload,
             price,
             quoteAmount: depositAmount || zero,
-            position: position as AjnaEarn,
+            position: position as AjnaEarnPosition,
           },
           { ...dependencies, getEarnData: getAjnaEarnData },
         )
@@ -185,7 +183,7 @@ export async function getAjnaParameters({
             ...commonPayload,
             price,
             quoteAmount: withdrawAmount || zero,
-            position: position as AjnaEarn,
+            position: position as AjnaEarnPosition,
           },
           { ...dependencies, getEarnData: getAjnaEarnData },
         )

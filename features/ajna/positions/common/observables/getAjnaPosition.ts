@@ -1,4 +1,4 @@
-import { views as pocViews } from '@oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition, views as pocViews } from '@oasis-actions-poc'
 import { views } from '@oasisdex/oasis-actions'
 import { Context } from 'blockchain/network'
 import { ethers } from 'ethers'
@@ -9,9 +9,6 @@ import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEar
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
-
-import { AjnaPosition } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna'
-import { AjnaEarn } from '@oasis-actions-poc/lib/packages/oasis-actions/src/helpers/ajna/AjnaEarn'
 
 interface AjnaMeta extends Omit<DpmPositionData, 'product'> {
   product: AjnaProduct
@@ -33,7 +30,7 @@ export type GetAjnaPositionIdentification =
   | GetAjnaPositionIdentificationWithoutPosition
 
 interface AjnaPositionWithMeta {
-  position: AjnaPosition | AjnaEarn
+  position: AjnaPosition | AjnaEarnPosition
   meta: AjnaMeta
 }
 
