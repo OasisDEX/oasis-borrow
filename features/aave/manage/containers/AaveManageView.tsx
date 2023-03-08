@@ -16,7 +16,6 @@ import { Box, Container } from 'theme-ui'
 import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
-  ownerAddress: string
   strategyConfig: IStrategyConfig
 }
 
@@ -24,17 +23,15 @@ function AaveManageContainer({
   strategyConfig,
   aaveReserveState,
   aaveReserveDataDebtToken,
-  ownerAddress: proxyAddress,
 }: {
   aaveReserveState: AaveV2ReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
   strategyConfig: IStrategyConfig
-  ownerAddress: string
 }) {
   const Header = strategyConfig.viewComponents.headerManage
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-
+  const { proxyAddress, ownerAddress } = state.context
   if (!state.context.protocolData) {
     return null
   }
@@ -42,7 +39,7 @@ function AaveManageContainer({
   return (
     <AaveAutomationContext
       aaveManageVault={{
-        ownerAddress: proxyAddress,
+        ownerAddress,
         aaveReserveState,
         strategyConfig,
         context: state.context,
@@ -55,7 +52,7 @@ function AaveManageContainer({
         <Header
           strategyConfig={strategyConfig}
           positionId={state.context.positionId}
-          ownerAddress={proxyAddress}
+          proxyAddress={proxyAddress}
         />
         <AaveManageTabBar
           strategyConfig={strategyConfig}
@@ -69,7 +66,6 @@ function AaveManageContainer({
 }
 
 export function AaveManagePositionView({
-  ownerAddress,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
   const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
@@ -93,7 +89,6 @@ export function AaveManagePositionView({
               strategyConfig={strategyConfig}
               aaveReserveState={_aaveReserveState}
               aaveReserveDataDebtToken={_aaveReserveDataDebt}
-              ownerAddress={ownerAddress}
             />
           )
         }}

@@ -8,12 +8,12 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 export function createFollowButton(
   positionId: PositionId,
   protocol: Protocol,
-  proxy: string,
+  proxy: string | undefined,
   strategy: string,
 ) {
   const followAaveVaultsEnabled = useFeatureToggle('FollowAAVEVaults')
   const { walletAddress: connectedWalletAddress, chainId } = useAccount()
-  console.log('proxy')
+  console.log('proxy in createFollowButton')
   console.log(proxy)
 
   const followButton: FollowButtonControlProps | undefined =

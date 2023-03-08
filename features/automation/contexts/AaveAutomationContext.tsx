@@ -10,7 +10,7 @@ import { zero } from 'helpers/zero'
 import React, { PropsWithChildren, useMemo } from 'react'
 
 export interface AaveManageVaultState {
-  ownerAddress: string
+  ownerAddress: string | undefined
   aaveReserveState: AaveV2ReserveConfigurationData
   strategyConfig: IStrategyConfig
   context: ManageAaveContext
