@@ -521,20 +521,20 @@ export function createFollowedAavePositions$(
               } = loadAavePositionDetails(loadAavePositionArgs)
 
               return {
-                token: followedAaveVault.strategy,
-                title: followedAaveVault.strategy,
-                contentsUsd: new BigNumber(0),
+                token: collateralToken,
+                title: title,
+                contentsUsd: netValueUsd,
                 url: `/aave/${followedAaveVault.protocol.split('aave')[1]}/${
                   followedAaveVault.vault_id
                 }/`,
                 netValue: netValueUsd,
-                multiple: one,
+                multiple: onChainPosition.riskRatio.multiple,
                 liquidationPrice,
                 fundingCost,
                 isOwner,
                 lockedCollateral: collateralNotWei,
                 type: 'multiply',
-                liquidity: one,
+                liquidity: liquidity,
                 stopLossData: undefined,
               }
             },
