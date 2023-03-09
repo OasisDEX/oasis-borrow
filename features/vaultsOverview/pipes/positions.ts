@@ -384,7 +384,6 @@ export function createFollowedAavePositions$(
         ? of([])
         : combineLatest(
             filteredVaults.map((followedAaveVault: UsersWhoFollowVaults) => {
-              // TODO let's try first get all required tokens for this vault
               return buildFollowedAavePosition(followedAaveVault)
             }),
           )

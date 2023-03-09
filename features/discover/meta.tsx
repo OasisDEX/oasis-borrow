@@ -1,3 +1,5 @@
+import { Protocol } from '@prisma/client'
+import BigNumber from 'bignumber.js'
 import {
   discoverFiltersAssetItems,
   discoverMultipleFilter,
@@ -21,9 +23,15 @@ export interface DiscoverFiltersListItem {
 export interface DiscoverFiltersList {
   [key: string]: DiscoverFiltersListItem
 }
-export interface DiscoverFollow {
+export interface DiscoverFollowTableData {
   followerAddress: string
-  chainId: number
+  chainId?: number
+}
+export type FollowDetailsForRow = DiscoverFollowTableData & {
+  vaultId: BigNumber
+  protocol: Protocol
+  proxy: string
+  strategy: string
 }
 export interface DiscoverBanner {
   icon: JSX.Element

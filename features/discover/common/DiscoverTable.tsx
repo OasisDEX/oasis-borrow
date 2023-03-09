@@ -3,7 +3,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
-import { DiscoverBanner, DiscoverFollow } from 'features/discover/meta'
+import { DiscoverBanner, FollowDetailsForRow, DiscoverFollowTableData } from 'features/discover/meta'
 import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -12,7 +12,7 @@ import { Box, Flex } from 'theme-ui'
 
 export interface DiscoverTableProps {
   banner?: DiscoverBanner
-  follow?: DiscoverFollow
+  follow?: DiscoverFollowTableData
   isLoading?: boolean
   isSticky?: boolean
   kind?: DiscoverPages
@@ -89,7 +89,6 @@ export function DiscoverTable({
             <Fragment key={getRowKey(i, row)}>
               <DiscoverTableDataRow
                 filteredRowKeys={filteredRowKeys}
-                follow={follow}
                 row={row}
                 onPositionClick={onPositionClick}
               />
@@ -116,7 +115,7 @@ export function DiscoverTableHeaderCell({
   tooltip,
 }: {
   first: boolean
-  follow?: DiscoverFollow
+  follow?: DiscoverFollowTableData
   label: string
   last: boolean
   tooltip: boolean
@@ -197,11 +196,9 @@ export function DiscoverTableHeaderCell({
 export function DiscoverTableDataRow({
   row,
   filteredRowKeys,
-  follow,
   onPositionClick,
 }: {
   filteredRowKeys: string[]
-  follow?: DiscoverFollow
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
 }) {
@@ -219,7 +216,7 @@ export function DiscoverTableDataRow({
       {filteredRowKeys.map((label, i) => (
         <DiscoverTableDataCell
           key={getRowKey(i, row)}
-          follow={follow}
+          followCellDetails={row.followDetails}
           label={label}
           row={row}
           onPositionClick={onPositionClick}
@@ -230,12 +227,12 @@ export function DiscoverTableDataRow({
 }
 
 export function DiscoverTableDataCell({
-  follow,
+  followCellDetails,
   label,
   row,
   onPositionClick,
 }: {
-  follow?: DiscoverFollow
+  followCellDetails?: FollowDetailsForRow
   label: string
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
@@ -254,7 +251,7 @@ export function DiscoverTableDataCell({
     >
       {!isValidElement(row[label]) ? (
         <DiscoverTableDataCellContent
-          follow={follow}
+          follow={followCellDetails}
           label={label}
           onPositionClick={onPositionClick}
           row={row}

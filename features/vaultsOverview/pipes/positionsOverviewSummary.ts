@@ -31,6 +31,7 @@ export type Position = {
   title: string
   contentsUsd: BigNumber
   url: string
+  // TODO ŁW add protocol here IMHO to make adding follow button on each position easier type Position needs to know what protocol it is
 }
 
 type WalletAssets = {

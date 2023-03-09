@@ -1,12 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { Item } from 'components/infoSection/Item'
 import { AppLink } from 'components/Links'
 import { getPillColor } from 'components/navigation/NavigationBranding'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
-import { DiscoverFollow } from 'features/discover/meta'
+import { FollowDetailsForRow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
 import {
   getTwitterShareUrl,
@@ -28,7 +30,7 @@ export function DiscoverTableDataCellContent({
   row,
   onPositionClick,
 }: {
-  follow?: DiscoverFollow
+  follow?: FollowDetailsForRow
   label: string
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
@@ -46,6 +48,14 @@ export function DiscoverTableDataCellContent({
       const asset = Object.values(discoverFiltersAssetItems).filter(
         (item) => item.value === primitives.asset,
       )[0]
+      const followRowDetails = {
+        followerAddress: follow?.followerAddress,
+        chainId: follow?.chainId,
+        vaultId: row.cdpId,
+        protocol: ,
+        proxy,
+        strategy,
+      }
       return (
         <DiscoverTableDataCellAsset
           asset={
@@ -221,7 +231,7 @@ export function DiscoverTableDataCellAsset({
   asset: string
   cdpId?: number
   inactive?: string
-  follow?: DiscoverFollow
+  follow?: FollowDetailsForRow
   icon?: string
 }) {
   const { t } = useTranslation()
@@ -233,13 +243,15 @@ export function DiscoverTableDataCellAsset({
           chainId={follow.chainId}
           followerAddress={follow.followerAddress}
           vaultId={new BigNumber(cdpId)}
+          protocol={follow.protocol? follow.protocol :  Protocol.maker}
+          proxy={follow.proxy}
+          strategy={follow.strategy}
           short
           sx={{
             position: ['absolute', null, null, 'relative'],
             right: [0, null, null, 'auto'],
             mr: ['24px', null, null, 4],
           }}
-          protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported
         />
       )}
       {icon && <Icon size={44} name={icon} sx={{ ...(inactive && { opacity: 0.5 }) }} />}

@@ -1,3 +1,4 @@
+import { FollowDetailsForRow } from 'features/discover/meta'
 import { ReactNode } from 'react'
 
 export enum DiscoverPages {
@@ -78,4 +79,5 @@ export type DiscoverTableRowData = {
   colRatio?: DiscoverTableColRatioRowData
   activity?: DiscoverTableActivityRowData
   status?: DiscoverTableStatusRowData
+  followDetails?: FollowDetailsForRow
 }

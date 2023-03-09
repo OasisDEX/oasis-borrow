@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { DiscoverFollowTableData } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
@@ -41,6 +42,7 @@ interface GetMakerPositionParams {
 interface GetAavePositionParams {
   positions: AavePosition[]
   skipShareButton?: boolean
+  followDetails: DiscoverFollowTableData
 }
 interface GetDsrPositionParams {
   address: string
@@ -198,6 +200,7 @@ export function getMakerEarnPositions({
 export function getAaveMultiplyPositions({
   positions,
   skipShareButton,
+  followDetails,
 }: GetAavePositionParams): DiscoverTableRowData[] {
   return getAavePositionOfType(positions).multiply.map(
     ({
@@ -223,6 +226,13 @@ export function getAaveMultiplyPositions({
         cdpId: id,
         url,
         ...(skipShareButton && { skipShareButton }),
+        followDetails: {
+          followerAddress: followDetails.followerAddress,
+          chainId: followDetails.chainId,
+          vaultId: id,
+          protocol
+          // TODO ŁW add all details here
+        },
       }
     },
   )

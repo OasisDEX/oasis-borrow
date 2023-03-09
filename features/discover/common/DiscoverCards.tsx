@@ -2,7 +2,7 @@ import { DiscoverTableProps } from 'features/discover/common/DiscoverTable'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
-import { DiscoverFollow } from 'features/discover/meta'
+import { FollowDetailsForRow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -67,7 +67,7 @@ export function DiscoverCard({
   skip,
   onPositionClick,
 }: {
-  follow?: DiscoverFollow
+  follow?: FollowDetailsForRow
   row: DiscoverTableRowData
   skip: string[]
   onPositionClick?: (cdpId: string) => void

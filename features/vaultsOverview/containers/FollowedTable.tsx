@@ -36,12 +36,16 @@ export function FollowedTable({ address }: { address: string }) {
     followedAavePositions$(checksumAddress),
   )
   const isOwner = address === walletAddress
+  const [context] = useObservable(context$)
 
   const multiplyPositions = useMemo(() => {
     return followedMakerVaultsData && followedAavePositionsData
       ? [
           ...getMakerMultiplyPositions({ positions: followedMakerVaultsData }),
-          ...getAaveMultiplyPositions({ positions: followedAavePositionsData }),
+          ...getAaveMultiplyPositions({
+            positions: followedAavePositionsData,
+            followDetails: { followerAddress: address, chainId: context?.chainId },
+          }),
         ]
       : []
   }, [followedMakerVaultsData, followedAavePositionsData])
@@ -52,9 +56,8 @@ export function FollowedTable({ address }: { address: string }) {
         value={[contextData, followedMakerVaultsData]}
         customLoader={<PositionTableLoadingState />}
       >
-        {([context, followedMakerPositions,/*, followedAavePositions*/]) => {
+        {([context, followedMakerPositions]) => {
           const borrowPositions = getMakerBorrowPositions({ positions: followedMakerPositions })
-          // const multiplyPositions = getMakerMultiplyPositions({ positions: followedMakerPositions })
           const earnPositions = getMakerEarnPositions({ positions: followedMakerPositions })
 
           return followedMakerPositions.length ? (
