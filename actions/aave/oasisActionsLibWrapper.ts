@@ -167,6 +167,8 @@ export async function getOnChainPosition({
     symbol: debtToken as AAVETokens,
     precision: getToken(debtToken).precision,
   }
+  console.log('_debtToken')
+  console.log(_debtToken)
 
   if (protocol === LendingProtocol.AaveV2) {
     return await strategies.aave.v2.view(

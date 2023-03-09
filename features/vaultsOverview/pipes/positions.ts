@@ -21,7 +21,7 @@ import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { protocolToLendingProtocol } from 'features/vaultsOverview/helpers'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import {
   AaveProtocolData as AaveProtocolDataV2,
@@ -252,6 +252,8 @@ function loadAavePositionDetails(prerequisites: LoadAavePositionPrerequisites) {
     walletAddress,
     protocol,
   } = prerequisites
+  console.log('loadAavePositionDetails prerequisites')
+  console.log(prerequisites)
   const isDebtZero = position.debt.amount.isZero()
 
   const oracleCollateralTokenPriceInEth = assetPrices[0]
@@ -273,6 +275,14 @@ function loadAavePositionDetails(prerequisites: LoadAavePositionPrerequisites) {
   const liquidationPrice = !isDebtZero
     ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
     : zero
+
+  console.log('calculating liquidation price for position')
+  console.log(position)
+  console.log(liquidationPrice.toFixed(2))
+  console.log('debtNotWei')
+  console.log(debtNotWei.toFixed(2))
+  console.log('position.category.liquidationThreshold.toFixed(2)')
+  console.log(position.category.liquidationThreshold.toFixed(2))
 
   const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
@@ -412,58 +422,25 @@ export function createFollowedAavePositions$(
         lockedCollateral: BigNumber
         type: string
         liquidity: BigNumber
-        // TODO Ł figure out how to pass trigger data
-        //   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
       }> {
-        // console.log('positionCreated') it won't
-        // console.log(positionCreated)
-        // TODO ŁW use             getOnChainPosition({
         const resolvedAaveServices = resolveAaveServices(
           aaveV2,
           aaveV3,
           protocolToLendingProtocol(followedAaveVault.protocol),
         )
-        console.log('resolvedAaveServices')
-        console.log(resolvedAaveServices)
         const strategyName = followedAaveVault.strategy ? followedAaveVault.strategy : ''
         const strategiesWithCurrentToken = getAaveStrategiesByName(strategyName)
-        console.log('strategiesWithCurrentToken')
-        console.log(strategiesWithCurrentToken)
+        console.log('strategiesWithCurrentToken:', strategiesWithCurrentToken)
         const currentStrategy = strategiesWithCurrentToken[0]
-        // ŁW is it possible to have 2 strategies with exactly same name need to pick one by proxy ????
-        // const currentStrategy = strategiesWithCurrentToken.find(strategy => strategy. === followedAaveVault.protocol)
+        console.log('currentStrategy:', currentStrategy)
         const {
           collateral: collateralTokenSymbol,
-          deposit: debtTokenSymbol,
+          debt: debtTokenSymbol,
         } = currentStrategy.tokens
         const proxyAddress = followedAaveVault.proxy ? followedAaveVault.proxy : ''
-        // TODO ŁW combineObservables, get protocaldata and so on
-
         const tickerForDebtToken$ = tickerPrices$([debtTokenSymbol])
-
-        // TODO
         const protocol = protocolToLendingProtocol(followedAaveVault.protocol)
-        // const getAaveOnChainPosition$ = memoize(
-        //   (collateralToken: string, debtToken: string, proxyAddress: string) => {
-        //     return context$.pipe(
-        //       switchMap(async (context) => {
-        //         return from(
-        //           getOnChainPosition({
-        //             context,
-        //             proxyAddress,
-        //             collateralToken,
-        //             debtToken,
-        //             protocol,
-        //           }),
-        //         )
-        //       }),
-        //       shareReplay(1),
-        //     )
-        //   },
-        //   (collateralToken: string, debtToken: string, proxyAddress: string) =>
-        //     collateralToken + debtToken + proxyAddress,
-        // )
-        // here try switchMap first, and then await getOnChainPosition
+
         return combineLatest(
           protocol === LendingProtocol.AaveV2
             ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
@@ -476,7 +453,6 @@ export function createFollowedAavePositions$(
           resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
             token: debtTokenSymbol,
           }),
-          // getAaveOnChainPosition$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
           from(
             getOnChainPosition({
               context,
@@ -509,7 +485,11 @@ export function createFollowedAavePositions$(
               }
               console.log('onChainPosition')
               console.log(onChainPosition)
-              // FIXME  address im saving in db is not proxy addres but user address this is source of issue
+              console.log('onChainPosition.debt.amount')
+              console.log(onChainPosition.debt.amount.toFixed(2))
+              // debtNotWei, multiple is 0 in onChainPosition ~ Ł
+              console.log('protocolData')
+              console.log(protocolData)
               const {
                 collateralToken,
                 title,
@@ -528,7 +508,7 @@ export function createFollowedAavePositions$(
                   followedAaveVault.vault_id
                 }/`,
                 netValue: netValueUsd,
-                multiple: onChainPosition.riskRatio.multiple,
+                multiple: onChainPosition.riskRatio.multiple, // TODO ŁW figure out why multiple here is 0
                 liquidationPrice,
                 fundingCost,
                 isOwner,
