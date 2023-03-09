@@ -212,8 +212,6 @@ export function getAaveMultiplyPositions({
       isOwner,
       stopLossData,
     }) => {
-      console.log('inside getAaveMultiplyPositions')
-      console.log(positions)
       return {
         icon: getToken(token).iconCircle,
         asset: title,

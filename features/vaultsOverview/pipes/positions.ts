@@ -158,8 +158,7 @@ function buildAaveViewModel(
 ): Observable<AavePosition> {
   const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol } = positionCreatedEvent
   const resolvedAaveServices = resolveAaveServices(observables.aaveV2, observables.aaveV3, protocol)
-  console.log('resolvedAaaveServices')
-  console.log(resolvedAaveServices)
+
   return combineLatest(
     // using properAaveMethods.aaveProtocolData causes this to lose strict typings
     protocol === LendingProtocol.AaveV2
@@ -252,8 +251,7 @@ function loadAavePositionDetails(prerequisites: LoadAavePositionPrerequisites) {
     walletAddress,
     protocol,
   } = prerequisites
-  console.log('loadAavePositionDetails prerequisites')
-  console.log(prerequisites)
+
   const isDebtZero = position.debt.amount.isZero()
 
   const oracleCollateralTokenPriceInEth = assetPrices[0]
@@ -275,14 +273,6 @@ function loadAavePositionDetails(prerequisites: LoadAavePositionPrerequisites) {
   const liquidationPrice = !isDebtZero
     ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
     : zero
-
-  console.log('calculating liquidation price for position')
-  console.log(position)
-  console.log(liquidationPrice.toFixed(2))
-  console.log('debtNotWei')
-  console.log(debtNotWei.toFixed(2))
-  console.log('position.category.liquidationThreshold.toFixed(2)')
-  console.log(position.category.liquidationThreshold.toFixed(2))
 
   const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
@@ -383,20 +373,13 @@ export function createFollowedAavePositions$(
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
   followerAddress: string,
 ): Observable<AavePosition[]> {
-  console.log('aaveV2')
-  console.log(aaveV2)
-  console.log('aaveV3')
-  console.log(aaveV3)
   const { tickerPrices$ /*, readPositionCreatedEvents$, automationTriggersData$*/ } = environment
-  // Todo łw create object od BuildPositionArgs from the environment observables like in createAavePosition$
-  // observables: BuildPositionArgs, //TODO ŁW get remaining data from this type
+
   return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
     switchMap(([_, context, followedVaults]) => {
-      console.log('followedVaults before filter:', followedVaults)
       const filteredVaults = followedVaults
         .filter((vault) => vault.vault_chain_id === context.chainId)
         .filter((vault) => vault.protocol === 'aavev2' || vault.protocol === 'aavev3')
-      console.log('followedVaults after filter:', filteredVaults)
 
       return filteredVaults.length === 0
         ? of([])
@@ -430,13 +413,8 @@ export function createFollowedAavePositions$(
         )
         const strategyName = followedAaveVault.strategy ? followedAaveVault.strategy : ''
         const strategiesWithCurrentToken = getAaveStrategiesByName(strategyName)
-        console.log('strategiesWithCurrentToken:', strategiesWithCurrentToken)
         const currentStrategy = strategiesWithCurrentToken[0]
-        console.log('currentStrategy:', currentStrategy)
-        const {
-          collateral: collateralTokenSymbol,
-          debt: debtTokenSymbol,
-        } = currentStrategy.tokens
+        const { collateral: collateralTokenSymbol, debt: debtTokenSymbol } = currentStrategy.tokens
         const proxyAddress = followedAaveVault.proxy ? followedAaveVault.proxy : ''
         const tickerForDebtToken$ = tickerPrices$([debtTokenSymbol])
         const protocol = protocolToLendingProtocol(followedAaveVault.protocol)
@@ -483,13 +461,7 @@ export function createFollowedAavePositions$(
                 walletAddress: context.account ? context.account : '',
                 protocol,
               }
-              console.log('onChainPosition')
-              console.log(onChainPosition)
-              console.log('onChainPosition.debt.amount')
-              console.log(onChainPosition.debt.amount.toFixed(2))
-              // debtNotWei, multiple is 0 in onChainPosition ~ Ł
-              console.log('protocolData')
-              console.log(protocolData)
+
               const {
                 collateralToken,
                 title,
@@ -539,8 +511,7 @@ export function createAavePosition$(
     readPositionCreatedEvents$,
     automationTriggersData$,
   } = environment
-  console.log('createAavePosition$')
-  console.log(environment)
+
   return combineLatest(
     proxyAddressesProvider.userDpmProxies$(walletAddress),
     getStethEthAaveV2DsProxyEarnPosition$(
@@ -553,12 +524,7 @@ export function createAavePosition$(
     switchMap(
       ([dpmProxiesData, fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition, context]) => {
         // if we have a DS proxy make a fake position created event so we can read any position out below
-        tap(() => {
-          console.log('dpmProxiesData')
-          console.log(dpmProxiesData)
-          console.log('fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition')
-          console.log(fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition)
-        })
+
         const userProxiesData = [
           ...dpmProxiesData,
           ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition.map((fakeEvent) => {
@@ -571,12 +537,6 @@ export function createAavePosition$(
         ]
         return readPositionCreatedEvents$(walletAddress).pipe(
           map((positionCreatedEvents) => {
-            tap(() => {
-              console.log('userProxiesData', userProxiesData)
-            })
-            tap(() => {
-              console.log('positionCreatedEvents', positionCreatedEvents)
-            })
             return [
               ...positionCreatedEvents,
               ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition,
@@ -587,9 +547,6 @@ export function createAavePosition$(
               positionCreatedEvents
                 .filter((event) => sumAaveArray.includes(event.protocol))
                 .map((pce) => {
-                  tap(() => {
-                    console.log('pce', pce)
-                  })
                   const userProxy = userProxiesData.find(
                     (userProxy) => userProxy.proxy === pce.proxyAddress,
                   )

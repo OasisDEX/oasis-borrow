@@ -71,7 +71,6 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
   const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
     where: { user_address: usersAddressWhoJustFollowedVaultLowercased },
   })
-  console.log('allVaultsFollowedByUser', allVaultsFollowedByUser)
 
   if (allVaultsFollowedByUser.length < LIMIT_OF_FOLLOWED_VAULTS) {
     await prisma.usersWhoFollowVaults.create({

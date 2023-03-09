@@ -157,7 +157,6 @@ export async function getOnChainPosition({
   protocol,
 }: GetOnChainPositionParams): Promise<IPosition> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
-  console.log('proxdyAddress in get on chain position', proxyAddress)
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
     precision: getToken(collateralToken).precision,
@@ -167,8 +166,6 @@ export async function getOnChainPosition({
     symbol: debtToken as AAVETokens,
     precision: getToken(debtToken).precision,
   }
-  console.log('_debtToken')
-  console.log(_debtToken)
 
   if (protocol === LendingProtocol.AaveV2) {
     return await strategies.aave.v2.view(

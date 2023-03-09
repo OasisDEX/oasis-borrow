@@ -45,14 +45,7 @@ export function FollowedTable({ address }: { address: string }) {
         ]
       : []
   }, [followedMakerVaultsData, followedAavePositionsData])
-  console.log('multiply positions')
-  console.log(multiplyPositions)
-  console.log('followed aave positions data')
-  console.log(followedAavePositionsData)
-  console.log('followed aave positions error')
-  console.log(followedAavePositionsError)
-  console.log('multiply positions aave')
-  console.log(multiplyPositions[1])
+
   return (
     <WithErrorHandler error={[contextError, followedMakerVaultsError, followedAavePositionsError]}>
       <WithLoadingIndicator
