@@ -29,7 +29,7 @@ import {
 } from 'lendingProtocols/aave-v2/pipelines'
 import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
 import { combineLatest, from, Observable, of } from 'rxjs'
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
+import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { Position } from './positionsOverviewSummary'
 
@@ -362,7 +362,6 @@ function getStethEthAaveV2DsProxyEarnPosition$(
 
 // TODO we will need proper handling for Ajna, filtered for now
 const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
-// TODO ŁW
 
 export function createFollowedAavePositions$(
   refreshInterval: Observable<number>,
@@ -373,7 +372,7 @@ export function createFollowedAavePositions$(
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
   followerAddress: string,
 ): Observable<AavePosition[]> {
-  const { tickerPrices$ /*, readPositionCreatedEvents$, automationTriggersData$*/ } = environment
+  const { tickerPrices$ } = environment
 
   return combineLatest(refreshInterval, context$, followedVaults$(followerAddress)).pipe(
     switchMap(([_, context, followedVaults]) => {
@@ -420,9 +419,6 @@ export function createFollowedAavePositions$(
         const protocol = protocolToLendingProtocol(followedAaveVault.protocol)
 
         return combineLatest(
-          protocol === LendingProtocol.AaveV2
-            ? aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
-            : aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
           resolvedAaveServices.getAaveAssetsPrices$({
             tokens: [collateralTokenSymbol, debtTokenSymbol],
           }),
@@ -443,7 +439,6 @@ export function createFollowedAavePositions$(
         ).pipe(
           map(
             ([
-              protocolData,
               assetPrices,
               tickerPrices,
               preparedAaveReserve,
