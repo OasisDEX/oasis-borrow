@@ -135,11 +135,11 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
+import { getAjnaPosition$ } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import {
-  getAjnaPosition$,
-  GetAjnaPositionIdentification,
-} from 'features/ajna/positions/common/observables/getAjnaPosition'
-import { getDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
+  DpmPositionData,
+  getDpmPositionData$,
+} from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -1406,8 +1406,8 @@ export function setupAppContext() {
   )
 
   const ajnaPosition$ = memoize(
-    curry(getAjnaPosition$)(context$, dpmPositionData$, onEveryBlock$),
-    (ajnaPositionIdentification: GetAjnaPositionIdentification) => ajnaPositionIdentification,
+    curry(getAjnaPosition$)(context$, onEveryBlock$),
+    (dpmPositionData: DpmPositionData) => dpmPositionData,
   )
 
   return {
