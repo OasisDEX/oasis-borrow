@@ -8,6 +8,6 @@ export function getGasMultiplier(context: ContextConnected) {
     default:
       // boost it slightly for others in case there’s
       // a deviation between the estimate and the actual gas used
-      return 1.1
+      return 1.5
   }
 }
