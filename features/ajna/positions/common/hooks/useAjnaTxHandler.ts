@@ -15,7 +15,7 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-import { Strategy } from '@oasis-actions-poc/src/types/common'
+import { Strategy } from '@oasisdex/oasis-actions-poc/src/types/common'
 
 export interface OasisActionCallData extends AjnaTxData {
   kind: TxMetaKind.libraryCall
