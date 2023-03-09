@@ -67,6 +67,12 @@ export function createSendWithGasConstraints<A extends TxMeta>(
   send: SendFunction<A>,
   context: ContextConnected,
   gasPrice$: GasPrice$,
+  gasMultiplier?: number,
 ) {
-  return createSendWithGasConstraintsAbstractContext<A, ContextConnected>(send, context, gasPrice$)
+  return createSendWithGasConstraintsAbstractContext<A, ContextConnected>(
+    send,
+    context,
+    gasPrice$,
+    gasMultiplier,
+  )
 }
