@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition, strategies } from '@oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition, strategies } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -8,7 +8,7 @@ import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEar
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
-import { Strategy } from '@oasis-actions-poc/src/types/common'
+import { Strategy } from '@oasisdex/oasis-actions-poc/src/types/common'
 
 interface AjnaTxHandlerInput {
   collateralToken: string

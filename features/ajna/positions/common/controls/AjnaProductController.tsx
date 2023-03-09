@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PageSEOTags } from 'components/HeadTags'
