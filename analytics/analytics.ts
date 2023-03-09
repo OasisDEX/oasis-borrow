@@ -212,10 +212,10 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       eventBody,
       eventName,
       distinctId: mixpanel.get_distinct_id(),
+      currentUrl: win.location.href,
       ...(!mixpanel.has_opted_out_tracking() && {
         browser: upperFirst(name),
         browserVersion: versionNumber,
-        currentUrl: win.location.href,
         initialReferrer,
         initialReferringDomain,
         mobile,
