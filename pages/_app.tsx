@@ -19,6 +19,7 @@ import { NotificationSocketProvider } from 'components/NotificationSocketProvide
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { loadFeatureToggles } from 'helpers/useFeatureToggle'
@@ -28,7 +29,7 @@ import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
@@ -107,7 +108,7 @@ const noOverlayWorkaroundScript = `
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
-
+  const mount = useRef(false)
   const Layout = Component.layout || AppLayout
 
   const layoutProps = Component.layoutProps
@@ -117,12 +118,30 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     <PageSEOTags
       title="seo.default.title"
       description="seo.default.description"
-      url={router.pathname || '/'}
+      url={router.pathname || INTERNAL_LINKS.homepage}
     />
   )
 
   useEffect(() => {
-    mixpanelInit()
+    if (router.isReady && !mount.current) {
+      mixpanelInit()
+
+      if (router.pathname === '/') {
+        const utm: { [key: string]: string | string[] | undefined } = {
+          utmSource: router.query.utm_source,
+          utmMedium: router.query.utm_medium,
+          utmCampaign: router.query.utm_campaign,
+        }
+
+        trackingEvents.landingPageView(utm)
+      } else {
+        trackingEvents.pageView(router.pathname)
+      }
+      mount.current = true
+    }
+  }, [router.isReady])
+
+  useEffect(() => {
     const handleRouteChange = (url: string) => {
       // track events when not in development
       if (process.env.NODE_ENV !== 'development') {
@@ -131,6 +150,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
+
     loadFeatureToggles()
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)

@@ -138,8 +138,8 @@ import { createTransactionManager } from 'features/account/transactionManager'
 import {
   getAjnaPosition$,
   GetAjnaPositionIdentification,
-} from 'features/ajna/common/observables/getAjnaPosition'
-import { getDpmPositionData$ } from 'features/ajna/common/observables/getDpmPositionData'
+} from 'features/ajna/positions/common/observables/getAjnaPosition'
+import { getDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -298,6 +298,7 @@ import {
   TxPayloadChange,
   TxPayloadChangeAction,
 } from 'helpers/gasEstimate'
+import { getGasMultiplier } from 'helpers/getGasMultiplier'
 import {
   createProductCardsData$,
   createProductCardsWithBalance$,
@@ -324,6 +325,7 @@ import {
 } from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
+
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -384,9 +386,14 @@ function createTxHelpers$(
     filter(({ status }) => status === 'connected'),
     map((context) => ({
       send: createSendTransaction(send, context),
-      sendWithGasEstimation: createSendWithGasConstraints(send, context, gasPrice$),
+      sendWithGasEstimation: createSendWithGasConstraints(
+        send,
+        context,
+        gasPrice$,
+        getGasMultiplier(context),
+      ),
       estimateGas: <B extends TxData>(def: TransactionDef<B>, args: B): Observable<number> => {
-        return estimateGas(context, def, args)
+        return estimateGas(context, def, args, getGasMultiplier(context))
       },
     })),
   )

@@ -1,5 +1,5 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
-import { BigNumber } from 'bignumber.js'
+import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
@@ -8,7 +8,7 @@ import { Feature } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 
-import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
+import { BaseAaveEvent, BaseViewProps } from './BaseAaveContext'
 
 export enum ProxyType {
   DsProxy = 'DsProxy',
@@ -34,7 +34,7 @@ export interface IStrategyConfig {
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
-    adjustRiskView: AdjustRiskView
+    secondaryInput: SecondaryInput
     positionInfo: PositionInfo
     sidebarTitle: string
     sidebarButton: string
@@ -68,6 +68,13 @@ export type ManageSectionComponentProps = {
   aaveReserveDataDebtToken: PreparedAaveReserveData
 }
 
+export type SecondaryInputProps = BaseViewProps<EventsRaisedFromSecondaryInput> & {
+  viewLocked?: boolean // locks whole view
+  showWarring?: boolean // displays warning
+  onChainPosition?: IPosition
+  stopLossError?: boolean
+}
+
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
 type ManageAaveHeader = (props: ManageAaveHeaderProps) => JSX.Element
 type SimulateSection = (props: AaveMultiplyManageComponentProps) => JSX.Element
@@ -76,5 +83,15 @@ type VaultDetails = (
     ViewPositionSectionComponentProps &
     AaveMultiplyManageComponentProps,
 ) => JSX.Element
-type AdjustRiskView = (props: AdjustRiskViewProps) => JSX.Element
+
+type SecondaryInput = (props: SecondaryInputProps) => JSX.Element
+
+type EventsRaisedFromSecondaryInput =
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | {
+      type: 'RESET_RISK_RATIO'
+    }
+  | { type: 'SET_DEBT'; debt: BigNumber }
+  | BaseAaveEvent
+
 type PositionInfo = () => JSX.Element

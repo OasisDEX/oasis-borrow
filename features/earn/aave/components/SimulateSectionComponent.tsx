@@ -1,6 +1,6 @@
-import { IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPositionTransition, IRiskRatio, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
-import { getFee } from 'actions/aave'
+import { getFee, transitionHasSwap } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
@@ -8,21 +8,18 @@ import { DetailsSectionContentTable } from 'components/DetailsSectionContentTabl
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { SimulateTitle } from 'components/SimulateTitle'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useSimulationYields } from 'features/aave/common/hooks'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
-import {
-  calculateSimulation,
-  CalculateSimulationResult,
-  Simulation,
-} from 'features/aave/open/services'
+import { Simulation } from 'features/aave/open/services'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import { HasGasEstimation } from 'helpers/form'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
+import { FilterYieldFieldsType } from 'lendingProtocols/common'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {
@@ -33,6 +30,8 @@ function mapSimulation(simulation?: Simulation): string[] {
   ]
 }
 
+const defaultYieldFields: FilterYieldFieldsType[] = ['7Days', '30Days', '90Days', '1Year']
+
 function SimulationSection({
   strategy,
   transition,
@@ -42,7 +41,7 @@ function SimulationSection({
   defaultRiskRatio,
 }: {
   strategy: IStrategyConfig
-  transition?: IPositionTransition
+  transition?: ISimplePositionTransition | IPositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
@@ -50,25 +49,27 @@ function SimulationSection({
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
-  const { aaveEarnYieldsQuery } = useAaveContext(strategy.protocol)
-  const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = useMemo(() => userInputAmount || new BigNumber(100), [userInputAmount])
 
-  const swapFee = (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
-  const gasFee = gasPrice?.gasEstimationEth || zero
-  const fees = swapFee.plus(gasFee)
-  const riskRatio = transition?.simulation.position.riskRatio || defaultRiskRatio
+  const fees = useMemo(() => {
+    const swapFee = (transitionHasSwap(transition) && getFee(transition?.simulation.swap)) || zero
+    const gasFee = gasPrice?.gasEstimationEth || zero
+    return swapFee.plus(gasFee)
+  }, [transition, gasPrice])
 
-  useEffect(() => {
-    aaveEarnYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
-      .then((yields) => {
-        const simulation = calculateSimulation({ amount, yields, token, fees })
-        setSimulation(simulation)
-      })
-      .catch((e) => {
-        console.error('unable to get yields', e)
-      })
-  }, [aaveEarnYieldsQuery, amount, fees, riskRatio, token])
+  const riskRatio = useMemo(() => transition?.simulation.position.riskRatio || defaultRiskRatio, [
+    defaultRiskRatio,
+    transition,
+  ])
+
+  const simulation = useSimulationYields({
+    amount,
+    riskRatio,
+    fields: defaultYieldFields,
+    token,
+    strategy,
+    fees,
+  })
 
   return (
     <>

@@ -2,14 +2,16 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useCoolMode } from 'helpers/sweet/useCoolMode'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
+import React, { Ref } from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
 import { BackgroundLight } from 'theme/BackgroundLight'
 import { BackgroundLighter } from 'theme/BackgroundLighter'
+import { ProductBackground } from 'theme/ProductBackground'
 
-import { ProductBackground } from '../theme/ProductBackground'
 import { Announcement } from './Announcement'
 import { ModalTrezorMetamaskEIP1559 } from './Modal'
 
@@ -26,6 +28,7 @@ interface WithAnnouncementLayoutProps extends BasicLayoutProps {
 }
 
 export function BasicLayout({ header, footer, children, sx, variant, bg }: BasicLayoutProps) {
+  const ref = useCoolMode()
   return (
     <Flex
       sx={{
@@ -37,7 +40,12 @@ export function BasicLayout({ header, footer, children, sx, variant, bg }: Basic
     >
       {bg}
       {header}
-      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+      <Container
+        variant={variant || 'appContainer'}
+        sx={{ flex: 2, mb: 5 }}
+        as="main"
+        ref={ref as Ref<HTMLDivElement>}
+      >
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}
@@ -54,6 +62,8 @@ export function WithAnnouncementLayout({
   variant,
   bg,
 }: WithAnnouncementLayoutProps) {
+  const ref = useCoolMode()
+
   return (
     <Flex
       sx={{
@@ -62,6 +72,7 @@ export function WithAnnouncementLayout({
         minHeight: '100%',
         ...sx,
       }}
+      ref={ref as Ref<HTMLDivElement>}
     >
       {bg}
       {header}
@@ -69,8 +80,8 @@ export function WithAnnouncementLayout({
         <Container variant="announcement">
           <Announcement
             text="Welcome to the new Oasis.app. We are thrilled to have you here."
-            discordLink="https://discord.gg/oasisapp"
-            link="https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/"
+            discordLink={EXTERNAL_LINKS.DISCORD}
+            link={EXTERNAL_LINKS.ETHEREUM_ORG_MERKLING}
             linkText="Check blog post"
           />
         </Container>

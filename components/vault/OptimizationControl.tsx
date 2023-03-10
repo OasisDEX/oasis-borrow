@@ -18,6 +18,7 @@ import {
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -54,7 +55,7 @@ function ZeroDebtOptimizationBanner({
           {showLink && (
             <>
               {', '}
-              <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 3 }}>
+              <AppLink href={EXTERNAL_LINKS.KB.HELP} sx={{ fontSize: 3 }}>
                 {t('here')}.
               </AppLink>
             </>

@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { allDefined } from 'helpers/allDefined'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { callBackIfDefined } from 'helpers/callBackIfDefined'
 import { useFlowState, UseFlowStateCBParamsType, UseFlowStateCBType } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
@@ -36,7 +37,7 @@ function NoConnectionStateView({
       isLoading: false,
       disabled: false,
       label: t('connect-wallet'),
-      url: '/connect',
+      url: INTERNAL_LINKS.connect,
     },
   }
 

@@ -8,11 +8,10 @@ import {
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
 } from '@oasisdex/transactions'
+import { Context, ContextConnected } from 'blockchain/network'
+import { GasPrice$ } from 'blockchain/prices'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { Context, ContextConnected } from '../network'
-import { GasPrice$ } from '../prices'
 
 export type CallDef<A, R> = CallDefAbstractContext<A, R, Context>
 
@@ -52,8 +51,9 @@ export function estimateGas<A extends TxMeta>(
   context: ContextConnected,
   txDef: TransactionDef<A>,
   args: A,
+  gasMultiplier?: number,
 ) {
-  return estimateGasAbstractContext<A, ContextConnected>(context, txDef, args)
+  return estimateGasAbstractContext<A, ContextConnected>(context, txDef, args, gasMultiplier)
 }
 
 export function createSendTransaction<A extends TxMeta>(
@@ -67,6 +67,12 @@ export function createSendWithGasConstraints<A extends TxMeta>(
   send: SendFunction<A>,
   context: ContextConnected,
   gasPrice$: GasPrice$,
+  gasMultiplier?: number,
 ) {
-  return createSendWithGasConstraintsAbstractContext<A, ContextConnected>(send, context, gasPrice$)
+  return createSendWithGasConstraintsAbstractContext<A, ContextConnected>(
+    send,
+    context,
+    gasPrice$,
+    gasMultiplier,
+  )
 }

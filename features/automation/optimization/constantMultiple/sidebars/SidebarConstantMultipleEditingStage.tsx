@@ -37,6 +37,7 @@ import { prepareConstantMultipleResetData } from 'features/automation/optimizati
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
 import {
   extractConstantMultipleCommonErrors,
@@ -166,10 +167,7 @@ export function SidebarConstantMultipleEditingStage({
       </Text>
       <Text as="p" variant="boldParagraph3" sx={{ color: 'neutral80' }}>
         {t('constant-multiple.set-trigger-risk')}
-        <AppLink
-          href="https://kb.oasis.app/help/what-are-the-risks-associated-with-constant-multiple"
-          sx={{ fontSize: 2 }}
-        >
+        <AppLink href={EXTERNAL_LINKS.KB.CONSTANT_MULTIPLE_RISKS} sx={{ fontSize: 2 }}>
           {t('here')}.
         </AppLink>
       </Text>

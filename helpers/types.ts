@@ -69,3 +69,5 @@ export type Unbox<T> = T extends Promise<infer U> ? U : T extends Array<infer Y>
 export interface PriceServiceResponse {
   [id: string]: string
 }
+
+export type RequiredField<T, K extends keyof T> = T & Required<Pick<T, K>>

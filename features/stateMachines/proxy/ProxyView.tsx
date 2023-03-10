@@ -1,6 +1,13 @@
 import { useActor } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import {
+  getEstimatedGasFeeTextOld,
+  VaultChangesInformationContainer,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
@@ -8,12 +15,6 @@ import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
 import { ActorRefFrom, Sender } from 'xstate'
 
-import { SidebarSection, SidebarSectionProps } from '../../../components/sidebar/SidebarSection'
-import {
-  getEstimatedGasFeeTextOld,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from '../../../components/vault/VaultChangesInformation'
 import { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from './state'
 
 interface ProxyViewProps {
@@ -40,12 +41,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
             <Trans
               i18nKey={'vault-form.subtext.proxy-start'}
               components={{
-                1: (
-                  <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                    sx={{ fontSize: 2 }}
-                  />
-                ),
+                1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
               }}
             />
           </Text>
@@ -54,7 +50,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
+              items={t('proxy-advantages', { returnObjects: true })}
               listStyle={{ my: 2 }}
             />
             <VaultChangesInformationContainer title={t('creating-proxy-contract')}>
@@ -90,12 +86,7 @@ function ProxyRunningView(props: { steps: [number, number] }) {
             <Trans
               i18nKey={'vault-form.subtext.proxy-progress'}
               components={{
-                1: (
-                  <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                    sx={{ fontSize: 2 }}
-                  />
-                ),
+                1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
               }}
             />
           </Text>

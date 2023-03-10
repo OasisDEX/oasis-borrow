@@ -1,18 +1,18 @@
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
+import {
+  getEstimatedGasFeeTextOld,
+  VaultChangesInformationContainer,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Image, Text } from 'theme-ui'
-
-import {
-  getEstimatedGasFeeTextOld,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from '../VaultChangesInformation'
 
 interface SidebarOpenVaultProxyStageProps {
   stage: SidebarVaultStages
@@ -40,12 +40,7 @@ export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxy
                 : 'vault-form.subtext.proxy-progress'
             }
             components={{
-              1: (
-                <AppLink
-                  href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                  sx={{ fontSize: 2 }}
-                />
-              ),
+              1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
             }}
           />
         </Text>
@@ -55,7 +50,7 @@ export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxy
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
+              items={t('proxy-advantages', { returnObjects: true })}
               listStyle={{ my: 2 }}
             />
             <VaultChangesInformationContainer title={t('creating-proxy-contract')}>
@@ -80,12 +75,7 @@ export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxy
           <Trans
             i18nKey="vault-form.subtext.new-proxy-temporally-disabled"
             components={{
-              1: (
-                <AppLink
-                  href="https://blog.oasis.app/what-to-expect-for-your-vault-after-the-merge/"
-                  sx={{ fontSize: 2 }}
-                />
-              ),
+              1: <AppLink href={EXTERNAL_LINKS.BLOG.VAULT_AFTER_MERGE} sx={{ fontSize: 2 }} />,
             }}
           />
         </Text>

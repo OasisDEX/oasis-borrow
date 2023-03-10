@@ -1,9 +1,8 @@
 import { FaqLayout } from '../../FaqLayout'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 
 export default ({ children }) => (
-  <FaqLayout learnMoreUrl="https://kb.oasis.app/help/earn-with-steth-aave-v3-e-mode">
-    {children}
-  </FaqLayout>
+  <FaqLayout learnMoreUrl={EXTERNAL_LINKS.KB.STETH_AAVE_V3_EMODE}>{children}</FaqLayout>
 )
 
 ##### Do I need to manage this Aave position?

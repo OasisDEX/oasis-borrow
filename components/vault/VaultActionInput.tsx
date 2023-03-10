@@ -10,7 +10,15 @@ import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
 
-export type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback' | 'Sell' | 'Buy' | 'Enter'
+export type VaultAction =
+  | 'Deposit'
+  | 'Withdraw'
+  | 'Generate'
+  | 'Payback'
+  | 'Sell'
+  | 'Buy'
+  | 'Enter'
+  | TranslateStringType
 const FIAT_PRECISION = 2
 
 export const PlusIcon = () => (

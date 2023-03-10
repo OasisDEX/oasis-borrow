@@ -1,13 +1,13 @@
+import { ReferralModal } from 'components/ReferralModal'
+import { SuccessfulJoinModal } from 'components/SuccessfullJoinModal'
 import { UserReferralState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAddress } from 'helpers/formatters/format'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-
-import { ReferralModal } from '../../components/ReferralModal'
-import { SuccessfulJoinModal } from '../../components/SuccessfullJoinModal'
 
 interface NewReferralModalProps {
   account?: string | null
@@ -47,7 +47,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
       {!success && !userReferral && (
         <ReferralModal
           heading="Welcome to the Oasis.app Referral Program"
-          topButton={{ text: t('connect-wallet'), func: () => push('/connect') }}
+          topButton={{ text: t('connect-wallet'), func: () => push(INTERNAL_LINKS.connect) }}
         />
       )}
       {!success && userReferral && userReferral.state === 'newUser' && (

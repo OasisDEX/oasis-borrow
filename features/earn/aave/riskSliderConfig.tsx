@@ -4,12 +4,12 @@ import {
   AdjustRiskViewConfig,
   richFormattedBoundary,
 } from 'features/aave/common/components/SidebarAdjustRiskView'
-import { externalLinks } from 'helpers/externalLinks'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatBigNumber } from 'helpers/formatters/format'
 
 const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
-    return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
+    return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'STETH/ETH' })
   },
   rightBoundary: {
     valueExtractor: (data) => data?.oracleAssetPrice,
@@ -19,7 +19,7 @@ const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
     translationKey: 'open-earn.aave.vault-form.configure-multiple.current-price',
   },
   link: {
-    url: externalLinks.stethHistory,
+    url: EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY,
     textTranslationKey: 'open-earn.aave.vault-form.configure-multiple.historical-ratio',
   },
   riskRatios: {
@@ -30,7 +30,7 @@ const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
 
 const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
-    return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'WSTETH/ETH' })
+    return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'WSTETH/ETH' })
   },
   rightBoundary: {
     valueExtractor: (data) => data?.oraclesPricesRatio,
@@ -40,7 +40,7 @@ const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
     translationKey: 'open-earn.aave.vault-form.configure-multiple.current-price',
   },
   link: {
-    url: externalLinks.stethHistory,
+    url: EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY,
     textTranslationKey: 'open-earn.aave.vault-form.configure-multiple.historical-ratio',
   },
   riskRatios: {

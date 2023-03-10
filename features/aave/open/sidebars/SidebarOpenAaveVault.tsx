@@ -7,6 +7,7 @@ import { StrategyInformationContainer } from 'features/aave/common/components/in
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { hasUserInteracted } from 'features/aave/helpers'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
@@ -15,6 +16,7 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -187,7 +189,7 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     ? {
         label: t('connect-wallet'),
         action: () => {
-          void push(`/connect`, getCustomNetworkParameter())
+          void push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
         },
         steps: undefined,
       }
@@ -275,7 +277,7 @@ function EditingStateViewSidebarPrimaryButton({
     return {
       label: t('connect-wallet'),
       action: () => {
-        void push(`/connect`, getCustomNetworkParameter())
+        void push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
       },
       steps: undefined,
     }
@@ -307,7 +309,7 @@ function EditingStateViewSidebarPrimaryButton({
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { hasOpenedPosition } = state.context
-  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
+  const SecondaryInputComponent = state.context.strategyConfig.viewComponents.secondaryInput
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
@@ -323,30 +325,21 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
             type="error"
           />
         )}
-        <AdjustRiskView
-          title={
-            state.context.strategyConfig.type === 'Earn'
-              ? t('sidebar-titles.open-earn-position')
-              : t('sidebar-titles.open-multiply-position')
-          }
+        <SecondaryInputComponent
           state={state}
           send={send}
           isLoading={isLoading}
-          primaryButton={{
-            steps: [state.context.currentStep, state.context.totalSteps],
-            isLoading: isLoading(),
-            disabled: !state.can('NEXT_STEP'),
-            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
-            action: () => send('NEXT_STEP'),
-          }}
-          textButton={{
-            label: t('open-earn.aave.vault-form.back-to-editing'),
-            action: () => send('BACK_TO_EDITING'),
-          }}
           viewLocked={hasOpenedPosition}
           showWarring={hasOpenedPosition}
-          noSidebar
         />
+        {hasUserInteracted(state) && (
+          <StrategyInformationContainer
+            state={state}
+            changeSlippageSource={(from) => {
+              send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+            }}
+          />
+        )}
       </Grid>
     ),
     primaryButton: {

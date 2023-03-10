@@ -4,6 +4,7 @@ import { WithArrow } from 'components/WithArrow'
 import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
 import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
 import { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { CommonVaultState } from 'helpers/types'
@@ -67,7 +68,7 @@ export function VaultProxyContentBox({
         />
       ) : (
         <>
-          <ListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
+          <ListWithIcon items={t('proxy-advantages', { returnObjects: true })} />
           {stage !== 'proxyInProgress' && (
             <Box>
               <Text as="p" sx={{ fontSize: 2, fontWeight: 'semiBold', mb: 3 }}>
@@ -96,9 +97,7 @@ export function VaultProxySubtitle({
         stage === 'proxySuccess' ? 'vault-form.subtext.proxy-success' : 'vault-form.subtext.proxy'
       }
       components={{
-        1: (
-          <AppLink href="https://kb.oasis.app/help/what-is-a-proxy-contract" sx={{ fontSize: 2 }} />
-        ),
+        1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
         2: <WithArrow sx={{ display: 'inline', color: 'interactive100', fontWeight: 'body' }} />,
       }}
     />
