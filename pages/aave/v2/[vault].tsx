@@ -38,7 +38,7 @@ function WithStrategy(positionId: PositionId) {
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
-  // TODO use proxiesRelatedWithPosition$ 
+  // TODO use proxiesRelatedWithPosition$
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
@@ -64,9 +64,7 @@ function WithStrategy(positionId: PositionId) {
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
-              <AaveManagePositionView
-                strategyConfig={_strategyConfig}
-              />
+              <AaveManagePositionView strategyConfig={_strategyConfig} />
             </Grid>
           </ManageAaveStateMachineContextProvider>
         )}

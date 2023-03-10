@@ -1,9 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { reactSelectCustomComponents } from 'components/reactSelectCustomComponents'
-import {
-  ProductLandingPagesFilter,
-  ProductLandingPagesFiltersKeys,
-} from 'helpers/productCards'
+import { ProductLandingPagesFilter, ProductLandingPagesFiltersKeys } from 'helpers/productCards'
 import React, { useCallback, useMemo } from 'react'
 import ReactSelect, { OptionProps, SingleValueProps, StylesConfig, ValueType } from 'react-select'
 import { Box, Flex } from 'theme-ui'

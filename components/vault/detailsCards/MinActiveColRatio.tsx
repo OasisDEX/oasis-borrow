@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
+import {
+  AfterPillProps,
+  VaultDetailsCard,
+  VaultDetailsCardModal,
+} from 'components/vault/VaultDetails'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'

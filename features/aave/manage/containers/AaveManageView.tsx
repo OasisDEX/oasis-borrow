@@ -65,9 +65,7 @@ function AaveManageContainer({
   )
 }
 
-export function AaveManagePositionView({
-  strategyConfig,
-}: AaveManageViewPositionViewProps) {
+export function AaveManagePositionView({ strategyConfig }: AaveManageViewPositionViewProps) {
   const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
     strategyConfig.protocol,
   )

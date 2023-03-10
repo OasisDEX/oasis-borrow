@@ -52,7 +52,7 @@ export function FollowedTable({ address }: { address: string }) {
         value={[contextData, followedMakerVaultsData]}
         customLoader={<PositionTableLoadingState />}
       >
-        {([context, followedMakerPositions,/*, followedAavePositions*/]) => {
+        {([context, followedMakerPositions /*, followedAavePositions*/]) => {
           const borrowPositions = getMakerBorrowPositions({ positions: followedMakerPositions })
           // const multiplyPositions = getMakerMultiplyPositions({ positions: followedMakerPositions })
           const earnPositions = getMakerEarnPositions({ positions: followedMakerPositions })

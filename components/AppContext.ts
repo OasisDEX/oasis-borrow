@@ -1356,14 +1356,14 @@ export function setupAppContext() {
       onEveryBlock$,
       chainContext$,
       aaveV2,
-      aaveV3
-      ,
+      aaveV3,
       {
         tickerPrices$: tokenPriceUSD$,
         context$,
         automationTriggersData$,
         readPositionCreatedEvents$,
-      },      allFollowedPositions$,
+      },
+      allFollowedPositions$,
     ),
   )
   const ownersPositionsList$ = memoize(

@@ -9,7 +9,10 @@ import {
 import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ManageStandardBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
+import {
+  ManageStandardBorrowVaultState,
+  ManageVaultChange,
+} from 'features/borrow/manage/pipes/manageVault'
 import { transactionToX } from 'helpers/form'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'

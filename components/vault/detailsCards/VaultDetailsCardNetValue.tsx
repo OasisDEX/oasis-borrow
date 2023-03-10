@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
-import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
-import { PriceInfo } from 'features/shared/priceInfo'
 import {
-  formatAmount,
-  formatCryptoBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+  AfterPillProps,
+  VaultDetailsCard,
+  VaultDetailsCardModal,
+} from 'components/vault/VaultDetails'
+import { PriceInfo } from 'features/shared/priceInfo'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

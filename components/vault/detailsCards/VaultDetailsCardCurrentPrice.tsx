@@ -1,5 +1,9 @@
 import { AppLink } from 'components/Links'
-import { getPriceChangeColor, VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
+import {
+  getPriceChangeColor,
+  VaultDetailsCard,
+  VaultDetailsCardModal,
+} from 'components/vault/VaultDetails'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'

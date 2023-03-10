@@ -2,7 +2,10 @@ import { createAccount, CreateDPMAccount } from 'blockchain/calls/accountFactory
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { TxHelpers } from 'components/AppContext'
-import { TransactionStateMachine, TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
+import {
+  TransactionStateMachine,
+  TransactionStateMachineResultEvents,
+} from 'features/stateMachines/transaction'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
