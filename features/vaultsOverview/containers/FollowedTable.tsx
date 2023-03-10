@@ -24,7 +24,6 @@ import React, { useMemo } from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
-  // FIXME ŁW prevent react hook error when fetching aave positions
   const { context$, followedMakerVaults$, followedAavePositions$ } = useAppContext()
   const { walletAddress } = useAccount()
   const [contextData, contextError] = useObservable(context$)

@@ -60,7 +60,7 @@ function WithStrategy(positionId: PositionId) {
                 token2: _strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
-              url={`/aave/v2/${positionId}`} // TODO ŁW should it be v2 or v3 ?
+              url={`/aave/v2/${positionId}`} // TODO ŁW should it be v2 or v3 this file is in v2 directory?
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
