@@ -1,12 +1,12 @@
-import Web3 from 'web3'
-
-import { DssProxyActions } from '../../../../types/web3-v1-contracts/dss-proxy-actions'
+import { ContextConnected } from 'blockchain/network'
+import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
+import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
-} from '../../../../types/web3-v1-contracts/types'
-import { ContextConnected } from '../../../network'
-import { amountToWei, amountToWeiRoundDown } from '../../../utils'
+} from 'types/web3-v1-contracts/types'
+import Web3 from 'web3'
+
 import {
   ClaimRewardData,
   DepositAndGenerateData,

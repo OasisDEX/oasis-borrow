@@ -1,7 +1,7 @@
+import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { expect } from 'chai'
+import { getStateUnpacker } from 'helpers/testHelpers'
 
-import { getStateUnpacker } from '../../../helpers/testHelpers'
-import { MakerVaultType } from '../vaultResolver'
 import { ProxyActionsAdapterType } from './adapters/ProxyActionsSmartContractAdapterInterface'
 import { proxyActionsAdapterResolver$ } from './proxyActionsAdapterResolver'
 

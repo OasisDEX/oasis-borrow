@@ -1,6 +1,7 @@
 import { nullAddress } from '@oasisdex/utils'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { contractDesc } from 'blockchain/config'
+import { Context } from 'blockchain/network'
 import { isEqual } from 'lodash'
 import { combineLatest, defer, Observable, of } from 'rxjs'
 import {
@@ -14,7 +15,6 @@ import {
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 
-import { Context } from '../network'
 import { TransactionDef } from './callsHelpers'
 import { call, CallDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'

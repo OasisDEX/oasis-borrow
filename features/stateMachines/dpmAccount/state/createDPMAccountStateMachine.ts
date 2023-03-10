@@ -1,15 +1,14 @@
+import { createAccount, CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { TxHelpers } from 'components/AppContext'
+import { TransactionStateMachine, TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators'
 import { ActorRefFrom, AnyEventObject, assign, createMachine, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
-
-import { createAccount, CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
-import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
-import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
-import { TxHelpers } from '../../../../components/AppContext'
-import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
-import { TransactionStateMachine, TransactionStateMachineResultEvents } from '../../transaction'
 
 export interface DMPAccountStateMachineContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount, UserDpmAccount>>

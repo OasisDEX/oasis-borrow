@@ -15,6 +15,7 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { AutoTakeProfitInfoSectionControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitInfoSectionControl'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
@@ -28,8 +29,6 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
-
-import { AutoTakeProfitInfoSectionControl } from '../controls/AutoTakeProfitInfoSectionControl'
 
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange

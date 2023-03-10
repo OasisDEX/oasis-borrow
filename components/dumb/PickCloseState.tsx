@@ -1,7 +1,6 @@
+import { ActionPills } from 'components/ActionPills'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { ActionPills } from '../ActionPills'
 
 export interface PickCloseStateProps {
   collateralTokenSymbol: string

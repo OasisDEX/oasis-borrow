@@ -2,50 +2,50 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
+import {
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
+  MutableManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
+import {
+  applyManageVaultCalculations,
+  defaultManageMultiplyVaultCalculations,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import {
+  applyManageVaultConditions,
+  applyManageVaultStageCategorisation,
+  defaultManageMultiplyVaultConditions,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultConditions'
+import { applyManageVaultEnvironment } from 'features/multiply/manage/pipes/manageMultiplyVaultEnvironment'
+import { manageMultiplyInputsDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
+import {
+  applyManageVaultSummary,
+  defaultManageVaultSummary,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultSummary'
+import { applyManageVaultTransaction } from 'features/multiply/manage/pipes/manageMultiplyVaultTransactions'
+import { applyManageVaultTransition } from 'features/multiply/manage/pipes/manageMultiplyVaultTransitions'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
+import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
+import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import moment, { Moment } from 'moment'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
-import { getToken } from '../../../../../blockchain/tokensMetadata'
-import { one, zero } from '../../../../../helpers/zero'
-import { applyExchange } from '../../../../multiply/manage/pipes/manageMultiplyQuote'
-import {
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultState,
-  MutableManageMultiplyVaultState,
-} from '../../../../multiply/manage/pipes/manageMultiplyVault'
-import {
-  applyManageVaultCalculations,
-  defaultManageMultiplyVaultCalculations,
-} from '../../../../multiply/manage/pipes/manageMultiplyVaultCalculations'
-import {
-  applyManageVaultConditions,
-  applyManageVaultStageCategorisation,
-  defaultManageMultiplyVaultConditions,
-} from '../../../../multiply/manage/pipes/manageMultiplyVaultConditions'
-import { applyManageVaultEnvironment } from '../../../../multiply/manage/pipes/manageMultiplyVaultEnvironment'
-import { manageMultiplyInputsDefaults } from '../../../../multiply/manage/pipes/manageMultiplyVaultForm'
-import {
-  applyManageVaultSummary,
-  defaultManageVaultSummary,
-} from '../../../../multiply/manage/pipes/manageMultiplyVaultSummary'
-import { applyManageVaultTransaction } from '../../../../multiply/manage/pipes/manageMultiplyVaultTransactions'
-import { applyManageVaultTransition } from '../../../../multiply/manage/pipes/manageMultiplyVaultTransitions'
-import {
-  finalValidation,
-  validateErrors,
-  validateWarnings,
-} from '../../../../multiply/manage/pipes/manageMultiplyVaultValidations'
-import { BalanceInfo, balanceInfoChange$ } from '../../../../shared/balanceInfo'
 import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'

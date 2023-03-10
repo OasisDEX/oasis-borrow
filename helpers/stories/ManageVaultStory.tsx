@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
+import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import {
   defaultMutableManageVaultState,
   MutableManageVaultState,
@@ -18,8 +19,6 @@ import React, { useEffect } from 'react'
 import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
-
-import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
 
 type ManageVaultStory = { title?: string } & MockManageVaultProps
 

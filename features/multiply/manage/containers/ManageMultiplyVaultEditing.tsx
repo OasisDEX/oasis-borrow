@@ -8,6 +8,8 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { ManageMultiplyVaultState, OtherAction } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -22,8 +24,6 @@ import React, { useEffect } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { ManageMultiplyVaultState, OtherAction } from '../pipes/manageMultiplyVault'
-import { MAX_COLL_RATIO } from '../pipes/manageMultiplyVaultCalculations'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
 //TODO max buy token, not needed right now but may be useful in near feature according to the designs

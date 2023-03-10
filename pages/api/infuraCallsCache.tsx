@@ -1,10 +1,9 @@
 import { withSentry } from '@sentry/nextjs'
+import { networksById } from 'blockchain/config'
 import { BatchManager } from 'helpers/api/BatchManager'
+import { Request } from 'helpers/api/BatchManager'
 import { NextApiRequest, NextApiResponse } from 'next'
 import NodeCache from 'node-cache'
-
-import { networksById } from '../../blockchain/config'
-import { Request } from '../../helpers/api/BatchManager'
 
 function respond(
   req: NextApiRequest,

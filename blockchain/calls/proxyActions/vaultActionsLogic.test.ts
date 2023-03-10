@@ -1,10 +1,10 @@
 import { BigNumber } from 'bignumber.js'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { expect } from 'chai'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one } from 'helpers/zero'
 import { describe } from 'mocha'
 
-import { TxMetaKind } from '../txMeta'
 import { MockProxyActionsSmartContractAdapter } from './adapters/mockProxyActionsSmartContractAdapter'
 import { vaultActionsLogic } from './vaultActionsLogic'
 

@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -14,7 +15,6 @@ import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 
-import { TxMetaKind } from '../txMeta'
 import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
 import { getWithdrawAndPaybackCallData } from './vaultActionsLogic'
 

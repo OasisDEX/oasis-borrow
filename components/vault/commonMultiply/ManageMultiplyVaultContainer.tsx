@@ -1,4 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
+import { useAppContext } from 'components/AppContextProvider'
+import { DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
@@ -7,9 +9,6 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
-
-import { useAppContext } from '../../AppContextProvider'
-import { DefaultVaultHeaderProps } from '../DefaultVaultHeader'
 
 export interface ManageMultiplyVaultContainerProps {
   manageVault: ManageMultiplyVaultState

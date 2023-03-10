@@ -1,8 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { getToken } from 'blockchain/tokensMetadata'
 import React, { ComponentProps } from 'react'
 import { Flex, Text } from 'theme-ui'
-
-import { getToken } from '../blockchain/tokensMetadata'
 
 export function TokenSymbol({
   token,
