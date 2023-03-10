@@ -5,6 +5,7 @@ import { PositionId } from 'features/aave/types'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
+import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
@@ -67,6 +68,8 @@ export function getAjnaPosition$(
           context.ajnaPoolPairs[
             `${meta.collateralToken}-${meta.quoteToken}` as keyof typeof context.ajnaPoolPairs
           ].address,
+        quotePrice: zero,
+        collateralPrice: zero,
       }
 
       const commonDependency = {

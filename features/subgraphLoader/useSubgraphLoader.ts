@@ -1,19 +1,19 @@
 import { getNetworkId } from '@oasisdex/web3-context'
 import { NetworkIds } from 'blockchain/network'
-import { Subgraphs } from 'features/subgraphLoader/types'
+import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
 import { useEffect, useState } from 'react'
 
-interface UseSubgraphLoader {
+interface UseSubgraphLoader<R> {
   isError: boolean
   isLoading: boolean
-  response: Object | undefined
+  response: SubgraphBaseResponse<R> | undefined
 }
 
 export async function loadSubgraph<
   S extends keyof Subgraphs,
   M extends keyof Subgraphs[S],
   P extends Subgraphs[S][M]
->(subgraph: S, method: M, params: P) {
+>(subgraph: S, method: M, params: P): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
   const networkId = getNetworkId() as NetworkIds
   const response = await fetch(`/api/subgraph`, {
     method: 'POST',
@@ -34,7 +34,9 @@ export function useSubgraphLoader<
   P extends Subgraphs[S][M]
 >(subgraph: S, method: M, params: P) {
   const stringifiedParams = JSON.stringify(params)
-  const [state, setState] = useState<UseSubgraphLoader>({
+  const [state, setState] = useState<
+    UseSubgraphLoader<SubgraphsResponses[S][keyof SubgraphsResponses[S]]>
+  >({
     isError: false,
     isLoading: false,
     response: undefined,
@@ -47,6 +49,8 @@ export function useSubgraphLoader<
     }))
 
     loadSubgraph(subgraph, method, params)
+      // @ts-ignore
+      // TODO adjust types
       .then(({ success, response }) => {
         setState((prev) => ({
           ...prev,

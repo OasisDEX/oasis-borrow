@@ -57,7 +57,9 @@ function getMinMaxAndRange({
 
   const range = [
     ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
-  ].sort((a, b) => a.toNumber() - b.toNumber())
+  ]
+    .sort((a, b) => a.toNumber() - b.toNumber())
+    .map((item) => item.decimalPlaces(18))
 
   return {
     min: range[0],
@@ -145,7 +147,7 @@ export function AjnaEarnSlider() {
 
   function handleChange(v: BigNumber) {
     const newValue = snapToPredefinedValues(v, range)
-    updateState('price', newValue.decimalPlaces(2))
+    updateState('price', newValue)
   }
 
   return (

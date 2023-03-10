@@ -52,6 +52,8 @@ export async function getAjnaParameters({
     dpmProxyAddress: dpmAddress,
     quoteTokenPrecision,
     collateralTokenPrecision,
+    quotePrice: zero,
+    collateralPrice: zero,
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
@@ -169,7 +171,7 @@ export async function getAjnaParameters({
             quoteAmount: depositAmount || zero,
             position: position as AjnaEarnPosition,
           },
-          { ...dependencies, getEarnData: getAjnaEarnData },
+          { ...dependencies },
         )
       }
       break
@@ -185,7 +187,7 @@ export async function getAjnaParameters({
             quoteAmount: withdrawAmount || zero,
             position: position as AjnaEarnPosition,
           },
-          { ...dependencies, getEarnData: getAjnaEarnData },
+          { ...dependencies },
         )
       }
       break
