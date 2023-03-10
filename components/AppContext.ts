@@ -135,7 +135,6 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
-import { AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPosition$ } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import {
   DpmPositionData,
@@ -1401,14 +1400,14 @@ export function setupAppContext() {
     (token, spender) => `${token}-${spender}`,
   )
 
-  const ajnaDpmPositionData$ = memoize(
-    curry(getDpmPositionData$<AjnaProduct>)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+  const dpmPositionData$ = memoize(
+    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
   const ajnaPosition$ = memoize(
     curry(getAjnaPosition$)(context$, onEveryBlock$),
-    (dpmPositionData: DpmPositionData<AjnaProduct>) => dpmPositionData,
+    (dpmPositionData: DpmPositionData) => dpmPositionData,
   )
 
   return {
@@ -1493,7 +1492,7 @@ export function setupAppContext() {
     allowanceStateMachine,
     allowanceForAccount$,
     contextForAddress$,
-    ajnaDpmPositionData$,
+    dpmPositionData$,
     ajnaPosition$,
     chainContext$,
     positionIdFromDpmProxy$,

@@ -7,18 +7,18 @@ import { isEqual } from 'lodash'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
-export interface DpmPositionData<P> extends UserDpmAccount {
+export interface DpmPositionData extends UserDpmAccount {
   collateralToken: string
-  product: P
+  product: string
   protocol: string
   quoteToken: string
 }
 
-export function getDpmPositionData$<P>(
+export function getDpmPositionData$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated>,
   positionId: PositionId,
-): Observable<DpmPositionData<P>> {
+): Observable<DpmPositionData> {
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dpmProxy }) => {
       return combineLatest(
@@ -31,7 +31,7 @@ export function getDpmPositionData$<P>(
         ? {
             ...dpmProxy,
             collateralToken: lastCreatedPosition.collateralTokenSymbol,
-            product: lastCreatedPosition.positionType.toLowerCase() as P,
+            product: lastCreatedPosition.positionType.toLowerCase(),
             protocol: lastCreatedPosition.protocol,
             quoteToken: lastCreatedPosition.debtTokenSymbol,
           }
@@ -42,17 +42,17 @@ export function getDpmPositionData$<P>(
   )
 }
 
-export function getStaticDpmPositionData$<P extends string>({
+export function getStaticDpmPositionData$({
   collateralToken,
   product,
   protocol,
   quoteToken,
 }: {
   collateralToken: string
-  product: P
+  product: string
   protocol: string
   quoteToken: string
-}): Observable<DpmPositionData<P>> {
+}): Observable<DpmPositionData> {
   return EMPTY.pipe(
     startWith({
       collateralToken,
