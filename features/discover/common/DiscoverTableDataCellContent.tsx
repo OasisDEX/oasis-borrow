@@ -239,7 +239,7 @@ export function DiscoverTableDataCellAsset({
             right: [0, null, null, 'auto'],
             mr: ['24px', null, null, 4],
           }}
-          protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported 
+          protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported
           // IMHO best way to do it would be in DiscoverTableRowData as there is 1 follow button per row
         />
       )}
