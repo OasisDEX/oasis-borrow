@@ -1350,7 +1350,6 @@ export function setupAppContext() {
       standardCdps$,
     ]),
   )
-  // TODO ŁW Pass remaining observables
   const followedAavePositions$ = memoize(
     curry(createFollowedAavePositions$)(
       onEveryBlock$,
