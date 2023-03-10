@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import { AjnaSimulationData } from 'actions/ajna'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'

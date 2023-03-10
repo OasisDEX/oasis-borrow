@@ -1,5 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition, views as pocViews } from '@oasis-actions-poc'
-import { views } from '@oasisdex/oasis-actions'
+import { AjnaEarnPosition, AjnaPosition, views } from '@oasisdex/oasis-actions-poc'
 import { Context } from 'blockchain/network'
 import { ethers } from 'ethers'
 import { PositionId } from 'features/aave/types'
@@ -78,7 +77,7 @@ export function getAjnaPosition$(
       const positionPerProduct = {
         borrow: async () => views.ajna.getPosition(commonPayload, commonDependency),
         earn: async () =>
-          pocViews.ajna.getEarnPosition(commonPayload, {
+          views.ajna.getEarnPosition(commonPayload, {
             ...commonDependency,
             getEarnData: getAjnaEarnData,
           }),

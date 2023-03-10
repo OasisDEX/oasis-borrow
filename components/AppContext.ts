@@ -324,6 +324,7 @@ import {
 } from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
+
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -384,7 +385,12 @@ function createTxHelpers$(
     filter(({ status }) => status === 'connected'),
     map((context) => ({
       send: createSendTransaction(send, context),
-      sendWithGasEstimation: createSendWithGasConstraints(send, context, gasPrice$),
+      sendWithGasEstimation: createSendWithGasConstraints(
+        send,
+        context,
+        gasPrice$,
+        getGasMultiplier(context),
+      ),
       estimateGas: <B extends TxData>(def: TransactionDef<B>, args: B): Observable<number> => {
         return estimateGas(context, def, args, getGasMultiplier(context))
       },
