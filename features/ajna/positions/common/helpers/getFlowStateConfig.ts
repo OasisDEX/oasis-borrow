@@ -35,6 +35,11 @@ export function getFlowStateConfig({
         amount: state.depositAmount,
         token: quoteToken,
       }
+    case 'withdraw-earn':
+      return {
+        amount: zero,
+        token: 'ETH',
+      }
     case 'open-borrow':
     case 'deposit-borrow':
       return {
