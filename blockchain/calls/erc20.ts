@@ -1,10 +1,10 @@
 import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
-import * as erc20 from 'blockchain/abi/erc20.json'
-import { contractDesc } from 'blockchain/config'
-import { getToken } from 'blockchain/tokensMetadata'
 import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
+import * as erc20 from '../abi/erc20.json'
+import { contractDesc } from '../config'
+import { getToken } from '../tokensMetadata'
 import { CallDef, TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
 

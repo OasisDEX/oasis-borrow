@@ -1,10 +1,11 @@
 import { Heading } from '@theme-ui/components'
 import { BigNumber } from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
-import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React from 'react'
+
+import { useObservable } from '../../helpers/observableHook'
+import { useAppContext } from '../AppContextProvider'
 
 interface VaultHeadingManageProps {
   vaultId: BigNumber

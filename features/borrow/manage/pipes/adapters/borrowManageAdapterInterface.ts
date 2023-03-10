@@ -2,12 +2,10 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import {
-  ManageVaultChange,
-  MutableManageVaultState,
-} from 'features/borrow/manage/pipes/manageVault'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
+
+import { BalanceInfo } from '../../../../shared/balanceInfo'
+import { PriceInfo } from '../../../../shared/priceInfo'
+import { ManageVaultChange, MutableManageVaultState } from '../manageVault'
 
 export type CreateInitialVaultStateArgs<V extends Vault> = {
   vault: V

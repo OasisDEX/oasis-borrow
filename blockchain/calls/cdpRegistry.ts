@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { CdpRegistry } from 'types/web3-v1-contracts/cdp-registry'
 import Web3 from 'web3'
 
+import { CdpRegistry } from '../../types/web3-v1-contracts/cdp-registry'
 import { CallDef } from './callsHelpers'
 
 export const cdpRegistryOwns: CallDef<BigNumber, string> = {

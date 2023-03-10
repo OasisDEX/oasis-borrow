@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { getStateUnpacker } from 'helpers/testHelpers'
 import { BehaviorSubject, Observable, of } from 'rxjs'
 import sinon from 'sinon'
 
+import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
 
 describe('bonusPipe', () => {

@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { getStateUnpacker } from 'helpers/testHelpers'
 import { of } from 'rxjs'
 
+import { getStateUnpacker } from '../../helpers/testHelpers'
+import { VaultType } from '../generalManageVault/vaultType'
 import { createCheckOasisCDPType$ } from './checkOasisCDPType'
 
 describe('checkOasisPositionType', () => {

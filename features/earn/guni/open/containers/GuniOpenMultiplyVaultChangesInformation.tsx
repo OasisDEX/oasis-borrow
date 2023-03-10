@@ -7,12 +7,13 @@ import {
   VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
+
+import { OpenGuniVaultState } from '../pipes/openGuniVault'
 
 export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultState) {
   const [showFees, setShowFees] = useState(false)

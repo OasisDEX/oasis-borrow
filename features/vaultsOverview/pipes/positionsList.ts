@@ -1,9 +1,10 @@
-import { Context } from 'blockchain/network'
-import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { VaultWithHistory } from 'features/vaultHistory/vaultsHistory'
 import { combineLatest, Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
+
+import { Context } from '../../../blockchain/network'
+import { IlkWithBalance } from '../../ilks/ilksWithBalances'
+import { VaultWithHistory } from '../../vaultHistory/vaultsHistory'
 
 export type MakerPositionDetails = VaultWithHistory &
   IlkWithBalance & {

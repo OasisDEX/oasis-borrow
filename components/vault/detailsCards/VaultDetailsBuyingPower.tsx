@@ -1,8 +1,9 @@
-import { VaultDetailsCardModal } from 'components/vault/VaultDetails'
-import { ModalProps } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
+
+import { ModalProps } from '../../../helpers/modalHook'
+import { VaultDetailsCardModal } from '../VaultDetails'
 
 export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
   const { t } = useTranslation()

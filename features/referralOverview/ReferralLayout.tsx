@@ -5,7 +5,8 @@ import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Heading, Text } from 'theme-ui'
-import { fadeInAnimation } from 'theme/animations'
+
+import { fadeInAnimation } from '../../theme/animations'
 
 export function ReferralLayout({ children }: WithChildren) {
   const { t } = useTranslation()

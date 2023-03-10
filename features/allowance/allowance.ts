@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { TxHelpers } from 'components/AppContext'
-import { TxError } from 'helpers/types'
 
+import { TxError } from '../../helpers/types'
 import { setAllowance } from './setAllowance'
 
 // TODO: there is inconsistency between open/manage

@@ -1,20 +1,20 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { MockProxyActionsSmartContractAdapter } from 'blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
-import {
-  vaultActionsLogic,
-  VaultActionsLogicInterface,
-} from 'blockchain/calls/proxyActions/vaultActionsLogic'
-import { VaultResolve } from 'blockchain/calls/vaultResolver'
-import { createMockVaultResolver$ } from 'blockchain/calls/vaultResolver.mock'
-import { ContextConnected } from 'blockchain/network'
 import { expect } from 'chai'
-import { protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { mockContextConnected } from 'helpers/mocks/context.mock'
-import { getStateUnpacker } from 'helpers/testHelpers'
 import { NEVER, Observable, of } from 'rxjs'
 import sinon from 'sinon'
 
+import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from '../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { VaultResolve } from '../../blockchain/calls/vaultResolver'
+import { createMockVaultResolver$ } from '../../blockchain/calls/vaultResolver.mock'
+import { ContextConnected } from '../../blockchain/network'
+import { protoTxHelpers, TxHelpers } from '../../components/AppContext'
+import { mockContextConnected } from '../../helpers/mocks/context.mock'
+import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState } from './bonusPipe'
 import { createMakerProtocolBonusAdapter } from './makerProtocolBonusAdapter'
 

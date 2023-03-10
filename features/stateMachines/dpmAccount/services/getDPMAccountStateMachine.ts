@@ -1,13 +1,14 @@
-import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { TxHelpers } from 'components/AppContext'
+import { Observable } from 'rxjs'
+
+import { CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
+import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
+import { TxHelpers } from '../../../../components/AppContext'
+import { HasGasEstimation } from '../../../../helpers/form'
+import { TransactionStateMachine } from '../../transaction'
 import {
   createDPMAccountStateMachine,
   getDPMAccountStateMachineServices,
-} from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
-import { TransactionStateMachine } from 'features/stateMachines/transaction'
-import { HasGasEstimation } from 'helpers/form'
-import { Observable } from 'rxjs'
+} from '../state/createDPMAccountStateMachine'
 
 export function getDPMAccountStateMachine(
   txHelpers$: Observable<TxHelpers>,

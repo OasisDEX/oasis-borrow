@@ -1,4 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { isNullish } from 'helpers/functions'
+import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
+
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -10,12 +15,7 @@ import {
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
   vaultWillBeAtRiskLevelWarningValidator,
-} from 'features/form/commonValidators'
-import { isNullish } from 'helpers/functions'
-import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
-import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { zero } from 'helpers/zero'
-
+} from '../../../form/commonValidators'
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
 const defaultOpenVaultStageCategories = {

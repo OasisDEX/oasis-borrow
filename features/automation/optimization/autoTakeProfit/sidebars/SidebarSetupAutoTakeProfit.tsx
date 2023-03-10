@@ -16,7 +16,6 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
-import { AutoTakeProfitInfoSectionControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitInfoSectionControl'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { SidebarAutoTakeProfitRemovalEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitRemovalEditingStage'
 import {
@@ -37,6 +36,8 @@ import {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
+
+import { AutoTakeProfitInfoSectionControl } from '../controls/AutoTakeProfitInfoSectionControl'
 
 interface SidebarSetupAutoTakeProfitProps {
   autoTakeProfitState: AutoTakeProfitFormChange

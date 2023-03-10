@@ -1,9 +1,10 @@
-import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
-import { VaultProxySubtitle } from 'components/vault/VaultProxy'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
+
+import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipes/manageMultiplyVault'
+import { WithVaultFormStepIndicator } from '../VaultForm'
+import { VaultProxySubtitle } from '../VaultProxy'
 
 export function ManageVaultHeaderAllowance({
   isProxyStage,

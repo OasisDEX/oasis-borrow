@@ -1,16 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
-import {
-  AfterPillProps,
-  VaultDetailsCard,
-  VaultDetailsCardModal,
-} from 'components/vault/VaultDetails'
-import { formatAmount } from 'helpers/formatters/format'
-import { ModalProps, useModal } from 'helpers/modalHook'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
+
+import { getToken } from '../../../blockchain/tokensMetadata'
+import { formatAmount } from '../../../helpers/formatters/format'
+import { ModalProps, useModal } from '../../../helpers/modalHook'
+import { zero } from '../../../helpers/zero'
+import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface CollateralLockedProps {
   token: string

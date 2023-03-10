@@ -1,6 +1,7 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
 import { Box, Flex, Image } from 'theme-ui'
+
+import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 
 export function FooterBackground() {
   return (

@@ -1,11 +1,12 @@
 import { BigNumber } from 'bignumber.js'
-import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading, Text } from 'theme-ui'
+
+import { DefinitionList, DefinitionListItem } from '../DefinitionList'
+import { AppLink } from '../Links'
+import { WithArrow } from '../WithArrow'
 
 interface VaultInformationItemProps {
   text: string

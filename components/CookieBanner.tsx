@@ -1,11 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { COOKIE_NAMES, CookieName, manageCookie } from 'analytics/common'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
 import { currentContent } from 'features/content'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { Fragment, MouseEventHandler, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
+
+import { COOKIE_NAMES, CookieName, manageCookie } from '../analytics/common'
 
 function Checkbox({
   checked,

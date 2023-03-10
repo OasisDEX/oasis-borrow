@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
-import { billion, million, thousand, zero } from 'helpers/zero'
 import { beforeEach, describe, it } from 'mocha'
 
+import { billion, million, thousand, zero } from '../zero'
 import {
   formatAsShorthandNumbers,
   formatCryptoBalance,

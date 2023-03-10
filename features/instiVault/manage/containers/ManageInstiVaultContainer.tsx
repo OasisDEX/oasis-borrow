@@ -7,13 +7,13 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
-import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
+import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {

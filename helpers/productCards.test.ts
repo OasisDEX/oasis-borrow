@@ -1,11 +1,11 @@
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { OraclePriceData } from 'blockchain/prices'
 import { expect } from 'chai'
 import { mockIlkData } from 'helpers/mocks/ilks.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of } from 'rxjs'
 
+import { IlkData } from '../blockchain/ilks'
+import { OraclePriceData } from '../blockchain/prices'
 import {
   borrowPageCardsData,
   createProductCardsData$,

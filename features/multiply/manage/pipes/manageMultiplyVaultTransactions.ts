@@ -3,27 +3,27 @@ import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
-  DepositAndGenerateData,
-  WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
-import {
   adjustMultiplyVault,
   closeVaultCall,
   MultiplyAdjustData,
 } from 'blockchain/calls/proxyActions/proxyActions'
-import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
-import { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
+import {
+  DepositAndGenerateData,
+  WithdrawAndPaybackData,
+} from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { StandardDssProxyActionsContractAdapter } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
+import { vaultActionsLogic } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { TxError } from '../../../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =

@@ -1,12 +1,13 @@
 import { IPosition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
-} from 'components/vault/VaultChangesInformation'
-import { formatPercent } from 'helpers/formatters/format'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
+} from '../../../../../components/vault/VaultChangesInformation'
+import { formatPercent } from '../../../../../helpers/formatters/format'
 
 interface LtvInformationProps {
   transactionParameters: ISimplePositionTransition

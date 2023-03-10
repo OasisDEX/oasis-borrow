@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
-import { mockVault$ } from 'helpers/mocks/vaults.mock'
-import { getStateUnpacker } from 'helpers/testHelpers'
-import { zero } from 'helpers/zero'
 import { BehaviorSubject, of } from 'rxjs'
+
+import { mockVault$ } from '../helpers/mocks/vaults.mock'
+import { getStateUnpacker } from '../helpers/testHelpers'
+import { zero } from '../helpers/zero'
 
 describe('instiVault$', () => {
   it('pipes nib, peace', () => {

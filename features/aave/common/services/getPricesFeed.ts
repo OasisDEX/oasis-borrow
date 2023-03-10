@@ -1,9 +1,10 @@
-import { Tickers } from 'blockchain/prices'
-import { BaseAaveEvent } from 'features/aave/common/BaseAaveContext'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
 import { map } from 'rxjs/operators'
+
+import { Tickers } from '../../../../blockchain/prices'
+import { BaseAaveEvent } from '../BaseAaveContext'
 
 export function getPricesFeed$(
   prices$: (tokens: string[]) => Observable<Tickers>,

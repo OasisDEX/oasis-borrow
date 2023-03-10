@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { map, share, startWith, switchMap } from 'rxjs/operators'
+
+import { zero } from '../../helpers/zero'
 
 export enum ClaimTxnState {
   PENDING = 'PENDING',

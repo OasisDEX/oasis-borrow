@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'blockchain/vaults'
-import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
+import { Vault } from '../../blockchain/vaults'
+import { ManageInstiVaultState } from '../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { ManageStandardBorrowVaultState } from '../borrow/manage/pipes/manageVault'
+import { ManageEarnVaultState } from '../earn/guni/manage/pipes/manageGuniVault'
+import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
 
 export type WithToggle<T> = T & { toggleVaultType: () => void }

@@ -1,6 +1,7 @@
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { combineLatest, Observable } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
+
+import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
 
 export function getAvailableDPMProxy$(
   userDpmProxies$: (account: string) => Observable<UserDpmAccount[]>,

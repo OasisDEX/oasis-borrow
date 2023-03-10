@@ -1,12 +1,13 @@
 import { IPosition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
-import {
-  VaultChangesInformationArrow,
-  VaultChangesInformationItem,
-} from 'components/vault/VaultChangesInformation'
 import { displayMultiple } from 'helpers/display-multiple'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import {
+  VaultChangesInformationArrow,
+  VaultChangesInformationItem,
+} from '../../../../../components/vault/VaultChangesInformation'
 
 interface MultiplyInformationProps {
   transactionParameters: ISimplePositionTransition

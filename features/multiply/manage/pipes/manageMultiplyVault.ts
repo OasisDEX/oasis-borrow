@@ -15,18 +15,13 @@ import { ConstantMultipleTriggerData } from 'features/automation/optimization/co
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import {
   SaveVaultType,
   saveVaultTypeForAccount,
   VaultType,
 } from 'features/generalManageVault/vaultType'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
-import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -34,6 +29,11 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
+import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
+import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
+import { createHistoryChange$, VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import {
   applyExchange,
   createExchangeChange$,

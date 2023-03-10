@@ -1,6 +1,6 @@
-import { OasisStats } from 'features/homepage/OasisStats'
-import { config } from 'server/config'
-import { getSnowflakeConnection } from 'server/snowflake'
+import { OasisStats } from '../../features/homepage/OasisStats'
+import { config } from '../config'
+import { getSnowflakeConnection } from '../snowflake'
 
 interface StatsResponse {
   MEDIAN_VAULT_SIZE_USD: number

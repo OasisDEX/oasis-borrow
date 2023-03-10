@@ -1,8 +1,8 @@
 import { IlkData } from 'blockchain/ilks'
-import { InstiVault } from 'blockchain/instiVault'
-import { Vault } from 'blockchain/vaults'
 import React from 'react'
 
+import { InstiVault } from '../../blockchain/instiVault'
+import { Vault } from '../../blockchain/vaults'
 import { VaultHeaderLayout } from './VaultHeaderLayout'
 
 export interface DefaultVaultHeaderControlProps {

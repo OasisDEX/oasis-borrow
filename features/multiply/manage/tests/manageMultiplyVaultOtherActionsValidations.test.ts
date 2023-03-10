@@ -2,12 +2,12 @@ import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
-import { mockedStopLossTrigger } from 'helpers/mocks/stopLoss.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 
+import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultOtherActionsValidations', () => {

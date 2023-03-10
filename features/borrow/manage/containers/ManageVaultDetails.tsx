@@ -22,13 +22,14 @@ import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
-import { BonusContainer } from 'features/bonus/BonusContainer'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
+
+import { BonusContainer } from '../../../bonus/BonusContainer'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },

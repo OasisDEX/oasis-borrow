@@ -1,10 +1,11 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+
+import { GuniManageMultiplyVaultChangesInformation } from '../containers/GuniManageMultiplyVaultChangesInformation'
 
 export function SidebarManageGuniVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

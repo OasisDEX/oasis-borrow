@@ -20,23 +20,23 @@ import { AutoTakeProfitTriggerData } from 'features/automation/optimization/auto
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import {
   SaveVaultType,
   saveVaultTypeForAccount,
   VaultType,
 } from 'features/generalManageVault/vaultType'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
-import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { HasGasEstimation } from 'helpers/form'
 import { TxError } from 'helpers/types'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
+import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
+import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
+import { createHistoryChange$, VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
 import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
 import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'

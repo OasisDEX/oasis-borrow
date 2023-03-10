@@ -1,8 +1,4 @@
 import {
-  ManageBorrowVaultStage,
-  ManageStandardBorrowVaultState,
-} from 'features/borrow/manage/pipes/manageVault'
-import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
   afterCollRatioThresholdRatioValidator,
@@ -37,6 +33,8 @@ import {
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
+
+import { ManageBorrowVaultStage, ManageStandardBorrowVaultState } from '../manageVault'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,

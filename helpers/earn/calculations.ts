@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
-import { one, zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
+
+import { IlkData } from '../../blockchain/ilks'
+import { one, zero } from '../zero'
 
 export enum YieldPeriod {
   Yield7Days,

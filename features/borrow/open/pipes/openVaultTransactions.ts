@@ -6,12 +6,12 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { jwtAuthGetToken } from 'features/shared/jwt'
-import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 
+import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
 export function applyOpenVaultTransaction(

@@ -1,8 +1,8 @@
 import { ContractDesc } from '@oasisdex/web3-context'
-import { ContextConnected } from 'blockchain/network'
-import { DssProxyActionsCharter } from 'types/web3-v1-contracts/dss-proxy-actions-charter'
-import { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
 
+import { DssProxyActionsCharter } from '../../../../types/web3-v1-contracts/dss-proxy-actions-charter'
+import { NonPayableTransactionObject } from '../../../../types/web3-v1-contracts/types'
+import { ContextConnected } from '../../../network'
 import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'
 import {
   ClaimRewardData,

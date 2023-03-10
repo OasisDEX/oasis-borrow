@@ -1,4 +1,4 @@
-import { BaseAaveContext } from 'features/aave/common/BaseAaveContext'
+import { BaseAaveContext } from '../common/BaseAaveContext'
 
 export function hasUserInteracted(state: { context: BaseAaveContext }) {
   // determines whether user inputted value on the aave multiply page

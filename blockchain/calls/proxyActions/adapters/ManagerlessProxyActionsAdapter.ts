@@ -1,14 +1,14 @@
 import { ContractDesc } from '@oasisdex/web3-context'
-import { ContextConnected } from 'blockchain/network'
-import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
-import { DssProxyActionsCharter } from 'types/web3-v1-contracts/dss-proxy-actions-charter'
-import { DssProxyActionsCropjoin } from 'types/web3-v1-contracts/dss-proxy-actions-cropjoin'
+import Web3 from 'web3'
+
+import { DssProxyActionsCharter } from '../../../../types/web3-v1-contracts/dss-proxy-actions-charter'
+import { DssProxyActionsCropjoin } from '../../../../types/web3-v1-contracts/dss-proxy-actions-cropjoin'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
-} from 'types/web3-v1-contracts/types'
-import Web3 from 'web3'
-
+} from '../../../../types/web3-v1-contracts/types'
+import { ContextConnected } from '../../../network'
+import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
   ClaimRewardData,
   DepositAndGenerateData,

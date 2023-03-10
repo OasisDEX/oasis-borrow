@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { getStateUnpacker } from 'helpers/testHelpers'
-import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import sinon from 'sinon'
 
+import { getStateUnpacker } from '../../../helpers/testHelpers'
+import { zero } from '../../../helpers/zero'
 import { createPositionsOverviewSummary$, Position, PositionView } from './positionsOverviewSummary'
 
 describe('positionsOverviewSummary', () => {

@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { getIsAllowanceStage } from 'features/allowance/allowance'
-import { DsrDepositStage, DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
-import { DsrWithdrawStage } from 'features/dsr/pipes/dsrWithdraw'
-import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { zero } from 'helpers/zero'
+
+import { DsrDepositStage, DsrDepositState } from '../helpers/dsrDeposit'
+import { DsrWithdrawStage } from '../pipes/dsrWithdraw'
+import { DsrSidebarTabOptions } from '../sidebar/DsrSideBar'
 
 // TODO: Move this to translations and add withdraw logic
 export function createPrimaryButtonLabel({

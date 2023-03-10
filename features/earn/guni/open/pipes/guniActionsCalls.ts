@@ -6,17 +6,18 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { amountToWei } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
 import { Quote } from 'features/exchange/exchange'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { jwtAuthGetToken } from 'features/shared/jwt'
-import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
-import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
-import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { catchError, startWith } from 'rxjs/operators'
 import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
 import { GuniToken } from 'types/ethers-contracts/GuniToken'
+
+import { TxError } from '../../../../../helpers/types'
+import { VaultType } from '../../../../generalManageVault/vaultType'
+import { jwtAuthGetToken } from '../../../../shared/jwt'
+import { parseVaultIdFromReceiptLogs } from '../../../../shared/transactions'
+import { saveVaultUsingApi$ } from '../../../../shared/vaultApi'
 
 export type TxChange =
   | { kind: 'txWaitingForApproval' }

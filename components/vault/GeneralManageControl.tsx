@@ -1,11 +1,11 @@
 import { BigNumber } from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import React, { useEffect } from 'react'
 
+import { useAppContext } from '../AppContextProvider'
 import { GeneralManageLayout } from './GeneralManageLayout'
 
 interface GeneralManageControlProps {

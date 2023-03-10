@@ -1,6 +1,8 @@
-import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
-
+import { errorMessagesHandler, VaultErrorMessage } from '../../../../form/errorMessagesHandler'
+import {
+  VaultWarningMessage,
+  warningMessagesHandler,
+} from '../../../../form/warningMessagesHandler'
 import { OpenGuniVaultState } from './openGuniVault'
 
 export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultState {

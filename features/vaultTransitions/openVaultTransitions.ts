@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { zero } from 'helpers/zero'
+
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
 
 export type OpenVaultTransitionChange =
   | {

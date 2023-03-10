@@ -6,8 +6,8 @@ import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
-import { fadeInAnimation } from 'theme/animations'
 
+import { fadeInAnimation } from '../../theme/animations'
 import { ClaimTxnState, UserReferralState } from './user'
 import { createUserUsingApi$ } from './userApi'
 

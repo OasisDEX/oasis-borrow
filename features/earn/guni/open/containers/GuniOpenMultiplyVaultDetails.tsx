@@ -1,26 +1,26 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
-import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import {
   calculateBreakeven,
   calculateEarnings,
   Yield,
   YieldPeriod,
 } from 'helpers/earn/calculations'
-import { formatCryptoBalance } from 'helpers/formatters/format'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useHash } from 'helpers/useHash'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
 
+import { Banner, bannerGradientPresets } from '../../../../../components/Banner'
+import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
+import { zero } from '../../../../../helpers/zero'
+import { OpenGuniVaultState } from '../pipes/openGuniVault'
 import { GuniVaultDetailsTitle } from './GuniVaultDetailsTitle'
 
 const examplePosition = {

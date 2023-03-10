@@ -1,9 +1,9 @@
 import { getNetworkId, Web3Context } from '@oasisdex/web3-context'
-import { jwtAuthGetToken } from 'features/shared/jwt'
-import { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
 import { Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
+import { jwtAuthGetToken } from '../shared/jwt'
+import { TermsAcceptanceState } from '../termsOfService/termsAcceptance'
 import { getWalletRisk$, WalletRiskResponse } from './walletRiskApi'
 
 export function createWalletAssociatedRisk$(

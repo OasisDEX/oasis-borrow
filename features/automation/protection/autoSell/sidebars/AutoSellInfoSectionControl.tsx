@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
-import { AddAutoSellInfoSection } from 'features/automation/protection/autoSell/controls/AddAutoSellInfoSection'
 import { one } from 'helpers/zero'
 import React from 'react'
+
+import { AddAutoSellInfoSection } from '../controls/AddAutoSellInfoSection'
 
 interface AutoSellInfoSectionControlProps {
   autoSellState: AutoBSFormChange

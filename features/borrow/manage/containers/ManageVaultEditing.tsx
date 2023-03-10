@@ -1,10 +1,10 @@
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 function DepositInput({

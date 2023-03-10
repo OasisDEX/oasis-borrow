@@ -1,8 +1,9 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { AdjustRiskViewConfig } from 'features/aave/common/components/SidebarAdjustRiskView'
-import { formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
+
+import { formatBigNumber, formatPercent } from '../../../helpers/formatters/format'
+import { AdjustRiskViewConfig } from '../../aave/common/components/SidebarAdjustRiskView'
 
 export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {

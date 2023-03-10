@@ -1,5 +1,6 @@
-import { CallDef } from 'blockchain/calls/callsHelpers'
 import { GetCdps } from 'types/web3-v1-contracts/get-cdps'
+
+import { CallDef } from '../../blockchain/calls/callsHelpers'
 
 export interface GetCdpsArgs {
   proxyAddress: string

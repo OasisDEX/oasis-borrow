@@ -2,12 +2,13 @@
 
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { roundRatioToBeDivisibleByFive } from 'helpers/roundRatioToBeDivisibleByFive'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+
+import { roundRatioToBeDivisibleByFive } from '../../../../helpers/roundRatioToBeDivisibleByFive'
+import { getVaultChange } from '../pipes/manageMultiplyVaultCalculations'
 
 describe('Adjust multiply calculations', () => {
   it('Increase multiply', () => {

@@ -1,7 +1,6 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
-import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import {
@@ -19,6 +18,8 @@ import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
+
+import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
 
 type ManageMultiplyVaultStory = { title?: string } & MockManageMultiplyVaultProps
 

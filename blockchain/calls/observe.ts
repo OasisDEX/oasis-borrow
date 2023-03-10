@@ -1,8 +1,8 @@
-import { Context } from 'blockchain/network'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
+import { Context } from '../network'
 import { call, CallDef } from './callsHelpers'
 
 export function observe<A, R>(

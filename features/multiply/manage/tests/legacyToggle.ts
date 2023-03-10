@@ -1,7 +1,7 @@
 import {
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
+} from '../pipes/manageMultiplyVault'
 
 /*
   The toggle function in multiply vaults used to

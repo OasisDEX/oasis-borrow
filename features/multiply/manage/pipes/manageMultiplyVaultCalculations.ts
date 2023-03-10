@@ -8,7 +8,6 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
-import { getMaxPossibleCollRatioOrMax } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
@@ -17,9 +16,10 @@ import {
   LOAN_FEE,
   OAZO_FEE,
 } from 'helpers/multiply/calculations'
-import { roundRatioToBeDivisibleByFive } from 'helpers/roundRatioToBeDivisibleByFive'
 import { one, zero } from 'helpers/zero'
 
+import { roundRatioToBeDivisibleByFive } from '../../../../helpers/roundRatioToBeDivisibleByFive'
+import { getMaxPossibleCollRatioOrMax } from '../../open/pipes/openMultiplyVaultCalculations'
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 // This value ought to be coupled in relation to how much we round the raw debt

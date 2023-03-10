@@ -4,7 +4,8 @@ import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { useRef, useState } from 'react'
 import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
-import { fadeInAnimation } from 'theme/animations'
+
+import { fadeInAnimation } from '../../theme/animations'
 
 interface Props {
   address: string

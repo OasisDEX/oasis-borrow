@@ -7,9 +7,10 @@ import {
   DEFAULT_DEBT_SCALING_FACTOR,
 } from 'helpers/mocks/ilks.mock'
 import { mockManageInstiVault$, mockManageVault } from 'helpers/mocks/manageVault.mock'
-import { mockVault$ } from 'helpers/mocks/vaults.mock'
-import { getStateUnpacker } from 'helpers/testHelpers'
 import { one } from 'helpers/zero'
+
+import { mockVault$ } from '../../../../helpers/mocks/vaults.mock'
+import { getStateUnpacker } from '../../../../helpers/testHelpers'
 
 describe('manageVaultCalculations', () => {
   afterEach(() => {

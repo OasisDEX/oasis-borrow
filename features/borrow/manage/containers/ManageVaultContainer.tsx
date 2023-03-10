@@ -2,8 +2,6 @@ import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
@@ -12,6 +10,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
+import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultDetails } from './ManageVaultDetails'
 
 export function ManageVaultContainer({

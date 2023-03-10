@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { amountFromRay } from 'blockchain/utils'
 import { expect } from 'chai'
-import { SECONDS_PER_YEAR } from 'components/constants'
-import { calculateBreakeven } from 'helpers/earn/calculations'
-import { calculateEarnings } from 'helpers/earn/calculations'
-import { calculateYield } from 'helpers/earn/calculations'
+
+import { amountFromRay } from '../../blockchain/utils'
+import { SECONDS_PER_YEAR } from '../../components/constants'
+import { calculateBreakeven } from '../../helpers/earn/calculations'
+import { calculateEarnings } from '../../helpers/earn/calculations'
+import { calculateYield } from '../../helpers/earn/calculations'
 
 describe('Yield Calculations', async () => {
   const stabilityFee = amountFromRay(new BigNumber('1000000000015850933588756013'))

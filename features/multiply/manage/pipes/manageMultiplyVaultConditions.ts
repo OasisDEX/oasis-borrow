@@ -1,4 +1,9 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { isNullish } from 'helpers/functions'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
+
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
@@ -30,12 +35,7 @@ import {
   withdrawAmountExceedsFreeCollateralAtNextPriceValidator,
   withdrawAmountExceedsFreeCollateralValidator,
   withdrawCollateralOnVaultUnderDebtFloorValidator,
-} from 'features/form/commonValidators'
-import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
-import { isNullish } from 'helpers/functions'
-import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { zero } from 'helpers/zero'
-
+} from '../../../form/commonValidators'
 import { ManageMultiplyVaultStage, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 const defaultManageVaultStageCategories = {
