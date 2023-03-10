@@ -1,4 +1,4 @@
-import { AjnaFormState } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaFormState } from 'features/ajna/common/types'
 import { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 
@@ -6,12 +6,14 @@ interface GetFlowStateConfigParams {
   collateralToken: string
   quoteToken: string
   state: AjnaFormState
+  flow: AjnaFlow
 }
 
 export function getFlowStateConfig({
   collateralToken,
   quoteToken,
   state,
+  flow,
 }: GetFlowStateConfigParams): {
   amount: UseFlowStateProps['amount']
   token: UseFlowStateProps['token']
@@ -21,7 +23,9 @@ export function getFlowStateConfig({
   switch (action) {
     case 'open-earn':
     case 'deposit-earn':
-      if (state.uiDropdown === 'adjust') {
+      // THIS CONDITION IS ADDED TO BYPASS DPM & ALLOWANCE FLOW
+      // WHILE IN AJNA EARN ADJUST MANAGE VIEW
+      if (state.uiDropdown === 'adjust' && flow === 'manage') {
         return {
           amount: zero,
           token: 'ETH',
