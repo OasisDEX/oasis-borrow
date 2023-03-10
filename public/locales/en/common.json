@@ -2557,7 +2557,9 @@
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited.",
       "earning-no-apy": "You will be lending without earning any yield",
-      "deposit-is-not-withdrawable": "You cannot set price bucket above MOMP TBD"
+      "price-below-htp": "You will be lending without earning any yield",
+      "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
+      "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{quoteToken}}, please select a lower amount"
     },
     "rewards": {
       "title": "Your Ajna token rewards",

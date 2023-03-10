@@ -52,7 +52,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
 
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),
-    ...getFlowStateConfig({ collateralToken, quoteToken, state }),
+    ...getFlowStateConfig({ collateralToken, quoteToken, state, flow }),
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })

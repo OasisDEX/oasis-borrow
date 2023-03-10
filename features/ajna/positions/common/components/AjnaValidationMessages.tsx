@@ -1,4 +1,5 @@
 import { ValidationMessages, ValidationMessagesInput } from 'components/ValidationMessages'
+import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import React from 'react'
 
 export function AjnaValidationMessages({
@@ -6,11 +7,15 @@ export function AjnaValidationMessages({
   type,
   additionalData,
 }: ValidationMessagesInput) {
+  const {
+    environment: { collateralToken, quoteToken },
+  } = useAjnaGeneralContext()
+
   return (
     <ValidationMessages
       messages={messages}
       type={type}
-      additionalData={additionalData}
+      additionalData={{ ...additionalData, collateralToken, quoteToken }}
       translationRootKey="ajna.validations"
     />
   )
