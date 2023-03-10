@@ -52,8 +52,6 @@ export async function getAjnaParameters({
     dpmProxyAddress: dpmAddress,
     quoteTokenPrecision,
     collateralTokenPrecision,
-    quotePrice: zero,
-    collateralPrice: zero,
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
@@ -69,6 +67,8 @@ export async function getAjnaParameters({
         return strategies.ajna.borrow.open(
           {
             ...commonPayload,
+            quotePrice: zero,
+            collateralPrice: zero,
             quoteAmount: generateAmount || zero,
             collateralAmount: depositAmount,
             price: borrowPrice,
