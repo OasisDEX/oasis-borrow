@@ -11,23 +11,26 @@ import { zero } from 'helpers/zero'
 import { Strategy } from '@oasisdex/oasis-actions-poc/src/types/common'
 
 interface AjnaTxHandlerInput {
+  collateralPrice: BigNumber
   collateralToken: string
   context: Context
   position: AjnaPosition | AjnaEarnPosition
+  quotePrice: BigNumber
   quoteToken: string
+  rpcProvider: ethers.providers.Provider
   state: AjnaFormState
 }
 
 export async function getAjnaParameters({
+  collateralPrice,
   collateralToken,
   context,
   position,
+  quotePrice,
   quoteToken,
   rpcProvider,
   state,
-}: AjnaTxHandlerInput & {
-  rpcProvider: ethers.providers.Provider
-}): Promise<Strategy<AjnaPosition | AjnaEarnPosition>> {
+}: AjnaTxHandlerInput): Promise<Strategy<AjnaPosition | AjnaEarnPosition>> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarnPosition>)
 
@@ -48,10 +51,10 @@ export async function getAjnaParameters({
   }
 
   const commonPayload = {
-    poolAddress: context.ajnaPoolPairs[tokenPair].address,
-    dpmProxyAddress: dpmAddress,
-    quoteTokenPrecision,
     collateralTokenPrecision,
+    dpmProxyAddress: dpmAddress,
+    poolAddress: context.ajnaPoolPairs[tokenPair].address,
+    quoteTokenPrecision,
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
@@ -67,9 +70,11 @@ export async function getAjnaParameters({
         return strategies.ajna.borrow.open(
           {
             ...commonPayload,
-            quoteAmount: generateAmount || zero,
             collateralAmount: depositAmount,
+            collateralPrice,
             price: borrowPrice,
+            quoteAmount: generateAmount || zero,
+            quotePrice,
           },
           dependencies,
         )
@@ -83,10 +88,10 @@ export async function getAjnaParameters({
         return strategies.ajna.borrow.depositBorrow(
           {
             ...commonPayload,
-            quoteAmount: generateAmount || zero,
             collateralAmount: depositAmount,
-            price: borrowPrice,
             position: position as AjnaPosition,
+            price: borrowPrice,
+            quoteAmount: generateAmount || zero,
           },
           dependencies,
         )
@@ -100,10 +105,10 @@ export async function getAjnaParameters({
         return strategies.ajna.borrow.depositBorrow(
           {
             ...commonPayload,
-            quoteAmount: generateAmount,
             collateralAmount: depositAmount || zero,
-            price: borrowPrice,
             position: position as AjnaPosition,
+            price: borrowPrice,
+            quoteAmount: generateAmount,
           },
           dependencies,
         )
@@ -117,9 +122,9 @@ export async function getAjnaParameters({
         return strategies.ajna.borrow.paybackWithdraw(
           {
             ...commonPayload,
-            quoteAmount: paybackAmount,
             collateralAmount: withdrawAmount || zero,
             position: position as AjnaPosition,
+            quoteAmount: paybackAmount,
           },
           dependencies,
         )
@@ -133,9 +138,9 @@ export async function getAjnaParameters({
         return strategies.ajna.paybackWithdraw(
           {
             ...commonPayload,
-            quoteAmount: paybackAmount || zero,
             collateralAmount: withdrawAmount,
             position: position as AjnaPosition,
+            quoteAmount: paybackAmount || zero,
           },
           dependencies,
         )

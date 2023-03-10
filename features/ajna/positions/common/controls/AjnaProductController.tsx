@@ -94,7 +94,17 @@ export function AjnaProductController({
     ),
   )
   const [ajnaPositionData, ajnaPositionError] = useObservable(
-    useMemo(() => (dpmPositionData ? ajnaPosition$(dpmPositionData) : EMPTY), [dpmPositionData]),
+    useMemo(
+      () =>
+        dpmPositionData && tokenPriceUSDData
+          ? ajnaPosition$(
+              tokenPriceUSDData[dpmPositionData.collateralToken],
+              tokenPriceUSDData[dpmPositionData.quoteToken],
+              dpmPositionData,
+            )
+          : EMPTY,
+      [dpmPositionData, tokenPriceUSDData],
+    ),
   )
 
   if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
