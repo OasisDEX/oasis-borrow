@@ -185,7 +185,7 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                              price: getEarnDefaultPrice(ajnaPosition.position as AjnaEarnPosition),
+                              price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
                             }}
                             formReducto={useAjnaEarnFormReducto}
                             position={ajnaPosition as AjnaEarnPosition}
