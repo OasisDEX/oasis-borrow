@@ -28,7 +28,7 @@ export function useAjnaTxHandler(): () => void {
   const [context] = useObservable(context$)
   const {
     tx: { setTxDetails },
-    environment: { collateralToken, ethPrice, quoteToken, product },
+    environment: { collateralToken, ethPrice, quoteToken, product, quotePrice, collateralPrice },
     steps: { isExternalStep },
   } = useAjnaGeneralContext()
   const {
@@ -67,6 +67,8 @@ export function useAjnaTxHandler(): () => void {
             position,
             quoteToken,
             rpcProvider: context.rpcProvider,
+            quotePrice,
+            collateralPrice,
             state,
           }),
         )

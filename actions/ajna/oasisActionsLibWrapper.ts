@@ -16,6 +16,8 @@ interface AjnaTxHandlerInput {
   position: AjnaPosition | AjnaEarnPosition
   quoteToken: string
   state: AjnaFormState
+  quotePrice: BigNumber
+  collateralPrice: BigNumber
 }
 
 export async function getAjnaParameters({
@@ -25,6 +27,8 @@ export async function getAjnaParameters({
   quoteToken,
   rpcProvider,
   state,
+  quotePrice,
+  collateralPrice,
 }: AjnaTxHandlerInput & {
   rpcProvider: ethers.providers.Provider
 }): Promise<Strategy<AjnaPosition | AjnaEarnPosition>> {
@@ -67,8 +71,8 @@ export async function getAjnaParameters({
         return strategies.ajna.borrow.open(
           {
             ...commonPayload,
-            quotePrice: zero,
-            collateralPrice: zero,
+            quotePrice,
+            collateralPrice,
             quoteAmount: generateAmount || zero,
             collateralAmount: depositAmount,
             price: borrowPrice,
