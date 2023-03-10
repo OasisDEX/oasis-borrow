@@ -58,49 +58,57 @@ export function AjnaProductController({
 }: AjnaProductControllerProps) {
   const { t } = useTranslation()
   const { push } = useRouter()
-  const { ajnaPosition$, dpmPositionData$, balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
+  const {
+    ajnaPosition$,
+    ajnaDpmPositionData$,
+    balancesInfoArray$,
+    tokenPriceUSD$,
+  } = useAppContext()
   const { walletAddress } = useAccount()
 
-  const [dpmPositionData, dpmPositionError] = useObservable(
+  const [ajnaDpmPositionData, ajnaDpmPositionError] = useObservable(
     useMemo(
       () =>
         id
-          ? dpmPositionData$(getPositionIdentity(id))
+          ? ajnaDpmPositionData$(getPositionIdentity(id))
           : collateralToken && product && quoteToken
-          ? getStaticDpmPositionData$({ collateralToken, product, quoteToken })
+          ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
           : EMPTY,
-      [collateralToken, dpmPositionData$, id, product, quoteToken],
+      [collateralToken, id, product, quoteToken],
     ),
   )
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>
-        dpmPositionData && walletAddress
+        ajnaDpmPositionData && walletAddress
           ? balancesInfoArray$(
-              [dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'],
+              [ajnaDpmPositionData.collateralToken, ajnaDpmPositionData.quoteToken, 'ETH'],
               walletAddress,
             )
           : EMPTY,
-      [balancesInfoArray$, dpmPositionData, walletAddress],
+      [ajnaDpmPositionData, walletAddress],
     ),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
       () =>
-        dpmPositionData
-          ? tokenPriceUSD$([dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'])
+        ajnaDpmPositionData
+          ? tokenPriceUSD$([
+              ajnaDpmPositionData.collateralToken,
+              ajnaDpmPositionData.quoteToken,
+              'ETH',
+            ])
           : EMPTY,
-      [dpmPositionData, tokenPriceUSD$],
+      [ajnaDpmPositionData],
     ),
   )
   const [ajnaPositionData, ajnaPositionError] = useObservable(
-    useMemo(() => (dpmPositionData ? ajnaPosition$(dpmPositionData) : EMPTY), [
-      ajnaPosition$,
-      dpmPositionData,
+    useMemo(() => (ajnaDpmPositionData ? ajnaPosition$(ajnaDpmPositionData) : EMPTY), [
+      ajnaDpmPositionData,
     ]),
   )
 
-  if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
+  if ((ajnaDpmPositionData || ajnaPositionData) === null) void push('/not-found')
 
   return (
     <WithConnection>
@@ -109,35 +117,35 @@ export function AjnaProductController({
           <AjnaWrapper>
             <WithErrorHandler
               error={[
+                ajnaDpmPositionError,
                 ajnaPositionError,
                 balancesInfoArrayError,
-                dpmPositionError,
                 tokenPriceUSDError,
               ]}
             >
               <WithLoadingIndicator
                 value={[
+                  ajnaDpmPositionData,
                   ajnaPositionData,
                   balancesInfoArrayData,
-                  dpmPositionData,
                   tokenPriceUSDData,
                 ]}
                 customLoader={
                   <PositionLoadingState
                     {...getAjnaHeadlineProps({
-                      collateralToken: dpmPositionData?.collateralToken,
+                      collateralToken: ajnaDpmPositionData?.collateralToken,
                       flow,
-                      product: dpmPositionData?.product,
-                      quoteToken: dpmPositionData?.quoteToken,
+                      product: ajnaDpmPositionData?.product,
+                      quoteToken: ajnaDpmPositionData?.quoteToken,
                       id,
                     })}
                   />
                 }
               >
                 {([
+                  ajnaDpmPosition,
                   ajnaPosition,
                   [collateralBalance, quoteBalance, ethBalance],
-                  dpmPosition,
                   tokenPriceUSD,
                 ]) =>
                   ajnaPosition ? (
@@ -146,44 +154,44 @@ export function AjnaProductController({
                         title="seo.title-product-w-tokens"
                         titleParams={{
                           product: t(`seo.ajnaProductPage.title`, {
-                            product: startCase(dpmPosition.product),
+                            product: startCase(ajnaDpmPosition.product),
                           }),
                           protocol: 'Ajna',
-                          token1: dpmPosition.collateralToken,
-                          token2: dpmPosition.quoteToken,
+                          token1: ajnaDpmPosition.collateralToken,
+                          token2: ajnaDpmPosition.quoteToken,
                         }}
                         description="seo.ajna.description"
                         url={document.location.pathname}
                       />
                       <AjnaGeneralContextProvider
                         collateralBalance={collateralBalance}
-                        collateralPrice={tokenPriceUSD[dpmPosition.collateralToken]}
-                        collateralToken={dpmPosition.collateralToken}
-                        {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
+                        collateralPrice={tokenPriceUSD[ajnaDpmPosition.collateralToken]}
+                        collateralToken={ajnaDpmPosition.collateralToken}
+                        {...(flow === 'manage' && { dpmProxy: ajnaDpmPosition.proxy })}
                         ethBalance={ethBalance}
                         ethPrice={tokenPriceUSD.ETH}
                         flow={flow}
                         id={id}
-                        owner={dpmPosition.user}
-                        product={dpmPosition.product}
+                        owner={ajnaDpmPosition.user}
+                        product={ajnaDpmPosition.product}
                         quoteBalance={quoteBalance}
-                        quotePrice={tokenPriceUSD[dpmPosition.quoteToken]}
-                        quoteToken={dpmPosition.quoteToken}
-                        steps={steps[dpmPosition.product][flow]}
+                        quotePrice={tokenPriceUSD[ajnaDpmPosition.quoteToken]}
+                        quoteToken={ajnaDpmPosition.quoteToken}
+                        steps={steps[ajnaDpmPosition.product][flow]}
                       >
-                        {dpmPosition.product === 'borrow' && (
+                        {ajnaDpmPosition.product === 'borrow' && (
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
                             }}
                             formReducto={useAjnaBorrowFormReducto}
                             position={ajnaPosition as AjnaPosition}
-                            product={dpmPosition.product}
+                            product={ajnaDpmPosition.product}
                           >
                             <AjnaBorrowPositionController />
                           </AjnaProductContextProvider>
                         )}
-                        {dpmPosition.product === 'earn' && (
+                        {ajnaDpmPosition.product === 'earn' && (
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
@@ -191,7 +199,7 @@ export function AjnaProductController({
                             }}
                             formReducto={useAjnaEarnFormReducto}
                             position={ajnaPosition as AjnaEarnPosition}
-                            product={dpmPosition.product}
+                            product={ajnaDpmPosition.product}
                           >
                             <AjnaEarnPositionController />
                           </AjnaProductContextProvider>
