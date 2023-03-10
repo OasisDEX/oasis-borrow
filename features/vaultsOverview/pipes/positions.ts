@@ -475,7 +475,7 @@ export function createFollowedAavePositions$(
                   followedAaveVault.vault_id
                 }/`,
                 netValue: netValueUsd,
-                multiple: onChainPosition.riskRatio.multiple, // TODO ŁW figure out why multiple here is 0
+                multiple: onChainPosition.riskRatio.multiple,
                 liquidationPrice,
                 fundingCost,
                 isOwner,
