@@ -993,17 +993,6 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
 
-  const psmExchangeQuote$ = memoize(
-    (
-      token: string,
-      slippage: BigNumber,
-      amount: BigNumber,
-      action: ExchangeAction,
-      exchangeType: ExchangeType,
-    ) => createExchangeQuote$(context$, 'PSM', token, slippage, amount, action, exchangeType),
-    (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
-      `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
-  )
   const vaultWithValue$ = memoize(
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
@@ -1166,7 +1155,7 @@ export function setupAppContext() {
         balanceInfo$,
         ilkData$,
         vault$,
-        psmExchangeQuote$,
+        exchangeQuote$,
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
@@ -1332,7 +1321,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilksSupportedOnNetwork$,
       ilkData$,
-      psmExchangeQuote$,
+      exchangeQuote$,
       onEveryBlock$,
       addGasEstimation$,
       ilk,
