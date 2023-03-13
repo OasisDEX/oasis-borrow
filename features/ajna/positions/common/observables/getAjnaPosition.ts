@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
@@ -27,8 +26,6 @@ export function getAjnaPosition$(
           context.ajnaPoolPairs[
             `${collateralToken}-${quoteToken}` as keyof typeof context.ajnaPoolPairs
           ].address,
-        quotePrice: zero,
-        collateralPrice: zero,
       }
 
       const commonDependency = {
