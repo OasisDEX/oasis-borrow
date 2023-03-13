@@ -1,4 +1,5 @@
 import { AjnaEarnPosition, AjnaPosition, views } from '@oasisdex/oasis-actions-poc'
+import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
@@ -10,6 +11,8 @@ import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 export function getAjnaPosition$(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
+  collateralPrice: BigNumber,
+  quotePrice: BigNumber,
   { collateralToken, product, protocol, proxy, quoteToken }: DpmPositionData,
 ): Observable<AjnaPosition | AjnaEarnPosition> {
   return combineLatest(context$, onEveryBlock$).pipe(
@@ -17,6 +20,8 @@ export function getAjnaPosition$(
       if (protocol !== 'Ajna') return null
 
       const commonPayload = {
+        collateralPrice,
+        quotePrice,
         proxyAddress: proxy,
         poolAddress:
           context.ajnaPoolPairs[

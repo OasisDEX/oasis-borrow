@@ -48,7 +48,7 @@ export function ContentFooterItemsBorrow({
       />
       <DetailsSectionFooterItem
         title={t('ajna.borrow.common.footer.available-to-borrow')}
-        value={`${formatted.availableToBorrow} ${collateralToken}`}
+        value={`${formatted.availableToBorrow} ${quoteToken}`}
         change={{
           isLoading,
           value:
@@ -59,7 +59,7 @@ export function ContentFooterItemsBorrow({
       />
       <DetailsSectionFooterItem
         title={t('ajna.borrow.common.footer.available-to-withdraw')}
-        value={`${formatted.availableToWithdraw} ${quoteToken}`}
+        value={`${formatted.availableToWithdraw} ${collateralToken}`}
         change={{
           isLoading,
           value:
