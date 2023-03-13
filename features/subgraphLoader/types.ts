@@ -9,6 +9,25 @@ export type Subgraphs = {
   }
 }
 
+export type SubgraphBaseResponse<R> = {
+  success: boolean
+  error: unknown
+  response: R
+}
+
+export type SubgraphsResponses = {
+  Ajna: {
+    getEarnData: SubgraphBaseResponse<{
+      account: {
+        earnPositions: { lps: number; index: number; nft: { id: string } | null }[]
+      }
+    }>
+  }
+  TempGraph: {
+    tempMethod: SubgraphBaseResponse<undefined>
+  }
+}
+
 export type SubgraphsRecord = {
   [key in keyof Subgraphs]: {
     [NetworkIds.MAINNET]: string

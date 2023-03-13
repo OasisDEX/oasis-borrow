@@ -13,6 +13,7 @@ import { AjnaProductContextProvider } from 'features/ajna/positions/common/conte
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
+import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -94,7 +95,17 @@ export function AjnaProductController({
     ),
   )
   const [ajnaPositionData, ajnaPositionError] = useObservable(
-    useMemo(() => (dpmPositionData ? ajnaPosition$(dpmPositionData) : EMPTY), [dpmPositionData]),
+    useMemo(
+      () =>
+        dpmPositionData && tokenPriceUSDData
+          ? ajnaPosition$(
+              tokenPriceUSDData[dpmPositionData.collateralToken],
+              tokenPriceUSDData[dpmPositionData.quoteToken],
+              dpmPositionData,
+            )
+          : EMPTY,
+      [dpmPositionData, tokenPriceUSDData],
+    ),
   )
 
   if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
@@ -184,7 +195,7 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                              price: ajnaPosition.pool.highestThresholdPrice.decimalPlaces(2),
+                              price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
                             }}
                             formReducto={useAjnaEarnFormReducto}
                             position={ajnaPosition as AjnaEarnPosition}
