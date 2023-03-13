@@ -1402,11 +1402,10 @@ export function setupAppContext() {
 
   const ajnaPosition$ = memoize(
     curry(getAjnaPosition$)(context$, onEveryBlock$),
-    (collateralPrice: BigNumber, quotePrice: BigNumber, dpmPositionData: DpmPositionData) => [
-      collateralPrice,
-      quotePrice,
-      dpmPositionData,
-    ],
+    (collateralPrice: BigNumber, quotePrice: BigNumber, dpmPositionData: DpmPositionData) =>
+      `${dpmPositionData.vaultId}-${collateralPrice
+        .decimalPlaces(2)
+        .toString()}-${quotePrice.decimalPlaces(2).toString()}`,
   )
 
   return {
