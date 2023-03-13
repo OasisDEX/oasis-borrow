@@ -58,7 +58,7 @@ export async function getAjnaParameters({
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
-  const borrowPrice = new BigNumber(16821273)
+  const borrowPrice = new BigNumber(12662543981384068647567)
 
   // intentionally allowed for fallthrough; if none of conditions are met, just go to default return
   /* eslint-disable no-fallthrough */
