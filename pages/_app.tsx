@@ -35,6 +35,7 @@ import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
+import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
 
 if (process.env.NODE_ENV !== 'production') {
@@ -54,6 +55,7 @@ function getLibrary(provider: any, connector: AbstractConnector | undefined): We
 }
 
 const globalStyles = `
+  ${web3OnboardStyles}
   html,
   body,
   div#__next {
