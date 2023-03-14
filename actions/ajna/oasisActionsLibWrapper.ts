@@ -62,111 +62,94 @@ export async function getAjnaParameters({
   // TODO hardcoded for now, but will be moved eventually to library
   const borrowPrice = new BigNumber(12662543981384068647567)
 
-  // intentionally allowed for fallthrough; if none of conditions are met, just go to default return
-  /* eslint-disable no-fallthrough */
+  if (!isFormValid) {
+    return defaultPromise
+  }
+
   switch (action) {
     case 'open-borrow': {
       const { depositAmount, generateAmount } = state
 
-      if (isFormValid) {
-        return strategies.ajna.borrow.open(
-          {
-            ...commonPayload,
-            collateralAmount: depositAmount!,
-            collateralPrice,
-            price: borrowPrice,
-            quoteAmount: generateAmount || zero,
-            quotePrice,
-          },
-          dependencies,
-        )
-      }
-      break
+      return strategies.ajna.borrow.open(
+        {
+          ...commonPayload,
+          collateralAmount: depositAmount!,
+          collateralPrice,
+          price: borrowPrice,
+          quoteAmount: generateAmount || zero,
+          quotePrice,
+        },
+        dependencies,
+      )
     }
     case 'deposit-borrow': {
       const { depositAmount, generateAmount } = state
 
-      if (isFormValid) {
-        return strategies.ajna.borrow.depositBorrow(
-          {
-            ...commonPayload,
-            collateralAmount: depositAmount!,
-            position: position as AjnaPosition,
-            price: borrowPrice,
-            quoteAmount: generateAmount || zero,
-          },
-          dependencies,
-        )
-      }
-      break
+      return strategies.ajna.borrow.depositBorrow(
+        {
+          ...commonPayload,
+          collateralAmount: depositAmount!,
+          position: position as AjnaPosition,
+          price: borrowPrice,
+          quoteAmount: generateAmount || zero,
+        },
+        dependencies,
+      )
     }
     case 'generate-borrow': {
       const { depositAmount, generateAmount } = state
 
-      if (isFormValid) {
-        return strategies.ajna.borrow.depositBorrow(
-          {
-            ...commonPayload,
-            collateralAmount: depositAmount || zero,
-            position: position as AjnaPosition,
-            price: borrowPrice,
-            quoteAmount: generateAmount!,
-          },
-          dependencies,
-        )
-      }
-      break
+      return strategies.ajna.borrow.depositBorrow(
+        {
+          ...commonPayload,
+          collateralAmount: depositAmount || zero,
+          position: position as AjnaPosition,
+          price: borrowPrice,
+          quoteAmount: generateAmount!,
+        },
+        dependencies,
+      )
     }
     case 'payback-borrow': {
       const { paybackAmount, withdrawAmount } = state
 
-      if (isFormValid) {
-        return strategies.ajna.borrow.paybackWithdraw(
-          {
-            ...commonPayload,
-            collateralAmount: withdrawAmount || zero,
-            position: position as AjnaPosition,
-            quoteAmount: paybackAmount!,
-          },
-          dependencies,
-        )
-      }
-      break
+      return strategies.ajna.borrow.paybackWithdraw(
+        {
+          ...commonPayload,
+          collateralAmount: withdrawAmount || zero,
+          position: position as AjnaPosition,
+          quoteAmount: paybackAmount!,
+        },
+        dependencies,
+      )
     }
     case 'withdraw-borrow': {
       const { paybackAmount, withdrawAmount } = state
 
-      if (isFormValid) {
-        return strategies.ajna.paybackWithdraw(
-          {
-            ...commonPayload,
-            collateralAmount: withdrawAmount!,
-            position: position as AjnaPosition,
-            quoteAmount: paybackAmount || zero,
-          },
-          dependencies,
-        )
-      }
-      break
+      return strategies.ajna.paybackWithdraw(
+        {
+          ...commonPayload,
+          collateralAmount: withdrawAmount!,
+          position: position as AjnaPosition,
+          quoteAmount: paybackAmount || zero,
+        },
+        dependencies,
+      )
     }
     case 'open-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
 
-      if (isFormValid) {
-        console.log('here')
-        return strategies.ajna.earn.open(
-          {
-            ...commonPayload,
-            price: price!,
-            quoteAmount: depositAmount!,
-            isStakingNft: false,
-            collateralPrice,
-            quotePrice,
-          },
-          { ...dependencies, getEarnData: getAjnaEarnData },
-        )
-      }
-      break
+      return strategies.ajna.earn.open(
+        {
+          ...commonPayload,
+          price: price!,
+          quoteAmount: depositAmount!,
+          isStakingNft: false,
+          collateralPrice,
+          quotePrice,
+        },
+        { ...dependencies, getEarnData: getAjnaEarnData },
+      )
     }
     case 'deposit-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
@@ -187,18 +170,15 @@ export async function getAjnaParameters({
     case 'withdraw-earn': {
       const { price, withdrawAmount } = state as AjnaEarnFormState
 
-      if (isFormValid) {
-        return strategies.ajna.earn.withdrawAndAdjust(
-          {
-            ...commonPayload,
-            price: price!,
-            quoteAmount: withdrawAmount || zero,
-            position: position as AjnaEarnPosition,
-          },
-          { ...dependencies },
-        )
-      }
-      break
+      return strategies.ajna.earn.withdrawAndAdjust(
+        {
+          ...commonPayload,
+          price: price!,
+          quoteAmount: withdrawAmount || zero,
+          position: position as AjnaEarnPosition,
+        },
+        { ...dependencies },
+      )
     }
     default:
       return defaultPromise
