@@ -1,32 +1,32 @@
 import { Vault } from 'blockchain/vaults'
-import { GasEstimationStatus } from 'helpers/form'
-import { zero } from 'helpers/zero'
-
 import {
   defaultMutableManageVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-} from '../manageVault'
-import { applyManageVaultAllowance } from '../viewStateTransforms/manageVaultAllowances'
+} from 'features/borrow/manage/pipes/manageVault'
+import { applyManageVaultAllowance } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
 import {
   applyManageVaultCalculations,
   defaultManageVaultCalculations,
-} from '../viewStateTransforms/manageVaultCalculations'
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
   defaultManageVaultConditions,
-} from '../viewStateTransforms/manageVaultConditions'
-import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
-import { applyManageVaultForm } from '../viewStateTransforms/manageVaultForm'
-import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
-import { applyManageVaultInput } from '../viewStateTransforms/manageVaultInput'
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultConditions'
+import { applyManageVaultEnvironment } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultEnvironment'
+import { applyManageVaultForm } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultForm'
+import { applyManageVaultInjectedOverride } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInjectedOverride'
+import { applyManageVaultInput } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
 import {
   applyManageVaultSummary,
   defaultManageVaultSummary,
-} from '../viewStateTransforms/manageVaultSummary'
-import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
-import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultSummary'
+import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
+import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
+import { GasEstimationStatus } from 'helpers/form'
+import { zero } from 'helpers/zero'
+
 import {
   BorrowManageAdapterInterface,
   CreateInitialVaultStateArgs,

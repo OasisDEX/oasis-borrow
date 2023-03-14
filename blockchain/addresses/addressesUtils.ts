@@ -1,8 +1,7 @@
+import * as erc20 from 'blockchain/abi/erc20.json'
+import * as mcdOsm from 'blockchain/abi/mcd-osm.json'
+import { contractDesc } from 'blockchain/config'
 import { Dictionary } from 'ts-essentials'
-
-import * as erc20 from '../abi/erc20.json'
-import * as mcdOsm from '../abi/mcd-osm.json'
-import { contractDesc } from '../config'
 
 export function getOsms(addresses: Dictionary<string>, ilks: readonly string[]) {
   const keysLegalPostfixes = ilks.map((x) =>

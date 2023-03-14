@@ -1,10 +1,4 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
-import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
-import { isNullish } from 'helpers/functions'
-import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
-import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { zero } from 'helpers/zero'
-
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -16,7 +10,13 @@ import {
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
   vaultWillBeAtRiskLevelWarningValidator,
-} from '../../../form/commonValidators'
+} from 'features/form/commonValidators'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { isNullish } from 'helpers/functions'
+import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
+
 import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
 
 const defaultOpenVaultStageCategories = {

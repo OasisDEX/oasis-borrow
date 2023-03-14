@@ -1,14 +1,13 @@
-import { Observable } from 'rxjs'
-
-import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
-import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { ContextConnected } from '../../../../blockchain/network'
-import { TxHelpers } from '../../../../components/AppContext'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
+import { ContextConnected } from 'blockchain/network'
+import { TxHelpers } from 'components/AppContext'
 import {
   CommonTransactionServices,
   createTransactionStateMachine,
   startTransactionService,
-} from '../../../stateMachines/transaction'
+} from 'features/stateMachines/transaction'
+import { Observable } from 'rxjs'
 
 export function getOperationExecutorTransactionMachine(
   txHelpers$: Observable<TxHelpers>,

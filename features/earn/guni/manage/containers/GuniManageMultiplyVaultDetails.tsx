@@ -4,16 +4,15 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentCardEarningsToDate } from 'components/vault/detailsSection/ContentCardEarningsToDate'
+import { ContentCardMultiple } from 'components/vault/detailsSection/ContentCardMultiple'
+import { ContentCardNetAPY } from 'components/vault/detailsSection/ContentCardNetAPY'
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
+import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
+import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
-
-import { ContentCardEarningsToDate } from '../../../../../components/vault/detailsSection/ContentCardEarningsToDate'
-import { ContentCardMultiple } from '../../../../../components/vault/detailsSection/ContentCardMultiple'
-import { ContentCardNetAPY } from '../../../../../components/vault/detailsSection/ContentCardNetAPY'
-import { ContentFooterItemsEarn } from '../../../../../components/vault/detailsSection/ContentFooterItemsEarn'
-import { ManageEarnVaultState } from '../pipes/manageGuniVault'
 
 export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
   const { t } = useTranslation()

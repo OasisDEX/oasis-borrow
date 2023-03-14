@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { VaultType } from '../generalManageVault/vaultType'
 
 export type CDPIdToTypeMapping = {
   [vaultId: string]: VaultType

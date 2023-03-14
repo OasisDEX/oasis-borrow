@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AddAutoBuyInfoSection } from 'features/automation/optimization/autoBuy/controls/AddAutoBuyInfoSection'
 import { one } from 'helpers/zero'
 import React from 'react'
-
-import { AddAutoBuyInfoSection } from '../controls/AddAutoBuyInfoSection'
 
 interface AutoBuyInfoSectionControlProps {
   executionPrice: BigNumber

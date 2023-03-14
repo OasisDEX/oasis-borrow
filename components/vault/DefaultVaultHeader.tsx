@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { IlkData } from '../../blockchain/ilks'
-import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
 import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 
 export interface DefaultVaultHeaderProps {

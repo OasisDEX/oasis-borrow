@@ -9,6 +9,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { AppSpinner } from 'helpers/AppSpinner'
 import {
   formatAmount,
@@ -19,8 +20,6 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-
-import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

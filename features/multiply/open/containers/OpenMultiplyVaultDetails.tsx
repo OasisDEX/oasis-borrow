@@ -1,19 +1,18 @@
-import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
-import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { DetailsSection } from '../../../../components/DetailsSection'
+import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
   getChangeVariant,
-} from '../../../../components/DetailsSectionContentCard'
-import { DetailsSectionFooterItemWrapper } from '../../../../components/DetailsSectionFooterItem'
-import { ContentCardBuyingPower } from '../../../../components/vault/detailsSection/ContentCardBuyingPower'
-import { ContentCardLiquidationPrice } from '../../../../components/vault/detailsSection/ContentCardLiquidationPrice'
-import { ContentCardNetValue } from '../../../../components/vault/detailsSection/ContentCardNetValue'
-import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
+} from 'components/DetailsSectionContentCard'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentCardBuyingPower } from 'components/vault/detailsSection/ContentCardBuyingPower'
+import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
+import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
+import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
+import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const {

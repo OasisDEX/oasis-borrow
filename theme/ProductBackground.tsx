@@ -1,7 +1,6 @@
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
 import { Box, Image } from 'theme-ui'
-
-import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 
 export function ProductBackground() {
   return (

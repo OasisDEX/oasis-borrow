@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
+import { mockedStopLossTrigger } from 'helpers/mocks/stopLoss.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 
-import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultAdjustPositionValidations', () => {

@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { Context, EveryBlockFunction$ } from 'blockchain/network'
 import { DsrEvent } from 'features/dsr/helpers/dsrHistory'
+import { DsrPot, dsrPot$, DsrPotKind } from 'features/dsr/helpers/dsrPot'
 import { Loadable, loadablifyLight } from 'helpers/loadable'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
-
-import { DsrPot, dsrPot$, DsrPotKind } from '../helpers/dsrPot'
 
 export type PotKind = DsrPotKind
 

@@ -1,6 +1,6 @@
+import { WithChildren } from 'helpers/types'
 import React, { useContext, useEffect, useState } from 'react'
 
-import { WithChildren } from '../helpers/types'
 import { AppContext, setupAppContext } from './AppContext'
 
 export const appContext = React.createContext<AppContext | undefined>(undefined)

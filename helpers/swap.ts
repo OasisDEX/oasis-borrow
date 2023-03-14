@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { defaultExchangeProtocols } from 'features/exchange/exchange'
 
-import { defaultExchangeProtocols } from '../features/exchange/exchange'
 import { one } from './zero'
 
 async function swapOneInchTokens(
