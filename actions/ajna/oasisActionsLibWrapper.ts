@@ -154,18 +154,15 @@ export async function getAjnaParameters({
     case 'deposit-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
 
-      if (isFormValid) {
-        return strategies.ajna.earn.depositAndAdjust(
-          {
-            ...commonPayload,
-            price: price!,
-            quoteAmount: depositAmount || zero,
-            position: position as AjnaEarnPosition,
-          },
-          { ...dependencies },
-        )
-      }
-      break
+      return strategies.ajna.earn.depositAndAdjust(
+        {
+          ...commonPayload,
+          price: price!,
+          quoteAmount: depositAmount || zero,
+          position: position as AjnaEarnPosition,
+        },
+        { ...dependencies },
+      )
     }
     case 'withdraw-earn': {
       const { price, withdrawAmount } = state as AjnaEarnFormState
@@ -183,6 +180,4 @@ export async function getAjnaParameters({
     default:
       return defaultPromise
   }
-
-  return defaultPromise
 }
