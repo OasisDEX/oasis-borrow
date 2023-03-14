@@ -30,8 +30,25 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
   prepareArgs: (data, context) => {
     return [context.operationExecutor.address, getCallData(data, context)]
   },
-  options: ({ token, amount = zero }) =>
-    token === 'ETH' && amount.gt(zero) ? { value: amountToWei(amount, 'ETH').toFixed(0) } : {},
+  // @ts-ignore
+  options: ({ token, amount = zero }) => {
+    const baseObj = {
+      type: 1,
+      accessList: [
+        {
+          address: '0x0DA96062099823ae487aeb33DA6331B8B5001c48', // gnosis safe master address
+          storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
+        },
+        {
+          address: '0xd9db270c1b5e3bd161e8c8503c55ceabee709552',
+          storageKeys: [],
+        },
+      ],
+    }
+    return token === 'ETH' && amount.gt(zero)
+      ? { value: amountToWei(amount, 'ETH').toFixed(0), ...baseObj }
+      : { ...baseObj }
+  },
 }
 
 export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutorTxMeta> = {
