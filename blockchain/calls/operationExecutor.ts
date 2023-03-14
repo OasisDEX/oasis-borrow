@@ -33,7 +33,7 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
   // @ts-ignore
   options: ({ token, amount = zero }) => {
     const baseObj = {
-      type: 1,
+      type: '0x1',
       accessList: [
         {
           address: '0x0DA96062099823ae487aeb33DA6331B8B5001c48', // gnosis safe master address
