@@ -556,7 +556,7 @@ export function setupAppContext() {
 
   const connectedContext$ = createContextConnected$(context$)
 
-  combineLatest([account$, connectedContext$])
+  combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
         return of({

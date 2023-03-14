@@ -5583,10 +5583,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@uniswap/conedison@^1.5.1":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@uniswap/conedison/-/conedison-1.5.2.tgz#915d2adafc416ea9b85a382b2f3f5345fd73cba3"
-  integrity sha512-YOXy1f4p7c20wyj20MZIGQ/DprCfZxxMnBE29bt6158oRfaabD2Ae9O9qK+ddalDc0vEv34rh9fUK3fMOEJ0aw==
+"@uniswap/conedison@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@uniswap/conedison/-/conedison-1.5.3.tgz#2a2fc9ca848644f21944a2d087de54032a6acf93"
+  integrity sha512-b8j2/0FzqLU4Qq+M+QEPGzacnZxNrzAHp7yoAWRvNJiFyLjBvcgfaT9ORS8rw17M8XBLWjh83faj5Kymc+62qw==
 
 "@uniswap/default-token-list@^2.0.0":
   version "2.3.0"
@@ -5831,17 +5831,17 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@uniswap/widgets@^2.44.2":
-  version "2.47.1"
-  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-2.47.1.tgz#d52908f1c445c4de7953962b8eae844f981c59dd"
-  integrity sha512-rzY9v/t/ic1vvq1jgT5FR1t7VHfhnkii3D0Tru8Veuc0i/vC53C30QBpjrcBmmoZTg/YFO2vHdpT2NhBmQmH7Q==
+"@uniswap/widgets@^2.47.10":
+  version "2.47.10"
+  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-2.47.10.tgz#85bcd31ba8f9fbb4e2d7a13d48c39e3ea6a33977"
+  integrity sha512-AwuOzkoD+awTU7BZx+ROTIzmmAtDuxZtg3yO6ig1lljR8MuSHEC6+Q02W7BnWYFk7s2hLfD0Id2aLqbXEq5/TA==
   dependencies:
     "@babel/runtime" ">=7.17.0"
     "@fontsource/ibm-plex-mono" "^4.5.1"
     "@fontsource/inter" "^4.5.1"
     "@popperjs/core" "^2.4.4"
     "@reduxjs/toolkit" "^1.6.1"
-    "@uniswap/conedison" "^1.5.1"
+    "@uniswap/conedison" "^1.5.3"
     "@uniswap/permit2-sdk" "^1.2.0"
     "@uniswap/redux-multicall" "^1.1.8"
     "@uniswap/router-sdk" "^1.3.0"
@@ -5864,7 +5864,7 @@
     cids "^1.0.0"
     ethers "^5.7.2"
     immer "^9.0.6"
-    jotai "^1.3.7"
+    jotai "1.4.0"
     jsbi "^3.1.4"
     make-plural "^7.0.0"
     ms.macro "^2.0.0"
@@ -14636,15 +14636,10 @@ joi@^17.6.1:
     "@sideway/formula" "^3.0.1"
     "@sideway/pinpoint" "^2.0.0"
 
-jotai-immer@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/jotai-immer/-/jotai-immer-0.2.0.tgz#9bfa1a5a7911c5b222d22a8388a801c05bc06c65"
-  integrity sha512-hahK8EPiROS9RoNWmX/Z8rY9WkAijspX4BZ1O7umpcwI4kPNkbcCpu/PhiQ8FMcpEcF6KmbpbMpSSj/GFmo8NA==
-
-jotai@^1.3.7:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.6.1.tgz#a6379d7dce159474f24963921d55ae8f6e9e8dd6"
-  integrity sha512-iNKHmpKGN31KXDqxGLsplb4HLTroYtiM7oBEQ9leyoXSEGQGUZKK5IOV4kN6fUmkBSJbwb5WnmInYOYzpjIDOw==
+jotai@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.4.0.tgz#0f350f65a968dd3ee2f9ad3618a3af635cd10220"
+  integrity sha512-CUB+A3N+WjtimZvtDnMXvVRognzKh86KB3rKnQlbRvpnmGYU+O9aOZMWSgTaxstXc4Y5GYy02LBEjiv4Rs8MAg==
 
 jpeg-js@0.4.2:
   version "0.4.2"
