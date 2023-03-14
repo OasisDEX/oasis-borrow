@@ -1,18 +1,18 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-
 import {
   AutoTakeProfitFormChange,
   AutoTakeProfitResetData,
-} from '../state/autoTakeProfitFormChange'
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import {
   AutoTakeProfitTriggerData,
   defaultAutoTakeProfitData,
   extractAutoTakeProfitData,
   pickTriggerWithLowestExecutionPrice,
   prepareAutoTakeProfitResetData,
-} from '../state/autoTakeProfitTriggerData'
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+
 import { generateRandomBigNumber } from './utils'
 
 describe('autoTakeProfit Form Change tests', () => {

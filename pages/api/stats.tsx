@@ -1,8 +1,7 @@
 import { withSentry } from '@sentry/nextjs'
+import { cacheObject } from 'helpers/api/cacheObject'
 import { NextApiRequest, NextApiResponse } from 'next'
-
-import { cacheObject } from '../../helpers/api/cacheObject'
-import { getOasisStats } from '../../server/services/getOasisStats'
+import { getOasisStats } from 'server/services/getOasisStats'
 
 const getStats = cacheObject(getOasisStats, 12 * 60 * 60)
 

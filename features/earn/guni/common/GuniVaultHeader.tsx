@@ -1,18 +1,17 @@
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
+import { EarnVaultHeadline } from 'components/vault/EarnVaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { YieldChange } from 'helpers/earn/calculations'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { EarnVaultHeadline } from '../../../../components/vault/EarnVaultHeadline'
-import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHandler'
-import { formatFiatBalance, formatPercent } from '../../../../helpers/formatters/format'
-import { useObservable } from '../../../../helpers/observableHook'
-import { zero } from '../../../../helpers/zero'
 
 export interface EarnVaultHeaderProps {
   ilk: string

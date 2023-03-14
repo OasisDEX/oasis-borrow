@@ -1,9 +1,10 @@
+import { ContextConnected } from 'blockchain/network'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
   PayableTx,
-} from '../../../../types/web3-v1-contracts/types'
-import { ContextConnected } from '../../../network'
+} from 'types/web3-v1-contracts/types'
+
 import {
   ClaimRewardData,
   DepositAndGenerateData,

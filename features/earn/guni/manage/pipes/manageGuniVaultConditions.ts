@@ -1,4 +1,5 @@
-import { GUNI_MAX_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
+import { GUNI_MAX_SLIPPAGE } from 'helpers/multiply/calculations'
+
 import { ManageEarnVaultState } from './manageGuniVault'
 
 // this method extends / overwrites applyManageVaultConditions

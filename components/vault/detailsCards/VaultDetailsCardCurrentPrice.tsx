@@ -1,14 +1,13 @@
+import { AppLink } from 'components/Links'
+import { getPriceChangeColor, VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { ModalProps, useModal } from 'helpers/modalHook'
 import { Trans } from 'next-i18next'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
-
-import { PriceInfo } from '../../../features/shared/priceInfo'
-import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
-import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { AppLink } from '../../Links'
-import { getPriceChangeColor, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 export function VaultDetailsCardCurrentPriceModal({
   close,

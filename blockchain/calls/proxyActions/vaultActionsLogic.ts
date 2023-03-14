@@ -1,11 +1,11 @@
+import dsProxy from 'blockchain/abi/ds-proxy.json'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { contractDesc } from 'blockchain/config'
+import { ContextConnected } from 'blockchain/network'
+import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 
-import dsProxy from '../../abi/ds-proxy.json'
-import { contractDesc } from '../../config'
-import { ContextConnected } from '../../network'
-import { amountToWei } from '../../utils'
-import { TransactionDef } from '../callsHelpers'
 import {
   ClaimRewardData,
   DepositAndGenerateData,

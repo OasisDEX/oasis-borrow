@@ -1,4 +1,5 @@
-import { MainAction, ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
+import { MainAction, ManageStandardBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
+
 import { allowanceDefaults } from './manageVaultAllowances'
 import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 

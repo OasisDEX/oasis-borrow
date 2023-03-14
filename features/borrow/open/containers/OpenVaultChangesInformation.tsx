@@ -8,13 +8,12 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { OpenVaultState } from '../pipes/openVault'
 
 export function OpenVaultChangesInformation(props: OpenVaultState) {
   const { t } = useTranslation()

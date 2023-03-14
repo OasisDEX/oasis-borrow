@@ -1,10 +1,9 @@
 import { TosApproval } from '@prisma/client'
+import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { selecTosForAddress } from 'handlers/tos/tos'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
-
-import { getUserFromRequest } from '../signature-auth/getUserFromRequest'
 
 const paramsSchema = z.object({
   version: z.string(),

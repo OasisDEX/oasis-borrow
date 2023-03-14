@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
+import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-import { useAppContext } from '../../components/AppContextProvider'
-import { useObservable } from '../../helpers/observableHook'
 import { ClaimTxnState } from './bonusPipe'
 
 type BonusContainerProps = {

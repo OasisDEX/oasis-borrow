@@ -1,9 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Box, Card, Heading, SxStyleProp, Text } from 'theme-ui'
 
-import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
-import { WithChildren } from '../helpers/types'
 import { AppLink } from './Links'
 
 function CardContent({

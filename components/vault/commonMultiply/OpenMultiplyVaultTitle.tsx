@@ -1,10 +1,9 @@
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
+import { VaultProxySubtitle } from 'components/vault/VaultProxy'
+import { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Text } from 'theme-ui'
-
-import { OpenMultiplyVaultStage } from '../../../features/multiply/open/pipes/openMultiplyVault'
-import { VaultProxySubtitle } from '../VaultProxy'
 
 export interface OpenMultiplyVaultTitleProps {
   isEditingStage: boolean

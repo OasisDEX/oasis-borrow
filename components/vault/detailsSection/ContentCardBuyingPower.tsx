@@ -5,11 +5,10 @@ import {
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
 import { formatAmount } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
-
-import { zero } from '../../../helpers/zero'
 
 interface ContentCardBuyingPowerProps {
   token: string

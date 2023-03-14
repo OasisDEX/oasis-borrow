@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-
-import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
+import { ManageStandardBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
 
 export const allowanceDefaults: Partial<ManageStandardBorrowVaultState> = {
   collateralAllowanceAmount: maxUint256,
