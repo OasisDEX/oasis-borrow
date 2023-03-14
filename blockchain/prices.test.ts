@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import { mockContextConnected } from 'helpers/mocks/context.mock'
+import { getStateUnpacker } from 'helpers/testHelpers'
 import moment from 'moment'
 import { Observable, of, throwError } from 'rxjs'
 import sinon from 'sinon'
 
-import { mockContextConnected } from '../helpers/mocks/context.mock'
-import { getStateUnpacker } from '../helpers/testHelpers'
 import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from './prices'
 
 describe('createTokenPriceInUSD$', () => {

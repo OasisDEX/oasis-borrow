@@ -8,6 +8,7 @@ import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { jwtAuthGetToken } from 'features/shared/jwt'
+import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
@@ -15,7 +16,6 @@ import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
-import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 export function applyOpenMultiplyVaultTransaction(

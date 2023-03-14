@@ -10,6 +10,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { AppSpinner } from 'helpers/AppSpinner'
 import {
   formatAmount,
@@ -21,8 +22,6 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-
-import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 
 export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultState) {
   const [showFees, setShowFees] = useState(false)

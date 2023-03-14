@@ -1,5 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import { AppLink } from 'components/Links'
 import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
@@ -19,8 +21,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
 
-import { useAppContext } from '../AppContextProvider'
-import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface ZeroDebtProtectionBannerProps {

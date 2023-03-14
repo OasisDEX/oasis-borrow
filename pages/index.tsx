@@ -2,11 +2,10 @@ import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { LandingPageLayout } from 'components/Layouts'
 import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
+import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-
-import { HomepageView } from '../features/homepage/HomepageView'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {

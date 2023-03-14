@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { one, zero } from 'helpers/zero'
-
-import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 
 // based on https://docs.google.com/spreadsheets/d/144cmXYXe89tzjUOrgj8eK7B2pU2WSQBdZr6s1GeXnms/edit#gid=0
 const multiplyBaseEvent = {

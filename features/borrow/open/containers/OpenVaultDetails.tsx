@@ -9,11 +9,10 @@ import { ContentCardCollateralLocked } from 'components/vault/detailsSection/Con
 import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentFooterItemsBorrow } from 'components/vault/detailsSection/ContentFooterItemsBorrow'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { OpenVaultState } from '../pipes/openVault'
 
 export function OpenVaultDetails(props: OpenVaultState) {
   const {

@@ -1,4 +1,5 @@
-import { zero } from '../../../../helpers/zero'
+import { zero } from 'helpers/zero'
+
 import {
   CloseVaultTo,
   MainAction,

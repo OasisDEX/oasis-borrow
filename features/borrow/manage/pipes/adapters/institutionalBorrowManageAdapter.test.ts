@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import { zero } from 'helpers/zero'
 
-import { zero } from '../../../../../helpers/zero'
 import { increasingRisk } from './institutionalBorrowManageAdapter'
 
 describe('InstitutionalBorrowManageAdapter', () => {

@@ -1,26 +1,26 @@
 import BigNumber from 'bignumber.js'
 import { InstiVault } from 'blockchain/instiVault'
-
-import { collateralPriceAtRatio } from '../../../../../blockchain/vault.maths'
-import { zero } from '../../../../../helpers/zero'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
   GenericManageBorrowVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-} from '../manageVault'
-import { applyManageVaultAllowance } from '../viewStateTransforms/manageVaultAllowances'
-import { applyManageVaultCalculations } from '../viewStateTransforms/manageVaultCalculations'
+} from 'features/borrow/manage/pipes/manageVault'
+import { applyManageVaultAllowance } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
+import { applyManageVaultCalculations } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
-} from '../viewStateTransforms/manageVaultConditions'
-import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
-import { applyManageVaultForm } from '../viewStateTransforms/manageVaultForm'
-import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
-import { applyManageVaultInput } from '../viewStateTransforms/manageVaultInput'
-import { applyManageVaultSummary } from '../viewStateTransforms/manageVaultSummary'
-import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
-import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultConditions'
+import { applyManageVaultEnvironment } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultEnvironment'
+import { applyManageVaultForm } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultForm'
+import { applyManageVaultInjectedOverride } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInjectedOverride'
+import { applyManageVaultInput } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
+import { applyManageVaultSummary } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultSummary'
+import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
+import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
+import { zero } from 'helpers/zero'
+
 import {
   BorrowManageAdapterInterface,
   CreateInitialVaultStateArgs,

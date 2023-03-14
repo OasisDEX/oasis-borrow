@@ -1,9 +1,11 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
+import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
 } from 'features/multiply/open/pipes/openMultiplyVault'
+import { mockGuniOpenEarnVault } from 'helpers/mocks/guniOpenEarnVault.mock'
 import { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
 import { AppContext } from 'next/app'
 import React from 'react'
@@ -11,9 +13,6 @@ import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
-
-import { GuniOpenVaultView } from '../../features/earn/guni/open/containers/GuniOpenVaultView'
-import { mockGuniOpenEarnVault } from '../mocks/guniOpenEarnVault.mock'
 
 type GuniOpenMultiplyVaultStory = { title?: string } & MockOpenMultiplyVaultProps
 

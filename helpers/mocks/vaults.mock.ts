@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { IlkData } from 'blockchain/ilks'
+import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import { OraclePriceData } from 'blockchain/prices'
 import { createVault$, Vault } from 'blockchain/vaults'
 import {
@@ -13,7 +14,6 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 
-import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
 import { mockContextConnected$ } from './context.mock'
 import { mockIlkData$, mockIlkToToken$ } from './ilks.mock'
 import { mockPriceInfo$ } from './priceInfo.mock'
