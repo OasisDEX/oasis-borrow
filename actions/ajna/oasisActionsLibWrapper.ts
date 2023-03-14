@@ -19,6 +19,7 @@ interface AjnaTxHandlerInput {
   quoteToken: string
   rpcProvider: ethers.providers.Provider
   state: AjnaFormState
+  isFormValid: boolean
 }
 
 export async function getAjnaParameters({
@@ -30,9 +31,10 @@ export async function getAjnaParameters({
   quoteToken,
   rpcProvider,
   state,
-}: AjnaTxHandlerInput): Promise<Strategy<AjnaPosition | AjnaEarnPosition>> {
+  isFormValid,
+}: AjnaTxHandlerInput): Promise<Strategy<AjnaPosition | AjnaEarnPosition> | undefined> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarnPosition>)
+  const defaultPromise = Promise.resolve(undefined)
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
@@ -66,11 +68,11 @@ export async function getAjnaParameters({
     case 'open-borrow': {
       const { depositAmount, generateAmount } = state
 
-      if (depositAmount) {
+      if (isFormValid) {
         return strategies.ajna.borrow.open(
           {
             ...commonPayload,
-            collateralAmount: depositAmount,
+            collateralAmount: depositAmount!,
             collateralPrice,
             price: borrowPrice,
             quoteAmount: generateAmount || zero,
@@ -84,11 +86,11 @@ export async function getAjnaParameters({
     case 'deposit-borrow': {
       const { depositAmount, generateAmount } = state
 
-      if (depositAmount) {
+      if (isFormValid) {
         return strategies.ajna.borrow.depositBorrow(
           {
             ...commonPayload,
-            collateralAmount: depositAmount,
+            collateralAmount: depositAmount!,
             position: position as AjnaPosition,
             price: borrowPrice,
             quoteAmount: generateAmount || zero,
@@ -101,14 +103,14 @@ export async function getAjnaParameters({
     case 'generate-borrow': {
       const { depositAmount, generateAmount } = state
 
-      if (generateAmount) {
+      if (isFormValid) {
         return strategies.ajna.borrow.depositBorrow(
           {
             ...commonPayload,
             collateralAmount: depositAmount || zero,
             position: position as AjnaPosition,
             price: borrowPrice,
-            quoteAmount: generateAmount,
+            quoteAmount: generateAmount!,
           },
           dependencies,
         )
@@ -118,13 +120,13 @@ export async function getAjnaParameters({
     case 'payback-borrow': {
       const { paybackAmount, withdrawAmount } = state
 
-      if (paybackAmount) {
+      if (isFormValid) {
         return strategies.ajna.borrow.paybackWithdraw(
           {
             ...commonPayload,
             collateralAmount: withdrawAmount || zero,
             position: position as AjnaPosition,
-            quoteAmount: paybackAmount,
+            quoteAmount: paybackAmount!,
           },
           dependencies,
         )
@@ -134,11 +136,11 @@ export async function getAjnaParameters({
     case 'withdraw-borrow': {
       const { paybackAmount, withdrawAmount } = state
 
-      if (withdrawAmount) {
+      if (isFormValid) {
         return strategies.ajna.paybackWithdraw(
           {
             ...commonPayload,
-            collateralAmount: withdrawAmount,
+            collateralAmount: withdrawAmount!,
             position: position as AjnaPosition,
             quoteAmount: paybackAmount || zero,
           },
@@ -150,13 +152,16 @@ export async function getAjnaParameters({
     case 'open-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
 
-      if (depositAmount && price) {
+      if (isFormValid) {
+        console.log('here')
         return strategies.ajna.earn.open(
           {
             ...commonPayload,
-            price,
-            quoteAmount: depositAmount,
+            price: price!,
+            quoteAmount: depositAmount!,
             isStakingNft: false,
+            collateralPrice,
+            quotePrice,
           },
           { ...dependencies, getEarnData: getAjnaEarnData },
         )
@@ -166,11 +171,11 @@ export async function getAjnaParameters({
     case 'deposit-earn': {
       const { price, depositAmount } = state as AjnaEarnFormState
 
-      if (price) {
+      if (isFormValid) {
         return strategies.ajna.earn.depositAndAdjust(
           {
             ...commonPayload,
-            price,
+            price: price!,
             quoteAmount: depositAmount || zero,
             position: position as AjnaEarnPosition,
           },
@@ -182,11 +187,11 @@ export async function getAjnaParameters({
     case 'withdraw-earn': {
       const { price, withdrawAmount } = state as AjnaEarnFormState
 
-      if (price) {
+      if (isFormValid) {
         return strategies.ajna.earn.withdrawAndAdjust(
           {
             ...commonPayload,
-            price,
+            price: price!,
             quoteAmount: withdrawAmount || zero,
             position: position as AjnaEarnPosition,
           },

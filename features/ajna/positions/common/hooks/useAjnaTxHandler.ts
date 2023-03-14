@@ -29,7 +29,7 @@ export function useAjnaTxHandler(): () => void {
   const {
     tx: { setTxDetails },
     environment: { collateralPrice, collateralToken, ethPrice, quotePrice, quoteToken, product },
-    steps: { isExternalStep },
+    steps: { isExternalStep, currentStep },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -39,27 +39,29 @@ export function useAjnaTxHandler(): () => void {
       setIsLoadingSimulation,
       setSimulation,
     },
+    validation: { isFormValid },
   } = useAjnaProductContext(product)
 
   const [txData, setTxData] = useState<AjnaTxData>()
   const [cancelablePromise, setCancelablePromise] = useState<
-    CancelablePromise<Strategy<typeof position>>
+    CancelablePromise<Strategy<typeof position> | undefined>
   >()
 
   const { dpmAddress } = state
 
   useEffect(() => {
     cancelablePromise?.cancel()
-    if (isFormEmpty({ product, state })) {
+    if (isFormEmpty({ product, state, position, currentStep })) {
       setSimulation(undefined)
       setIsLoadingSimulation(false)
     } else {
       setIsLoadingSimulation(true)
     }
   }, [context?.rpcProvider, dpmAddress, state])
+
   useDebouncedEffect(
     () => {
-      if (context && !isExternalStep) {
+      if (context && !isExternalStep && currentStep !== 'risk') {
         const promise = cancelable(
           getAjnaParameters({
             collateralPrice,
@@ -70,24 +72,27 @@ export function useAjnaTxHandler(): () => void {
             quoteToken,
             rpcProvider: context.rpcProvider,
             state,
+            isFormValid,
           }),
         )
         setCancelablePromise(promise)
 
         promise
           .then((data) => {
-            setTxData(data.tx)
-            setSimulation(data.simulation)
-            setIsLoadingSimulation(false)
-            uiChanges.publish(TX_DATA_CHANGE, {
-              type: 'tx-data',
-              transaction: callOasisActionsWithDpmProxy,
-              data: {
-                kind: TxMetaKind.libraryCall,
-                proxyAddress: dpmAddress,
-                ...data?.tx,
-              },
-            })
+            if (data) {
+              setTxData(data.tx)
+              setSimulation(data.simulation)
+              setIsLoadingSimulation(false)
+              uiChanges.publish(TX_DATA_CHANGE, {
+                type: 'tx-data',
+                transaction: callOasisActionsWithDpmProxy,
+                data: {
+                  kind: TxMetaKind.libraryCall,
+                  proxyAddress: dpmAddress,
+                  ...data?.tx,
+                },
+              })
+            }
           })
           .catch((error) => {
             setIsLoadingSimulation(false)

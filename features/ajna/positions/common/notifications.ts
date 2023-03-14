@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AjnaBorrowUpdateState, AjnaEarnUpdateState, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaBorrowFormAction } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
@@ -56,30 +56,15 @@ const ajnaNotifications: {
   }),
 }
 
-type NotificationEarnParams = {
-  price: BigNumber
-  htp: BigNumber
-  momp: BigNumber
-}
-
-// TODO added for now just to test typescript
-type NotificationBorrowParams = {
-  param1: BigNumber
-  param2: BigNumber
-  param3: BigNumber
-}
-
-type NotificationParams = NotificationBorrowParams | NotificationEarnParams
-
 export function getAjnaNotifications({
-  params,
+  position,
   collateralToken,
   quoteToken,
   dispatch,
   updateState,
   product,
 }: {
-  params: NotificationParams
+  position: AjnaPosition | AjnaEarnPosition
   collateralToken: string
   quoteToken: string
   dispatch: Dispatch<AjnaBorrowFormAction> | Dispatch<AjnaEarnFormAction>
@@ -93,9 +78,12 @@ export function getAjnaNotifications({
     case 'borrow':
       break
     case 'earn': {
-      const { price, htp, momp } = params as NotificationEarnParams
-      const earningNoApy = price.lt(htp)
-      const depositIsNotWithdrawable = price.gt(momp)
+      const {
+        price,
+        pool: { highestThresholdPrice, mostOptimisticMatchingPrice },
+      } = position as AjnaEarnPosition
+      const earningNoApy = price.lt(highestThresholdPrice)
+      const depositIsNotWithdrawable = price.gt(mostOptimisticMatchingPrice)
 
       const moveToAdjust = () => {
         dispatch({ type: 'reset' })

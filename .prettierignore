@@ -5,3 +5,4 @@ package.json
 .next/
 types
 i18next.d.ts
+.yalc

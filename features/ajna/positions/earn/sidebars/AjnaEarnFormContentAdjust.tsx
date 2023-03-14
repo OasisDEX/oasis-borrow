@@ -6,20 +6,13 @@ import React from 'react'
 
 export function AjnaEarnFormContentAdjust() {
   const {
-    form: {
-      state: { price },
-    },
-    position: {
-      currentPosition: {
-        position: { price: currentPrice },
-      },
-    },
+    validation: { isFormValid },
   } = useAjnaProductContext('earn')
 
   return (
     <>
       <AjnaEarnSlider />
-      {!price?.decimalPlaces(2).eq(currentPrice.decimalPlaces(2)) && (
+      {isFormValid && (
         <AjnaFormContentSummary>
           <AjnaEarnFormOrder />
         </AjnaFormContentSummary>
