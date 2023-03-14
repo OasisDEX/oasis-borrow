@@ -81,7 +81,7 @@ function getProtection({
   ).toNumber()
 }
 
-function getMakerPositionOfType(position: MakerPositionDetails[]) {
+export function getMakerPositionOfType(position: MakerPositionDetails[]) {
   return position.reduce<{
     borrow: MakerPositionDetails[]
     multiply: MakerPositionDetails[]

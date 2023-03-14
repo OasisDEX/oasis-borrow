@@ -13,9 +13,15 @@ import {
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
+  getMakerPositionOfType,
   positionsTableSkippedHeaders,
   positionsTableTooltips,
 } from 'features/vaultsOverview/helpers'
+import {
+  getBorrowPositionRows,
+  parseMakerBorrowPositionRows,
+} from 'features/vaultsOverview/parsers'
+import { PositionsList } from 'features/vaultsOverview/vaultsOverview'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
@@ -86,6 +92,7 @@ export function PositionsTable({ address }: { address: string }) {
                 address: formatAddress(address),
               })} (${combinedPositionsData.length})`}
             >
+              <PositionsTableInner ownersPositionsList={ownersPositionsList} />
               {borrowPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
@@ -146,5 +153,40 @@ export function PositionsTable({ address }: { address: string }) {
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>
+  )
+}
+
+export function PositionsTableInner({
+  ownersPositionsList,
+}: {
+  ownersPositionsList: PositionsList
+}) {
+  const { t } = useTranslation()
+
+  console.log('ownersPositionsListData')
+  console.log(ownersPositionsList)
+
+  const makerPositions = useMemo(() => getMakerPositionOfType(ownersPositionsList.makerPositions), [
+    ownersPositionsList.makerPositions,
+  ])
+  const parsedMakerBorrowPositions = useMemo(
+    () => parseMakerBorrowPositionRows(makerPositions.borrow),
+    [makerPositions.borrow],
+  )
+  const borrowPositionsRows = useMemo(() => getBorrowPositionRows(parsedMakerBorrowPositions), [
+    parsedMakerBorrowPositions,
+  ])
+
+  return (
+    <>
+      {borrowPositionsRows.length > 0 && (
+        <>
+          <DiscoverTableHeading>
+            Oasis {t('nav.borrow')} ({borrowPositionsRows.length})
+          </DiscoverTableHeading>
+          <DiscoverResponsiveTable rows={borrowPositionsRows} />
+        </>
+      )}
+    </>
   )
 }

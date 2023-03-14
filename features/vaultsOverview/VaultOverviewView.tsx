@@ -15,18 +15,18 @@ export function VaultsOverviewView({ address }: { address: string }) {
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1, gap: 4, mt: [0, 4], mb: 5 }} key={address}>
-      <VaultOwnershipNotice address={address} />
-      <AssetsAndPositionsOverview address={address} />
+      {/* <VaultOwnershipNotice address={address} /> */}
+      {/* <AssetsAndPositionsOverview address={address} /> */}
       {!followVaultsEnabled ? (
         <PositionsList address={address} />
       ) : (
         <>
           <PositionsTable address={address} />
-          <FollowedTable address={address} />
+          {/* <FollowedTable address={address} /> */}
         </>
       )}
-      <ConnectWalletPrompt />
-      <VaultSuggestions address={address} />
+      {/* <ConnectWalletPrompt /> */}
+      {/* <VaultSuggestions address={address} /> */}
     </Grid>
   )
 }
