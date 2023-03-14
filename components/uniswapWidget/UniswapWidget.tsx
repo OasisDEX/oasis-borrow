@@ -412,6 +412,7 @@ export function UniswapWidget(props: { token?: string }) {
       )}
       <SwapWidget
         /* @ts-ignore */
+        permit2
         theme={widgetTheme}
         tokenList={tokenList.tokens}
         convenienceFee={20}
