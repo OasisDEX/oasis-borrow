@@ -2,7 +2,10 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { ManageVaultChange, MutableManageVaultState } from 'features/borrow/manage/pipes/manageVault'
+import {
+  ManageVaultChange,
+  MutableManageVaultState,
+} from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 

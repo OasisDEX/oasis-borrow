@@ -1,4 +1,7 @@
-import { ManageBorrowVaultStage, ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import {
+  ManageBorrowVaultStage,
+  ManageStandardBorrowVaultState,
+} from 'features/borrow/manage/pipes/manageVault'
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,

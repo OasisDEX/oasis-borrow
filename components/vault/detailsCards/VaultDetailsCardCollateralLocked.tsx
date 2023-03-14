@@ -1,6 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
+import {
+  AfterPillProps,
+  VaultDetailsCard,
+  VaultDetailsCardModal,
+} from 'components/vault/VaultDetails'
 import { formatAmount } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'

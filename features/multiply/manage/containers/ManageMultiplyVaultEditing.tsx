@@ -8,7 +8,10 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
-import { ManageMultiplyVaultState, OtherAction } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import {
+  ManageMultiplyVaultState,
+  OtherAction,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import {
   formatAmount,

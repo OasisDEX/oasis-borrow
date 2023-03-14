@@ -1,5 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import { ManageStandardBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
+import {
+  ManageStandardBorrowVaultState,
+  ManageVaultChange,
+} from 'features/borrow/manage/pipes/manageVault'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
 
