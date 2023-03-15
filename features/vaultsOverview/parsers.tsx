@@ -5,23 +5,28 @@ import { AppLink } from 'components/Links'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import {
   DiscoverTableDataCellAsset,
+  DiscoverTableDataCellInactive,
   DiscoverTableDataCellProtocol,
   DiscoverTableDataCellProtocols,
   DiscoverTableDataCellRiskRatio,
 } from 'features/discover/common/DiscoverTableDataCellComponents'
 import { DiscoverTableRowData } from 'features/discover/types'
+import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getFundingCost } from 'features/vaultsOverview/helpers'
 import { AavePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { calculatePNL } from 'helpers/multiply/calculations'
+import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
+import React from 'react'
 import { Button, Text } from 'theme-ui'
 
 interface PositionTableRow {
   asset: string
   icon: string
-  id: BigNumber
+  id: string
   protocol: DiscoverTableDataCellProtocols
   url: string
 }
@@ -45,6 +50,12 @@ export interface PositionTableMultiplyRow extends PositionTableRow {
   multiple: BigNumber
   netValue: BigNumber
 }
+export interface PositionTableEarnRow extends PositionTableRow {
+  liquidity?: BigNumber | string
+  liquidityToken: string
+  netValue?: BigNumber
+  pnl?: BigNumber
+}
 
 export function parseMakerBorrowPositionRows(
   positions: MakerPositionDetails[],
@@ -67,7 +78,7 @@ export function parseMakerBorrowPositionRows(
       debt,
       debtToken: 'DAI',
       icon: token,
-      id,
+      id: id.toString(),
       protocol: 'Maker',
       riskRatio: {
         level: collateralizationRatio.times(100),
@@ -88,10 +99,27 @@ export function parseMakerMultiplyPositionRows(
       asset: ilk,
       fundingCost: getFundingCost({ debt, stabilityFee, value }),
       icon: token,
-      id,
+      id: id.toString(),
       liquidationPrice,
       multiple: calculateMultiply({ debt, lockedCollateralUSD }),
       netValue: value,
+      protocol: 'Maker',
+      url: `/${id}`,
+    }),
+  )
+}
+export function parseMakerEarnPositionRows(
+  positions: MakerPositionDetails[],
+): PositionTableEarnRow[] {
+  return positions.map(
+    ({ debt, history, id, ilk, ilkDebtAvailable, lockedCollateralUSD, token, value }) => ({
+      asset: ilk,
+      icon: token,
+      id: id.toString(),
+      liquidity: ilkDebtAvailable,
+      liquidityToken: 'DAI',
+      netValue: value,
+      pnl: calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100),
       protocol: 'Maker',
       url: `/${id}`,
     }),
@@ -105,7 +133,7 @@ export function parseAaveMultiplyPositionRows(
       asset: title,
       fundingCost,
       icon: token,
-      id: new BigNumber(id),
+      id,
       liquidationPrice,
       multiple,
       netValue,
@@ -113,6 +141,18 @@ export function parseAaveMultiplyPositionRows(
       url,
     }),
   )
+}
+export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTableEarnRow[] {
+  return positions.map(({ id, liquidity, netValue, protocol, title, token, url }) => ({
+    asset: title,
+    icon: token,
+    id,
+    liquidity,
+    liquidityToken: 'USDC',
+    netValue,
+    protocol: `Aave v${protocol === LendingProtocol.AaveV2 ? '2' : '3'}`,
+    url,
+  }))
 }
 export function parseAjnaBorrowPositionRows(
   positions: AjnaPositionDetails[],
@@ -132,7 +172,7 @@ export function parseAjnaBorrowPositionRows(
       debt: debtAmount,
       debtToken: quoteToken,
       icon: collateralToken,
-      id: new BigNumber(vaultId),
+      id: vaultId,
       protocol: 'Ajna',
       riskRatio: {
         level: riskRatio.loanToValue.times(100),
@@ -145,6 +185,43 @@ export function parseAjnaBorrowPositionRows(
       variable: rate.times(100),
     }
   })
+}
+export function parseAjnaEarnPositionRows(
+  positions: AjnaPositionDetails[],
+): PositionTableEarnRow[] {
+  return positions.map(({ details: { collateralToken, vaultId, quoteToken } }) => ({
+    asset: `${collateralToken}/${quoteToken}`,
+    icon: collateralToken,
+    id: vaultId,
+    liquidityToken: quoteToken,
+    protocol: `Ajna`,
+    url: `/ajna/position/${vaultId}`,
+  }))
+}
+export function parseDsrEarnPosition({
+  address,
+  dsr,
+}: {
+  address: string
+  dsr?: Dsr
+}): PositionTableEarnRow[] {
+  const netValue =
+    dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
+
+  return netValue.gt(zero)
+    ? [
+        {
+          asset: 'DAI Savings Rate',
+          icon: 'DAI',
+          id: formatAddress(address),
+          liquidity: 'Unlimited',
+          liquidityToken: 'DAI',
+          netValue,
+          protocol: 'Maker',
+          url: `/earn/dsr/${address}`,
+        },
+      ]
+    : []
 }
 
 export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverTableRowData[] {
@@ -162,13 +239,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
       variable,
       url,
     }) => ({
-      asset: (
-        <DiscoverTableDataCellAsset
-          asset={asset}
-          icon={getToken(icon).iconCircle}
-          id={id.toNumber()}
-        />
-      ),
+      asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
       riskRatio: (
         <>
           <DiscoverTableDataCellRiskRatio
@@ -204,21 +275,47 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
     }),
   )
 }
-
 export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): DiscoverTableRowData[] {
   return rows.map(
     ({ asset, fundingCost, icon, id, liquidationPrice, multiple, netValue, protocol, url }) => ({
-      asset: (
-        <DiscoverTableDataCellAsset
-          asset={asset}
-          icon={getToken(icon).iconCircle}
-          id={id.toNumber()}
-        />
-      ),
+      asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
       netValue: <>${formatCryptoBalance(netValue)}</>,
       multiple: <>{multiple.toFixed(2)}x</>,
       liquidationPrice: <>${formatCryptoBalance(liquidationPrice)}</>,
       fundingCost: <>{formatPercent(fundingCost, { precision: 2 })}</>,
+      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
+      automation: '',
+      action: (
+        <AppLink href={url} sx={{ flexGrow: [1, null, null, 'initial'] }}>
+          <Button className="discover-action" variant="tertiary">
+            View
+          </Button>
+        </AppLink>
+      ),
+    }),
+  )
+}
+export function getEarnPositionRows(rows: PositionTableEarnRow[]): DiscoverTableRowData[] {
+  return rows.map(
+    ({ asset, icon, id, liquidity, liquidityToken, netValue, pnl, protocol, url }) => ({
+      asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
+      netValue: BigNumber.isBigNumber(netValue) ? (
+        <>${formatCryptoBalance(netValue)}</>
+      ) : (
+        <DiscoverTableDataCellInactive>{netValue || 'Soon'}</DiscoverTableDataCellInactive>
+      ),
+      pnl: BigNumber.isBigNumber(pnl) ? (
+        <>${formatCryptoBalance(pnl)}</>
+      ) : (
+        <DiscoverTableDataCellInactive>{pnl || 'Soon'}</DiscoverTableDataCellInactive>
+      ),
+      liquidity: BigNumber.isBigNumber(liquidity) ? (
+        <>
+          {formatCryptoBalance(liquidity)} {liquidityToken}
+        </>
+      ) : (
+        <DiscoverTableDataCellInactive>{liquidity || 'Soon'}</DiscoverTableDataCellInactive>
+      ),
       protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
       automation: '',
       action: (

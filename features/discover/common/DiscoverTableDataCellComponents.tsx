@@ -5,6 +5,7 @@ import { DiscoverTableColRatioRowData } from 'features/discover/types'
 import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import { formatPercent } from 'helpers/formatters/format'
 import { PropsWithChildren } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Text } from 'theme-ui'
 
@@ -22,18 +23,16 @@ export function DiscoverTableDataCellInactive({ children }: PropsWithChildren<{}
 }
 
 export function DiscoverTableDataCellAsset({
-  address,
   asset,
   follow,
   icon,
   id,
   inactive,
 }: {
-  address?: string
   asset: string
   follow?: DiscoverFollow
   icon?: string
-  id?: number
+  id?: string
   inactive?: string
 }) {
   const { t } = useTranslation()
@@ -65,10 +64,10 @@ export function DiscoverTableDataCellAsset({
             </Text>
           )}
         </Text>
-        {(id || address) && (
+        {id && (
           <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-            {t('position')} {id && '#'}
-            {id || address}
+            {t('position')} {!id.toString().includes('...') && '#'}
+            {id}
           </Text>
         )}
       </Flex>

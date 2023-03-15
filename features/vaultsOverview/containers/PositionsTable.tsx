@@ -21,10 +21,15 @@ import {
 } from 'features/vaultsOverview/helpers'
 import {
   getBorrowPositionRows,
+  getEarnPositionRows,
   getMultiplyPositionRows,
+  parseAaveEarnPositionRows,
   parseAaveMultiplyPositionRows,
   parseAjnaBorrowPositionRows,
+  parseAjnaEarnPositionRows,
+  parseDsrEarnPosition,
   parseMakerBorrowPositionRows,
+  parseMakerEarnPositionRows,
   parseMakerMultiplyPositionRows,
 } from 'features/vaultsOverview/parsers'
 import { PositionsList } from 'features/vaultsOverview/vaultsOverview'
@@ -98,7 +103,7 @@ export function PositionsTable({ address }: { address: string }) {
                 address: formatAddress(address),
               })} (${combinedPositionsData.length})`}
             >
-              <PositionsTableInner ownersPositionsList={ownersPositionsList} />
+              <PositionsTableInner address={address} ownersPositionsList={ownersPositionsList} />
               {borrowPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
@@ -163,14 +168,13 @@ export function PositionsTable({ address }: { address: string }) {
 }
 
 export function PositionsTableInner({
+  address,
   ownersPositionsList,
 }: {
+  address: string
   ownersPositionsList: PositionsList
 }) {
   const { t } = useTranslation()
-
-  console.log('ownersPositionsListData')
-  console.log(ownersPositionsList)
 
   const makerPositions = useMemo(() => getMakerPositionOfType(ownersPositionsList.makerPositions), [
     ownersPositionsList.makerPositions,
@@ -209,6 +213,35 @@ export function PositionsTableInner({
     [parsedMakerMultiplyPositions, parsedAaveMultiplyPositions],
   )
 
+  const parsedMakerEarnPositions = useMemo(() => parseMakerEarnPositionRows(makerPositions.earn), [
+    makerPositions.earn,
+  ])
+  const parsedAaveEarnPositions = useMemo(() => parseAaveEarnPositionRows(aavePositions.earn), [
+    aavePositions.earn,
+  ])
+  const parsedAjnaEarnPositions = useMemo(() => parseAjnaEarnPositionRows(ajnaPositions.earn), [
+    ajnaPositions.earn,
+  ])
+  const parsedDsrEarnPositions = useMemo(
+    () => parseDsrEarnPosition({ address, dsr: ownersPositionsList.dsrPosition }),
+    [address, ownersPositionsList.dsrPosition],
+  )
+  const earnPositionsRows = useMemo(
+    () =>
+      getEarnPositionRows([
+        ...parsedMakerEarnPositions,
+        ...parsedAaveEarnPositions,
+        ...parsedAjnaEarnPositions,
+        ...parsedDsrEarnPositions,
+      ]),
+    [
+      parsedMakerEarnPositions,
+      parsedAaveEarnPositions,
+      parsedAjnaEarnPositions,
+      parsedDsrEarnPositions,
+    ],
+  )
+
   return (
     <>
       {borrowPositionsRows.length > 0 && (
@@ -225,6 +258,14 @@ export function PositionsTableInner({
             Oasis {t('nav.multiply')} ({multiplyPositionsRows.length})
           </DiscoverTableHeading>
           <DiscoverResponsiveTable rows={multiplyPositionsRows} />
+        </>
+      )}
+      {earnPositionsRows.length > 0 && (
+        <>
+          <DiscoverTableHeading>
+            Oasis {t('nav.earn')} ({earnPositionsRows.length})
+          </DiscoverTableHeading>
+          <DiscoverResponsiveTable rows={earnPositionsRows} />
         </>
       )}
     </>
