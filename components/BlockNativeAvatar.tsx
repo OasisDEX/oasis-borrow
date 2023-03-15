@@ -1,5 +1,6 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import { svgStringToBase64 } from 'helpers/svgStringToBase64'
+import React from 'react'
 import { Box, Image, SxStyleProp } from 'theme-ui'
 
 type BlockNativeAvatarProps = {
