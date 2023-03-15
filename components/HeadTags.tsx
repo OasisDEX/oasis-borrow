@@ -66,13 +66,13 @@ export function PageSEOTags({
   }
 
   const networkParameter = query.network as string
+  const tabTitle = `${networkParameter ? { hardhat: '👷 ', goerli: '🌲 ' }[networkParameter] : ''}${
+    titleParams ? t(title, titleParams) : t(title)
+  }`
 
   return (
     <Head>
-      <title>
-        {networkParameter ? { hardhat: '👷 ', goerli: '🌲 ' }[networkParameter] : ''}
-        {titleParams ? t(title, titleParams) : t(title)}
-      </title>
+      <title>{tabTitle}</title>
       <meta property="og:title" content={t(title)!} />
       <meta property="twitter:title" content={t(title)!} />
 
