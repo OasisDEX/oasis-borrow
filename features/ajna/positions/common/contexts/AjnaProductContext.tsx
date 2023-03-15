@@ -1,6 +1,5 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import { AjnaSimulationData } from 'actions/ajna'
-import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
@@ -159,8 +158,9 @@ export function AjnaProductContextProvider({
         product,
         quoteBalance,
         simulationErrors: simulation?.errors,
-        simulationWarnings: simulation?.errors,
+        simulationWarnings: simulation?.warnings,
         state,
+        position,
         txError: txDetails?.txError,
       }),
     [
@@ -177,29 +177,17 @@ export function AjnaProductContextProvider({
     ],
   )
 
-  // TODO we will probably need resolver of these params per product
-  // should be based on position not form state
-  const resolvedNotificationsParams = useMemo(
-    () => ({
-      price: new BigNumber(18000),
-      htp: new BigNumber(19000),
-      // in general momp should be always above htp but here set below to force all notification to popup
-      momp: new BigNumber(17000),
-    }),
-    [],
-  )
-
   const notifications = useMemo(
     () =>
       getAjnaNotifications({
-        params: resolvedNotificationsParams,
+        position,
         product,
         quoteToken,
         collateralToken,
         dispatch: form.dispatch,
         updateState: form.updateState,
       }),
-    [quoteToken, collateralToken, resolvedNotificationsParams],
+    [quoteToken, collateralToken, position],
   )
 
   const [context, setContext] = useState<AjnaProductContext<typeof position, typeof form>>({

@@ -1,13 +1,17 @@
-import { AjnaFormState, AjnaProduct } from 'features/ajna/common/types'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaFormState, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 
 interface IsFormEmptyParams {
   product: AjnaProduct
   state: AjnaFormState
+  position: AjnaPosition | AjnaEarnPosition
+  currentStep: AjnaSidebarStep
 }
 
-export function isFormEmpty({ product, state }: IsFormEmptyParams): boolean {
+export function isFormEmpty({ product, state, position, currentStep }: IsFormEmptyParams): boolean {
   switch (product) {
     case 'borrow': {
       const {
@@ -20,10 +24,20 @@ export function isFormEmpty({ product, state }: IsFormEmptyParams): boolean {
       return !depositAmount && !generateAmount && !paybackAmount && !withdrawAmount
     }
     case 'earn': {
-      const { depositAmount, withdrawAmount } = state as AjnaEarnFormState
+      const { depositAmount, withdrawAmount, price } = state as AjnaEarnFormState
 
-      // TODO: add check if price is at its default or initial state
-      return !depositAmount && !withdrawAmount
+      switch (currentStep) {
+        case 'setup':
+          return !depositAmount && !withdrawAmount
+        case 'manage':
+          return (
+            !depositAmount &&
+            !withdrawAmount &&
+            !!areEarnPricesEqual((position as AjnaEarnPosition).price, price)
+          )
+        default:
+          return true
+      }
     }
     case 'multiply':
       return true
