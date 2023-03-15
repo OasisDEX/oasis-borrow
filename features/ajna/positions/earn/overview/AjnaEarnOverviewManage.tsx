@@ -9,16 +9,20 @@ import { ContentCardMaxLendingLTV } from 'features/ajna/positions/earn/overview/
 import { ContentCardTokensDeposited } from 'features/ajna/positions/earn/overview/ContentCardTokensDeposited'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnManage'
 import { ContentPositionLendingPrice } from 'features/ajna/positions/earn/overview/ContentPositionLendingPrice'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaEarnOverviewManage() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, quotePrice },
+    environment: { collateralToken, quoteToken, quotePrice, collateralPrice },
   } = useAjnaGeneralContext()
   const {
-    position: { isSimulationLoading },
+    position: {
+      isSimulationLoading,
+      currentPosition: { position, simulation },
+    },
     notifications,
   } = useAjnaProductContext('earn')
 
@@ -37,8 +41,9 @@ export function AjnaEarnOverviewManage() {
           <ContentCardTokensDeposited
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
-            tokensDeposited={new BigNumber(5250)}
-            tokensDepositedUSD={new BigNumber(5250).times(quotePrice)}
+            tokensDeposited={position.quoteTokenAmount}
+            tokensDepositedUSD={position.quoteTokenAmount.times(quotePrice)}
+            afterTokensDeposited={simulation?.quoteTokenAmount}
           />
           <ContentCardMaxLendingLTV
             isLoading={isSimulationLoading}
@@ -48,8 +53,9 @@ export function AjnaEarnOverviewManage() {
             isLoading={isSimulationLoading}
             collateralToken={collateralToken}
             quoteToken={quoteToken}
-            positionLendingPrice={new BigNumber(23506.3)}
-            relationToMarketPrice={new BigNumber(-10)}
+            positionLendingPrice={position.price}
+            afterPositionLendingPrice={simulation?.price}
+            relationToMarketPrice={position.price.div(collateralPrice.div(quotePrice)).minus(one)}
           />
         </DetailsSectionContentCardWrapper>
       }
@@ -57,7 +63,8 @@ export function AjnaEarnOverviewManage() {
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
             quoteToken={quoteToken}
-            availableToWithdraw={new BigNumber(2750)}
+            availableToWithdraw={position.quoteTokenAmount}
+            afterAvailableToWithdraw={simulation?.quoteTokenAmount}
             earlyWithdrawalPenalty={new BigNumber(2)}
             earlyWithdrawalPeriod={new Date(new Date().getTime() + 10000000)}
           />

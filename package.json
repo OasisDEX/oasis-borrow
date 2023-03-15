@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "7.4.0",
+  "version": "7.4.1",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=18.x"
@@ -50,7 +50,7 @@
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/oasis-actions": "0.2.15",
-    "@oasisdex/oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-14",
+    "@oasisdex/oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-15",
     "@oasisdex/transactions": "0.1.3-alpha.0",
     "@oasisdex/utils": "^0.0.8",
     "@prisma/client": "^3.14.0",

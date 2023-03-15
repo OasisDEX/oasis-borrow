@@ -25,7 +25,7 @@ const FOOTER_SECTIONS = [
     titleKey: 'nav.about',
     links: [
       { labelKey: 'nav.team', url: INTERNAL_LINKS.about },
-      { labelKey: 'nav.careers', url: INTERNAL_LINKS.careers },
+      { labelKey: 'nav.careers', url: EXTERNAL_LINKS.WORKABLE },
       { labelKey: 'nav.privacy', url: INTERNAL_LINKS.privacy },
       { labelKey: 'nav.cookie', url: INTERNAL_LINKS.cookie },
       { labelKey: 'nav.terms', url: INTERNAL_LINKS.terms },

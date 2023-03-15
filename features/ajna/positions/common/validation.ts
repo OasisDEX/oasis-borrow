@@ -1,8 +1,10 @@
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { AjnaFormState, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
@@ -19,6 +21,7 @@ interface GetAjnaBorrowValidationsParams {
   simulationErrors?: AjnaValidationItem[]
   simulationWarnings?: AjnaValidationItem[]
   state: AjnaFormState
+  position: AjnaPosition | AjnaEarnPosition
   txError?: TxError
 }
 
@@ -59,10 +62,12 @@ function isFormValid({
   currentStep,
   product,
   state,
+  position,
 }: {
   currentStep: GetAjnaBorrowValidationsParams['currentStep']
   product: GetAjnaBorrowValidationsParams['product']
   state: GetAjnaBorrowValidationsParams['state']
+  position: AjnaPosition | AjnaEarnPosition
 }): boolean {
   switch (product) {
     case 'borrow': {
@@ -102,10 +107,17 @@ function isFormValid({
         case 'manage':
           switch (action) {
             case 'open-earn':
+              return !!depositAmount?.gt(0)
             case 'deposit-earn':
-              return !!depositAmount?.gt(0) || !!price?.gt(0)
+              return (
+                !!depositAmount?.gt(0) ||
+                !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
+              )
             case 'withdraw-earn':
-              return !!withdrawAmount?.gt(0)
+              return (
+                !!withdrawAmount?.gt(0) ||
+                !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
+              )
             default:
               return false
           }
@@ -131,6 +143,7 @@ export function getAjnaValidation({
   simulationWarnings = [],
   state,
   txError,
+  position,
 }: GetAjnaBorrowValidationsParams): {
   isFormValid: boolean
   errors: ValidationMessagesInput
@@ -169,7 +182,8 @@ export function getAjnaValidation({
   )
 
   return {
-    isFormValid: errors.messages.length === 0 && isFormValid({ currentStep, product, state }),
+    isFormValid:
+      errors.messages.length === 0 && isFormValid({ currentStep, product, state, position }),
     errors,
     warnings,
   }

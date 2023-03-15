@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -38,7 +38,7 @@ export function ContentPositionLendingPrice({
       relationToMarketPrice.gte(zero)
         ? 'ajna.earn.manage.overview.above-market-price'
         : 'ajna.earn.manage.overview.below-market-price',
-      { amount: relationToMarketPrice.abs() },
+      { amount: formatDecimalAsPercent(relationToMarketPrice.abs()) },
     ),
   }
 
