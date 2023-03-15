@@ -391,8 +391,8 @@ export function InjectTokenIconsDefs() {
           y2="29.0002"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#001427" />
-          <stop offset="1" stop-color="#003386" />
+          <stop stopColor="#001427" />
+          <stop offset="1" stopColor="#003386" />
         </linearGradient>
       </defs>
     </svg>
@@ -19773,8 +19773,8 @@ export const tokenIcons = {
             y2="21.5632"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#B6509E" />
-            <stop offset="1" stop-color="#2EBAC6" />
+            <stop stopColor="#B6509E" />
+            <stop offset="1" stopColor="#2EBAC6" />
           </linearGradient>
           <linearGradient
             id="paint1_linear_12228_814"
@@ -19784,8 +19784,8 @@ export const tokenIcons = {
             y2="24.5003"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#6580EB" />
-            <stop offset="1" stop-color="#8EA2F2" />
+            <stop stopColor="#6580EB" />
+            <stop offset="1" stopColor="#8EA2F2" />
           </linearGradient>
           <linearGradient
             id="paint2_linear_12228_814"
@@ -19795,8 +19795,8 @@ export const tokenIcons = {
             y2="17.7498"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#00A3FF" />
-            <stop offset="1" stop-color="#0B91DD" />
+            <stop stopColor="#00A3FF" />
+            <stop offset="1" stopColor="#0B91DD" />
           </linearGradient>
         </defs>
       </>
@@ -19851,8 +19851,8 @@ export const tokenIcons = {
             y2="21.5632"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#B6509E" />
-            <stop offset="1" stop-color="#2EBAC6" />
+            <stop stopColor="#B6509E" />
+            <stop offset="1" stopColor="#2EBAC6" />
           </linearGradient>
           <linearGradient
             id="paint1_linear_12228_814"
@@ -19862,8 +19862,8 @@ export const tokenIcons = {
             y2="24.5003"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#6580EB" />
-            <stop offset="1" stop-color="#8EA2F2" />
+            <stop stopColor="#6580EB" />
+            <stop offset="1" stopColor="#8EA2F2" />
           </linearGradient>
           <linearGradient
             id="paint2_linear_12228_814"
@@ -19873,8 +19873,8 @@ export const tokenIcons = {
             y2="17.7498"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#00A3FF" />
-            <stop offset="1" stop-color="#0B91DD" />
+            <stop stopColor="#00A3FF" />
+            <stop offset="1" stopColor="#0B91DD" />
           </linearGradient>
         </defs>
       </>
@@ -19929,8 +19929,8 @@ export const tokenIcons = {
             y2="21.5632"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#B6509E" />
-            <stop offset="1" stop-color="#2EBAC6" />
+            <stop stopColor="#B6509E" />
+            <stop offset="1" stopColor="#2EBAC6" />
           </linearGradient>
           <linearGradient
             id="paint1_linear_12228_814"
@@ -19940,8 +19940,8 @@ export const tokenIcons = {
             y2="24.5003"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#6580EB" />
-            <stop offset="1" stop-color="#8EA2F2" />
+            <stop stopColor="#6580EB" />
+            <stop offset="1" stopColor="#8EA2F2" />
           </linearGradient>
           <linearGradient
             id="paint2_linear_12228_814"
@@ -19951,8 +19951,8 @@ export const tokenIcons = {
             y2="17.7498"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#00A3FF" />
-            <stop offset="1" stop-color="#0B91DD" />
+            <stop stopColor="#00A3FF" />
+            <stop offset="1" stopColor="#0B91DD" />
           </linearGradient>
         </defs>
       </>
@@ -20007,8 +20007,8 @@ export const tokenIcons = {
             y2="21.5632"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#B6509E" />
-            <stop offset="1" stop-color="#2EBAC6" />
+            <stop stopColor="#B6509E" />
+            <stop offset="1" stopColor="#2EBAC6" />
           </linearGradient>
           <linearGradient
             id="paint1_linear_12228_814"
@@ -20018,8 +20018,8 @@ export const tokenIcons = {
             y2="24.5003"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#6580EB" />
-            <stop offset="1" stop-color="#8EA2F2" />
+            <stop stopColor="#6580EB" />
+            <stop offset="1" stopColor="#8EA2F2" />
           </linearGradient>
           <linearGradient
             id="paint2_linear_12228_814"
@@ -20029,8 +20029,8 @@ export const tokenIcons = {
             y2="17.7498"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#00A3FF" />
-            <stop offset="1" stop-color="#0B91DD" />
+            <stop stopColor="#00A3FF" />
+            <stop offset="1" stopColor="#0B91DD" />
           </linearGradient>
         </defs>
       </>
