@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
-import { AjnaFormState, AjnaPoolPairs } from 'features/ajna/common/types'
+import { AjnaFormState, AjnaGenericPosition, AjnaPoolPairs } from 'features/ajna/common/types'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
@@ -14,7 +14,7 @@ interface AjnaTxHandlerInput {
   collateralPrice: BigNumber
   collateralToken: string
   context: Context
-  position: AjnaPosition | AjnaEarnPosition
+  position: AjnaGenericPosition
   quotePrice: BigNumber
   quoteToken: string
   rpcProvider: ethers.providers.Provider
@@ -30,9 +30,9 @@ export async function getAjnaParameters({
   quoteToken,
   rpcProvider,
   state,
-}: AjnaTxHandlerInput): Promise<Strategy<AjnaPosition | AjnaEarnPosition>> {
+}: AjnaTxHandlerInput): Promise<Strategy<AjnaGenericPosition>> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const defaultPromise = Promise.resolve({} as Strategy<AjnaPosition | AjnaEarnPosition>)
+  const defaultPromise = Promise.resolve({} as Strategy<AjnaGenericPosition>)
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision

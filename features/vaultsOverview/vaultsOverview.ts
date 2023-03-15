@@ -1,4 +1,6 @@
+import { getNetworkId } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
+import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
@@ -7,22 +9,24 @@ import {
   PositionVM,
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
+import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { combineLatest, iif, Observable, of } from 'rxjs'
+import { map, switchMap } from 'rxjs/operators'
 
-import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { AavePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
 
 export interface PositionsList {
   makerPositions: MakerPositionDetails[]
   aavePositions: AavePosition[]
+  ajnaPositions: AjnaPositionDetails[]
   dsrPosition: Dsr
 }
 
@@ -31,17 +35,29 @@ export interface VaultsOverview {
 }
 
 export function createPositionsList$(
+  context$: Observable<Context>,
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
   aavePositions$: (address: string) => Observable<AavePosition[]>,
+  ajnaPositions$: (address: string) => Observable<AjnaPositionDetails[]>,
   dsr$: (address: string) => Observable<Dsr>,
   address: string,
 ): Observable<PositionsList> {
-  return combineLatest(makerPositions$(address), aavePositions$(address), dsr$(address)).pipe(
-    map(([makerPositions, aavePositions, dsrPosition]) => ({
-      makerPositions: makerPositions,
-      aavePositions: aavePositions,
-      dsrPosition: dsrPosition,
-    })),
+  return context$.pipe(
+    switchMap(() => {
+      return combineLatest(
+        makerPositions$(address),
+        iif(() => getNetworkId() !== 5, aavePositions$(address), of([] as AavePosition[])),
+        ajnaPositions$(address),
+        dsr$(address),
+      ).pipe(
+        map(([makerPositions, aavePositions, ajnaPositions, dsrPosition]) => ({
+          makerPositions: makerPositions,
+          aavePositions: aavePositions,
+          ajnaPositions: ajnaPositions,
+          dsrPosition: dsrPosition,
+        })),
+      )
+    }),
   )
 }
 

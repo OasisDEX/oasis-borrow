@@ -135,7 +135,10 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
-import { getAjnaPosition$ } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import {
+  getAjnaPosition$,
+  getAjnaPositionsWithDetails$,
+} from 'features/ajna/positions/common/observables/getAjnaPosition'
 import {
   DpmPositionData,
   getDpmPositionData$,
@@ -1339,8 +1342,13 @@ export function setupAppContext() {
     ]),
   )
 
+  const ajnaPositions$ = memoize(
+    curry(getAjnaPositionsWithDetails$)(context$, userDpmProxies$, readPositionCreatedEvents$),
+    (walletAddress: string) => walletAddress,
+  )
+
   const ownersPositionsList$ = memoize(
-    curry(createPositionsList$)(positionsList$, aavePositions$, dsr$),
+    curry(createPositionsList$)(context$, positionsList$, aavePositions$, ajnaPositions$, dsr$),
   )
 
   const followedList$ = memoize(
