@@ -27,7 +27,7 @@ export function SidebarAutomationFeatureCreationStage({
   const { t } = useTranslation()
 
   const linkMap = {
-    [AutomationFeatures.STOP_LOSS]: 'setting-up-auto-buy-for-your-vault',
+    [AutomationFeatures.STOP_LOSS]: 'what-is-automated-stop-loss',
     [AutomationFeatures.AUTO_BUY]: 'setting-up-auto-buy-for-your-vault',
     [AutomationFeatures.AUTO_SELL]: 'setting-up-auto-sell-for-your-vault',
     [AutomationFeatures.CONSTANT_MULTIPLE]: 'what-is-constant-multiple',
