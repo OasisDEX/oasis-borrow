@@ -12,8 +12,10 @@ import {
 import { DiscoverTableRowData } from 'features/discover/types'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getFundingCost } from 'features/vaultsOverview/helpers'
+import { AavePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { LendingProtocol } from 'lendingProtocols'
 import { Button, Text } from 'theme-ui'
 
 interface PositionTableRow {
@@ -92,6 +94,23 @@ export function parseMakerMultiplyPositionRows(
       netValue: value,
       protocol: 'Maker',
       url: `/${id}`,
+    }),
+  )
+}
+export function parseAaveMultiplyPositionRows(
+  positions: AavePosition[],
+): PositionTableMultiplyRow[] {
+  return positions.map(
+    ({ fundingCost, id, liquidationPrice, multiple, netValue, protocol, title, token, url }) => ({
+      asset: title,
+      fundingCost,
+      icon: token,
+      id: new BigNumber(id),
+      liquidationPrice,
+      multiple,
+      netValue,
+      protocol: `Aave v${protocol === LendingProtocol.AaveV2 ? '2' : '3'}`,
+      url,
     }),
   )
 }

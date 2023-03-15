@@ -1,6 +1,6 @@
 import { getNetworkId } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import { Context, NetworkIds } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
@@ -46,8 +46,17 @@ export function createPositionsList$(
     switchMap(() => {
       return combineLatest(
         makerPositions$(address),
-        iif(() => getNetworkId() !== 5, aavePositions$(address), of([] as AavePosition[])),
-        ajnaPositions$(address),
+        iif(
+          () => getNetworkId() !== NetworkIds.GOERLI,
+          aavePositions$(address),
+          of([] as AavePosition[]),
+        ),
+        // TODO: temporary until Ajna contracts are on mainnet
+        iif(
+          () => getNetworkId() === NetworkIds.GOERLI,
+          ajnaPositions$(address),
+          of([] as AjnaPositionDetails[]),
+        ),
         dsr$(address),
       ).pipe(
         map(([makerPositions, aavePositions, ajnaPositions, dsrPosition]) => ({

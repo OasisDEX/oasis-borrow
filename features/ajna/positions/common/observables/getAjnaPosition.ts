@@ -97,9 +97,6 @@ export function getAjnaPositionsWithDetails$(
           .flat(),
       )
 
-      console.log('tokens')
-      console.log(tokens)
-
       return tokenPriceUSD$(tokens).pipe(
         switchMap((tokenPrice) => {
           return combineLatest(

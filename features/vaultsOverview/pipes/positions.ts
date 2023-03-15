@@ -112,6 +112,7 @@ export type AavePosition = Position & {
   liquidity: BigNumber
   stopLossData?: StopLossTriggerData
   fakePositionCreatedEvtForDsProxyUsers?: boolean
+  protocol: LendingProtocol.AaveV2 | LendingProtocol.AaveV3
 }
 
 export function createPositions$(
@@ -221,9 +222,7 @@ function buildAaveViewModel(
 
         const isOwner = context.status === 'connected' && context.account === walletAddress
 
-        const title = `${collateralToken}/${debtToken} Aave ${
-          protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
-        }`
+        const title = `${collateralToken}/${debtToken}`
 
         return {
           token: collateralToken,
@@ -240,6 +239,7 @@ function buildAaveViewModel(
           type: mappymap[positionCreatedEvent.positionType],
           liquidity: liquidity,
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
+          protocol,
         }
       },
     ),

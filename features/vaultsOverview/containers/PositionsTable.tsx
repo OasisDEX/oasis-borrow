@@ -22,6 +22,7 @@ import {
 import {
   getBorrowPositionRows,
   getMultiplyPositionRows,
+  parseAaveMultiplyPositionRows,
   parseAjnaBorrowPositionRows,
   parseMakerBorrowPositionRows,
   parseMakerMultiplyPositionRows,
@@ -198,9 +199,14 @@ export function PositionsTableInner({
     () => parseMakerMultiplyPositionRows(makerPositions.multiply),
     [makerPositions.multiply],
   )
+  const parsedAaveMultiplyPositions = useMemo(
+    () => parseAaveMultiplyPositionRows(aavePositions.multiply),
+    [aavePositions.multiply],
+  )
   const multiplyPositionsRows = useMemo(
-    () => getMultiplyPositionRows([...parsedMakerMultiplyPositions]),
-    [parsedMakerMultiplyPositions],
+    () =>
+      getMultiplyPositionRows([...parsedMakerMultiplyPositions, ...parsedAaveMultiplyPositions]),
+    [parsedMakerMultiplyPositions, parsedAaveMultiplyPositions],
   )
 
   return (
