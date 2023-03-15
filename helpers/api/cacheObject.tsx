@@ -4,6 +4,7 @@ interface Cached<T> {
   data: T
   time: number
 }
+
 export function cacheObject<R>(
   fetchFunction: () => Promise<R>,
   stdTTL: number, // seconds
@@ -15,10 +16,6 @@ export function cacheObject<R>(
     statsCache.set('data', JSON.stringify(response))
     return JSON.stringify(response)
   }
-
-  statsCache.on('expired', async () => {
-    return cacheFreshData()
-  })
 
   return async () => {
     let storedData: string | undefined = statsCache.get('data')
