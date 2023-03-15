@@ -13,7 +13,7 @@ import {
 import { DiscoverTableRowData } from 'features/discover/types'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { getFundingCost } from 'features/vaultsOverview/helpers'
+import { getDsrValue, getFundingCost } from 'features/vaultsOverview/helpers'
 import { AavePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -205,8 +205,7 @@ export function parseDsrEarnPosition({
   address: string
   dsr?: Dsr
 }): PositionTableEarnRow[] {
-  const netValue =
-    dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
+  const netValue = getDsrValue(dsr)
 
   return netValue.gt(zero)
     ? [

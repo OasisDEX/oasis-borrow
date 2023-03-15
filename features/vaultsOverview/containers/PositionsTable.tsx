@@ -12,6 +12,7 @@ import {
   getAavePositionOfType,
   getAjnaPositionOfType,
   getDsrPosition,
+  getDsrValue,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
@@ -38,10 +39,13 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
 export function PositionsTable({ address }: { address: string }) {
+  const ajnaEnabled = useFeatureToggle('Ajna')
   const { t } = useTranslation()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const { ownersPositionsList$ } = useAppContext()
@@ -59,86 +63,27 @@ export function PositionsTable({ address }: { address: string }) {
         customLoader={<PositionTableLoadingState />}
       >
         {([ownersPositionsList]) => {
-          const dsrPosition = getDsrPosition({
-            dsr: ownersPositionsList.dsrPosition,
-            address,
-            skipShareButton: true,
-          })
-          const combinedPositionsData = [
-            ...ownersPositionsList.makerPositions,
-            ...ownersPositionsList.aavePositions,
-            ...dsrPosition,
-          ]
-          const borrowPositions = getMakerBorrowPositions({
-            positions: ownersPositionsList.makerPositions,
-            skipShareButton: true,
-          })
-          const multiplyPositions = useMemo(() => {
-            return [
-              ...getMakerMultiplyPositions({
-                positions: ownersPositionsList.makerPositions,
-                skipShareButton: true,
-              }),
-              ...getAaveMultiplyPositions({
-                positions: ownersPositionsList.aavePositions,
-                skipShareButton: true,
-              }),
-            ]
-          }, [ownersPositionsList])
-          const earnPositions = [
-            ...getMakerEarnPositions({
-              positions: ownersPositionsList.makerPositions,
-              skipShareButton: true,
-            }),
-            ...getAaveEarnPositions({
-              positions: ownersPositionsList.aavePositions,
-              skipShareButton: true,
-            }),
-            ...dsrPosition,
-          ]
+          let amountOfPositions =
+            ownersPositionsList.makerPositions.length + ownersPositionsList.aavePositions.length
+          if (getDsrValue(ownersPositionsList.dsrPosition).gt(zero)) amountOfPositions++
+          if (ajnaEnabled) amountOfPositions += ownersPositionsList.ajnaPositions.length
 
-          return combinedPositionsData.length ? (
+          return amountOfPositions ? (
             <DiscoverTableContainer
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-positions`, {
                 address: formatAddress(address),
-              })} (${combinedPositionsData.length})`}
+              })} (${amountOfPositions})`}
             >
-              <PositionsTableInner address={address} ownersPositionsList={ownersPositionsList} />
-              {borrowPositions.length > 0 && (
-                <>
-                  <DiscoverTableHeading>
-                    Oasis {t('nav.borrow')} ({borrowPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
-                    rows={borrowPositions}
-                    skip={positionsTableSkippedHeaders}
-                    tooltips={positionsTableTooltips}
-                  />
-                </>
-              )}
-              {multiplyPositions.length > 0 && (
-                <>
-                  <DiscoverTableHeading>
-                    Oasis {t('nav.multiply')} ({multiplyPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
-                    rows={multiplyPositions}
-                    skip={positionsTableSkippedHeaders}
-                    tooltips={positionsTableTooltips}
-                  />
-                </>
-              )}
-              {earnPositions.length > 0 && (
-                <>
-                  <DiscoverTableHeading>
-                    Oasis {t('nav.earn')} ({earnPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
-                    rows={earnPositions}
-                    skip={positionsTableSkippedHeaders}
-                    tooltips={positionsTableTooltips}
-                  />
-                </>
+              {ajnaEnabled ? (
+                <PositionsTableWithAjna
+                  address={address}
+                  ownersPositionsList={ownersPositionsList}
+                />
+              ) : (
+                <PositionsTableWithoutAjna
+                  address={address}
+                  ownersPositionsList={ownersPositionsList}
+                />
               )}
             </DiscoverTableContainer>
           ) : (
@@ -167,7 +112,89 @@ export function PositionsTable({ address }: { address: string }) {
   )
 }
 
-export function PositionsTableInner({
+export function PositionsTableWithoutAjna({
+  address,
+  ownersPositionsList,
+}: {
+  address: string
+  ownersPositionsList: PositionsList
+}) {
+  const { t } = useTranslation()
+
+  const dsrPosition = getDsrPosition({
+    dsr: ownersPositionsList.dsrPosition,
+    address,
+    skipShareButton: true,
+  })
+  const borrowPositions = getMakerBorrowPositions({
+    positions: ownersPositionsList.makerPositions,
+    skipShareButton: true,
+  })
+  const multiplyPositions = [
+    ...getMakerMultiplyPositions({
+      positions: ownersPositionsList.makerPositions,
+      skipShareButton: true,
+    }),
+    ...getAaveMultiplyPositions({
+      positions: ownersPositionsList.aavePositions,
+      skipShareButton: true,
+    }),
+  ]
+  const earnPositions = [
+    ...getMakerEarnPositions({
+      positions: ownersPositionsList.makerPositions,
+      skipShareButton: true,
+    }),
+    ...getAaveEarnPositions({
+      positions: ownersPositionsList.aavePositions,
+      skipShareButton: true,
+    }),
+    ...dsrPosition,
+  ]
+
+  return (
+    <>
+      {borrowPositions.length > 0 && (
+        <>
+          <DiscoverTableHeading>
+            Oasis {t('nav.borrow')} ({borrowPositions.length})
+          </DiscoverTableHeading>
+          <DiscoverResponsiveTable
+            rows={borrowPositions}
+            skip={positionsTableSkippedHeaders}
+            tooltips={positionsTableTooltips}
+          />
+        </>
+      )}
+      {multiplyPositions.length > 0 && (
+        <>
+          <DiscoverTableHeading>
+            Oasis {t('nav.multiply')} ({multiplyPositions.length})
+          </DiscoverTableHeading>
+          <DiscoverResponsiveTable
+            rows={multiplyPositions}
+            skip={positionsTableSkippedHeaders}
+            tooltips={positionsTableTooltips}
+          />
+        </>
+      )}
+      {earnPositions.length > 0 && (
+        <>
+          <DiscoverTableHeading>
+            Oasis {t('nav.earn')} ({earnPositions.length})
+          </DiscoverTableHeading>
+          <DiscoverResponsiveTable
+            rows={earnPositions}
+            skip={positionsTableSkippedHeaders}
+            tooltips={positionsTableTooltips}
+          />
+        </>
+      )}
+    </>
+  )
+}
+
+export function PositionsTableWithAjna({
   address,
   ownersPositionsList,
 }: {

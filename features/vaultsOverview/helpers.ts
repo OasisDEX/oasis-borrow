@@ -55,6 +55,10 @@ interface GetDsrPositionParams {
   skipShareButton?: boolean
 }
 
+export function getDsrValue(dsr?: Dsr): BigNumber {
+  return dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
+}
+
 export function getFundingCost({
   debt,
   stabilityFee,
@@ -284,8 +288,7 @@ export function getDsrPosition({
   dsr,
   skipShareButton,
 }: GetDsrPositionParams): DiscoverTableRowData[] {
-  const netValue =
-    dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
+  const netValue = getDsrValue(dsr)
 
   const dsrPosition = [
     {
