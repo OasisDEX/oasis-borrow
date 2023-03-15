@@ -132,6 +132,5 @@ export function prepareConstantMultipleResetData({
       triggerId: triggersId[1],
     }),
     isEditing: false,
-    txDetails: {},
   }
 }

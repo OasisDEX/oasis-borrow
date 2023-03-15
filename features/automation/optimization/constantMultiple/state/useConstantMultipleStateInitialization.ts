@@ -91,7 +91,7 @@ export function useConstantMultipleStateInitialization({
     })
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'is-reset-action',
-      isResetAction: false,
+      isResetAction: true,
     })
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'is-awaiting-confirmation',
@@ -113,16 +113,20 @@ export function useConstantMultipleStateInitialization({
       type: 'deviation',
       deviation: constantMultipleTriggerData.deviation,
     })
-    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-      type: 'current-form',
-      currentForm: 'add',
-    })
   }, [
+    constantMultipleTriggerData.triggersId.join('-'),
     positionRatio.toNumber(),
     stopLossTriggerData.triggerId.toNumber(),
     autoBuyTriggerData.triggerId.toNumber(),
     autoSellTriggerData.triggerId.toNumber(),
   ])
+
+  useEffect(() => {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: 'add',
+    })
+  }, [])
 
   return constantMultipleTriggerData.isTriggerEnabled
 }
