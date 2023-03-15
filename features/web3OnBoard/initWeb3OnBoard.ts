@@ -79,6 +79,6 @@ export const initWeb3OnBoard = init({
     },
   },
   connect: {
-    autoConnectLastWallet: true,
+    autoConnectLastWallet: false,
   },
 })

@@ -14,7 +14,7 @@ import {
   SwapWidgetState,
 } from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
-import { ConnectButton } from 'features/web3OnBoard/connectButton'
+import { ConnectButton } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getShouldHideHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'

@@ -22,6 +22,7 @@ import {
   Web3Context,
   Web3ContextNotConnected,
 } from 'features/web3Context'
+import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
@@ -617,7 +618,6 @@ function autoConnect(
   let firstTime = true
 
   const subscription = web3Context$.subscribe(async (web3Context) => {
-    console.log(`Subscripting web3Context`)
     try {
       const serialized = localStorage.getItem(AUTO_CONNECT)
       if (firstTime && web3Context.status === 'notConnected' && serialized) {
@@ -687,8 +687,15 @@ export function WithConnection({ children }: WithChildren) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
   const useBlockNativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
+  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
+    walletConnect: false,
+  })
 
   useEffect(() => {
+    if (useBlockNativeOnBoard) {
+      if (!connected && !connecting) executeConnection()
+      return
+    }
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
       redirectState$.next(window.location.pathname)
@@ -698,7 +705,7 @@ export function WithConnection({ children }: WithChildren) {
     if (web3Context && web3Context.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)
     }
-  }, [replace, web3Context, web3Context?.status])
+  }, [replace, web3Context, useBlockNativeOnBoard, connected, executeConnection, connecting])
 
   useEffect(() => {
     if (!useBlockNativeOnBoard) {
@@ -714,8 +721,15 @@ export function WithWalletConnection({ children }: WithChildren) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
   const useBlockNativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
+  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
+    walletConnect: true,
+  })
 
   useEffect(() => {
+    if (useBlockNativeOnBoard) {
+      if (!connected && !connecting) executeConnection()
+      return
+    }
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
       redirectState$.next(window.location.pathname)
@@ -730,13 +744,19 @@ export function WithWalletConnection({ children }: WithChildren) {
     if (web3Context?.status === 'notConnected') {
       redirectState$.next(window.location.pathname)
 
-      if (useBlockNativeOnBoard) {
-        autoConnect(web3Context$, getNetworkId(), () =>
-          replace(`/connect`, getCustomNetworkParameter()),
-        )
-      }
+      autoConnect(web3Context$, getNetworkId(), () =>
+        replace(`/connect`, getCustomNetworkParameter()),
+      )
     }
-  }, [replace, web3Context, web3Context$, useBlockNativeOnBoard])
+  }, [
+    connecting,
+    connected,
+    executeConnection,
+    replace,
+    web3Context,
+    web3Context$,
+    useBlockNativeOnBoard,
+  ])
 
   return children
 }
