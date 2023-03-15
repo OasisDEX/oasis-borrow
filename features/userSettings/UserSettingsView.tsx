@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnectWallet } from '@web3-onboard/react'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
 import {
   disconnect,
   getConnectionDetails,
@@ -249,6 +250,7 @@ function WalletInfo() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
+  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
 
   const { t } = useTranslation()
 
@@ -269,7 +271,11 @@ function WalletInfo() {
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }} />
+        {useBlockNative ? (
+          <BlockNativeAvatar small sx={{ mr: 2 }} />
+        ) : (
+          <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }} />
+        )}
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
             <Text variant="boldParagraph3" sx={{ letterSpacing: '0.02em' }}>
@@ -404,12 +410,12 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
 
 export function UserSettingsButtonContents({ context, accountData, web3Context, active }: any) {
   const { connectionKind } = web3Context
+  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
   const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
-
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={userIcon!} size="auto" width="42" />
+        {useBlockNative ? <BlockNativeAvatar /> : <Icon name={userIcon!} size="auto" width="42" />}
         <Text
           as="p"
           variant="paragraph3"
