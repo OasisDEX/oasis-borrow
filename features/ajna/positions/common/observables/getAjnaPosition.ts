@@ -1,12 +1,12 @@
 import { views } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import { zero } from 'helpers/zero'
-import { isEqual } from 'lodash'
+import { isEqual, uniq } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 import { PositionCreated } from 'types/ethers-contracts'
@@ -75,6 +75,7 @@ export function getAjnaPositionsWithDetails$(
   context$: Observable<Context>,
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
   readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
+  tokenPriceUSD$: (tokens: string[]) => Observable<Tickers>,
   walletAddress: string,
 ): Observable<AjnaPositionDetails[]> {
   return combineLatest(
@@ -87,23 +88,49 @@ export function getAjnaPositionsWithDetails$(
         (a, v) => ({ ...a, [v.proxy]: v.vaultId }),
         {},
       )
-
-      return combineLatest(
+      const tokens: string[] = uniq(
         positionCreatedEvents
-          .filter(({ protocol }) => protocol === 'Ajna')
-          .map(
-            ({ collateralTokenSymbol, debtTokenSymbol, positionType, protocol, proxyAddress }) => {
-              return getAjnaPositionDetails$(context$, zero, zero, {
-                collateralToken: collateralTokenSymbol,
-                product: positionType.toLowerCase(),
-                protocol,
-                proxy: proxyAddress,
-                quoteToken: debtTokenSymbol,
-                user: walletAddress,
-                vaultId: idMap[proxyAddress],
-              })
-            },
-          ),
+          .map(({ collateralTokenSymbol, debtTokenSymbol }) => [
+            collateralTokenSymbol,
+            debtTokenSymbol,
+          ])
+          .flat(),
+      )
+
+      console.log('tokens')
+      console.log(tokens)
+
+      return tokenPriceUSD$(tokens).pipe(
+        switchMap((tokenPrice) => {
+          return combineLatest(
+            positionCreatedEvents
+              .filter(({ protocol }) => protocol === 'Ajna')
+              .map(
+                ({
+                  collateralTokenSymbol,
+                  debtTokenSymbol,
+                  positionType,
+                  protocol,
+                  proxyAddress,
+                }) => {
+                  return getAjnaPositionDetails$(
+                    context$,
+                    tokenPrice[collateralTokenSymbol],
+                    tokenPrice[debtTokenSymbol],
+                    {
+                      collateralToken: collateralTokenSymbol,
+                      product: positionType.toLowerCase(),
+                      protocol,
+                      proxy: proxyAddress,
+                      quoteToken: debtTokenSymbol,
+                      user: walletAddress,
+                      vaultId: idMap[proxyAddress],
+                    },
+                  )
+                },
+              ),
+          )
+        }),
       )
     }),
     shareReplay(1),

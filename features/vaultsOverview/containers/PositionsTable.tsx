@@ -9,6 +9,8 @@ import { PositionTableLoadingState } from 'features/vaultsOverview/components/Po
 import {
   getAaveEarnPositions,
   getAaveMultiplyPositions,
+  getAavePositionOfType,
+  getAjnaPositionOfType,
   getDsrPosition,
   getMakerBorrowPositions,
   getMakerEarnPositions,
@@ -19,7 +21,10 @@ import {
 } from 'features/vaultsOverview/helpers'
 import {
   getBorrowPositionRows,
+  getMultiplyPositionRows,
+  parseAjnaBorrowPositionRows,
   parseMakerBorrowPositionRows,
+  parseMakerMultiplyPositionRows,
 } from 'features/vaultsOverview/parsers'
 import { PositionsList } from 'features/vaultsOverview/vaultsOverview'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -169,13 +174,34 @@ export function PositionsTableInner({
   const makerPositions = useMemo(() => getMakerPositionOfType(ownersPositionsList.makerPositions), [
     ownersPositionsList.makerPositions,
   ])
+  const aavePositions = useMemo(() => getAavePositionOfType(ownersPositionsList.aavePositions), [
+    ownersPositionsList.aavePositions,
+  ])
+  const ajnaPositions = useMemo(() => getAjnaPositionOfType(ownersPositionsList.ajnaPositions), [
+    ownersPositionsList.ajnaPositions,
+  ])
+
   const parsedMakerBorrowPositions = useMemo(
     () => parseMakerBorrowPositionRows(makerPositions.borrow),
     [makerPositions.borrow],
   )
-  const borrowPositionsRows = useMemo(() => getBorrowPositionRows(parsedMakerBorrowPositions), [
-    parsedMakerBorrowPositions,
-  ])
+  const parsedAjnaBorrowPositions = useMemo(
+    () => parseAjnaBorrowPositionRows(ajnaPositions.borrow),
+    [ajnaPositions.borrow],
+  )
+  const borrowPositionsRows = useMemo(
+    () => getBorrowPositionRows([...parsedMakerBorrowPositions, ...parsedAjnaBorrowPositions]),
+    [parsedMakerBorrowPositions, parsedAjnaBorrowPositions],
+  )
+
+  const parsedMakerMultiplyPositions = useMemo(
+    () => parseMakerMultiplyPositionRows(makerPositions.multiply),
+    [makerPositions.multiply],
+  )
+  const multiplyPositionsRows = useMemo(
+    () => getMultiplyPositionRows([...parsedMakerMultiplyPositions]),
+    [parsedMakerMultiplyPositions],
+  )
 
   return (
     <>
@@ -185,6 +211,14 @@ export function PositionsTableInner({
             Oasis {t('nav.borrow')} ({borrowPositionsRows.length})
           </DiscoverTableHeading>
           <DiscoverResponsiveTable rows={borrowPositionsRows} />
+        </>
+      )}
+      {multiplyPositionsRows.length > 0 && (
+        <>
+          <DiscoverTableHeading>
+            Oasis {t('nav.multiply')} ({multiplyPositionsRows.length})
+          </DiscoverTableHeading>
+          <DiscoverResponsiveTable rows={multiplyPositionsRows} />
         </>
       )}
     </>

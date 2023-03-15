@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { DiscoverTableRowData } from 'features/discover/types'
@@ -54,7 +55,7 @@ interface GetDsrPositionParams {
   skipShareButton?: boolean
 }
 
-function getFundingCost({
+export function getFundingCost({
   debt,
   stabilityFee,
   value,
@@ -99,7 +100,7 @@ export function getMakerPositionOfType(position: MakerPositionDetails[]) {
   )
 }
 
-function getAavePositionOfType(position: AavePosition[]) {
+export function getAavePositionOfType(position: AavePosition[]) {
   return position.reduce<{
     multiply: AavePosition[]
     earn: AavePosition[]
@@ -111,6 +112,23 @@ function getAavePositionOfType(position: AavePosition[]) {
       return v
     },
     { multiply: [], earn: [] },
+  )
+}
+
+export function getAjnaPositionOfType(position: AjnaPositionDetails[]) {
+  return position.reduce<{
+    borrow: AjnaPositionDetails[]
+    earn: AjnaPositionDetails[]
+    multiply: AjnaPositionDetails[]
+  }>(
+    (v, position) => {
+      if (position.details.product === 'borrow') v.borrow.push(position)
+      else if (position.details.product === 'earn') v.earn.push(position)
+      else if (position.details.product === 'multiply') v.multiply.push(position)
+
+      return v
+    },
+    { borrow: [], earn: [], multiply: [] },
   )
 }
 
