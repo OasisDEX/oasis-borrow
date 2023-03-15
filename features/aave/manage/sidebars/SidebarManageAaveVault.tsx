@@ -666,14 +666,22 @@ export function SidebarManageAaveVault() {
               : t('manage-multiply.sidebar.title')
           }
           content={
-            <SecondaryInputComponent
-              state={state}
-              onChainPosition={state.context.protocolData?.position}
-              isLoading={loading}
-              send={send}
-              viewLocked={isLocked(state)}
-              stopLossError={stopLossError}
-            />
+            <Grid gap={3}>
+              <SecondaryInputComponent
+                state={state}
+                onChainPosition={state.context.protocolData?.position}
+                isLoading={loading}
+                send={send}
+                viewLocked={isLocked(state)}
+                stopLossError={stopLossError}
+              />
+              <StrategyInformationContainer
+                state={state}
+                changeSlippageSource={(from) => {
+                  send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+                }}
+              />
+            </Grid>
           }
           primaryButton={{
             isLoading: loading(),
