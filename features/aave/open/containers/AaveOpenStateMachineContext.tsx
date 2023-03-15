@@ -1,6 +1,6 @@
 import { useInterpret } from '@xstate/react'
 import { getEmptyPosition } from 'actions/aave'
-import { IStrategyConfig } from 'features/aave/common'
+import { IStrategyConfig, ProxyType } from 'features/aave/common'
 import { OpenAaveStateMachine } from 'features/aave/open/state'
 import React from 'react'
 
@@ -11,15 +11,20 @@ function setupOpenAaveStateContext({
   machine: OpenAaveStateMachine
   config: IStrategyConfig
 }) {
+  const effectiveStrategy = {
+    ...config,
+    proxyType: ProxyType.DpmProxy,
+  }
   const stateMachine = useInterpret(
     machine.withContext({
-      strategyConfig: config,
+      strategyConfig: effectiveStrategy,
       userInput: {},
       tokens: config.tokens,
       currentStep: 1,
       totalSteps: 4,
       currentPosition: getEmptyPosition(config.tokens.collateral, config.tokens.debt),
-      getSlippageFrom: config.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
+      getSlippageFrom:
+        effectiveStrategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
     }),
     { devTools: process.env.NODE_ENV !== 'production' },
   ).start()
