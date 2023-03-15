@@ -152,7 +152,7 @@ const conf = withBundleAnalyzer(
         },
         {
           source: '/careers(.*)',
-          destination: 'http://oasisapp.workable.com/',
+          destination: 'https://oasisapp.workable.com/',
           permanent: true,
         },
       ]
