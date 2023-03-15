@@ -150,6 +150,11 @@ const conf = withBundleAnalyzer(
           destination: '/aave/v2/:vault*',
           permanent: true,
         },
+        {
+          source: '/careers(.*)',
+          destination: 'http://oasisapp.workable.com/',
+          permanent: true,
+        },
       ]
     },
     async headers() {
