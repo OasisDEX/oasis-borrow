@@ -13,15 +13,6 @@ export function useBridgeConnection() {
 
   const { error } = useAsyncEffect(
     async () => {
-      if (!bridgeConnector && web3Context?.status === 'connected') {
-        web3Context.deactivate()
-        return
-      }
-
-      if (bridgeConnector && web3Context?.status === 'connectedReadonly') {
-        web3Context.deactivate()
-        return
-      }
       if (
         bridgeConnector &&
         (web3Context?.status === 'error' ||

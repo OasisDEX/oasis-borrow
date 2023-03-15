@@ -15,7 +15,10 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
 
   const connected = useMemo(() => {
     if (!walletConnect) {
-      return web3Context?.status === 'connected' && web3Context.connectionKind === 'network'
+      return (
+        (web3Context?.status === 'connectedReadonly' || web3Context?.status === 'connected') &&
+        web3Context.connectionKind === 'network'
+      )
     }
     return web3Context?.status === 'connected' && wallet !== undefined
   }, [wallet, web3Context, walletConnect])
@@ -25,12 +28,13 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
   }, [web3Context, connecting])
 
   const executeConnection = useCallback(() => {
-    if (!connected && walletConnect) {
+    if (connecting || connected) return
+    if (walletConnect) {
       void connect()
-    } else if (!connected && !walletConnect) {
+    } else {
       void networkConnect()
     }
-  }, [networkConnect, connect, connected, walletConnect])
+  }, [networkConnect, connect, connected, connecting, walletConnect])
 
   return { executeConnection, connected, connecting: connectingMemo }
 }

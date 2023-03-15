@@ -1,15 +1,13 @@
-import { useConnectWallet } from '@web3-onboard/react'
 import { WithArrow } from 'components/WithArrow'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button } from 'theme-ui'
 
-import { useBridgeConnection } from './useBridgeConnection'
+import { useWeb3OnBoardConnection } from './useWeb3OnBoardConnection'
 
 export function ConnectButton() {
-  const [{ connecting }, connect] = useConnectWallet()
   const { t } = useTranslation()
-  useBridgeConnection()
+  const { connecting, executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
 
   return (
     <div>
@@ -24,7 +22,7 @@ export function ConnectButton() {
           boxShadow: 'buttonMenu',
         }}
         disabled={connecting}
-        onClick={() => connect()}
+        onClick={() => executeConnection()}
       >
         <WithArrow
           sx={{

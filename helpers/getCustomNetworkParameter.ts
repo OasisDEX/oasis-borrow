@@ -27,7 +27,11 @@ export function useCustomNetworkParameter(): CustomNetwork | undefined {
         })
       }
     }
-    return setCustomNetworkName(undefined)
+    return setCustomNetworkName({
+      network: 'mainnet',
+      id: '1',
+      hexId: '0x1',
+    })
   }, [])
 
   useEffect(() => {

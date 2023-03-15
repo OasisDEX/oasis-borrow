@@ -70,11 +70,11 @@ export const initWeb3OnBoard = init({
   },
   accountCenter: {
     desktop: {
-      enabled: true,
+      enabled: false,
       minimal: false,
     },
     mobile: {
-      enabled: true,
+      enabled: false,
       minimal: false,
     },
   },

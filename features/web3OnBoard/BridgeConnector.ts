@@ -25,7 +25,6 @@ export class BridgeConnector extends AbstractConnector {
   }
 
   get connectionKind(): ConnectionKind {
-    console.log(`Wallet label: ${this.wallet.label}`)
     return 'injected'
   }
 
