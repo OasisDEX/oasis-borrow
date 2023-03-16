@@ -1,10 +1,14 @@
-import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import {
+  AllowanceChanges,
+  AllowanceOption,
+  applyAllowanceChanges,
+} from 'features/allowance/allowance'
 import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
 import {
   applyOpenVaultStopLoss,
@@ -18,10 +22,19 @@ import {
 import { OpenVaultStopLossSetup } from 'features/borrow/open/pipes/openVault'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { createProxy } from 'features/proxy/createProxy'
+import { applyProxyChanges, ProxyChanges } from 'features/proxy/proxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { OpenVaultTransactionChange } from 'features/shared/transactions'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
+import {
+  createApplyOpenVaultTransition,
+  OpenVaultTransitionChange,
+} from 'features/vaultTransitions/openVaultTransitions'
+import { getNetworkName } from 'features/web3Context'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { TxError } from 'helpers/types'
@@ -31,19 +44,6 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import {
-  AllowanceChanges,
-  AllowanceOption,
-  applyAllowanceChanges,
-} from '../../../allowance/allowance'
-import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
-import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
-import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
-import { OpenVaultTransactionChange } from '../../../shared/transactions'
-import {
-  createApplyOpenVaultTransition,
-  OpenVaultTransitionChange,
-} from '../../../vaultTransitions/openVaultTransitions'
 import {
   applyExchange,
   createExchangeChange$,

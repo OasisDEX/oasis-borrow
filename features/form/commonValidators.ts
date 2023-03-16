@@ -1,11 +1,10 @@
 import { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { AutomationKinds } from 'features/automation/common/types'
 import { mapAutomationEvents, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-
-import { maxUint256 } from '../../blockchain/calls/erc20'
-import { isNullish } from '../../helpers/functions'
-import { TxError } from '../../helpers/types'
-import { zero } from '../../helpers/zero'
+import { isNullish } from 'helpers/functions'
+import { TxError } from 'helpers/types'
+import { zero } from 'helpers/zero'
 
 type CollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
 type DaiAllowanceRadio = 'unlimited' | 'actionAmount' | 'custom'

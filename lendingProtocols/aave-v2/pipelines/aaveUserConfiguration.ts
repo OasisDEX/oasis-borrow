@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { AaveV2UserConfigurationsParameters } from 'blockchain/aave'
 import mainnet from 'blockchain/addresses/mainnet.json'
 import { curry } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { AaveV2UserConfigurationsParameters } from '../../../blockchain/aave'
 
 const reserveNamesDictionary = Object.fromEntries(
   Object.entries(mainnet).map((mainnetEntry) => mainnetEntry.reverse()),

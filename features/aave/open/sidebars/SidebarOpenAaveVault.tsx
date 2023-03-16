@@ -16,6 +16,7 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
+import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -23,7 +24,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
@@ -174,9 +175,36 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
+function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
   const { push } = useRedirect()
+  const useBlockNativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
+  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
+    walletConnect: true,
+  })
+
+  return useMemo(
+    () => ({
+      label: t('connect-wallet'),
+      action: () => {
+        if (useBlockNativeOnBoard) {
+          if (!connected && !connecting) {
+            executeConnection()
+          }
+        } else {
+          push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
+        }
+      },
+      steps: undefined,
+    }),
+    [t, useBlockNativeOnBoard, connected, connecting, executeConnection, push],
+  )
+}
+
+function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+
+  const connectWalletPrimaryButton = useConnectWalletPrimaryButton()
 
   const { stopLossSkipped, stopLossLevel } = state.context
 
@@ -186,13 +214,7 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     : t('open-vault-two-tx-first-step-title', { type: t('position') })
 
   const primaryButton = !isUserWalletConnected(state.context)
-    ? {
-        label: t('connect-wallet'),
-        action: () => {
-          void push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
-        },
-        steps: undefined,
-      }
+    ? connectWalletPrimaryButton
     : {
         steps: [state.context.currentStep, state.context.totalSteps] as [number, number],
         isLoading: isLoading(),
@@ -271,16 +293,12 @@ function EditingStateViewSidebarPrimaryButton({
   'isLoading' | 'disabled' | 'label' | 'action' | 'steps'
 > {
   const { t } = useTranslation()
-  const { push } = useRedirect()
+  const connectWalletPrimaryButton = useConnectWalletPrimaryButton()
+
+  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   if (!isUserWalletConnected(state.context)) {
-    return {
-      label: t('connect-wallet'),
-      action: () => {
-        void push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
-      },
-      steps: undefined,
-    }
+    return connectWalletPrimaryButton
   }
 
   const hasProxy =
@@ -295,8 +313,6 @@ function EditingStateViewSidebarPrimaryButton({
       ? t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
       : t(state.context.strategyConfig.viewComponents.sidebarButton)
     : t('dpm.create-flow.welcome-screen.create-button')
-
-  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   return {
     isLoading: isLoading(),

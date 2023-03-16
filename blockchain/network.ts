@@ -1,12 +1,12 @@
 // tslint:disable:no-console
+import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
 import {
   Web3Context,
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
-} from '@oasisdex/web3-context'
-import { contract, ContractDesc } from '@oasisdex/web3-context'
-import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
+} from 'features/web3Context'
+import { contract, ContractDesc } from 'features/web3Context'
 import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs'
 import {
   catchError,

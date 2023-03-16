@@ -1,6 +1,6 @@
-import { getNetworkId } from '@oasisdex/web3-context'
 import { accountFactoryNetworkMap } from 'blockchain/dpm/accountFactory'
 import { accountGuardNetworkMap } from 'blockchain/dpm/accountGuard'
+import { getNetworkId } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory } from 'types/web3-v1-contracts/account-factory'

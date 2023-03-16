@@ -3,6 +3,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { getTeamPicsFileNames, parseMemberInfo, TeamMember } from 'features/about/about'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { sortBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -30,7 +31,7 @@ function AboutPage({ members }: { members: TeamMember[] }) {
         </Text>
       </Box>
       <AppLink
-        href="/careers"
+        href={EXTERNAL_LINKS.WORKABLE}
         sx={{ color: 'primary100', display: 'flex', alignItems: 'center', mt: 3 }}
       >
         <Text variant="paragraph1" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>

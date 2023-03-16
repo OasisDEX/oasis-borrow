@@ -1,12 +1,6 @@
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
-import {
-  ConnectionKind,
-  getNetworkId,
-  Web3Context,
-  Web3ContextNotConnected,
-} from '@oasisdex/web3-context'
 import { UnsupportedChainIdError } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
@@ -22,6 +16,13 @@ import { AppLink } from 'components/Links'
 import { SwitchNetworkModal, SwitchNetworkModalType } from 'components/SwitchNetworkModal'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { redirectState$ } from 'features/router/redirectState'
+import {
+  ConnectionKind,
+  getNetworkId,
+  Web3Context,
+  Web3ContextNotConnected,
+} from 'features/web3Context'
+import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
@@ -29,6 +30,7 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
 import { mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -178,12 +180,12 @@ function ConnectWalletButton({
 
   const handleMouseEnter = useMemo(
     () => (!isTouchDevice && !isSupported ? () => setTooltipOpen(true) : undefined),
-    [isTouchDevice, isSupported],
+    [isSupported, setTooltipOpen],
   )
 
   const handleMouseLeave = useMemo(
     () => (!isTouchDevice && !isSupported ? () => setTooltipOpen(false) : undefined),
-    [isTouchDevice, isSupported],
+    [isSupported, setTooltipOpen],
   )
 
   const handleClick = useCallback(() => {
@@ -192,7 +194,7 @@ function ConnectWalletButton({
     } else {
       setTooltipOpen(true)
     }
-  }, [connect, isSupported])
+  }, [connect, isSupported, setTooltipOpen])
 
   return (
     <ConnectWalletButtonWrapper {...{ missingInjectedWallet }}>
@@ -276,7 +278,12 @@ function connect(
     ) {
       try {
         const connector = await getConnector(connectorKind, chainId, options)
-        web3Context.connect(connector, connectorKind)
+        web3Context
+          .connect(connector, connectorKind)
+          .then(() => {})
+          .catch((e) => {
+            console.error('Error while connecting', e)
+          })
       } catch (e) {
         console.log(e)
       }
@@ -451,7 +458,7 @@ export function ConnectWallet() {
       }
     })
     return () => subscription.unsubscribe()
-  }, [])
+  }, [redirectState$, replace, web3Context$])
 
   useEffect(() => {
     if (web3Context?.status === 'error') {
@@ -462,7 +469,8 @@ export function ConnectWallet() {
         switchNetworkModal('userNetwork')
       }
     }
-  }, [web3Context?.status])
+    // eslint-disable-next-line
+  }, [switchNetworkModal, web3Context?.status])
 
   if (!web3Context) {
     return null
@@ -618,7 +626,12 @@ function autoConnect(
           const connector = await getConnector(connectionKind, defaultChainId, {
             email: magicLinkEmail,
           })
-          web3Context.connect(connector, connectionKind)
+          web3Context
+            .connect(connector, connectionKind)
+            .then(() => {})
+            .catch((e) => {
+              console.error('Error while connecting', e)
+            })
         }
       } else if (web3Context.status === 'notConnected') {
         fallback(web3Context)
@@ -661,15 +674,28 @@ export function disconnect(web3Context: Web3Context | undefined) {
 }
 
 async function connectReadonly(web3Context: Web3ContextNotConnected) {
-  web3Context.connect(await getConnector('network', getNetworkId()), 'network')
+  web3Context
+    .connect(await getConnector('network', getNetworkId()), 'network')
+    .then(() => {})
+    .catch((e) => {
+      console.error('Error while connecting', e)
+    })
 }
 
 export function WithConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
+  const useBlockNativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
+  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
+    walletConnect: false,
+  })
 
   useEffect(() => {
+    if (useBlockNativeOnBoard) {
+      if (!connected && !connecting) executeConnection()
+      return
+    }
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
       redirectState$.next(window.location.pathname)
@@ -679,9 +705,13 @@ export function WithConnection({ children }: WithChildren) {
     if (web3Context && web3Context.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)
     }
-  }, [web3Context?.status])
+  }, [replace, web3Context, useBlockNativeOnBoard, connected, executeConnection, connecting])
 
-  useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
+  useEffect(() => {
+    if (!useBlockNativeOnBoard) {
+      autoConnect(web3Context$, getNetworkId(), connectReadonly)
+    }
+  }, [web3Context$, useBlockNativeOnBoard])
 
   return children
 }
@@ -690,8 +720,16 @@ export function WithWalletConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
+  const useBlockNativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
+  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
+    walletConnect: true,
+  })
 
   useEffect(() => {
+    if (useBlockNativeOnBoard) {
+      if (!connected && !connecting) executeConnection()
+      return
+    }
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
       redirectState$.next(window.location.pathname)
@@ -705,11 +743,20 @@ export function WithWalletConnection({ children }: WithChildren) {
 
     if (web3Context?.status === 'notConnected') {
       redirectState$.next(window.location.pathname)
+
       autoConnect(web3Context$, getNetworkId(), () =>
         replace(`/connect`, getCustomNetworkParameter()),
       )
     }
-  }, [web3Context?.status])
+  }, [
+    connecting,
+    connected,
+    executeConnection,
+    replace,
+    web3Context,
+    web3Context$,
+    useBlockNativeOnBoard,
+  ])
 
   return children
 }

@@ -2,13 +2,13 @@ import {
   Web3Context,
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
-} from '@oasisdex/web3-context'
+} from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import Web3 from 'web3'
 
 const mockWeb3ContextNotConnected: Web3Context = {
   status: 'notConnected',
-  connect: () => null,
+  connect: () => Promise.resolve(),
   connectLedger: () => null,
 }
 
@@ -18,7 +18,7 @@ export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
   web3: new Web3(),
   chainId: 1,
   deactivate: () => null,
-  connect: () => null,
+  connect: () => Promise.resolve(),
   connectLedger: () => null,
 }
 

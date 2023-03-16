@@ -1,9 +1,8 @@
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { PositionId } from 'features/aave/types'
 import { isEqual } from 'lodash'
 import { iif, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
-
-import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
-import { PositionId } from '../types'
 
 export interface ProxiesRelatedWithPosition {
   dsProxy: string | undefined

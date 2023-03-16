@@ -17,17 +17,16 @@ import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Box, Grid } from 'theme-ui'
-
-import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import {
   calculateCurrentPnLInUSD,
   calculateTotalDepositWithdrawals,
   calculateTotalGasFeeInEth,
-} from '../utils'
+} from 'features/multiply/manage/utils'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Box, Grid } from 'theme-ui'
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {

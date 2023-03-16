@@ -3,7 +3,7 @@ import {
   AccountWithBalances,
   Web3ContextConnecting,
   Web3ContextConnectingHWSelectAccount,
-} from '@oasisdex/web3-context'
+} from 'features/web3Context'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -38,14 +38,14 @@ export function TrezorAccountSelection({ web3Context, cancel }: TrezorAccountSel
         })
         .catch((e) => mountedRef.current && setError(e))
     }
-  }, [page, web3Context.status])
+  }, [page, web3Context])
 
   useEffect(() => {
     return () => {
       cancel()
       mountedRef.current = false
     }
-  }, [])
+  }, [cancel])
 
   if (error) {
     return (

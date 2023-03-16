@@ -1,7 +1,7 @@
+import { MakerVaultType } from 'blockchain/calls/vaultResolver'
+import { charterIlks, cropJoinIlks } from 'blockchain/config'
 import { Observable, of, throwError } from 'rxjs'
 
-import { charterIlks, cropJoinIlks } from '../../config'
-import { MakerVaultType } from '../vaultResolver'
 import { CharteredDssProxyActionsContractAdapter } from './adapters/CharteredDssProxyActionsContractAdapter'
 import { CropjoinProxyActionsContractAdapter } from './adapters/CropjoinProxyActionsSmartContractAdapter'
 import { ProxyActionsSmartContractAdapterInterface } from './adapters/ProxyActionsSmartContractAdapterInterface'

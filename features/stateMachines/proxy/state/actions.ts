@@ -1,6 +1,6 @@
+import { GasEstimationStatus } from 'helpers/form'
 import { assign } from 'xstate'
 
-import { GasEstimationStatus } from '../../../../helpers/form'
 import { ProxyContext, ProxyEvent } from './types'
 
 const initGasData = assign<ProxyContext, ProxyEvent>(() => ({

@@ -14,10 +14,8 @@ export function AjnaEarnFormContentDeposit() {
     environment: { quoteBalance, quotePrice, quoteToken },
   } = useAjnaGeneralContext()
   const {
-    form: {
-      dispatch,
-      state: { depositAmount },
-    },
+    form: { dispatch },
+    validation: { isFormValid },
   } = useAjnaProductContext('earn')
 
   return (
@@ -32,7 +30,7 @@ export function AjnaEarnFormContentDeposit() {
       <PillAccordion title={t('ajna.earn.manage.form.adjust-lending-price-bucket')}>
         <AjnaEarnSlider />
       </PillAccordion>
-      {depositAmount && (
+      {isFormValid && (
         <AjnaFormContentSummary>
           <AjnaEarnFormOrder />
         </AjnaFormContentSummary>

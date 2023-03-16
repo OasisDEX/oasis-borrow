@@ -1,10 +1,10 @@
 import { AssertionError } from 'assert'
 import { expect } from 'chai'
+import { UIChanges } from 'components/AppContext'
+import { mockContextConnected } from 'helpers/mocks/context.mock'
+import { getStateUnpacker } from 'helpers/testHelpers'
 import { of } from 'rxjs'
 
-import { UIChanges } from '../../../components/AppContext'
-import { mockContextConnected } from '../../../helpers/mocks/context.mock'
-import { getStateUnpacker } from '../../../helpers/testHelpers'
 import { createAssetActions$, isOnClickAction, isUrlAction } from './assetActions'
 
 function assertAssetAction(

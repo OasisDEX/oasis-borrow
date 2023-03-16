@@ -1,6 +1,7 @@
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
+import { GasPriceParams, Tickers } from 'blockchain/prices'
 import { TxHelpers, TxHelpers$ } from 'components/AppContext'
 import { MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 } from 'components/Modal'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -8,7 +9,6 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import { OmitProperties, ValueOf } from 'ts-essentials'
 
-import { GasPriceParams, Tickers } from '../blockchain/prices'
 import { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {

@@ -14,10 +14,8 @@ export function AjnaEarnFormContentWithdraw() {
     environment: { quoteBalance, quotePrice, quoteToken },
   } = useAjnaGeneralContext()
   const {
-    form: {
-      dispatch,
-      state: { withdrawAmount },
-    },
+    form: { dispatch },
+    validation: { isFormValid },
   } = useAjnaProductContext('earn')
 
   return (
@@ -32,7 +30,7 @@ export function AjnaEarnFormContentWithdraw() {
       <PillAccordion title={t('ajna.earn.manage.form.adjust-lending-price-bucket')}>
         <AjnaEarnSlider />
       </PillAccordion>
-      {withdrawAmount && (
+      {isFormValid && (
         <AjnaFormContentSummary>
           <AjnaEarnFormOrder />
         </AjnaFormContentSummary>

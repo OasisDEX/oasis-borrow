@@ -56,7 +56,7 @@ export function getAddConstantMultipleHistoryEventIndex(events: VaultEvent[]) {
     })
     .filter((item) => item)[0] as AutomationEvent[]
 
-  const triggerIdOfAddCMEvent = mostRecentConstantMultipleAddEvents[0].id
+  const triggerIdOfAddCMEvent = mostRecentConstantMultipleAddEvents?.[0].id
 
   const index = events.findIndex((item) => 'triggerId' in item && item.id === triggerIdOfAddCMEvent)
 

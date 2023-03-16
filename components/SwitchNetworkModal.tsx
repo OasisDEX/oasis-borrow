@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { getNetworkId } from '@oasisdex/web3-context'
 import { useWeb3React } from '@web3-react/core'
+import { getNetworkId } from 'features/web3Context'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { ModalProps } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -37,7 +37,7 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
     return () => {
       ethereum.removeListener('chainChanged', handleChainChange)
     }
-  }, [ethereum?.provider])
+  }, [ethereum])
 
   useEffect(() => {
     const handleChainChange = (update: { chainId?: string }) => {
@@ -59,13 +59,13 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
     if (appNetworkId === userNetworkId) {
       close()
     }
-  }, [userNetworkId])
+  }, [appNetworkId, close, userNetworkId])
 
   useEffect(() => {
     return () => {
       close()
     }
-  }, [])
+  }, [close])
 
   async function handleSwitch() {
     if (ethereum) {

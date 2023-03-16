@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
 import { gql, GraphQLClient } from 'graphql-request'
 import moment from 'moment'
 import { Observable } from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
-
-import { Context } from '../../blockchain/network'
 
 const makerOraclePrice = gql`
   mutation prices($token: String!, $date: Datetime) {

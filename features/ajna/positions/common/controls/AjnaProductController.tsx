@@ -76,10 +76,10 @@ export function AjnaProductController({
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>
-        dpmPositionData && walletAddress
+        dpmPositionData
           ? balancesInfoArray$(
               [dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'],
-              walletAddress,
+              walletAddress || dpmPositionData.user,
             )
           : EMPTY,
       [dpmPositionData, walletAddress],

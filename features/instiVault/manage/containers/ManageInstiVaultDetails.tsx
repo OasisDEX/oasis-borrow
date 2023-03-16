@@ -1,3 +1,4 @@
+import { MinActiveColRatioCard } from 'components/vault/detailsCards/MinActiveColRatio'
 import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
@@ -7,14 +8,12 @@ import {
   VaultDetailsCard,
 } from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
+import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
-
-import { MinActiveColRatioCard } from '../../../../components/vault/detailsCards/MinActiveColRatio'
-import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {

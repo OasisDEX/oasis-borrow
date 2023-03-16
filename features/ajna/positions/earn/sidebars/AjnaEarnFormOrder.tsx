@@ -46,8 +46,8 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
       items={[
         {
           label: t('amount-to-lend'),
-          value: `${formatted.amountToLend} ${collateralToken}`,
-          secondaryValue: `${formatted.afterAmountToLend} ${collateralToken}`,
+          value: `${formatted.amountToLend} ${quoteToken}`,
+          secondaryValue: `${formatted.afterAmountToLend} ${quoteToken}`,
           isLoading,
         },
         // {

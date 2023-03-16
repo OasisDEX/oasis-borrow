@@ -6,12 +6,11 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
 } from 'features/uniswapWidget/SwapWidgetChange'
+import { Web3Context } from 'features/web3Context'
 import { mapTokenToFilter, supportedEarnIlks } from 'helpers/productCards'
 import { map as mapLodash, omit, reduce } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { flatMap, map, startWith, switchMap } from 'rxjs/operators'
-
-import { Web3Context } from '@oasisdex/web3-context/src/types'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction
 

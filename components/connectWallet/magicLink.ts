@@ -1,6 +1,6 @@
 import { MagicLinkConnector, NetworkName } from '@oasisdex/connectors'
-import { getNetworkId, Web3Context } from '@oasisdex/web3-context'
 import { networksById } from 'blockchain/config'
+import { getNetworkId, Web3Context } from 'features/web3Context'
 import { EMAIL_REGEX } from 'helpers/constants'
 import { identity, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, tap } from 'rxjs/operators'
@@ -56,15 +56,20 @@ function connect(web3Context$: Observable<Web3Context>, email: string) {
         if (web3Context.status === 'notConnected' || web3Context.status === 'connectedReadonly') {
           const networkId = getNetworkId()
 
-          web3Context.connect(
-            new MagicLinkConnector({
-              apiKey: getMagicLinkKey(networkId),
-              chainId: networkId,
-              network: (networksById[networkId].name as any) as NetworkName,
-              email,
-            }),
-            'magicLink',
-          )
+          web3Context
+            .connect(
+              new MagicLinkConnector({
+                apiKey: getMagicLinkKey(networkId),
+                chainId: networkId,
+                network: (networksById[networkId].name as any) as NetworkName,
+                email,
+              }),
+              'magicLink',
+            )
+            .then(() => {})
+            .catch((e) => {
+              console.error('Error while connecting', e)
+            })
         }
       }),
     )

@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
+import { zero } from 'helpers/zero'
 import * as React from 'react'
 import { Text } from 'theme-ui'
 
-import { zero } from '../zero'
 import {
   formatAmount,
   formatCryptoBalance,

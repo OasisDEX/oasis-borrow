@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { AccountWithBalances, Web3Context } from '@oasisdex/web3-context'
+import { AccountWithBalances, Web3Context } from 'features/web3Context'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -59,14 +59,14 @@ export function LedgerAccountSelection({
         })
         .catch((e) => mountedRef.current && setError(e))
     }
-  }, [page, web3Context.status])
+  }, [page, web3Context])
 
   useEffect(() => {
     return () => {
       cancel()
       mountedRef.current = false
     }
-  }, [])
+  }, [cancel])
 
   if (error || web3Context.status === 'error') {
     return (

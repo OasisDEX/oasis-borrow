@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of, throwError } from 'rxjs'
 
-import { getStateUnpacker } from '../helpers/testHelpers'
 import { getCollateralLocked$, getTotalValueLocked$ } from './collateral'
 import { ContextConnected } from './network'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'

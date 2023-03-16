@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
 import { VaultIlkDetailsItem } from './VaultHeader'
 
 export interface VaultHeaderLayoutProps {

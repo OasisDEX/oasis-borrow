@@ -5,6 +5,7 @@ import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaul
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getIsAllowanceStage } from 'features/allowance/allowance'
 import { DsrEditing } from 'features/dsr/containers/DsrEditing'
+import { DsrDepositStage, DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
 import { DsrSidebarCreation } from 'features/dsr/sidebar/DsrSidebarCreation'
 import { createPrimaryButtonLabel, isDsrButtonDisabled } from 'features/dsr/utils/helpers'
 import { isProxyStage } from 'features/proxy/proxy'
@@ -13,8 +14,6 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent, useMemo } from 'react'
 import { Grid } from 'theme-ui'
-
-import { DsrDepositStage, DsrDepositState } from '../helpers/dsrDeposit'
 
 export type DsrSidebarTabOptions = 'deposit' | 'withdraw'
 

@@ -1,15 +1,19 @@
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { AjnaFormState, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
+import { zero } from 'helpers/zero'
 
 interface GetAjnaBorrowValidationsParams {
   collateralBalance: BigNumber
   collateralToken: string
+  quoteToken: string
   currentStep: AjnaSidebarStep
   ethBalance: BigNumber
   ethPrice: BigNumber
@@ -19,6 +23,7 @@ interface GetAjnaBorrowValidationsParams {
   simulationErrors?: AjnaValidationItem[]
   simulationWarnings?: AjnaValidationItem[]
   state: AjnaFormState
+  position: AjnaPosition | AjnaEarnPosition
   txError?: TxError
 }
 
@@ -59,10 +64,12 @@ function isFormValid({
   currentStep,
   product,
   state,
+  position,
 }: {
   currentStep: GetAjnaBorrowValidationsParams['currentStep']
   product: GetAjnaBorrowValidationsParams['product']
   state: GetAjnaBorrowValidationsParams['state']
+  position: AjnaPosition | AjnaEarnPosition
 }): boolean {
   switch (product) {
     case 'borrow': {
@@ -102,10 +109,17 @@ function isFormValid({
         case 'manage':
           switch (action) {
             case 'open-earn':
+              return !!depositAmount?.gt(0)
             case 'deposit-earn':
-              return !!depositAmount?.gt(0) || !!price?.gt(0)
+              return (
+                !!depositAmount?.gt(0) ||
+                !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
+              )
             case 'withdraw-earn':
-              return !!withdrawAmount?.gt(0)
+              return (
+                !!withdrawAmount?.gt(0) ||
+                !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
+              )
             default:
               return false
           }
@@ -121,6 +135,7 @@ function isFormValid({
 export function getAjnaValidation({
   collateralBalance,
   collateralToken,
+  quoteToken,
   currentStep,
   ethBalance,
   ethPrice,
@@ -131,6 +146,7 @@ export function getAjnaValidation({
   simulationWarnings = [],
   state,
   txError,
+  position,
 }: GetAjnaBorrowValidationsParams): {
   isFormValid: boolean
   errors: ValidationMessagesInput
@@ -149,12 +165,13 @@ export function getAjnaValidation({
 
   const localWarnings = {
     hasPotentialInsufficientEthFundsForTx: notEnoughETHtoPayForTx({
-      token: collateralToken,
+      token: isEarnProduct ? quoteToken : collateralToken,
       ethBalance,
       ethPrice,
-      // TODO: this is an error, for all other actions than open and deposit, this deposit should be taken from different state value
-      // e.g.: that error still might occur on payback action, but we're not checking for that
-      depositAmount: state.depositAmount,
+      depositAmount:
+        'paybackAmount' in state && state.paybackAmount?.gt(zero) && quoteToken === 'ETH'
+          ? state.paybackAmount
+          : state.depositAmount,
       gasEstimationUsd,
     }),
   }
@@ -169,7 +186,8 @@ export function getAjnaValidation({
   )
 
   return {
-    isFormValid: errors.messages.length === 0 && isFormValid({ currentStep, product, state }),
+    isFormValid:
+      errors.messages.length === 0 && isFormValid({ currentStep, product, state, position }),
     errors,
     warnings,
   }
