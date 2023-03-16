@@ -151,6 +151,7 @@ export function AjnaProductContextProvider({
       getAjnaValidation({
         collateralBalance,
         collateralToken,
+        quoteToken,
         currentStep,
         ethBalance,
         ethPrice,
@@ -167,6 +168,7 @@ export function AjnaProductContextProvider({
       currentStep,
       collateralBalance.toNumber(),
       collateralToken,
+      quoteToken,
       ethBalance.toNumber(),
       ethPrice.toNumber(),
       gasEstimation?.usdValue.toNumber(),

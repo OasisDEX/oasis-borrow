@@ -59,9 +59,6 @@ export async function getAjnaParameters({
     quoteTokenPrecision,
   }
 
-  // TODO hardcoded for now, but will be moved eventually to library
-  const borrowPrice = new BigNumber(12662543981384068647567)
-
   if (!isFormValid) {
     return defaultPromise
   }
@@ -75,7 +72,6 @@ export async function getAjnaParameters({
           ...commonPayload,
           collateralAmount: depositAmount!,
           collateralPrice,
-          price: borrowPrice,
           quoteAmount: generateAmount || zero,
           quotePrice,
         },
@@ -90,7 +86,6 @@ export async function getAjnaParameters({
           ...commonPayload,
           collateralAmount: depositAmount!,
           position: position as AjnaPosition,
-          price: borrowPrice,
           quoteAmount: generateAmount || zero,
         },
         dependencies,
@@ -104,7 +99,6 @@ export async function getAjnaParameters({
           ...commonPayload,
           collateralAmount: depositAmount || zero,
           position: position as AjnaPosition,
-          price: borrowPrice,
           quoteAmount: generateAmount!,
         },
         dependencies,
@@ -144,7 +138,7 @@ export async function getAjnaParameters({
           ...commonPayload,
           price: price!,
           quoteAmount: depositAmount!,
-          isStakingNft: false,
+          isStakingNft: true,
           collateralPrice,
           quotePrice,
         },
@@ -158,6 +152,7 @@ export async function getAjnaParameters({
         {
           ...commonPayload,
           price: price!,
+          collateralAmount: zero,
           quoteAmount: depositAmount || zero,
           position: position as AjnaEarnPosition,
         },
@@ -171,6 +166,7 @@ export async function getAjnaParameters({
         {
           ...commonPayload,
           price: price!,
+          collateralAmount: zero,
           quoteAmount: withdrawAmount || zero,
           position: position as AjnaEarnPosition,
         },
