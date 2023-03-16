@@ -25,7 +25,7 @@ export function DiscoverTableDataCellInactive({ children }: PropsWithChildren<{}
 export function DiscoverTableDataCellAsset({
   asset,
   follow,
-  icons,
+  icons = [],
   id,
   inactive,
 }: {
@@ -53,7 +53,7 @@ export function DiscoverTableDataCellAsset({
           protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported
         />
       )}
-      {icons && <TokensGroup tokens={icons} />}
+      {icons.length > 0 && <TokensGroup tokens={icons} />}
       <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
         <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
           {asset}

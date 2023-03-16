@@ -16,7 +16,7 @@ import {
   DiscoverTableDataCellAsset,
   DiscoverTableDataCellInactive,
   DiscoverTableDataCellProtocol,
-} from 'features/discover/common/DiscoverTableDataCellContent'
+} from 'features/discover/common/DiscoverTableDataCellComponents'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { useObservable } from 'helpers/observableHook'
@@ -69,19 +69,13 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
               const pair = pool.join('-')
 
               return {
-                asset: (
-                  <DiscoverTableDataCellAsset asset={token} icon={getToken(token).iconCircle} />
-                ),
+                asset: <DiscoverTableDataCellAsset asset={token} icons={[token]} />,
                 ...filterPoolData({
                   data: ajnaPoolDummyData,
                   pair,
                   product,
                 }),
-                protocol: (
-                  <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
-                    Ajna
-                  </DiscoverTableDataCellProtocol>
-                ),
+                protocol: <DiscoverTableDataCellProtocol protocol="Ajna" />,
                 action: (
                   <AppLink href={`/ajna/${product}/${pair}`}>
                     <Button className="discover-action" variant="tertiary">
@@ -105,7 +99,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
               <DiscoverTableDataCellInactive>
                 <DiscoverTableDataCellAsset
                   asset={token}
-                  icon={getToken(token).iconCircle}
+                  icons={[token]}
                   inactive={`(${t('coming-soon')})`}
                 />
               </DiscoverTableDataCellInactive>
@@ -117,9 +111,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
             }),
             protocol: (
               <DiscoverTableDataCellInactive>
-                <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
-                  Ajna
-                </DiscoverTableDataCellProtocol>
+                <DiscoverTableDataCellProtocol protocol="Ajna" />
               </DiscoverTableDataCellInactive>
             ),
             action: (

@@ -50,9 +50,9 @@ export function DiscoverTableDataCellContent({
           asset={
             (primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset) as string
           }
-          id={primitives.cdpId as number}
+          id={primitives.cdpId as string}
           follow={follow}
-          icon={(primitives?.icon || asset?.icon) as string}
+          icons={[(primitives?.icon || asset?.icon) as string]}
         />
       )
     case 'status':

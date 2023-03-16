@@ -128,7 +128,18 @@ export function parseAaveMultiplyPositionRows(
   positions: AavePosition[],
 ): PositionTableMultiplyRow[] {
   return positions.map(
-    ({ debtToken, fundingCost, id, liquidationPrice, multiple, netValue, protocol, title, token, url }) => ({
+    ({
+      debtToken,
+      fundingCost,
+      id,
+      liquidationPrice,
+      multiple,
+      netValue,
+      protocol,
+      title,
+      token,
+      url,
+    }) => ({
       asset: title,
       fundingCost,
       icons: [token, debtToken],

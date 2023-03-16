@@ -1343,7 +1343,12 @@ export function setupAppContext() {
   )
 
   const ajnaPositions$ = memoize(
-    curry(getAjnaPositionsWithDetails$)(context$, userDpmProxies$, readPositionCreatedEvents$, tokenPriceUSD$),
+    curry(getAjnaPositionsWithDetails$)(
+      context$,
+      userDpmProxies$,
+      readPositionCreatedEvents$,
+      tokenPriceUSD$,
+    ),
     (walletAddress: string) => walletAddress,
   )
 
