@@ -239,6 +239,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
       url,
     }) => ({
       asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
+      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
       riskRatio: (
         <>
           <DiscoverTableDataCellRiskRatio
@@ -262,8 +263,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
         </>
       ),
       variable: <>{formatPercent(variable, { precision: 2 })}</>,
-      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
-      automation: '',
+      // automation: '',
       action: (
         <AppLink href={url} sx={{ flexGrow: [1, null, null, 'initial'] }}>
           <Button className="discover-action" variant="tertiary">
@@ -278,12 +278,12 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Disco
   return rows.map(
     ({ asset, fundingCost, icon, id, liquidationPrice, multiple, netValue, protocol, url }) => ({
       asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
+      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
       netValue: <>${formatCryptoBalance(netValue)}</>,
       multiple: <>{multiple.toFixed(2)}x</>,
       liquidationPrice: <>${formatCryptoBalance(liquidationPrice)}</>,
       fundingCost: <>{formatPercent(fundingCost, { precision: 2 })}</>,
-      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
-      automation: '',
+      // automation: '',
       action: (
         <AppLink href={url} sx={{ flexGrow: [1, null, null, 'initial'] }}>
           <Button className="discover-action" variant="tertiary">
@@ -298,6 +298,7 @@ export function getEarnPositionRows(rows: PositionTableEarnRow[]): DiscoverTable
   return rows.map(
     ({ asset, icon, id, liquidity, liquidityToken, netValue, pnl, protocol, url }) => ({
       asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
+      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
       netValue: BigNumber.isBigNumber(netValue) ? (
         <>${formatCryptoBalance(netValue)}</>
       ) : (
@@ -315,8 +316,7 @@ export function getEarnPositionRows(rows: PositionTableEarnRow[]): DiscoverTable
       ) : (
         <DiscoverTableDataCellInactive>{liquidity || 'Soon'}</DiscoverTableDataCellInactive>
       ),
-      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
-      automation: '',
+      // automation: '',
       action: (
         <AppLink href={url} sx={{ flexGrow: [1, null, null, 'initial'] }}>
           <Button className="discover-action" variant="tertiary">
