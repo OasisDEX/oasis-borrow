@@ -12,6 +12,8 @@ import { actions, createMachine, sendParent } from 'xstate'
 
 const { assign } = actions
 
+const MAX_RETRIES = 3
+
 export interface BaseTransactionParameters {
   token?: string
   amount?: BigNumber
@@ -24,6 +26,7 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
+  retries?: number // number of retries for gas estimation
 }
 
 export type TransactionParametersStateMachineResponseEvent =
@@ -72,6 +75,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
       states: {
         idle: {},
         gettingParameters: {
+          entry: ['setRetries'],
           invoke: {
             src: 'getParameters',
             id: 'library-call',
@@ -97,9 +101,16 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
           invoke: {
             src: 'estimateGas',
             id: 'gas-estimation',
-            onError: {
-              actions: ['setErrorGasPrice', 'sendGasEstimation'],
-            },
+            onError: [
+              {
+                actions: ['setErrorGasPrice', 'sendGasEstimation'],
+                cond: 'isRetryable',
+                target: 'gettingParameters',
+              },
+              {
+                actions: ['setErrorGasPrice', 'sendGasEstimation'],
+              },
+            ],
           },
           initial: 'gas',
           states: {
@@ -127,7 +138,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
       on: {
         VARIABLES_RECEIVED: {
           target: '.gettingParameters',
-          actions: ['updateContext'],
+          actions: ['updateContext', 'resetRetries'],
         },
         TX_HELPER_CHANGED: {
           actions: ['updateContext'],
@@ -158,6 +169,8 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         setErrorGasPrice: assign((_) => ({
           estimatedGasPrice: { gasEstimationStatus: GasEstimationStatus.error },
         })),
+        setRetries: assign((context) => ({ retries: (context.retries || 0) + 1 })),
+        resetRetries: assign((_) => ({ retries: 0 })),
       },
       services: {
         getParameters: async (context) => libraryCall(context.parameters!),
@@ -193,6 +206,9 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         },
         hasMockProxyAddress: ({ parameters }) => {
           return parameters?.proxyAddress === ethNullAddress
+        },
+        isRetryable: ({ retries }) => {
+          return retries! <= MAX_RETRIES
         },
       },
     },
