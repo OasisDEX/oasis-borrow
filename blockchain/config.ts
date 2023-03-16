@@ -1,4 +1,4 @@
-import { ContractDesc } from '@oasisdex/web3-context'
+import { ContractDesc } from 'features/web3Context'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
@@ -169,6 +169,8 @@ const tokensMainnet = {
 } as Dictionary<ContractDesc>
 const protoMain = {
   id: '1',
+  hexId: '0x1',
+  token: 'ETH',
   name: 'main',
   label: 'Mainnet',
   infuraUrl: mainnetRpc,
@@ -300,6 +302,8 @@ const main: NetworkConfig = protoMain
 
 const goerli: NetworkConfig = {
   id: '5',
+  hexId: '0x5',
+  token: 'GoerliETH',
   name: 'goerli',
   label: 'goerli',
   infuraUrl: goerliRpc,
@@ -429,6 +433,7 @@ const goerli: NetworkConfig = {
 const hardhat: NetworkConfig = {
   ...protoMain,
   id: '2137',
+  hexId: '0x859',
   name: 'hardhat',
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
@@ -440,6 +445,6 @@ export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 export const networksById = keyBy([main, hardhat, goerli], 'id')
 export const networksByName = keyBy([main, hardhat, goerli], 'name')
-
+export const networks = [main, goerli, hardhat]
 export const dappName = 'Oasis'
 export const pollingInterval = 12000

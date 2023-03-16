@@ -1,4 +1,3 @@
-import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
@@ -6,6 +5,7 @@ import { FollowButtonControlProps } from 'features/follow/controllers/FollowButt
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
+import { getNetworkName } from 'features/web3Context'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'

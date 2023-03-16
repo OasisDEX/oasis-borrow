@@ -1,4 +1,3 @@
-import { getNetworkName } from '@oasisdex/web3-context'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -10,6 +9,7 @@ import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { getNetworkName } from 'features/web3Context'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

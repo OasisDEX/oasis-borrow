@@ -1,6 +1,6 @@
-import { ContractDesc } from '@oasisdex/web3-context'
 import { ContextConnected } from 'blockchain/network'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
+import { ContractDesc } from 'features/web3Context'
 import { DssProxyActionsCharter } from 'types/web3-v1-contracts/dss-proxy-actions-charter'
 import { DssProxyActionsCropjoin } from 'types/web3-v1-contracts/dss-proxy-actions-cropjoin'
 import {

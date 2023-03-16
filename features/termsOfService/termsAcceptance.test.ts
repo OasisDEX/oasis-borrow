@@ -1,5 +1,5 @@
-import { Web3Context } from '@oasisdex/web3-context'
 import { expect } from 'chai'
+import { Web3Context } from 'features/web3Context'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { mapValues } from 'lodash'
 import { describe, it } from 'mocha'

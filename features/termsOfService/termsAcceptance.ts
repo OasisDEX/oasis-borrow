@@ -1,5 +1,5 @@
-import { Web3Context, Web3ContextConnected } from '@oasisdex/web3-context'
 import { jwtAuthGetToken, JWToken } from 'features/shared/jwt'
+import { Web3Context, Web3ContextConnected } from 'features/web3Context'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
 import { identity, merge, NEVER, Observable, of, Subject } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'

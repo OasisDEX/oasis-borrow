@@ -1,8 +1,8 @@
-import { Web3Context } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { BorrowPositionVM, MultiplyPositionVM } from 'components/dumb/PositionList'
 import { AccountDetails } from 'features/account/AccountData'
+import { Web3Context } from 'features/web3Context'
 
 export function isNullish(amount: BigNumber | undefined | null): boolean {
   return !amount || amount.isZero()

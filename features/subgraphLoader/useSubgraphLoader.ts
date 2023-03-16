@@ -1,6 +1,6 @@
-import { getNetworkId } from '@oasisdex/web3-context'
 import { NetworkIds } from 'blockchain/network'
 import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
+import { getNetworkId } from 'features/web3Context'
 import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader<R> {

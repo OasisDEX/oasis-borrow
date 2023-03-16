@@ -1,4 +1,3 @@
-import { contract, ContractDesc } from '@oasisdex/web3-context'
 import { networksById } from 'blockchain/config'
 import {
   Context,
@@ -7,6 +6,7 @@ import {
   createContextConnected$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import { contract, ContractDesc } from 'features/web3Context'
 import Web3 from 'web3'
 
 import {

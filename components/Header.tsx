@@ -14,6 +14,7 @@ import {
   SwapWidgetState,
 } from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
+import { ConnectButton } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getShouldHideHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
@@ -26,7 +27,7 @@ import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
@@ -776,13 +777,14 @@ function MobileMenu() {
 }
 
 function DisconnectedHeader() {
+  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
-            <ConnectWalletButton />
+            {useBlockNative ? <ConnectButton /> : <ConnectWalletButton />}
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}
             />
@@ -882,10 +884,15 @@ function MainNavigation() {
 }
 
 export function AppHeader() {
-  const { context$ } = useAppContext()
-  const [context] = useObservable(context$)
+  const { web3Context$ } = useAppContext()
+  const [context] = useObservable(web3Context$)
 
-  return context?.status === 'connected' ? <ConnectedHeader /> : <DisconnectedHeader />
+  const Header = useMemo(
+    () => (context?.status === 'connected' ? ConnectedHeader : DisconnectedHeader),
+    [context?.status],
+  )
+
+  return <Header />
 }
 
 export function ConnectPageHeader() {

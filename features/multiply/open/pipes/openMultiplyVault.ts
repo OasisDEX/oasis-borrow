@@ -1,4 +1,3 @@
-import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
@@ -35,6 +34,7 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
+import { getNetworkName } from 'features/web3Context'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { TxError } from 'helpers/types'

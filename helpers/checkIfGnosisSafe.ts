@@ -1,4 +1,4 @@
-import { ConnectionKind } from '@oasisdex/web3-context'
+import { ConnectionKind } from 'features/web3Context'
 import Web3 from 'web3'
 
 export function checkIfGnosisSafe(connectionKind: ConnectionKind, web3: Web3) {

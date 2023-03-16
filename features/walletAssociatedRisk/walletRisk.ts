@@ -1,6 +1,6 @@
-import { getNetworkId, Web3Context } from '@oasisdex/web3-context'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
+import { getNetworkId, Web3Context } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 

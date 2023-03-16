@@ -1,5 +1,5 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
-import { getNetworkId } from '@oasisdex/web3-context'
+import { getNetworkId } from 'features/web3Context'
 import { decode } from 'jsonwebtoken'
 import getConfig from 'next/config'
 import { Observable, of } from 'rxjs'

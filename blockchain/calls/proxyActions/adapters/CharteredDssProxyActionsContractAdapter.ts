@@ -1,5 +1,5 @@
-import { ContractDesc } from '@oasisdex/web3-context'
 import { ContextConnected } from 'blockchain/network'
+import { ContractDesc } from 'features/web3Context'
 import { DssProxyActionsCharter } from 'types/web3-v1-contracts/dss-proxy-actions-charter'
 import { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
 
