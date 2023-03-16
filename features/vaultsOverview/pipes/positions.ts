@@ -112,6 +112,7 @@ export type AavePosition = Position & {
   liquidity: BigNumber
   stopLossData?: StopLossTriggerData
   fakePositionCreatedEvtForDsProxyUsers?: boolean
+  debtToken: string
   protocol: LendingProtocol.AaveV2 | LendingProtocol.AaveV3
 }
 
@@ -226,6 +227,7 @@ function buildAaveViewModel(
 
         return {
           token: collateralToken,
+          debtToken: debtToken,
           title: title,
           url: `/aave/${mapAaveProtocol(protocol)}/${positionId}`,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,

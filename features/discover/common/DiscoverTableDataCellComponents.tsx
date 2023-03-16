@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { TokensGroup } from 'components/TokensGroup'
 import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableColRatioRowData } from 'features/discover/types'
 import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
@@ -25,13 +25,13 @@ export function DiscoverTableDataCellInactive({ children }: PropsWithChildren<{}
 export function DiscoverTableDataCellAsset({
   asset,
   follow,
-  icon,
+  icons,
   id,
   inactive,
 }: {
   asset: string
   follow?: DiscoverFollow
-  icon?: string
+  icons?: string[]
   id?: string
   inactive?: string
 }) {
@@ -53,7 +53,7 @@ export function DiscoverTableDataCellAsset({
           protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported
         />
       )}
-      {icon && <Icon size={44} name={icon} sx={{ ...(inactive && { opacity: 0.5 }) }} />}
+      {icons && <TokensGroup tokens={icons} />}
       <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
         <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
           {asset}

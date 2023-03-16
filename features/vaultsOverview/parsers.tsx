@@ -1,6 +1,5 @@
 import { AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import {
@@ -25,7 +24,7 @@ import { Button, Text } from 'theme-ui'
 
 interface PositionTableRow {
   asset: string
-  icon: string
+  icons: string[]
   id: string
   protocol: DiscoverTableDataCellProtocols
   url: string
@@ -77,7 +76,7 @@ export function parseMakerBorrowPositionRows(
       collateralToken: token,
       debt,
       debtToken: 'DAI',
-      icon: token,
+      icons: [token, 'DAI'],
       id: id.toString(),
       protocol: 'Maker',
       riskRatio: {
@@ -98,7 +97,7 @@ export function parseMakerMultiplyPositionRows(
     ({ debt, id, ilk, liquidationPrice, lockedCollateralUSD, stabilityFee, token, value }) => ({
       asset: ilk,
       fundingCost: getFundingCost({ debt, stabilityFee, value }),
-      icon: token,
+      icons: [token, 'DAI'],
       id: id.toString(),
       liquidationPrice,
       multiple: calculateMultiply({ debt, lockedCollateralUSD }),
@@ -112,9 +111,9 @@ export function parseMakerEarnPositionRows(
   positions: MakerPositionDetails[],
 ): PositionTableEarnRow[] {
   return positions.map(
-    ({ debt, history, id, ilk, ilkDebtAvailable, lockedCollateralUSD, token, value }) => ({
+    ({ debt, history, id, ilk, ilkDebtAvailable, lockedCollateralUSD, value }) => ({
       asset: ilk,
-      icon: token,
+      icons: ['DAI', 'USDC'],
       id: id.toString(),
       liquidity: ilkDebtAvailable,
       liquidityToken: 'DAI',
@@ -129,10 +128,10 @@ export function parseAaveMultiplyPositionRows(
   positions: AavePosition[],
 ): PositionTableMultiplyRow[] {
   return positions.map(
-    ({ fundingCost, id, liquidationPrice, multiple, netValue, protocol, title, token, url }) => ({
+    ({ debtToken, fundingCost, id, liquidationPrice, multiple, netValue, protocol, title, token, url }) => ({
       asset: title,
       fundingCost,
-      icon: token,
+      icons: [token, debtToken],
       id,
       liquidationPrice,
       multiple,
@@ -143,9 +142,9 @@ export function parseAaveMultiplyPositionRows(
   )
 }
 export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTableEarnRow[] {
-  return positions.map(({ id, liquidity, netValue, protocol, title, token, url }) => ({
+  return positions.map(({ debtToken, id, liquidity, netValue, protocol, title, token, url }) => ({
     asset: title,
-    icon: token,
+    icons: [token, debtToken],
     id,
     liquidity,
     liquidityToken: 'USDC',
@@ -171,7 +170,7 @@ export function parseAjnaBorrowPositionRows(
       collateralToken: collateralToken,
       debt: debtAmount,
       debtToken: quoteToken,
-      icon: collateralToken,
+      icons: [collateralToken, quoteToken],
       id: vaultId,
       protocol: 'Ajna',
       riskRatio: {
@@ -191,7 +190,7 @@ export function parseAjnaEarnPositionRows(
 ): PositionTableEarnRow[] {
   return positions.map(({ details: { collateralToken, vaultId, quoteToken } }) => ({
     asset: `${collateralToken}/${quoteToken}`,
-    icon: collateralToken,
+    icons: [collateralToken, quoteToken],
     id: vaultId,
     liquidityToken: quoteToken,
     protocol: `Ajna`,
@@ -211,7 +210,7 @@ export function parseDsrEarnPosition({
     ? [
         {
           asset: 'DAI Savings Rate',
-          icon: 'DAI',
+          icons: ['DAI'],
           id: formatAddress(address),
           liquidity: 'Unlimited',
           liquidityToken: 'DAI',
@@ -231,14 +230,14 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
       collateralToken,
       debt,
       debtToken,
-      icon,
+      icons,
       id,
       protocol,
       riskRatio: { level, isAtRiskDanger, isAtRiskWarning, type },
       variable,
       url,
     }) => ({
-      asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
+      asset: <DiscoverTableDataCellAsset asset={asset} icons={icons} id={id} />,
       protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
       riskRatio: (
         <>
@@ -276,8 +275,8 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
 }
 export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): DiscoverTableRowData[] {
   return rows.map(
-    ({ asset, fundingCost, icon, id, liquidationPrice, multiple, netValue, protocol, url }) => ({
-      asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
+    ({ asset, fundingCost, icons, id, liquidationPrice, multiple, netValue, protocol, url }) => ({
+      asset: <DiscoverTableDataCellAsset asset={asset} icons={icons} id={id} />,
       protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
       netValue: <>${formatCryptoBalance(netValue)}</>,
       multiple: <>{multiple.toFixed(2)}x</>,
@@ -296,8 +295,8 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Disco
 }
 export function getEarnPositionRows(rows: PositionTableEarnRow[]): DiscoverTableRowData[] {
   return rows.map(
-    ({ asset, icon, id, liquidity, liquidityToken, netValue, pnl, protocol, url }) => ({
-      asset: <DiscoverTableDataCellAsset asset={asset} icon={getToken(icon).iconCircle} id={id} />,
+    ({ asset, icons, id, liquidity, liquidityToken, netValue, pnl, protocol, url }) => ({
+      asset: <DiscoverTableDataCellAsset asset={asset} icons={icons} id={id} />,
       protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
       netValue: BigNumber.isBigNumber(netValue) ? (
         <>${formatCryptoBalance(netValue)}</>
