@@ -169,7 +169,7 @@ export function getAjnaValidation({
       ethBalance,
       ethPrice,
       depositAmount:
-        'paybackAmount' in state && state.paybackAmount?.gt(zero)
+        'paybackAmount' in state && state.paybackAmount?.gt(zero) && quoteToken === 'ETH'
           ? state.paybackAmount
           : state.depositAmount,
       gasEstimationUsd,
