@@ -8,10 +8,12 @@ import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarn
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
+import { zero } from 'helpers/zero'
 
 interface GetAjnaBorrowValidationsParams {
   collateralBalance: BigNumber
   collateralToken: string
+  quoteToken: string
   currentStep: AjnaSidebarStep
   ethBalance: BigNumber
   ethPrice: BigNumber
@@ -133,6 +135,7 @@ function isFormValid({
 export function getAjnaValidation({
   collateralBalance,
   collateralToken,
+  quoteToken,
   currentStep,
   ethBalance,
   ethPrice,
@@ -162,12 +165,13 @@ export function getAjnaValidation({
 
   const localWarnings = {
     hasPotentialInsufficientEthFundsForTx: notEnoughETHtoPayForTx({
-      token: collateralToken,
+      token: isEarnProduct ? quoteToken : collateralToken,
       ethBalance,
       ethPrice,
-      // TODO: this is an error, for all other actions than open and deposit, this deposit should be taken from different state value
-      // e.g.: that error still might occur on payback action, but we're not checking for that
-      depositAmount: state.depositAmount,
+      depositAmount:
+        'paybackAmount' in state && state.paybackAmount?.gt(zero)
+          ? state.paybackAmount
+          : state.depositAmount,
       gasEstimationUsd,
     }),
   }
