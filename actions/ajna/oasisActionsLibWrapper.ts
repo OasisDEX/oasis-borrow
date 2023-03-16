@@ -32,7 +32,7 @@ export async function getAjnaParameters({
   rpcProvider,
   state,
   isFormValid,
-}: AjnaTxHandlerInput): Promise<Strategy<AjnaPosition | AjnaEarnPosition> | undefined> {
+}: AjnaTxHandlerInput): Promise<Strategy<AjnaGenericPosition> | undefined> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const defaultPromise = Promise.resolve(undefined)
 

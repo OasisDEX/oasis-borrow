@@ -1,5 +1,10 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
-import { AjnaFormState, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
+import {
+  AjnaFormState,
+  AjnaGenericPosition,
+  AjnaProduct,
+  AjnaSidebarStep,
+} from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
@@ -7,7 +12,7 @@ import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFo
 interface IsFormEmptyParams {
   product: AjnaProduct
   state: AjnaFormState
-  position: AjnaPosition | AjnaEarnPosition
+  position: AjnaGenericPosition
   currentStep: AjnaSidebarStep
 }
 

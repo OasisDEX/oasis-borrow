@@ -1,4 +1,3 @@
-import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { Context, NetworkIds } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
@@ -14,6 +13,7 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { getNetworkId } from 'features/web3Context'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { zero } from 'helpers/zero'

@@ -1021,6 +1021,7 @@
     "max": "Max transaction cost"
   },
   "notice": "Notice",
+  "soon": "Soon",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {

@@ -1,4 +1,3 @@
-import { getNetworkId } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { Context, NetworkIds } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -14,6 +13,7 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { getNetworkId } from 'features/web3Context'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
