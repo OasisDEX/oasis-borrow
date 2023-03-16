@@ -86,8 +86,8 @@ function getProtection({
   ).toNumber()
 }
 
-export function getMakerPositionOfType(position: MakerPositionDetails[]) {
-  return position.reduce<{
+export function getMakerPositionOfType(positions: MakerPositionDetails[]) {
+  return positions.reduce<{
     borrow: MakerPositionDetails[]
     multiply: MakerPositionDetails[]
     earn: MakerPositionDetails[]
@@ -104,8 +104,8 @@ export function getMakerPositionOfType(position: MakerPositionDetails[]) {
   )
 }
 
-export function getAavePositionOfType(position: AavePosition[]) {
-  return position.reduce<{
+export function getAavePositionOfType(positions: AavePosition[]) {
+  return positions.reduce<{
     multiply: AavePosition[]
     earn: AavePosition[]
   }>(
@@ -119,8 +119,8 @@ export function getAavePositionOfType(position: AavePosition[]) {
   )
 }
 
-export function getAjnaPositionOfType(position: AjnaPositionDetails[]) {
-  return position.reduce<{
+export function getAjnaPositionOfType(positions: AjnaPositionDetails[]) {
+  return positions.reduce<{
     borrow: AjnaPositionDetails[]
     earn: AjnaPositionDetails[]
     multiply: AjnaPositionDetails[]
