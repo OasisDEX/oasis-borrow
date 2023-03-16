@@ -10,7 +10,7 @@ interface TokensGroupProps {
 
 export function TokensGroup({ sx, tokens }: TokensGroupProps) {
   return (
-    <Box sx={{ position: 'relative', ...sx }}>
+    <Box sx={{ position: 'relative', zIndex: 0, ...sx }}>
       {/* uncomment if background around tokens is needed */}
       {/* <Flex as="ul" sx={{ position: 'absolute', top: 0, left: 0, m: 0, p: 0, listStyle: 'none' }}>
         {tokens.map(() => (

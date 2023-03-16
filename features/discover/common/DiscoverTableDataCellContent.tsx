@@ -45,6 +45,7 @@ export function DiscoverTableDataCellContent({
       const asset = Object.values(discoverFiltersAssetItems).filter(
         (item) => item.value === primitives.asset,
       )[0]
+
       return (
         <DiscoverTableDataCellAsset
           asset={
@@ -52,7 +53,7 @@ export function DiscoverTableDataCellContent({
           }
           id={primitives.cdpId as string}
           follow={follow}
-          icons={[(primitives?.icon || asset?.icon) as string]}
+          icons={[(primitives?.label || asset?.label) as string]}
         />
       )
     case 'status':
