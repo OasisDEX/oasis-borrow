@@ -46,11 +46,7 @@ export function createPositionsList$(
     switchMap(() => {
       return combineLatest(
         makerPositions$(address),
-        iif(
-          () => getNetworkId() !== NetworkIds.GOERLI,
-          aavePositions$(address),
-          of([] as AavePosition[]),
-        ),
+        aavePositions$(address),
         // TODO: temporary until Ajna contracts are on mainnet
         iif(
           () => getNetworkId() === NetworkIds.GOERLI,

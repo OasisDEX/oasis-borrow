@@ -1,5 +1,6 @@
+import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import { Context, NetworkIds } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
@@ -305,60 +306,73 @@ export function createAavePosition$(
     readPositionCreatedEvents$,
     automationTriggersData$,
   } = environment
-  return combineLatest(
-    proxyAddressesProvider.userDpmProxies$(walletAddress),
-    getStethEthAaveV2DsProxyEarnPosition$(
-      proxyAddressesProvider,
-      aaveV2.aaveProtocolData$,
-      walletAddress,
-    ),
-    context$,
-  ).pipe(
-    switchMap(
-      ([dpmProxiesData, fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition, context]) => {
-        // if we have a DS proxy make a fake position created event so we can read any position out below
-        const userProxiesData = [
-          ...dpmProxiesData,
-          ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition.map((fakeEvent) => {
-            return {
-              user: walletAddress,
-              proxy: fakeEvent.proxyAddress,
-              vaultId: walletAddress,
-            }
-          }),
-        ]
-        return readPositionCreatedEvents$(walletAddress).pipe(
-          map((positionCreatedEvents) => {
-            return [
-              ...positionCreatedEvents,
-              ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition,
-            ]
-          }),
-          switchMap((positionCreatedEvents) => {
-            return combineLatest(
-              positionCreatedEvents
-                .filter((event) => sumAaveArray.includes(event.protocol))
-                .map((pce) => {
-                  const userProxy = userProxiesData.find(
-                    (userProxy) => userProxy.proxy === pce.proxyAddress,
-                  )
-                  if (!userProxy) {
-                    throw new Error('nope')
-                  }
+  return context$.pipe(
+    switchMap((context) => {
+      return getNetworkId() !== NetworkIds.GOERLI
+        ? combineLatest(
+            proxyAddressesProvider.userDpmProxies$(walletAddress),
+            getStethEthAaveV2DsProxyEarnPosition$(
+              proxyAddressesProvider,
+              aaveV2.aaveProtocolData$,
+              walletAddress,
+            ),
+          ).pipe(
+            switchMap(
+              ([dpmProxiesData, fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition]) => {
+                // if we have a DS proxy make a fake position created event so we can read any position out below
+                const userProxiesData = [
+                  ...dpmProxiesData,
+                  ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition.map(
+                    (fakeEvent) => {
+                      return {
+                        user: walletAddress,
+                        proxy: fakeEvent.proxyAddress,
+                        vaultId: walletAddress,
+                      }
+                    },
+                  ),
+                ]
+                return readPositionCreatedEvents$(walletAddress).pipe(
+                  map((positionCreatedEvents) => {
+                    return [
+                      ...positionCreatedEvents,
+                      ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition,
+                    ]
+                  }),
+                  switchMap((positionCreatedEvents) => {
+                    return combineLatest(
+                      positionCreatedEvents
+                        .filter((event) => sumAaveArray.includes(event.protocol))
+                        .map((pce) => {
+                          const userProxy = userProxiesData.find(
+                            (userProxy) => userProxy.proxy === pce.proxyAddress,
+                          )
+                          if (!userProxy) {
+                            throw new Error('nope')
+                          }
 
-                  return buildAaveViewModel(pce, userProxy.vaultId, context, walletAddress, {
-                    aaveV2,
-                    aaveV3,
-                    tickerPrices$,
-                    automationTriggersData$,
-                  })
-                }),
-            )
-          }),
-        )
-      },
-    ),
-    startWith([]),
+                          return buildAaveViewModel(
+                            pce,
+                            userProxy.vaultId,
+                            context,
+                            walletAddress,
+                            {
+                              aaveV2,
+                              aaveV3,
+                              tickerPrices$,
+                              automationTriggersData$,
+                            },
+                          )
+                        }),
+                    )
+                  }),
+                )
+              },
+            ),
+            startWith([]),
+          )
+        : of([] as AavePosition[])
+    }),
   )
 }
 
