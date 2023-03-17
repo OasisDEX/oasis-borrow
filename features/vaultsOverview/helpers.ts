@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
+import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { DiscoverTableRowData } from 'features/discover/types'
@@ -54,7 +54,11 @@ interface GetDsrPositionParams {
   skipShareButton?: boolean
 }
 
-function getFundingCost({
+export function getDsrValue(dsr?: Dsr): BigNumber {
+  return dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
+}
+
+export function getFundingCost({
   debt,
   stabilityFee,
   value,
@@ -81,8 +85,8 @@ function getProtection({
   ).toNumber()
 }
 
-function getMakerPositionOfType(position: MakerPositionDetails[]) {
-  return position.reduce<{
+export function getMakerPositionOfType(positions: MakerPositionDetails[]) {
+  return positions.reduce<{
     borrow: MakerPositionDetails[]
     multiply: MakerPositionDetails[]
     earn: MakerPositionDetails[]
@@ -99,8 +103,8 @@ function getMakerPositionOfType(position: MakerPositionDetails[]) {
   )
 }
 
-function getAavePositionOfType(position: AavePosition[]) {
-  return position.reduce<{
+export function getAavePositionOfType(positions: AavePosition[]) {
+  return positions.reduce<{
     multiply: AavePosition[]
     earn: AavePosition[]
   }>(
@@ -111,6 +115,23 @@ function getAavePositionOfType(position: AavePosition[]) {
       return v
     },
     { multiply: [], earn: [] },
+  )
+}
+
+export function getAjnaPositionOfType(positions: AjnaPositionDetails[]) {
+  return positions.reduce<{
+    borrow: AjnaPositionDetails[]
+    earn: AjnaPositionDetails[]
+    multiply: AjnaPositionDetails[]
+  }>(
+    (v, position) => {
+      if (position.details.product === 'borrow') v.borrow.push(position)
+      else if (position.details.product === 'earn') v.earn.push(position)
+      else if (position.details.product === 'multiply') v.multiply.push(position)
+
+      return v
+    },
+    { borrow: [], earn: [], multiply: [] },
   )
 }
 
@@ -222,7 +243,7 @@ export function getAaveMultiplyPositions({
       stopLossData,
     }) => {
       return {
-        icon: getToken(token).iconCircle,
+        icon: token,
         asset: title,
         netUSDValue: netValue.toNumber(),
         currentMultiple: multiple.toNumber(),
@@ -245,7 +266,7 @@ export function getAaveEarnPositions({
   return getAavePositionOfType(positions).earn.map(
     ({ id, liquidity, netValue, title, token, url }) => {
       return {
-        icon: getToken(token).iconCircle,
+        icon: token,
         asset: title,
         netUSDValue: netValue.toNumber(),
         pnl: 'Soon',
@@ -266,12 +287,11 @@ export function getDsrPosition({
   dsr,
   skipShareButton,
 }: GetDsrPositionParams): DiscoverTableRowData[] {
-  const netValue =
-    dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
+  const netValue = getDsrValue(dsr)
 
   const dsrPosition = [
     {
-      icon: getToken('DAI').iconCircle,
+      icon: 'DAI',
       asset: 'DAI Savings Rate',
       netUSDValue: netValue.toNumber(),
       pnl: 'Soon',

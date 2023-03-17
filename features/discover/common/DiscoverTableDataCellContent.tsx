@@ -1,8 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
-import { getPillColor } from 'components/navigation/NavigationBranding'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { DiscoverTableDataCellAsset } from 'features/discover/common/DiscoverTableDataCellComponents'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
@@ -13,12 +13,11 @@ import {
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
-import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import React, { PropsWithChildren } from 'react'
-import { Box, Button, Flex, Text } from 'theme-ui'
+import React from 'react'
+import { Button, Flex, Text } from 'theme-ui'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath
 
@@ -46,14 +45,15 @@ export function DiscoverTableDataCellContent({
       const asset = Object.values(discoverFiltersAssetItems).filter(
         (item) => item.value === primitives.asset,
       )[0]
+
       return (
         <DiscoverTableDataCellAsset
           asset={
             (primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset) as string
           }
-          cdpId={primitives.cdpId as number}
+          id={primitives.cdpId as string}
           follow={follow}
-          icon={(primitives?.icon || asset?.icon) as string}
+          icons={[(primitives?.icon || asset?.label) as string]}
         />
       )
     case 'status':
@@ -205,80 +205,4 @@ export function DiscoverTableDataCellContent({
     default:
       return <>{primitives[label]}</>
   }
-}
-
-export function DiscoverTableDataCellInactive({ children }: PropsWithChildren<{}>) {
-  return <Text sx={{ color: 'neutral80' }}>{children}</Text>
-}
-
-export function DiscoverTableDataCellAsset({
-  asset,
-  cdpId,
-  inactive,
-  follow,
-  icon,
-}: {
-  asset: string
-  cdpId?: number
-  inactive?: string
-  follow?: DiscoverFollow
-  icon?: string
-}) {
-  const { t } = useTranslation()
-
-  return (
-    <Flex sx={{ alignItems: 'center' }}>
-      {follow && cdpId && (
-        <FollowButtonControl
-          chainId={follow.chainId}
-          followerAddress={follow.followerAddress}
-          vaultId={new BigNumber(cdpId)}
-          short
-          sx={{
-            position: ['absolute', null, null, 'relative'],
-            right: [0, null, null, 'auto'],
-            mr: ['24px', null, null, 4],
-          }}
-          protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported
-        />
-      )}
-      {icon && <Icon size={44} name={icon} sx={{ ...(inactive && { opacity: 0.5 }) }} />}
-      <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
-        <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
-          {asset}
-          {inactive && (
-            <Text as="span" sx={{ fontWeight: 'regular' }}>
-              {' '}
-              {inactive}
-            </Text>
-          )}
-        </Text>
-        {cdpId && (
-          <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-            {t('position')} #{cdpId}
-          </Text>
-        )}
-      </Flex>
-    </Flex>
-  )
-}
-
-export function DiscoverTableDataCellProtocol({
-  children,
-  color,
-}: PropsWithChildren<{ color: string | [string, string] }>) {
-  return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-      <Box
-        sx={{
-          width: '10px',
-          height: '10px',
-          mr: 2,
-          borderRadius: 'ellipse',
-          background: getPillColor(color),
-        }}
-      />
-      {children}
-    </Flex>
-  )
 }
