@@ -32,6 +32,7 @@ import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } fr
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
+import { NavigationPickNetwork } from './navigation/NavigationPickNetwork'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidgetShowHide'
 
@@ -306,6 +307,7 @@ function UserDesktopMenu() {
           </Button>
           <UniswapWidgetShowHide />
         </Box>
+        <NavigationPickNetwork />
 
         {!shouldHideSettings && (
           <ButtonDropdown

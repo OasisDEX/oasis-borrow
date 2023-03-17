@@ -171,7 +171,7 @@ const protoMain = {
   id: '1',
   hexId: '0x1',
   token: 'ETH',
-  name: 'main',
+  name: 'ethereumMainnet',
   label: 'Mainnet',
   infuraUrl: mainnetRpc,
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
@@ -304,7 +304,7 @@ const goerli: NetworkConfig = {
   id: '5',
   hexId: '0x5',
   token: 'GoerliETH',
-  name: 'goerli',
+  name: 'ethereumGoerli',
   label: 'goerli',
   infuraUrl: goerliRpc,
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
@@ -434,17 +434,29 @@ const hardhat: NetworkConfig = {
   ...protoMain,
   id: '2137',
   hexId: '0x859',
-  name: 'hardhat',
+  name: 'ethereumHardhat',
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
+const arbitrum: NetworkConfig = {
+  ...protoMain,
+  id: '42161',
+  hexId: '0xa4b1',
+  name: 'arbitrumMainnet',
+  label: 'Arbitrum',
+  infuraUrl: `https://rpc.ankr.com/arbitrum`,
+  infuraUrlWS: `ws://localhost:8545`,
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
+}
+
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
-export const networksById = keyBy([main, hardhat, goerli], 'id')
-export const networksByName = keyBy([main, hardhat, goerli], 'name')
-export const networks = [main, goerli, hardhat]
+export const networksById = keyBy([main, hardhat, goerli, arbitrum], 'id')
+export const networksByName = keyBy([main, hardhat, goerli, arbitrum], 'name')
+export const networksByHexId = keyBy([main, hardhat, goerli, arbitrum], 'hexId')
+export const networks = [main, hardhat, goerli, arbitrum]
 export const dappName = 'Oasis'
 export const pollingInterval = 12000

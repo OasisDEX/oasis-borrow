@@ -2,9 +2,9 @@ import { isNull, isUndefined, memoize } from 'lodash'
 import Web3 from 'web3'
 
 export const networkNameToId = {
-  main: 1,
-  goerli: 5,
-  hardhat: 2137,
+  ethereumMainnet: 1,
+  ethereumGoerli: 5,
+  ethereumHardhat: 2137,
 } as { [key: string]: number }
 
 export interface ContractDesc {
@@ -25,7 +25,7 @@ export const contract: any = memoize(
 
 export function getNetworkName(): string {
   const name = 'network'
-  const defaultNetwork = 'main'
+  const defaultNetwork = 'ethereumMainnet'
   const matchesIfFound = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search)
   if (isNull(matchesIfFound)) {
     return defaultNetwork

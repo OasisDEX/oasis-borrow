@@ -1,9 +1,11 @@
 import { networksByName } from 'blockchain/config'
-import { useCallback, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
+
+import { useLocalStorage } from './useLocalStorage'
 
 export function getCustomNetworkParameter() {
-  const customNetworkName = new URLSearchParams(window.location.search).get('network')
-  return customNetworkName ? { network: customNetworkName } : undefined
+  const customNetwork = new URLSearchParams(window.location.search).get('network')
+  return customNetwork ? { network: customNetwork } : undefined
 }
 
 type CustomNetwork = {
@@ -12,30 +14,25 @@ type CustomNetwork = {
   hexId: string
 }
 
-export function useCustomNetworkParameter(): CustomNetwork {
-  const [customNetworkName, setCustomNetworkName] = useState<CustomNetwork>({
-    network: 'mainnet',
-    id: '1',
-    hexId: '0x1',
-  })
+export const mainnetNetworkParameter = {
+  network: networksByName['ethereumMainnet'].name,
+  id: networksByName['ethereumMainnet'].id,
+  hexId: networksByName['ethereumMainnet'].hexId,
+}
 
-  const networkChanged = useCallback(() => {
-    const customNetworkName = new URLSearchParams(window.location.search).get('network')
-    if (customNetworkName) {
-      const network = networksByName[customNetworkName]
-      if (network) {
-        return setCustomNetworkName({
-          network: customNetworkName,
-          id: network.id,
-          hexId: network.hexId,
-        })
-      }
-    }
-  }, [])
+export const CustomNetworkStorageKey = 'CustomNetwork'
 
-  useEffect(() => {
-    networkChanged()
-  }, [networkChanged])
+export function useCustomNetworkParameter(): [
+  CustomNetwork | undefined,
+  Dispatch<SetStateAction<CustomNetwork | undefined>>,
+] {
+  const [customNetwork, setCustomNetwork] = useLocalStorage(
+    CustomNetworkStorageKey,
+    mainnetNetworkParameter,
+  )
 
-  return customNetworkName
+  return [
+    customNetwork as CustomNetwork | undefined,
+    setCustomNetwork as Dispatch<SetStateAction<CustomNetwork | undefined>>,
+  ]
 }

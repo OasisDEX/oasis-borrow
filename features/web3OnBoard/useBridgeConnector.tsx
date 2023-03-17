@@ -8,7 +8,7 @@ import { BridgeConnector } from './BridgeConnector'
 export function useBridgeConnector(): () => Promise<BridgeConnector | undefined> {
   const [, connect, disconnect] = useConnectWallet()
   const [{ chains }, setChain] = useSetChain()
-  const networkFromUrl = useCustomNetworkParameter()
+  const networkParameter = useCustomNetworkParameter()
 
   const reconnect = useCallback(
     async (wallet: WalletState) => {
@@ -20,7 +20,7 @@ export function useBridgeConnector(): () => Promise<BridgeConnector | undefined>
 
   const changeNetwork = useCallback(
     async (wallet: WalletState) => {
-      const forcedChain = chains.find((chain) => chain.id === networkFromUrl.hexId)
+      const forcedChain = chains.find((chain) => chain.id === networkParameter.hexId)
       if (forcedChain && wallet.chains[0].id !== forcedChain.id) {
         await setChain({ chainId: forcedChain.id })
         const result = await reconnect(wallet)
@@ -28,7 +28,7 @@ export function useBridgeConnector(): () => Promise<BridgeConnector | undefined>
       }
       return wallet
     },
-    [networkFromUrl, chains, setChain, reconnect],
+    [networkParameter, chains, setChain, reconnect],
   )
 
   const bridgeConnector = useCallback(

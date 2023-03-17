@@ -916,6 +916,6 @@ const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
 }
 
 export function isSupportedAutomationIlk(network: string, ilk: string) {
-  const key = network in ALLOWED_AUTOMATION_ILKS ? network : 'main'
+  const key = network in ALLOWED_AUTOMATION_ILKS ? network : 'ethereumMainnet'
   return ALLOWED_AUTOMATION_ILKS[key].includes(ilk)
 }
