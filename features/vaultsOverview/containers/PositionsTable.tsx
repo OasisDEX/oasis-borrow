@@ -50,8 +50,11 @@ export function PositionsTable({ address }: { address: string }) {
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const { ownersPositionsList$ } = useAppContext()
   const { walletAddress } = useAccount()
+  const memoizedOwnersPositionList$ = useMemo(() => ownersPositionsList$(checksumAddress), [
+    checksumAddress,
+  ])
   const [ownersPositionsListData, ownersPositionsListError] = useObservable(
-    ownersPositionsList$(checksumAddress),
+    memoizedOwnersPositionList$,
   )
 
   const isOwner = address === walletAddress

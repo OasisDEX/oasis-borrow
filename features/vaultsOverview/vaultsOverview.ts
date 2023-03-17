@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { Context, NetworkIds } from 'blockchain/network'
+import {  NetworkIds } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
@@ -18,7 +18,7 @@ import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/f
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { combineLatest, iif, Observable, of } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 
 import { AavePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
@@ -35,34 +35,29 @@ export interface VaultsOverview {
 }
 
 export function createPositionsList$(
-  context$: Observable<Context>,
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
   aavePositions$: (address: string) => Observable<AavePosition[]>,
   ajnaPositions$: (address: string) => Observable<AjnaPositionDetails[]>,
   dsr$: (address: string) => Observable<Dsr>,
   address: string,
 ): Observable<PositionsList> {
-  return context$.pipe(
-    switchMap(() => {
-      return combineLatest(
-        makerPositions$(address),
-        aavePositions$(address),
-        // TODO: temporary until Ajna contracts are on mainnet
-        iif(
-          () => getNetworkId() === NetworkIds.GOERLI,
-          ajnaPositions$(address),
-          of([] as AjnaPositionDetails[]),
-        ),
-        dsr$(address),
-      ).pipe(
-        map(([makerPositions, aavePositions, ajnaPositions, dsrPosition]) => ({
-          makerPositions: makerPositions,
-          aavePositions: aavePositions,
-          ajnaPositions: ajnaPositions,
-          dsrPosition: dsrPosition,
-        })),
-      )
-    }),
+  return combineLatest(
+    makerPositions$(address),
+    aavePositions$(address),
+    // TODO: temporary until Ajna contracts are on mainnet
+    iif(
+      () => getNetworkId() === NetworkIds.GOERLI,
+      ajnaPositions$(address),
+      of([] as AjnaPositionDetails[]),
+    ),
+    dsr$(address),
+  ).pipe(
+    map(([makerPositions, aavePositions, ajnaPositions, dsrPosition]) => ({
+      makerPositions: makerPositions,
+      aavePositions: aavePositions,
+      ajnaPositions: ajnaPositions,
+      dsrPosition: dsrPosition,
+    })),
   )
 }
 

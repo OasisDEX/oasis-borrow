@@ -136,11 +136,10 @@ export function parseAaveMultiplyPositionRows(
       multiple,
       netValue,
       protocol,
-      title,
       token,
       url,
     }) => ({
-      asset: title,
+      asset: `${token}/${debtToken}`,
       fundingCost,
       icons: [token, debtToken],
       id,
@@ -153,8 +152,8 @@ export function parseAaveMultiplyPositionRows(
   )
 }
 export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTableEarnRow[] {
-  return positions.map(({ debtToken, id, liquidity, netValue, protocol, title, token, url }) => ({
-    asset: title,
+  return positions.map(({ debtToken, id, liquidity, netValue, protocol, token, url }) => ({
+    asset: `${token}/${debtToken}`,
     icons: [token, debtToken],
     id,
     liquidity,

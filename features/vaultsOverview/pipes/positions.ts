@@ -224,11 +224,13 @@ function buildAaveViewModel(
 
         const isOwner = context.status === 'connected' && context.account === walletAddress
 
-        const title = `${collateralToken}/${debtToken}`
+        const title = `${collateralToken}/${debtToken} Aave ${
+          protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
+        }`
 
         return {
           token: collateralToken,
-          debtToken: debtToken,
+          debtToken,
           title: title,
           url: `/aave/${mapAaveProtocol(protocol)}/${positionId}`,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,

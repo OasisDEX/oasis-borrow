@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -244,7 +243,7 @@ export function getAaveMultiplyPositions({
       stopLossData,
     }) => {
       return {
-        icon: getToken(token).iconCircle,
+        icon: token,
         asset: title,
         netUSDValue: netValue.toNumber(),
         currentMultiple: multiple.toNumber(),
@@ -267,7 +266,7 @@ export function getAaveEarnPositions({
   return getAavePositionOfType(positions).earn.map(
     ({ id, liquidity, netValue, title, token, url }) => {
       return {
-        icon: getToken(token).iconCircle,
+        icon: token,
         asset: title,
         netUSDValue: netValue.toNumber(),
         pnl: 'Soon',
@@ -292,7 +291,7 @@ export function getDsrPosition({
 
   const dsrPosition = [
     {
-      icon: getToken('DAI').iconCircle,
+      icon: 'DAI',
       asset: 'DAI Savings Rate',
       netUSDValue: netValue.toNumber(),
       pnl: 'Soon',
