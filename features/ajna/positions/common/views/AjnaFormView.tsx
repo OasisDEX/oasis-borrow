@@ -45,7 +45,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
   const {
     form: { dispatch, state },
     position: { isSimulationLoading, resolvedId },
-    validation: { isFormValid },
+    validation: { isFormValid, hasErrors },
   } = useAjnaProductContext(product)
 
   const txHandler = useAjnaTxHandler()
@@ -67,6 +67,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     editingStep,
     isAllowanceLoading: flowState.isLoading,
     isFormValid,
+    hasErrors,
     isOwner,
     isSimulationLoading,
     isTxError,

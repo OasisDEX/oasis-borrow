@@ -154,6 +154,7 @@ export function getAjnaValidation({
   position,
 }: GetAjnaBorrowValidationsParams): {
   isFormValid: boolean
+  hasErrors: boolean
   errors: ValidationMessagesInput
   warnings: ValidationMessagesInput
 } {
@@ -191,8 +192,8 @@ export function getAjnaValidation({
   )
 
   return {
-    isFormValid:
-      errors.messages.length === 0 && isFormValid({ currentStep, product, state, position }),
+    isFormValid: isFormValid({ currentStep, product, state, position }),
+    hasErrors: errors.messages.length > 0,
     errors,
     warnings,
   }
