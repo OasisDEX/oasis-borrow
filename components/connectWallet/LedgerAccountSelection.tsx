@@ -62,14 +62,16 @@ export function LedgerAccountSelection({
         })
         .catch((e) => mountedRef.current && setError(e))
     }
-  }, [page, web3Context])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, web3Context.status])
 
   useEffect(() => {
     return () => {
       cancel()
       mountedRef.current = false
     }
-  }, [cancel])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (error || web3Context.status === 'error') {
     return (
