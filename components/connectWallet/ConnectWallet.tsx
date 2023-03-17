@@ -278,12 +278,7 @@ function connect(
     ) {
       try {
         const connector = await getConnector(connectorKind, chainId, options)
-        web3Context
-          .connect(connector, connectorKind)
-          .then(() => {})
-          .catch((e) => {
-            console.error('Error while connecting', e)
-          })
+        await web3Context.connect(connector, connectorKind)
       } catch (e) {
         console.log(e)
       }
@@ -626,12 +621,7 @@ function autoConnect(
           const connector = await getConnector(connectionKind, defaultChainId, {
             email: magicLinkEmail,
           })
-          web3Context
-            .connect(connector, connectionKind)
-            .then(() => {})
-            .catch((e) => {
-              console.error('Error while connecting', e)
-            })
+          await web3Context.connect(connector, connectionKind)
         }
       } else if (web3Context.status === 'notConnected') {
         fallback(web3Context)
@@ -674,12 +664,8 @@ export function disconnect(web3Context: Web3Context | undefined) {
 }
 
 async function connectReadonly(web3Context: Web3ContextNotConnected) {
-  web3Context
-    .connect(await getConnector('network', getNetworkId()), 'network')
-    .then(() => {})
-    .catch((e) => {
-      console.error('Error while connecting', e)
-    })
+  const readonlyConnector = await getConnector('network', getNetworkId())
+  await web3Context.connect(readonlyConnector, 'network')
 }
 
 export function WithConnection({ children }: WithChildren) {

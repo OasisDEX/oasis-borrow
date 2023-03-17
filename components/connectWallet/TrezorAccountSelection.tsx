@@ -45,7 +45,8 @@ export function TrezorAccountSelection({ web3Context, cancel }: TrezorAccountSel
       cancel()
       mountedRef.current = false
     }
-  }, [cancel])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (error) {
     return (

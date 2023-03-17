@@ -3,7 +3,7 @@ import { AccountWithBalances, Web3Context } from 'features/web3Context'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
 type LedgerAccountSelectionProps = {
@@ -26,13 +26,16 @@ export function LedgerAccountSelection({
   const [error, setError] = useState()
   const mountedRef = useRef(true)
 
-  function connectLedger(path: string) {
-    if (web3Context.status === 'notConnected' || web3Context.status === 'connectedReadonly') {
-      setDerivPath(path)
-      return web3Context.connectLedger(chainId, path)
-    }
-    return null
-  }
+  const connectLedger = useCallback(
+    (path: string) => {
+      if (web3Context.status === 'notConnected' || web3Context.status === 'connectedReadonly') {
+        setDerivPath(path)
+        return web3Context.connectLedger(chainId, path)
+      }
+      return null
+    },
+    [chainId, web3Context],
+  )
 
   const accountsLoaded = !!(accounts && accounts.length)
   const liveLoading =
@@ -59,14 +62,16 @@ export function LedgerAccountSelection({
         })
         .catch((e) => mountedRef.current && setError(e))
     }
-  }, [page, web3Context])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, web3Context.status])
 
   useEffect(() => {
     return () => {
       cancel()
       mountedRef.current = false
     }
-  }, [cancel])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (error || web3Context.status === 'error') {
     return (
