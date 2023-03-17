@@ -203,7 +203,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
             </Web3ReactProvider>
           </MDXProvider>
         </CacheProvider>
-        //{' '}
       </ThemeProvider>
     </>
   )
