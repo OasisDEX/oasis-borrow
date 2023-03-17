@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { NetworkIds } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
@@ -7,14 +8,16 @@ import {
   PositionVM,
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { getNetworkId } from 'features/web3Context'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, iif, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { AavePosition } from './pipes/positions'
@@ -23,6 +26,7 @@ import { MakerPositionDetails } from './pipes/positionsList'
 export interface PositionsList {
   makerPositions: MakerPositionDetails[]
   aavePositions: AavePosition[]
+  ajnaPositions: AjnaPositionDetails[]
   dsrPosition: Dsr
 }
 
@@ -33,13 +37,25 @@ export interface VaultsOverview {
 export function createPositionsList$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
   aavePositions$: (address: string) => Observable<AavePosition[]>,
+  ajnaPositions$: (address: string) => Observable<AjnaPositionDetails[]>,
   dsr$: (address: string) => Observable<Dsr>,
   address: string,
 ): Observable<PositionsList> {
-  return combineLatest(makerPositions$(address), aavePositions$(address), dsr$(address)).pipe(
-    map(([makerPositions, aavePositions, dsrPosition]) => ({
+  return combineLatest(
+    makerPositions$(address),
+    aavePositions$(address),
+    // TODO: temporary until Ajna contracts are on mainnet
+    iif(
+      () => getNetworkId() === NetworkIds.GOERLI,
+      ajnaPositions$(address),
+      of([] as AjnaPositionDetails[]),
+    ),
+    dsr$(address),
+  ).pipe(
+    map(([makerPositions, aavePositions, ajnaPositions, dsrPosition]) => ({
       makerPositions: makerPositions,
       aavePositions: aavePositions,
+      ajnaPositions: ajnaPositions,
       dsrPosition: dsrPosition,
     })),
   )

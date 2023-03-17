@@ -4,7 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
-import { AjnaProduct } from 'features/ajna/common/types'
+import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import {
   AjnaBorrowFormState,
   useAjnaBorrowFormReducto,
@@ -62,11 +62,9 @@ interface AjnaProductContextPosition<P> {
   currentPosition: AjnaPositionSet<P>
   isSimulationLoading?: boolean
   resolvedId?: string
-  setCachedPosition: (positionSet: AjnaPositionSet<AjnaPosition | AjnaEarnPosition>) => void
+  setCachedPosition: (positionSet: AjnaPositionSet<AjnaGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<
-    SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarnPosition> | undefined>
-  >
+  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
 }
 
 interface AjnaProductContext<P, F> {

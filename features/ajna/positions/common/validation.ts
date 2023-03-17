@@ -1,8 +1,13 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
 import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
-import { AjnaFormState, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import {
+  AjnaFormState,
+  AjnaGenericPosition,
+  AjnaProduct,
+  AjnaSidebarStep,
+} from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
@@ -23,7 +28,7 @@ interface GetAjnaBorrowValidationsParams {
   simulationErrors?: AjnaValidationItem[]
   simulationWarnings?: AjnaValidationItem[]
   state: AjnaFormState
-  position: AjnaPosition | AjnaEarnPosition
+  position: AjnaGenericPosition
   txError?: TxError
 }
 
@@ -69,7 +74,7 @@ function isFormValid({
   currentStep: GetAjnaBorrowValidationsParams['currentStep']
   product: GetAjnaBorrowValidationsParams['product']
   state: GetAjnaBorrowValidationsParams['state']
-  position: AjnaPosition | AjnaEarnPosition
+  position: AjnaGenericPosition
 }): boolean {
   switch (product) {
     case 'borrow': {

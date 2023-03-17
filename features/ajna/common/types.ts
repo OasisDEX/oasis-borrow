@@ -1,8 +1,10 @@
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 
+export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
 export type AjnaFormState = AjnaBorrowFormState | AjnaEarnFormState

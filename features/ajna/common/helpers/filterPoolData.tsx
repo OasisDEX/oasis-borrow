@@ -1,5 +1,5 @@
 import { AjnaPoolData, AjnaProduct } from 'features/ajna/common/types'
-import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellContent'
+import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellComponents'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 

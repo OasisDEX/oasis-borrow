@@ -1,6 +1,11 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { AjnaBorrowUpdateState, AjnaEarnUpdateState, AjnaProduct } from 'features/ajna/common/types'
+import {
+  AjnaBorrowUpdateState,
+  AjnaEarnUpdateState,
+  AjnaGenericPosition,
+  AjnaProduct,
+} from 'features/ajna/common/types'
 import { AjnaBorrowFormAction } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaEarnFormAction } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { Dispatch } from 'react'
@@ -64,7 +69,7 @@ export function getAjnaNotifications({
   updateState,
   product,
 }: {
-  position: AjnaPosition | AjnaEarnPosition
+  position: AjnaGenericPosition
   collateralToken: string
   quoteToken: string
   dispatch: Dispatch<AjnaBorrowFormAction> | Dispatch<AjnaEarnFormAction>

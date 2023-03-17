@@ -134,7 +134,10 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
-import { getAjnaPosition$ } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import {
+  getAjnaPosition$,
+  getAjnaPositionsWithDetails$,
+} from 'features/ajna/positions/common/observables/getAjnaPosition'
 import {
   DpmPositionData,
   getDpmPositionData$,
@@ -531,6 +534,7 @@ function initializeUIChanges() {
 }
 
 export function setupAppContext() {
+  const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
@@ -594,6 +598,10 @@ export function setupAppContext() {
     curry(createTokenPriceInUSD$)(every10Seconds$, tokenPrices$),
     (tokens: string[]) => tokens.sort().join(','),
   )
+  const tokenPriceUSDStatic$ = memoize(
+    curry(createTokenPriceInUSD$)(once$, tokenPrices$),
+    (tokens: string[]) => tokens.sort().join(','),
+  )
 
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
 
@@ -603,8 +611,6 @@ export function setupAppContext() {
   ): Observable<S> {
     return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
   }
-
-  const once$ = of(undefined).pipe(shareReplay(1))
 
   // protocols
   const aaveV2 = getAaveV2Services({
@@ -1030,7 +1036,7 @@ export function setupAppContext() {
         userDpmProxies$,
       },
       {
-        tickerPrices$: tokenPriceUSD$,
+        tickerPrices$: tokenPriceUSDStatic$,
         context$,
         automationTriggersData$,
         readPositionCreatedEvents$,
@@ -1339,8 +1345,18 @@ export function setupAppContext() {
     ]),
   )
 
+  const ajnaPositions$ = memoize(
+    curry(getAjnaPositionsWithDetails$)(
+      context$,
+      userDpmProxies$,
+      readPositionCreatedEvents$,
+      tokenPriceUSDStatic$,
+    ),
+    (walletAddress: string) => walletAddress,
+  )
+
   const ownersPositionsList$ = memoize(
-    curry(createPositionsList$)(positionsList$, aavePositions$, dsr$),
+    curry(createPositionsList$)(positionsList$, aavePositions$, ajnaPositions$, dsr$),
   )
 
   const followedList$ = memoize(
