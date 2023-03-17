@@ -50,7 +50,7 @@
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/oasis-actions": "0.2.15",
-    "@oasisdex/oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-16",
+    "@oasisdex/oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-17",
     "@oasisdex/transactions": "0.1.3-alpha.0",
     "@oasisdex/utils": "^0.0.8",
     "@prisma/client": "^3.14.0",
