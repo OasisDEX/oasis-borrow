@@ -11,6 +11,7 @@ import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
+import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren, useEffect } from 'react'
 import { Grid } from 'theme-ui'
@@ -103,7 +104,9 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
   })
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(`ajna.${product}.common.form.title.${currentStep}`),
+    title: t(`ajna.position-page.common.form.title.${currentStep}`, {
+      product: upperFirst(product),
+    }),
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {

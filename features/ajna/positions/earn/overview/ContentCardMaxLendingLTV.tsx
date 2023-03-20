@@ -30,7 +30,7 @@ export function ContentCardMaxLendingLTV({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.earn.manage.overview.max-lending-ltv'),
+    title: t('ajna.position-page.earn.manage.overview.max-lending-ltv'),
     value: formatted.maxLendingPercentage,
     change: {
       isLoading,

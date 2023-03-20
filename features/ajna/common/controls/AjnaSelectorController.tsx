@@ -132,7 +132,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
             <AjnaHeader
               title={
                 <Box ref={ref} sx={{ position: 'relative', mb: 3, zIndex: 2 }}>
-                  {t(`ajna.${product}.open.select.heading.pre`)}
+                  {t(`ajna.product-page.${product}.heading.pre`)}
                   <HeaderSelector
                     defaultOption={defaultOption}
                     gradient={['#f154db', '#974eea']}
@@ -140,10 +140,10 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
                     parentRef={ref}
                     onChange={setSelected}
                   />
-                  {t(`ajna.${product}.open.select.heading.post`)}
+                  {t(`ajna.product-page.${product}.heading.post`)}
                 </Box>
               }
-              intro={t(`ajna.${product}.open.select.intro`, { token: selected.value })}
+              intro={t(`ajna.product-page.${product}.intro`, { token: selected.value })}
             />
             <DiscoverTableContainer tableOnly>
               {rows.length > 0 && <DiscoverResponsiveTable rows={rows} skip={['icon']} />}

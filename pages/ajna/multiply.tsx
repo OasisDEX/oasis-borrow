@@ -16,8 +16,8 @@ function AjnaMultiplySelectorPage() {
       <AjnaWrapper>
         <AnimatedWrapper>
           <AjnaHeader
-            title={t('ajna.multiply.coming-soon.title')}
-            intro={t('ajna.multiply.coming-soon.intro')}
+            title={t('ajna.product-page.multiply.coming-soon.title')}
+            intro={t('ajna.product-page.multiply.coming-soon.intro')}
           />
         </AnimatedWrapper>
       </AjnaWrapper>
