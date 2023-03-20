@@ -51,9 +51,12 @@ export function ContentCardLiquidationPrice({
   }
 
   if (!liquidationPrice.isZero()) {
-    contentCardSettings.footnote = t('ajna.position-page.borrow.common.overview.below-current-price', {
-      belowCurrentPrice: formatted.belowCurrentPrice,
-    })
+    contentCardSettings.footnote = t(
+      'ajna.position-page.borrow.common.overview.below-current-price',
+      {
+        belowCurrentPrice: formatted.belowCurrentPrice,
+      },
+    )
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
