@@ -30,6 +30,7 @@ export function getOpenMultiplyAaveParametersMachine(
         throw e
       }
     },
+    'open',
   )
 }
 
@@ -41,6 +42,7 @@ export function getCloseAaveParametersMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: CloseAaveParameters) => getCloseAaveParameters(parameters),
+    'close',
   )
 }
 
@@ -52,6 +54,7 @@ export function getAdjustAaveParametersMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: AdjustAaveParameters) => getAdjustAaveParameters(parameters),
+    'adjust',
   )
 }
 
@@ -63,6 +66,7 @@ export function getDepositBorrowAaveMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: ManageAaveParameters) => getManageAaveParameters(parameters),
+    'depositBorrow',
   )
 }
 
@@ -74,5 +78,6 @@ export function getOpenDepositBorrowAaveMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: OpenAaveDepositBorrowParameters) => getOpenDepositBorrowParameters(parameters),
+    'openDepositBorrow',
   )
 }
