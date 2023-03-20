@@ -43,11 +43,11 @@ export function ContentFooterItemsBorrow({
   return (
     <>
       <DetailsSectionFooterItem
-        title={t('ajna.borrow.common.footer.annual-net-borrow-cost')}
+        title={t('ajna.position-page.borrow.common.footer.annual-net-borrow-cost')}
         value={formatted.cost}
       />
       <DetailsSectionFooterItem
-        title={t('ajna.borrow.common.footer.available-to-borrow')}
+        title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
         value={`${formatted.availableToBorrow} ${quoteToken}`}
         change={{
           isLoading,
@@ -58,7 +58,7 @@ export function ContentFooterItemsBorrow({
         }}
       />
       <DetailsSectionFooterItem
-        title={t('ajna.borrow.common.footer.available-to-withdraw')}
+        title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
         value={`${formatted.availableToWithdraw} ${collateralToken}`}
         change={{
           isLoading,

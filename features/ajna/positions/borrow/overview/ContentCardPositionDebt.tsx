@@ -35,7 +35,7 @@ export function ContentCardPositionDebt({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.borrow.common.overview.position-debt'),
+    title: t('ajna.position-page.borrow.common.overview.position-debt'),
     value: formatted.positionDebt,
     unit: quoteToken,
     change: {

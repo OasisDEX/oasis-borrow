@@ -40,15 +40,15 @@ export function ContentFooterItemsEarnManage({
       />
       {now > earlyWithdrawalPeriod ? (
         <DetailsSectionFooterItem
-          title={t('ajna.earn.manage.overview.early-withdrawal-period')}
-          value={t('ajna.earn.manage.overview.early-withdrawal-ended', {
+          title={t('ajna.position-page.earn.manage.overview.early-withdrawal-period')}
+          value={t('ajna.position-page.earn.manage.overview.early-withdrawal-ended', {
             earlyWithdrawalPeriod: formatted.earlyWithdrawalPeriod,
           })}
         />
       ) : (
         <DetailsSectionFooterItem
-          title={t('ajna.earn.manage.overview.early-withdrawal-penalty')}
-          value={t('ajna.earn.manage.overview.early-withdrawal-ends-in', {
+          title={t('ajna.position-page.earn.manage.overview.early-withdrawal-penalty')}
+          value={t('ajna.position-page.earn.manage.overview.early-withdrawal-ends-in', {
             earlyWithdrawalPenalty: formatted.earlyWithdrawalPenalty,
             earlyWithdrawalPeriod: formatted.earlyWithdrawalPeriod,
           })}

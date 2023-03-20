@@ -29,7 +29,7 @@ export function ContentCardLoanToValue({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.borrow.common.overview.loan-to-value'),
+    title: t('ajna.position-page.borrow.common.overview.loan-to-value'),
     value: `${formatted.loanToValue}`,
     change: {
       isLoading,

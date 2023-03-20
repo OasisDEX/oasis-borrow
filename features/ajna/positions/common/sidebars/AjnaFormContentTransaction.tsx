@@ -1,5 +1,6 @@
-import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { MessageCard } from 'components/MessageCard'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { ReactElement } from 'react'
 import { Text } from 'theme-ui'
@@ -23,24 +24,20 @@ export function AjnaFormContentTransaction({
       {(!isTxStarted || isTxWaitingForApproval || isTxError) && (
         <>
           <Text as="p" variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
-            {t(`ajna.${product}.common.form.transaction.confirm`, { collateralToken, quoteToken })}
+            {t(`ajna.position-page.common.form.transaction.confirm`, {
+              collateralToken,
+              product: upperFirst(product),
+              quoteToken,
+            })}
           </Text>
           <OrderInformation />
         </>
       )}
-      {isTxInProgress && (
-        <>
-          <OpenVaultAnimation />
-          <Text as="p" variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque molestie libero
-            nec pharetra scelerisque. In porta nisl sed leo dignissim feugiat vel et ligula.
-          </Text>
-        </>
-      )}
+      {isTxInProgress && <OpenVaultAnimation />}
       {isTxSuccess && (
         <>
           <OrderInformation cached />
-          <VaultChangesWithADelayCard />
+          <MessageCard messages={[t('heads-up')]} type="warning" withBullet={false} />
         </>
       )}
     </>

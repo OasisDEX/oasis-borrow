@@ -36,7 +36,7 @@ export function ContentCardCollateralLocked({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.borrow.common.overview.collateral-locked'),
+    title: t('ajna.position-page.borrow.common.overview.collateral-locked'),
     value: formatted.collateralLocked,
     unit: collateralToken,
     change: {

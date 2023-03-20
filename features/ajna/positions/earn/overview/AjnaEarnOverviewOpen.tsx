@@ -28,16 +28,28 @@ export function AjnaEarnOverviewOpen() {
           {/* TODO: use data from useAjnaEarnContext once available */}
           <DetailsSectionContentTable
             headers={[
-              t('ajna.earn.open.simulation.header1'),
-              t('ajna.earn.open.simulation.header2'),
-              t('ajna.earn.open.simulation.header3'),
+              t('ajna.position-page.earn.open.simulation.duration'),
+              t('ajna.position-page.earn.open.simulation.earnings-after-fees'),
+              t('ajna.position-page.earn.open.simulation.net-value'),
             ]}
             rows={[
-              [t('ajna.earn.open.simulation.rowlabel1'), '0.25 ETH', '100.25 ETH'],
-              [t('ajna.earn.open.simulation.rowlabel2'), '1.52 ETH', '101.52 ETH'],
-              [t('ajna.earn.open.simulation.rowlabel3'), '14.94 ETH', '114.94 ETH'],
+              [
+                t('ajna.position-page.earn.open.simulation.earnings-per-day'),
+                '0.25 ETH',
+                '100.25 ETH',
+              ],
+              [
+                t('ajna.position-page.earn.open.simulation.earnings-per-30d'),
+                '1.52 ETH',
+                '101.52 ETH',
+              ],
+              [
+                t('ajna.position-page.earn.open.simulation.earnings-per-1y'),
+                '14.94 ETH',
+                '114.94 ETH',
+              ],
             ]}
-            footnote={<>{t('ajna.earn.open.simulation.footnote1')}</>}
+            footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
           />
         </>
       }
