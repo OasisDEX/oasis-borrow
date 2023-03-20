@@ -2460,7 +2460,11 @@
             ]
           },
           "transaction": {
-            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position."
+            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position.",
+            "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} Ajna Position",
+            "progress-manage": "Updating your {{collateralToken}}/{{quoteToken}} Ajna Position",
+            "success-open": "Your your {{collateralToken}}/{{quoteToken}} Ajna Position was created",
+            "success-manage": "Your your {{collateralToken}}/{{quoteToken}} Ajna Position was updated"
           }
         }
       },

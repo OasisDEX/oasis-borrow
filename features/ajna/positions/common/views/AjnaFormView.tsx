@@ -112,7 +112,12 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     etherscan: context?.etherscan.url,
     isTxInProgress,
     isTxSuccess,
-    text: t(''),
+    text: t(
+      isTxSuccess
+        ? `ajna.position-page.common.form.transaction.success-${flow}`
+        : `ajna.position-page.common.form.transaction.progress-${flow}`,
+      { collateralToken, quoteToken },
+    ),
     txDetails,
   })
 
