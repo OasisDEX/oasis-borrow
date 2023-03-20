@@ -2512,7 +2512,7 @@
             "early-withdrawal-ended": "Ended {{earlyWithdrawalPeriod}}",
             "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
             "early-withdrawal-period": "Early withdrawal period",
-            "max-lending-ltv": "Max lending LTV ",
+            "max-lending-ltv": "Max lending LTV",
             "net-pnl": "Net PnL: {{netPnL}}",
             "position-lending-price": "Position lending price",
             "tokens-deposited": "Tokens deposited"
