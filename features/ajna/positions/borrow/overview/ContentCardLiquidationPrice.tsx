@@ -36,7 +36,7 @@ export function ContentCardLiquidationPrice({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.borrow.common.overview.liquidation-price'),
+    title: t('ajna.position-page.borrow.common.overview.liquidation-price'),
     value: `${formatted.liquidationPrice}`,
     unit: `${collateralToken}/${quoteToken}`,
     change: {
@@ -51,7 +51,7 @@ export function ContentCardLiquidationPrice({
   }
 
   if (!liquidationPrice.isZero()) {
-    contentCardSettings.footnote = t('ajna.borrow.common.overview.below-current-price', {
+    contentCardSettings.footnote = t('ajna.position-page.borrow.common.overview.below-current-price', {
       belowCurrentPrice: formatted.belowCurrentPrice,
     })
   }

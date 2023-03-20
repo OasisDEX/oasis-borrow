@@ -22,7 +22,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { startCase } from 'lodash'
+import {  upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -154,7 +154,7 @@ export function AjnaProductController({
                         title="seo.title-product-w-tokens"
                         titleParams={{
                           product: t(`seo.ajnaProductPage.title`, {
-                            product: startCase(dpmPosition.product),
+                            product: upperFirst(dpmPosition.product),
                           }),
                           protocol: 'Ajna',
                           token1: dpmPosition.collateralToken,

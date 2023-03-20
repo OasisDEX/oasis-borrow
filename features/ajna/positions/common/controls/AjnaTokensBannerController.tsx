@@ -7,15 +7,15 @@ export function AjnaTokensBannerController() {
 
   return (
     <Banner
-      title={t('ajna.borrow.common.banners.tokens.title')}
-      description={t('ajna.borrow.common.banners.tokens.description')}
+      title={t('ajna.position-page.common.banners.tokens.title')}
+      description={t('ajna.position-page.common.banners.tokens.description')}
       image={{
         src: '/static/img/ajna-tokens-banner.svg',
         backgroundColor: '#FFEBF6',
         spacing: '12px',
       }}
       button={{
-        text: t('ajna.borrow.common.banners.tokens.button'),
+        text: t('ajna.position-page.common.banners.tokens.button'),
         action: () => {
           alert('Take me wherever')
         },

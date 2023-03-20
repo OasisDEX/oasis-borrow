@@ -380,6 +380,7 @@
   "here": "here",
   "from:": "From",
   "full": "Full",
+  "heads-up": "Heads up! It can take up to 30 seconds for your Position to update.",
   "history": {
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
@@ -2404,155 +2405,127 @@
       "collaterals-you-can-borrow": "Collaterals you can borrow",
       "annual-variable-rates": "Annual variable rates"
     },
-    "risk": {
-      "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
-      "bullet-points": [
-        "Its a new DeFi protocol.",
-        "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
-      ]
-    },
     "history": {
       "title": "History is coming soon",
       "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
     },
-    "borrow": {
+    "product-page": {
+      "borrow": {
+        "heading": {
+          "pre": "Borrow against your",
+          "post": "exposure on Ajna"
+        },
+        "intro": "Select the crypto asset you want to borrow against your {{token}}"
+      },
+      "earn": {
+        "heading": {
+          "pre": "Lend",
+          "post": "to Earn on Ajna"
+        },
+        "intro": "Select the crypto asset you want to earn for lending your {{token}}"
+      },
+      "multiply": {
+        "coming-soon": {
+          "title": "Ajna Multiply coming soon",
+          "intro": "We're busy building Multiply for Ajna and will be releasing it shortly. For now you can Borrow and Earn on Ajna."
+        }
+      }
+    },
+    "position-page": {
       "common": {
         "headline": {
+          "open": "{{collateralToken}}/{{quoteToken}} {{product}} Position",
+          "manage": "{{collateralToken}}/{{quoteToken}} {{product}} #{{id}}",
           "current-market-price": "Current Market Price"
-        },
-        "overview": {
-          "liquidation-price": "Liquidation Price",
-          "below-current-price": "{{belowCurrentPrice}} below current price",
-          "loan-to-value": "Loan to value",
-          "collateral-locked": "Collateral locked",
-          "position-debt": "Position debt"
-        },
-        "footer": {
-          "annual-net-borrow-cost": "Annual net borrow cost",
-          "available-to-borrow": "Available to borrow",
-          "available-to-withdraw": "Available to withdraw"
         },
         "banners": {
           "tokens": {
             "title": "This positions earns AJNA tokens",
-            "description": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You wallet will automatically get AJNA token rewards.",
-            "button": "Read about AJNA token rewards"
+            "description": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards.",
+            "button": "Claim your AJNA tokens"
           }
         },
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
-            "setup": "Configure your Ajna Position",
-            "manage": "Manage your Ajna Position",
-            "transaction": "Confirm your Ajna Position"
+            "setup": "Configure your Ajna {{product}} Position",
+            "manage": "Manage your Ajna {{product}} Position",
+            "transaction": "Confirm your Ajna {{product}} Position"
+          },
+          "risk": {
+            "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
+            "bullet-points": [
+              "Its a new DeFi protocol.",
+              "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
+            ]
           },
           "transaction": {
-            "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
+            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position."
           }
         }
       },
-      "open": {
-        "select": {
-          "heading": {
-            "pre": "Borrow against your",
-            "post": "exposure on Ajna"
+      "borrow": {
+        "common": {
+          "overview": {
+            "liquidation-price": "Liquidation Price",
+            "below-current-price": "{{belowCurrentPrice}} below current price",
+            "loan-to-value": "Loan to value",
+            "collateral-locked": "Collateral locked",
+            "position-debt": "Position debt"
           },
-          "intro": "Select the crypto asset you want to borrow against your {{token}}"
-        },
-        "headline": {
-          "header": "Borrow {{quoteToken}} against {{collateralToken}}"
-        }
-      },
-      "manage": {
-        "headline": {
-          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
-        }
-      }
-    },
-    "earn": {
-      "common": {
-        "headline": {
-          "current-yield": "Current yield",
-          "90-day-avg": "90 Day Avg",
-          "current-market-price": "Current Market Price"
-        },
-        "ajna-faq": "Ajna FAQ",
-        "form": {
-          "title": {
-            "risk": "Things to know before opening an Ajna position",
-            "setup": "Configure your Ajna Position",
-            "manage": "Manage your Ajna Position",
-            "transaction": "Confirm your Ajna Position"
-          },
-          "transaction": {
-            "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
+          "footer": {
+            "annual-net-borrow-cost": "Annual net borrow cost",
+            "available-to-borrow": "Available to borrow",
+            "available-to-withdraw": "Available to withdraw"
           }
         }
       },
-      "open": {
-        "select": {
-          "heading": {
-            "pre": "Lend",
-            "post": "to Earn on Ajna"
+      "earn": {
+        "common": {
+          "headline": {
+            "current-yield": "Current yield",
+            "90-day-avg": "90 Day Avg",
+            "current-market-price": "Current Market Price"
+          }
+        },
+        "open": {
+          "simulation": {
+            "header1": "Duration",
+            "header2": "Earnings after fees",
+            "header3": "Net value",
+            "rowlabel1": "Projected earnings per day",
+            "rowlabel2": "Projected earnings per 30d",
+            "rowlabel3": "Projected earnings for 1 year",
+            "footnote1": "*Past performance is not indicative of future results."
+          }
+        },
+        "manage": {
+          "overview": {
+            "above-market-price": "{{amount}}% above market price",
+            "below-market-price": "{{amount}}% below market price",
+            "current-earnings": "Current earnings",
+            "early-withdrawal-penalty": "Early withdrawal penalty",
+            "early-withdrawal-ended": "Ended {{earlyWithdrawalPeriod}}",
+            "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
+            "early-withdrawal-period": "Early withdrawal period",
+            "max-lending-ltv": "Max lending LTV ",
+            "net-pnl": "Net PnL: {{netPnL}}",
+            "position-lending-price": "Position lending price",
+            "tokens-deposited": "Tokens deposited"
           },
-          "intro": "Select the crypto asset you want to earn for lending your {{token}}"
-        },
-        "headline": {
-          "header": "Lend {{quoteToken}} against {{collateralToken}}"
-        },
-        "form": {
-          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
-          "max-ltv-to-lend-at": "Max LTV to lend at",
-          "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
-        },
-        "simulation": {
-          "header1": "Duration",
-          "header2": "Earnings after fees",
-          "header3": "Net value",
-          "rowlabel1": "Projected earnings per day",
-          "rowlabel2": "Projected earnings per 30d",
-          "rowlabel3": "Projected earnings for 1 year",
-          "footnote1": "*Past performance is not indicative of future results."
-        }
-      },
-      "manage": {
-        "headline": {
-          "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
-        },
-        "overview": {
-          "above-market-price": "{{amount}}% above market price",
-          "below-market-price": "{{amount}}% below market price",
-          "current-earnings": "Current earnings",
-          "early-withdrawal-penalty": "Early withdrawal penalty",
-          "early-withdrawal-ended": "Ended {{earlyWithdrawalPeriod}}",
-          "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
-          "early-withdrawal-period": "Early withdrawal period",
-          "max-lending-ltv": "Max lending LTV ",
-          "net-pnl": "Net PnL: {{netPnL}}",
-          "position-lending-price": "Position lending price",
-          "tokens-deposited": "Tokens deposited"
-        },
-        "form": {
-          "adjust-lending-price-bucket": "Adjust lending price bucket"
-        },
-        "notifications": {
-          "deposit-is-not-withdrawable": {
-            "title": "Warning your selected price is too close to market price",
-            "message": "In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}",
-            "label": "Adjust lending price"
-          },
-          "earning-no-apy": {
-            "title": "Warning your position is not earning any yield",
-            "message": "Your lending position is below the minimum yield bearing price",
-            "label": "Adjust lending price"
+          "notifications": {
+            "deposit-is-not-withdrawable": {
+              "title": "Warning your selected price is too close to market price",
+              "message": "In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}",
+              "label": "Adjust lending price"
+            },
+            "earning-no-apy": {
+              "title": "Warning your position is not earning any yield",
+              "message": "Your lending position is below the minimum yield bearing price",
+              "label": "Adjust lending price"
+            }
           }
         }
-      }
-    },
-    "multiply": {
-      "coming-soon": {
-        "title": "Ajna Multiply coming soon",
-        "intro": "We’re busy building Multiply for Ajna and will be releasing it shortly. For now you can Borrow and Earn on Ajna."
       }
     },
     "validations": {
