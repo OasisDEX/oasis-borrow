@@ -108,10 +108,11 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     walletAddress,
   })
   const status = getAjnaSidebarTransactionStatus({
+    etherscan: context?.etherscan.url,
     isTxInProgress,
     isTxSuccess,
+    text: t(''),
     txDetails,
-    etherscan: context?.etherscan.url,
   })
 
   const sidebarSectionProps: SidebarSectionProps = {

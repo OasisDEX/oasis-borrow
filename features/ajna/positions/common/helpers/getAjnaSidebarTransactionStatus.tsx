@@ -3,20 +3,22 @@ import { TxDetails } from 'helpers/handleTransaction'
 
 export function getAjnaSidebarTransactionStatus({
   etherscan = '',
-  isTxSuccess,
   isTxInProgress,
+  isTxSuccess,
+  text,
   txDetails,
 }: {
   etherscan?: string
-  isTxSuccess: boolean
   isTxInProgress: boolean
+  isTxSuccess: boolean
+  text: string
   txDetails?: TxDetails
 }): SidebarSectionStatusProps[] | undefined {
   return txDetails && (isTxInProgress || isTxSuccess)
     ? [
         {
           etherscan,
-          text: 'text',
+          text,
           txHash: txDetails.txHash,
           type: isTxInProgress ? 'progress' : 'success',
         },
