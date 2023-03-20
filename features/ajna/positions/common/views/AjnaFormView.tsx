@@ -41,7 +41,6 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
       isTxStarted,
       isTxInProgress,
       setTxDetails,
-      txDetails,
     },
   } = useAjnaGeneralContext()
   const {
