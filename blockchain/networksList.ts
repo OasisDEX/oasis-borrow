@@ -4,6 +4,8 @@ import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainne
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
+export type NetworkNameType = keyof typeof networksList
+
 // This is used as a list (filtered by isTestnet) for the network switcher
 export const networksList = {
   ethereumMainnet: {

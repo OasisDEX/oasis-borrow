@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { networksByName } from 'blockchain/config'
-import { networksList } from 'blockchain/networksList'
+import { NetworkNameType, networksList } from 'blockchain/networksList'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useNetworkName } from 'helpers/useNetworkName'
@@ -14,14 +14,18 @@ export function NavigationPickNetwork() {
   const [{ chains: usableChains, settingChain }, setChain] = useSetChain()
   const currentNetworkName = useNetworkName()
   const [, setCustomNetwork] = useCustomNetworkParameter()
-  const changeChain = (networkName: keyof typeof networksList) => () => {
+  const changeChain = (networkName: NetworkNameType) => () => {
     const network = networksByName[networkName]
-    setChain({ chainId: network.hexId }).catch(console.error)
-    setCustomNetwork({
-      network: network.name,
-      id: network.id,
-      hexId: network.hexId,
-    })
+    setChain({ chainId: network.hexId })
+      .then((setChainSuccess) => {
+        setChainSuccess &&
+          setCustomNetwork({
+            network: network.name,
+            id: network.id,
+            hexId: network.hexId,
+          })
+      })
+      .catch(console.error)
   }
   return (
     <Box sx={{ mr: 2 }}>
@@ -45,7 +49,7 @@ export function NavigationPickNetwork() {
                 }}
               >
                 {Object.keys(networksList).map((networkListName) => {
-                  const networkData = networksList[networkListName as keyof typeof networksList]
+                  const networkData = networksList[networkListName as NetworkNameType]
                   const isCurrentNetwork = networkListName === currentNetworkName
                   return (
                     <Button
@@ -53,7 +57,7 @@ export function NavigationPickNetwork() {
                       sx={{
                         fontWeight: isCurrentNetwork ? '600' : '400',
                       }}
-                      onClick={changeChain(networkListName as keyof typeof networksList)}
+                      onClick={changeChain(networkListName as NetworkNameType)}
                       disabled={
                         !usableChains.map(({ label }) => label).includes(networkListName) ||
                         settingChain

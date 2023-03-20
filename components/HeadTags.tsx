@@ -1,5 +1,8 @@
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { networkIconMap } from 'helpers/networkIconMap'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -45,6 +48,8 @@ export function PageSEOTags({
   twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
   const { t } = useTranslation()
+  const useWeb3Onboard = useFeatureToggle('UseBlocknativeOnboard')
+  const [web3OnboardNetworkParameter] = useCustomNetworkParameter()
   const { query } = useRouter()
 
   const OGImages = {
@@ -64,11 +69,15 @@ export function PageSEOTags({
     ogImage,
     twitterImage,
   }
-
-  const networkParameter = query.network as string
-  const tabTitle = `${networkParameter ? { hardhat: '👷 ', goerli: '🌲 ' }[networkParameter] : ''}${
-    titleParams ? t(title, titleParams) : t(title)
-  }`
+  const properNetworkIconMap = useWeb3Onboard ? networkIconMap : { hardhat: '👷 ', goerli: '🌲 ' }
+  const networkParameter = useWeb3Onboard
+    ? web3OnboardNetworkParameter?.network
+    : (query.network as string)
+  const tabTitle = `${
+    networkParameter
+      ? properNetworkIconMap[networkParameter as keyof typeof properNetworkIconMap]
+      : ''
+  }${titleParams ? t(title, titleParams) : t(title)}`
 
   return (
     <Head>
