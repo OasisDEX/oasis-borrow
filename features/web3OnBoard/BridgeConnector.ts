@@ -10,18 +10,16 @@ interface ConnectorUpdate {
 }
 
 export class BridgeConnector extends AbstractConnector {
-  private basicInfo: { chainId: number; provider: EIP1193Provider; account: string | undefined }
+  public readonly basicInfo: {
+    chainId: number
+    provider: EIP1193Provider
+    account: string | undefined
+  }
 
-  constructor(private wallet: WalletState, private chains: Chain[]) {
+  constructor(public readonly wallet: WalletState, private chains: Chain[]) {
     const chainsIds = chains.map((chain) => parseInt(chain.id, 16))
     super({ supportedChainIds: chainsIds })
     this.basicInfo = this.getBasicInfoFromWallet()
-  }
-
-  async changeWallet(wallet: WalletState): Promise<void> {
-    this.wallet = wallet
-    this.basicInfo = this.getBasicInfoFromWallet()
-    await this.activate()
   }
 
   get connectionKind(): ConnectionKind {

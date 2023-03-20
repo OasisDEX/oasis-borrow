@@ -1,32 +1,46 @@
+import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
-import { useAsyncEffect } from 'helpers/hooks/useAsyncEffect'
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
 
-export function useBridgeConnector() {
-  const [{ wallet, connecting }] = useConnectWallet()
+export function useBridgeConnector(): () => Promise<BridgeConnector | undefined> {
+  const [, connect, disconnect] = useConnectWallet()
   const [{ chains, connectedChain }, setChain] = useSetChain()
   const networkFromUrl = useCustomNetworkParameter()
 
-  useAsyncEffect(
-    async () => {
-      if (!networkFromUrl) return
-      if (!wallet) return
+  const reconnect = useCallback(
+    async (wallet: WalletState) => {
+      await disconnect(wallet)
+      return await connect({ autoSelect: { label: wallet.label, disableModals: true } })
+    },
+    [disconnect, connect],
+  )
+
+  const changeNetwork = useCallback(
+    async (wallet: WalletState) => {
       const forcedChain = chains.find((chain) => chain.id === networkFromUrl.hexId)
       if (forcedChain && connectedChain?.id !== forcedChain.id) {
         await setChain({ chainId: forcedChain.id })
+        const result = await reconnect(wallet)
+        return result[0]
       }
+      return wallet
     },
-    () => Promise.resolve(),
-    [wallet, chains, connectedChain, networkFromUrl, setChain],
+    [networkFromUrl, chains, connectedChain, setChain, reconnect],
   )
 
-  const bridgeConnector: BridgeConnector | undefined = useMemo(() => {
-    if (!wallet || connecting) return undefined
-    return new BridgeConnector(wallet, chains)
-  }, [chains, wallet, connecting])
+  const bridgeConnector = useCallback(
+    (wallet: WalletState) => {
+      return new BridgeConnector(wallet, chains)
+    },
+    [chains],
+  )
 
-  return bridgeConnector
+  return useCallback(async () => {
+    const wallet = await connect()
+    const walletWithCorrectNetwork = await changeNetwork(wallet[0])
+    return bridgeConnector(walletWithCorrectNetwork)
+  }, [connect, changeNetwork, bridgeConnector])
 }

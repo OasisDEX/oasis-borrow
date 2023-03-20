@@ -12,8 +12,12 @@ type CustomNetwork = {
   hexId: string
 }
 
-export function useCustomNetworkParameter(): CustomNetwork | undefined {
-  const [customNetworkName, setCustomNetworkName] = useState<CustomNetwork | undefined>(undefined)
+export function useCustomNetworkParameter(): CustomNetwork {
+  const [customNetworkName, setCustomNetworkName] = useState<CustomNetwork>({
+    network: 'mainnet',
+    id: '1',
+    hexId: '0x1',
+  })
 
   const networkChanged = useCallback(() => {
     const customNetworkName = new URLSearchParams(window.location.search).get('network')
@@ -27,11 +31,6 @@ export function useCustomNetworkParameter(): CustomNetwork | undefined {
         })
       }
     }
-    return setCustomNetworkName({
-      network: 'mainnet',
-      id: '1',
-      hexId: '0x1',
-    })
   }, [])
 
   useEffect(() => {
