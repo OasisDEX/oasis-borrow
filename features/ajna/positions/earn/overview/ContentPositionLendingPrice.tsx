@@ -36,14 +36,14 @@ export function ContentPositionLendingPrice({
       afterPositionLendingPrice && formatCryptoBalance(afterPositionLendingPrice),
     relationToMarketPrice: t(
       relationToMarketPrice.gte(zero)
-        ? 'ajna.earn.manage.overview.above-market-price'
-        : 'ajna.earn.manage.overview.below-market-price',
+        ? 'ajna.position-page.earn.manage.overview.above-market-price'
+        : 'ajna.position-page.earn.manage.overview.below-market-price',
       { amount: formatDecimalAsPercent(relationToMarketPrice.abs()) },
     ),
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.earn.manage.overview.position-lending-price'),
+    title: t('ajna.position-page.earn.manage.overview.position-lending-price'),
     value: formatted.positionLendingPrice,
     unit: `${collateralToken}/${quoteToken}`,
     change: {

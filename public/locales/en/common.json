@@ -2486,17 +2486,21 @@
             "current-yield": "Current yield",
             "90-day-avg": "90 Day Avg",
             "current-market-price": "Current Market Price"
+          },
+          "form": {
+            "max-ltv-to-lend-at": "Max LTV to lend at",
+            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
           }
         },
         "open": {
           "simulation": {
-            "header1": "Duration",
-            "header2": "Earnings after fees",
-            "header3": "Net value",
-            "rowlabel1": "Projected earnings per day",
-            "rowlabel2": "Projected earnings per 30d",
-            "rowlabel3": "Projected earnings for 1 year",
-            "footnote1": "*Past performance is not indicative of future results."
+            "duration": "Duration",
+            "earnings-after-fees": "Earnings after fees",
+            "net-value": "Net value",
+            "earnings-per-day": "Projected earnings per day",
+            "earnings-per-30d": "Projected earnings per 30d",
+            "earnings-per-1y": "Projected earnings for 1 year",
+            "disclaimer": "*Past performance is not indicative of future results."
           }
         },
         "manage": {
