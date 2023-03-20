@@ -36,56 +36,54 @@ export function NavigationPickNetwork() {
           outlineColor: 'primary100',
         }}
       >
-        {(isOpen) =>
-          isOpen && (
-            <>
-              <Box
-                sx={{
-                  width: ['100%', '240px'],
-                  gap: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: 3,
-                }}
-              >
-                {Object.keys(networksList).map((networkListName) => {
-                  const networkData = networksList[networkListName as NetworkNameType]
-                  const isCurrentNetwork = networkListName === currentNetworkName
-                  return (
-                    <Button
-                      variant="networkPicker"
+        {(_isOpen) => (
+          <>
+            <Box
+              sx={{
+                width: ['100%', '240px'],
+                gap: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                padding: 3,
+              }}
+            >
+              {Object.keys(networksList).map((networkListName) => {
+                const networkData = networksList[networkListName as NetworkNameType]
+                const isCurrentNetwork = networkListName === currentNetworkName
+                return (
+                  <Button
+                    variant="networkPicker"
+                    sx={{
+                      fontWeight: isCurrentNetwork ? '600' : '400',
+                    }}
+                    onClick={changeChain(networkListName as NetworkNameType)}
+                    disabled={
+                      !usableChains.map(({ label }) => label).includes(networkListName) ||
+                      settingChain
+                    }
+                    key={networkListName}
+                  >
+                    <Image
+                      src={networkData.icon}
                       sx={{
-                        fontWeight: isCurrentNetwork ? '600' : '400',
+                        mr: 3,
+                        minWidth: 4,
+                        minHeight: 4,
                       }}
-                      onClick={changeChain(networkListName as NetworkNameType)}
-                      disabled={
-                        !usableChains.map(({ label }) => label).includes(networkListName) ||
-                        settingChain
-                      }
-                      key={networkListName}
-                    >
-                      <Image
-                        src={networkData.icon}
-                        sx={{
-                          mr: 3,
-                          minWidth: 4,
-                          minHeight: 4,
-                        }}
-                      />
-                      {networkData.displayName}
-                      {isCurrentNetwork && (
-                        <Box sx={{ width: '100%', textAlign: 'right' }}>
-                          <Icon name="tick" color="interactive100" />
-                        </Box>
-                      )}
-                    </Button>
-                  )
-                })}
-              </Box>
-              {settingChain && <AppSpinnerWholePage />}
-            </>
-          )
-        }
+                    />
+                    {networkData.displayName}
+                    {isCurrentNetwork && (
+                      <Box sx={{ width: '100%', textAlign: 'right' }}>
+                        <Icon name="tick" color="interactive100" />
+                      </Box>
+                    )}
+                  </Button>
+                )
+              })}
+            </Box>
+            {settingChain && <AppSpinnerWholePage />}
+          </>
+        )}
       </NavigationOrb>
     </Box>
   )
