@@ -121,19 +121,6 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
       action: () => setStep(editingStep),
       hidden: isTextButtonHidden,
     },
-    ...(isTxStarted &&
-      isTxInProgress &&
-      isTxSuccess &&
-      txDetails && {
-        status: [
-          {
-            etherscan: 'as',
-            text: 'asd',
-            txHash: txDetails.txHash,
-            type: isTxSuccess ? 'success' : 'progress',
-          },
-        ],
-      }),
   }
 
   useEffect(() => {
