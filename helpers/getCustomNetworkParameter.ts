@@ -8,9 +8,9 @@ export function getCustomNetworkParameter() {
 }
 
 export const mainnetNetworkParameter = {
-  network: networksByName['ethereumMainnet'].name,
-  id: networksByName['ethereumMainnet'].id,
-  hexId: networksByName['ethereumMainnet'].hexId,
+  network: networksByName['ethereumMainnet'].name!,
+  id: networksByName['ethereumMainnet'].id!,
+  hexId: networksByName['ethereumMainnet'].hexId!,
 }
 
 export const CustomNetworkStorageKey = 'CustomNetwork'

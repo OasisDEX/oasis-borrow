@@ -142,6 +142,7 @@ export function createWeb3Context$(
       }
 
       if (!account) {
+        console.log('123123')
         push({
           status: 'connectedReadonly',
           connectionKind: connectionKind!,

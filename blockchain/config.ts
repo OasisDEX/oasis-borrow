@@ -441,22 +441,35 @@ const hardhat: NetworkConfig = {
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
-const arbitrum: NetworkConfig = {
+const arbitrum: Partial<NetworkConfig> = {
   ...protoMain,
   id: '42161',
   hexId: '0xa4b1',
   name: 'arbitrumMainnet',
   label: 'Arbitrum',
+  token: 'ETH',
   infuraUrl: `https://rpc.ankr.com/arbitrum`,
+  infuraUrlWS: `ws://localhost:8545`,
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
+}
+
+const avalanche: Partial<NetworkConfig> = {
+  ...protoMain,
+  id: '43114',
+  hexId: '0xa86a',
+  name: 'avalancheMainnet',
+  label: 'Avalanche',
+  token: 'ETH',
+  infuraUrl: `https://api.avax.network/ext/bc/C/rpc`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
-export const networksById = keyBy([main, hardhat, goerli, arbitrum], 'id')
-export const networksByName = keyBy([main, hardhat, goerli, arbitrum], 'name')
-export const networksByHexId = keyBy([main, hardhat, goerli, arbitrum], 'hexId')
-export const networks = [main, hardhat, goerli, arbitrum]
+export const networks = [main, hardhat, goerli, arbitrum, avalanche]
+export const networksById = keyBy(networks, 'id')
+export const networksByName = keyBy(networks, 'name')
+export const networksByHexId = keyBy(networks, 'hexId')
 export const dappName = 'Oasis'
 export const pollingInterval = 12000

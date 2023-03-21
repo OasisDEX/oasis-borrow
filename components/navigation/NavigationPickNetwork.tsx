@@ -13,16 +13,18 @@ import { NavigationOrb } from './NavigationMenuOrb'
 export function NavigationPickNetwork() {
   const [{ chains: usableChains, settingChain }, setChain] = useSetChain()
   const currentNetworkName = useNetworkName()
+  // const context = useWeb3React<Web3Provider>()
+  // console.log('context', context)
   const [, setCustomNetwork] = useCustomNetworkParameter()
   const changeChain = (networkName: NetworkNameType) => () => {
     const network = networksByName[networkName]
-    setChain({ chainId: network.hexId })
+    setChain({ chainId: network.hexId! })
       .then((setChainSuccess) => {
         setChainSuccess &&
           setCustomNetwork({
-            network: network.name,
-            id: network.id,
-            hexId: network.hexId,
+            network: network.name!,
+            id: network.id!,
+            hexId: network.hexId!,
           })
       })
       .catch(console.error)

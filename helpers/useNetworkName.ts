@@ -1,15 +1,19 @@
 import { useSetChain } from '@web3-onboard/react'
-import { networksList } from 'blockchain/networksList'
+import { NetworkNameType } from 'blockchain/networksList'
+
+import { mainnetNetworkParameter } from './getCustomNetworkParameter'
 
 export function useNetworkName() {
   const [{ chains, connectedChain }] = useSetChain()
   const filteredChain = chains.filter(({ id }) => id === connectedChain?.id)
   if (!connectedChain) {
-    return
+    return mainnetNetworkParameter.network as NetworkNameType
   }
   if (!filteredChain[0]) {
-    throw new Error(`Chain not configured:
+    console.error(`Chain not configured:
     ${JSON.stringify({ chains, connectedChain }, null, 4)}`)
+    console.error('Returning Ethereum Mainnet.')
+    return mainnetNetworkParameter.network as NetworkNameType
   }
-  return filteredChain[0].label as keyof typeof networksList
+  return filteredChain[0].label as NetworkNameType
 }
