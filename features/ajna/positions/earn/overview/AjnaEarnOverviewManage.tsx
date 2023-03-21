@@ -9,7 +9,7 @@ import { ContentCardMaxLendingLTV } from 'features/ajna/positions/earn/overview/
 import { ContentCardTokensDeposited } from 'features/ajna/positions/earn/overview/ContentCardTokensDeposited'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnManage'
 import { ContentPositionLendingPrice } from 'features/ajna/positions/earn/overview/ContentPositionLendingPrice'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -35,6 +35,7 @@ export function AjnaEarnOverviewManage() {
           <ContentCardCurrentEarnings
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
+            // TODO adjust once data available in subgraph
             currentEarnings={new BigNumber(190)}
             netPnL={new BigNumber(12.35)}
           />
@@ -47,7 +48,10 @@ export function AjnaEarnOverviewManage() {
           />
           <ContentCardMaxLendingLTV
             isLoading={isSimulationLoading}
-            maxLendingPercentage={new BigNumber(65)}
+            price={position.price}
+            quoteToken={quoteToken}
+            maxLendingPercentage={position.price.div(collateralPrice.div(quotePrice))}
+            afterMaxLendingPercentage={simulation?.price.div(collateralPrice.div(quotePrice))}
           />
           <ContentPositionLendingPrice
             isLoading={isSimulationLoading}
@@ -64,9 +68,10 @@ export function AjnaEarnOverviewManage() {
           <ContentFooterItemsEarnManage
             quoteToken={quoteToken}
             availableToWithdraw={position.quoteTokenAmount}
+            // TODO adjust once data available in subgraph
+            projectedAnnualReward={zero}
+            totalAjnaRewards={zero}
             afterAvailableToWithdraw={simulation?.quoteTokenAmount}
-            earlyWithdrawalPenalty={new BigNumber(2)}
-            earlyWithdrawalPeriod={new Date(new Date().getTime() + 10000000)}
           />
         </DetailsSectionFooterItemWrapper>
       }

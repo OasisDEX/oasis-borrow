@@ -102,6 +102,7 @@
   "max-ltv": "Max LTV",
   "total-value-locked": "Total value locked",
   "position-apy": "Position APY",
+  "average-apy-in-days": "Average APY - {{days}}d",
   "build-your-position": "Build your position",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
@@ -2520,11 +2521,11 @@
           "header": "Ajna {{collateralToken}}/{{quoteToken}} #{{id}}"
         },
         "overview": {
-          "above-market-price": "{{amount}}% above market price",
-          "below-market-price": "{{amount}}% below market price",
+          "above-market-price": "{{amount}} above market price",
+          "below-market-price": "{{amount}} below market price",
           "current-earnings": "Current earnings",
-          "early-withdrawal-penalty": "Early withdrawal penalty",
-          "early-withdrawal-ended": "Ended {{earlyWithdrawalPeriod}}",
+          "projected-annual-reward": "Projected annual reward",
+          "total-ajna-rewards": "Total AJNA rewards",
           "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
           "early-withdrawal-period": "Early withdrawal period",
           "max-lending-ltv": "Max lending LTV ",

@@ -4,7 +4,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
@@ -92,14 +92,10 @@ function convertSliderThresholds({
   }
 }
 
-const ajnaSliderDefaults = {
-  maxLtv: new BigNumber(0.65),
-}
-
 export function AjnaEarnSlider() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralToken, quoteToken, collateralPrice, quotePrice },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -115,8 +111,9 @@ export function AjnaEarnSlider() {
     },
   } = useAjnaProductContext('earn')
 
-  const { maxLtv } = ajnaSliderDefaults
   const resolvedValue = (price || highestThresholdPrice).decimalPlaces(2)
+
+  const maxLtv = price?.div(collateralPrice.div(quotePrice)) || zero
 
   const { min, max, range } = useMemo(
     () =>
@@ -159,7 +156,9 @@ export function AjnaEarnSlider() {
       leftBoundry={resolvedValue}
       rightBoundry={maxLtv}
       leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
-      rightBoundryFormatter={(v) => `${t('max-ltv')} ${formatDecimalAsPercent(v)}`}
+      rightBoundryFormatter={(v) =>
+        !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
+      }
       disabled={false}
       onChange={handleChange}
       leftLabel={t('ajna.earn.open.form.max-lending-price', {

@@ -4,6 +4,7 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaGenericPosition, AjnaPoolPairs } from 'features/ajna/common/types'
+import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
@@ -46,6 +47,7 @@ export async function getAjnaParameters({
     poolInfoAddress: context.ajnaPoolInfo.address,
     provider: rpcProvider,
     WETH: context.tokens.ETH.address,
+    getPoolData: getAjnaPoolData,
   }
 
   if (!context.ajnaPoolPairs[tokenPair]) {

@@ -59,9 +59,16 @@ export function AjnaProductController({
 }: AjnaProductControllerProps) {
   const { t } = useTranslation()
   const { push } = useRouter()
-  const { ajnaPosition$, balancesInfoArray$, dpmPositionData$, tokenPriceUSD$ } = useAppContext()
+  const {
+    ajnaPosition$,
+    balancesInfoArray$,
+    dpmPositionData$,
+    tokenPriceUSD$,
+    gasPrice$,
+  } = useAppContext()
   const { walletAddress } = useAccount()
 
+  const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
@@ -121,6 +128,7 @@ export function AjnaProductController({
                 balancesInfoArrayError,
                 dpmPositionError,
                 tokenPriceUSDError,
+                gasPriceError,
               ]}
             >
               <WithLoadingIndicator
@@ -129,6 +137,7 @@ export function AjnaProductController({
                   balancesInfoArrayData,
                   dpmPositionData,
                   tokenPriceUSDData,
+                  gasPriceData,
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -147,6 +156,7 @@ export function AjnaProductController({
                   [collateralBalance, quoteBalance, ethBalance],
                   dpmPosition,
                   tokenPriceUSD,
+                  gasPrice,
                 ]) =>
                   ajnaPosition ? (
                     <>
@@ -178,6 +188,7 @@ export function AjnaProductController({
                         quotePrice={tokenPriceUSD[dpmPosition.quoteToken]}
                         quoteToken={dpmPosition.quoteToken}
                         steps={steps[dpmPosition.product as AjnaProduct][flow]}
+                        gasPrice={gasPrice}
                       >
                         {dpmPosition.product === 'borrow' && (
                           <AjnaProductContextProvider
