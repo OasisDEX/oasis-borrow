@@ -58,6 +58,8 @@ export interface Web3ContextConnected {
   deactivate: () => void
   account: string
   magicLinkEmail?: string
+  connectionMethod: 'legacy' | 'web3-onboard'
+  walletLabel?: string
 }
 
 export interface Web3ContextError extends Connectable {

@@ -567,14 +567,16 @@ export function setupAppContext() {
           networkName: network.name,
           connectionKind: network.connectionKind,
           account: account?.toLowerCase(),
+          method: network.connectionMethod,
+          walletLabel: network.walletLabel,
         })
       }),
       distinctUntilChanged(isEqual),
     )
-    .subscribe(({ account, networkName, connectionKind }) => {
+    .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
       if (account) {
-        mixpanelIdentify(account, { walletType: connectionKind })
-        trackingEvents.accountChange(account, networkName, connectionKind)
+        mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
+        trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }
     })
 
