@@ -1,3 +1,4 @@
+import { useAppContext } from 'components/AppContextProvider'
 import { FlowSidebar } from 'components/FlowSidebar'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
@@ -6,11 +7,14 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaSidebarButtonsStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarButtonsStatus'
 import { getAjnaSidebarPrimaryButtonActions } from 'features/ajna/positions/common/helpers/getAjnaSidebarPrimaryButtonActions'
+import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
 import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
+import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
+import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren, useEffect } from 'react'
 import { Grid } from 'theme-ui'
@@ -21,6 +25,8 @@ interface AjnaFormViewProps {
 
 export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormViewProps>) {
   const { t } = useTranslation()
+  const { context$ } = useAppContext()
+  const [context] = useObservable(context$)
   const { walletAddress } = useAccount()
   const {
     environment: { collateralToken, dpmProxy, flow, isOwner, product, quoteToken },
@@ -40,12 +46,13 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
       isTxStarted,
       isTxInProgress,
       setTxDetails,
+      txDetails,
     },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
     position: { isSimulationLoading, resolvedId },
-    validation: { isFormValid },
+    validation: { isFormValid, hasErrors },
   } = useAjnaProductContext(product)
 
   const txHandler = useAjnaTxHandler()
@@ -67,6 +74,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     editingStep,
     isAllowanceLoading: flowState.isLoading,
     isFormValid,
+    hasErrors,
     isOwner,
     isSimulationLoading,
     isTxError,
@@ -100,9 +108,23 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     isTxSuccess,
     walletAddress,
   })
+  const status = getAjnaSidebarTransactionStatus({
+    etherscan: context?.etherscan.url,
+    isTxInProgress,
+    isTxSuccess,
+    text: t(
+      isTxSuccess
+        ? `ajna.position-page.common.form.transaction.success-${flow}`
+        : `ajna.position-page.common.form.transaction.progress-${flow}`,
+      { collateralToken, quoteToken },
+    ),
+    txDetails,
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(`ajna.${product}.common.form.title.${currentStep}`),
+    title: t(`ajna.position-page.common.form.title.${currentStep}`, {
+      product: upperFirst(product),
+    }),
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
@@ -117,6 +139,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
       action: () => setStep(editingStep),
       hidden: isTextButtonHidden,
     },
+    status,
   }
 
   useEffect(() => {

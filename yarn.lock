@@ -3746,10 +3746,10 @@
     ramda "^0.28.0"
     utility-types "^3.10.0"
 
-"@oasisdex/oasis-actions@0.2.15":
-  version "0.2.15"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.15.tgz#4bbe546538fc2b9a8a813a20de75303c4e70e4ef"
-  integrity sha512-VNFZ4dykou2tsJoMUTboGEFkxDMz57rGEfOPIFp0+p92n6oS7+rkNPMULs4Zidcx0Th2H9GYcmP/BbIx5tt/dg==
+"@oasisdex/oasis-actions@0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.16.tgz#ce973ba2c8703779adb47661c1a1de6e3a5003c6"
+  integrity sha512-jE81kefamqsaQXC+odpYpKk+K4dEJ01iXQ0shtQsVffUkEQzB+4xmbd7v73NNTfujCOCqyZ29j8R4PHbdSCyOQ==
   dependencies:
     bignumber.js "^9.0.1"
     ethers "^5.6.2"

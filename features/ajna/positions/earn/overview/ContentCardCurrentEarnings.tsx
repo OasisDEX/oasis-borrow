@@ -35,7 +35,7 @@ export function ContentCardCurrentEarnings({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.earn.manage.overview.current-earnings'),
+    title: t('ajna.position-page.earn.manage.overview.current-earnings'),
     value: formatted.currentEarnings,
     unit: quoteToken,
     change: {
@@ -48,7 +48,7 @@ export function ContentCardCurrentEarnings({
   }
 
   if (!netPnL.isZero()) {
-    contentCardSettings.footnote = t('ajna.earn.manage.overview.net-pnl', {
+    contentCardSettings.footnote = t('ajna.position-page.earn.manage.overview.net-pnl', {
       netPnL: formatted.netPnL,
     })
   }

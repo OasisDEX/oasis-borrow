@@ -41,11 +41,11 @@ export function ContentFooterItemsEarnManage({
         value={formatted.availableToWithdraw}
       />
       <DetailsSectionFooterItem
-        title={t('ajna.earn.manage.overview.projected-annual-reward')}
+        title={t('ajna.position-page.earn.manage.overview.projected-annual-reward')}
         value={formatted.projectedAnnualReward}
       />{' '}
       <DetailsSectionFooterItem
-        title={t('ajna.earn.manage.overview.total-ajna-rewards')}
+        title={t('ajna.position-page.earn.manage.overview.total-ajna-rewards')}
         value={formatted.totalAjnaRewards}
       />
     </>

@@ -71,12 +71,12 @@ export function AjnaEarnOverviewOpen() {
         <>
           <DetailsSectionContentTable
             headers={[
-              t('ajna.earn.open.simulation.header1'),
-              t('ajna.earn.open.simulation.header2'),
-              t('ajna.earn.open.simulation.header3'),
+              t('ajna.position-page.earn.open.simulation.duration'),
+              t('ajna.position-page.earn.open.simulation.earnings-after-fees'),
+              t('ajna.position-page.earn.open.simulation.net-value'),
             ]}
             rows={getAjnaSimulationRows({ rowsInput, quoteToken, depositAmount })}
-            footnote={<>{t('ajna.earn.open.simulation.footnote1')}</>}
+            footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
           />
         </>
       }

@@ -1,4 +1,5 @@
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 
 interface AjnaBorrowHeadlinePropsParams {
@@ -21,7 +22,12 @@ export function getAjnaHeadlineProps({
   return {
     ...(collateralToken &&
       quoteToken && {
-        header: t(`ajna.${product}.${flow}.headline.header`, { collateralToken, id, quoteToken }),
+        header: t(`ajna.position-page.common.headline.${flow}`, {
+          collateralToken,
+          id,
+          product: upperFirst(product),
+          quoteToken,
+        }),
         token: [collateralToken, quoteToken],
         label: '/static/img/ajna-product-card-label.svg',
       }),

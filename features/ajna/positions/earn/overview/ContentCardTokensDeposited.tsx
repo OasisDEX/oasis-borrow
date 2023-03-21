@@ -35,7 +35,7 @@ export function ContentCardTokensDeposited({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.earn.manage.overview.tokens-deposited'),
+    title: t('ajna.position-page.earn.manage.overview.tokens-deposited'),
     value: formatted.tokensDeposited,
     unit: quoteToken,
     change: {

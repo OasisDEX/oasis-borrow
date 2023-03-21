@@ -161,11 +161,11 @@ export function AjnaEarnSlider() {
       }
       disabled={false}
       onChange={handleChange}
-      leftLabel={t('ajna.earn.open.form.max-lending-price', {
+      leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {
         quoteToken,
         collateralToken,
       })}
-      rightLabel={t('ajna.earn.open.form.max-ltv-to-lend-at')}
+      rightLabel={t('ajna.position-page.earn.common.form.max-ltv-to-lend-at')}
       leftBottomLabel={t('safer')}
       rightBottomLabel={t('riskier')}
       colorfulRanges={`linear-gradient(to right,

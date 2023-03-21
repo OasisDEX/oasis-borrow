@@ -10,13 +10,13 @@ export function AjnaFormContentRisk() {
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('ajna.risk.intro')}
+        {t('ajna.position-page.common.form.risk.intro')}
       </Text>
       <ListWithIcon
         icon="checkmark"
         iconSize="14px"
         iconColor="primary100"
-        items={t('ajna.risk.bullet-points', {
+        items={t('ajna.position-page.common.form.risk.bullet-points', {
           returnObjects: true,
         })}
         listStyle={{ mt: 2 }}

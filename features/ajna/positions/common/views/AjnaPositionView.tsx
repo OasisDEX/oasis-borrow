@@ -52,7 +52,9 @@ export function AjnaPositionView({
         details={[
           ...(headlineDetails || []),
           {
-            label: t('ajna.borrow.common.headline.current-market-price', { collateralToken }),
+            label: t('ajna.position-page.common.headline.current-market-price', {
+              collateralToken,
+            }),
             value: `${formatCryptoBalance(
               collateralPrice.dividedBy(quotePrice),
             )} ${collateralToken}/${quoteToken}`,

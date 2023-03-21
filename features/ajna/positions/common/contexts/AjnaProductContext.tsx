@@ -72,6 +72,7 @@ interface AjnaProductContext<P, F> {
   position: AjnaProductContextPosition<P>
   validation: {
     errors: ValidationMessagesInput
+    hasErrors: boolean
     isFormValid: boolean
     warnings: ValidationMessagesInput
   }

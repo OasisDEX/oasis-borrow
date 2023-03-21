@@ -3,7 +3,7 @@ import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaSelectorController } from 'features/ajna/common/controls/AjnaSelectorController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
-import { startCase } from 'lodash'
+import { upperFirst } from 'lodash'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -17,11 +17,11 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
     <>
       <PageSEOTags
         title="seo.ajnaProductPage.title"
-        titleParams={{ product: startCase(product) }}
+        titleParams={{ product: upperFirst(product) }}
         description="seo.ajna.description"
         url={`/ajna/${product}`}
       />
-      <AjnaSelectorController product={product} />
+      <AjnaSelectorController key={product} product={product} />
     </>
   )
 }
