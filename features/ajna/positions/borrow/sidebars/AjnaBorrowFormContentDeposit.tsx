@@ -1,3 +1,6 @@
+
+import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
+import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -17,19 +20,27 @@ export function AjnaBorrowFormContentDeposit() {
       dispatch,
       state: { depositAmount },
     },
+    position: {
+      currentPosition: { position, simulation },
+    },
   } = useAjnaProductContext('borrow')
+
+  const debtMin = getAjnaBorrowDebtMin({ position })
+  const debtMax = getAjnaBorrowDebtMax({ position, simulation })
 
   return (
     <>
       <AjnaFormFieldDeposit
         dispatchAmount={dispatch}
+        maxAmount={collateralBalance}
         token={collateralToken}
         tokenPrice={collateralPrice}
-        tokenBalance={collateralBalance}
         resetOnClear
       />
       <AjnaFormFieldGenerate
         dispatchAmount={dispatch}
+        minAmount={debtMin}
+        maxAmount={debtMax}
         isDisabled={!depositAmount || depositAmount?.lte(0)}
       />
       {depositAmount && (

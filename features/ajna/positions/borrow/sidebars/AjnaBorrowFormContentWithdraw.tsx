@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -10,20 +12,26 @@ import React from 'react'
 
 export function AjnaBorrowFormContentWithdraw() {
   const {
-    environment: { collateralBalance, collateralPrice, collateralToken },
+    environment: { collateralPrice, collateralToken, quoteBalance },
   } = useAjnaGeneralContext()
   const {
     form: {
       dispatch,
       state: { withdrawAmount },
     },
+    position: {
+      currentPosition: { position, simulation },
+    },
   } = useAjnaProductContext('borrow')
+
+  const collateralMax = getAjnaBorrowCollateralMax({ position, simulation })
+  const { debtAmount } = position
 
   return (
     <>
       <AjnaFormFieldWithdraw
         dispatchAmount={dispatch}
-        tokenBalance={collateralBalance}
+        maxAmount={collateralMax}
         token={collateralToken}
         tokenPrice={collateralPrice}
         resetOnClear
@@ -31,6 +39,8 @@ export function AjnaBorrowFormContentWithdraw() {
       <AjnaFormFieldPayback
         dispatchAmount={dispatch}
         isDisabled={!withdrawAmount || withdrawAmount?.lte(0)}
+        maxAmount={BigNumber.min(debtAmount, quoteBalance)}
+        maxAmountLabel={quoteBalance.lt(debtAmount) ? 'balance' : 'max'}
       />
       {withdrawAmount && (
         <AjnaFormContentSummary>

@@ -9,6 +9,7 @@ import {
   AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { handleNumericInput } from 'helpers/input'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { Dispatch } from 'react'
 
@@ -18,20 +19,32 @@ interface AjnaFormField<D> {
   resetOnClear?: boolean
 }
 
-interface AjnaFormFieldExtended<D> extends AjnaFormField<D> {
+interface AjnaFormFieldWithDefinedToken {
   token: string
   tokenPrice: BigNumber
-  tokenBalance: BigNumber
+}
+
+interface AjnaFormFieldWithMinAmount {
+  minAmount?: BigNumber
+  minAmountLabel?: string
+}
+
+interface AjnaFormFieldWithMaxAmount {
+  maxAmount?: BigNumber
+  maxAmountLabel?: string
 }
 
 export function AjnaFormFieldDeposit({
   dispatchAmount,
   isDisabled,
+  maxAmount,
+  maxAmountLabel = 'balance',
   resetOnClear,
   token,
-  tokenBalance,
   tokenPrice,
-}: AjnaFormFieldExtended<AjnaFormActionsUpdateDeposit>) {
+}: AjnaFormField<AjnaFormActionsUpdateDeposit> &
+  AjnaFormFieldWithDefinedToken &
+  AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
     environment: { product },
@@ -51,9 +64,9 @@ export function AjnaFormFieldDeposit({
       hasError={false}
       disabled={isDisabled}
       showMax={true}
-      maxAmount={tokenBalance}
-      maxAuxiliaryAmount={tokenBalance.times(tokenPrice)}
-      maxAmountLabel={t('balance')}
+      maxAmount={maxAmount}
+      maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
+      maxAmountLabel={t(maxAmountLabel)}
       onChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-deposit',
@@ -73,8 +86,8 @@ export function AjnaFormFieldDeposit({
       onSetMax={() => {
         dispatchAmount({
           type: 'update-deposit',
-          depositAmount: tokenBalance,
-          depositAmountUSD: tokenBalance.times(tokenPrice),
+          depositAmount: maxAmount,
+          depositAmountUSD: maxAmount?.times(tokenPrice),
         })
       }}
     />
@@ -84,8 +97,15 @@ export function AjnaFormFieldDeposit({
 export function AjnaFormFieldGenerate({
   dispatchAmount,
   isDisabled,
+  maxAmount,
+  maxAmountLabel = 'max',
+  minAmount,
+  minAmountLabel = 'field-from',
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdateGenerate>) {
+}: AjnaFormField<AjnaFormActionsUpdateGenerate> &
+  AjnaFormFieldWithMinAmount &
+  AjnaFormFieldWithMaxAmount) {
+  const { t } = useTranslation()
   const {
     environment: { product, quotePrice, quoteToken },
   } = useAjnaGeneralContext()
@@ -103,6 +123,14 @@ export function AjnaFormFieldGenerate({
       hasAuxiliary={true}
       hasError={false}
       disabled={isDisabled}
+      showMin={minAmount?.gt(zero)}
+      minAmount={minAmount}
+      minAmountLabel={t(minAmountLabel)}
+      minAuxiliaryAmount={minAmount?.times(quotePrice)}
+      showMax={maxAmount?.gt(zero)}
+      maxAmount={maxAmount}
+      maxAmountLabel={t(maxAmountLabel)}
+      maxAuxiliaryAmount={maxAmount?.times(quotePrice)}
       onChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-generate',
@@ -119,6 +147,20 @@ export function AjnaFormFieldGenerate({
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
+      onSetMin={() => {
+        dispatchAmount({
+          type: 'update-generate',
+          generateAmount: minAmount,
+          generateAmountUSD: minAmount?.times(quotePrice),
+        })
+      }}
+      onSetMax={() => {
+        dispatchAmount({
+          type: 'update-generate',
+          generateAmount: maxAmount,
+          generateAmountUSD: maxAmount?.times(quotePrice),
+        })
+      }}
     />
   ) : null
 }
@@ -126,11 +168,13 @@ export function AjnaFormFieldGenerate({
 export function AjnaFormFieldPayback({
   dispatchAmount,
   isDisabled,
+  maxAmount,
+  maxAmountLabel = 'max',
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdatePayback>) {
+}: AjnaFormField<AjnaFormActionsUpdatePayback> & AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { quoteBalance, quotePrice, quoteToken, product },
+    environment: { quotePrice, quoteToken, product },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -141,16 +185,16 @@ export function AjnaFormFieldPayback({
       action="Payback"
       currencyCode={quoteToken}
       tokenUsdPrice={quotePrice}
-      amount={state.paybackAmount}
-      auxiliaryAmount={state.paybackAmountUSD}
+      amount={state.paybackAmount?.decimalPlaces(6)}
+      auxiliaryAmount={state.paybackAmountUSD?.decimalPlaces(6)}
       hasAuxiliary={true}
       hasError={false}
       disabled={isDisabled}
       showMax={true}
       // TODO: should be quoteBalance or total debt, whatever is lower, but debt is not yet available
-      maxAmount={quoteBalance}
-      maxAuxiliaryAmount={quoteBalance.times(quotePrice)}
-      maxAmountLabel={t('balance')}
+      maxAmount={maxAmount}
+      maxAuxiliaryAmount={maxAmount?.times(quotePrice)}
+      maxAmountLabel={t(maxAmountLabel)}
       onChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-payback',
@@ -170,8 +214,8 @@ export function AjnaFormFieldPayback({
       onSetMax={() => {
         dispatchAmount({
           type: 'update-payback',
-          paybackAmount: quoteBalance,
-          paybackAmountUSD: quoteBalance.times(quotePrice),
+          paybackAmount: maxAmount,
+          paybackAmountUSD: maxAmount?.times(quotePrice),
         })
       }}
     />
@@ -181,10 +225,16 @@ export function AjnaFormFieldPayback({
 export function AjnaFormFieldWithdraw({
   dispatchAmount,
   isDisabled,
+  maxAmount,
+  maxAmountLabel = 'max',
   resetOnClear,
   token,
   tokenPrice,
-}: AjnaFormFieldExtended<AjnaFormActionsUpdateWithdraw>) {
+}: AjnaFormField<AjnaFormActionsUpdateWithdraw> &
+  AjnaFormFieldWithDefinedToken &
+  AjnaFormFieldWithMaxAmount) {
+  const { t } = useTranslation()
+
   const {
     environment: { product },
   } = useAjnaGeneralContext()
@@ -202,6 +252,10 @@ export function AjnaFormFieldWithdraw({
       hasAuxiliary={true}
       hasError={false}
       disabled={isDisabled}
+      showMax={maxAmount?.gt(zero)}
+      maxAmount={maxAmount}
+      maxAmountLabel={t(maxAmountLabel)}
+      maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
       onChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-withdraw',
@@ -218,6 +272,13 @@ export function AjnaFormFieldWithdraw({
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
+      onSetMax={() => {
+        dispatchAmount({
+          type: 'update-withdraw',
+          withdrawAmount: maxAmount,
+          withdrawAmountUSD: maxAmount?.times(tokenPrice),
+        })
+      }}
     />
   ) : null
 }
