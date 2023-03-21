@@ -33,6 +33,7 @@ export const initWeb3OnBoard = init({
       label: network.label,
       rpcUrl: network.infuraUrl,
       token: network.token,
+      color: network.color,
     })),
   ],
   appMetadata: {

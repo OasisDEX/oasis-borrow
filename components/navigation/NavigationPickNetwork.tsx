@@ -39,7 +39,7 @@ export function NavigationPickNetwork() {
           <>
             <Box
               sx={{
-                width: ['100%', '240px'],
+                width: ['100%', '260px'],
                 gap: 2,
                 display: 'flex',
                 flexDirection: 'column',
@@ -47,12 +47,13 @@ export function NavigationPickNetwork() {
               }}
             >
               {networks.map((network) => {
-                const isCurrentNetwork = network.label === currentNetworkName
+                const isCurrentNetwork = network.name === currentNetworkName
                 return (
                   <Button
                     variant="networkPicker"
                     sx={{
                       fontWeight: isCurrentNetwork ? '600' : '400',
+                      whiteSpace: 'pre',
                     }}
                     onClick={changeChain(network.name)}
                     disabled={
@@ -70,11 +71,16 @@ export function NavigationPickNetwork() {
                       }}
                     />
                     {network.label}
-                    {isCurrentNetwork && (
-                      <Box sx={{ width: '100%', textAlign: 'right' }}>
-                        <Icon name="tick" color="interactive100" />
-                      </Box>
-                    )}
+                    <Box
+                      sx={{
+                        width: '100%',
+                        textAlign: 'right',
+                        opacity: isCurrentNetwork ? 1 : 0,
+                        transition: '0.2s opacity',
+                      }}
+                    >
+                      <Icon name="tick" color="interactive100" />
+                    </Box>
                   </Button>
                 )
               })}
@@ -89,10 +95,10 @@ export function NavigationPickNetwork() {
 
 function NavigationPickNetworkIcon(_isOpen: boolean) {
   const [{ connecting: isWalletConnecting }] = useConnectWallet()
-  const networkName = useNetworkName()
+  const currentNetworkName = useNetworkName()
   return isWalletConnecting ? (
     <AppSpinner />
   ) : (
-    <Image src={networksByName[networkName].icon} sx={{ width: '42px', height: '42px' }} />
+    <Image src={networksByName[currentNetworkName].icon} sx={{ width: '42px', height: '42px' }} />
   )
 }
