@@ -2,6 +2,11 @@ import { ContractDesc } from 'features/web3Context'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
+import arbitrumMainnetIcon from 'public/static/img/network_icons/arbitrum_mainnet.svg'
+import avalancheMainnetIcon from 'public/static/img/network_icons/avalanche_mainnet.svg'
+import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainnet.svg'
+import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
+import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 import { Dictionary } from 'ts-essentials'
 
 import * as aaveV2LendingPool from './abi/aave-v2-lending-pool.json'
@@ -172,7 +177,10 @@ const protoMain = {
   hexId: '0x1',
   token: 'ETH',
   name: 'ethereumMainnet',
-  label: 'Mainnet',
+  label: 'Ethereum',
+  icon: ethereumMainnetIcon as string,
+  isTestnet: false,
+  enabled: true,
   infuraUrl: mainnetRpc,
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
@@ -305,7 +313,10 @@ const goerli: NetworkConfig = {
   hexId: '0x5',
   token: 'GoerliETH',
   name: 'ethereumGoerli',
-  label: 'goerli',
+  label: 'Ethereum Goerli',
+  icon: ethereumMainnetIcon as string,
+  isTestnet: true,
+  enabled: true,
   infuraUrl: goerliRpc,
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
@@ -435,39 +446,70 @@ const hardhat: NetworkConfig = {
   id: '2137',
   hexId: '0x859',
   name: 'ethereumHardhat',
-  label: 'Hardhat',
+  label: 'Ethereum Hardhat',
+  icon: ethereumMainnetIcon as string,
+  isTestnet: true,
+  enabled: true,
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
-const arbitrum: Partial<NetworkConfig> = {
+const arbitrum: NetworkConfig = {
   ...protoMain,
   id: '42161',
   hexId: '0xa4b1',
   name: 'arbitrumMainnet',
   label: 'Arbitrum',
+  icon: arbitrumMainnetIcon as string,
+  isTestnet: false,
+  enabled: true,
   token: 'ETH',
   infuraUrl: `https://rpc.ankr.com/arbitrum`,
-  infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
-const avalanche: Partial<NetworkConfig> = {
+const avalanche: NetworkConfig = {
   ...protoMain,
   id: '43114',
   hexId: '0xa86a',
   name: 'avalancheMainnet',
   label: 'Avalanche',
+  icon: avalancheMainnetIcon as string,
+  isTestnet: false,
+  enabled: true,
   token: 'ETH',
   infuraUrl: `https://api.avax.network/ext/bc/C/rpc`,
-  infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
+}
+
+const optimism: NetworkConfig = {
+  ...protoMain,
+  id: '10',
+  hexId: '0xa',
+  name: 'optimismMainnet',
+  label: 'Optimism',
+  icon: optimismMainnetIcon as string,
+  isTestnet: false,
+  enabled: true,
+  token: 'ETH',
+  infuraUrl: `https://mainnet.optimism.io`,
+}
+
+const polygon: NetworkConfig = {
+  ...protoMain,
+  id: '137',
+  hexId: '0x89',
+  name: 'polygonMainnet',
+  label: 'Polygon',
+  icon: polygonMainnetIcon as string,
+  isTestnet: false,
+  enabled: true,
+  token: 'ETH',
+  infuraUrl: `https://polygon-rpc.com`,
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
-export const networks = [main, hardhat, goerli, arbitrum, avalanche]
+export const networks = [main, hardhat, goerli, arbitrum, avalanche, optimism, polygon]
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')
 export const networksByHexId = keyBy(networks, 'hexId')

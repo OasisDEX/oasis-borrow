@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { networksByName } from 'blockchain/config'
-import { NetworkNameType, networksList } from 'blockchain/networksList'
+import { networks, networksByName } from 'blockchain/config'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useNetworkName } from 'helpers/useNetworkName'
@@ -13,10 +12,8 @@ import { NavigationOrb } from './NavigationMenuOrb'
 export function NavigationPickNetwork() {
   const [{ chains: usableChains, settingChain }, setChain] = useSetChain()
   const currentNetworkName = useNetworkName()
-  // const context = useWeb3React<Web3Provider>()
-  // console.log('context', context)
   const [, setCustomNetwork] = useCustomNetworkParameter()
-  const changeChain = (networkName: NetworkNameType) => () => {
+  const changeChain = (networkName: string) => () => {
     const network = networksByName[networkName]
     setChain({ chainId: network.hexId! })
       .then((setChainSuccess) => {
@@ -49,31 +46,30 @@ export function NavigationPickNetwork() {
                 padding: 3,
               }}
             >
-              {Object.keys(networksList).map((networkListName) => {
-                const networkData = networksList[networkListName as NetworkNameType]
-                const isCurrentNetwork = networkListName === currentNetworkName
+              {networks.map((network) => {
+                const isCurrentNetwork = network.label === currentNetworkName
                 return (
                   <Button
                     variant="networkPicker"
                     sx={{
                       fontWeight: isCurrentNetwork ? '600' : '400',
                     }}
-                    onClick={changeChain(networkListName as NetworkNameType)}
+                    onClick={changeChain(network.name)}
                     disabled={
-                      !usableChains.map(({ label }) => label).includes(networkListName) ||
+                      !usableChains.map(({ label }) => label).includes(network.label) ||
                       settingChain
                     }
-                    key={networkListName}
+                    key={network.hexId}
                   >
                     <Image
-                      src={networkData.icon}
+                      src={network.icon}
                       sx={{
                         mr: 3,
                         minWidth: 4,
                         minHeight: 4,
                       }}
                     />
-                    {networkData.displayName}
+                    {network.label}
                     {isCurrentNetwork && (
                       <Box sx={{ width: '100%', textAlign: 'right' }}>
                         <Icon name="tick" color="interactive100" />
@@ -97,6 +93,6 @@ function NavigationPickNetworkIcon(_isOpen: boolean) {
   return isWalletConnecting ? (
     <AppSpinner />
   ) : (
-    <Image src={networksList[networkName].icon} sx={{ width: '42px', height: '42px' }} />
+    <Image src={networksByName[networkName].icon} sx={{ width: '42px', height: '42px' }} />
   )
 }

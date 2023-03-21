@@ -30,7 +30,7 @@ export const initWeb3OnBoard = init({
   chains: [
     ...networks.map((network) => ({
       id: network.hexId,
-      label: network.name,
+      label: network.label,
       rpcUrl: network.infuraUrl,
       token: network.token,
     })),

@@ -1,5 +1,4 @@
 import { networksByName } from 'blockchain/config'
-import { NetworkNameType, networksList } from 'blockchain/networksList'
 import { CustomNetworkStorageKey } from 'helpers/getCustomNetworkParameter'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { getStorageValue } from 'helpers/useLocalStorage'
@@ -35,7 +34,7 @@ export function getNetworkName(): string {
     return defaultNetwork
   }
   const networkName = decodeURIComponent(matchesIfFound[1].replace(/\+/g, ' '))
-  if (isUndefined(networksList[networkName as NetworkNameType])) {
+  if (isUndefined(networksByName[networkName])) {
     throw new Error(`Unsupported network in URL param: ${networkName}`)
   }
   return networkName

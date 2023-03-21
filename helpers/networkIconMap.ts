@@ -1,6 +1,4 @@
-import { NetworkNameType } from 'blockchain/networksList'
-
-export const networkIconMap: Record<NetworkNameType, string> = {
+export const networkIconMap: Record<string, string> = {
   ethereumMainnet: '',
   ethereumHardhat: '👷 ',
   ethereumGoerli: '🌲 ',
