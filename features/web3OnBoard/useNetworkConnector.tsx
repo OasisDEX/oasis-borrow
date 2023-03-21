@@ -4,7 +4,7 @@ import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useMemo } from 'react'
 
 export function useNetworkConnector(): NetworkConnector {
-  const network = useCustomNetworkParameter()
+  const [network] = useCustomNetworkParameter()
   return useMemo(() => {
     return new NetworkConnector({
       urls: { [network?.id]: networksById[network?.id].infuraUrl },
