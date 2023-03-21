@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { Context, NetworkIds } from 'blockchain/network'
+import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'

@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 
 export type Subgraphs = {

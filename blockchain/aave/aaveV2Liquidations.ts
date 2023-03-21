@@ -1,4 +1,5 @@
-import { Context, NetworkIds } from 'blockchain/network'
+import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getNetworkId } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'

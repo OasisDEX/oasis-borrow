@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { Subgraphs, SubgraphsRecord } from 'features/subgraphLoader/types'
 import { gql } from 'graphql-request'
 import getConfig from 'next/config'
