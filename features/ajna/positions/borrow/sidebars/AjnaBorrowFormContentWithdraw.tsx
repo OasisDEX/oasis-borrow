@@ -32,9 +32,9 @@ export function AjnaBorrowFormContentWithdraw() {
       <AjnaFormFieldWithdraw
         dispatchAmount={dispatch}
         maxAmount={collateralMax}
+        resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
-        resetOnClear
       />
       <AjnaFormFieldPayback
         dispatchAmount={dispatch}
