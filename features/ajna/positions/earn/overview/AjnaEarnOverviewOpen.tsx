@@ -50,15 +50,15 @@ export function AjnaEarnOverviewOpen() {
   const rowsInput = [
     {
       apy: apy1Day,
-      translation: t('ajna.earn.open.simulation.rowlabel1'),
+      translation: t('ajna.position-page.earn.open.simulation.earnings-per-day'),
     },
     {
       apy: apy30Days,
-      translation: t('ajna.earn.open.simulation.rowlabel2'),
+      translation: t('ajna.position-page.earn.open.simulation.earnings-per-30d'),
     },
     {
       apy: apy365Days,
-      translation: t('ajna.earn.open.simulation.rowlabel3'),
+      translation: t('ajna.position-page.earn.open.simulation.earnings-per-1y'),
     },
   ]
 
