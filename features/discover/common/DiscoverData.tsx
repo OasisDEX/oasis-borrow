@@ -1,5 +1,5 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
-import { NetworkIds } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { DiscoverDataResponse } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
