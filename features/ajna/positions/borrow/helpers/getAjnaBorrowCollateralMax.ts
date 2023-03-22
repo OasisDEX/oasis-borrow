@@ -16,10 +16,10 @@ export function getAjnaBorrowCollateralMax({
   },
   simulation,
 }: AjnaBorrowCollateralMaxParams) {
-  const resolveedDebtAmount = simulation?.debtAmount || debtAmount
-  const resolveedLowestUtilizedPrice = simulation?.pool.lowestUtilizedPrice || lowestUtilizedPrice
+  const resolvedDebtAmount = simulation?.debtAmount || debtAmount
+  const resolvedLowestUtilizedPrice = simulation?.pool.lowestUtilizedPrice || lowestUtilizedPrice
 
   return collateralAmount
-    .minus(resolveedDebtAmount.div(resolveedLowestUtilizedPrice))
+    .minus(resolvedDebtAmount.div(resolvedLowestUtilizedPrice))
     .decimalPlaces(digits, BigNumber.ROUND_DOWN)
 }

@@ -185,8 +185,8 @@ export function AjnaFormFieldPayback({
       action="Payback"
       currencyCode={quoteToken}
       tokenUsdPrice={quotePrice}
-      amount={state.paybackAmount?.decimalPlaces(6)}
-      auxiliaryAmount={state.paybackAmountUSD?.decimalPlaces(6)}
+      amount={state.paybackAmount}
+      auxiliaryAmount={state.paybackAmountUSD}
       hasAuxiliary={true}
       hasError={false}
       disabled={isDisabled}
