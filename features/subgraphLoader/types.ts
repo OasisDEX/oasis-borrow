@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 
 export type Subgraphs = {
   Ajna: {
