@@ -1,4 +1,4 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'

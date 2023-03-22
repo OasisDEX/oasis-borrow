@@ -1,5 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
-import { disconnect } from 'components/connectWallet/ConnectWallet'
+import { disconnect } from 'components/connectWallet'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'
 import React, { ReactNode, useEffect } from 'react'

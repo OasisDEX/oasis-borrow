@@ -1,4 +1,4 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { ProductPagesLayout } from 'components/Layouts'
 import { MultiplyView } from 'features/multiply/MultiplyView'

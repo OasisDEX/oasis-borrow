@@ -1,4 +1,4 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { MarketingLayout } from 'components/Layouts'
 import { CollateralPricesView } from 'features/collateralPrices/CollateralPricesView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
