@@ -27,7 +27,7 @@ export function AjnaEarnFormContentDeposit() {
         tokenBalance={quoteBalance}
         tokenPrice={quotePrice}
       />
-      <PillAccordion title={t('ajna.earn.manage.form.adjust-lending-price-bucket')}>
+      <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>
         <AjnaEarnSlider />
       </PillAccordion>
       {isFormValid && (

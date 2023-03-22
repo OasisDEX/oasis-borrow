@@ -2494,7 +2494,9 @@
           },
           "form": {
             "max-ltv-to-lend-at": "Max LTV to lend at",
-            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
+            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
+            "adjust-lending-price-bucket": "Adjust lending price bucket",
+            "ajna-fee": "Ajna fee"
           }
         },
         "open": {

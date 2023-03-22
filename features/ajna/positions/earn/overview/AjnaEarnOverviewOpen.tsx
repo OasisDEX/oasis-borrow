@@ -10,6 +10,7 @@ import {
   getAjnaSimulationRows,
 } from 'features/ajna/positions/earn/helpers/overview'
 import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnOpen'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -23,26 +24,29 @@ export function AjnaEarnOverviewOpen() {
       state: { depositAmount },
     },
     position: {
-      currentPosition: { position },
+      currentPosition: { simulation },
     },
   } = useAjnaProductContext('earn')
 
-  const openPositionFees = averageGasWhenOpeningAjnaEarnPosition
+  const openPositionGasFee = averageGasWhenOpeningAjnaEarnPosition
     .times(gasPrice.maxFeePerGas.plus(gasPrice.maxPriorityFeePerGas).shiftedBy(-9))
     .times(ethPrice)
     .shiftedBy(-9)
 
-  const apy365Days = position.getApyPerDays({
+  const feeWhenActionBelowLup = simulation?.getFeeWhenBelowLup(quotePrice) || zero
+  const openPositionFees = openPositionGasFee.plus(feeWhenActionBelowLup)
+
+  const apy365Days = simulation?.getApyPerDays({
     amount: depositAmount,
     days: 365,
   })
 
-  const apy1Day = position.getApyPerDays({
+  const apy1Day = simulation?.getApyPerDays({
     amount: depositAmount,
     days: 1,
   })
 
-  const apy30Days = position.getApyPerDays({
+  const apy30Days = simulation?.getApyPerDays({
     amount: depositAmount,
     days: 30,
   })
@@ -88,7 +92,7 @@ export function AjnaEarnOverviewOpen() {
                 ? new Date(new Date().getTime() + breakEvenInDays * 24 * 60 * 60 * 1000)
                 : undefined
             }
-            totalValueLocked={position.pool.depositSize.times(quotePrice)}
+            totalValueLocked={simulation?.pool.depositSize.times(quotePrice)}
             apy={apy30Days}
             days={30}
           />

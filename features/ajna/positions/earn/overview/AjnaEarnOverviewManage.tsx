@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -26,6 +25,8 @@ export function AjnaEarnOverviewManage() {
     notifications,
   } = useAjnaProductContext('earn')
 
+  console.log('pool', position.pool)
+
   return (
     <DetailsSection
       notifications={notifications}
@@ -36,8 +37,8 @@ export function AjnaEarnOverviewManage() {
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
             // TODO adjust once data available in subgraph
-            currentEarnings={new BigNumber(190)}
-            netPnL={new BigNumber(12.35)}
+            currentEarnings={zero}
+            netPnL={zero}
           />
           <ContentCardTokensDeposited
             isLoading={isSimulationLoading}

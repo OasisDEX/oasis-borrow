@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import { zero } from 'helpers/zero'
 
 import { GetPoolData } from '@oasisdex/oasis-actions-poc/src/views/ajna'
 
@@ -21,6 +20,10 @@ export interface AjnaPoolDataResponse {
   apr30dAverage: string
   dailyPercentageRate30dAverage: string
   monthlyPercentageRate30dAverage: string
+  poolMinDebtAmount: string
+  poolCollateralization: string
+  poolActualUtilization: string
+  poolTargetUtilization: string
 }
 
 export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
@@ -46,6 +49,10 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       apr30dAverage,
       dailyPercentageRate30dAverage,
       monthlyPercentageRate30dAverage,
+      poolMinDebtAmount,
+      poolCollateralization,
+      poolActualUtilization,
+      poolTargetUtilization,
     } = response.pool
     return {
       poolAddress: address,
@@ -65,10 +72,10 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
 
       mostOptimisticMatchingPrice: new BigNumber(momp).shiftedBy(-18),
 
-      poolMinDebtAmount: zero,
-      poolCollateralization: zero,
-      poolActualUtilization: zero,
-      poolTargetUtilization: zero,
+      poolMinDebtAmount: new BigNumber(poolMinDebtAmount).shiftedBy(-18),
+      poolCollateralization: new BigNumber(poolCollateralization).shiftedBy(-18),
+      poolActualUtilization: new BigNumber(poolActualUtilization).shiftedBy(-18),
+      poolTargetUtilization: new BigNumber(poolTargetUtilization).shiftedBy(-18),
       interestRate: new BigNumber(interestRate).shiftedBy(-18),
 
       debt: new BigNumber(debt).shiftedBy(-18),

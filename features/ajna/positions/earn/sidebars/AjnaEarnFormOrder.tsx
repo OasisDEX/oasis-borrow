@@ -39,6 +39,9 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
     days: 365,
   })
 
+  const feeWhenActionBelowLup = simulationData?.getFeeWhenBelowLup(quotePrice) || zero
+  const withAjnaFee = feeWhenActionBelowLup.gt(zero)
+
   const isLoading = !cached && isSimulationLoading
   const formatted = {
     amountToLend: formatCryptoBalance(positionData.quoteTokenAmount),
@@ -54,7 +57,9 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
       simulationData?.price &&
       formatDecimalAsPercent(simulationData?.price.div(collateralPrice.div(quotePrice))),
     afterLendingPrice: simulationData?.price && formatCryptoBalance(simulationData.price),
-    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
+    totalCost: txDetails?.txCost
+      ? `$${formatAmount(txDetails.txCost.plus(feeWhenActionBelowLup), 'USD')}`
+      : '-',
   }
 
   return (
@@ -93,7 +98,24 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
             }
           : {
               label: t('system.max-transaction-cost'),
-              value: <GasEstimation />,
+              value: (
+                <>
+                  <GasEstimation />
+                  {withAjnaFee && <>{` + ${formatAmount(feeWhenActionBelowLup, 'USD')}$`}</>}
+                </>
+              ),
+              dropdownValues: withAjnaFee
+                ? [
+                    {
+                      label: t('max-gas-fee'),
+                      value: <GasEstimation />,
+                    },
+                    {
+                      label: t('ajna.position-page.earn.common.form.ajna-fee'),
+                      value: `${formatAmount(feeWhenActionBelowLup, 'USD')}$`,
+                    },
+                  ]
+                : undefined,
               isLoading,
             },
       ]}

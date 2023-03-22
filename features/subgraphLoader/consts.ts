@@ -51,6 +51,10 @@ export const subgraphMethodsRecord: {
         apr30dAverage
         dailyPercentageRate30dAverage
         monthlyPercentageRate30dAverage
+        poolMinDebtAmount
+        poolCollateralization
+        poolActualUtilization
+        poolTargetUtilization
       }
     }
   `,
