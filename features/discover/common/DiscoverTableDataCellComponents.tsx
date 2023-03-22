@@ -38,8 +38,6 @@ export function DiscoverTableDataCellAsset({
 }) {
   const { t } = useTranslation()
 
-  console.log('icons', icons)
-
   return (
     <Flex sx={{ alignItems: 'center' }}>
       {follow && id && (
