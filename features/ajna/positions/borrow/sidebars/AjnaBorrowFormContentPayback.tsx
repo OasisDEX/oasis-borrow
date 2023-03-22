@@ -1,5 +1,6 @@
-import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
+import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -12,7 +13,7 @@ import React from 'react'
 
 export function AjnaBorrowFormContentPayback() {
   const {
-    environment: { collateralPrice, collateralToken, quoteBalance },
+    environment: { collateralPrice, collateralToken, quoteBalance, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -24,14 +25,23 @@ export function AjnaBorrowFormContentPayback() {
     },
   } = useAjnaProductContext('borrow')
 
-  const collateralMax = getAjnaBorrowCollateralMax({ position, simulation })
+  const collateralMax = getAjnaBorrowCollateralMax({
+    digits: getToken(collateralToken).digits,
+    position,
+    simulation,
+  })
+  const paybackMax = getAjnaBorrowPaybackMax({
+    balance: quoteBalance,
+    digits: getToken(quoteToken).digits,
+    position,
+  })
   const { debtAmount } = position
 
   return (
     <>
       <AjnaFormFieldPayback
         dispatchAmount={dispatch}
-        maxAmount={BigNumber.min(debtAmount, quoteBalance)}
+        maxAmount={paybackMax}
         maxAmountLabel={quoteBalance.lt(debtAmount) ? 'balance' : 'max'}
         resetOnClear
       />

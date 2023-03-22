@@ -1,11 +1,14 @@
 import { AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import BigNumber from 'bignumber.js'
 
 interface AjnaBorrowCollateralMaxParams {
+  digits: number
   position: AjnaPosition
   simulation?: AjnaPosition
 }
 
 export function getAjnaBorrowCollateralMax({
+  digits,
   position: {
     collateralAmount,
     debtAmount,
@@ -16,5 +19,7 @@ export function getAjnaBorrowCollateralMax({
   const resolveedDebtAmount = simulation?.debtAmount || debtAmount
   const resolveedLowestUtilizedPrice = simulation?.pool.lowestUtilizedPrice || lowestUtilizedPrice
 
-  return collateralAmount.minus(resolveedDebtAmount.div(resolveedLowestUtilizedPrice))
+  return collateralAmount
+    .minus(resolveedDebtAmount.div(resolveedLowestUtilizedPrice))
+    .decimalPlaces(digits, BigNumber.ROUND_DOWN)
 }
