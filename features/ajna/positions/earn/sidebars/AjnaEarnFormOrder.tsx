@@ -32,7 +32,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
   const apyCurrentPosition = positionData.apy
   const apySimulation = simulationData?.apy
 
-  const feeWhenActionBelowLup = simulationData?.getFeeWhenBelowLup(quotePrice) || zero
+  const feeWhenActionBelowLup = simulationData?.getFeeWhenBelowLup || zero
   const withAjnaFee = feeWhenActionBelowLup.gt(zero)
 
   const isLoading = !cached && isSimulationLoading
