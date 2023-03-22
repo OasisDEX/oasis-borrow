@@ -20,7 +20,7 @@ export function AjnaEarnOverviewOpen() {
       state: { depositAmount },
     },
     position: {
-      currentPosition: { simulation },
+      currentPosition: { simulation, position },
     },
   } = useAjnaProductContext('earn')
 
@@ -72,7 +72,7 @@ export function AjnaEarnOverviewOpen() {
                 ? new Date(new Date().getTime() + breakEvenInDays * 24 * 60 * 60 * 1000)
                 : undefined
             }
-            totalValueLocked={simulation?.pool.depositSize.times(quotePrice)}
+            totalValueLocked={position.pool.depositSize.times(quotePrice)}
             apy={simulation?.apy.per30d}
             days={30}
           />
