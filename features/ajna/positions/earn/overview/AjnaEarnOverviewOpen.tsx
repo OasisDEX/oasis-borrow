@@ -24,6 +24,8 @@ export function AjnaEarnOverviewOpen() {
     },
   } = useAjnaProductContext('earn')
 
+  // TODO currently its based on open nft in future we may need
+  // different value when position is being opened without nft
   const openPositionGasFee = averageGasWhenOpeningAjnaEarnPosition
     .times(gasPrice.maxFeePerGas.plus(gasPrice.maxPriorityFeePerGas).shiftedBy(-9))
     .times(ethPrice)
