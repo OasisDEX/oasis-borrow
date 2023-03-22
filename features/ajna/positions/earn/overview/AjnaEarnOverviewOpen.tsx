@@ -5,7 +5,7 @@ import { SimulateTitle } from 'components/SimulateTitle'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { averageGasWhenOpeningAjnaEarnPosition } from 'features/ajna/positions/earn/consts'
-import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/overview'
+import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/getAjnaSimulationRows'
 import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnOpen'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -31,41 +31,22 @@ export function AjnaEarnOverviewOpen() {
     .times(ethPrice)
     .shiftedBy(-9)
 
-  const apy365Days = simulation?.getApyPerDays({
-    amount: depositAmount,
-    days: 365,
-  })
-
-  const apy1Day = simulation?.getApyPerDays({
-    amount: depositAmount,
-    days: 1,
-  })
-
-  const apy30Days = simulation?.getApyPerDays({
-    amount: depositAmount,
-    days: 30,
-  })
-
   const rowsInput = [
     {
-      apy: apy1Day,
+      apy: simulation?.apy.per1d,
       translation: t('ajna.position-page.earn.open.simulation.earnings-per-day'),
     },
     {
-      apy: apy30Days,
+      apy: simulation?.apy.per30d,
       translation: t('ajna.position-page.earn.open.simulation.earnings-per-30d'),
     },
     {
-      apy: apy365Days,
+      apy: simulation?.apy.per365d,
       translation: t('ajna.position-page.earn.open.simulation.earnings-per-1y'),
     },
   ]
 
-  const breakEvenInDays = simulation?.getBreakEven({
-    depositAmount,
-    quotePrice,
-    openPositionGasFee,
-  })
+  const breakEvenInDays = simulation?.getBreakEven(openPositionGasFee)
 
   return (
     <DetailsSection
@@ -92,7 +73,7 @@ export function AjnaEarnOverviewOpen() {
                 : undefined
             }
             totalValueLocked={simulation?.pool.depositSize.times(quotePrice)}
-            apy={apy30Days}
+            apy={simulation?.apy.per30d}
             days={30}
           />
         </DetailsSectionFooterItemWrapper>

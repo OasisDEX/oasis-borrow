@@ -15,7 +15,7 @@ import React from 'react'
 export function AjnaEarnOverviewManage() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, quotePrice, collateralPrice },
+    environment: { collateralToken, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -24,8 +24,6 @@ export function AjnaEarnOverviewManage() {
     },
     notifications,
   } = useAjnaProductContext('earn')
-
-  console.log('pool', position.pool)
 
   return (
     <DetailsSection
@@ -51,8 +49,8 @@ export function AjnaEarnOverviewManage() {
             isLoading={isSimulationLoading}
             price={position.price}
             quoteToken={quoteToken}
-            maxLendingPercentage={position.price.div(collateralPrice.div(quotePrice))}
-            afterMaxLendingPercentage={simulation?.price.div(collateralPrice.div(quotePrice))}
+            maxLendingPercentage={position.maxRiskRatio.loanToValue}
+            afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
           />
           <ContentPositionLendingPrice
             isLoading={isSimulationLoading}
@@ -60,7 +58,7 @@ export function AjnaEarnOverviewManage() {
             quoteToken={quoteToken}
             positionLendingPrice={position.price}
             afterPositionLendingPrice={simulation?.price}
-            relationToMarketPrice={position.price.div(collateralPrice.div(quotePrice)).minus(one)}
+            relationToMarketPrice={position.maxRiskRatio.loanToValue.minus(one)}
           />
         </DetailsSectionContentCardWrapper>
       }

@@ -2512,8 +2512,8 @@
         },
         "manage": {
           "overview": {
-            "above-market-price": "{{amount}}% above market price",
-            "below-market-price": "{{amount}}% below market price",
+            "above-market-price": "{{amount}} above market price",
+            "below-market-price": "{{amount}} below market price",
             "current-earnings": "Current earnings",
             "projected-annual-reward": "Projected annual reward",
             "total-ajna-rewards": "Total AJNA rewards",

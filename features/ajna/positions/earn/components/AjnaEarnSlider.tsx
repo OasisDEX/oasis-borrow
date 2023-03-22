@@ -4,7 +4,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
@@ -95,7 +95,7 @@ function convertSliderThresholds({
 export function AjnaEarnSlider() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, collateralPrice, quotePrice },
+    environment: { collateralToken, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -103,17 +103,15 @@ export function AjnaEarnSlider() {
       updateState,
     },
     position: {
-      currentPosition: {
-        position: {
-          pool: { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice },
-        },
-      },
+      currentPosition: { position },
     },
   } = useAjnaProductContext('earn')
 
+  const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
+
   const resolvedValue = (price || highestThresholdPrice).decimalPlaces(2)
 
-  const maxLtv = price?.div(collateralPrice.div(quotePrice)) || zero
+  const maxLtv = position.getMaxLtv(price)
 
   const { min, max, range } = useMemo(
     () =>

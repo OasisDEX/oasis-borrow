@@ -19,26 +19,16 @@ export function AjnaEarnPositionController() {
     },
   } = useAjnaProductContext('earn')
 
-  const apy7Days = position.getApyPerDays({
-    amount: position.pool.depositSize,
-    days: 7,
-  })
-
-  const apy90Days = position.getApyPerDays({
-    amount: position.pool.depositSize,
-    days: 90,
-  })
-
   return (
     <AjnaPositionView
       headlineDetails={[
         {
           label: t('ajna.position-page.earn.common.headline.current-yield'),
-          value: apy7Days ? formatDecimalAsPercent(apy7Days) : '-',
+          value: position.poolApy.per7d ? formatDecimalAsPercent(position.poolApy.per7d) : '-',
         },
         {
           label: t('ajna.position-page.earn.common.headline.90-day-avg'),
-          value: apy90Days ? formatDecimalAsPercent(apy90Days) : '-',
+          value: position.poolApy.per90d ? formatDecimalAsPercent(position.poolApy.per90d) : '-',
         },
       ]}
       tabs={{

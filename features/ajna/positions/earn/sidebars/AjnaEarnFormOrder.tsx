@@ -29,15 +29,8 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
     currentPosition,
   })
 
-  const positionApy365Days = positionData.getApyPerDays({
-    amount: positionData.quoteTokenAmount,
-    days: 365,
-  })
-
-  const simulationApy365Days = simulationData?.getApyPerDays({
-    amount: simulationData.quoteTokenAmount,
-    days: 365,
-  })
+  const apyCurrentPosition = positionData.apy
+  const apySimulation = simulationData?.apy
 
   const feeWhenActionBelowLup = simulationData?.getFeeWhenBelowLup(quotePrice) || zero
   const withAjnaFee = feeWhenActionBelowLup.gt(zero)
@@ -46,13 +39,13 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
   const formatted = {
     amountToLend: formatCryptoBalance(positionData.quoteTokenAmount),
     maxLtv: formatDecimalAsPercent(positionData.price.div(collateralPrice.div(quotePrice))),
-    netApy: positionApy365Days
-      ? formatDecimalAsPercent(positionApy365Days)
+    netApy: apyCurrentPosition.per365d
+      ? formatDecimalAsPercent(apyCurrentPosition.per365d)
       : formatDecimalAsPercent(zero),
     lendingPrice: formatCryptoBalance(positionData.price),
     afterAmountToLend:
       simulationData?.quoteTokenAmount && formatCryptoBalance(simulationData.quoteTokenAmount),
-    afterNetApy: simulationApy365Days && formatDecimalAsPercent(simulationApy365Days),
+    afterNetApy: apySimulation?.per365d && formatDecimalAsPercent(apySimulation.per365d),
     afterMaxLtv:
       simulationData?.price &&
       formatDecimalAsPercent(simulationData?.price.div(collateralPrice.div(quotePrice))),

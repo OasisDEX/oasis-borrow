@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 
-export const getAjnaSimulationData = ({
+const getAjnaSimulationData = ({
   depositAmount,
   apy,
 }: {

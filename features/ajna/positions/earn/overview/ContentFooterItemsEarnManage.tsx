@@ -43,7 +43,7 @@ export function ContentFooterItemsEarnManage({
       <DetailsSectionFooterItem
         title={t('ajna.position-page.earn.manage.overview.projected-annual-reward')}
         value={formatted.projectedAnnualReward}
-      />{' '}
+      />
       <DetailsSectionFooterItem
         title={t('ajna.position-page.earn.manage.overview.total-ajna-rewards')}
         value={formatted.totalAjnaRewards}

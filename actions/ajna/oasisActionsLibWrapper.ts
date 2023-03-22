@@ -157,6 +157,8 @@ export async function getAjnaParameters({
           collateralAmount: zero,
           quoteAmount: depositAmount || zero,
           position: position as AjnaEarnPosition,
+          collateralPrice,
+          quotePrice,
         },
         { ...dependencies },
       )
@@ -171,6 +173,8 @@ export async function getAjnaParameters({
           collateralAmount: zero,
           quoteAmount: withdrawAmount || zero,
           position: position as AjnaEarnPosition,
+          collateralPrice,
+          quotePrice,
         },
         { ...dependencies },
       )
