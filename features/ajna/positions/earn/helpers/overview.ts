@@ -1,23 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 
-export const getAjnaBreakEven = ({
-  openPositionFees,
-  depositAmount,
-  apy1Day,
-}: {
-  openPositionFees: BigNumber
-  depositAmount?: BigNumber
-  apy1Day?: BigNumber
-}) => {
-  if (!apy1Day || !depositAmount) return undefined
-
-  return (
-    Math.log(depositAmount.plus(openPositionFees).div(depositAmount).toNumber()) /
-    apy1Day.toNumber()
-  )
-}
-
 export const getAjnaSimulationData = ({
   depositAmount,
   apy,

@@ -5,12 +5,8 @@ import { SimulateTitle } from 'components/SimulateTitle'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { averageGasWhenOpeningAjnaEarnPosition } from 'features/ajna/positions/earn/consts'
-import {
-  getAjnaBreakEven,
-  getAjnaSimulationRows,
-} from 'features/ajna/positions/earn/helpers/overview'
+import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/overview'
 import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnOpen'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -32,9 +28,6 @@ export function AjnaEarnOverviewOpen() {
     .times(gasPrice.maxFeePerGas.plus(gasPrice.maxPriorityFeePerGas).shiftedBy(-9))
     .times(ethPrice)
     .shiftedBy(-9)
-
-  const feeWhenActionBelowLup = simulation?.getFeeWhenBelowLup(quotePrice) || zero
-  const openPositionFees = openPositionGasFee.plus(feeWhenActionBelowLup)
 
   const apy365Days = simulation?.getApyPerDays({
     amount: depositAmount,
@@ -66,7 +59,11 @@ export function AjnaEarnOverviewOpen() {
     },
   ]
 
-  const breakEvenInDays = getAjnaBreakEven({ depositAmount, apy1Day, openPositionFees })
+  const breakEvenInDays = simulation?.getBreakEven({
+    depositAmount,
+    quotePrice,
+    openPositionGasFee,
+  })
 
   return (
     <DetailsSection
