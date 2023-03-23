@@ -447,7 +447,7 @@
     "hero": {
       "maker": {
         "headline": "Simple and Secure DeFi",
-        "subheader": "Take advantage of powerful automation strategies and user-friendly UX. Borrow, Multiply and Earn on the assets you hold."
+        "subheader": "Borrow, Multiply and Earn on the assets you hold across multiple protocols. Take advantage of powerful automation strategies and simple UX."
       },
       "ajna": {
         "headline": "Borrow and lend your crypto on Ajna",
@@ -697,8 +697,8 @@
       "next-price": "Next Price",
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
-      "net-value": "Net Value & Unrealised P&L",
-      "unrealised-pnl": "Unrealised Profit & Loss",
+      "net-value": "Net Value & P&L",
+      "unrealised-pnl": "Profit & Loss",
       "based-on-price": "The current net value is calculated based on the market price of",
       "based-on-price-lp": "The current net value is calculated based on the oracle price of",
       "total-col": "Total Col:",
@@ -711,7 +711,7 @@
       "withdraws": "Withdraws",
       "gas-fees": "Gas Fees spent",
       "market-price-unavailable": "Market price temporally unavailable, please check later",
-      "formula": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative  deposits",
+      "formula": "P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative  deposits",
       "formula-note": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction.",
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
       "profit-and-loss": "P&L",
