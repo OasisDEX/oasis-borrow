@@ -154,6 +154,16 @@ const ACCOUNT_GUARD_FACTORY_GENESIS = {
   goerli: 8420373,
 }
 
+const AAVE_V3_POOL_GENESIS = {
+  mainnet: 16291127,
+  goerli: 8294332,
+}
+
+const AAVE_V2_LENDING_POOL_GENESIS = {
+  mainnet: 11362579,
+  goerli: 7480475,
+}
+
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
@@ -268,7 +278,11 @@ const protoMain = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveV2LendingPool: contractDesc(aaveV2LendingPool, mainnetAddresses.AAVE_V2_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(
+    aaveV2LendingPool,
+    mainnetAddresses.AAVE_V2_LENDING_POOL,
+    AAVE_V2_LENDING_POOL_GENESIS.mainnet,
+  ),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
   accountFactory: contractDesc(
@@ -281,7 +295,7 @@ const protoMain = {
     mainnetAddresses.ACCOUNT_GUARD,
     ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL),
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS.mainnet),
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnetAddresses.AAVE_V3_ORACLE),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
@@ -403,7 +417,11 @@ const goerli: NetworkConfig = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveV2LendingPool: contractDesc(aaveV2LendingPool, goerliAddresses.AAVE_V2_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(
+    aaveV2LendingPool,
+    goerliAddresses.AAVE_V2_LENDING_POOL,
+    AAVE_V2_LENDING_POOL_GENESIS.goerli,
+  ),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
   accountFactory: contractDesc(
@@ -416,7 +434,7 @@ const goerli: NetworkConfig = {
     goerliAddresses.ACCOUNT_GUARD,
     ACCOUNT_GUARD_FACTORY_GENESIS.goerli,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, goerliAddresses.AAVE_V3_POOL),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerliAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS.goerli),
   aaveV3Oracle: contractDesc(aaveV3Oracle, goerliAddresses.AAVE_V3_ORACLE),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
