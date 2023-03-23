@@ -25,6 +25,7 @@ export interface AjnaPoolDataResponse {
   poolCollateralization: string
   poolActualUtilization: string
   poolTargetUtilization: string
+  currentBurnEpoch: string
 }
 
 export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
@@ -56,6 +57,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       poolCollateralization,
       poolActualUtilization,
       poolTargetUtilization,
+      currentBurnEpoch,
     } = response.pool
 
     return {
@@ -91,6 +93,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       monthlyPercentageRate30dAverage: new BigNumber(monthlyPercentageRate30dAverage)
         .shiftedBy(negativeWadPrecision)
         .shiftedBy(2),
+      currentBurnEpoch: new BigNumber(currentBurnEpoch),
     }
   }
 
