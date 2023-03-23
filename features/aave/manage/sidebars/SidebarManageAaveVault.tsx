@@ -74,9 +74,9 @@ function isLocked(state: ManageAaveStateMachineState) {
 }
 
 function textButtonReturningToAdjust({
-                                       state,
-                                       send,
-                                     }: ManageAaveStateProps): Pick<SidebarSectionProps, 'textButton'> {
+  state,
+  send,
+}: ManageAaveStateProps): Pick<SidebarSectionProps, 'textButton'> {
   const { t } = useTranslation()
   if (state.can('BACK_TO_EDITING')) {
     return {
@@ -131,18 +131,18 @@ function getAmountReceivedAfterClose(
 
   const { fee, fromTokenAmount, toTokenAmount } = transitionHasSwap(strategy)
     ? {
-      fromTokenAmount: strategy.simulation.swap.fromTokenAmount,
-      toTokenAmount: strategy.simulation.swap.toTokenAmount,
-      fee:
-        strategy.simulation.swap.collectFeeFrom === 'targetToken'
-          ? strategy.simulation.swap.tokenFee
-          : zero, // fee already accounted for in toTokenAmount
-    }
+        fromTokenAmount: strategy.simulation.swap.fromTokenAmount,
+        toTokenAmount: strategy.simulation.swap.toTokenAmount,
+        fee:
+          strategy.simulation.swap.collectFeeFrom === 'targetToken'
+            ? strategy.simulation.swap.tokenFee
+            : zero, // fee already accounted for in toTokenAmount
+      }
     : {
-      fromTokenAmount: zero,
-      toTokenAmount: zero,
-      fee: zero,
-    }
+        fromTokenAmount: zero,
+        toTokenAmount: zero,
+        fee: zero,
+      }
 
   if (isCloseToCollateral) {
     return currentPosition.collateral.amount.minus(fromTokenAmount)
@@ -170,13 +170,13 @@ function BalanceAfterClose({ state }: ManageAaveStateProps) {
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Flex>
-        <Icon name={getToken(closingToken).iconCircle} size={22} sx={{ mr: 1 }}/>
+        <Icon name={getToken(closingToken).iconCircle} size={22} sx={{ mr: 1 }} />
         <Text variant="boldParagraph3" sx={{ color: 'neutral80', whiteSpace: 'pre' }}>
           {t('manage-earn.aave.vault-form.token-amount-after-closing', { token: closingToken })}
         </Text>
       </Flex>
       {isLoading(state) ? (
-        <Skeleton width={100}/>
+        <Skeleton width={100} />
       ) : (
         <Text variant="boldParagraph3">
           {balance} {closingToken}
@@ -193,7 +193,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
     title: t('manage-earn.aave.vault-form.adjust-title'),
     content: (
       <Grid gap={3}>
-        <OpenVaultAnimation/>
+        <OpenVaultAnimation />
         <StrategyInformationContainer
           state={state}
           changeSlippageSource={(from) => {
@@ -249,10 +249,10 @@ function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
 }
 
 function GetReviewingSidebarProps({
-                                    state,
-                                    send,
-                                    automation,
-                                  }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
+  state,
+  send,
+  automation,
+}: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
   const { collateral, debt } = state.context.tokens
   const stopLossError = automation?.stopLoss.stopLossError
@@ -293,7 +293,7 @@ function GetReviewingSidebarProps({
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {t('manage-earn.aave.vault-form.close-description', { closeToToken })}
             </Text>
-            {closeToToken && <BalanceAfterClose state={state} send={send}/>}
+            {closeToToken && <BalanceAfterClose state={state} send={send} />}
             {closeToToken && (
               <StrategyInformationContainer
                 state={state}
@@ -339,18 +339,18 @@ function GetReviewingSidebarProps({
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
-            {stopLossError && <StopLossAaveErrorMessage/>}
+            {stopLossError && <StopLossAaveErrorMessage />}
             {amountCollateralTooHigh && (
               <MessageCard
                 messages={
                   state.context.manageTokenInput?.manageTokenAction ===
                   ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
                     ? [
-                      t('vault-errors.withdraw-amount-exceeds-free-collateral', {
-                        maxWithdrawAmount: formatCryptoBalance(maxCollateralAmount),
-                        token: state.context.tokens.collateral,
-                      }),
-                    ]
+                        t('vault-errors.withdraw-amount-exceeds-free-collateral', {
+                          maxWithdrawAmount: formatCryptoBalance(maxCollateralAmount),
+                          token: state.context.tokens.collateral,
+                        }),
+                      ]
                     : [t('vault-errors.deposit-amount-exceeds-collateral-balance')]
                 }
                 type="error"
@@ -399,24 +399,24 @@ function GetReviewingSidebarProps({
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
-            {stopLossError && <StopLossAaveErrorMessage/>}
+            {stopLossError && <StopLossAaveErrorMessage />}
             {amountDebtTooHigh && (
               <MessageCard
                 messages={
                   state.context.manageTokenInput?.manageTokenAction ===
                   ManageDebtActionsEnum.PAYBACK_DEBT
                     ? [
-                      t('vault-errors.payback-amount-exceeds', {
-                        maxPaybackAmount: formatCryptoBalance(maxDebtAmount),
-                        token: state.context.tokens.debt,
-                      }),
-                    ]
+                        t('vault-errors.payback-amount-exceeds', {
+                          maxPaybackAmount: formatCryptoBalance(maxDebtAmount),
+                          token: state.context.tokens.debt,
+                        }),
+                      ]
                     : [
-                      t('vault-errors.borrow-amount-exceeds-max', {
-                        maxBorrowAmount: formatCryptoBalance(maxDebtAmount),
-                        token: state.context.tokens.debt,
-                      }),
-                    ]
+                        t('vault-errors.borrow-amount-exceeds-max', {
+                          maxBorrowAmount: formatCryptoBalance(maxDebtAmount),
+                          token: state.context.tokens.debt,
+                        }),
+                      ]
                 }
                 type="error"
               />
@@ -451,11 +451,11 @@ function GetReviewingSidebarProps({
 }
 
 function ManageAaveReviewingStateView({
-                                        state,
-                                        send,
-                                        dropdownConfig,
-                                        automation,
-                                      }: WithDropdownConfig<ManageAaveStateProps>) {
+  state,
+  send,
+  dropdownConfig,
+  automation,
+}: WithDropdownConfig<ManageAaveStateProps>) {
   const { t } = useTranslation()
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
@@ -464,8 +464,8 @@ function ManageAaveReviewingStateView({
 
   const label = allowanceNeeded
     ? t('set-allowance-for', {
-      token: state.context.transactionToken || state.context.strategyConfig.tokens.deposit,
-    })
+        token: state.context.transactionToken || state.context.strategyConfig.tokens.deposit,
+      })
     : t('manage-earn.aave.vault-form.confirm-btn')
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -511,7 +511,7 @@ function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveSta
       <Grid gap={3}>
         <Box>
           <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')}/>
+            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
         <StrategyInformationContainer
@@ -540,7 +540,7 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
       <Grid gap={3}>
         <Box>
           <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')}/>
+            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
         <StrategyInformationContainer
@@ -727,17 +727,17 @@ export function SidebarManageAaveVault() {
         />
       )
     case state.matches('frontend.txInProgress'):
-      return <ManageAaveTransactionInProgressStateView state={state} send={send}/>
+      return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('frontend.txFailure'):
-      return <ManageAaveFailureStateView state={state} send={send}/>
+      return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-    (state.context.transition?.transaction.operationName ===
-      OPERATION_NAMES.aave.v2.CLOSE_POSITION ||
-      state.context.transition?.transaction.operationName ===
-      OPERATION_NAMES.aave.v3.CLOSE_POSITION):
-      return <ManageAaveSuccessClosePositionStateView state={state} send={send}/>
+      (state.context.transition?.transaction.operationName ===
+        OPERATION_NAMES.aave.v2.CLOSE_POSITION ||
+        state.context.transition?.transaction.operationName ===
+          OPERATION_NAMES.aave.v3.CLOSE_POSITION):
+      return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
-      return <ManageAaveSuccessAdjustPositionStateView state={state} send={send}/>
+      return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
     default: {
       return <></>
     }
