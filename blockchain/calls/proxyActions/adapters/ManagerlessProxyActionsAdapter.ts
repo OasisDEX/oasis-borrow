@@ -1,8 +1,7 @@
 import { ContextConnected } from 'blockchain/network'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
 import { ContractDesc } from 'features/web3Context'
-import { DssProxyActionsCharter } from 'types/web3-v1-contracts/dss-proxy-actions-charter'
-import { DssProxyActionsCropjoin } from 'types/web3-v1-contracts/dss-proxy-actions-cropjoin'
+import { DssProxyActionsCharter, DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,

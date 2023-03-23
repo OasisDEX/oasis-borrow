@@ -1,4 +1,4 @@
-import { McdEnd } from 'types/web3-v1-contracts/mcd-end'
+import { McdEnd } from 'types/web3-v1-contracts'
 
 import { CallDef } from './callsHelpers'
 

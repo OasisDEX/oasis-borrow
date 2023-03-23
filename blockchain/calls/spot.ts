@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { amountFromRay } from 'blockchain/utils'
-import { McdSpot } from 'types/web3-v1-contracts/mcd-spot'
+import { McdSpot } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
 import { CallDef } from './callsHelpers'

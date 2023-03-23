@@ -10,10 +10,12 @@ import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
-import { DssGuniProxyActions } from 'types/ethers-contracts'
-import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
-import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
-import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
+import {
+  DsProxy,
+  DssGuniProxyActions,
+  DssProxyActions,
+  MultiplyProxyActions,
+} from 'types/web3-v1-contracts'
 
 import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
 import { getWithdrawAndPaybackCallData } from './vaultActionsLogic'

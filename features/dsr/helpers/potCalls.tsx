@@ -5,9 +5,7 @@ import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { contractDesc } from 'blockchain/config'
 import { getToken } from 'blockchain/tokensMetadata'
-import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
-import { DssProxyActionsDsr } from 'types/web3-v1-contracts/dss-proxy-actions-dsr'
-import { McdPot } from 'types/web3-v1-contracts/mcd-pot'
+import { DsProxy, DssProxyActionsDsr, McdPot } from 'types/web3-v1-contracts'
 
 export const pie: CallDef<string, BigNumber> = {
   call: (_, { contract, mcdPot }) => contract<McdPot>(mcdPot).methods.pie,
