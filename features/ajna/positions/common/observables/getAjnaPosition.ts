@@ -4,6 +4,7 @@ import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
+import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { isEqual, uniq } from 'lodash'
@@ -43,6 +44,7 @@ export function getAjnaPosition$(
       const commonDependency = {
         poolInfoAddress: context.ajnaPoolInfo.address,
         provider: context.rpcProvider,
+        getPoolData: getAjnaPoolData,
       }
 
       return product === 'earn'

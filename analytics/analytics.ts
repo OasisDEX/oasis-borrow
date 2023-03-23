@@ -263,13 +263,21 @@ export const trackingEvents = {
     !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.Pageview, eventBody)
   },
 
-  accountChange: (account: string, network: string, walletType: string) => {
+  accountChange: (
+    account: string,
+    network: string,
+    walletType: string,
+    connectionMethod: string,
+    walletLabel: string | undefined,
+  ) => {
     const eventBody = {
       id: 'AccountChange',
       account,
       network,
       product: ProductType.BORROW,
       walletType,
+      connectionMethod,
+      walletLabel,
     }
 
     mixpanelInternalAPI(EventTypes.AccountChange, eventBody)

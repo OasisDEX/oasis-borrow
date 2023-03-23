@@ -92,10 +92,6 @@ function convertSliderThresholds({
   }
 }
 
-const ajnaSliderDefaults = {
-  maxLtv: new BigNumber(0.65),
-}
-
 export function AjnaEarnSlider() {
   const { t } = useTranslation()
   const {
@@ -107,16 +103,15 @@ export function AjnaEarnSlider() {
       updateState,
     },
     position: {
-      currentPosition: {
-        position: {
-          pool: { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice },
-        },
-      },
+      currentPosition: { position },
     },
   } = useAjnaProductContext('earn')
 
-  const { maxLtv } = ajnaSliderDefaults
+  const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
+
   const resolvedValue = (price || highestThresholdPrice).decimalPlaces(2)
+
+  const maxLtv = position.getMaxLtv(price)
 
   const { min, max, range } = useMemo(
     () =>
@@ -159,7 +154,9 @@ export function AjnaEarnSlider() {
       leftBoundry={resolvedValue}
       rightBoundry={maxLtv}
       leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
-      rightBoundryFormatter={(v) => `${t('max-ltv')} ${formatDecimalAsPercent(v)}`}
+      rightBoundryFormatter={(v) =>
+        !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
+      }
       disabled={false}
       onChange={handleChange}
       leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {

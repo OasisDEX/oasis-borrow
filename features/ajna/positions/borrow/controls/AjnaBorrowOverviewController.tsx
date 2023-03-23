@@ -68,7 +68,7 @@ export function AjnaBorrowOverviewController() {
               isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              cost={position.pool.rate}
+              cost={position.pool.interestRate}
               availableToBorrow={position.debtAvailable}
               afterAvailableToBorrow={simulation?.debtAvailable}
               availableToWithdraw={position.collateralAvailable}

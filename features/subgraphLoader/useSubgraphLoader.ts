@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
 import { getNetworkId } from 'features/web3Context'
 import { useEffect, useState } from 'react'

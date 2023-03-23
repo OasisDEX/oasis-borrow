@@ -30,32 +30,35 @@ const ajnaNotifications: {
 } = {
   depositIsNotWithdrawable: ({ action, message }) => ({
     title: {
-      translationKey: 'ajna.earn.manage.notifications.deposit-is-not-withdrawable.title',
+      translationKey:
+        'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.title',
     },
     message: {
-      translationKey: 'ajna.earn.manage.notifications.deposit-is-not-withdrawable.message',
+      translationKey:
+        'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.message',
       params: message,
     },
     icon: 'coins_cross',
     type: 'error',
     closable: true,
     link: {
-      translationKey: 'ajna.earn.manage.notifications.deposit-is-not-withdrawable.label',
+      translationKey:
+        'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.label',
       action,
     },
   }),
   earningNoApy: ({ action }) => ({
     title: {
-      translationKey: 'ajna.earn.manage.notifications.earning-no-apy.title',
+      translationKey: 'ajna.position-page.earn.manage.notifications.earning-no-apy.title',
     },
     message: {
-      translationKey: 'ajna.earn.manage.notifications.earning-no-apy.message',
+      translationKey: 'ajna.position-page.earn.manage.notifications.earning-no-apy.message',
     },
     icon: 'coins_cross',
     type: 'warning',
     closable: true,
     link: {
-      translationKey: 'ajna.earn.manage.notifications.earning-no-apy.label',
+      translationKey: 'ajna.position-page.earn.manage.notifications.earning-no-apy.label',
       action,
     },
   }),

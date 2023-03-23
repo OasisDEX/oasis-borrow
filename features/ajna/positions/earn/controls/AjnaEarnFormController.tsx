@@ -41,6 +41,7 @@ export function AjnaEarnFormController() {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'adjust')
                 updateState('uiPill', 'deposit-earn')
+                updateState('action', 'deposit-earn')
               },
             },
             {
@@ -54,6 +55,7 @@ export function AjnaEarnFormController() {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'liquidity')
                 updateState('uiPill', 'deposit-earn')
+                updateState('action', 'deposit-earn')
               },
             },
           ],

@@ -189,7 +189,7 @@ function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
       action: () => {
         if (useBlockNativeOnBoard) {
           if (!connected && !connecting) {
-            executeConnection()
+            void executeConnection()
           }
         } else {
           push(INTERNAL_LINKS.connect, getCustomNetworkParameter())

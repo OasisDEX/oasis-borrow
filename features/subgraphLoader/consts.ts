@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { Subgraphs, SubgraphsRecord } from 'features/subgraphLoader/types'
 import { gql } from 'graphql-request'
 import getConfig from 'next/config'
@@ -29,6 +29,32 @@ export const subgraphMethodsRecord: {
             id
           }
         }
+      }
+    }
+  `,
+  getPoolData: gql`
+    query getPool($poolAddress: ID!) {
+      pool(id: $poolAddress) {
+        address
+        collateralAddress
+        quoteTokenAddress
+        htp
+        hpb
+        lup
+        htpIndex
+        hpbIndex
+        lupIndex
+        momp
+        debt
+        depositSize
+        interestRate
+        apr30dAverage
+        dailyPercentageRate30dAverage
+        monthlyPercentageRate30dAverage
+        poolMinDebtAmount
+        poolCollateralization
+        poolActualUtilization
+        poolTargetUtilization
       }
     }
   `,
