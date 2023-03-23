@@ -1,12 +1,13 @@
 import { accountFactoryNetworkMap } from 'blockchain/dpm/accountFactory'
 import { accountGuardNetworkMap } from 'blockchain/dpm/accountGuard'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getNetworkId } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory } from 'types/web3-v1-contracts/account-factory'
 import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
-import { Context, NetworkIds } from './network'
+import { Context } from './network'
 
 export interface UserDpmAccount {
   proxy: string

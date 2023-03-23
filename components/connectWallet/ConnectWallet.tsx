@@ -679,7 +679,7 @@ export function WithConnection({ children }: WithChildren) {
 
   useEffect(() => {
     if (useBlockNativeOnBoard) {
-      if (!connected && !connecting) executeConnection()
+      if (!connected && !connecting) void executeConnection()
       return
     }
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
@@ -713,7 +713,7 @@ export function WithWalletConnection({ children }: WithChildren) {
 
   useEffect(() => {
     if (useBlockNativeOnBoard) {
-      if (!connected && !connecting) executeConnection()
+      if (!connected && !connecting) void executeConnection()
       return
     }
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {

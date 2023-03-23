@@ -24,6 +24,8 @@ const defaultParams: PipelineInput = {
     connectionKind: 'injected',
     chainId: 42,
     deactivate: () => null,
+    walletLabel: 'MetaMask',
+    connectionMethod: 'web3-onboard',
   }),
   version: 'v1',
   jwtAuthSetupToken$: () => NEVER,

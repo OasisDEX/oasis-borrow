@@ -29,6 +29,8 @@ export const mockWeb3ContextConnected: Web3ContextConnected = {
   chainId: 1,
   deactivate: () => null,
   account: '0xUserAddress',
+  walletLabel: 'MetaMask',
+  connectionMethod: 'web3-onboard',
 }
 
 export interface MockWeb3ContextProps {

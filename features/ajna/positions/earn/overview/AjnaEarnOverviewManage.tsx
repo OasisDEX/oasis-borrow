@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -9,14 +8,14 @@ import { ContentCardMaxLendingLTV } from 'features/ajna/positions/earn/overview/
 import { ContentCardTokensDeposited } from 'features/ajna/positions/earn/overview/ContentCardTokensDeposited'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnManage'
 import { ContentPositionLendingPrice } from 'features/ajna/positions/earn/overview/ContentPositionLendingPrice'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaEarnOverviewManage() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, quotePrice, collateralPrice },
+    environment: { collateralToken, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -35,8 +34,9 @@ export function AjnaEarnOverviewManage() {
           <ContentCardCurrentEarnings
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
-            currentEarnings={new BigNumber(190)}
-            netPnL={new BigNumber(12.35)}
+            // TODO adjust once data available in subgraph
+            currentEarnings={zero}
+            netPnL={zero}
           />
           <ContentCardTokensDeposited
             isLoading={isSimulationLoading}
@@ -47,7 +47,10 @@ export function AjnaEarnOverviewManage() {
           />
           <ContentCardMaxLendingLTV
             isLoading={isSimulationLoading}
-            maxLendingPercentage={new BigNumber(65)}
+            price={position.price}
+            quoteToken={quoteToken}
+            maxLendingPercentage={position.maxRiskRatio.loanToValue}
+            afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
           />
           <ContentPositionLendingPrice
             isLoading={isSimulationLoading}
@@ -55,7 +58,7 @@ export function AjnaEarnOverviewManage() {
             quoteToken={quoteToken}
             positionLendingPrice={position.price}
             afterPositionLendingPrice={simulation?.price}
-            relationToMarketPrice={position.price.div(collateralPrice.div(quotePrice)).minus(one)}
+            relationToMarketPrice={position.maxRiskRatio.loanToValue.minus(one)}
           />
         </DetailsSectionContentCardWrapper>
       }
@@ -64,9 +67,10 @@ export function AjnaEarnOverviewManage() {
           <ContentFooterItemsEarnManage
             quoteToken={quoteToken}
             availableToWithdraw={position.quoteTokenAmount}
+            // TODO adjust once data available in subgraph
+            projectedAnnualReward={zero}
+            totalAjnaRewards={zero}
             afterAvailableToWithdraw={simulation?.quoteTokenAmount}
-            earlyWithdrawalPenalty={new BigNumber(2)}
-            earlyWithdrawalPeriod={new Date(new Date().getTime() + 10000000)}
           />
         </DetailsSectionFooterItemWrapper>
       }

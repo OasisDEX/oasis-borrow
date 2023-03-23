@@ -42,6 +42,7 @@ export function AjnaBorrowFormController() {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
                 updateState('uiPill', 'deposit-borrow')
+                updateState('action', 'deposit-borrow')
               },
             },
             {
@@ -55,6 +56,7 @@ export function AjnaBorrowFormController() {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
                 updateState('uiPill', 'generate-borrow')
+                updateState('action', 'generate-borrow')
               },
             },
           ],

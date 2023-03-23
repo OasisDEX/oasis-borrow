@@ -102,6 +102,7 @@
   "max-ltv": "Max LTV",
   "total-value-locked": "Total value locked",
   "position-apy": "Position APY",
+  "average-apy-in-days": "Average APY - {{days}}d",
   "build-your-position": "Build your position",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
@@ -446,7 +447,7 @@
     "hero": {
       "maker": {
         "headline": "Simple and Secure DeFi",
-        "subheader": "Enter into advanced positions across multiple protocols in just a few clicks so you can Borrow, Multiply and Earn on the assets you hold."
+        "subheader": "Take advantage of powerful automation strategies and user-friendly UX. Borrow, Multiply and Earn on the assets you hold."
       },
       "ajna": {
         "headline": "Borrow and lend your crypto on Ajna",
@@ -2493,7 +2494,9 @@
           },
           "form": {
             "max-ltv-to-lend-at": "Max LTV to lend at",
-            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
+            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
+            "adjust-lending-price-bucket": "Adjust lending price bucket",
+            "ajna-fee": "Ajna fee"
           }
         },
         "open": {
@@ -2509,11 +2512,11 @@
         },
         "manage": {
           "overview": {
-            "above-market-price": "{{amount}}% above market price",
-            "below-market-price": "{{amount}}% below market price",
+            "above-market-price": "{{amount}} above market price",
+            "below-market-price": "{{amount}} below market price",
             "current-earnings": "Current earnings",
-            "early-withdrawal-penalty": "Early withdrawal penalty",
-            "early-withdrawal-ended": "Ended {{earlyWithdrawalPeriod}}",
+            "projected-annual-reward": "Projected annual reward",
+            "total-ajna-rewards": "Total AJNA rewards",
             "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
             "early-withdrawal-period": "Early withdrawal period",
             "max-lending-ltv": "Max lending LTV",

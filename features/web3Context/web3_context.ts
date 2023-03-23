@@ -5,6 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
 import BigNumber from 'bignumber.js'
 import { Provider as Web3Provider } from 'ethereum-types'
+import { BridgeConnector } from 'features/web3OnBoard'
 import { isEqual } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
@@ -198,6 +199,8 @@ export function createWeb3Context$(
           account: ['ledger', 'trezor'].indexOf(connectionKind) >= 0 ? hwAccount! : account,
           deactivate,
           magicLinkEmail: undefined,
+          connectionMethod: connector instanceof BridgeConnector ? 'web3-onboard' : 'legacy',
+          walletLabel: connector instanceof BridgeConnector ? connector.wallet.label : undefined,
           // REFACTOR!
           // connectionKind === 'magicLink'
           //   ? (connector as MagicLinkConnector).getEmail()
