@@ -54,18 +54,7 @@ export function DiscoverTableDataCellAsset({
           protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported
         />
       )}
-      {icons.length > 0 && allDefined(...icons) ? (
-        <TokensGroup tokens={icons} />
-      ) : (
-        <Box
-          sx={{
-            backgroundColor: 'warning10',
-            width: '44px',
-            height: '44px',
-            borderRadius: 'round',
-          }}
-        />
-      )}
+      {icons.length > 0 && allDefined(...icons) && <TokensGroup tokens={icons} />}
       <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
         <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
           {asset}
