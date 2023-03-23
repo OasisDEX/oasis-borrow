@@ -9,7 +9,7 @@ export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
     dpmProxyAddress: proxy.toLowerCase(),
   })
 
-  if (response.account) {
+  if ('account' in response && response.account) {
     const earnPosition = response.account.earnPositions.find((position) => position.lps > 0)
 
     if (earnPosition)

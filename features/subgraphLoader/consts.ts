@@ -32,5 +32,31 @@ export const subgraphMethodsRecord: {
       }
     }
   `,
+  getPoolData: gql`
+    query getPool($poolAddress: ID!) {
+      pool(id: $poolAddress) {
+        address
+        collateralAddress
+        quoteTokenAddress
+        htp
+        hpb
+        lup
+        htpIndex
+        hpbIndex
+        lupIndex
+        momp
+        debt
+        depositSize
+        interestRate
+        apr30dAverage
+        dailyPercentageRate30dAverage
+        monthlyPercentageRate30dAverage
+        poolMinDebtAmount
+        poolCollateralization
+        poolActualUtilization
+        poolTargetUtilization
+      }
+    }
+  `,
   tempMethod: '',
 }
