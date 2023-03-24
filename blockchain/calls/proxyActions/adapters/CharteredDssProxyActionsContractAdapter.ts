@@ -1,6 +1,6 @@
 import { ContextConnected } from 'blockchain/network'
 import { ContractDesc } from 'features/web3Context'
-import { DssProxyActionsCharter } from 'types/web3-v1-contracts/dss-proxy-actions-charter'
+import { DssProxyActionsCharter } from 'types/web3-v1-contracts'
 import { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
 
 import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'

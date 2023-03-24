@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
-import { AaveV3Oracle } from 'types/web3-v1-contracts/aave-v3-oracle'
+import { AaveV3Oracle } from 'types/web3-v1-contracts/'
 export interface AaveV3AssetsPricesParameters {
   tokens: string[]
   baseCurrencyUnit: BigNumber

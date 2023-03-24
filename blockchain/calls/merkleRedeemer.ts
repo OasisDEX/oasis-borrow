@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { BytesLike } from 'ethers'
-import { MerkleRedeemer } from 'types/ethers-contracts/MerkleRedeemer'
+import { MerkleRedeemer } from 'types/web3-v1-contracts'
 
 import { TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'

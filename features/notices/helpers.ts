@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { Web3ContractEvent } from 'blockchain/aave/aaveV2Liquidations'
 import { allDefined } from 'helpers/allDefined'
+import { LiquidationCallEvent as LiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
+import { LiquidationCallEvent as LiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
 
 export function getLiquidatedHeaderNotice(isPositionController: boolean) {
   return isPositionController
@@ -21,7 +22,7 @@ export function getAaveNoticeBanner({
   maxLoanToValue: BigNumber
   liquidationThreshold: BigNumber
   connectedProxyAddress?: string
-  aaveLiquidations?: Web3ContractEvent[]
+  aaveLiquidations?: LiquidationCallEventV3[] | LiquidationCallEventV2[]
   ownerAddress: string
   connectedAddress?: string
 }) {

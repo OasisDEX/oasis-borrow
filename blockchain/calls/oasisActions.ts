@@ -3,7 +3,7 @@ import * as accountImplementation from 'blockchain/abi/account-implementation.js
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { contractDesc } from 'blockchain/config'
-import { AccountImplementation } from 'types/ethers-contracts/AccountImplementation'
+import { AccountImplementation } from 'types/web3-v1-contracts'
 
 export interface OasisActionsTxData extends TxMeta {
   kind: TxMetaKind.libraryCall
@@ -16,7 +16,7 @@ export interface OasisActionsTxData extends TxMeta {
 export const callOasisActionsWithDpmProxy: TransactionDef<OasisActionsTxData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute(address,bytes)']
+      .methods['execute']
   },
   prepareArgs: ({ data, to }) => {
     return [to, data]
