@@ -55,9 +55,9 @@ ENV COMMIT_SHA=$COMMIT_SHA \
   SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN \
   NODE_OPTIONS=--max-old-space-size=6144
 
-# COPY . .
+COPY . .
 
-# RUN chmod +x ./scripts/wait-for-it.sh \
-#     && npm run build
+RUN chmod +x ./scripts/wait-for-it.sh \
+  && npm run build
 
-# CMD [ "npm", "run", "start:prod" ]
+CMD [ "npm", "run", "start:prod" ]
