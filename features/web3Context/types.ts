@@ -48,6 +48,8 @@ export interface Web3ContextConnectedReadonly extends Connectable {
   web3: Web3
   chainId: number
   deactivate: () => void
+  connectionMethod: 'legacy' | 'web3-onboard'
+  walletLabel?: undefined
 }
 
 export interface Web3ContextConnected {
@@ -59,7 +61,7 @@ export interface Web3ContextConnected {
   account: string
   magicLinkEmail?: string
   connectionMethod: 'legacy' | 'web3-onboard'
-  walletLabel?: string
+  walletLabel?: string // you can check this value in our MixPanel board.
 }
 
 export interface Web3ContextError extends Connectable {

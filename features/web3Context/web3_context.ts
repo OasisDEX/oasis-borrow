@@ -150,6 +150,8 @@ export function createWeb3Context$(
           connect,
           connectLedger,
           deactivate,
+          walletLabel: undefined,
+          connectionMethod: 'legacy',
         })
         return
       }
