@@ -144,7 +144,11 @@ export async function getAjnaParameters({
           collateralPrice,
           quotePrice,
         },
-        { ...dependencies, getEarnData: getAjnaEarnData },
+        {
+          ...dependencies,
+          getEarnData: getAjnaEarnData,
+          rewardsManagerAddress: context.rewardsManager.address,
+        },
       )
     }
     case 'deposit-earn': {
