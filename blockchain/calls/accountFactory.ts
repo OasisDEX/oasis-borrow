@@ -1,6 +1,6 @@
 import { TxMeta } from '@oasisdex/transactions'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { AccountFactory } from 'types/web3-v1-contracts/account-factory'
+import { AccountFactory } from 'types/web3-v1-contracts'
 
 import { TxMetaKind } from './txMeta'
 

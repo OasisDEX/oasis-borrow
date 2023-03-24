@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { amountFromWei } from 'blockchain/utils'
-import { AaveV2ProtocolDataProvider } from 'types/web3-v1-contracts/aave-v2-protocol-data-provider'
+import { AaveV2ProtocolDataProvider } from 'types/web3-v1-contracts'
 
 export interface AaveV2UserReserveDataParameters {
   token: string

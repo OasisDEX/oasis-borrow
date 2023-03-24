@@ -12,8 +12,7 @@ import {
   shareReplay,
   switchMap,
 } from 'rxjs/operators'
-import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
-import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
+import { DsProxy, DsProxyRegistry } from 'types/web3-v1-contracts'
 
 import { TransactionDef } from './callsHelpers'
 import { call, CallDef } from './callsHelpers'

@@ -47,6 +47,7 @@ import * as merkleRedeemer from './abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as operationExecutor from './abi/operation-executor.json'
 import * as otcSupport from './abi/otc-support-methods.json'
+import * as rewardsManager from './abi/rewards-manager.json'
 import * as vat from './abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -152,6 +153,16 @@ export const ilksNotSupportedOnGoerli = [
 const ACCOUNT_GUARD_FACTORY_GENESIS = {
   mainnet: 16183119,
   goerli: 8420373,
+}
+
+const AAVE_V3_POOL_GENESIS = {
+  mainnet: 16291127,
+  goerli: 8294332,
+}
+
+const AAVE_V2_LENDING_POOL_GENESIS = {
+  mainnet: 11362579,
+  goerli: 7480475,
 }
 
 const tokensMainnet = {
@@ -268,7 +279,11 @@ const protoMain = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveV2LendingPool: contractDesc(aaveV2LendingPool, mainnetAddresses.AAVE_V2_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(
+    aaveV2LendingPool,
+    mainnetAddresses.AAVE_V2_LENDING_POOL,
+    AAVE_V2_LENDING_POOL_GENESIS.mainnet,
+  ),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
   accountFactory: contractDesc(
@@ -281,7 +296,7 @@ const protoMain = {
     mainnetAddresses.ACCOUNT_GUARD,
     ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL),
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS.mainnet),
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnetAddresses.AAVE_V3_ORACLE),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
@@ -294,6 +309,7 @@ const protoMain = {
     'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
     'ETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
   },
+  rewardsManager: contractDesc(rewardsManager, '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476'),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -403,7 +419,11 @@ const goerli: NetworkConfig = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveV2LendingPool: contractDesc(aaveV2LendingPool, goerliAddresses.AAVE_V2_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(
+    aaveV2LendingPool,
+    goerliAddresses.AAVE_V2_LENDING_POOL,
+    AAVE_V2_LENDING_POOL_GENESIS.goerli,
+  ),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
   accountFactory: contractDesc(
@@ -416,7 +436,7 @@ const goerli: NetworkConfig = {
     goerliAddresses.ACCOUNT_GUARD,
     ACCOUNT_GUARD_FACTORY_GENESIS.goerli,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, goerliAddresses.AAVE_V3_POOL),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerliAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS.goerli),
   aaveV3Oracle: contractDesc(aaveV3Oracle, goerliAddresses.AAVE_V3_ORACLE),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
@@ -428,6 +448,7 @@ const goerli: NetworkConfig = {
     'WBTC-USDC': contractDesc(ajnaPool, '0x17e5a1A6450d4fB32fFFc329ca92db55293db10e'),
     'ETH-USDC': contractDesc(ajnaPool, '0xe1200AEfd60559D494d4419E17419571eF8fC1Eb'),
   },
+  rewardsManager: contractDesc(rewardsManager, '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476'),
 }
 
 const hardhat: NetworkConfig = {

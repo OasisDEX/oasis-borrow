@@ -1,11 +1,18 @@
-import { ConnectionKind } from 'features/web3Context'
-import Web3 from 'web3'
+import { Context } from 'blockchain/network'
 
-export function checkIfGnosisSafe(connectionKind: ConnectionKind, web3: Web3) {
+export function checkIfGnosisSafe({
+  connectionKind,
+  walletLabel,
+  connectionMethod,
+  web3,
+}: Pick<Context, 'connectionKind' | 'walletLabel' | 'connectionMethod' | 'web3'>) {
   let isGnosisSafe = false
 
   // check if current provider is Gnosis connected by WalletConnect or by dedicated web3-react-connector
-  if (connectionKind === 'walletConnect') {
+  if (
+    connectionKind === 'walletConnect' ||
+    (connectionMethod === 'web3-onboard' && walletLabel === 'WalletConnect')
+  ) {
     // @ts-ignore
     if (web3.currentProvider.wc) {
       // @ts-ignore
@@ -14,6 +21,10 @@ export function checkIfGnosisSafe(connectionKind: ConnectionKind, web3: Web3) {
   }
 
   if (connectionKind === 'gnosisSafe') {
+    isGnosisSafe = true
+  }
+
+  if (connectionMethod === 'web3-onboard' && walletLabel === 'Safe') {
     isGnosisSafe = true
   }
 

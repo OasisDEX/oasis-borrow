@@ -10,7 +10,7 @@ import {
   AutomationBot,
   AutomationBotV2,
   DsProxy,
-} from 'types/ethers-contracts'
+} from 'types/web3-v1-contracts'
 
 import { TxMetaKind } from './txMeta'
 
@@ -51,7 +51,7 @@ function getAddAutomationTriggerCallData(
 ) {
   const { contract, automationBot } = context
   return contract<AutomationBot>(automationBot).methods.addTrigger(
-    data.cdpId,
+    data.cdpId.toString(),
     data.triggerType,
     data.replacedTriggerId,
     data.triggerData,
@@ -100,7 +100,7 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
 export const addAutomationBotTriggerV2: TransactionDef<AutomationBotV2AddTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute(address,bytes)']
+      .methods['execute']
   },
   prepareArgs: (data, context) => [
     context.automationBotV2.address,
@@ -111,7 +111,7 @@ export const addAutomationBotTriggerV2: TransactionDef<AutomationBotV2AddTrigger
 export const removeAutomationBotTriggerV2: TransactionDef<AutomationBotV2RemoveTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute(address,bytes)']
+      .methods['execute']
   },
   prepareArgs: (data, context) => [
     context.automationBotV2.address,

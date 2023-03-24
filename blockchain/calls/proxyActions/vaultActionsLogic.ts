@@ -4,7 +4,7 @@ import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
-import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
+import { DsProxy } from 'types/web3-v1-contracts'
 
 import {
   ClaimRewardData,
