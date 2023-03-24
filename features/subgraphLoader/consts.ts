@@ -55,6 +55,7 @@ export const subgraphMethodsRecord: {
         poolCollateralization
         poolActualUtilization
         poolTargetUtilization
+        currentBurnEpoch
       }
     }
   `,

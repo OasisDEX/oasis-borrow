@@ -20,6 +20,8 @@ export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
   deactivate: () => null,
   connect: () => Promise.resolve(),
   connectLedger: () => null,
+  walletLabel: undefined,
+  connectionMethod: 'web3-onboard',
 }
 
 export const mockWeb3ContextConnected: Web3ContextConnected = {

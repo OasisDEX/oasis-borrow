@@ -1,21 +1,11 @@
-import positionCreatedAbi from 'blockchain/abi/position-created.json'
 import { Context } from 'blockchain/network'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { utils } from 'ethers'
 import { LendingProtocol } from 'lendingProtocols'
-import { combineLatest, from, Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
-import { TypedEvent } from 'types/ethers-contracts/commons'
-import { PositionCreated as PositionCreatedContract } from 'types/ethers-contracts/PositionCreated'
-
-type PositionCreatedChainEvent = {
-  collateralToken: string // address
-  debtToken: string // address
-  positionType: 'Multiply' | 'Earn'
-  protocol: string
-  proxyAddress: string
-}
+import { PositionCreated__factory } from 'types/ethers-contracts'
+import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 export type PositionCreated = {
   collateralTokenSymbol: string
@@ -25,48 +15,51 @@ export type PositionCreated = {
   proxyAddress: string
 }
 
-function getPositionCreatedEventForProxyAddress$(context: Context, proxyAddress: string) {
-  const positionCreatedContract = context.contractV2<PositionCreatedContract>({
-    address: proxyAddress,
-    abi: positionCreatedAbi,
-  })
+function getPositionCreatedEventForProxyAddress(
+  context: Context,
+  proxyAddress: string,
+): Promise<CreatePositionEvent[]> {
+  const dpmWithPositionCreatedEvent = PositionCreated__factory.connect(
+    proxyAddress,
+    context.rpcProvider,
+  )
 
-  return from(
-    positionCreatedContract.queryFilter(
-      {
-        address: proxyAddress,
-        topics: [utils.id('CreatePosition(address,string,string,address,address)')],
-      },
-      context.accountGuard.genesisBlock,
-    ),
+  const filter = dpmWithPositionCreatedEvent.filters.CreatePosition(
+    proxyAddress,
+    null,
+    null,
+    null,
+    null,
+  )
+
+  return dpmWithPositionCreatedEvent.queryFilter(
+    filter,
+    context.accountGuard.genesisBlock,
+    'latest',
   )
 }
 
 function mapEvent(
-  positionCreatedEvents: Array<TypedEvent<Array<any>>>[],
+  positionCreatedEvents: CreatePositionEvent[][],
   context: Context,
 ): Array<PositionCreated> {
   return positionCreatedEvents
     .flatMap((events) => events)
-    .filter((e) => e.event === 'CreatePosition')
     .map((e) => {
-      const positionCreatedFromChain = (e.args as unknown) as PositionCreatedChainEvent
       return {
-        ...positionCreatedFromChain,
-        collateralTokenSymbol: getTokenSymbolFromAddress(
-          context,
-          positionCreatedFromChain.collateralToken,
-        ),
-        debtTokenSymbol: getTokenSymbolFromAddress(context, positionCreatedFromChain.debtToken),
-        protocol: extractLendingProtocolFromPositionCreatedEvent(positionCreatedFromChain),
+        positionType: e.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
+        collateralTokenSymbol: getTokenSymbolFromAddress(context, e.args.collateralToken),
+        debtTokenSymbol: getTokenSymbolFromAddress(context, e.args.debtToken),
+        protocol: extractLendingProtocolFromPositionCreatedEvent(e),
+        proxyAddress: e.args.proxyAddress,
       }
     })
 }
 
 function extractLendingProtocolFromPositionCreatedEvent(
-  positionCreatedChainEvent: PositionCreatedChainEvent,
+  positionCreatedChainEvent: CreatePositionEvent,
 ): LendingProtocol {
-  switch (positionCreatedChainEvent.protocol) {
+  switch (positionCreatedChainEvent.args.protocol) {
     case 'AAVE':
     case 'AaveV2':
       return LendingProtocol.AaveV2
@@ -90,23 +83,19 @@ export function getLastCreatedPositionForProxy$(
   proxyAddress: string,
 ): Observable<PositionCreated> {
   return context$.pipe(
-    switchMap((context) =>
-      getPositionCreatedEventForProxyAddress$(context, proxyAddress).pipe(
-        map((events) => ({ context, events })),
-      ),
-    ),
+    switchMap(async (context) => {
+      const events = await getPositionCreatedEventForProxyAddress(context, proxyAddress)
+      return { context, events }
+    }),
     map(({ context, events }) => ({ context, event: events.pop() })),
     filter(({ event }) => event !== undefined),
     map(({ context, event }) => {
-      const positionCreatedFromChain = (event!.args as unknown) as PositionCreatedChainEvent
       return {
-        ...positionCreatedFromChain,
-        collateralTokenSymbol: getTokenSymbolFromAddress(
-          context,
-          positionCreatedFromChain.collateralToken,
-        ),
-        debtTokenSymbol: getTokenSymbolFromAddress(context, positionCreatedFromChain.debtToken),
-        protocol: extractLendingProtocolFromPositionCreatedEvent(positionCreatedFromChain),
+        positionType: event!.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
+        collateralTokenSymbol: getTokenSymbolFromAddress(context, event!.args.collateralToken),
+        debtTokenSymbol: getTokenSymbolFromAddress(context, event!.args.debtToken),
+        protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
+        proxyAddress: event!.args.proxyAddress,
       }
     }),
   )
@@ -121,9 +110,7 @@ export function createReadPositionCreatedEvents$(
     switchMap(([context, dpmProxies]) => {
       return combineLatest(
         dpmProxies.map((dpmProxy) => {
-          // using the contract from the context was causing issues when mutating
-          // multiply position
-          return getPositionCreatedEventForProxyAddress$(context, dpmProxy.proxy)
+          return getPositionCreatedEventForProxyAddress(context, dpmProxy.proxy)
         }),
       ).pipe(
         map((positionCreatedEvents) => {

@@ -3,7 +3,7 @@ import { contractDesc } from 'blockchain/config'
 import { Context } from 'blockchain/network'
 import { defer, Observable } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
-import { McdGemJoin } from 'types/web3-v1-contracts/mcd-gem-join'
+import { McdGemJoin } from 'types/web3-v1-contracts'
 
 import { call, CallDef } from './callsHelpers'
 

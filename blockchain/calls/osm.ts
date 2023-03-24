@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { McdOsm } from 'types/web3-v1-contracts/mcd-osm'
+import { McdOsm } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
 import { CallDef } from './callsHelpers'

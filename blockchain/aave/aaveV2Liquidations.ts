@@ -1,75 +1,73 @@
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
-import { getNetworkId } from 'features/web3Context'
+import { ethers } from 'ethers'
+import { ContractDesc } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { AaveV2LendingPool } from 'types/web3-v1-contracts/aave-v2-lending-pool'
+import { AaveV2LendingPool__factory } from 'types/ethers-contracts'
+import { LiquidationCallEvent } from 'types/ethers-contracts/AaveV2LendingPool'
 
-// TODO probably we would like to set here a block numbers of our aave deployment
-const aaveV2LendingPoolGenesisBlockMainnet = 11362579
-const aaveV2LendingPoolGenesisBlockGoerli = 7480475
+async function getLastLiquidationEvent(
+  aaveV2LendingPool: ContractDesc & { genesisBlock: number },
+  rpcProvider: ethers.providers.Provider,
+  proxyAddress: string,
+): Promise<LiquidationCallEvent[]> {
+  const aaveLendingPoolContract = AaveV2LendingPool__factory.connect(
+    aaveV2LendingPool.address,
+    rpcProvider,
+  )
 
-const networkMap = {
-  [NetworkIds.MAINNET]: aaveV2LendingPoolGenesisBlockMainnet,
-  [NetworkIds.HARDHAT]: aaveV2LendingPoolGenesisBlockMainnet,
-  [NetworkIds.GOERLI]: aaveV2LendingPoolGenesisBlockGoerli,
-}
+  const liquidationCallFilter = aaveLendingPoolContract.filters.LiquidationCall(
+    null,
+    null,
+    proxyAddress,
+    null,
+    null,
+    null,
+    null,
+  )
+  const depositFilter = aaveLendingPoolContract.filters.Deposit(
+    null,
+    null,
+    proxyAddress,
+    null,
+    null,
+  )
 
-export interface Web3ContractEvent {
-  event: string
-  signature: string | null
-  address: string
-  returnValues: Record<string, string>
-  logIndex: number
-  transactionIndex: number
-  transactionHash: string
-  blockHash: string
-  blockNumber: number
-  raw: { data: string; topics: string[] }
+  const [liquidationEvents, depositEvents] = await Promise.all([
+    aaveLendingPoolContract.queryFilter(
+      liquidationCallFilter,
+      aaveV2LendingPool.genesisBlock,
+      'latest',
+    ),
+    aaveLendingPoolContract.queryFilter(depositFilter, aaveV2LendingPool.genesisBlock, 'latest'),
+  ])
+
+  if (!liquidationEvents.length || !depositEvents.length) {
+    return []
+  }
+
+  const mostRecentDepositEvent = depositEvents[depositEvents.length - 1]
+  const mostRecentLiquidationEvent = liquidationEvents[liquidationEvents.length - 1]
+
+  if (mostRecentDepositEvent.blockNumber > mostRecentLiquidationEvent.blockNumber) {
+    return []
+  }
+
+  return [mostRecentLiquidationEvent]
 }
 
 export function getAaveV2PositionLiquidation$(
   context$: Observable<Context>,
   proxyAddress: string,
-): Observable<Web3ContractEvent[]> {
+): Observable<LiquidationCallEvent[]> {
   if (!proxyAddress) {
     return of([])
   }
 
-  const chainId = getNetworkId() as NetworkIds
-  const genesisBlock = networkMap[chainId]
-
   return context$.pipe(
-    switchMap(async ({ aaveV2LendingPool, contract }) => {
-      const aaveLendingPoolContract = contract<AaveV2LendingPool>(aaveV2LendingPool)
-
-      const contractCalls = Promise.all<Web3ContractEvent[]>([
-        aaveLendingPoolContract.getPastEvents('LiquidationCall', {
-          filter: { user: proxyAddress },
-          fromBlock: genesisBlock,
-          toBlock: 'latest',
-        }),
-        aaveLendingPoolContract.getPastEvents('Deposit', {
-          filter: { onBehalfOf: proxyAddress },
-          fromBlock: genesisBlock,
-          toBlock: 'latest',
-        }),
-      ])
-
-      const [liquidationEvents, depositEvents] = await contractCalls
-
-      if (!liquidationEvents.length || !depositEvents.length) {
-        return []
-      }
-
-      const mostRecentDepositEvent = depositEvents[depositEvents.length - 1]
-      const mostRecentLiquidationEvent = liquidationEvents[liquidationEvents.length - 1]
-
-      if (mostRecentDepositEvent.blockNumber > mostRecentLiquidationEvent.blockNumber) {
-        return []
-      }
-
-      return [mostRecentLiquidationEvent]
-    }),
+    switchMap(
+      async ({ aaveV2LendingPool, rpcProvider }) =>
+        await getLastLiquidationEvent(aaveV2LendingPool, rpcProvider, proxyAddress),
+    ),
   )
 }

@@ -35,7 +35,7 @@ export type TxChange =
 
 export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
   call: (_, { contract, guniProxyActions }) => {
-    return contract<GuniProxyActions>(guniProxyActions).methods.getOtherTokenAmount
+    return contract<GuniProxyActions>(guniProxyActions).functions.getOtherTokenAmount
   },
   prepareArgs: ({ token, leveragedAmount }, context) => {
     const guniToken = context.tokens[token]
@@ -55,7 +55,7 @@ export const getGuniMintAmount: CallDef<
 > = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).methods.getMintAmounts
+    return contract<GuniToken>(guniToken).functions.getMintAmounts
   },
   prepareArgs: ({ amountOMax, amount1Max }) => {
     return [amountToWei(amountOMax, 'DAI').toFixed(0), amountToWei(amount1Max, 'USDC').toFixed(0)]

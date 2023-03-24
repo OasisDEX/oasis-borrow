@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import * as dummyExchange from 'blockchain/abi/dummy-exchange.json'
 import { contractDesc } from 'blockchain/config'
 import { amountToWei } from 'blockchain/utils'
-import { DummyExchange } from 'types/web3-v1-contracts/dummy-exchange'
+import { DummyExchange } from 'types/web3-v1-contracts'
 
 import { CallDef } from './callsHelpers'
 

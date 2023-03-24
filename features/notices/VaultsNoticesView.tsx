@@ -516,9 +516,10 @@ function AavePositionAboveMaxLtvNotice({
 }
 
 export function AavePositionNoticesView() {
-  const { aaveLiquidations$ } = useAppContext()
+  const { protocols } = useAppContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const { aaveLiquidations$ } = protocols[state.context.strategyConfig.protocol]
   const preparedAaveLiquidations$ = aaveLiquidations$(state.context.proxyAddress || '')
   const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
 

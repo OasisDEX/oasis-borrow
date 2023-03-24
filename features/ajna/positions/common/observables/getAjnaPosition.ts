@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
@@ -10,7 +11,6 @@ import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEar
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
-import { PositionCreated } from 'types/ethers-contracts'
 
 export interface AjnaPositionDetails {
   position: AjnaGenericPosition
@@ -43,6 +43,7 @@ export function getAjnaPosition$(
 
       const commonDependency = {
         poolInfoAddress: context.ajnaPoolInfo.address,
+        rewardsManagerAddress: context.rewardsManager.address,
         provider: context.rpcProvider,
         getPoolData: getAjnaPoolData,
       }
@@ -103,6 +104,7 @@ export function getAjnaPositionsWithDetails$(
         switchMap((tokenPrice) => {
           return combineLatest(
             positionCreatedEvents
+              // @ts-ignore
               .filter(({ protocol }) => protocol === 'Ajna')
               .map(
                 ({

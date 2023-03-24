@@ -55,13 +55,8 @@ export function createContext$(
 ): Observable<Context> {
   return web3ContextConnected$.pipe(
     map((web3Context) => {
-      // magic link has limit for querying block range and we can't get events in one call
-      // couldn't get information from them about what block range they allow
       const networkData = networksById[web3Context.chainId]
-      const web3ProviderGetPastLogs =
-        web3Context.connectionKind === 'magicLink'
-          ? new Web3(networkData.infuraUrl)
-          : web3Context.web3
+      const web3ProviderGetPastLogs = new Web3(networkData.infuraUrl)
 
       const provider = new ethers.providers.JsonRpcProvider(
         networkData.infuraUrl,
