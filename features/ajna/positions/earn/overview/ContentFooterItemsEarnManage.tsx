@@ -1,35 +1,37 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatAmount } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+} from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { timeAgo } from 'utils/timeAgo'
 
 interface ContentFooterItemsEarnOpenProps {
   quoteToken: string
   availableToWithdraw: BigNumber
+  projectedAnnualReward: BigNumber
+  totalAjnaRewards: BigNumber
   afterAvailableToWithdraw?: BigNumber
-  earlyWithdrawalPenalty: BigNumber
-  earlyWithdrawalPeriod: Date
 }
 
 export function ContentFooterItemsEarnManage({
   quoteToken,
   availableToWithdraw,
+  projectedAnnualReward,
+  totalAjnaRewards,
   afterAvailableToWithdraw,
-  earlyWithdrawalPeriod,
-  earlyWithdrawalPenalty,
 }: ContentFooterItemsEarnOpenProps) {
   const { t } = useTranslation()
-  const now = new Date()
 
   const formatted = {
     availableToWithdraw: `${formatAmount(availableToWithdraw, quoteToken)} ${quoteToken}`,
     afterAvailableToWithdraw:
       afterAvailableToWithdraw &&
       `${formatAmount(afterAvailableToWithdraw, quoteToken)} ${quoteToken}`,
-    earlyWithdrawalPeriod: timeAgo({ to: earlyWithdrawalPeriod }),
-    earlyWithdrawalPenalty: `${formatAmount(earlyWithdrawalPenalty, quoteToken)} ${quoteToken}`,
+    projectedAnnualReward: `${formatDecimalAsPercent(projectedAnnualReward)}`,
+    totalAjnaRewards: `${formatCryptoBalance(totalAjnaRewards)} AJNA`,
   }
 
   return (
@@ -38,22 +40,14 @@ export function ContentFooterItemsEarnManage({
         title={t('system.available-to-withdraw')}
         value={formatted.availableToWithdraw}
       />
-      {now > earlyWithdrawalPeriod ? (
-        <DetailsSectionFooterItem
-          title={t('ajna.position-page.earn.manage.overview.early-withdrawal-period')}
-          value={t('ajna.position-page.earn.manage.overview.early-withdrawal-ended', {
-            earlyWithdrawalPeriod: formatted.earlyWithdrawalPeriod,
-          })}
-        />
-      ) : (
-        <DetailsSectionFooterItem
-          title={t('ajna.position-page.earn.manage.overview.early-withdrawal-penalty')}
-          value={t('ajna.position-page.earn.manage.overview.early-withdrawal-ends-in', {
-            earlyWithdrawalPenalty: formatted.earlyWithdrawalPenalty,
-            earlyWithdrawalPeriod: formatted.earlyWithdrawalPeriod,
-          })}
-        />
-      )}
+      <DetailsSectionFooterItem
+        title={t('ajna.position-page.earn.manage.overview.projected-annual-reward')}
+        value={formatted.projectedAnnualReward}
+      />
+      <DetailsSectionFooterItem
+        title={t('ajna.position-page.earn.manage.overview.total-ajna-rewards')}
+        value={formatted.totalAjnaRewards}
+      />
     </>
   )
 }

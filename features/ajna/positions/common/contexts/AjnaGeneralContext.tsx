@@ -1,5 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { GasPriceParams } from 'blockchain/prices'
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import {
   AjnaFlow,
@@ -38,6 +39,7 @@ interface AjnaGeneralContextProviderProps {
   quotePrice: BigNumber
   quoteToken: string
   steps: AjnaSidebarStep[]
+  gasPrice: GasPriceParams
 }
 
 type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'>

@@ -170,7 +170,7 @@ export function parseAjnaBorrowPositionRows(
     const {
       collateralAmount,
       debtAmount,
-      pool: { rate },
+      pool: { interestRate },
       riskRatio,
     } = position as AjnaPosition
 
@@ -191,7 +191,7 @@ export function parseAjnaBorrowPositionRows(
         type: 'LTV',
       },
       url: `/ajna/position/${vaultId}`,
-      variable: rate.times(100),
+      variable: interestRate.times(100),
     }
   })
 }

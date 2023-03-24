@@ -3831,10 +3831,10 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
-"@oasisdex/oasis-actions-poc@npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-17":
-  version "0.2.16-ajna-earn-17"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.16-ajna-earn-17.tgz#71e56c4b6107ec13691e49539efe41edd82242fb"
-  integrity sha512-ALpZ+YlffxL1PYbpH1PR5GqMNZvBLaxZg+8yk/CG4JKVIGaGa9h8c37YpSmJUMigUjFyHcNY16J8zzDFNMXuMg==
+"@oasisdex/oasis-actions-poc@npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-20":
+  version "0.2.16-ajna-earn-20"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.16-ajna-earn-20.tgz#dbf218dcb414de9211b94916dc15541c46b754f2"
+  integrity sha512-xhEHyO0Iz+/Igavb5utbx5LFppQAvUxJgCa2azKmbcbduntSmbmdEQ2oJ3hZ8qm7Ni8C6QPy7W9ol8y6mrj84Q==
   dependencies:
     bignumber.js "^9.0.1"
     ethers "^5.6.2"

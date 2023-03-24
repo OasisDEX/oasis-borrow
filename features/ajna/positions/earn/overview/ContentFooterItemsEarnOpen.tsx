@@ -1,27 +1,29 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { timeAgo } from 'utils'
 
 interface ContentFooterItemsEarnOpenProps {
-  estimatedBreakEven: Date
-  totalValueLocked: BigNumber
-  apy: BigNumber
+  estimatedBreakEven?: Date
+  totalValueLocked?: BigNumber
+  days: number
+  apy?: BigNumber
 }
 
 export function ContentFooterItemsEarnOpen({
   estimatedBreakEven,
   totalValueLocked,
   apy,
+  days,
 }: ContentFooterItemsEarnOpenProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    estimatedBreakEven: timeAgo({ to: estimatedBreakEven }),
+    estimatedBreakEven: estimatedBreakEven ? timeAgo({ to: estimatedBreakEven }) : '-',
     totalValueLocked: totalValueLocked ? `$${formatCryptoBalance(totalValueLocked)}` : '-',
-    apy: apy ? `${formatPercent(apy, { precision: 2 })}` : '-',
+    apy: apy ? `${formatDecimalAsPercent(apy)}` : '-',
   }
 
   return (
@@ -34,7 +36,7 @@ export function ContentFooterItemsEarnOpen({
         title={t('total-value-locked')}
         value={formatted.totalValueLocked}
       />
-      <DetailsSectionFooterItem title={t('position-apy')} value={formatted.apy} />
+      <DetailsSectionFooterItem title={t('average-apy-in-days', { days })} value={formatted.apy} />
     </>
   )
 }
