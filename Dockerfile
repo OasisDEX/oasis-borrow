@@ -5,11 +5,12 @@ EXPOSE 3000
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 COPY ./server/ /usr/src/app/server
+COPY ./blockchain/abi/*.json /usr/src/app/blockchain/abi/
 
 WORKDIR /usr/src/app
 
 RUN apt update && apt-get install -y libudev-dev && apt-get install libusb-1.0-0
-RUN yarn --no-progress --non-interactive --frozen-lockfile --ignore-scripts --ignore-optional
+RUN yarn --no-progress --non-interactive --frozen-lockfile
 
 ARG COMMIT_SHA
 ARG API_HOST
