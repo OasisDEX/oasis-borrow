@@ -786,7 +786,7 @@ function DisconnectedHeader() {
         <BasicHeader variant="appContainer">
           <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
-            <NavigationPickNetwork />
+            {useBlockNative ? <NavigationPickNetwork /> : null}
             {useBlockNative ? <ConnectButton /> : <ConnectWalletButton />}
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}
