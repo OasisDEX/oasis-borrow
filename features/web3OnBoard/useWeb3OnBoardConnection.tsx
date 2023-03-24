@@ -14,7 +14,7 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
   const { connect } = useBridgeConnection()
   const [, setChain] = useSetChain()
   const { networkConnect } = useNetworkConnection()
-  const customNetwork = useCustomNetworkParameter()
+  const [customNetwork] = useCustomNetworkParameter()
 
   const connected = useMemo(() => {
     if (!walletConnect) {
