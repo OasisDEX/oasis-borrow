@@ -896,7 +896,7 @@ export const ETH_TOKENS = tokens
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
 const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
-  main: [
+  ethereumMainnet: [
     'ETH-A',
     'ETH-B',
     'ETH-C',
@@ -912,7 +912,7 @@ const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
     'MANA-A',
     'RETH-A',
   ],
-  goerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C', 'RETH-A'],
+  ethereumGoerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C', 'RETH-A'],
 }
 
 export function isSupportedAutomationIlk(network: string, ilk: string) {
