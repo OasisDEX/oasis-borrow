@@ -12,31 +12,31 @@ export function useBridgeConnection() {
   const [{ chains }] = useSetChain()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const walletIsNotConnected =
+  const web3NotConnected =
     web3Context?.status === 'error' ||
     web3Context?.status === 'notConnected' ||
     web3Context?.status === 'connectedReadonly'
 
   useEffect(() => {
     async function autoConnect() {
-      if (walletIsNotConnected && wallet?.accounts.length && chains.length) {
+      if (web3NotConnected && wallet?.accounts.length && chains.length) {
         const bridgeConnector = new BridgeConnector(wallet, chains)
         await web3Context.connect(bridgeConnector!, bridgeConnector!.connectionKind)
       }
     }
     void autoConnect()
-  }, [createBridgeConnector, wallet, walletIsNotConnected, web3Context, chains])
+  }, [wallet, web3NotConnected, web3Context, chains])
 
   const connect = useCallback(async () => {
     const bridgeConnector = await createBridgeConnector()
-    if (bridgeConnector && walletIsNotConnected) {
+    if (bridgeConnector && web3NotConnected) {
       try {
         await web3Context.connect(bridgeConnector, bridgeConnector.connectionKind)
       } catch (error) {
         console.error(error)
       }
     }
-  }, [createBridgeConnector, walletIsNotConnected, web3Context])
+  }, [createBridgeConnector, web3NotConnected, web3Context])
 
   return { connect }
 }

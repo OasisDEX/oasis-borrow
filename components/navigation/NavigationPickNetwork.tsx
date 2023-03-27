@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { NetworkConfig, networks, networksByName } from 'blockchain/config'
+import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useNetworkName } from 'helpers/useNetworkName'
@@ -21,21 +22,24 @@ const filterNetworks = (network: NetworkConfig) => {
 }
 
 export function NavigationPickNetwork() {
-  const [{ chains: usableChains, settingChain }, setChain] = useSetChain()
+  const { switchChains } = useAppContext()
+  const [{ chains: usableChains, settingChain, connectedChain }, setChain] = useSetChain()
   const currentNetworkName = useNetworkName()
   const [, setCustomNetwork] = useCustomNetworkParameter()
   const changeChain = (networkName: string) => () => {
     const network = networksByName[networkName]
-    setChain({ chainId: network.hexId! })
-      .then((setChainSuccess) => {
-        setChainSuccess &&
-          setCustomNetwork({
-            network: network.name!,
-            id: network.id!,
-            hexId: network.hexId!,
+    connectedChain
+      ? setChain({ chainId: network.hexId! })
+          .then((setChainSuccess) => {
+            setChainSuccess &&
+              setCustomNetwork({
+                network: network.name!,
+                id: network.id!,
+                hexId: network.hexId!,
+              })
           })
-      })
-      .catch(console.error)
+          .catch(console.error)
+      : switchChains(Number(network.id))
   }
   return (
     <Box sx={{ mr: 2 }}>

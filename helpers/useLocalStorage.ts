@@ -10,7 +10,7 @@ export function getStorageValue(key: string, defaultValue: unknown) {
 
 type SetValue<T> = Dispatch<SetStateAction<T>>
 
-export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
+export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T | null>] {
   const readValue = useCallback((): T => {
     if (typeof window === 'undefined') {
       return initialValue

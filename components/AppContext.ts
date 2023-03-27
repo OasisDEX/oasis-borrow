@@ -537,7 +537,7 @@ export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
-  const [web3Context$, setupWeb3Context$] = createWeb3Context$(
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(
     chainIdToRpcUrl,
     chainIdToDAIContractDesc,
   )
@@ -1512,6 +1512,7 @@ export function setupAppContext() {
     ajnaPosition$,
     chainContext$,
     positionIdFromDpmProxy$,
+    switchChains,
   }
 }
 

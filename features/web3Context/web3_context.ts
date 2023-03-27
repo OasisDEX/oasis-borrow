@@ -41,10 +41,12 @@ export async function fetchAccountBalances(
   )
 }
 
+type createWeb3ContextReturnType = [Observable<Web3Context>, () => void, (chainId: number) => void]
+
 export function createWeb3Context$(
   chainIdToRpcUrl: { [chainId: number]: string },
   chainIdToDaiContractDesc: { [chainId: number]: ContractDesc },
-): [Observable<Web3Context>, () => void] {
+): createWeb3ContextReturnType {
   const web3Context$ = new ReplaySubject<Web3Context>(1)
 
   function push(c: Web3Context) {
@@ -226,5 +228,9 @@ export function createWeb3Context$(
     ])
   }
 
-  return [web3Context$.pipe(distinctUntilChanged(isEqual)), setupWeb3Context$]
+  function switchChains(_nextChainId: number) {
+    console.log('Not yet implemented')
+  }
+
+  return [web3Context$.pipe(distinctUntilChanged(isEqual)), setupWeb3Context$, switchChains]
 }
