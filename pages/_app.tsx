@@ -6,12 +6,12 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { adRollPixelScript } from 'analytics/adroll'
 import { trackingEvents } from 'analytics/analytics'
-import { LOCALSTORAGE_KEY } from 'analytics/common'
+import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
-import { CookieBanner } from 'components/CookieBanner'
+import { CookieBanner, SavedSettings } from 'components/CookieBanner'
 import { GasEstimationContextProvider } from 'components/GasEstimationContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
@@ -111,7 +111,10 @@ const noOverlayWorkaroundScript = `
 `
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
-  const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
+  const [cookiesValue, cookiesSetValue] = useLocalStorage(
+    COOKIE_NAMES_LOCASTORAGE_KEY,
+    {} as SavedSettings,
+  )
   const mount = useRef(false)
   const Layout = Component.layout || AppLayout
 
@@ -167,7 +170,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        {value?.enabledCookies?.marketing && (
+        {cookiesValue?.enabledCookies?.marketing && (
           <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
         )}
 
@@ -190,7 +193,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                             <WithFollowVaults>
                               <Layout {...layoutProps}>
                                 <Component {...pageProps} />
-                                <CookieBanner setValue={setValue} value={value} />
+                                <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
                               </Layout>
                             </WithFollowVaults>
                           </NotificationSocketProvider>
