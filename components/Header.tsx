@@ -233,6 +233,7 @@ function UserDesktopMenu() {
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
+  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
@@ -307,7 +308,7 @@ function UserDesktopMenu() {
           </Button>
           <UniswapWidgetShowHide />
         </Box>
-        <NavigationPickNetwork />
+        {useBlockNative ? <NavigationPickNetwork /> : null}
 
         {!shouldHideSettings && (
           <ButtonDropdown

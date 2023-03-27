@@ -1,13 +1,24 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { networks, networksByName } from 'blockchain/config'
+import { NetworkConfig, networks, networksByName } from 'blockchain/config'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useNetworkName } from 'helpers/useNetworkName'
+import { env } from 'process'
 import React from 'react'
 import { Box, Button, Image } from 'theme-ui'
 
 import { NavigationOrb } from './NavigationMenuOrb'
+
+const filterNetworks = (network: NetworkConfig) => {
+  const isDev = env.NODE_ENV !== 'production'
+  const showTestnetsParam =
+    window && new URLSearchParams(window.location.search).get('testnets') !== null
+  if (network['enabled']) {
+    return !network['testnet'] || isDev || showTestnetsParam
+  }
+  return false
+}
 
 export function NavigationPickNetwork() {
   const [{ chains: usableChains, settingChain }, setChain] = useSetChain()
@@ -46,7 +57,7 @@ export function NavigationPickNetwork() {
                 padding: 3,
               }}
             >
-              {networks.map((network) => {
+              {networks.filter(filterNetworks).map((network) => {
                 const isCurrentNetwork = network.name === currentNetworkName
                 return (
                   <Button
