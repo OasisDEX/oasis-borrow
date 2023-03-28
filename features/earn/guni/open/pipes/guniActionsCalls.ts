@@ -35,7 +35,9 @@ export type TxChange =
 
 export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
   call: (_, { contract, guniProxyActions }) => {
-    return contract<GuniProxyActions>(guniProxyActions).functions.getOtherTokenAmount
+    // TODO figure out why generated type doesn't contain methods property
+    // @ts-ignore
+    return contract<GuniProxyActions>(guniProxyActions).methods.getOtherTokenAmount
   },
   prepareArgs: ({ token, leveragedAmount }, context) => {
     const guniToken = context.tokens[token]
@@ -55,7 +57,9 @@ export const getGuniMintAmount: CallDef<
 > = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).functions.getMintAmounts
+    // TODO figure out why generated type doesn't contain methods property
+    // @ts-ignore
+    return contract<GuniToken>(guniToken).methods.getMintAmounts
   },
   prepareArgs: ({ amountOMax, amount1Max }) => {
     return [amountToWei(amountOMax, 'DAI').toFixed(0), amountToWei(amount1Max, 'USDC').toFixed(0)]

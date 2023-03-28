@@ -24,7 +24,9 @@ export const getUnderlyingBalances: CallDef<
 > = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).functions.getUnderlyingBalances
+    // TODO figure out why generated type doesn't contain methods property
+    // @ts-ignore
+    return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
   postprocess: ({ 0: amount0, 1: amount1 }: any, { token }) => {
@@ -42,7 +44,9 @@ export const getUnderlyingBalances: CallDef<
 export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).functions.totalSupply
+    // TODO figure out why generated type doesn't contain methods property
+    // @ts-ignore
+    return contract<GuniToken>(guniToken).methods.totalSupply
   },
   prepareArgs: () => [],
   postprocess: (total: any, { token }) => {
