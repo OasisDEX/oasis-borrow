@@ -59,5 +59,20 @@ export const subgraphMethodsRecord: {
       }
     }
   `,
+  getPoolsTableData: gql`
+    {
+      pools {
+        collateralAddress
+        quoteTokenAddress
+        dailyPercentageRate30dAverage
+        debt
+        depositSize
+        interestRate
+        poolMinDebtAmount
+        lup
+        htp
+      }
+    }
+  `,
   tempMethod: '',
 }

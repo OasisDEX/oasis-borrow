@@ -69,7 +69,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       lowestUtilizedPrice: new BigNumber(lup).shiftedBy(negativeWadPrecision),
       lowestUtilizedPriceIndex: new BigNumber(lupIndex),
 
-      htp: new BigNumber(htp),
+      htp: new BigNumber(htp).shiftedBy(negativeWadPrecision),
       highestThresholdPrice: new BigNumber(htp).shiftedBy(negativeWadPrecision),
       highestThresholdPriceIndex: new BigNumber(htpIndex),
 

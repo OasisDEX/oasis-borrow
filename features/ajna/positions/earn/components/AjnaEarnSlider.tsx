@@ -109,7 +109,7 @@ export function AjnaEarnSlider() {
 
   const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
 
-  const resolvedValue = (price || highestThresholdPrice).decimalPlaces(2)
+  const resolvedValue = price || lowestUtilizedPrice
 
   const maxLtv = position.getMaxLtv(price)
 
