@@ -35,9 +35,7 @@ export type TxChange =
 
 export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
   call: (_, { contract, guniProxyActions }) => {
-    // TODO figure out why generated type doesn't contain methods property
-    // @ts-ignore
-    return contract<GuniProxyActions>(guniProxyActions).methods.getOtherTokenAmount
+    return contract<GuniProxyActions>(guniProxyActions).functions.getOtherTokenAmount
   },
   prepareArgs: ({ token, leveragedAmount }, context) => {
     const guniToken = context.tokens[token]
