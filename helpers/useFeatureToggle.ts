@@ -30,6 +30,7 @@ export type Feature =
   | 'FollowAAVEVaults'
   | 'UseBlocknativeOnboard'
   | 'GoerliButton'
+  | 'Sillyness'
   | '🌞'
 
 const configuredFeatures: Record<Feature, boolean> = {
@@ -60,6 +61,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseBlocknativeOnboard: false,
   // Added for gnosis safe testing
   GoerliButton: false,
+  Sillyness: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
 }
 
