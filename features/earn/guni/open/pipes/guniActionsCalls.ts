@@ -15,7 +15,7 @@ import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { catchError, startWith } from 'rxjs/operators'
-import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
+import { DssGuniProxyActions as GuniProxyActions } from 'types/web3-v1-contracts'
 import { GuniToken } from 'types/web3-v1-contracts'
 
 export type TxChange =
@@ -35,7 +35,7 @@ export type TxChange =
 
 export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
   call: (_, { contract, guniProxyActions }) => {
-    return contract<GuniProxyActions>(guniProxyActions).functions.getOtherTokenAmount
+    return contract<GuniProxyActions>(guniProxyActions).methods.getOtherTokenAmount
   },
   prepareArgs: ({ token, leveragedAmount }, context) => {
     const guniToken = context.tokens[token]
