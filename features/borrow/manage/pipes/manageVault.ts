@@ -211,6 +211,7 @@ function addTransitions(
           state.vault.id,
           VaultType.Multiply,
           state.vault.chainId,
+          'maker',
           () => {
             window.location.reload()
             change({ kind: 'multiplyTransitionSuccess' })

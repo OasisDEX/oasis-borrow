@@ -35,11 +35,11 @@ export function createGeneralManageVault$(
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageGuniVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageVault$: (id: BigNumber) => Observable<ManageStandardBorrowVaultState>,
-  checkVaultType$: (id: BigNumber) => Observable<VaultType>,
+  checkVaultType$: ({ id, protocol }: { id: BigNumber; protocol: string }) => Observable<VaultType>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<GeneralManageVaultState> {
-  return checkVaultType$(id).pipe(
+  return checkVaultType$({ id, protocol: 'maker' }).pipe(
     switchMap((type) => {
       return vault$(id).pipe(
         filter((vault) => vault !== undefined),

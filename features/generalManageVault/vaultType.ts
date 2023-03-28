@@ -21,6 +21,7 @@ export type SaveVaultType = (
   token: string,
   vaultType: VaultType,
   chainId: number,
+  protocol: string,
 ) => Observable<void>
 
 export function saveVaultTypeForAccount(
@@ -29,6 +30,7 @@ export function saveVaultTypeForAccount(
   vaultId: BigNumber,
   vaultType: VaultType,
   chainId: number,
+  protocol: string,
   onSuccess: Function,
   onFailure: Function,
   onProgress: Function,
@@ -37,7 +39,7 @@ export function saveVaultTypeForAccount(
   const token = jwtAuthGetToken(account)
 
   if (token) {
-    saveVaultType$(vaultId, token, vaultType, chainId)
+    saveVaultType$(vaultId, token, vaultType, chainId, protocol)
       .pipe<Function>(
         map(() => onSuccess),
         catchError(() => of(onFailure)),

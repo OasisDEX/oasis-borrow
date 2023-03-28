@@ -123,6 +123,7 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
                   jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
+                  'maker'
                 ).subscribe()
               }
 

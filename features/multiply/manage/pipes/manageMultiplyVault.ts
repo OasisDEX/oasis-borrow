@@ -300,6 +300,7 @@ function addTransitions(
           state.vault.id,
           VaultType.Borrow,
           state.vault.chainId,
+          'maker',
           () => {
             window.location.reload()
             change({ kind: 'borrowTransitionSuccess' })

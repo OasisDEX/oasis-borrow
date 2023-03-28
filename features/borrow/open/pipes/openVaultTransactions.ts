@@ -136,6 +136,7 @@ export function openVault(
               jwtToken,
               VaultType.Borrow,
               parseInt(txState.networkId),
+              'maker',
             ).subscribe()
           }
 

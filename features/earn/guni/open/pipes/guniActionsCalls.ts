@@ -152,6 +152,7 @@ export function openGuniVault<S extends TxStateDependencies>(
               jwtToken,
               VaultType.Multiply,
               parseInt(txState.networkId),
+              'maker',
             ).subscribe()
           }
 

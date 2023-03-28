@@ -167,6 +167,7 @@ export function multiplyVault(
                   jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
+                  'maker'
                 ).subscribe()
               }
 

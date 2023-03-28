@@ -1176,9 +1176,13 @@ export function setupAppContext() {
 
   const uiChanges = initializeUIChanges()
 
-  const checkOasisCDPType$: (id: BigNumber) => Observable<VaultType> = curry(
-    createCheckOasisCDPType$,
-  )(
+  const checkOasisCDPType$: ({
+    id,
+    protocol,
+  }: {
+    id: BigNumber
+    protocol: string
+  }) => Observable<VaultType> = curry(createCheckOasisCDPType$)(
     curry(checkVaultTypeUsingApi$)(
       context$,
       uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT),
