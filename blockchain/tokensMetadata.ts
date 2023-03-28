@@ -867,7 +867,10 @@ export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
 }
 
 export function getTokenSymbolFromAddress(context: Context, tokenAddress: string) {
-  const token = findKey(context.tokens, (contractDesc) => contractDesc.address === tokenAddress)
+  const token = findKey(
+    context.tokens,
+    (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
+  )
   if (!token) {
     throw new Error(`could not find token for address ${tokenAddress}`)
   }
