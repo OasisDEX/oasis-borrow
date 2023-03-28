@@ -16,7 +16,7 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
-import { GuniToken } from 'types/ethers-contracts'
+import { GuniToken } from 'types/web3-v1-contracts'
 
 export const getUnderlyingBalances: CallDef<
   { token: string },
@@ -24,8 +24,6 @@ export const getUnderlyingBalances: CallDef<
 > = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    // TODO figure out why generated type doesn't contain methods property
-    // @ts-ignore
     return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
@@ -44,8 +42,6 @@ export const getUnderlyingBalances: CallDef<
 export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    // TODO figure out why generated type doesn't contain methods property
-    // @ts-ignore
     return contract<GuniToken>(guniToken).methods.totalSupply
   },
   prepareArgs: () => [],
