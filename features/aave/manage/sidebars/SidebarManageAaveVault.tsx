@@ -286,7 +286,6 @@ function GetReviewingSidebarProps({
               active={closeToToken || ''}
               items={[collateral, debt].map((token) => ({
                 id: token,
-                disabled: token === collateral,
                 label: t('close-to', { token }),
                 action: () => curry(updateClosingAction)(token),
               }))}
