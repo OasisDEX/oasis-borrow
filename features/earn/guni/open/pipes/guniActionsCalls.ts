@@ -15,8 +15,8 @@ import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { catchError, startWith } from 'rxjs/operators'
-import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
-import { GuniToken } from 'types/ethers-contracts/GuniToken'
+import { DssGuniProxyActions as GuniProxyActions } from 'types/web3-v1-contracts'
+import { GuniToken } from 'types/web3-v1-contracts'
 
 export type TxChange =
   | { kind: 'txWaitingForApproval' }
@@ -35,8 +35,6 @@ export type TxChange =
 
 export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
   call: (_, { contract, guniProxyActions }) => {
-    // TODO figure out why generated type doesn't contain methods property
-    // @ts-ignore
     return contract<GuniProxyActions>(guniProxyActions).methods.getOtherTokenAmount
   },
   prepareArgs: ({ token, leveragedAmount }, context) => {
@@ -57,8 +55,6 @@ export const getGuniMintAmount: CallDef<
 > = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    // TODO figure out why generated type doesn't contain methods property
-    // @ts-ignore
     return contract<GuniToken>(guniToken).methods.getMintAmounts
   },
   prepareArgs: ({ amountOMax, amount1Max }) => {
