@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { getStateUnpacker } from 'helpers/testHelpers'
+import { Protocols } from 'lendingProtocols'
 import { of } from 'rxjs'
 
 import { createCheckOasisCDPType$ } from './checkOasisCDPType'
@@ -13,7 +14,7 @@ describe('checkOasisPositionType', () => {
         () => of(VaultType.Multiply),
         () => of('ETH-A'),
         [],
-        new BigNumber(1),
+        { id: new BigNumber(1), protocol: Protocols.MAKER },
       ),
     )
     expect(state()).to.eq(VaultType.Multiply)
@@ -24,7 +25,7 @@ describe('checkOasisPositionType', () => {
         () => of(VaultType.Borrow),
         () => of('INST-ETH-A'),
         ['INST-ETH-A'],
-        new BigNumber(1),
+        { id: new BigNumber(1), protocol: Protocols.MAKER },
       ),
     )
     expect(state()).to.eq(VaultType.Insti)

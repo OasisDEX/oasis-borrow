@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { Protocols } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
@@ -14,7 +15,7 @@ const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 export function checkVaultTypeUsingApi$(
   context$: Observable<Context>,
   pillChange: Observable<MultiplyPillChange>,
-  positionInfo: { id: BigNumber; protocol: string },
+  positionInfo: { id: BigNumber; protocol: Protocols },
 ): Observable<VaultType> {
   const pillChange$ = pillChange.pipe(
     startWith(({ currentChange: '' } as unknown) as MultiplyPillChange),
@@ -53,9 +54,10 @@ interface CheckMultipleVaultsResponse {
 
 export function checkMultipleVaultsFromApi$(
   vaults: string[],
+  protocol: string,
 ): Observable<CheckMultipleVaultsResponse> {
   return ajax({
-    url: `/api/vaults/?${vaults.map((vault) => `id=${vault}&`).join('')}`,
+    url: `/api/vaults/${protocol}?${vaults.map((vault) => `id=${vault}&`).join('')}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -83,7 +85,7 @@ export function checkMultipleVaultsFromApi$(
 export function getVaultFromApi$(
   vaultId: BigNumber,
   chainId: BigNumber,
-  protocol: string,
+  protocol: Protocols,
 ): Observable<
   | {
       vaultId: BigNumber

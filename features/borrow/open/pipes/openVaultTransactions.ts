@@ -10,6 +10,7 @@ import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
+import { Protocols } from 'lendingProtocols'
 import { iif, Observable, of } from 'rxjs'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
@@ -136,7 +137,7 @@ export function openVault(
               jwtToken,
               VaultType.Borrow,
               parseInt(txState.networkId),
-              'maker',
+              Protocols.MAKER,
             ).subscribe()
           }
 

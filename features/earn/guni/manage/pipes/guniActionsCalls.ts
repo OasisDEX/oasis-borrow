@@ -14,6 +14,7 @@ import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
+import { Protocols } from 'lendingProtocols'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 import { GuniToken } from 'types/ethers-contracts'
@@ -123,7 +124,7 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
                   jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
-                  'maker'
+                  Protocols.MAKER,
                 ).subscribe()
               }
 
