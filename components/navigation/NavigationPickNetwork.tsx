@@ -4,9 +4,10 @@ import { NetworkConfig, networks, networksByName } from 'blockchain/config'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { useObservable } from 'helpers/observableHook'
 import { useNetworkName } from 'helpers/useNetworkName'
 import { env } from 'process'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Box, Button, Image } from 'theme-ui'
 
 import { NavigationOrb } from './NavigationMenuOrb'
@@ -22,14 +23,17 @@ const filterNetworks = (network: NetworkConfig) => {
 }
 
 export function NavigationPickNetwork() {
-  const { switchChains } = useAppContext()
+  const { web3Context$ } = useAppContext()
   const [{ chains: usableChains, settingChain, connectedChain }, setChain] = useSetChain()
   const currentNetworkName = useNetworkName()
   const [, setCustomNetwork] = useCustomNetworkParameter()
-  const changeChain = (networkName: string) => () => {
-    const network = networksByName[networkName]
-    connectedChain
-      ? setChain({ chainId: network.hexId! })
+  const [web3Context] = useObservable(web3Context$)
+  const changeChain = useCallback(
+    (networkName: string) => () => {
+      const network = networksByName[networkName]
+      if (connectedChain) {
+        // wallet is connected, change it there so it updates everywhere
+        setChain({ chainId: network.hexId! })
           .then((setChainSuccess) => {
             setChainSuccess &&
               setCustomNetwork({
@@ -39,8 +43,19 @@ export function NavigationPickNetwork() {
               })
           })
           .catch(console.error)
-      : switchChains(Number(network.id))
-  }
+        return
+      }
+      if (web3Context?.status === 'connectedReadonly') {
+        setCustomNetwork({
+          network: network.name!,
+          id: network.id!,
+          hexId: network.hexId!,
+        })
+        window && window.location.reload() // duh
+      }
+    },
+    [connectedChain, setChain, setCustomNetwork, web3Context?.status],
+  )
   return (
     <Box sx={{ mr: 2 }}>
       <NavigationOrb

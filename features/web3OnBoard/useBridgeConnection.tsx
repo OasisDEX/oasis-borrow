@@ -1,37 +1,30 @@
-import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { useAppContext } from 'components/AppContextProvider'
+import { Web3ContextConnectedReadonly } from 'features/web3Context'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { BridgeConnector } from './BridgeConnector'
 import { useBridgeConnector } from './useBridgeConnector'
 
 export function useBridgeConnection() {
   const createBridgeConnector = useBridgeConnector()
-  const [{ wallet }] = useConnectWallet()
-  const [{ chains }] = useSetChain()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const web3NotConnected =
-    web3Context?.status === 'error' ||
-    web3Context?.status === 'notConnected' ||
-    web3Context?.status === 'connectedReadonly'
-
-  useEffect(() => {
-    async function autoConnect() {
-      if (web3NotConnected && wallet?.accounts.length && chains.length) {
-        const bridgeConnector = new BridgeConnector(wallet, chains)
-        await web3Context.connect(bridgeConnector!, bridgeConnector!.connectionKind)
-      }
-    }
-    void autoConnect()
-  }, [wallet, web3NotConnected, web3Context, chains])
+  const web3NotConnected = useMemo(() => {
+    return (
+      web3Context?.status === 'error' ||
+      web3Context?.status === 'notConnected' ||
+      web3Context?.status === 'connectedReadonly'
+    )
+  }, [web3Context?.status])
 
   const connect = useCallback(async () => {
     const bridgeConnector = await createBridgeConnector()
     if (bridgeConnector && web3NotConnected) {
       try {
-        await web3Context.connect(bridgeConnector, bridgeConnector.connectionKind)
+        await (web3Context as Web3ContextConnectedReadonly).connect(
+          bridgeConnector,
+          bridgeConnector.connectionKind,
+        )
       } catch (error) {
         console.error(error)
       }

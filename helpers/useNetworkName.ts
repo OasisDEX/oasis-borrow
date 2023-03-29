@@ -1,13 +1,14 @@
 import { useSetChain } from '@web3-onboard/react'
 import { networksByHexId } from 'blockchain/config'
 
-import { mainnetNetworkParameter } from './getCustomNetworkParameter'
+import { mainnetNetworkParameter, useCustomNetworkParameter } from './getCustomNetworkParameter'
 
 export function useNetworkName() {
   const [{ chains, connectedChain }] = useSetChain()
+  const [customNetworkName] = useCustomNetworkParameter()
   const filteredChain = chains.filter(({ id }) => id === connectedChain?.id)
   if (!connectedChain) {
-    return mainnetNetworkParameter.network
+    return customNetworkName.network || mainnetNetworkParameter.network
   }
   if (!filteredChain[0]) {
     console.error(`Chain not configured:

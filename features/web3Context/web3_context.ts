@@ -13,7 +13,12 @@ import { distinctUntilChanged } from 'rxjs/operators'
 import Web3 from 'web3'
 
 import { contract, ContractDesc, getNetworkId } from './network'
-import { AccountWithBalances, ConnectionKind, Web3Context } from './types'
+import {
+  AccountWithBalances,
+  ConnectionKind,
+  Web3Context,
+  Web3ContextConnectedReadonly,
+} from './types'
 
 export type BalanceOfMethod = (address: string) => { call: () => Promise<string> }
 export type BalanceOfCreator = (web3: Web3, chainId: number) => BalanceOfMethod
@@ -41,7 +46,11 @@ export async function fetchAccountBalances(
   )
 }
 
-type createWeb3ContextReturnType = [Observable<Web3Context>, () => void, (chainId: number) => void]
+type createWeb3ContextReturnType = [
+  Observable<Web3Context>,
+  () => void,
+  (chainId: number, context: Web3ContextConnectedReadonly) => void,
+]
 
 export function createWeb3Context$(
   chainIdToRpcUrl: { [chainId: number]: string },
@@ -177,6 +186,7 @@ export function createWeb3Context$(
       }
 
       if (chainId !== getNetworkId()) {
+        console.log('chainId !== getNetworkId()', chainId)
         setTimeout(() => {
           connect(
             new NetworkConnector({
@@ -186,7 +196,9 @@ export function createWeb3Context$(
             'network',
             // eslint-disable-next-line @typescript-eslint/no-empty-function
           )
-            .then(() => {})
+            .then(() => {
+              console.log('Chain ID changed:', chainId, '/', getNetworkId())
+            })
             .catch((e) => {
               console.error('Error while connecting to network', e)
             })
@@ -228,8 +240,18 @@ export function createWeb3Context$(
     ])
   }
 
-  function switchChains(_nextChainId: number) {
-    console.log('Not yet implemented')
+  function switchChains(_nextChainId: number, context: Web3ContextConnectedReadonly) {
+    push({
+      status: context.status,
+      connectionKind: context.connectionKind,
+      web3: context.web3,
+      chainId: _nextChainId,
+      deactivate: context.deactivate,
+      connect: context.connect,
+      connectionMethod: context.connectionMethod,
+      connectLedger: context.connectLedger,
+    })
+    // this is currently not being used
   }
 
   return [web3Context$.pipe(distinctUntilChanged(isEqual)), setupWeb3Context$, switchChains]
