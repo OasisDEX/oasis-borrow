@@ -49,6 +49,7 @@ export function AjnaEarnOverviewManage() {
             isLoading={isSimulationLoading}
             price={position.price}
             quoteToken={quoteToken}
+            collateralToken={collateralToken}
             maxLendingPercentage={position.maxRiskRatio.loanToValue}
             afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
           />
@@ -57,6 +58,7 @@ export function AjnaEarnOverviewManage() {
             collateralToken={collateralToken}
             quoteToken={quoteToken}
             positionLendingPrice={position.price}
+            highestThresholdPrice={position.pool.highestThresholdPrice}
             afterPositionLendingPrice={simulation?.price}
             relationToMarketPrice={position.maxRiskRatio.loanToValue.minus(one)}
           />
