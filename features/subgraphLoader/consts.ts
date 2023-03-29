@@ -56,6 +56,13 @@ export const subgraphMethodsRecord: {
         poolActualUtilization
         poolTargetUtilization
         currentBurnEpoch
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
       }
     }
   `,
