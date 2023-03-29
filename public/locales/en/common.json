@@ -2560,7 +2560,7 @@
       "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
-      "debt-less-then-dust-limit": "You cannot generate more than {{}} of debt, as this would take your position below the minimum LTV. Please enter a lower amount.",
+      "debt-less-then-dust-limit": "You cannot generate more than {{amount}} of debt, as this would take your position below the minimum LTV. Please enter a lower amount.",
       "repay-more-then-debt": "You cannot repay more than the total debt amount [bTKN].",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}."
     },
