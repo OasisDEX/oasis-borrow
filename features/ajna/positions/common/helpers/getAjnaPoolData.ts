@@ -30,6 +30,7 @@ export interface AjnaPoolDataResponse {
   pendingInflator: string
   buckets: Bucket[]
   pendingInflator: string
+  buckets: Bucket[]
 }
 
 export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
@@ -65,6 +66,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       pendingInflator,
       buckets,
       pendingInflator,
+      buckets,
     } = response.pool
 
     return {
@@ -112,6 +114,13 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       })),
 
       pendingInflator: new BigNumber(pendingInflator).shiftedBy(negativeWadPrecision),
+      buckets: buckets.map((bucket) => ({
+        index: new BigNumber(bucket.index),
+        price: new BigNumber(bucket.price).shiftedBy(negativeWadPrecision),
+        quoteTokens: new BigNumber(bucket.quoteTokens).shiftedBy(negativeWadPrecision),
+        collateral: new BigNumber(bucket.collateral).shiftedBy(negativeWadPrecision),
+        bucketLPs: new BigNumber(bucket.bucketLPs),
+      })),
     }
   }
 

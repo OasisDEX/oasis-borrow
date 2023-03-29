@@ -65,6 +65,13 @@ export const subgraphMethodsRecord: {
           bucketLPs
         }
         pendingInflator
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
       }
     }
   `,
