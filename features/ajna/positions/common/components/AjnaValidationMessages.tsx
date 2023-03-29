@@ -8,14 +8,16 @@ export function AjnaValidationMessages({
   additionalData,
 }: ValidationMessagesInput) {
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralToken, quoteToken, product },
   } = useAjnaGeneralContext()
+
+  const token = product === 'earn' ? quoteToken : collateralToken
 
   return (
     <ValidationMessages
       messages={messages}
       type={type}
-      additionalData={{ ...additionalData, collateralToken, quoteToken }}
+      additionalData={{ ...additionalData, collateralToken, quoteToken, token }}
       translationRootKey="ajna.validations"
     />
   )

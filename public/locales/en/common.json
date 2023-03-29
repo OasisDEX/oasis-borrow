@@ -2555,16 +2555,19 @@
       }
     },
     "validations": {
-      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
-      "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet",
-      "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
-      "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
-      "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited.",
-      "earning-no-apy": "You will be lending without earning any yield",
-      "price-below-htp": "You will be lending without earning any yield",
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",
+      "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet.",
+      "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
+      "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
+      "undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
+      "earning-no-apy": "You will be lending without earning any yield.",
+      "price-below-htp": "You will be lending without earning any yield.",
       "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
-      "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{quoteToken}}, please select a lower amount",
-      "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less"
+      "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
+      "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
+      "debt-less-then-dust-limit": "You cannot generate more than {{}} of debt, as this would take your position below the minimum LTV. Please enter a lower amount.",
+      "repay-more-then-debt": "You cannot repay more than the total debt amount [bTKN].",
+      "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}."
     },
     "rewards": {
       "title": "Your Ajna token rewards",
