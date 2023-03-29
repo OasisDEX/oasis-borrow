@@ -31,7 +31,9 @@ function ContentPositionLendingPriceModal({
         {t('ajna.position-page.earn.manage.overview.position-lending-price')}
       </Heading>
       <Text variant="paragraph2" as="p" sx={{ pb: 2 }}>
-        {t('ajna.position-page.earn.manage.overview.position-lending-price-modal-desc', { quoteToken })}
+        {t('ajna.position-page.earn.manage.overview.position-lending-price-modal-desc', {
+          quoteToken,
+        })}
       </Text>
       <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
         {positionLendingPrice} {quoteToken}
