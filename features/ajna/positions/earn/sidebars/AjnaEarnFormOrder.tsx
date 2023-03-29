@@ -94,7 +94,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
               value: (
                 <>
                   <GasEstimation />
-                  {withAjnaFee && <>{` + ${formatAmount(feeWhenActionBelowLup, 'USD')}$`}</>}
+                  {withAjnaFee && <>{` + $${formatAmount(feeWhenActionBelowLup, 'USD')}`}</>}
                 </>
               ),
               dropdownValues: withAjnaFee
@@ -105,7 +105,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
                     },
                     {
                       label: t('ajna.position-page.earn.common.form.ajna-fee'),
-                      value: `${formatAmount(feeWhenActionBelowLup, 'USD')}$`,
+                      value: `$${formatAmount(feeWhenActionBelowLup, 'USD')}`,
                     },
                   ]
                 : undefined,

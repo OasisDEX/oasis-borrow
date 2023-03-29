@@ -16,7 +16,7 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
-import { GuniToken } from 'types/ethers-contracts'
+import { GuniToken } from 'types/web3-v1-contracts'
 
 export const getUnderlyingBalances: CallDef<
   { token: string },
@@ -24,7 +24,7 @@ export const getUnderlyingBalances: CallDef<
 > = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).functions.getUnderlyingBalances
+    return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
   postprocess: ({ 0: amount0, 1: amount1 }: any, { token }) => {
@@ -42,7 +42,7 @@ export const getUnderlyingBalances: CallDef<
 export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).functions.totalSupply
+    return contract<GuniToken>(guniToken).methods.totalSupply
   },
   prepareArgs: () => [],
   postprocess: (total: any, { token }) => {

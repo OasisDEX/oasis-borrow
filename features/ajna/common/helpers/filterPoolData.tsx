@@ -1,6 +1,6 @@
 import { AjnaPoolData, AjnaProduct } from 'features/ajna/common/types'
 import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellComponents'
-import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import React from 'react'
 
 interface FilterPoolDataParams {
@@ -17,9 +17,9 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
 
         return {
           minPositionSize: `$${formatFiatBalance(payload.minPositionSize)}`,
-          maxLtv: formatPercent(payload.maxLtv, { precision: 2 }),
+          maxLtv: formatDecimalAsPercent(payload.maxLtv),
           liquidityAvaliable: `$${formatFiatBalance(payload.liquidityAvaliable)}`,
-          annualFee: formatPercent(payload.annualFee, { precision: 2 }),
+          annualFee: formatDecimalAsPercent(payload.annualFee),
         }
       } else
         return {
@@ -33,10 +33,10 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
         const payload = data[pair as keyof typeof data]
 
         return {
-          '90DayNetApy': formatPercent(payload['90DayNetApy'], { precision: 2 }),
-          '7DayNetApy': formatPercent(payload['7DayNetApy'], { precision: 2 }),
+          '90DayNetApy': formatDecimalAsPercent(payload['90DayNetApy']),
+          '7DayNetApy': formatDecimalAsPercent(payload['7DayNetApy']),
           tvl: `$${formatFiatBalance(payload.tvl)}`,
-          minLtv: formatPercent(payload.minLtv, { precision: 2 }),
+          minLtv: formatDecimalAsPercent(payload.minLtv),
         }
       } else
         return {

@@ -134,6 +134,7 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
+import { getAjnaPoolsTableContent$ } from 'features/ajna/positions/common/observables/getAjnaPoolsTableContent'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
@@ -1357,6 +1358,8 @@ export function setupAppContext() {
     (walletAddress: string) => walletAddress,
   )
 
+  const ajnaPoolsTableData$ = curry(getAjnaPoolsTableContent$)(context$, tokenPriceUSDStatic$)
+
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(positionsList$, aavePositions$, ajnaPositions$, dsr$),
   )
@@ -1513,6 +1516,7 @@ export function setupAppContext() {
     chainContext$,
     positionIdFromDpmProxy$,
     switchChains,
+    ajnaPoolsTableData$,
   }
 }
 

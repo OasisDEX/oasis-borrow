@@ -2259,7 +2259,11 @@
           "vault-message-ok": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{priceMovement}} with respect to {{debtToken}} for this position to be available for liquidation. Aave's liquidations penalty is at least {{liquidationPenalty}}.",
           "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. Aave's liquidations penalty is at least {{liquidationPenalty}}."
         }
-      }
+      },
+      "af-title": "Fill the gas tank",
+      "af-description": "Please fill the gas tank to proceed with your transaction.",
+      "af-cta-button": "Turn on the pump",
+      "af-secondary-button": "Skip this tomfoolery"
     }
   },
   "open-multiply": {
@@ -2515,14 +2519,20 @@
             "above-market-price": "{{amount}} above market price",
             "below-market-price": "{{amount}} below market price",
             "current-earnings": "Current earnings",
+            "current-earnings-modal-desc": "The amount of {{quoteToken}} you have earn since the last time this position has been adjusted:",
             "projected-annual-reward": "Projected annual reward",
             "total-ajna-rewards": "Total AJNA rewards",
             "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
             "early-withdrawal-period": "Early withdrawal period",
             "max-lending-ltv": "Max lending LTV",
+            "max-lending-ltv-modal-desc": "The max lending LTV represents the % of {{quoteToken}} you are willing to lend for each unit of {{collateralToken}}. This value moves as the price of {{collateralToken}}/{{quoteToken}} changes. You should adjust your position as the price changes to earn yield in a safe way:",
             "net-pnl": "Net PnL: {{netPnL}}",
             "position-lending-price": "Position lending price",
-            "tokens-deposited": "Tokens deposited"
+            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in quote token.",
+            "minimum-yield-price-modal": "Minimum Yield Price",
+            "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
+            "tokens-deposited": "Tokens deposited",
+            "tokens-deposited-modal-desc": "The total amount of tokens deposited into the protocol, this includes the earned amount:"
           },
           "notifications": {
             "deposit-is-not-withdrawable": {

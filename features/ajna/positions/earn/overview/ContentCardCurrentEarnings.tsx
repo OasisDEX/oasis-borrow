@@ -7,6 +7,33 @@ import {
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Card, Grid, Heading, Text } from 'theme-ui'
+
+interface ContentCardCurrentEarningsModalProps {
+  earnings: string
+  quoteToken: string
+}
+
+function ContentCardCurrentEarningsModal({
+  earnings,
+  quoteToken,
+}: ContentCardCurrentEarningsModalProps) {
+  const { t } = useTranslation()
+
+  return (
+    <Grid gap={2}>
+      <Heading variant="header3">
+        {t('ajna.position-page.earn.manage.overview.current-earnings')}
+      </Heading>
+      <Text variant="paragraph2" as="p" sx={{ pb: 2 }}>
+        {t('ajna.position-page.earn.manage.overview.current-earnings-modal-desc', { quoteToken })}
+      </Text>
+      <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
+        {earnings} {quoteToken}
+      </Card>
+    </Grid>
+  )
+}
 
 interface ContentCardCurrentEarningsProps {
   isLoading?: boolean
@@ -45,6 +72,12 @@ export function ContentCardCurrentEarnings({
         `${formatted.afterCurrentEarnings} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
+    modal: (
+      <ContentCardCurrentEarningsModal
+        earnings={formatted.currentEarnings}
+        quoteToken={quoteToken}
+      />
+    ),
   }
 
   if (!netPnL.isZero()) {
