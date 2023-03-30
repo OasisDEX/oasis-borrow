@@ -342,7 +342,7 @@ export const tokens: TokenConfig[] = [
   {
     symbol: 'USDC',
     precision: 6,
-    digits: 6,
+    digits: 2,
     digitsInstant: 2,
     maxSell: '1000000000000000',
     name: 'USD Coin',

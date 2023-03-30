@@ -1,10 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import {
-  formatAmount,
-  formatCryptoBalance,
-  formatDecimalAsPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -26,10 +22,9 @@ export function ContentFooterItemsEarnManage({
   const { t } = useTranslation()
 
   const formatted = {
-    availableToWithdraw: `${formatAmount(availableToWithdraw, quoteToken)} ${quoteToken}`,
+    availableToWithdraw: `${formatCryptoBalance(availableToWithdraw)} ${quoteToken}`,
     afterAvailableToWithdraw:
-      afterAvailableToWithdraw &&
-      `${formatAmount(afterAvailableToWithdraw, quoteToken)} ${quoteToken}`,
+      afterAvailableToWithdraw && `${formatCryptoBalance(afterAvailableToWithdraw)} ${quoteToken}`,
     projectedAnnualReward: `${formatDecimalAsPercent(projectedAnnualReward)}`,
     totalAjnaRewards: `${formatCryptoBalance(totalAjnaRewards)} AJNA`,
   }
