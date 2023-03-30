@@ -9,13 +9,19 @@ import { Observable, ReplaySubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
 
 import { getNetworkId } from './network'
-import { ConnectionKind, Web3Context } from './types'
+import { ConnectionKind, Web3Context, Web3ContextConnectedReadonly } from './types'
 
 export type BalanceOfMethod = (address: string) => { call: () => Promise<string> }
 
+type createWeb3ContextReturnType = [
+  Observable<Web3Context>,
+  () => void,
+  (chainId: number, context: Web3ContextConnectedReadonly) => void,
+]
+
 export function createWeb3Context$(chainIdToRpcUrl: {
   [chainId: number]: string
-}): [Observable<Web3Context>, () => void] {
+}): createWeb3ContextReturnType {
   const web3Context$ = new ReplaySubject<Web3Context>(1)
 
   function push(c: Web3Context) {
@@ -108,6 +114,7 @@ export function createWeb3Context$(chainIdToRpcUrl: {
       }
 
       if (chainId !== getNetworkId()) {
+        console.log('chainId !== getNetworkId()', chainId)
         setTimeout(() => {
           connect(
             new NetworkConnector({
@@ -117,7 +124,9 @@ export function createWeb3Context$(chainIdToRpcUrl: {
             'network',
             // eslint-disable-next-line @typescript-eslint/no-empty-function
           )
-            .then(() => {})
+            .then(() => {
+              console.log('Chain ID changed:', chainId, '/', getNetworkId())
+            })
             .catch((e) => {
               console.error('Error while connecting to network', e)
             })
@@ -153,5 +162,18 @@ export function createWeb3Context$(chainIdToRpcUrl: {
     ])
   }
 
-  return [web3Context$.pipe(distinctUntilChanged(isEqual)), setupWeb3Context$]
+  function switchChains(_nextChainId: number, context: Web3ContextConnectedReadonly) {
+    push({
+      status: context.status,
+      connectionKind: context.connectionKind,
+      web3: context.web3,
+      chainId: _nextChainId,
+      deactivate: context.deactivate,
+      connect: context.connect,
+      connectionMethod: context.connectionMethod,
+    })
+    // this is currently not being used
+  }
+
+  return [web3Context$.pipe(distinctUntilChanged(isEqual)), setupWeb3Context$, switchChains]
 }

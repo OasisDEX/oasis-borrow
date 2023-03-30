@@ -31,6 +31,7 @@ import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } fr
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
+import { NavigationPickNetwork } from './navigation/NavigationPickNetwork'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidgetShowHide'
 
@@ -230,6 +231,7 @@ function UserDesktopMenu() {
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
@@ -306,6 +308,7 @@ function UserDesktopMenu() {
           </Button>
           <UniswapWidgetShowHide />
         </Box>
+        {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
 
         {showHeaderSettings && (
           <ButtonDropdown
@@ -781,12 +784,14 @@ function MobileMenu() {
 }
 
 function DisconnectedHeader() {
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
+            {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
             <ConnectButton />
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}

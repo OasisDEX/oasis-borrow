@@ -9,7 +9,7 @@ const USD_CHAINLINK_PRECISION = 8
 export function getChainlinkOraclePrice(
   contractName: keyof NetworkConfig['chainlinkPriceOracle'],
 ): CallDef<void, BigNumber> {
-  if (!contractName || !networksByName['main']['chainlinkPriceOracle'][contractName]) {
+  if (!contractName || !networksByName['ethereumMainnet']['chainlinkPriceOracle'][contractName]) {
     throw new Error(`ChainlinkPriceOracle ${contractName} not found`)
   }
   return {

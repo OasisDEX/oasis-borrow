@@ -745,6 +745,21 @@ export const oasisBaseTheme = {
         backgroundColor: 'interactive100',
       },
     },
+    networkPicker: {
+      backgroundColor: 'transparent',
+      color: 'primary100',
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      position: 'relative',
+      fontSize: '14px',
+      padding: 2,
+      cursor: 'pointer',
+      '&:disabled': {
+        opacity: 0.5,
+        cursor: 'not-allowed',
+      },
+    },
   },
   links: {
     unStyled: {

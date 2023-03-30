@@ -11,7 +11,7 @@ type SurveyConfig = { id: string; title: string; color: string }
 export function SurveyButtons({ id, title, color }: SurveyConfig) {
   const breakpoint = useBreakpointIndex()
 
-  const [closedSurveys, setClosedSurveys] = useLocalStorage('closed-surveys', [])
+  const [closedSurveys, setClosedSurveys] = useLocalStorage('closed-surveys', [''])
   const wasClosed = closedSurveys.includes(id)
 
   return (
