@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getNetworkId } from 'features/web3Context'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
@@ -64,7 +65,7 @@ export function createGasPrice$(
 
         const network = getNetworkId()
 
-        if (blockNative.maxFeePerGas.gt(0) && network !== 5) {
+        if (blockNative.maxFeePerGas.gt(0) && network !== NetworkIds.GOERLI) {
           gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
           gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
             blockNative.maxPriorityFeePerGas,
