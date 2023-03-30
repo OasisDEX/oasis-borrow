@@ -17,11 +17,8 @@ import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
 import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useRedirect } from 'helpers/useRedirect'
 import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -179,8 +176,6 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
 
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const { push } = useRedirect()
-  const useBlockNativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
   const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
     walletConnect: true,
   })
@@ -189,17 +184,15 @@ function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
     () => ({
       label: t('connect-wallet'),
       action: () => {
-        if (useBlockNativeOnBoard) {
-          if (!connected && !connecting) {
-            void executeConnection()
-          }
-        } else {
-          push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
+        if (!connected && !connecting) {
+          void executeConnection()
         }
       },
       steps: undefined,
+      isLoading: connecting,
+      disabled: connecting,
     }),
-    [t, useBlockNativeOnBoard, connected, connecting, executeConnection, push],
+    [t, connected, connecting, executeConnection],
   )
 }
 

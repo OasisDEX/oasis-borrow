@@ -1,7 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaPoolsTable } from 'features/ajna/common/components/AjnaPoolsTable'

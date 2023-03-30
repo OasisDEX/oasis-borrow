@@ -234,7 +234,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { connectionKind, tokensMainnet, defaultExchange, walletLabel, connectionMethod, web3 }: Context,
+  { tokensMainnet, defaultExchange, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -257,8 +257,6 @@ export function adjustPosition(
       switchMap(({ sendWithGasEstimation, send }) => {
         const isGnosisSafe = checkIfGnosisSafe({
           walletLabel,
-          connectionMethod,
-          connectionKind,
           web3,
         })
         const sendFn = isGnosisSafe ? send : sendWithGasEstimation
@@ -387,11 +385,9 @@ export function manageVaultWithdrawAndPayback(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation, send }) => {
-        const { walletLabel, connectionMethod, web3, connectionKind } = context
+        const { walletLabel, web3 } = context
         const isGnosisSafe = checkIfGnosisSafe({
           walletLabel,
-          connectionMethod,
-          connectionKind,
           web3,
         })
         const sendFn = isGnosisSafe ? send : sendWithGasEstimation
@@ -568,7 +564,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { connectionKind, tokensMainnet, defaultExchange, walletLabel, connectionMethod, web3 }: Context,
+  { tokensMainnet, defaultExchange, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -599,8 +595,6 @@ export function closeVault(
           switchMap((swap) => {
             const isGnosisSafe = checkIfGnosisSafe({
               walletLabel,
-              connectionMethod,
-              connectionKind,
               web3,
             })
             const sendFn = isGnosisSafe ? send : sendWithGasEstimation

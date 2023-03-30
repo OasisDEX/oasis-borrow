@@ -1,5 +1,5 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaLayout, AjnaWrapper } from 'features/ajna/common/layout'

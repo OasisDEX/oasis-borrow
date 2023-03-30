@@ -2,21 +2,10 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import BigNumber from 'bignumber.js'
 import Web3 from 'web3'
 
-export type ConnectionKind =
-  | 'injected'
-  | 'walletLink'
-  | 'walletConnect'
-  | 'portis'
-  | 'myetherwallet'
-  | 'trezor'
-  | 'ledger'
-  | 'network'
-  | 'gnosisSafe'
-  | 'magicLink'
+export type ConnectionKind = 'injected' | 'network'
 
 interface Connectable {
   connect: (connector: AbstractConnector, connectionKind: ConnectionKind) => Promise<void>
-  connectLedger: (chainId: number, derivationPath: string) => void
 }
 
 export interface Web3ContextNotConnected extends Connectable {
@@ -73,7 +62,6 @@ export interface Web3ContextError extends Connectable {
 export type Web3Context =
   | Web3ContextNotConnected
   | Web3ContextConnecting
-  | Web3ContextConnectingHWSelectAccount
   | Web3ContextError
   | Web3ContextConnectedReadonly
   | Web3ContextConnected

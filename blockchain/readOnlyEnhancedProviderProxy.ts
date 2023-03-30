@@ -1,5 +1,5 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { JSONRPCRequestPayload } from 'ethereum-protocol'
+import { JSONRPCRequestPayload } from 'ethereum-types'
 import { providers } from 'ethers'
 import { skipCache } from 'helpers/api/skipCache'
 import _ from 'lodash'

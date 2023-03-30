@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { AppLayout } from 'components/Layouts'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'

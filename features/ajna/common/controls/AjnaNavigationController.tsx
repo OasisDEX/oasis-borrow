@@ -1,10 +1,10 @@
-import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { MyPositionsOrb } from 'components/navigation/content/MyPositionsOrb'
 import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
+import { ConnectButton } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
@@ -182,7 +182,7 @@ export function AjnaNavigationController() {
             {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>
         ) : (
-          <>{!isViewBelowL && <ConnectWalletButton />}</>
+          <>{!isViewBelowL && <ConnectButton />}</>
         )
       }
     />
