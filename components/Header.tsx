@@ -784,6 +784,7 @@ function MobileMenu() {
 }
 
 function DisconnectedHeader() {
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
