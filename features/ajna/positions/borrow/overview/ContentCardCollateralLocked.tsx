@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -28,10 +28,10 @@ export function ContentCardCollateralLocked({
   const { t } = useTranslation()
 
   const formatted = {
-    collateralLocked: formatAmount(collateralLocked, collateralToken),
+    collateralLocked: formatCryptoBalance(collateralLocked),
     afterCollateralLocked:
       afterCollateralLocked &&
-      `${formatAmount(afterCollateralLocked, collateralToken)} ${collateralToken}`,
+      `${formatCryptoBalance(afterCollateralLocked)} ${collateralToken}`,
     collateralLockedUSD: `$${formatAmount(collateralLockedUSD, 'USD')}`,
   }
 

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 
 const getAjnaSimulationData = ({
   depositAmount,
@@ -26,8 +26,8 @@ export const getAjnaSimulationRows = ({
 
     return [
       row.translation,
-      earnings ? `${formatAmount(earnings, quoteToken)} ${quoteToken}` : '-',
-      netValue ? `${formatAmount(netValue, quoteToken)} ${quoteToken}` : '-',
+      earnings ? `${formatCryptoBalance(earnings)} ${quoteToken}` : '-',
+      netValue ? `${formatCryptoBalance(netValue)} ${quoteToken}` : '-',
     ]
   })
 }
