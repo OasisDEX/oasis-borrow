@@ -123,7 +123,7 @@
     "ts-essentials": "^7.0.1",
     "ts-node": "^7.0.1",
     "url-loader": "^4.1.0",
-    "usehooks-ts": "^2.9.1",
+    "usehooks-ts": "2.7.0",
     "uuid": "^8.3.0",
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
