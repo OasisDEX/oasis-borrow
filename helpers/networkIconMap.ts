@@ -6,5 +6,6 @@ export const networkIconMap: Record<string, string> = {
   arbitrumGoerli: '🌲 ',
   avalancheMainnet: '',
   optimismMainnet: '',
+  optimismGoerli: '🌲',
   polygonMainnet: '',
 }
