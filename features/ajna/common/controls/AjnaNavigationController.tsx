@@ -4,9 +4,12 @@ import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
+import { NavigationPickNetwork } from 'components/navigation/NavigationPickNetwork'
 import { ConnectButton } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
+import { Flex } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 export const otherAssets = [
@@ -49,6 +52,7 @@ export function AjnaNavigationController() {
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
   const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1]})`)
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
 
   return (
     <Navigation
@@ -179,10 +183,14 @@ export function AjnaNavigationController() {
             {isViewBelowXl && <MyPositionsOrb />}
             {/* <SwapOrb /> */}
             <NotificationsOrb />
+            {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
             {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>
         ) : (
-          <>{!isViewBelowL && <ConnectButton />}</>
+          <Flex sx={{ alignItems: 'center' }}>
+            {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
+            {!isViewBelowL && <ConnectButton />}
+          </Flex>
         )
       }
     />
