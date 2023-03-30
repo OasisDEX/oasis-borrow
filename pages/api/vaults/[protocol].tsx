@@ -1,10 +1,10 @@
-import { getMultipleVaults } from 'handlers/getMultipleVaults'
+import { getVaults } from 'handlers/getVaults'
 import { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
     case 'GET':
-      return await getMultipleVaults(req, res)
+      return await getVaults(req, res)
     default:
       return res.status(405).end()
   }

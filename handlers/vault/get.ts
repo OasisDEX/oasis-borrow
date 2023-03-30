@@ -6,6 +6,7 @@ import * as z from 'zod'
 const paramsSchema = z.object({
   id: z.string(),
   chainId: z.string(),
+  protocol: z.string(),
 })
 
 export async function getVault(req: NextApiRequest, res: NextApiResponse) {
@@ -14,6 +15,7 @@ export async function getVault(req: NextApiRequest, res: NextApiResponse) {
   const vault = await selectVaultByIdAndChainId({
     vault_id: parseInt(params.id, 10),
     chain_id: parseInt(params.chainId),
+    protocol: params.protocol,
   })
 
   if (vault === undefined || vault == null) {
@@ -31,12 +33,14 @@ export async function getVault(req: NextApiRequest, res: NextApiResponse) {
 export async function selectVaultByIdAndChainId({
   vault_id,
   chain_id,
+  protocol,
 }: {
   vault_id: number
   chain_id: number
+  protocol: string
 }): Promise<Vault | null> {
   const result = await prisma.vault.findUnique({
-    where: { vault_vault_id_chain_id_unique_constraint: { vault_id, chain_id } },
+    where: { vault_vault_id_chain_id_unique_constraint: { vault_id, chain_id, protocol } },
   })
   return result
 }

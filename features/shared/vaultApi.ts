@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { Protocols } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
@@ -14,7 +15,7 @@ const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 export function checkVaultTypeUsingApi$(
   context$: Observable<Context>,
   pillChange: Observable<MultiplyPillChange>,
-  id: BigNumber,
+  positionInfo: { id: BigNumber; protocol: Protocols },
 ): Observable<VaultType> {
   const pillChange$ = pillChange.pipe(
     startWith(({ currentChange: '' } as unknown) as MultiplyPillChange),
@@ -26,7 +27,11 @@ export function checkVaultTypeUsingApi$(
         return of(VaultType.Multiply)
       }
 
-      return getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
+      return getVaultFromApi$(
+        positionInfo.id,
+        new BigNumber(context.chainId),
+        positionInfo.protocol,
+      ).pipe(
         map((resp) => {
           if (Object.keys(resp).length === 0) {
             return VaultType.Borrow
@@ -49,9 +54,10 @@ interface CheckMultipleVaultsResponse {
 
 export function checkMultipleVaultsFromApi$(
   vaults: string[],
+  protocol: string,
 ): Observable<CheckMultipleVaultsResponse> {
   return ajax({
-    url: `/api/vaults/?${vaults.map((vault) => `id=${vault}&`).join('')}`,
+    url: `/api/vaults/${protocol}?${vaults.map((vault) => `id=${vault}&`).join('')}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -79,6 +85,7 @@ export function checkMultipleVaultsFromApi$(
 export function getVaultFromApi$(
   vaultId: BigNumber,
   chainId: BigNumber,
+  protocol: Protocols,
 ): Observable<
   | {
       vaultId: BigNumber
@@ -88,19 +95,20 @@ export function getVaultFromApi$(
   | {}
 > {
   return ajax({
-    url: `${basePath}/api/vault/${vaultId}/${chainId}`,
+    url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   }).pipe(
     map((resp) => {
-      const { vaultId, type, chainId } = resp.response as {
+      const { vaultId, type, chainId, protocol } = resp.response as {
         vaultId: number
         type: VaultType
         chainId: number
+        protocol: string
       }
-      return { vaultId, type, chainId }
+      return { vaultId, type, chainId, protocol }
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {
@@ -116,6 +124,7 @@ export function saveVaultUsingApi$(
   token: string,
   vaultType: VaultType,
   chainId: number,
+  protocol: string,
 ): Observable<void> {
   return ajax({
     url: `${basePath}/api/vault`,
@@ -127,7 +136,8 @@ export function saveVaultUsingApi$(
     body: {
       id: parseInt(id.toFixed(0)),
       type: vaultType,
-      chainId: chainId,
+      chainId,
+      protocol,
     },
   }).pipe(map((_) => {}))
 }
