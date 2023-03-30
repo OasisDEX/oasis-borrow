@@ -32,12 +32,12 @@ export function ContentFooterItemsBorrow({
 
   const formatted = {
     cost: formatDecimalAsPercent(cost),
-    availableToBorrow: `${formatAmount(availableToBorrow, collateralToken)}`,
+    availableToBorrow: `${formatAmount(availableToBorrow, quoteToken)}`,
     afterAvailableToBorrow:
-      afterAvailableToBorrow && `${formatAmount(afterAvailableToBorrow, collateralToken)}`,
-    availableToWithdraw: `${formatAmount(availableToWithdraw, quoteToken)}`,
+      afterAvailableToBorrow && `${formatAmount(afterAvailableToBorrow, quoteToken)}`,
+    availableToWithdraw: `${formatAmount(availableToWithdraw, collateralToken)}`,
     afterAvailableToWithdraw:
-      afterAvailableToWithdraw && `${formatAmount(afterAvailableToWithdraw, quoteToken)}`,
+      afterAvailableToWithdraw && `${formatAmount(afterAvailableToWithdraw, collateralToken)}`,
   }
 
   return (
