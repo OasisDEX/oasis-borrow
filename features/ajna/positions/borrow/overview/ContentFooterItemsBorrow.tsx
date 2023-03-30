@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -32,12 +32,12 @@ export function ContentFooterItemsBorrow({
 
   const formatted = {
     cost: formatDecimalAsPercent(cost),
-    availableToBorrow: `${formatAmount(availableToBorrow, collateralToken)}`,
+    availableToBorrow: `${formatCryptoBalance(availableToBorrow)}`,
     afterAvailableToBorrow:
-      afterAvailableToBorrow && `${formatAmount(afterAvailableToBorrow, collateralToken)}`,
-    availableToWithdraw: `${formatAmount(availableToWithdraw, quoteToken)}`,
+      afterAvailableToBorrow && `${formatCryptoBalance(afterAvailableToBorrow)}`,
+    availableToWithdraw: `${formatCryptoBalance(availableToWithdraw)}`,
     afterAvailableToWithdraw:
-      afterAvailableToWithdraw && `${formatAmount(afterAvailableToWithdraw, quoteToken)}`,
+      afterAvailableToWithdraw && `${formatCryptoBalance(afterAvailableToWithdraw)}`,
   }
 
   return (

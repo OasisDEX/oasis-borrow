@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
@@ -55,9 +55,9 @@ export function ContentCardCurrentEarnings({
   const { t } = useTranslation()
 
   const formatted = {
-    currentEarnings: formatAmount(currentEarnings, quoteToken),
+    currentEarnings: formatCryptoBalance(currentEarnings),
     afterCurrentEarnings:
-      afterCurrentEarnings && `${formatAmount(afterCurrentEarnings, quoteToken)} ${quoteToken}`,
+      afterCurrentEarnings && `${formatCryptoBalance(afterCurrentEarnings)} ${quoteToken}`,
     netPnL: formatPercent(netPnL, { precision: 2 }),
   }
 
