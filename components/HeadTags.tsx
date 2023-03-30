@@ -48,7 +48,7 @@ export function PageSEOTags({
   twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
   const { t } = useTranslation()
-  const useWeb3Onboard = useFeatureToggle('UseBlocknativeOnboard')
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
   const [web3OnboardNetworkParameter] = useCustomNetworkParameter()
   const { query } = useRouter()
 
@@ -69,8 +69,10 @@ export function PageSEOTags({
     ogImage,
     twitterImage,
   }
-  const properNetworkIconMap = useWeb3Onboard ? networkIconMap : { hardhat: '👷 ', goerli: '🌲 ' }
-  const networkParameter = useWeb3Onboard
+  const properNetworkIconMap = useNetworkSwitcher
+    ? networkIconMap
+    : { hardhat: '👷 ', goerli: '🌲 ' }
+  const networkParameter = useNetworkSwitcher
     ? web3OnboardNetworkParameter?.network
     : (query.network as string)
   const tabTitle = `${

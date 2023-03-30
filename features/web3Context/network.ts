@@ -24,9 +24,9 @@ export function getNetworkName(): string {
   const name = 'network'
   const defaultNetwork = 'ethereumMainnet'
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const useWeb3Onboard = useFeatureToggle('UseBlocknativeOnboard') // not a hook :)
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher') // not a hook :)
   const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
-  if (useWeb3Onboard && customNetworkData) {
+  if (useNetworkSwitcher && customNetworkData) {
     return customNetworkData.network || defaultNetwork
   }
   const matchesIfFound = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search)
