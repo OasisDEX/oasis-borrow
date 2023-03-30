@@ -220,13 +220,19 @@ export interface ProductCardProps {
   protocol?: TokenMetadataType['protocol']
 }
 
-function InternalButton(
-  inactive: boolean | undefined,
-  isFull: boolean,
-  clicked: boolean,
-  buttonLabel: string,
-  onClick?: () => void,
-) {
+function InternalButton({
+  inactive,
+  isFull,
+  clicked,
+  buttonLabel,
+  onClick,
+}: {
+  inactive: boolean | undefined
+  isFull: boolean
+  clicked: boolean
+  buttonLabel: string
+  onClick?: () => void
+}) {
   const { t } = useTranslation()
   return (
     <Button
@@ -280,11 +286,24 @@ function ProductCardButton({
   if (button.link) {
     return (
       <AppLink href={button.link} disabled={isFull} sx={{ width: '100%' }} onClick={handleClick}>
-        {InternalButton(inactive, isFull, clicked, buttonLabel)}
+        <InternalButton
+          inactive={inactive}
+          isFull={isFull}
+          clicked={clicked}
+          buttonLabel={buttonLabel}
+        />
       </AppLink>
     )
   } else {
-    return InternalButton(inactive, isFull, clicked, buttonLabel, handleClick)
+    return (
+      <InternalButton
+        inactive={inactive}
+        isFull={isFull}
+        clicked={clicked}
+        buttonLabel={buttonLabel}
+        onClick={handleClick}
+      />
+    )
   }
 }
 

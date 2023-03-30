@@ -57,7 +57,7 @@ function NoConnectionStateView({
         )}
       </Grid>
     ),
-    primaryButton: primaryButton,
+    primaryButton,
   }
 
   return <SidebarSection {...sidebarSectionProps} />

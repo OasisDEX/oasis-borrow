@@ -131,15 +131,11 @@ export function createWeb3Context$(chainIdToRpcUrl: {
           connectionKind,
           web3: library as any,
           chainId: chainId!,
-          account: account,
+          account,
           deactivate,
           magicLinkEmail: undefined,
           connectionMethod: connector instanceof BridgeConnector ? 'web3-onboard' : 'legacy',
           walletLabel: connector instanceof BridgeConnector ? connector.wallet.label : undefined,
-          // REFACTOR!
-          // connectionKind === 'magicLink'
-          //   ? (connector as MagicLinkConnector).getEmail()
-          //   : undefined,
         })
       }
     }, [
