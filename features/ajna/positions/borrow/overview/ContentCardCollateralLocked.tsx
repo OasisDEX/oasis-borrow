@@ -30,8 +30,7 @@ export function ContentCardCollateralLocked({
   const formatted = {
     collateralLocked: formatCryptoBalance(collateralLocked),
     afterCollateralLocked:
-      afterCollateralLocked &&
-      `${formatCryptoBalance(afterCollateralLocked)} ${collateralToken}`,
+      afterCollateralLocked && `${formatCryptoBalance(afterCollateralLocked)} ${collateralToken}`,
     collateralLockedUSD: `$${formatAmount(collateralLockedUSD, 'USD')}`,
   }
 
