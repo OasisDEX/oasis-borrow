@@ -1,9 +1,10 @@
 export enum LendingProtocol {
   AaveV2 = 'AaveV2',
   AaveV3 = 'AaveV3',
-  // TODO we will need provide proper handling for Ajna
-  // Ajna = 'Ajna',
+  Ajna = 'Ajna',
 }
+
+export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
 
 // This one partially duplicates Lending protocol
 // this is because LendingProtocol is used in the way that when

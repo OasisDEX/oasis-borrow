@@ -2,7 +2,7 @@ import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { calculateSimulation, CalculateSimulationResult } from 'features/aave/open/services'
-import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/common'
+import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
 import { useEffect, useState } from 'react'
 
 import { useAaveEarnYields } from './useAaveEarnYields'

@@ -8,18 +8,10 @@ import {
   AaveV3UserReserveData,
   AaveV3UserReserveDataParameters,
 } from 'blockchain/aave-v3'
+import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
-
-export interface AaveProtocolData {
-  positionData: AaveV3UserReserveData
-  accountData: AaveV3UserAccountData
-  oraclePrice: BigNumber
-  position: IPosition
-  aaveUserConfiguration: AaveV3ConfigurationData
-  aaveReservesList: AaveV3ConfigurationData
-}
 
 export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
 
@@ -53,7 +45,7 @@ export function getAaveProtocolData$(
   collateralToken: string,
   debtToken: string,
   proxyAddress: string,
-): Observable<AaveProtocolData> {
+): Observable<ProtocolData> {
   return combineLatest(
     aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
     aaveUserAccountData$({ address: proxyAddress }),
@@ -76,11 +68,11 @@ export function getAaveProtocolData$(
           accountData: accountData,
           oraclePrice: oraclePrice,
           position: onChainPosition,
-          aaveUserConfiguration,
-          aaveReservesList,
+          userConfiguration: aaveUserConfiguration,
+          reservesList: aaveReservesList,
         }
       },
     ),
-    distinctUntilChanged(isEqual),
+    distinctUntilChanged((a, b) => isEqual(a, b)),
   )
 }

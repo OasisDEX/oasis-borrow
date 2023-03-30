@@ -1,12 +1,12 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { LendingProtocol } from 'lendingProtocols'
-import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/common'
+import { AaveLendingProtocol } from 'lendingProtocols'
+import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
 import { useEffect, useState } from 'react'
 
 export function useAaveEarnYields(
   riskRatio: IRiskRatio | undefined,
-  protocol: LendingProtocol,
+  protocol: AaveLendingProtocol,
   yieldFields: FilterYieldFieldsType[],
 ): AaveYieldsResponse | undefined {
   const { aaveEarnYieldsQuery } = useAaveContext(protocol)

@@ -5,7 +5,7 @@ import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol } from 'lendingProtocols'
 import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 
 import { BaseAaveEvent, BaseViewProps } from './BaseAaveContext'
@@ -50,7 +50,7 @@ export interface IStrategyConfig {
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
   type: ProductType
-  protocol: LendingProtocol
+  protocol: AaveLendingProtocol
   featureToggle?: Feature
   defaultSlippage?: BigNumber
 }
