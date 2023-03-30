@@ -33,6 +33,7 @@ export function useBridgeConnector(): () => Promise<BridgeConnector | undefined>
   const changeNetwork = useCallback(
     async (wallet: WalletState) => {
       const forcedChain = chains.find((chain) => chain.id === customNetwork.hexId)
+      console.log(`Forcing chain to be: ${JSON.stringify(forcedChain, null, 2)}`)
       if (forcedChain && wallet && wallet.chains[0].id !== forcedChain.id) {
         await setChain({ chainId: forcedChain.id })
         const result = await reconnect(wallet)
