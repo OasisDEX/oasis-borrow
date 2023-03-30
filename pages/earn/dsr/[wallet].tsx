@@ -1,5 +1,5 @@
 import { ProtocolLongNames } from 'blockchain/tokensMetadata'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'

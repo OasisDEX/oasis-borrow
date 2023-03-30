@@ -537,11 +537,7 @@ function initializeUIChanges() {
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
-  const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(
-    chainIdToRpcUrl,
-    chainIdToDAIContractDesc,
-  )
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)

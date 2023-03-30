@@ -1,6 +1,6 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import { useAppContext } from 'components/AppContextProvider'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { steps } from 'features/ajna/common/consts'

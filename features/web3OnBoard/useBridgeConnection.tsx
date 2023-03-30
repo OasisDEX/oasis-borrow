@@ -1,4 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { getAddress } from 'ethers/lib/utils'
 import { Web3ContextConnectedReadonly } from 'features/web3Context'
 import { useObservable } from 'helpers/observableHook'
 import { useCallback, useMemo } from 'react'
@@ -25,11 +26,13 @@ export function useBridgeConnection() {
           bridgeConnector,
           bridgeConnector.connectionKind,
         )
+        return getAddress(bridgeConnector.wallet.accounts[0].address)
       } catch (error) {
         console.error(error)
       }
     }
-  }, [createBridgeConnector, web3NotConnected, web3Context])
+    return undefined
+  }, [createBridgeConnector, web3Context, web3NotConnected])
 
   return { connect }
 }

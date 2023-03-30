@@ -25,7 +25,7 @@ import {
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
-import { disconnect } from './connectWallet/ConnectWallet'
+import { disconnect } from './connectWallet'
 import { AppLink } from './Links'
 import curry from 'ramda/src/curry'
 

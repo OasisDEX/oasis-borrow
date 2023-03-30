@@ -1,18 +1,10 @@
 import { Context } from 'blockchain/network'
 
-export function checkIfGnosisSafe({
-  connectionKind,
-  walletLabel,
-  connectionMethod,
-  web3,
-}: Pick<Context, 'connectionKind' | 'walletLabel' | 'connectionMethod' | 'web3'>) {
+export function checkIfGnosisSafe({ walletLabel, web3 }: Pick<Context, 'walletLabel' | 'web3'>) {
   let isGnosisSafe = false
 
   // check if current provider is Gnosis connected by WalletConnect or by dedicated web3-react-connector
-  if (
-    connectionKind === 'walletConnect' ||
-    (connectionMethod === 'web3-onboard' && walletLabel === 'WalletConnect')
-  ) {
+  if (walletLabel === 'WalletConnect') {
     // @ts-ignore
     if (web3.currentProvider.wc) {
       // @ts-ignore
@@ -20,11 +12,7 @@ export function checkIfGnosisSafe({
     }
   }
 
-  if (connectionKind === 'gnosisSafe') {
-    isGnosisSafe = true
-  }
-
-  if (connectionMethod === 'web3-onboard' && walletLabel === 'Safe') {
+  if (walletLabel === 'Safe') {
     isGnosisSafe = true
   }
 

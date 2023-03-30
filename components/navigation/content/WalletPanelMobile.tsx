@@ -2,24 +2,24 @@ import { useAppContext } from 'components/AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
-import { getShouldHideHeaderSettings } from 'helpers/functions'
+import { ContextAccountDetails, getShowHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useState } from 'react'
 import { Box, Button, Card, Flex } from 'theme-ui'
 
 export function WalletPanelMobile() {
-  const { accountData$, context$, web3Context$ } = useAppContext()
+  const { accountData$, connectedContext$ } = useAppContext()
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [context] = useObservable(context$)
+  const [context] = useObservable(connectedContext$)
   const [accountData] = useObservable(accountData$)
-  const [web3Context] = useObservable(web3Context$)
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
 
-  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
+  const contextAccountDetails: ContextAccountDetails = { context, accountData }
+  const showHeaderSettings = getShowHeaderSettings(contextAccountDetails)
 
-  if (shouldHideSettings) return null
+  if (!showHeaderSettings) return null
 
   return (
     <>
@@ -41,7 +41,10 @@ export function WalletPanelMobile() {
           onClick={() => setIsOpen(true)}
           sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'neutral80' }}
         >
-          <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
+          <UserSettingsButtonContents
+            context={contextAccountDetails.context}
+            accountData={contextAccountDetails.accountData}
+          />
         </Button>
         {vaultFormToggleTitle && (
           <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>

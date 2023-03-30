@@ -3,7 +3,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { getMixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
-import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { LANDING_PILLS } from 'content/landing'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
@@ -16,7 +15,7 @@ import {
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { ConnectButton } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getShouldHideHeaderSettings } from 'helpers/functions'
+import { ContextAccountDetails, getShowHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -217,10 +216,9 @@ function ButtonDropdown({
 
 function UserDesktopMenu() {
   const { t } = useTranslation()
-  const { accountData$, context$, web3Context$, uiChanges } = useAppContext()
+  const { accountData$, context$, uiChanges } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
-  const [web3Context] = useObservable(web3Context$)
   const { amountOfPositions } = useAccount()
   const [exchangeOnboarded] = useOnboarding('Exchange')
   const [exchangeOpened, setExchangeOpened] = useState(false)
@@ -233,13 +231,15 @@ function UserDesktopMenu() {
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
-  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
   const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
-  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
+  const contextAccountDetails: ContextAccountDetails = { context, accountData }
+
+  const showHeaderSettings = getShowHeaderSettings(contextAccountDetails)
 
   const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
@@ -308,12 +308,16 @@ function UserDesktopMenu() {
           </Button>
           <UniswapWidgetShowHide />
         </Box>
-        {useBlockNative ? <NavigationPickNetwork /> : null}
+        {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
 
-        {!shouldHideSettings && (
+        {showHeaderSettings && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
-              <UserSettingsButtonContents {...{ context, accountData, web3Context, active }} />
+              <UserSettingsButtonContents
+                context={contextAccountDetails.context}
+                accountData={contextAccountDetails.accountData}
+                active={active}
+              />
             )}
           >
             <UserSettings sx={{ p: 4, minWidth: '380px' }} />
@@ -321,7 +325,7 @@ function UserDesktopMenu() {
         )}
 
         {/* TODO: Should remove feature toggle */}
-        {!shouldHideSettings && notificationsToggle && (
+        {!showHeaderSettings && notificationsToggle && (
           <NotificationsIconButton
             notificationsRef={notificationsRef}
             onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
@@ -654,17 +658,17 @@ function MobileMenu() {
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [showAssets, setShowAssets] = useState(false)
-  const { accountData$, context$, web3Context$ } = useAppContext()
+  const { accountData$, context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
-  const [web3Context] = useObservable(web3Context$)
 
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
-  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
+  const contextAccountDetails: ContextAccountDetails = { context, accountData }
+  const showHeaderSettings = getShowHeaderSettings(contextAccountDetails)
 
   const links = [
     { labelKey: 'nav.multiply', url: INTERNAL_LINKS.multiply },
@@ -757,7 +761,7 @@ function MobileMenu() {
           <Icon name="mobile_menu_close" size="auto" width="50" />
         </Box>
       </Box>
-      {!shouldHideSettings && notificationsToggle && (
+      {showHeaderSettings && notificationsToggle && (
         <NotificationsIconButton
           notificationsRef={notificationsRef}
           onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
@@ -780,15 +784,14 @@ function MobileMenu() {
 }
 
 function DisconnectedHeader() {
-  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
-            {useBlockNative ? <NavigationPickNetwork /> : null}
-            {useBlockNative ? <ConnectButton /> : <ConnectWalletButton />}
+            {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
+            <ConnectButton />
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}
             />

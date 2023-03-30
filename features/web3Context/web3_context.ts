@@ -1,50 +1,17 @@
-import { LedgerConnector } from '@oasisdex/connectors'
-import { amountFromWei } from '@oasisdex/utils'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
-import BigNumber from 'bignumber.js'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { BridgeConnector } from 'features/web3OnBoard'
 import { isEqual } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
-import Web3 from 'web3'
 
-import { contract, ContractDesc, getNetworkId } from './network'
-import {
-  AccountWithBalances,
-  ConnectionKind,
-  Web3Context,
-  Web3ContextConnectedReadonly,
-} from './types'
+import { getNetworkId } from './network'
+import { ConnectionKind, Web3Context, Web3ContextConnectedReadonly } from './types'
 
 export type BalanceOfMethod = (address: string) => { call: () => Promise<string> }
-export type BalanceOfCreator = (web3: Web3, chainId: number) => BalanceOfMethod
-
-export async function fetchAccountBalances(
-  accountsLength: number,
-  connector: LedgerConnector,
-  daiContractDesc: ContractDesc,
-): Promise<AccountWithBalances[]> {
-  const provider = await connector.getProvider()
-  const web3 = new Web3(provider as any)
-  const accounts = await connector.getAccounts(accountsLength)
-
-  return Promise.all(
-    accounts.map(async (address: string) => {
-      const etherBalance = amountFromWei(new BigNumber(await web3.eth.getBalance(address)))
-      const daiBalanceOfMethod = contract(web3, daiContractDesc).methods.balanceOf
-      const daiBalance = amountFromWei(new BigNumber(await daiBalanceOfMethod(address).call()))
-      return {
-        address: Web3.utils.toChecksumAddress(address),
-        daiAmount: daiBalance,
-        ethAmount: etherBalance,
-      }
-    }),
-  )
-}
 
 type createWeb3ContextReturnType = [
   Observable<Web3Context>,
@@ -52,10 +19,9 @@ type createWeb3ContextReturnType = [
   (chainId: number, context: Web3ContextConnectedReadonly) => void,
 ]
 
-export function createWeb3Context$(
-  chainIdToRpcUrl: { [chainId: number]: string },
-  chainIdToDaiContractDesc: { [chainId: number]: ContractDesc },
-): createWeb3ContextReturnType {
+export function createWeb3Context$(chainIdToRpcUrl: {
+  [chainId: number]: string
+}): createWeb3ContextReturnType {
   const web3Context$ = new ReplaySubject<Web3Context>(1)
 
   function push(c: Web3Context) {
@@ -81,15 +47,12 @@ export function createWeb3Context$(
     const [activatingConnector, setActivatingConnector] = useState<AbstractConnector>()
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [connectionKind, setConnectionKind] = useState<ConnectionKind>()
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [hwAccount, setHWAccount] = useState<string>()
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const connect = useCallback(
       async (connector: AbstractConnector, connectionKind: ConnectionKind) => {
         setActivatingConnector(connector)
         setConnectionKind(connectionKind)
-        setHWAccount(undefined)
 
         try {
           await activate(connector)
@@ -99,20 +62,6 @@ export function createWeb3Context$(
         }
       },
       [activate, setError],
-    )
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const connectLedger = useCallback(
-      async (chainId: number, baseDerivationPath: string) => {
-        const connector = new LedgerConnector({
-          baseDerivationPath,
-          chainId,
-          url: chainIdToRpcUrl[chainId],
-          pollingInterval: 1000,
-        })
-        await connect(connector, 'ledger')
-      },
-      [connect],
     )
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -137,7 +86,6 @@ export function createWeb3Context$(
           status: 'error',
           error,
           connect,
-          connectLedger,
           deactivate,
         })
         return
@@ -147,7 +95,6 @@ export function createWeb3Context$(
         push({
           status: 'notConnected',
           connect,
-          connectLedger,
         })
         return
       }
@@ -159,28 +106,9 @@ export function createWeb3Context$(
           web3: library as any,
           chainId: chainId!,
           connect,
-          connectLedger,
           deactivate,
           walletLabel: undefined,
           connectionMethod: 'legacy',
-        })
-        return
-      }
-
-      if ((connectionKind === 'ledger' || connectionKind === 'trezor') && !hwAccount) {
-        push({
-          status: 'connectingHWSelectAccount',
-          connectionKind,
-          getAccounts: async (accountsLength: number) =>
-            await fetchAccountBalances(
-              accountsLength,
-              connector as LedgerConnector,
-              chainIdToDaiContractDesc[chainId!],
-            ),
-          selectAccount: (account: string) => {
-            setHWAccount(account)
-          },
-          deactivate,
         })
         return
       }
@@ -212,15 +140,11 @@ export function createWeb3Context$(
           connectionKind,
           web3: library as any,
           chainId: chainId!,
-          account: ['ledger', 'trezor'].indexOf(connectionKind) >= 0 ? hwAccount! : account,
+          account,
           deactivate,
           magicLinkEmail: undefined,
           connectionMethod: connector instanceof BridgeConnector ? 'web3-onboard' : 'legacy',
           walletLabel: connector instanceof BridgeConnector ? connector.wallet.label : undefined,
-          // REFACTOR!
-          // connectionKind === 'magicLink'
-          //   ? (connector as MagicLinkConnector).getEmail()
-          //   : undefined,
         })
       }
     }, [
@@ -234,9 +158,7 @@ export function createWeb3Context$(
       deactivate,
       active,
       error,
-      hwAccount,
       connect,
-      connectLedger,
     ])
   }
 
@@ -249,7 +171,6 @@ export function createWeb3Context$(
       deactivate: context.deactivate,
       connect: context.connect,
       connectionMethod: context.connectionMethod,
-      connectLedger: context.connectLedger,
     })
     // this is currently not being used
   }

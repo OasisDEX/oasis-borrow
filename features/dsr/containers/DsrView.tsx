@@ -58,7 +58,7 @@ export function DsrView({
 
   return (
     <>
-      {account !== walletAddress && (
+      {!isOwner && (
         <Box mb={4}>
           <VaultOwnershipBanner account={account} controller={walletAddress} />
         </Box>
