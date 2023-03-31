@@ -1,22 +1,19 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnectWallet } from '@web3-onboard/react'
 import BigNumber from 'bignumber.js'
+import { ContextConnected } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
-import {
-  disconnect,
-  getConnectionDetails,
-  getWalletKind,
-} from 'components/connectWallet/ConnectWallet'
+import { disconnect } from 'components/connectWallet'
 import { AppLink } from 'components/Links'
 import { useNotificationSocket } from 'components/NotificationSocketProvider'
+import { AccountDetails } from 'features/account/AccountData'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import React, { ChangeEvent, useCallback, useRef, useState } from 'react'
@@ -250,7 +247,6 @@ function WalletInfo() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
-  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
 
   const { t } = useTranslation()
 
@@ -265,17 +261,12 @@ function WalletInfo() {
 
   if (web3Context?.status !== 'connected') return null
 
-  const { account, connectionKind } = web3Context
-  const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
+  const { account } = web3Context
 
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        {useBlockNative ? (
-          <BlockNativeAvatar small sx={{ mr: 2 }} />
-        ) : (
-          <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }} />
-        )}
+        <BlockNativeAvatar small sx={{ mr: 2 }} />
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
             <Text variant="boldParagraph3" sx={{ letterSpacing: '0.02em' }}>
@@ -327,19 +318,15 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
   const { socket } = useNotificationSocket()
-  const useBlocknativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
   const [{ wallet }, , disconnectWallet] = useConnectWallet()
 
   const disconnectCallback = useCallback(async () => {
     socket?.disconnect()
-    console.log(`Disconnecting wallet...`)
-    console.log(`Current wallet from onboard: ${wallet?.label}`)
-    if (useBlocknativeOnBoard && wallet) {
-      console.log(`Disconnecting wallet ${wallet.label}...`)
+    if (wallet) {
       await disconnectWallet(wallet)
     }
     disconnect(web3Context)
-  }, [disconnectWallet, socket, useBlocknativeOnBoard, wallet, web3Context])
+  }, [disconnectWallet, socket, wallet, web3Context])
 
   return (
     <Box sx={sx}>
@@ -408,14 +395,21 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-export function UserSettingsButtonContents({ context, accountData, web3Context, active }: any) {
-  const { connectionKind } = web3Context
-  const useBlockNative = useFeatureToggle('UseBlocknativeOnboard')
-  const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
+export interface UserSettingsButtonContentsProps {
+  context: ContextConnected
+  accountData: AccountDetails
+  active?: boolean | undefined
+}
+
+export function UserSettingsButtonContents({
+  context,
+  accountData,
+  active,
+}: UserSettingsButtonContentsProps) {
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Flex sx={{ alignItems: 'center' }}>
-        {useBlockNative ? <BlockNativeAvatar /> : <Icon name={userIcon!} size="auto" width="42" />}
+        <BlockNativeAvatar />
         <Text
           as="p"
           variant="paragraph3"

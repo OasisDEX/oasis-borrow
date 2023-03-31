@@ -4,7 +4,6 @@ export const INTERNAL_LINKS = {
   about: '/about',
   discover: '/discover',
   notFound: '/not-found',
-  connect: '/connect',
   privacy: '/privacy',
   cookie: '/cookie',
   terms: '/terms',

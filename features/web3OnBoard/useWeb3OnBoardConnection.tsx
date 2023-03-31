@@ -22,13 +22,18 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
     return web3Context === undefined || web3Context.status === 'connecting'
   }, [web3Context])
 
-  const executeConnection = useCallback(async () => {
-    if (walletConnect) {
-      await connect()
-    } else {
-      await networkConnect()
-    }
-  }, [networkConnect, connect, walletConnect])
+  const executeConnection = useCallback(
+    async (onConnect?: (account?: string) => void) => {
+      let account: string | undefined = undefined
+      if (walletConnect) {
+        account = await connect()
+      } else {
+        await networkConnect()
+      }
+      onConnect?.(account)
+    },
+    [walletConnect, connect, networkConnect],
+  )
 
   return { executeConnection, connected, connecting: connectingMemo }
 }

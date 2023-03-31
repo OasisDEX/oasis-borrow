@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
@@ -56,9 +56,9 @@ export function ContentCardTokensDeposited({
   const { t } = useTranslation()
 
   const formatted = {
-    tokensDeposited: formatAmount(tokensDeposited, quoteToken),
+    tokensDeposited: formatCryptoBalance(tokensDeposited),
     afterTokensDeposited:
-      afterTokensDeposited && `${formatAmount(afterTokensDeposited, quoteToken)} ${quoteToken}`,
+      afterTokensDeposited && `${formatCryptoBalance(afterTokensDeposited)} ${quoteToken}`,
     tokensDepositedUSD: `$${formatAmount(tokensDepositedUSD, 'USD')}`,
   }
 

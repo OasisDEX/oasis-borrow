@@ -13,6 +13,7 @@ import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
+import { Protocols } from 'lendingProtocols'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
@@ -167,6 +168,7 @@ export function multiplyVault(
                   jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
+                  Protocols.MAKER,
                 ).subscribe()
               }
 

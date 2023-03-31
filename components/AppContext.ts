@@ -537,11 +537,7 @@ function initializeUIChanges() {
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
-  const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
-  const [web3Context$, setupWeb3Context$] = createWeb3Context$(
-    chainIdToRpcUrl,
-    chainIdToDAIContractDesc,
-  )
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
@@ -1176,9 +1172,13 @@ export function setupAppContext() {
 
   const uiChanges = initializeUIChanges()
 
-  const checkOasisCDPType$: (id: BigNumber) => Observable<VaultType> = curry(
-    createCheckOasisCDPType$,
-  )(
+  const checkOasisCDPType$: ({
+    id,
+    protocol,
+  }: {
+    id: BigNumber
+    protocol: string
+  }) => Observable<VaultType> = curry(createCheckOasisCDPType$)(
     curry(checkVaultTypeUsingApi$)(
       context$,
       uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT),
@@ -1515,6 +1515,7 @@ export function setupAppContext() {
     ajnaPosition$,
     chainContext$,
     positionIdFromDpmProxy$,
+    switchChains,
     ajnaPoolsTableData$,
   }
 }

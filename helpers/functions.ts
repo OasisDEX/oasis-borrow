@@ -1,8 +1,7 @@
 import { BigNumber } from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import { Context, ContextConnected } from 'blockchain/network'
 import { BorrowPositionVM, MultiplyPositionVM } from 'components/dumb/PositionList'
 import { AccountDetails } from 'features/account/AccountData'
-import { Web3Context } from 'features/web3Context'
 
 export function isNullish(amount: BigNumber | undefined | null): boolean {
   return !amount || amount.isZero()
@@ -24,17 +23,16 @@ export function checkIfVaultEmptyAndProtectionActive(
   )
 }
 
-export function getShouldHideHeaderSettings(
-  context?: Context,
-  accountData?: AccountDetails,
-  web3Context?: Web3Context,
-) {
-  return (
-    !context ||
-    context.status === 'connectedReadonly' ||
-    !accountData ||
-    web3Context?.status !== 'connected'
-  )
+type UnknownAccountDetails = { context?: Context; accountData?: AccountDetails }
+type ConnectedAccountDetails = { context: ContextConnected; accountData: AccountDetails }
+
+export type ContextAccountDetails = UnknownAccountDetails | ConnectedAccountDetails
+
+export function getShowHeaderSettings(
+  props: ContextAccountDetails,
+): props is ConnectedAccountDetails {
+  const { context, accountData } = props
+  return context !== undefined && context.status === 'connected' && accountData !== undefined
 }
 
 export function getBrowserName() {
