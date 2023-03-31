@@ -74,6 +74,7 @@ export function NavigationPickNetwork() {
                 display: 'flex',
                 flexDirection: 'column',
                 padding: 3,
+                overflow: 'hidden',
               }}
             >
               {networks.filter(filterNetworks).map((network) => {
@@ -84,6 +85,10 @@ export function NavigationPickNetwork() {
                     sx={{
                       fontWeight: isCurrentNetwork ? '600' : '400',
                       whiteSpace: 'pre',
+                      color: isCurrentNetwork ? 'primary100' : 'neutral80',
+                      ':hover': {
+                        color: 'primary100',
+                      },
                     }}
                     onClick={changeChain(network.name)}
                     disabled={
@@ -105,8 +110,11 @@ export function NavigationPickNetwork() {
                       sx={{
                         width: '100%',
                         textAlign: 'right',
+                        position: 'relative',
                         opacity: isCurrentNetwork ? 1 : 0,
-                        transition: '0.2s opacity',
+                        left: isCurrentNetwork ? 0 : '5px',
+                        transition: '0.2s opacity, 0.2s left',
+                        mb: '-3px',
                       }}
                     >
                       <Icon name="tick" color="interactive100" />
