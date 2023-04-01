@@ -10,7 +10,7 @@ export function SillyVideo({
 }) {
   const vidRef = useRef<HTMLVideoElement>(null)
   useEffect(() => {
-    if (document.createElement('video').canPlayType('video/webm')) {
+    if (!document.createElement('video').canPlayType('video/webm')) {
       onVideoEnd()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
