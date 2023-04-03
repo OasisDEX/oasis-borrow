@@ -10,6 +10,7 @@ export interface NavigationMenuPanelLink {
   icon: string
   title: string
   link: string
+  hash?: string
   footnote?: ReactNode
 }
 export interface NavigationMenuPanelType {

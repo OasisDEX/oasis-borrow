@@ -86,10 +86,11 @@ export function NavigationMobileMenuPanel({
             p: '0',
           }}
         >
-          {links.map(({ icon, link, title }, i) => (
+          {links.map(({ icon, link, title, hash }, i) => (
             <Flex key={i} as="li">
               <AppLink
                 href={link}
+                hash={hash}
                 sx={{
                   ...mobileLinkSx,
                   alignItems: 'flex-start',
