@@ -65,6 +65,13 @@ export function createGasPrice$(
 
         const network = getNetworkId()
 
+        // Increase maxFeePerGas by 20% when on goerli
+        if (network === NetworkIds.GOERLI) {
+          gasFees.maxFeePerGas = new BigNumber((block as any).baseFeePerGas)
+            .multipliedBy(1.15)
+            .plus(minersTip)
+        }
+
         if (blockNative.maxFeePerGas.gt(0) && network !== NetworkIds.GOERLI) {
           gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
           gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
