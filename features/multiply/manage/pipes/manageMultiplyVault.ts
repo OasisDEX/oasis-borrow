@@ -30,7 +30,7 @@ import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/v
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
-import { Protocols } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -301,7 +301,7 @@ function addTransitions(
           state.vault.id,
           VaultType.Borrow,
           state.vault.chainId,
-          Protocols.MAKER,
+          LendingProtocol.Maker,
           () => {
             window.location.reload()
             change({ kind: 'borrowTransitionSuccess' })
