@@ -15,6 +15,10 @@ export const INTERNAL_LINKS = {
   earn: '/earn',
   earnDSR: '/earn/dsr',
   daiWalletContact: '/daiwallet/contact',
+  ajna: '/ajna',
+  ajnaBorrow: '/ajna/borrow',
+  ajnaEarn: '/ajna/earn',
+  ajnaMultiply: '/ajna/multiply',
 }
 
 export const EXTERNAL_LINKS = {

@@ -7,46 +7,17 @@ import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
 import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
-import { AlternateProductCard } from 'components/productCards/AlternateProductCard'
-import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
 import { TabBar } from 'components/TabBar'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
-import { productCardsAjna } from 'features/ajna/common/content'
+import { benefitCardsAnja } from 'features/ajna/common/content'
 import { otherAssets } from 'features/ajna/common/controls/AjnaNavigationController'
+import { AjnaProductCardBorrowController } from 'features/ajna/common/controls/AjnaProductCardBorrowController'
+import { AjnaProductCardEarnController } from 'features/ajna/common/controls/AjnaProductCardEarnController'
 import { Hero } from 'features/homepage/HomepageView'
 import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
-
-const benefitCardsAnja = [
-  {
-    header: 'landing.benefits.ajna.card-header-1',
-    image: {
-      src: '/static/img/info_cards/benefit_1.png',
-      bottom: '0',
-    },
-    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-  },
-  {
-    header: 'landing.benefits.ajna.card-header-2',
-    image: {
-      src: '/static/img/info_cards/benefit_2.png',
-      bottom: '30px',
-      width: '382px',
-      bgWidth: 'calc(100% - 64px)',
-    },
-    background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-  },
-  {
-    header: 'landing.benefits.ajna.card-header-3',
-    image: {
-      src: '/static/img/info_cards/benefit_3.png',
-      bottom: '0',
-    },
-    background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-  },
-]
 
 export function AjnaHomepageView() {
   const { t } = useTranslation()
@@ -66,17 +37,18 @@ export function AjnaHomepageView() {
             i18nKey="landing.hero.ajna.subheader"
             components={[
               <AppLink
-                // sx={{ fontSize: 'inherit' }}
+                sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
                 href="https://oasis.app/anja"
               />,
             ]}
           />
         }
+        showButton={false}
       />
       <Box
         sx={{
           width: '100%',
-          mt: '126px',
+          mt: '84px',
         }}
         id="product-cards-wrapper"
       >
@@ -88,71 +60,18 @@ export function AjnaHomepageView() {
             {
               label: t('landing.tabs.ajna.borrow.tabLabel'),
               value: 'borrow',
-              content: (
-                <HomepageTabLayout
-                  cards={
-                    <ProductCardsWrapper sx={{ mt: ['9px', '48px'], gap: ['88px', 3, 3] }}>
-                      {productCardsAjna.borrow.map((card) => (
-                        <AlternateProductCard
-                          header={t(card.headerKey, { token: card.token })}
-                          background={card.background}
-                          icon={card.icon}
-                          key={card.headerKey}
-                          banner={card.banner}
-                          button={card.button}
-                          labels={card.labels}
-                        />
-                      ))}
-                    </ProductCardsWrapper>
-                  }
-                />
-              ),
+              content: <HomepageTabLayout cards={<AjnaProductCardBorrowController />} />,
             },
-            {
-              label: t('landing.tabs.ajna.multiply.tabLabel'),
-              value: 'multiply',
-              content: (
-                <HomepageTabLayout
-                  cards={
-                    <ProductCardsWrapper sx={{ mt: ['9px', '48px'], gap: ['88px', 3, 3] }}>
-                      {productCardsAjna.borrow.map((card) => (
-                        <AlternateProductCard
-                          header={t(card.headerKey, { token: card.token })}
-                          background={card.background}
-                          icon={card.icon}
-                          key={card.headerKey}
-                          banner={card.banner}
-                          button={card.button}
-                          labels={card.labels}
-                        />
-                      ))}
-                    </ProductCardsWrapper>
-                  }
-                />
-              ),
-            },
+            // // TODO uncomment and configure once multiply available
+            // {
+            //   label: t('landing.tabs.ajna.multiply.tabLabel'),
+            //   value: 'multiply',
+            //   content: <HomepageTabLayout cards={<AjnaProductCardBorrowController />} />,
+            // },
             {
               label: t('landing.tabs.ajna.earn.tabLabel'),
               value: 'earn',
-              content: (
-                <HomepageTabLayout
-                  cards={
-                    <ProductCardsWrapper sx={{ mt: ['9px', '48px'], gap: ['88px', 3, 3] }}>
-                      {productCardsAjna.borrow.map((card) => (
-                        <AlternateProductCard
-                          header={t(card.headerKey, { token: card.token })}
-                          background={card.background}
-                          icon={card.icon}
-                          key={card.headerKey}
-                          banner={card.banner}
-                          button={card.button}
-                          labels={card.labels}
-                        />
-                      ))}
-                    </ProductCardsWrapper>
-                  }
-                />
-              ),
+              content: <HomepageTabLayout cards={<AjnaProductCardEarnController />} />,
             },
           ]}
         />
