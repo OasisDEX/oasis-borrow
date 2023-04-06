@@ -2,24 +2,6 @@ import BigNumber from 'bignumber.js'
 import { AjnaPoolData } from 'features/ajna/common/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 
-type AjnaProductCardBorrowBase = {
-  token: string
-  headerKey: string
-  icon: string
-  background: string
-  banner: {
-    titleKey: string
-  }
-  button: {
-    link: string
-    hash: string
-    labelKey: string
-  }
-  labels: { titleKey: string; value: string }[]
-}
-
-type AjnaProductCardEarnBase = AjnaProductCardBorrowBase
-
 export const productCardsAjna = {
   borrow: [
     {
@@ -106,19 +88,6 @@ export const productCardsAjna = {
     },
   ],
   multiply: [],
-}
-
-type CardComputedProperties = { computed: { tokens: string[] } }
-
-export type AjnaProductCardsBase = AjnaProductCardBorrowBase[] | AjnaProductCardEarnBase[]
-
-export type AjnaProductCardsBorrow = AjnaProductCardBorrowBase & CardComputedProperties
-export type AjnaProductCardsEarn = AjnaProductCardEarnBase & CardComputedProperties
-
-export type AjnaProductCardsData = {
-  borrowCards: AjnaProductCardsBorrow[]
-  earnCards: AjnaProductCardsEarn[]
-  multiplyCards: unknown[]
 }
 
 export const ajnaPoolDummyData: AjnaPoolData = {

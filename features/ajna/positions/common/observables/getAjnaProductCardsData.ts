@@ -1,9 +1,6 @@
 import { Context } from 'blockchain/network'
-import {
-  AjnaProductCardsBase,
-  AjnaProductCardsData,
-  productCardsAjna,
-} from 'features/ajna/common/content'
+import { productCardsAjna } from 'features/ajna/common/content'
+import { AjnaProductCardsData, AlternateProductCardBase } from 'features/ajna/common/types'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -20,7 +17,7 @@ const getMappedPairs = ({
   data,
   reducedTokens,
 }: {
-  data: AjnaProductCardsBase
+  data: AlternateProductCardBase[]
   reducedTokens: ReducedTokens
 }) =>
   data
