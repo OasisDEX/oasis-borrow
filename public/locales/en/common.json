@@ -1041,6 +1041,7 @@
     "est-break-even-value": "{{days}} days",
     "est-entry-fees": "Est. entry fees",
     "apy": "APY",
+    "available-to-borrow": "Available to Borrow",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
     "coll-ratio": "Coll. Ratio",
@@ -1303,6 +1304,7 @@
     "slippage-from-strategy": "Use slippage from strategy"
   },
   "vault-actions": {
+    "borrow": "Borrow",
     "deposit": "Deposit",
     "generate": "Generate",
     "payback": "Payback",
