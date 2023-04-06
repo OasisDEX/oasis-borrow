@@ -1,6 +1,7 @@
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { LTVWarningThreshold } from 'features/ajna/common/consts'
 import { ContentCardCollateralLocked } from 'features/ajna/positions/borrow/overview/ContentCardCollateralLocked'
 import { ContentCardLiquidationPrice } from 'features/ajna/positions/borrow/overview/ContentCardLiquidationPrice'
 import { ContentCardLoanToValue } from 'features/ajna/positions/borrow/overview/ContentCardLoanToValue'
@@ -26,6 +27,14 @@ export function AjnaBorrowOverviewController() {
     },
   } = useAjnaProductContext('borrow')
 
+  const changeVariant = simulation
+    ? simulation.maxRiskRatio.loanToValue
+        .minus(simulation.riskRatio.loanToValue)
+        .gt(LTVWarningThreshold)
+      ? 'positive'
+      : 'negative'
+    : 'positive'
+
   return (
     <Grid gap={2}>
       <DetailsSection
@@ -39,12 +48,14 @@ export function AjnaBorrowOverviewController() {
               liquidationPrice={position.liquidationPrice}
               afterLiquidationPrice={simulation?.liquidationPrice}
               belowCurrentPrice={one.minus(position.liquidationToMarketPrice)}
+              changeVariant={changeVariant}
             />
             <ContentCardLoanToValue
               isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
               liquidationTreshold={position.maxRiskRatio.loanToValue}
+              changeVariant={changeVariant}
             />
             <ContentCardCollateralLocked
               isLoading={isSimulationLoading}
@@ -52,6 +63,7 @@ export function AjnaBorrowOverviewController() {
               collateralLocked={position.collateralAmount}
               collateralLockedUSD={position.collateralAmount.times(collateralPrice)}
               afterCollateralLocked={simulation?.collateralAmount}
+              changeVariant={changeVariant}
             />
             <ContentCardPositionDebt
               isLoading={isSimulationLoading}
@@ -59,6 +71,7 @@ export function AjnaBorrowOverviewController() {
               positionDebt={position.debtAmount}
               positionDebtUSD={position.debtAmount.times(quotePrice)}
               afterPositionDebt={simulation?.debtAmount}
+              changeVariant={changeVariant}
             />
           </DetailsSectionContentCardWrapper>
         }
@@ -73,6 +86,7 @@ export function AjnaBorrowOverviewController() {
               afterAvailableToBorrow={simulation?.debtAvailable}
               availableToWithdraw={position.collateralAvailable}
               afterAvailableToWithdraw={simulation?.collateralAvailable}
+              changeVariant={changeVariant}
             />
           </DetailsSectionFooterItemWrapper>
         }
