@@ -9,6 +9,7 @@ import { ContentFooterItemsBorrow } from 'features/ajna/positions/borrow/overvie
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -37,9 +38,7 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               liquidationPrice={position.liquidationPrice}
               afterLiquidationPrice={simulation?.liquidationPrice}
-              belowCurrentPrice={collateralPrice
-                .minus(position.liquidationPrice)
-                .dividedBy(collateralPrice)}
+              belowCurrentPrice={one.minus(position.liquidationToMarketPrice)}
             />
             <ContentCardLoanToValue
               isLoading={isSimulationLoading}
