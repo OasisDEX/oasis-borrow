@@ -44,6 +44,7 @@ export function AjnaBorrowOverviewController() {
               isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
+              liquidationTreshold={position.maxRiskRatio.loanToValue}
             />
             <ContentCardCollateralLocked
               isLoading={isSimulationLoading}

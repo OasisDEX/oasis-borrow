@@ -12,6 +12,7 @@ interface ContentCardLoanToValueProps {
   isLoading?: boolean
   loanToValue: BigNumber
   afterLoanToValue?: BigNumber
+  liquidationTreshold: BigNumber
   changeVariant?: ChangeVariantType
 }
 
@@ -19,6 +20,7 @@ export function ContentCardLoanToValue({
   isLoading,
   loanToValue,
   afterLoanToValue,
+  liquidationTreshold,
   changeVariant = 'positive',
 }: ContentCardLoanToValueProps) {
   const { t } = useTranslation()
@@ -26,6 +28,7 @@ export function ContentCardLoanToValue({
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
     afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
+    liquidationTreshold: liquidationTreshold && formatDecimalAsPercent(liquidationTreshold),
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -36,6 +39,9 @@ export function ContentCardLoanToValue({
       value: afterLoanToValue && `${formatted.afterLoanToValue} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
+    footnote: t('ajna.position-page.borrow.common.overview.liquidation-threshold', {
+      liquidationTreshold: formatted.liquidationTreshold,
+    }),
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
