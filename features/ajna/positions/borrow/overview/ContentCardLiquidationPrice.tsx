@@ -31,7 +31,7 @@ export function ContentCardLiquidationPrice({
 
   const formatted = {
     liquidationPrice: formatCryptoBalance(liquidationPrice),
-    afterLiquidationPrice: afterLiquidationPrice && formatCryptoBalance(liquidationPrice),
+    afterLiquidationPrice: afterLiquidationPrice && formatCryptoBalance(afterLiquidationPrice),
     belowCurrentPrice: formatDecimalAsPercent(belowCurrentPrice),
   }
 

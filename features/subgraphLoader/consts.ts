@@ -56,6 +56,7 @@ export const subgraphMethodsRecord: {
         poolActualUtilization
         poolTargetUtilization
         currentBurnEpoch
+        pendingInflator
       }
     }
   `,
