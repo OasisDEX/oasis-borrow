@@ -114,32 +114,3 @@ export const ajnaPoolDummyData: AjnaPoolData = {
     tvl: new BigNumber(Math.random() * 10000000),
   },
 }
-
-export const benefitCardsAnja = [
-  {
-    header: 'landing.benefits.ajna.card-header-1',
-    image: {
-      src: '/static/img/info_cards/benefit_1.png',
-      bottom: '0',
-    },
-    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-  },
-  {
-    header: 'landing.benefits.ajna.card-header-2',
-    image: {
-      src: '/static/img/info_cards/benefit_2.png',
-      bottom: '30px',
-      width: '382px',
-      bgWidth: 'calc(100% - 64px)',
-    },
-    background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-  },
-  {
-    header: 'landing.benefits.ajna.card-header-3',
-    image: {
-      src: '/static/img/info_cards/benefit_3.png',
-      bottom: '0',
-    },
-    background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-  },
-]
