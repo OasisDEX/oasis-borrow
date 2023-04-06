@@ -29,6 +29,7 @@ export interface AjnaPoolDataResponse {
   currentBurnEpoch: string
   pendingInflator: string
   buckets: Bucket[]
+  pendingInflator: string
 }
 
 export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
@@ -63,6 +64,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       currentBurnEpoch,
       pendingInflator,
       buckets,
+      pendingInflator,
     } = response.pool
 
     return {
@@ -108,6 +110,8 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
         collateral: new BigNumber(bucket.collateral).shiftedBy(negativeWadPrecision),
         bucketLPs: new BigNumber(bucket.bucketLPs),
       })),
+
+      pendingInflator: new BigNumber(pendingInflator).shiftedBy(negativeWadPrecision),
     }
   }
 
