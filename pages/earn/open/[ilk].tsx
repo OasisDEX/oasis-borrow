@@ -1,4 +1,4 @@
-import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { WithWalletConnection } from 'components/connectWallet'
 import { AppLayout } from 'components/Layouts'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { Survey } from 'features/survey'

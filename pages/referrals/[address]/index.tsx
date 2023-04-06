@@ -1,4 +1,4 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { AppLayout } from 'components/Layouts'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'

@@ -1,5 +1,5 @@
 import { ProtocolLongNames } from 'blockchain/tokensMetadata'
-import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { WithWalletConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'

@@ -211,13 +211,100 @@ export interface ProductCardProps {
   title: string
   description: string
   banner: ProductCardBannerProps
-  button: { link: string; text: string; onClick?: () => void }
+  button: { link?: string; text: string; onClick?: () => void }
   background: string
   isFull: boolean
   floatingLabelText?: TranslateStringType
   inactive?: boolean
   labels?: { title: string; value: ReactNode }[]
   protocol?: TokenMetadataType['protocol']
+}
+
+function InternalButton({
+  inactive,
+  isFull,
+  clicked,
+  buttonLabel,
+  onClick,
+}: {
+  inactive: boolean | undefined
+  isFull: boolean
+  clicked: boolean
+  buttonLabel: string
+  onClick?: () => void
+}) {
+  const { t } = useTranslation()
+  return (
+    <Button
+      onClick={onClick}
+      variant="primary"
+      sx={{
+        width: '100%',
+        height: '54px',
+        fontWeight: 'semiBold',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
+        backgroundColor: inactive || isFull ? 'neutral70' : 'primary100',
+        '&:hover': {
+          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+          backgroundColor: isFull ? 'neutral70' : 'primary60',
+          cursor: isFull ? 'default' : 'pointer',
+        },
+      }}
+    >
+      {isFull ? t('full') : !clicked ? buttonLabel : ''}
+      {clicked && (
+        <Spinner
+          variant="styles.spinner.medium"
+          size={20}
+          sx={{
+            color: 'white',
+            boxSizing: 'content-box',
+          }}
+        />
+      )}
+    </Button>
+  )
+}
+
+function ProductCardButton({
+  button,
+  isFull,
+  inactive,
+}: Pick<ProductCardProps, 'button' | 'isFull' | 'inactive'>) {
+  const [clicked, setClicked] = useState(false)
+
+  const handleClick = useCallback(() => {
+    setClicked(true)
+    button.onClick?.()
+    setClicked(false)
+  }, [button])
+
+  const buttonLabel = button.text
+  if (button.link) {
+    return (
+      <AppLink href={button.link} disabled={isFull} sx={{ width: '100%' }} onClick={handleClick}>
+        <InternalButton
+          inactive={inactive}
+          isFull={isFull}
+          clicked={clicked}
+          buttonLabel={buttonLabel}
+        />
+      </AppLink>
+    )
+  } else {
+    return (
+      <InternalButton
+        inactive={inactive}
+        isFull={isFull}
+        clicked={clicked}
+        buttonLabel={buttonLabel}
+        onClick={handleClick}
+      />
+    )
+  }
 }
 
 export function ProductCard({
@@ -234,19 +321,8 @@ export function ProductCard({
   labels,
 }: ProductCardProps) {
   const [hover, setHover] = useState(false)
-  const [clicked, setClicked] = useState(false)
-
-  const { t } = useTranslation()
-
   const handleMouseEnter = useCallback(() => setHover(true), [])
   const handleMouseLeave = useCallback(() => setHover(false), [])
-
-  const handleClick = useCallback(() => {
-    setClicked(true)
-    button.onClick?.()
-  }, [])
-
-  const buttonLabel = button.text
 
   return (
     <Box
@@ -290,43 +366,7 @@ export function ProductCard({
               marginTop: 'auto',
             }}
           >
-            <AppLink
-              href={button.link}
-              disabled={isFull}
-              sx={{ width: '100%' }}
-              onClick={handleClick}
-            >
-              <Button
-                variant="primary"
-                sx={{
-                  width: '100%',
-                  height: '54px',
-                  fontWeight: 'semiBold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
-                  backgroundColor: inactive || isFull ? 'neutral70' : 'primary100',
-                  '&:hover': {
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-                    backgroundColor: isFull ? 'neutral70' : 'primary60',
-                    cursor: isFull ? 'default' : 'pointer',
-                  },
-                }}
-              >
-                {isFull ? t('full') : !clicked ? buttonLabel : ''}
-                {clicked && (
-                  <Spinner
-                    variant="styles.spinner.medium"
-                    size={20}
-                    sx={{
-                      color: 'white',
-                      boxSizing: 'content-box',
-                    }}
-                  />
-                )}
-              </Button>
-            </AppLink>
+            <ProductCardButton button={button} isFull={isFull} inactive={inactive} />
           </Flex>
         </Flex>
       </Card>

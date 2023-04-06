@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { amountFromRad, amountFromRay } from 'blockchain/utils'
-import { Vat } from 'types/web3-v1-contracts/vat'
+import { Vat } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
 import { CallDef } from './callsHelpers'

@@ -1,4 +1,4 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaHomepageView } from 'features/homepage/AjnaHomepageView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

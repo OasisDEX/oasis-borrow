@@ -55,6 +55,23 @@ export const subgraphMethodsRecord: {
         poolCollateralization
         poolActualUtilization
         poolTargetUtilization
+        currentBurnEpoch
+        pendingInflator
+      }
+    }
+  `,
+  getPoolsTableData: gql`
+    {
+      pools {
+        collateralAddress
+        quoteTokenAddress
+        dailyPercentageRate30dAverage
+        debt
+        depositSize
+        interestRate
+        poolMinDebtAmount
+        lup
+        htp
       }
     }
   `,

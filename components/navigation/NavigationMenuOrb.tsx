@@ -17,6 +17,10 @@ export interface NavigationMenuOrbProps {
   onClose?: () => void
   onOpen?: () => void
   width?: number
+  outline?: {
+    outline: string
+    outlineColor: string
+  }
 }
 
 interface NavigationMenuOrbIconProps {
@@ -39,6 +43,7 @@ export function NavigationOrb({
   onClose,
   onOpen,
   width,
+  outline,
 }: NavigationMenuOrbProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const didMountRef = useRef(false)
@@ -71,6 +76,8 @@ export function NavigationOrb({
             transition: 'background-color 200ms',
             '&:hover': { boxShadow: 'buttonMenu' },
             ':hover': { color: 'primary100' },
+            ...(isOpen && outline),
+            ':focus': isOpen ? outline : null,
           }}
         >
           <NavigationOrbIcon

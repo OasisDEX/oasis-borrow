@@ -5,6 +5,7 @@ import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { zero } from 'helpers/zero'
+import { Protocols } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
@@ -27,7 +28,10 @@ export interface VaultWithType extends Vault {
 }
 
 export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
-  return checkMultipleVaultsFromApi$(vaults.map((vault) => vault.id.toFixed(0))).pipe(
+  return checkMultipleVaultsFromApi$(
+    vaults.map((vault) => vault.id.toFixed(0)),
+    Protocols.MAKER,
+  ).pipe(
     map((res) =>
       vaults.map((vault) => ({
         ...vault,

@@ -2,19 +2,42 @@ import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
+import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { allDefined } from 'helpers/allDefined'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { callBackIfDefined } from 'helpers/callBackIfDefined'
 import { useFlowState, UseFlowStateCBParamsType, UseFlowStateCBType } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Grid, Text } from 'theme-ui'
 
 import { SidebarSection, SidebarSectionProps } from './sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from './sidebar/SidebarSectionFooter'
 
 export type CreateDPMAccountViewProps = {
   noConnectionContent?: JSX.Element
 } & ReturnType<typeof useFlowState>
+
+function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
+  const { t } = useTranslation()
+  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
+    walletConnect: true,
+  })
+
+  return useMemo(
+    () => ({
+      label: t('connect-wallet'),
+      action: () => {
+        if (!connected && !connecting) {
+          void executeConnection()
+        }
+      },
+      steps: undefined,
+      isLoading: connecting,
+      disabled: connecting,
+    }),
+    [t, connected, connecting, executeConnection],
+  )
+}
 
 function NoConnectionStateView({
   noConnectionContent,
@@ -22,6 +45,7 @@ function NoConnectionStateView({
   noConnectionContent?: CreateDPMAccountViewProps['noConnectionContent']
 }) {
   const { t } = useTranslation()
+  const primaryButton = useConnectWalletPrimaryButton()
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('dpm.create-flow.welcome-screen.header'),
     content: (
@@ -33,12 +57,7 @@ function NoConnectionStateView({
         )}
       </Grid>
     ),
-    primaryButton: {
-      isLoading: false,
-      disabled: false,
-      label: t('connect-wallet'),
-      url: INTERNAL_LINKS.connect,
-    },
+    primaryButton,
   }
 
   return <SidebarSection {...sidebarSectionProps} />

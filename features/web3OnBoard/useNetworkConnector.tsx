@@ -3,12 +3,12 @@ import { networksById } from 'blockchain/config'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useMemo } from 'react'
 
-export function useNetworkConnector(): NetworkConnector {
-  const network = useCustomNetworkParameter()
+export function useNetworkConnector(): NetworkConnector | null {
+  const [customNetwork] = useCustomNetworkParameter()
   return useMemo(() => {
     return new NetworkConnector({
-      urls: { [network?.id]: networksById[network?.id].infuraUrl },
-      defaultChainId: parseInt(network?.id),
+      urls: { [customNetwork?.id]: networksById[customNetwork?.id].infuraUrl },
+      defaultChainId: parseInt(customNetwork?.id),
     })
-  }, [network])
+  }, [customNetwork])
 }

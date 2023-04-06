@@ -342,7 +342,7 @@ export const tokens: TokenConfig[] = [
   {
     symbol: 'USDC',
     precision: 6,
-    digits: 6,
+    digits: 2,
     digitsInstant: 2,
     maxSell: '1000000000000000',
     name: 'USD Coin',
@@ -867,7 +867,10 @@ export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
 }
 
 export function getTokenSymbolFromAddress(context: Context, tokenAddress: string) {
-  const token = findKey(context.tokens, (contractDesc) => contractDesc.address === tokenAddress)
+  const token = findKey(
+    context.tokens,
+    (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
+  )
   if (!token) {
     throw new Error(`could not find token for address ${tokenAddress}`)
   }
@@ -896,7 +899,7 @@ export const ETH_TOKENS = tokens
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
 const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
-  main: [
+  ethereumMainnet: [
     'ETH-A',
     'ETH-B',
     'ETH-C',
@@ -912,10 +915,10 @@ const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
     'MANA-A',
     'RETH-A',
   ],
-  goerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C', 'RETH-A'],
+  ethereumGoerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C', 'RETH-A'],
 }
 
 export function isSupportedAutomationIlk(network: string, ilk: string) {
-  const key = network in ALLOWED_AUTOMATION_ILKS ? network : 'main'
+  const key = network in ALLOWED_AUTOMATION_ILKS ? network : 'ethereumMainnet'
   return ALLOWED_AUTOMATION_ILKS[key].includes(ilk)
 }

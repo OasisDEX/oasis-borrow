@@ -7,8 +7,7 @@ import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
-import { DsProxy, OperationExecutor } from 'types/ethers-contracts'
-import { AccountImplementation } from 'types/ethers-contracts'
+import { AccountImplementation, DsProxy, OperationExecutor } from 'types/web3-v1-contracts'
 
 import { TxMetaKind } from './txMeta'
 
@@ -37,7 +36,7 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
 export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutorTxMeta> = {
   call: (args, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, args.proxyAddress))
-      .methods['execute(address,bytes)']
+      .methods['execute']
   },
   prepareArgs: (data, context) => {
     return [context.operationExecutor.address, getCallData(data, context)]

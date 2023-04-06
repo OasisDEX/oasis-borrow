@@ -13,7 +13,11 @@ export async function loadSubgraph<
   S extends keyof Subgraphs,
   M extends keyof Subgraphs[S],
   P extends Subgraphs[S][M]
->(subgraph: S, method: M, params: P): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
+>(
+  subgraph: S,
+  method: M,
+  params: P = {} as P,
+): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
   const networkId = getNetworkId() as NetworkIds
   const response = await fetch(`/api/subgraph`, {
     method: 'POST',

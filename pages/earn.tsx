@@ -1,4 +1,4 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
 import { ProductPagesLayout } from 'components/Layouts'

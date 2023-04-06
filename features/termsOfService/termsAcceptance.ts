@@ -56,7 +56,7 @@ function verifyAcceptance$(
   version: string,
   web3Context: Web3ContextConnected,
 ): Observable<TermsAcceptanceState> {
-  const { account, web3, magicLinkEmail, connectionKind } = web3Context
+  const { account, web3, magicLinkEmail } = web3Context
 
   // helper function used in case when user deletes his JWT from Local storage
   // we have to recheck newly issued JWT against addresses in db that acceppted terms and then eventually save them
@@ -90,7 +90,7 @@ function verifyAcceptance$(
     )
   }
 
-  const isGnosisSafe = checkIfGnosisSafe(connectionKind, web3)
+  const isGnosisSafe = checkIfGnosisSafe(web3Context)
 
   const token = jwtAuthGetToken(account)
 

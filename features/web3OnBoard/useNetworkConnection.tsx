@@ -10,7 +10,7 @@ export function useNetworkConnection() {
   const [web3Context] = useObservable(web3Context$)
 
   const networkConnect = useCallback(async () => {
-    if (web3Context?.status === 'notConnected') {
+    if (web3Context?.status === 'notConnected' && networkConnector) {
       await web3Context.connect(networkConnector, 'network')
     }
   }, [web3Context, networkConnector])

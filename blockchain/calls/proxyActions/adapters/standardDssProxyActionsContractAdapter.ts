@@ -1,6 +1,6 @@
 import { ContextConnected } from 'blockchain/network'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
-import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
+import { DssProxyActions } from 'types/web3-v1-contracts'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,

@@ -1,13 +1,14 @@
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
-import { redirectState$ } from 'features/router/redirectState'
+import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 
@@ -17,12 +18,14 @@ export function ProductCardEarnDsr() {
   const [potDsr] = useObservable(potDsr$)
   const [potTotalValueLocked] = useObservable(potTotalValueLocked$)
   const [connectedContext] = useObservable(connectedContext$)
+  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { push } = useRedirect()
 
-  function handleClick() {
+  const handleClick = useCallback(async () => {
     if (!connectedContext) {
-      redirectState$.next(INTERNAL_LINKS.earnDSR)
+      await executeConnection((account) => push(`${INTERNAL_LINKS.earnDSR}/${account}`))
     }
-  }
+  }, [connectedContext, executeConnection, push])
 
   const apy = potDsr
     ? getYearlyRate(potDsr || zero)
@@ -32,9 +35,10 @@ export function ProductCardEarnDsr() {
 
   const earnUpTo = new BigNumber(100000).times(apy.decimalPlaces(5))
 
-  const link = connectedContext
-    ? `${INTERNAL_LINKS.earnDSR}/${connectedContext.account}`
-    : INTERNAL_LINKS.connect
+  const link = useMemo(
+    () => connectedContext && `${INTERNAL_LINKS.earnDSR}/${connectedContext.account}`,
+    [connectedContext],
+  )
 
   return (
     <ProductCard

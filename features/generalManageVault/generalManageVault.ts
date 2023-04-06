@@ -5,6 +5,7 @@ import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/man
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { Protocols } from 'lendingProtocols'
 import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
@@ -35,11 +36,17 @@ export function createGeneralManageVault$(
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageGuniVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageVault$: (id: BigNumber) => Observable<ManageStandardBorrowVaultState>,
-  checkVaultType$: (id: BigNumber) => Observable<VaultType>,
+  checkVaultType$: ({
+    id,
+    protocol,
+  }: {
+    id: BigNumber
+    protocol: Protocols
+  }) => Observable<VaultType>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<GeneralManageVaultState> {
-  return checkVaultType$(id).pipe(
+  return checkVaultType$({ id, protocol: Protocols.MAKER }).pipe(
     switchMap((type) => {
       return vault$(id).pipe(
         filter((vault) => vault !== undefined),

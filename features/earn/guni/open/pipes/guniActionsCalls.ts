@@ -13,10 +13,11 @@ import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { Protocols } from 'lendingProtocols'
 import { of } from 'rxjs'
 import { catchError, startWith } from 'rxjs/operators'
-import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
-import { GuniToken } from 'types/ethers-contracts/GuniToken'
+import { DssGuniProxyActions as GuniProxyActions } from 'types/web3-v1-contracts'
+import { GuniToken } from 'types/web3-v1-contracts'
 
 export type TxChange =
   | { kind: 'txWaitingForApproval' }
@@ -152,6 +153,7 @@ export function openGuniVault<S extends TxStateDependencies>(
               jwtToken,
               VaultType.Multiply,
               parseInt(txState.networkId),
+              Protocols.MAKER,
             ).subscribe()
           }
 

@@ -17,19 +17,18 @@ import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
 import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useRedirect } from 'helpers/useRedirect'
+import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
-import { Box, Flex, Grid, Image } from 'theme-ui'
+import React, { useMemo, useState } from 'react'
+import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
+import { SillyVideo } from './SillyVideo'
 
 function isLoading(state: StateFrom<OpenAaveStateMachine>) {
   return state.matches('background.loading')
@@ -177,8 +176,6 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
 
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const { push } = useRedirect()
-  const useBlockNativeOnBoard = useFeatureToggle('UseBlocknativeOnboard')
   const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
     walletConnect: true,
   })
@@ -187,22 +184,22 @@ function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
     () => ({
       label: t('connect-wallet'),
       action: () => {
-        if (useBlockNativeOnBoard) {
-          if (!connected && !connecting) {
-            void executeConnection()
-          }
-        } else {
-          push(INTERNAL_LINKS.connect, getCustomNetworkParameter())
+        if (!connected && !connecting) {
+          void executeConnection()
         }
       },
       steps: undefined,
+      isLoading: connecting,
+      disabled: connecting,
     }),
-    [t, useBlockNativeOnBoard, connected, connecting, executeConnection, push],
+    [t, connected, connecting, executeConnection],
   )
 }
 
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const [tomfooleryEnabled, disableTomfoolery] = useTomfoolery()
+  const [pumpTheGas, setPumpTheGas] = useState(false)
 
   const connectWalletPrimaryButton = useConnectWalletPrimaryButton()
 
@@ -223,21 +220,43 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
         action: () => send('NEXT_STEP'),
       }
 
-  const sidebarSectionProps: SidebarSectionProps = {
-    title: resolvedTitle,
-    content: (
-      <Grid gap={3}>
-        {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
-        <StrategyInformationContainer
-          state={state}
-          changeSlippageSource={(from) => {
-            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-          }}
-        />
-      </Grid>
-    ),
-    primaryButton,
-  }
+  const sidebarSectionProps: SidebarSectionProps = tomfooleryEnabled
+    ? {
+        title: t('open-earn.aave.af-title'),
+        content: (
+          <Grid gap={3}>
+            <Text>{t('open-earn.aave.af-description')}</Text>
+            <SillyVideo playVideo={pumpTheGas} onVideoEnd={disableTomfoolery} />
+          </Grid>
+        ),
+        primaryButton: {
+          label: t('open-earn.aave.af-cta-button'),
+          action: () => {
+            setPumpTheGas(true)
+          },
+          isLoading: pumpTheGas,
+          steps: [state.context.currentStep - 0.5, state.context.totalSteps] as [number, number],
+        },
+        secondaryButton: {
+          label: t('open-earn.aave.af-secondary-button'),
+          action: disableTomfoolery,
+        },
+      }
+    : {
+        title: resolvedTitle,
+        content: (
+          <Grid gap={3}>
+            {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
+            <StrategyInformationContainer
+              state={state}
+              changeSlippageSource={(from) => {
+                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+              }}
+            />
+          </Grid>
+        ),
+        primaryButton,
+      }
 
   return (
     <SidebarSection

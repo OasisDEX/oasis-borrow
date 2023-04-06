@@ -14,6 +14,7 @@ import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -25,7 +26,7 @@ import { debounce } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
-import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
@@ -198,7 +199,7 @@ export function HomepageView() {
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const [userReferral] = useObservable(userReferral$)
   const [landedWithRef, setLandedWithRef] = useState('')
-  const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
+  const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   const [scrollPercentage, setScrollPercentage] = useState(0)
   // Magic number which is the rough height of three HomepagePromoBlocks + margins (search for sub-headers.security)
   // Why: cause the refs + calculations were singnificantly expensive than this
@@ -714,6 +715,9 @@ export function Hero({
 }) {
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
+  const { connecting, connected, executeConnection } = useWeb3OnBoardConnection({
+    walletConnect: true,
+  })
 
   return (
     <Flex
@@ -734,8 +738,7 @@ export function Hero({
       <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
         {subheading}
       </Text>
-      <AppLink
-        href={isConnected ? INTERNAL_LINKS.homepage : INTERNAL_LINKS.connect}
+      <Button
         variant="primary"
         sx={{
           display: 'flex',
@@ -747,7 +750,7 @@ export function Hero({
             transform: 'translateX(10px)',
           },
         }}
-        hash={isConnected ? 'product-cards-wrapper' : ''}
+        onClick={async () => connected || connecting || (await executeConnection())}
       >
         {isConnected ? t('see-products') : t('connect-wallet')}
         <Icon
@@ -759,7 +762,7 @@ export function Hero({
             transition: '0.2s',
           }}
         />
-      </AppLink>
+      </Button>
     </Flex>
   )
 }

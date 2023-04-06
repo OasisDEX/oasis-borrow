@@ -1,12 +1,9 @@
+import { networksByName } from 'blockchain/config'
+import { CustomNetworkStorageKey } from 'helpers/getCustomNetworkParameter'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { getStorageValue } from 'helpers/useLocalStorage'
 import { isNull, isUndefined, memoize } from 'lodash'
 import Web3 from 'web3'
-
-export const networkNameToId = {
-  main: 1,
-  goerli: 5,
-  hardhat: 2137,
-} as { [key: string]: number }
-
 export interface ContractDesc {
   abi: any
   address: string
@@ -25,13 +22,19 @@ export const contract: any = memoize(
 
 export function getNetworkName(): string {
   const name = 'network'
-  const defaultNetwork = 'main'
+  const defaultNetwork = 'ethereumMainnet'
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher') // not a hook :)
+  const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
+  if (useNetworkSwitcher && customNetworkData) {
+    return customNetworkData.network || defaultNetwork
+  }
   const matchesIfFound = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search)
   if (isNull(matchesIfFound)) {
     return defaultNetwork
   }
   const networkName = decodeURIComponent(matchesIfFound[1].replace(/\+/g, ' '))
-  if (isUndefined(networkNameToId[networkName])) {
+  if (isUndefined(networksByName[networkName])) {
     throw new Error(`Unsupported network in URL param: ${networkName}`)
   }
   return networkName
@@ -39,5 +42,5 @@ export function getNetworkName(): string {
 
 export function getNetworkId(): number {
   const networkName = getNetworkName()
-  return networkNameToId[networkName]
+  return Number(networksByName[networkName].id)
 }

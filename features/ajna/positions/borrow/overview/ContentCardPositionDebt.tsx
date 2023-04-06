@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -28,9 +28,9 @@ export function ContentCardPositionDebt({
   const { t } = useTranslation()
 
   const formatted = {
-    positionDebt: formatAmount(positionDebt, quoteToken),
+    positionDebt: formatCryptoBalance(positionDebt),
     afterPositionDebt:
-      afterPositionDebt && `${formatAmount(afterPositionDebt, quoteToken)} ${quoteToken}`,
+      afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
     positionDebtUSD: `$${formatAmount(positionDebtUSD, 'USD')}`,
   }
 

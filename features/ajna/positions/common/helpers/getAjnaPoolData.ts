@@ -25,6 +25,8 @@ export interface AjnaPoolDataResponse {
   poolCollateralization: string
   poolActualUtilization: string
   poolTargetUtilization: string
+  currentBurnEpoch: string
+  pendingInflator: string
 }
 
 export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
@@ -56,6 +58,8 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       poolCollateralization,
       poolActualUtilization,
       poolTargetUtilization,
+      currentBurnEpoch,
+      pendingInflator,
     } = response.pool
 
     return {
@@ -67,7 +71,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       lowestUtilizedPrice: new BigNumber(lup).shiftedBy(negativeWadPrecision),
       lowestUtilizedPriceIndex: new BigNumber(lupIndex),
 
-      htp: new BigNumber(htp),
+      htp: new BigNumber(htp).shiftedBy(negativeWadPrecision),
       highestThresholdPrice: new BigNumber(htp).shiftedBy(negativeWadPrecision),
       highestThresholdPriceIndex: new BigNumber(htpIndex),
 
@@ -91,6 +95,9 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       monthlyPercentageRate30dAverage: new BigNumber(monthlyPercentageRate30dAverage)
         .shiftedBy(negativeWadPrecision)
         .shiftedBy(2),
+      currentBurnEpoch: new BigNumber(currentBurnEpoch),
+
+      pendingInflator: new BigNumber(pendingInflator).shiftedBy(negativeWadPrecision),
     }
   }
 

@@ -17,6 +17,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
+import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
 import { TxError } from 'helpers/types'
@@ -233,7 +234,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { connectionKind, tokensMainnet, defaultExchange }: Context,
+  { tokensMainnet, defaultExchange, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -254,7 +255,10 @@ export function adjustPosition(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation, send }) => {
-        const isGnosisSafe = connectionKind === 'gnosisSafe'
+        const isGnosisSafe = checkIfGnosisSafe({
+          walletLabel,
+          web3,
+        })
         const sendFn = isGnosisSafe ? send : sendWithGasEstimation
 
         return getQuote$(
@@ -381,7 +385,11 @@ export function manageVaultWithdrawAndPayback(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation, send }) => {
-        const isGnosisSafe = context.connectionKind === 'gnosisSafe'
+        const { walletLabel, web3 } = context
+        const isGnosisSafe = checkIfGnosisSafe({
+          walletLabel,
+          web3,
+        })
         const sendFn = isGnosisSafe ? send : sendWithGasEstimation
 
         return sendFn(
@@ -556,7 +564,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { connectionKind, tokensMainnet, defaultExchange }: Context,
+  { tokensMainnet, defaultExchange, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -585,7 +593,10 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) => {
-            const isGnosisSafe = connectionKind === 'gnosisSafe'
+            const isGnosisSafe = checkIfGnosisSafe({
+              walletLabel,
+              web3,
+            })
             const sendFn = isGnosisSafe ? send : sendWithGasEstimation
 
             return sendFn(closeVaultCall, {
@@ -664,7 +675,7 @@ export function applyEstimateGas(
     This errors occurred within the Gnosis SDK are proved tricky to debug. Given the Gnosis t/x confirmation popup does correctly estimate gas
     We've opted to simply disable gas estimation on our side for those wallets for select actions
     */
-    const isGnosisSafeWallet = context.connectionKind === 'gnosisSafe'
+    const isGnosisSafeWallet = checkIfGnosisSafe(context)
     const GNOSIS_GAS_ESTIMATE = undefined
     if (isGnosisSafeWallet) return GNOSIS_GAS_ESTIMATE
 
