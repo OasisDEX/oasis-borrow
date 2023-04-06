@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 
 // TODO: add 'earn' and 'multiply' in distant future
@@ -46,3 +47,5 @@ export const steps: {
 
 export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
 export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']
+
+export const LTVWarningThreshold = new BigNumber(0.05)
