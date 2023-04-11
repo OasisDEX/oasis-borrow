@@ -2410,6 +2410,8 @@
     "product-cards": {
       "borrow-against-your": "Borrow against your {{token}}",
       "collaterals-you-can-borrow": "Collaterals you can borrow",
+      "lend-against-your": "Lend {{token }} to earn",
+      "collaterals-to-earn-on": "Collaterals to earn on",
       "annual-variable-rates": "Annual variable rates"
     },
     "history": {
