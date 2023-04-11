@@ -40,7 +40,10 @@ export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
 }
 
 export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyFormState>) {
-  const { dispatch, state, updateState } = useReducto<AjnaMultiplyFormState, AjnaMultiplyFormAction>({
+  const { dispatch, state, updateState } = useReducto<
+    AjnaMultiplyFormState,
+    AjnaMultiplyFormAction
+  >({
     defaults: {
       ...ajnaMultiplyDefault,
       ...rest,
