@@ -2552,6 +2552,21 @@
             }
           }
         }
+      },
+      "multiply": {
+        "common": {
+          "overview": {
+            "net-borrow-cost": "Net Borrow Cost",
+            "net-value": "Net Value",
+            "pnl": "P&L"
+          },
+          "footer": {
+            "total-exposure": "Total {{token}} Exposure",
+            "position-debt": "Position debt",
+            "multiple": "Multiple",
+            "buying-power": "Buying power"
+          }
+        }
       }
     },
     "validations": {
