@@ -25,7 +25,8 @@ export function DetailsSectionFooterItemWrapper({
     <Grid
       as="ul"
       sx={{
-        gap: 3,
+        columnGap: 3,
+        rowGap: 0,
         gridTemplateColumns: `repeat(${columns}, 1fr)`,
         mt: [0, null, null, -3],
         mb: [0, null, null, -3],
