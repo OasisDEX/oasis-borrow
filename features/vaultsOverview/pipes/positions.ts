@@ -13,13 +13,13 @@ import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { getNetworkId } from 'features/web3Context'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { zero } from 'helpers/zero'
-import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, checkIfAave, LendingProtocol } from 'lendingProtocols'
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
+import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
@@ -63,40 +63,6 @@ export function createMakerPositions$(
           url: `/${vault.id}`,
         }
       })
-    }),
-  )
-}
-
-export function decorateAaveTokensPrice$(
-  collateralTokens$: Observable<string[]>,
-  exchangeQuote$: (
-    token: string,
-    slippage: BigNumber,
-    amount: BigNumber,
-    action: ExchangeAction,
-    exchangeType: ExchangeType,
-  ) => Observable<Quote>,
-): Observable<{ token: string; tokenPrice: BigNumber }[]> {
-  return collateralTokens$.pipe(
-    switchMap((tokens) => {
-      const tokens$ = tokens.map((token) => {
-        const defaultQuoteAmount = new BigNumber(100)
-        return exchangeQuote$(
-          token,
-          new BigNumber(0.005),
-          defaultQuoteAmount,
-          'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
-          'defaultExchange',
-        ).pipe(
-          map((quote) => {
-            return {
-              token,
-              tokenPrice: quote.status === 'SUCCESS' ? quote.tokenPrice : new BigNumber(0),
-            }
-          }),
-        )
-      })
-      return tokens$.length === 0 ? of([]) : combineLatest(tokens$)
     }),
   )
 }
@@ -151,12 +117,12 @@ function buildAaveViewModel(
   observables: BuildPositionArgs,
 ): Observable<AavePosition | undefined> {
   const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol } = positionCreatedEvent
-  const aaveServiceMap = {
+  const aaveServiceMap: Record<AaveLendingProtocol, AaveServices> = {
     [LendingProtocol.AaveV2]: observables.aaveV2,
     [LendingProtocol.AaveV3]: observables.aaveV3,
   }
 
-  if (protocol === LendingProtocol.Ajna) {
+  if (!checkIfAave(protocol)) {
     return of(undefined)
   }
 
@@ -168,7 +134,7 @@ function buildAaveViewModel(
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
     observables.tickerPrices$([debtTokenSymbol]),
-    resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol),
+    resolvedAaveServices.getAaveReserveData$({ token: debtTokenSymbol }),
     resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),

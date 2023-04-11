@@ -12,6 +12,7 @@ import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
+import { switchMap } from 'rxjs/operators'
 
 export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
 
@@ -42,37 +43,42 @@ export function getAaveProtocolData$(
     debtToken: string,
     address: string,
   ) => Observable<IPosition>,
+  aaveBaseUnit$: Observable<BigNumber>,
   collateralToken: string,
   debtToken: string,
   proxyAddress: string,
 ): Observable<ProtocolData> {
-  return combineLatest(
-    aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
-    aaveUserAccountData$({ address: proxyAddress }),
-    aaveOracleAssetPriceData$({ token: collateralToken }),
-    aaveUserConfiguration$({ address: proxyAddress }),
-    aaveReservesList$,
-    aaveOnChainPosition$(collateralToken, debtToken, proxyAddress),
-  ).pipe(
-    map(
-      ([
-        reserveData,
-        accountData,
-        oraclePrice,
-        aaveUserConfiguration,
-        aaveReservesList,
-        onChainPosition,
-      ]) => {
-        return {
-          positionData: reserveData,
-          accountData: accountData,
-          oraclePrice: oraclePrice,
-          position: onChainPosition,
-          userConfiguration: aaveUserConfiguration,
-          reservesList: aaveReservesList,
-        }
-      },
-    ),
-    distinctUntilChanged((a, b) => isEqual(a, b)),
+  return aaveBaseUnit$.pipe(
+    switchMap((baseUnit) => {
+      return combineLatest(
+        aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
+        aaveUserAccountData$({ address: proxyAddress, baseCurrencyUnit: baseUnit }),
+        aaveOracleAssetPriceData$({ token: collateralToken }),
+        aaveUserConfiguration$({ address: proxyAddress }),
+        aaveReservesList$,
+        aaveOnChainPosition$(collateralToken, debtToken, proxyAddress),
+      ).pipe(
+        map(
+          ([
+            reserveData,
+            accountData,
+            oraclePrice,
+            aaveUserConfiguration,
+            aaveReservesList,
+            onChainPosition,
+          ]) => {
+            return {
+              positionData: reserveData,
+              accountData: accountData,
+              oraclePrice: oraclePrice,
+              position: onChainPosition,
+              userConfiguration: aaveUserConfiguration,
+              reservesList: aaveReservesList,
+            }
+          },
+        ),
+        distinctUntilChanged((a, b) => isEqual(a, b)),
+      )
+    }),
   )
 }

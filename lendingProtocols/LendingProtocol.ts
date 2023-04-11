@@ -6,3 +6,7 @@ export enum LendingProtocol {
 }
 
 export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
+
+export const checkIfAave = (protocol: LendingProtocol): protocol is AaveLendingProtocol => {
+  return protocol === LendingProtocol.AaveV2 || protocol === LendingProtocol.AaveV3
+}

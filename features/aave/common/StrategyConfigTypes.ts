@@ -1,12 +1,11 @@
 import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
 import { AaveLendingProtocol } from 'lendingProtocols'
-import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
+import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
 
 import { BaseAaveEvent, BaseViewProps } from './BaseAaveContext'
 
@@ -63,8 +62,8 @@ export type ManageAaveHeaderProps = AaveHeaderProps & {
 }
 
 export type ManageSectionComponentProps = {
-  aaveReserveState: AaveV2ReserveConfigurationData
-  aaveReserveDataDebtToken: PreparedAaveReserveData
+  aaveReserveState: ReserveConfigurationData
+  aaveReserveDataDebtToken: ReserveData
 }
 
 export type SecondaryInputProps = BaseViewProps<EventsRaisedFromSecondaryInput> & {
