@@ -11,7 +11,7 @@ import React from 'react'
 export function AjnaEarnFormContentWithdraw() {
   const { t } = useTranslation()
   const {
-    environment: { quoteBalance, quotePrice, quoteToken },
+    environment: { quotePrice, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch },
@@ -24,7 +24,6 @@ export function AjnaEarnFormContentWithdraw() {
         dispatchAmount={dispatch}
         resetOnClear
         token={quoteToken}
-        tokenBalance={quoteBalance}
         tokenPrice={quotePrice}
       />
       <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>

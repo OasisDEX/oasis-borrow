@@ -8,7 +8,7 @@ import React from 'react'
 
 export function AjnaEarnFormContentOpen() {
   const {
-    environment: { quoteBalance, quotePrice, quoteToken },
+    environment: { quotePrice, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch },
@@ -21,7 +21,6 @@ export function AjnaEarnFormContentOpen() {
         dispatchAmount={dispatch}
         token={quoteToken}
         tokenPrice={quotePrice}
-        tokenBalance={quoteBalance}
         resetOnClear
       />
       <AjnaEarnSlider />
