@@ -1,8 +1,10 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
+import { networksById } from 'blockchain/config'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { BridgeConnector } from 'features/web3OnBoard'
+import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { isEqual } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
@@ -47,6 +49,8 @@ export function createWeb3Context$(chainIdToRpcUrl: {
     const [activatingConnector, setActivatingConnector] = useState<AbstractConnector>()
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [connectionKind, setConnectionKind] = useState<ConnectionKind>()
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [, setCustomNetwork] = useCustomNetworkParameter()
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const connect = useCallback(
@@ -114,18 +118,24 @@ export function createWeb3Context$(chainIdToRpcUrl: {
       }
 
       if (chainId !== getNetworkId()) {
-        console.log('chainId !== getNetworkId()', chainId)
+        const networkIdParam = getNetworkId()
         setTimeout(() => {
           connect(
             new NetworkConnector({
               urls: chainIdToRpcUrl,
-              defaultChainId: getNetworkId(),
+              defaultChainId: networkIdParam,
             }),
             'network',
             // eslint-disable-next-line @typescript-eslint/no-empty-function
           )
             .then(() => {
-              console.log('Chain ID changed:', chainId, '/', getNetworkId())
+              const network = networksById[networkIdParam]
+              setCustomNetwork({
+                network: network.name!,
+                id: network.id!,
+                hexId: network.hexId!,
+              })
+              console.log('Chain ID changed:', chainId, '/', networkIdParam)
             })
             .catch((e) => {
               console.error('Error while connecting to network', e)
@@ -159,6 +169,7 @@ export function createWeb3Context$(chainIdToRpcUrl: {
       active,
       error,
       connect,
+      setCustomNetwork,
     ])
   }
 
