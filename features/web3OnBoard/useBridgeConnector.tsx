@@ -1,26 +1,17 @@
 import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { useAppContext } from 'components/AppContextProvider'
-import { Web3ContextConnectedReadonly } from 'features/web3Context'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
-import { useObservable } from 'helpers/observableHook'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
 
-export function useBridgeConnector(): () => Promise<BridgeConnector | undefined> {
+export function useBridgeConnector(): [
+  BridgeConnector | undefined,
+  () => Promise<BridgeConnector | undefined>,
+] {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
   const [{ chains }, setChain] = useSetChain()
   const [customNetwork] = useCustomNetworkParameter()
-  const { web3Context$ } = useAppContext()
-  const [web3Context] = useObservable(web3Context$)
-  const web3NotConnected = useMemo(() => {
-    return (
-      web3Context?.status === 'error' ||
-      web3Context?.status === 'notConnected' ||
-      web3Context?.status === 'connectedReadonly'
-    )
-  }, [web3Context?.status])
 
   const reconnect = useCallback(
     async (wallet: WalletState) => {
@@ -51,23 +42,19 @@ export function useBridgeConnector(): () => Promise<BridgeConnector | undefined>
     [chains],
   )
 
-  useEffect(() => {
-    async function autoConnect() {
-      if (web3NotConnected && wallet?.accounts.length && chains.length) {
-        const bridgeConnector = new BridgeConnector(wallet, chains)
-        await (web3Context as Web3ContextConnectedReadonly).connect(
-          bridgeConnector!,
-          bridgeConnector!.connectionKind,
-        )
-      }
+  const automaticConnector = useMemo(() => {
+    if (wallet) {
+      return new BridgeConnector(wallet, chains)
     }
-    void autoConnect()
-  }, [wallet, web3NotConnected, web3Context, chains])
+    return undefined
+  }, [wallet, chains])
 
-  return useCallback(async () => {
-    const wallet = await connect()
-    if (wallet.length === 0) return
-    const walletWithCorrectNetwork = await changeNetwork(wallet[0])
+  const connectCallback = useCallback(async () => {
+    const _wallet = await connect()
+    if (_wallet.length === 0) return
+    const walletWithCorrectNetwork = await changeNetwork(_wallet[0])
     return bridgeConnector(walletWithCorrectNetwork)
   }, [connect, changeNetwork, bridgeConnector])
+
+  return [automaticConnector, connectCallback]
 }

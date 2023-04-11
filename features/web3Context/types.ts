@@ -4,6 +4,16 @@ import Web3 from 'web3'
 
 export type ConnectionKind = 'injected' | 'network'
 
+export function isConnectable(
+  web3Context: Web3Context | undefined,
+): web3Context is ConnectableWeb3Context {
+  return (
+    web3Context?.status === 'notConnected' ||
+    web3Context?.status === 'connectedReadonly' ||
+    web3Context?.status === 'error'
+  )
+}
+
 interface Connectable {
   connect: (connector: AbstractConnector, connectionKind: ConnectionKind) => Promise<void>
 }
@@ -21,14 +31,6 @@ export interface AccountWithBalances {
   address: string
   ethAmount: BigNumber
   daiAmount: BigNumber
-}
-
-export interface Web3ContextConnectingHWSelectAccount {
-  status: 'connectingHWSelectAccount'
-  connectionKind: 'ledger' | 'trezor'
-  getAccounts: (accountsLength: number) => Promise<AccountWithBalances[]>
-  selectAccount: (account: string) => void
-  deactivate: () => void
 }
 
 export interface Web3ContextConnectedReadonly extends Connectable {
@@ -58,6 +60,11 @@ export interface Web3ContextError extends Connectable {
   error: Error
   deactivate: () => void
 }
+
+export type ConnectableWeb3Context =
+  | Web3ContextNotConnected
+  | Web3ContextConnectedReadonly
+  | Web3ContextError
 
 export type Web3Context =
   | Web3ContextNotConnected
