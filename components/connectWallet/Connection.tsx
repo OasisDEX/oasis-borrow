@@ -10,12 +10,13 @@ export function Connection({ children, walletConnect }: WithChildren & { walletC
   })
   const { replace, reload } = useRouter()
   const handleConnected = useCallback(
-    (account?: string) => {
+    async (account?: string) => {
       if (!account && walletConnect) {
         // if the connection is required and the user closes the connection window
         // redirect him to the homepage and reload (cause there might be old wallet
         // connection stored in memory)
-        void replace(INTERNAL_LINKS.homepage).then(reload)
+        await replace(INTERNAL_LINKS.homepage)
+        reload()
       }
     },
     [replace, reload, walletConnect],

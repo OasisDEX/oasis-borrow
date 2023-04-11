@@ -112,7 +112,7 @@ export function NavigationPickNetwork() {
                         textAlign: 'right',
                         position: 'relative',
                         opacity: isCurrentNetwork ? 1 : 0,
-                        left: isCurrentNetwork ? 0 : '5px',
+                        left: isCurrentNetwork ? 0 : 2,
                         transition: '0.2s opacity, 0.2s left',
                         mb: '-3px',
                       }}
