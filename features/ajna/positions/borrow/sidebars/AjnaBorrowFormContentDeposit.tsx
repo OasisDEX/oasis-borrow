@@ -28,6 +28,7 @@ export function AjnaBorrowFormContentDeposit() {
   const debtMin = getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position })
   const debtMax = getAjnaBorrowDebtMax({
     digits: getToken(quoteToken).digits,
+    interestRate: position.pool.interestRate,
     position,
     simulation,
   })
