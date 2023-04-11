@@ -139,6 +139,7 @@ import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
 } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import { getAjnaProductCardsData$ } from 'features/ajna/positions/common/observables/getAjnaProductCardsData'
 import {
   DpmPositionData,
   getDpmPositionData$,
@@ -1359,6 +1360,7 @@ export function setupAppContext() {
   )
 
   const ajnaPoolsTableData$ = curry(getAjnaPoolsTableContent$)(context$, tokenPriceUSDStatic$)
+  const ajnaProductCardsData$ = curry(getAjnaProductCardsData$)(context$, once$)
 
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(positionsList$, aavePositions$, ajnaPositions$, dsr$),
@@ -1517,6 +1519,7 @@ export function setupAppContext() {
     positionIdFromDpmProxy$,
     switchChains,
     ajnaPoolsTableData$,
+    ajnaProductCardsData$,
   }
 }
 

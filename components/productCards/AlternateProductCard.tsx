@@ -12,11 +12,12 @@ interface AlternateProductCardProps {
   icon: string
   banner: {
     titleKey: string
-    collateralsToBorrow: string[]
+    tokens: string[]
   }
   button: {
     labelKey: string
     link: string
+    hash?: string
     onClick?: () => void
   }
   labels?: {
@@ -88,7 +89,7 @@ export function AlternateProductCard({
                 {t(banner.titleKey)}
               </Text>
               <Text as="p" variant="boldParagraph1" sx={{ textAlign: 'center', fontSize: 2 }}>
-                {banner.collateralsToBorrow.join(', ')}
+                {banner.tokens.join(', ')}
               </Text>
             </Flex>
           </Card>
@@ -100,7 +101,12 @@ export function AlternateProductCard({
               marginTop: 'auto',
             }}
           >
-            <AppLink href={button.link} sx={{ width: '100%' }} onClick={handleClick}>
+            <AppLink
+              href={button.link}
+              sx={{ width: '100%' }}
+              onClick={handleClick}
+              hash={button.hash}
+            >
               <Button
                 variant="primary"
                 sx={{

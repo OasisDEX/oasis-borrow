@@ -11,13 +11,14 @@ import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
 
 export type VaultAction =
+  | 'Borrow'
+  | 'Buy'
   | 'Deposit'
-  | 'Withdraw'
+  | 'Enter'
   | 'Generate'
   | 'Payback'
   | 'Sell'
-  | 'Buy'
-  | 'Enter'
+  | 'Withdraw'
   | TranslateStringType
 const FIAT_PRECISION = 2
 

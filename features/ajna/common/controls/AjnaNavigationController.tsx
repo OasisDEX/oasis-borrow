@@ -6,6 +6,7 @@ import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobi
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
 import { NavigationPickNetwork } from 'components/navigation/NavigationPickNetwork'
 import { ConnectButton } from 'features/web3OnBoard'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -60,7 +61,7 @@ export function AjnaNavigationController() {
       panels={[
         {
           label: 'Borrow',
-          link: '/ajna/borrow',
+          link: INTERNAL_LINKS.ajnaBorrow,
           description: 'Borrow against your favorite crypto assets.',
           learn: {
             label: 'Learn more about Borrow',
@@ -70,7 +71,8 @@ export function AjnaNavigationController() {
             {
               title: 'Borrow against ETH',
               icon: 'ether_circle_color',
-              link: '/',
+              link: INTERNAL_LINKS.ajnaBorrow,
+              hash: 'ETH',
               footnote: (
                 <>
                   Borrowing from as little as <strong>0.25%</strong> a year
@@ -86,7 +88,8 @@ export function AjnaNavigationController() {
             {
               title: 'Borrow against BTC',
               icon: 'btc_circle_color',
-              link: '/',
+              link: INTERNAL_LINKS.ajnaBorrow,
+              hash: 'WBTC',
               footnote: (
                 <>
                   Borrowing from as little as <strong>0.25%</strong> a year
@@ -104,7 +107,7 @@ export function AjnaNavigationController() {
         },
         {
           label: 'Multiply',
-          link: '/ajna/multiply',
+          link: INTERNAL_LINKS.ajnaMultiply,
           description: 'Multiply your exposure to your favorite crypto assets.',
           learn: {
             label: 'Learn more about Multiply',
@@ -131,7 +134,7 @@ export function AjnaNavigationController() {
         },
         {
           label: 'Earn',
-          link: '/ajna/earn',
+          link: INTERNAL_LINKS.ajnaEarn,
           description: 'Put your crypto assets to work today.',
           learn: {
             label: 'Learn more about Earn',
@@ -141,7 +144,8 @@ export function AjnaNavigationController() {
             {
               title: 'Earn on DAI',
               icon: 'dai_circle_color',
-              link: '/',
+              link: INTERNAL_LINKS.ajnaEarn,
+              hash: 'DAI',
               footnote: (
                 <>
                   Average 90 day yield is <strong>22.3%</strong>
@@ -151,7 +155,8 @@ export function AjnaNavigationController() {
             {
               title: 'Earn on USDC',
               icon: 'usdc_circle_color',
-              link: '/',
+              link: INTERNAL_LINKS.ajnaEarn,
+              hash: 'USDC',
               footnote: 'Proin vel nibh consectetur risus hendrerit suscipit',
             },
           ],
@@ -166,7 +171,7 @@ export function AjnaNavigationController() {
       links={[
         {
           label: 'Ajna Tokens',
-          link: '/ajna/rewards',
+          link: INTERNAL_LINKS.ajnaRewards,
         },
         ...(isConnected && !isViewBelowXl
           ? [

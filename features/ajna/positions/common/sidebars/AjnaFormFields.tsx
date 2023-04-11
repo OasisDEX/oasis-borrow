@@ -95,7 +95,7 @@ export function AjnaFormFieldGenerate({
 
   return 'generateAmount' in state && 'generateAmountUSD' in state ? (
     <VaultActionInput
-      action="Generate"
+      action="Borrow"
       currencyCode={quoteToken}
       tokenUsdPrice={quotePrice}
       amount={state.generateAmount}

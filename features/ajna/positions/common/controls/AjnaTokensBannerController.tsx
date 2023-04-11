@@ -1,9 +1,12 @@
 import { Banner } from 'components/Banner'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaTokensBannerController() {
   const { t } = useTranslation()
+  const { push } = useRedirect()
 
   return (
     <Banner
@@ -16,9 +19,7 @@ export function AjnaTokensBannerController() {
       }}
       button={{
         text: t('ajna.position-page.common.banners.tokens.button'),
-        action: () => {
-          alert('Take me wherever')
-        },
+        action: () => push(INTERNAL_LINKS.ajnaRewards),
       }}
     />
   )

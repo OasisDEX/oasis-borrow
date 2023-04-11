@@ -56,10 +56,11 @@ export function NavigationMenuDropdownContent({
           listStyle: 'none',
         }}
       >
-        {links.map(({ icon, footnote, link, title }, i) => (
+        {links.map(({ icon, footnote, link, title, hash }, i) => (
           <Flex key={i} as="li" sx={{ flexGrow: 1, flexBasis: 0 }}>
             <AppLink
               href={link}
+              hash={hash}
               sx={{
                 display: 'flex',
                 alignItems: 'center',

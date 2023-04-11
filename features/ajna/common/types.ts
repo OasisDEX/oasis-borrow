@@ -48,3 +48,33 @@ export type AjnaEarnUpdateState = (
   key: keyof AjnaEarnFormState,
   value: AjnaEarnFormState[keyof AjnaEarnFormState],
 ) => void
+
+export type AlternateProductCardBase = {
+  token: string
+  headerKey: string
+  icon: string
+  background: string
+  banner: {
+    titleKey: string
+  }
+  button: {
+    link: string
+    hash: string
+    labelKey: string
+  }
+  labels: { titleKey: string; value: string }[]
+}
+
+type CardComputedProperties = { computed: { tokens: string[] } }
+
+// for now borrow and earn are the same but eventually
+// CardComputedProperties will be different and potentially
+// AlternateProductCardBase as well
+export type AjnaProductCardsBorrow = AlternateProductCardBase & CardComputedProperties
+export type AjnaProductCardsEarn = AlternateProductCardBase & CardComputedProperties
+
+export type AjnaProductCardsData = {
+  borrowCards: AjnaProductCardsBorrow[]
+  earnCards: AjnaProductCardsEarn[]
+  multiplyCards: unknown[]
+}

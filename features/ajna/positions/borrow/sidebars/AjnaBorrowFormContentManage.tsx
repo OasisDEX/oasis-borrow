@@ -48,7 +48,7 @@ export function AjnaBorrowFormContentManage() {
               items: [
                 {
                   id: 'generate-borrow',
-                  label: t('vault-actions.generate'),
+                  label: t('vault-actions.borrow'),
                   action: () => {
                     dispatch({ type: 'reset' })
                     updateState('uiPill', 'generate-borrow')

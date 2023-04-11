@@ -85,7 +85,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           isLoading,
         },
         {
-          label: t('system.available-to-generate'),
+          label: t('system.available-to-borrow'),
           value: `${formatted.availableToBorrow} ${quoteToken}`,
           secondaryValue: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
           isLoading,
