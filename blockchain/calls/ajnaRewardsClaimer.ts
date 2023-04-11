@@ -6,7 +6,7 @@ import { TxMetaKind } from './txMeta'
 
 export interface ClaimAjnaRewardsTxData extends TxMeta {
   kind: TxMetaKind.claimAjnaRewards
-  nftIds: any
+  nftIds: any // string[]
 }
 
 export const claimAjnaRewards: TransactionDef<ClaimAjnaRewardsTxData> = {
