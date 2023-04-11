@@ -15,7 +15,7 @@ import { ManageSectionModal } from 'features/aave/manage/components'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines/aaveV2PrepareReserveData'
+import { ReserveData } from 'lendingProtocols/aaveCommon'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -31,7 +31,7 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 }
 
 type PositionInfoComponentProps = {
-  aaveReserveDataDebtToken: PreparedAaveReserveData
+  aaveReserveDataDebtToken: ReserveData
   apy?: BigNumber
   position: IPosition
 }

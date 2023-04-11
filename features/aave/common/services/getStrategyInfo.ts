@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { IStrategyInfo } from 'features/aave/common/BaseAaveContext'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { ReserveConfigurationData } from 'lendingProtocols/common'
+import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 

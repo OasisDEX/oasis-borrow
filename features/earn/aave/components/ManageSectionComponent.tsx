@@ -1,17 +1,16 @@
 import { useActor } from '@xstate/react'
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { useSimulationYields } from 'features/aave/common/hooks/useSimulationYields'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
+import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
 import React from 'react'
 
 import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ManageSectionComponentProps = {
-  aaveReserveState: AaveV2ReserveConfigurationData
-  aaveReserveDataDebtToken: PreparedAaveReserveData
+  aaveReserveState: ReserveConfigurationData
+  aaveReserveDataDebtToken: ReserveData
   strategyConfig: IStrategyConfig
 }
 

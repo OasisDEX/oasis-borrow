@@ -23,9 +23,9 @@ const aaveMultiplyCalcValueBasis = {
 
 export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAaveProps) {
   const { t } = useTranslation()
-  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext()
+  const { getAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
-  const [debtReserveData] = useObservable(wrappedGetAaveReserveData$(strategy.tokens.debt))
+  const [debtReserveData] = useObservable(getAaveReserveData$({ token: strategy.tokens.debt }))
   const [collateralReserveConfigurationData] = useObservable(
     aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
   )

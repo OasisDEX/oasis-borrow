@@ -21,7 +21,7 @@ import { TransactionParametersStateMachineResponseEvent } from 'features/stateMa
 import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
+import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 import { IStrategyConfig } from './StrategyConfigTypes'
@@ -100,7 +100,7 @@ export type BaseAaveEvent =
   | UpdateDebtActionType
   | UpdateTokenActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
-  | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
+  | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: ProtocolData }
   | { type: 'UPDATE_ALLOWANCE'; allowance: StrategyTokenAllowance }
   | { type: 'USE_SLIPPAGE'; getSlippageFrom: 'userSettings' | 'strategyConfig' }
   | TransactionParametersStateMachineResponseEvent
@@ -149,7 +149,7 @@ export interface BaseAaveContext {
   web3Context?: Context
   userSettings?: UserSettingsState
   error?: string | unknown
-  protocolData?: AaveProtocolData
+  protocolData?: ProtocolData
   userDpmAccount?: UserDpmAccount
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>

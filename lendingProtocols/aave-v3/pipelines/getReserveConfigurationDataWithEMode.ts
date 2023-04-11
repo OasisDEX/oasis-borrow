@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { GetEModeCategoryDataParameters, GetEModeCategoryDataResult } from 'blockchain/aave-v3'
-import { ReserveConfigurationData } from 'lendingProtocols/common'
+import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 

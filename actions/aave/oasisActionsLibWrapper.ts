@@ -20,7 +20,7 @@ import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { checkContext } from './checkContext'
 import { getAddressesFromContext } from './getAddressesFromContext'
@@ -63,7 +63,7 @@ async function openAave(
   context: Context,
   proxyAddress: string,
   proxyType: ProxyType,
-  protocol: LendingProtocol,
+  protocol: AaveLendingProtocol,
 ) {
   const args: Parameters<typeof strategies.aave.v2.open>[0] &
     Parameters<typeof strategies.aave.v3.open>[0] = {
@@ -90,6 +90,8 @@ async function openAave(
       return await strategies.aave.v2.open(args, dependencies)
     case LendingProtocol.AaveV3:
       return await strategies.aave.v3.open(args, dependencies)
+    default:
+      throw new Error('Unsupported protocol')
   }
 }
 
@@ -249,8 +251,6 @@ export async function getAdjustAaveParameters({
         return await strategies.aave.v2.adjust(args, stratDeps)
       case LendingProtocol.AaveV3:
         return await strategies.aave.v3.adjust(args, stratDeps)
-      default:
-        throw new Error('Protocol not supported')
     }
   } catch (e) {
     console.error(e)
