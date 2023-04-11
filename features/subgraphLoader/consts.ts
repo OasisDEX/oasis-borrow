@@ -75,5 +75,14 @@ export const subgraphMethodsRecord: {
       }
     }
   `,
+  getNftIds: gql`
+    query getNfts($walletAddress: ID!) {
+      nfts(where: { user_: { id: $walletAddress }, staked: true }) {
+        id
+        staked
+        currentReward
+      }
+    }
+  `,
   tempMethod: '',
 }

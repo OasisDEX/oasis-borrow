@@ -20,6 +20,8 @@ import * as accountGuard from './abi/account-guard.json'
 import * as ajnaPoolInfo from './abi/ajna-pool-info.json'
 import * as ajnaPool from './abi/ajna-pool.json'
 import * as ajnaProxyActions from './abi/ajna-proxy-actions.json'
+import * as ajnaRewardsClaimer from './abi/ajna-rewards-claimer.json'
+import * as ajnaRewardsManager from './abi/ajna-rewards-manager.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBotV2 from './abi/automation-bot-v2.json'
 import * as automationBot from './abi/automation-bot.json'
@@ -52,7 +54,6 @@ import * as merkleRedeemer from './abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as operationExecutor from './abi/operation-executor.json'
 import * as otcSupport from './abi/otc-support-methods.json'
-import * as rewardsManager from './abi/rewards-manager.json'
 import * as vat from './abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -318,7 +319,15 @@ const protoMain = {
     'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
     'ETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
   },
-  rewardsManager: contractDesc(rewardsManager, '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476'),
+  ajnaRewardsManager: contractDesc(
+    ajnaRewardsManager,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
+  // TODO update address
+  ajnaRewardsClaimer: contractDesc(
+    ajnaRewardsClaimer,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -461,7 +470,15 @@ const goerli: NetworkConfig = {
     'WBTC-USDC': contractDesc(ajnaPool, '0x17e5a1A6450d4fB32fFFc329ca92db55293db10e'),
     'ETH-USDC': contractDesc(ajnaPool, '0xe1200AEfd60559D494d4419E17419571eF8fC1Eb'),
   },
-  rewardsManager: contractDesc(rewardsManager, '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476'),
+  ajnaRewardsManager: contractDesc(
+    ajnaRewardsManager,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
+  // TODO update address
+  ajnaRewardsClaimer: contractDesc(
+    ajnaRewardsClaimer,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
 }
 
 const hardhat: NetworkConfig = {

@@ -36,7 +36,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
 
   const negativeWadPrecision = WAD_PRECISION * -1
 
-  if ('pool' in response && response.pool) {
+  if (response && 'pool' in response) {
     const {
       address,
       collateralAddress,
