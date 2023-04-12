@@ -2578,7 +2578,8 @@
           "link": "Learn more about Ajna Liquidity Mining Rewards",
           "banner": {
             "title": "AJNA Liquidity Mining Rewards "
-          }
+          },
+          "floatingLabel": "Exclusive to Oasis.app"
         },
         "token": {
           "title": "AJNA Token Rewards",

@@ -10,7 +10,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
 interface Link {
@@ -248,6 +248,7 @@ interface AjnaRewardCardProps {
   onBtnClick?: () => void
   txStatus?: TxStatus
   notAvailable?: boolean
+  floatingLabel?: ReactNode
 }
 
 export function AjnaRewardCard({
@@ -263,11 +264,13 @@ export function AjnaRewardCard({
   isLoading,
   rewards,
   notAvailable,
+  floatingLabel,
 }: AjnaRewardCardProps) {
   const { isConnected, walletAddress } = useAccount()
 
   return (
-    <Card p={4} sx={{ height: '100%', borderRadius: 'large' }}>
+    <Card p={4} sx={{ height: '100%', borderRadius: 'large', position: 'relative' }}>
+      {floatingLabel}
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Flex
           sx={{

@@ -1,4 +1,5 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
+import { FloatingLabel } from 'components/FloatingLabel'
 import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
 import { WithArrow } from 'components/WithArrow'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
@@ -94,6 +95,22 @@ export function AjnaRewardsController() {
           notAvailable
           isLoading={false}
           rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
+          floatingLabel={
+            <FloatingLabel
+              text={t('ajna.rewards.cards.mining.floatingLabel')}
+              flexSx={{
+                top: 4,
+                right: ['-17px', '-23px'],
+                background:
+                  'radial-gradient(99% 180% at 11.74% 11.59%, #B67CFF 0%, #878BFC 61.65%, #526EFF 100%)',
+                boxShadow: 'unset',
+              }}
+              textSx={{
+                fontWeight: 'semiBold',
+              }}
+              imageUrl="/static/img/logo_monolithic.svg"
+            />
+          }
         />
       </ProductCardsWrapper>
       <AjnaHaveSomeQuestions />
