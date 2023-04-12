@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "7.7.1",
+  "version": "7.8.1",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=18.x"
@@ -31,7 +31,8 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate && yarn xstate:typegen",
     "xstate:typegen": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" ",
     "xstate:typegen:watch": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" --watch",
-    "release": "release-it"
+    "release": "release-it",
+    "jest": "jest"
   },
   "dependencies": {
     "@gnosis.pm/safe-apps-sdk": "^7.7.0",
@@ -47,7 +48,7 @@
     "@oasisdex/automation": "1.4.0",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/oasis-actions": "0.2.16",
-    "@oasisdex/oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-24",
+    "@oasisdex/oasis-actions-poc": "npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-27",
     "@oasisdex/transactions": "0.1.3-alpha.0",
     "@oasisdex/utils": "^0.0.8",
     "@prisma/client": "^3.14.0",
@@ -121,7 +122,7 @@
     "text-mask-addons": "^3.7.2",
     "theme-ui": "^0.3.1",
     "ts-essentials": "^7.0.1",
-    "ts-node": "^7.0.1",
+    "ts-node": "10.9.1",
     "url-loader": "^4.1.0",
     "usehooks-ts": "^2.9.1",
     "uuid": "^8.3.0",
@@ -144,6 +145,7 @@
     "@types/enzyme": "^3.10.8",
     "@types/express": "^4.17.6",
     "@types/express-jwt": "^7.4.2",
+    "@types/jest": "^29.5.0",
     "@types/jsonwebtoken": "^9.0.0",
     "@types/lodash": "^4.14.109",
     "@types/mixpanel-browser": "^2.23.1",
@@ -189,6 +191,7 @@
     "express": "^4.17.3",
     "i18next-hmr": "^1.11.0",
     "i18next-http-backend": "^1.4.0",
+    "jest": "^29.5.0",
     "mocha": "^9.1.2",
     "patch-package": "^6.4.7",
     "prettier": "^2.0.1",
@@ -196,6 +199,7 @@
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
     "stream-browserify": "^3.0.0",
+    "ts-jest": "^29.1.0",
     "ts-mockito": "^2.6.1",
     "tsconfig-paths": "^3.9.0",
     "typechain": "^8.1.1",

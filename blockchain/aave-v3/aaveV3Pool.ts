@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
-import { amountFromWei } from 'blockchain/utils'
 import { AaveV3Pool } from 'types/web3-v1-contracts'
 
 export interface AaveV3UserAccountData {
@@ -24,6 +23,7 @@ export interface GetEModeCategoryDataResult {
 
 export interface AaveV3UserAccountDataParameters {
   address: string
+  baseCurrencyUnit: BigNumber
 }
 
 export type AaveV3UserConfigurationsParameters = {
@@ -41,16 +41,14 @@ export const getAaveV3UserAccountData: CallDef<
   prepareArgs: ({ address }) => {
     return [address]
   },
-  postprocess: (result) => {
+  postprocess: (result, { baseCurrencyUnit }) => {
     return {
-      totalCollateralBase: amountFromWei(
-        new BigNumber(result.totalCollateralBase.toString()),
-        'ETH',
+      totalCollateralBase: new BigNumber(result.totalCollateralBase.toString()).div(
+        baseCurrencyUnit,
       ),
-      totalDebtBase: amountFromWei(new BigNumber(result.totalDebtBase.toString()), 'ETH'),
-      availableBorrowsBase: amountFromWei(
-        new BigNumber(result.availableBorrowsBase.toString()),
-        'ETH',
+      totalDebtBase: new BigNumber(result.totalDebtBase.toString()).div(baseCurrencyUnit),
+      availableBorrowsBase: new BigNumber(result.availableBorrowsBase.toString()).div(
+        baseCurrencyUnit,
       ),
       currentLiquidationThreshold: new BigNumber(result.currentLiquidationThreshold.toString()),
       ltv: new BigNumber(result.ltv.toString()),

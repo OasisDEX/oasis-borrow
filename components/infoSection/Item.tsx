@@ -1,7 +1,7 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
-import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { ReactNode, useState } from 'react'
 import React from 'react'
@@ -69,6 +69,7 @@ export function Item({
               ? {
                   as: 'p',
                   sx: {
+                    flexShrink: 0,
                     mr: 'auto',
                     color: labelColorPrimary ? 'primary100' : 'neutral80',
                   },
@@ -87,9 +88,12 @@ export function Item({
         )}
         <Text
           sx={{
-            color: 'primary100',
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'center',
+            justifyContent: 'flex-end',
+            columnGap: 2,
+            color: 'primary100',
           }}
           as="div"
         >
@@ -100,7 +104,7 @@ export function Item({
               {value && <>{React.isValidElement(value) ? value : `${value}`}</>}
               {secondaryValue && (
                 <>
-                  <VaultChangesInformationArrow />
+                  <Icon name="arrow_right_light" size="auto" width={10} height={7} />
                   {`${secondaryValue}`}
                 </>
               )}

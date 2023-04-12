@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { one, zero } from 'helpers/zero'
-import { AaveYieldsResponse } from 'lendingProtocols/common'
+import { AaveYieldsResponse } from 'lendingProtocols/aaveCommon'
 import moment from 'moment/moment'
 
 const AAVE_INCEPTION_DATE = moment('2022-02-28')

@@ -28,7 +28,6 @@ export type Feature =
   | 'Ajna'
   | 'DaiSavingsRate'
   | 'FollowAAVEVaults'
-  | 'GoerliButton'
   | 'Sillyness'
   | 'UseNetworkSwitcher'
   | '🌞'
@@ -58,8 +57,6 @@ const configuredFeatures: Record<Feature, boolean> = {
   Ajna: false,
   DaiSavingsRate: true,
   FollowAAVEVaults: false,
-  // Added for gnosis safe testing
-  GoerliButton: false,
   Sillyness: false,
   UseNetworkSwitcher: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.

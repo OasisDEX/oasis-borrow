@@ -1041,6 +1041,7 @@
     "est-break-even-value": "{{days}} days",
     "est-entry-fees": "Est. entry fees",
     "apy": "APY",
+    "available-to-borrow": "Available to Borrow",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
     "coll-ratio": "Coll. Ratio",
@@ -1303,6 +1304,7 @@
     "slippage-from-strategy": "Use slippage from strategy"
   },
   "vault-actions": {
+    "borrow": "Borrow",
     "deposit": "Deposit",
     "generate": "Generate",
     "payback": "Payback",
@@ -2408,6 +2410,8 @@
     "product-cards": {
       "borrow-against-your": "Borrow against your {{token}}",
       "collaterals-you-can-borrow": "Collaterals you can borrow",
+      "lend-against-your": "Lend {{token }} to earn",
+      "collaterals-to-earn-on": "Collaterals to earn on",
       "annual-variable-rates": "Annual variable rates"
     },
     "history": {
@@ -2479,6 +2483,7 @@
             "liquidation-price": "Liquidation Price",
             "below-current-price": "{{belowCurrentPrice}} below current price",
             "loan-to-value": "Loan to value",
+            "liquidation-threshold": "Liquidation Threshold: {{liquidationTreshold}}",
             "collateral-locked": "Collateral locked",
             "position-debt": "Position debt"
           },
@@ -2561,7 +2566,7 @@
       "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
-      "debt-less-then-dust-limit": "You cannot generate more than {{amount}} of debt, as this would take your position below the minimum LTV. Please enter a lower amount.",
+      "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{amount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}."
     },

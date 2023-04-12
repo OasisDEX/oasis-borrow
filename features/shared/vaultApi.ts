@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { Protocols } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
@@ -15,7 +15,7 @@ const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 export function checkVaultTypeUsingApi$(
   context$: Observable<Context>,
   pillChange: Observable<MultiplyPillChange>,
-  positionInfo: { id: BigNumber; protocol: Protocols },
+  positionInfo: { id: BigNumber; protocol: LendingProtocol },
 ): Observable<VaultType> {
   const pillChange$ = pillChange.pipe(
     startWith(({ currentChange: '' } as unknown) as MultiplyPillChange),
@@ -85,7 +85,7 @@ export function checkMultipleVaultsFromApi$(
 export function getVaultFromApi$(
   vaultId: BigNumber,
   chainId: BigNumber,
-  protocol: Protocols,
+  protocol: LendingProtocol,
 ): Observable<
   | {
       vaultId: BigNumber

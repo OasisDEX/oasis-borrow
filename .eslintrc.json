@@ -14,7 +14,6 @@
     "unused-imports/no-unused-imports-ts": "error",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "import/no-default-export": "error",
     "simple-import-sort/sort": [
       "error",
       {
@@ -190,12 +189,6 @@
     "react-hooks/exhaustive-deps": "warn"
   },
   "overrides": [
-    {
-      "files": ["pages/**/*.{ts,tsx}"],
-      "rules": {
-        "import/no-default-export": "off"
-      }
-    },
     {
       "files": ["**/*.tsx"],
       "rules": {

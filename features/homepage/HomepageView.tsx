@@ -707,11 +707,13 @@ export function Hero({
   isConnected,
   heading,
   subheading,
+  showButton = true,
 }: {
   sx?: SxStyleProp
   isConnected: boolean
   heading: string
   subheading: ReactNode
+  showButton?: boolean
 }) {
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
@@ -738,31 +740,33 @@ export function Hero({
       <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
         {subheading}
       </Text>
-      <Button
-        variant="primary"
-        sx={{
-          display: 'flex',
-          margin: '0 auto',
-          px: '40px',
-          py: 2,
-          alignItems: 'center',
-          '&:hover svg': {
-            transform: 'translateX(10px)',
-          },
-        }}
-        onClick={async () => connected || connecting || (await executeConnection())}
-      >
-        {isConnected ? t('see-products') : t('connect-wallet')}
-        <Icon
-          name="arrow_right"
+      {showButton && (
+        <Button
+          variant="primary"
           sx={{
-            ml: 2,
-            position: 'relative',
-            left: 2,
-            transition: '0.2s',
+            display: 'flex',
+            margin: '0 auto',
+            px: '40px',
+            py: 2,
+            alignItems: 'center',
+            '&:hover svg': {
+              transform: 'translateX(10px)',
+            },
           }}
-        />
-      </Button>
+          onClick={async () => connected || connecting || (await executeConnection())}
+        >
+          {isConnected ? t('see-products') : t('connect-wallet')}
+          <Icon
+            name="arrow_right"
+            sx={{
+              ml: 2,
+              position: 'relative',
+              left: 2,
+              transition: '0.2s',
+            }}
+          />
+        </Button>
+      )}
     </Flex>
   )
 }

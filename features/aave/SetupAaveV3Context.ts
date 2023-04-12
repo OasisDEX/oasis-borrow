@@ -6,7 +6,7 @@ import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
-import { ReserveConfigurationData } from 'lendingProtocols/common'
+import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { memoize } from 'lodash'
 import moment from 'moment/moment'
 import { curry } from 'ramda'
@@ -68,7 +68,6 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     aaveAvailableLiquidityInUSDC$,
     aaveProtocolData$,
     aaveReserveConfigurationData$,
-    wrappedGetAaveReserveData$,
     convertToAaveOracleAssetPrice$,
     aaveOracleAssetPriceData$,
     getAaveReserveData$,
@@ -168,10 +167,9 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'WSTETH' }),
     getAaveReserveData$({ token: 'ETH' }),
-    // @ts-expect-error
     getAaveAssetsPrices$({
       tokens: ['ETH', 'WSTETH'],
-    }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    }),
   )
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
@@ -181,7 +179,6 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     aaveManageStateMachine,
     aaveTotalValueLocked$,
     aaveReserveConfigurationData$,
-    wrappedGetAaveReserveData$,
     aaveEarnYieldsQuery,
     aaveProtocolData$,
     strategyConfig$,

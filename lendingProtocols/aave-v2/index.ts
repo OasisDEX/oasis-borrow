@@ -14,15 +14,16 @@ import {
 } from 'blockchain/aave'
 import { observe } from 'blockchain/calls/observe'
 import { Context } from 'blockchain/network'
+import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
-import { memoize } from 'lodash'
+import { isEqual, memoize } from 'lodash'
 import { from, Observable } from 'rxjs'
-import { shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
-  createAaveV2PrepareReserveData$,
   getAaveProtocolData$,
   getAaveProxyConfiguration$,
+  mapAaveUserAccountData$,
   prepareAaveAvailableLiquidityInUSDC$,
 } from './pipelines'
 import curry from 'ramda/src/curry'
@@ -32,27 +33,45 @@ interface AaveV2ServicesDependencies {
   refresh$: Observable<unknown>
   once$: Observable<unknown>
 }
-export function getAaveV2Services({ context$, refresh$, once$ }: AaveV2ServicesDependencies) {
+export function getAaveV2Services({
+  context$,
+  refresh$,
+  once$,
+}: AaveV2ServicesDependencies): AaveServices {
   const aaveLiquidations$ = memoize(
     curry(getAaveV2PositionLiquidation$)(context$),
     (proxyAddress) => proxyAddress,
   )
 
-  const aaveUserAccountData$ = observe(
+  const aaveV2UserAccountData$ = observe(
     refresh$,
     context$,
     getAaveV2UserAccountData,
     (args) => args.address,
   )
 
+  const aaveUserAccountData$ = memoize(
+    curry(mapAaveUserAccountData$)(aaveV2UserAccountData$),
+    (args) => JSON.stringify(args),
+  )
+
   const getAaveReserveData$ = observe(once$, context$, getAaveV2ReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveV2AssetsPrices)
+
+  const tokenPriceInEth$ = memoize((token: string) => {
+    return getAaveAssetsPrices$({ tokens: [token] }).pipe(
+      map(([tokenPriceInEth]) => tokenPriceInEth),
+      distinctUntilChanged((a, b) => isEqual(a, b)),
+    )
+  })
+
+  const usdcPriceInEth$ = tokenPriceInEth$('USDC')
 
   const aaveAvailableLiquidityInUSDC$ = memoize(
     curry(prepareAaveAvailableLiquidityInUSDC$)(
       getAaveReserveData$,
-      // @ts-expect-error
-      getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+      tokenPriceInEth$,
+      usdcPriceInEth$,
     ),
     ({ token }) => token,
   )
@@ -106,12 +125,6 @@ export function getAaveV2Services({ context$, refresh$, once$ }: AaveV2ServicesD
     curry(getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
   )
 
-  const wrappedGetAaveReserveData$ = memoize(
-    curry(createAaveV2PrepareReserveData$)(
-      observe(refresh$, context$, getAaveV2ReserveData, (args) => args.token),
-    ),
-  )
-
   const aaveReserveConfigurationData$ = observe(
     refresh$,
     context$,
@@ -131,7 +144,6 @@ export function getAaveV2Services({ context$, refresh$, once$ }: AaveV2ServicesD
     aaveAvailableLiquidityInUSDC$,
     aaveProtocolData$,
     aaveProxyConfiguration$,
-    wrappedGetAaveReserveData$,
     getAaveAssetsPrices$,
     aaveReserveConfigurationData$,
     convertToAaveOracleAssetPrice$,

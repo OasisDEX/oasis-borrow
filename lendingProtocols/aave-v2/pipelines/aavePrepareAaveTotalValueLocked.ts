@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { AaveV2ReserveDataReply } from 'blockchain/aave'
 import { amountFromWei } from 'blockchain/utils'
+import { ReserveData } from 'lendingProtocols/aaveCommon'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -11,9 +12,9 @@ export type PreparedAaveTotalValueLocked = {
 type PrepareAaveTVLProps = [AaveV2ReserveDataReply, AaveV2ReserveDataReply, BigNumber[]]
 
 export function prepareAaveTotalValueLocked$(
-  getAaveStEthReserveData$: Observable<AaveV2ReserveDataReply>,
-  getAaveWEthReserveData$: Observable<AaveV2ReserveDataReply>,
-  getAaveAssetsPrices$: Observable<string[]>,
+  getAaveStEthReserveData$: Observable<ReserveData>,
+  getAaveWEthReserveData$: Observable<ReserveData>,
+  getAaveAssetsPrices$: Observable<BigNumber[]>,
 ): Observable<PreparedAaveTotalValueLocked> {
   return combineLatest(
     getAaveStEthReserveData$,

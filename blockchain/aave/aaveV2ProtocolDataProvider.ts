@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
-import { amountFromWei } from 'blockchain/utils'
+import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV2ProtocolDataProvider } from 'types/web3-v1-contracts'
 
 export interface AaveV2UserReserveDataParameters {
@@ -80,15 +80,17 @@ export const getAaveV2ReserveData: CallDef<AaveV2ReserveDataParameters, AaveV2Re
   call: (_, { contract, aaveV2ProtocolDataProvider }) =>
     contract<AaveV2ProtocolDataProvider>(aaveV2ProtocolDataProvider).methods.getReserveData,
   prepareArgs: ({ token }, context) => [context.tokens[token].address],
-  postprocess: (result) => {
+  postprocess: (result, { token }) => {
     return {
-      availableLiquidity: new BigNumber(result.availableLiquidity.toString()),
-      totalStableDebt: new BigNumber(result.totalStableDebt.toString()),
-      totalVariableDebt: new BigNumber(result.totalVariableDebt.toString()),
-      liquidityRate: new BigNumber(result.liquidityRate.toString()),
-      variableBorrowRate: new BigNumber(result.variableBorrowRate.toString()),
-      stableBorrowRate: new BigNumber(result.stableBorrowRate.toString()),
-      averageStableBorrowRate: new BigNumber(result.averageStableBorrowRate.toString()),
+      availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity), token),
+      totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
+      totalVariableDebt: amountFromWei(new BigNumber(result.totalVariableDebt.toString()), token),
+      liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
+      variableBorrowRate: amountFromRay(new BigNumber(result.variableBorrowRate.toString())),
+      stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
+      averageStableBorrowRate: amountFromRay(
+        new BigNumber(result.averageStableBorrowRate.toString()),
+      ),
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
