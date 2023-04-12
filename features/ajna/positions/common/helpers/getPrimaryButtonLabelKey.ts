@@ -2,8 +2,9 @@ import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/typ
 
 interface GetPrimaryButtonLabelKeyParams {
   currentStep: AjnaSidebarStep
-  hasDpmAddress: boolean
   flow: AjnaFlow
+  hasAllowance: boolean
+  hasDpmAddress: boolean
   isTxError: boolean
   isTxSuccess: boolean
   product: AjnaProduct
@@ -12,8 +13,9 @@ interface GetPrimaryButtonLabelKeyParams {
 
 export function getPrimaryButtonLabelKey({
   currentStep,
-  hasDpmAddress,
   flow,
+  hasAllowance,
+  hasDpmAddress,
   isTxError,
   isTxSuccess,
   walletAddress,
@@ -26,7 +28,8 @@ export function getPrimaryButtonLabelKey({
       else if (isTxError) return 'retry'
       else return 'confirm'
     default:
-      if (walletAddress && hasDpmAddress) return 'confirm'
+      if (walletAddress && hasDpmAddress && hasAllowance) return 'confirm'
+      else if (walletAddress && hasDpmAddress) return 'set-token-allowance'
       else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
       else return 'connect-wallet-button'
   }

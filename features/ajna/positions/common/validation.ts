@@ -11,6 +11,7 @@ import {
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -133,7 +134,20 @@ function isFormValid({
       }
     }
     case 'multiply':
-      return false
+      const { action, depositAmount } = state as AjnaMultiplyFormState
+
+      switch (currentStep) {
+        case 'setup':
+        case 'manage':
+          switch (action) {
+            case 'open-multiply':
+              return !!depositAmount?.gt(0)
+            default:
+              return false
+          }
+        default:
+          return true
+      }
   }
 }
 
