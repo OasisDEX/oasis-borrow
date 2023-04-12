@@ -37,16 +37,16 @@ export function ContentFooterItemsMultiply({
   const { t } = useTranslation()
 
   const formatted = {
-    totalExposure: `${formatCryptoBalance(totalExposure)} ${quoteToken}`,
+    totalExposure: `${formatCryptoBalance(totalExposure)} ${collateralToken}`,
     afterTotalExposure:
-      afterTotalExposure && `${formatCryptoBalance(afterTotalExposure)} ${quoteToken}`,
-    positionDebt: `${formatCryptoBalance(positionDebt)} ${collateralToken}`,
+      afterTotalExposure && `${formatCryptoBalance(afterTotalExposure)} ${collateralToken}`,
+    positionDebt: `${formatCryptoBalance(positionDebt)} ${quoteToken}`,
     afterPositionDebt:
-      afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${collateralToken}`,
+      afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
     multiple: `${multiple.toFixed(2)}x`,
     afterMultiple: afterMultiple && `${afterMultiple.toFixed(2)}x`,
-    buyingPower: `${formatCryptoBalance(buyingPower)} ${quoteToken}`,
-    afterBuyingPower: afterBuyingPower && `${formatCryptoBalance(afterBuyingPower)} ${quoteToken}`,
+    buyingPower: `${formatCryptoBalance(buyingPower)} ${collateralToken}`,
+    afterBuyingPower: afterBuyingPower && `${formatCryptoBalance(afterBuyingPower)} ${collateralToken}`,
   }
 
   return (
