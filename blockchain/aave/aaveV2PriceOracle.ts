@@ -14,6 +14,14 @@ export const getAaveV2AssetsPrices: CallDef<AaveV2AssetsPricesParameters, BigNum
     tokenPrices.map((tokenPriceInEth) => amountFromWei(new BigNumber(tokenPriceInEth), 'ETH')),
 }
 
+export const getAaveV2AssetPrice: CallDef<string, BigNumber[]> = {
+  call: (_, { contract, aaveV2PriceOracle }) =>
+    contract<AaveV2PriceOracle>(aaveV2PriceOracle).methods.getAssetsPrices,
+  prepareArgs: (token, context) => [context.tokens[token].address],
+  postprocess: (tokenPrices) =>
+    tokenPrices.map((tokenPriceInEth) => amountFromWei(new BigNumber(tokenPriceInEth), 'ETH')),
+}
+
 export const getAaveV2OracleAssetPriceData: CallDef<{ token: string }, BigNumber> = {
   call: (args, { contract, aaveV2PriceOracle }) => {
     return contract<AaveV2PriceOracle>(aaveV2PriceOracle).methods.getAssetPrice

@@ -13,7 +13,7 @@ import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
-import { Protocols } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import { of } from 'rxjs'
 import { catchError, startWith } from 'rxjs/operators'
 import { DssGuniProxyActions as GuniProxyActions } from 'types/web3-v1-contracts'
@@ -153,7 +153,7 @@ export function openGuniVault<S extends TxStateDependencies>(
               jwtToken,
               VaultType.Multiply,
               parseInt(txState.networkId),
-              Protocols.MAKER,
+              LendingProtocol.Maker,
             ).subscribe()
           }
 

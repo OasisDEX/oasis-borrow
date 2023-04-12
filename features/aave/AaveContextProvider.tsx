@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithChildren } from 'helpers/types'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import React, { useContext, useEffect, useState } from 'react'
 
 import { AaveContext, setupAaveV2Context } from './AaveContext'
@@ -17,7 +17,9 @@ export function isAaveContextAvailable(): boolean {
   return !!useContext(aaveContext)
 }
 
-export function useAaveContext(protocol: LendingProtocol = LendingProtocol.AaveV2): AaveContext {
+export function useAaveContext(
+  protocol: AaveLendingProtocol = LendingProtocol.AaveV2,
+): AaveContext {
   const ac = useContext(aaveContext)
   if (!ac || !ac[protocol]) {
     throw new Error("AaveContext not available! useAppContext can't be used serverside")

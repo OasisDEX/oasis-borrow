@@ -5,7 +5,7 @@ import {
   AaveYieldsResponse,
   FilterYieldFieldsType,
   yieldsDateFormat,
-} from 'lendingProtocols/common/yields'
+} from 'lendingProtocols/aaveCommon/yields'
 import moment from 'moment/moment'
 import { Observable } from 'rxjs'
 import { first } from 'rxjs/operators'

@@ -1,8 +1,8 @@
 import { ProductType } from 'features/aave/common'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 type AaveVersionProps = {
-  protocol: LendingProtocol
+  protocol: AaveLendingProtocol
   action?: 'open' // others?
   strategyType: ProductType
   slug: string

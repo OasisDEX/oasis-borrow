@@ -325,7 +325,7 @@ function UserDesktopMenu() {
         )}
 
         {/* TODO: Should remove feature toggle */}
-        {!showHeaderSettings && notificationsToggle && (
+        {showHeaderSettings && notificationsToggle && (
           <NotificationsIconButton
             notificationsRef={notificationsRef}
             onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}

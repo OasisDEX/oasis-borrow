@@ -15,7 +15,7 @@ import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { PositionId } from 'features/aave/types'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
-import { AaveProtocolData } from 'lendingProtocols/aave-v3/pipelines'
+import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -33,7 +33,7 @@ export function getManageAaveV3PositionStateMachineServices(
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<AaveProtocolData>,
+  ) => Observable<ProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)

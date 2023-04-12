@@ -1,5 +1,4 @@
 import { useActor } from '@xstate/react'
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
@@ -9,7 +8,7 @@ import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
+import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
 import React from 'react'
 import { Box, Container } from 'theme-ui'
 
@@ -26,8 +25,8 @@ function AaveManageContainer({
   aaveReserveDataDebtToken,
   address,
 }: {
-  aaveReserveState: AaveV2ReserveConfigurationData
-  aaveReserveDataDebtToken: PreparedAaveReserveData
+  aaveReserveState: ReserveConfigurationData
+  aaveReserveDataDebtToken: ReserveData
   strategyConfig: IStrategyConfig
   address: string
 }) {
@@ -68,11 +67,11 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
+  const { aaveReserveConfigurationData$, getAaveReserveData$ } = useAaveContext(
     strategyConfig.protocol,
   )
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
-    wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
+    getAaveReserveData$({ token: strategyConfig.tokens.debt }),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(
     aaveReserveConfigurationData$({ token: strategyConfig.tokens.collateral }),

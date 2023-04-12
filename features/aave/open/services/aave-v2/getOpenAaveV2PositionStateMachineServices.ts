@@ -1,9 +1,4 @@
 import BigNumber from 'bignumber.js'
-import {
-  AaveV2ReserveConfigurationData,
-  AaveV2UserAccountData,
-  AaveV2UserAccountDataParameters,
-} from 'blockchain/aave'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
@@ -19,7 +14,12 @@ import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigT
 import { OpenAaveStateMachineServices } from 'features/aave/open/state'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
-import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
+import {
+  ProtocolData,
+  ReserveConfigurationData,
+  UserAccountData,
+  UserAccountDataArgs,
+} from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -29,9 +29,7 @@ export function getOpenAaveV2PositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
-  aaveUserAccountData$: (
-    parameters: AaveV2UserAccountDataParameters,
-  ) => Observable<AaveV2UserAccountData>,
+  aaveUserAccountData$: (parameters: UserAccountDataArgs) => Observable<UserAccountData>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
@@ -39,13 +37,11 @@ export function getOpenAaveV2PositionStateMachineServices(
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<AaveProtocolData>,
+  ) => Observable<ProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
-  aaveReserveConfiguration$: (args: {
-    token: string
-  }) => Observable<AaveV2ReserveConfigurationData>,
+  aaveReserveConfiguration$: (args: { token: string }) => Observable<ReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {

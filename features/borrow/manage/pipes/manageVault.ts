@@ -33,7 +33,7 @@ import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { HasGasEstimation } from 'helpers/form'
 import { TxError } from 'helpers/types'
-import { Protocols } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
@@ -212,7 +212,7 @@ function addTransitions(
           state.vault.id,
           VaultType.Multiply,
           state.vault.chainId,
-          Protocols.MAKER,
+          LendingProtocol.Maker,
           () => {
             window.location.reload()
             change({ kind: 'multiplyTransitionSuccess' })
