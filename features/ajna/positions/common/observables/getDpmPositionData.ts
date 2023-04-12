@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
+import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { isEqual } from 'lodash'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
@@ -26,12 +27,23 @@ export function getDpmPositionData$(
         dpmProxy ? lastCreatedPositionForProxy$(dpmProxy.proxy) : of(undefined),
       )
     }),
-    map(([dpmProxy, lastCreatedPosition]) => {
-      return dpmProxy && lastCreatedPosition
+    switchMap(([dpmProxy, lastCreatedPosition]) => {
+      return combineLatest(
+        of(dpmProxy),
+        of(lastCreatedPosition),
+        dpmProxy && lastCreatedPosition
+          ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], lastCreatedPosition.protocol)
+          : of(undefined),
+      )
+    }),
+    map(([dpmProxy, lastCreatedPosition, vaultsFromApi]) => {
+      return dpmProxy && lastCreatedPosition && vaultsFromApi
         ? {
             ...dpmProxy,
             collateralToken: lastCreatedPosition.collateralTokenSymbol,
-            product: lastCreatedPosition.positionType.toLowerCase(),
+            product: (
+              vaultsFromApi[dpmProxy.vaultId] || lastCreatedPosition.positionType
+            ).toLowerCase(),
             protocol: lastCreatedPosition.protocol,
             quoteToken: lastCreatedPosition.debtTokenSymbol,
           }
