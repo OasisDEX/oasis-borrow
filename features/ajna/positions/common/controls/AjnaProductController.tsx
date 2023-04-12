@@ -160,8 +160,8 @@ export function AjnaProductController({
                   dpmPosition,
                   tokenPriceUSD,
                   gasPrice,
-                ]) => {
-                  return ajnaPosition ? (
+                ]) =>
+                  ajnaPosition ? (
                     <>
                       <PageSEOTags
                         title="seo.title-product-w-tokens"
@@ -235,7 +235,7 @@ export function AjnaProductController({
                   ) : (
                     <></>
                   )
-                }}
+                }
               </WithLoadingIndicator>
             </WithErrorHandler>
           </AjnaWrapper>
