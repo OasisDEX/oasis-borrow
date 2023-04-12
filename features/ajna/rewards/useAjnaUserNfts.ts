@@ -53,7 +53,6 @@ export const useAjnaUserNfts = (): AjnaUserNfts | undefined => {
     txDetails,
     handler: () =>
       txHelpers
-        // @ts-ignore
         ?.sendWithGasEstimation(claimAjnaRewards, {
           kind: TxMetaKind.claimAjnaRewards,
           nftIds: nfts.map((nft) => nft.id),
