@@ -7,6 +7,7 @@ import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
 import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
 import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Button, Flex } from 'theme-ui'
@@ -81,12 +82,19 @@ export function AjnaRewardsController() {
       <ProductCardsWrapper gap={24} desktopWidthOfCard={448} sx={{ mt: 5 }}>
         <AjnaRewardCard
           {...miningRewardsCard}
-          onBtnClick={userNftsData?.handler}
-          txStatus={userNftsData?.txDetails?.txStatus}
-          rewards={userNftsData?.rewards}
+          onBtnClick={userNftsData.handler}
+          txStatus={userNftsData.txDetails?.txStatus}
+          rewards={userNftsData.rewards}
+          isLoading={userNftsData.isLoading}
           key="miningRewards"
         />
-        <AjnaRewardCard {...oasisRewardsCard} key="oasisRewards" notAvailable />
+        <AjnaRewardCard
+          {...oasisRewardsCard}
+          key="oasisRewards"
+          notAvailable
+          isLoading={false}
+          rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
+        />
       </ProductCardsWrapper>
       <AjnaHaveSomeQuestions />
     </AnimatedWrapper>

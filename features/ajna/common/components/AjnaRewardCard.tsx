@@ -243,7 +243,8 @@ interface AjnaRewardCardProps {
   ownerPageLink: Link
   banner: BannerProps
   gradient: string
-  rewards?: Rewards
+  isLoading: boolean
+  rewards: Rewards
   onBtnClick?: () => void
   txStatus?: TxStatus
   notAvailable?: boolean
@@ -259,6 +260,7 @@ export function AjnaRewardCard({
   gradient,
   onBtnClick,
   txStatus,
+  isLoading,
   rewards,
   notAvailable,
 }: AjnaRewardCardProps) {
@@ -281,7 +283,7 @@ export function AjnaRewardCard({
           <Image src={staticFilesRuntimeUrl(image)} />
         </Flex>
         <AjnaRewardCardListBox title={title} list={list} link={link} />
-        {walletAddress && !notAvailable && rewards && (
+        {walletAddress && !isLoading && !notAvailable && (
           <AjnaRewardCardBanner
             rewards={rewards}
             banner={banner}
@@ -292,7 +294,7 @@ export function AjnaRewardCard({
             walletAddress={walletAddress}
           />
         )}
-        {isConnected && !rewards && !notAvailable && <Skeleton sx={{ mt: 4, height: '272px' }} />}
+        {isConnected && isLoading && !notAvailable && <Skeleton sx={{ mt: 4, height: '202px' }} />}
         {rewards && walletAddress && (
           <EarningOnPositionsLink
             ownerPageLink={ownerPageLink}

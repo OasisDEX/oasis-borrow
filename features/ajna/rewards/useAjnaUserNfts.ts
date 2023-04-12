@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 interface AjnaUserNfts {
+  isLoading: boolean
   rewards: {
     tokens: BigNumber
     usd: BigNumber
@@ -24,26 +25,46 @@ interface AjnaUserNfts {
   txDetails?: TxDetails
 }
 
-export const useAjnaUserNfts = (): AjnaUserNfts | undefined => {
+export const useAjnaUserNfts = (): AjnaUserNfts => {
   const { walletAddress } = useAccount()
   const { txHelpers$ } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [nfts, setNfts] = useState<AjnaUserNftsResponse[]>()
   const [txDetails, setTxDetails] = useState<TxDetails>()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    setIsLoading(true)
     if (walletAddress) {
-      void getAjnaUserNfts(walletAddress).then((data) => setNfts(data))
+      void getAjnaUserNfts(walletAddress)
+        .then((data) => {
+          setIsLoading(false)
+          setNfts(data)
+        })
+        .catch((error) => {
+          console.error(error)
+          setIsLoading(false)
+        })
     }
   }, [walletAddress, txDetails?.txStatus])
 
   if (!nfts?.length) {
-    return undefined
+    return {
+      isLoading,
+      rewards: {
+        tokens: zero,
+        usd: zero,
+        numberOfPositions: 0,
+      },
+      txDetails: undefined,
+      handler: undefined,
+    }
   }
 
   const tokenRewards = nfts.reduce((acc, curr) => acc.plus(curr.currentReward), zero)
 
   return {
+    isLoading,
     rewards: {
       tokens: tokenRewards,
       // TODO times ajna price
