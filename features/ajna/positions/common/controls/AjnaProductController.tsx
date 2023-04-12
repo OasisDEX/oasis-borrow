@@ -15,6 +15,8 @@ import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observ
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -213,6 +215,18 @@ export function AjnaProductController({
                             product={dpmPosition.product}
                           >
                             <AjnaEarnPositionController />
+                          </AjnaProductContextProvider>
+                        )}
+                        {dpmPosition.product === 'multiply' && (
+                          <AjnaProductContextProvider
+                            formDefaults={{
+                              action: flow === 'open' ? 'open-multiply' : 'deposit-multiply',
+                            }}
+                            formReducto={useAjnaMultiplyFormReducto}
+                            position={ajnaPosition as AjnaMultiplyPosition}
+                            product={dpmPosition.product}
+                          >
+                            Ajna Multiply UI
                           </AjnaProductContextProvider>
                         )}
                       </AjnaGeneralContextProvider>

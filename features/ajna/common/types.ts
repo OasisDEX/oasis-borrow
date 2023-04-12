@@ -3,11 +3,13 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 
-export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition
+export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition | AjnaMultiplyPosition
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
-export type AjnaFormState = AjnaBorrowFormState | AjnaEarnFormState
+export type AjnaFormState = AjnaBorrowFormState | AjnaEarnFormState | AjnaMultiplyFormState
 
 export type AjnaBorrowAction =
   | 'open-borrow'
@@ -19,6 +21,17 @@ export type AjnaBorrowPanel = 'collateral' | 'quote'
 
 export type AjnaEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn'
 export type AjnaEarnPanel = 'adjust' | 'liquidity'
+
+export type AjnaMultiplyAction =
+  | 'open-multiply'
+  | 'deposit-multiply'
+  | 'withdraw-multiply'
+  | 'payback-multiply'
+  | 'deposit-quote-multiply'
+  | 'withdraw-quote-multiply'
+  | 'switch-multiply'
+  | 'close-multiply'
+export type AjnaMultiplyPanel = 'collateral' | 'quote' | 'switch' | 'close'
 
 export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction'
 export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
@@ -39,15 +52,7 @@ export type AjnaPoolData = {
   }
 }
 
-export type AjnaBorrowUpdateState = (
-  key: keyof AjnaBorrowFormState,
-  value: AjnaBorrowFormState[keyof AjnaBorrowFormState],
-) => void
-
-export type AjnaEarnUpdateState = (
-  key: keyof AjnaEarnFormState,
-  value: AjnaEarnFormState[keyof AjnaEarnFormState],
-) => void
+export type AjnaUpdateState<T> = (key: keyof T, value: T[keyof T]) => void
 
 export type AlternateProductCardBase = {
   token: string

@@ -1,13 +1,18 @@
 import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import { AjnaGenericPosition, AjnaProduct, AjnaUpdateState } from 'features/ajna/common/types'
 import {
-  AjnaBorrowUpdateState,
-  AjnaEarnUpdateState,
-  AjnaGenericPosition,
-  AjnaProduct,
-} from 'features/ajna/common/types'
-import { AjnaBorrowFormAction } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import { AjnaEarnFormAction } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+  AjnaBorrowFormAction,
+  AjnaBorrowFormState,
+} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import {
+  AjnaEarnFormAction,
+  AjnaEarnFormState,
+} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import {
+  AjnaMultiplyFormAction,
+  AjnaMultiplyFormState,
+} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { Dispatch } from 'react'
 
 type DepositIsNotWithdrawableParams = {
@@ -75,8 +80,14 @@ export function getAjnaNotifications({
   position: AjnaGenericPosition
   collateralToken: string
   quoteToken: string
-  dispatch: Dispatch<AjnaBorrowFormAction> | Dispatch<AjnaEarnFormAction>
-  updateState: AjnaBorrowUpdateState | AjnaEarnUpdateState
+  dispatch:
+    | Dispatch<AjnaBorrowFormAction>
+    | Dispatch<AjnaEarnFormAction>
+    | Dispatch<AjnaMultiplyFormAction>
+  updateState:
+    | AjnaUpdateState<AjnaBorrowFormState>
+    | AjnaUpdateState<AjnaEarnFormState>
+    | AjnaUpdateState<AjnaMultiplyFormState>
   product: AjnaProduct
 }) {
   const notifications: DetailsSectionNotificationItem[] = []
