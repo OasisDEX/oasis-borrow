@@ -37,7 +37,7 @@ export const useAjnaUserNfts = (): AjnaUserNfts | undefined => {
     }
   }, [walletAddress, txDetails?.txStatus])
 
-  if (!nfts) {
+  if (!nfts?.length) {
     return undefined
   }
 
