@@ -15,6 +15,7 @@ import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observ
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyPositionController'
 import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -226,7 +227,7 @@ export function AjnaProductController({
                             position={ajnaPosition as AjnaMultiplyPosition}
                             product={dpmPosition.product}
                           >
-                            Ajna Multiply UI
+                            <AjnaMultiplyPositionController />
                           </AjnaProductContextProvider>
                         )}
                       </AjnaGeneralContextProvider>

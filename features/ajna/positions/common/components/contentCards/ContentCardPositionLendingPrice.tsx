@@ -10,19 +10,19 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-interface ContentPositionLendingPriceModalProps {
+interface ContentCardPositionLendingPriceModalProps {
   positionLendingPrice: string
   highestThresholdPrice: string
   collateralToken: string
   quoteToken: string
 }
 
-function ContentPositionLendingPriceModal({
+function ContentCardPositionLendingPriceModal({
   positionLendingPrice,
   highestThresholdPrice,
   collateralToken,
   quoteToken,
-}: ContentPositionLendingPriceModalProps) {
+}: ContentCardPositionLendingPriceModalProps) {
   const { t } = useTranslation()
 
   return (
@@ -53,7 +53,7 @@ function ContentPositionLendingPriceModal({
   )
 }
 
-interface ContentPositionLendingPriceProps {
+interface ContentCardPositionLendingPriceProps {
   isLoading?: boolean
   collateralToken: string
   quoteToken: string
@@ -64,7 +64,7 @@ interface ContentPositionLendingPriceProps {
   changeVariant?: ChangeVariantType
 }
 
-export function ContentPositionLendingPrice({
+export function ContentCardPositionLendingPrice({
   isLoading,
   collateralToken,
   quoteToken,
@@ -73,7 +73,7 @@ export function ContentPositionLendingPrice({
   afterPositionLendingPrice,
   relationToMarketPrice,
   changeVariant = 'positive',
-}: ContentPositionLendingPriceProps) {
+}: ContentCardPositionLendingPriceProps) {
   const { t } = useTranslation()
 
   const formatted = {
@@ -102,7 +102,7 @@ export function ContentPositionLendingPrice({
     },
     footnote: formatted.relationToMarketPrice,
     modal: (
-      <ContentPositionLendingPriceModal
+      <ContentCardPositionLendingPriceModal
         collateralToken={collateralToken}
         quoteToken={quoteToken}
         positionLendingPrice={formatted.positionLendingPrice}
