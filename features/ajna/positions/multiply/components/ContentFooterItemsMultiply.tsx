@@ -46,7 +46,8 @@ export function ContentFooterItemsMultiply({
     multiple: `${multiple.toFixed(2)}x`,
     afterMultiple: afterMultiple && `${afterMultiple.toFixed(2)}x`,
     buyingPower: `${formatCryptoBalance(buyingPower)} ${collateralToken}`,
-    afterBuyingPower: afterBuyingPower && `${formatCryptoBalance(afterBuyingPower)} ${collateralToken}`,
+    afterBuyingPower:
+      afterBuyingPower && `${formatCryptoBalance(afterBuyingPower)} ${collateralToken}`,
   }
 
   return (
