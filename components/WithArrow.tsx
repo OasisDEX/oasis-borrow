@@ -29,7 +29,7 @@ export function WithArrow({
         },
         ...sx,
       }}
-      {...(as ? { as } : {})}
+      {...(as && { as })}
     >
       <Box sx={{ display: 'inline', mr: gap }}>{children}</Box>
       <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>
