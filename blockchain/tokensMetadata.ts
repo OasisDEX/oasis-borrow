@@ -1,3 +1,4 @@
+import { NetworkNames } from 'helpers/networkNames'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
@@ -29,6 +30,7 @@ export interface TokenConfig {
   digitsInstant?: number
   safeCollRatio?: number
   protocol: 'maker' | 'aaveV2' | 'aaveV3'
+  chains: NetworkNames[]
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -56,6 +58,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'STETH',
@@ -72,6 +79,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_stETH.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'MKR',
@@ -89,6 +101,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'WETH',
@@ -106,6 +123,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'ETH',
@@ -125,6 +147,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'BAT',
@@ -140,6 +167,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'WBTC',
@@ -161,6 +193,11 @@ export const tokens: TokenConfig[] = [
     tags: [],
     rootToken: 'BTC',
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'RENBTC',
@@ -182,6 +219,11 @@ export const tokens: TokenConfig[] = [
     tags: [],
     rootToken: 'BTC',
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'TUSD',
@@ -197,6 +239,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['stablecoin'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'KNC',
@@ -212,6 +259,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'MANA',
@@ -229,6 +281,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_MANA.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'PAXUSD',
@@ -244,6 +301,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['stablecoin'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'USDT',
@@ -259,6 +321,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['stablecoin'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'COMP',
@@ -274,6 +341,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'LRC',
@@ -289,6 +361,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'LINK',
@@ -306,6 +383,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_LINK.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'GUSD',
@@ -323,6 +405,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_GUSD.gif'),
     tags: ['stablecoin'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'ZRX',
@@ -338,6 +425,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'USDC',
@@ -356,6 +448,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/usdc.gif'),
     tags: ['stablecoin'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'BAL',
@@ -372,6 +469,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'YFI',
@@ -390,6 +492,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_YFI.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNI',
@@ -407,6 +514,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'AAVE',
@@ -423,6 +535,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2USDCETH',
@@ -439,6 +556,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.gif'),
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2DAIUSDC',
@@ -455,6 +577,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.gif'),
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2WBTCETH',
@@ -471,6 +598,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_eth.gif'),
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2DAIETH',
@@ -487,6 +619,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.gif'),
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2ETHUSDT',
@@ -503,6 +640,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2UNIETH',
@@ -519,6 +661,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.gif'),
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2LINKETH',
@@ -535,6 +682,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2WBTCDAI',
@@ -551,6 +703,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.gif'),
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2AAVEETH',
@@ -567,6 +724,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'UNIV2DAIUSDT',
@@ -583,6 +745,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'GUNIV3DAIUSDC1',
@@ -601,6 +768,11 @@ export const tokens: TokenConfig[] = [
     token0: 'DAI',
     token1: 'USDC',
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'GUNIV3DAIUSDC2',
@@ -619,6 +791,11 @@ export const tokens: TokenConfig[] = [
     token0: 'DAI',
     token1: 'USDC',
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'MATIC',
@@ -637,6 +814,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_MATIC.gif'),
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'WSTETH',
@@ -657,6 +839,11 @@ export const tokens: TokenConfig[] = [
     tags: [],
     rootToken: 'ETH',
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'DAI',
@@ -675,6 +862,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: ['stablecoin'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'CRVV1ETHSTETH',
@@ -691,6 +883,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.gif'),
     tags: ['lp-token'],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'stETHeth',
@@ -707,6 +904,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
     protocol: 'aaveV2',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'stETHusdc',
@@ -723,6 +925,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
     protocol: 'aaveV2',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'ethusdc',
@@ -739,6 +946,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
     tags: [],
     protocol: 'aaveV2',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'wBTCusdc',
@@ -755,6 +967,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_WBTC_v2.gif'),
     tags: [],
     protocol: 'aaveV2',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'wstETHeth',
@@ -771,6 +988,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v3.gif'),
     tags: [],
     protocol: 'aaveV3',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'borrow-against-ETH',
@@ -787,6 +1009,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
     tags: [],
     protocol: 'aaveV2',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'RETH',
@@ -805,6 +1032,11 @@ export const tokens: TokenConfig[] = [
     rootToken: 'ETH',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'CBETH',
@@ -826,6 +1058,11 @@ export const tokens: TokenConfig[] = [
     rootToken: 'ETH',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
   {
     symbol: 'GNO',
@@ -843,6 +1080,11 @@ export const tokens: TokenConfig[] = [
     bannerGif: '',
     tags: [],
     protocol: 'maker',
+    chains: [
+      NetworkNames.ethereumMainnet,
+      NetworkNames.ethereumGoerli,
+      NetworkNames.ethereumHardhat,
+    ],
   },
 ]
 

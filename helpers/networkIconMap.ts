@@ -1,11 +1,13 @@
+import { NetworkNames } from './networkNames'
+
 export const networkIconMap: Record<string, string> = {
-  ethereumMainnet: '',
-  ethereumHardhat: '👷 ',
-  ethereumGoerli: '🌲 ',
-  arbitrumMainnet: '',
-  arbitrumGoerli: '🌲 ',
-  avalancheMainnet: '',
-  optimismMainnet: '',
-  optimismGoerli: '🌲',
-  polygonMainnet: '',
+  [NetworkNames.ethereumMainnet]: '',
+  [NetworkNames.ethereumHardhat]: '👷 ',
+  [NetworkNames.ethereumGoerli]: '🌲 ',
+  [NetworkNames.arbitrumMainnet]: '',
+  [NetworkNames.arbitrumGoerli]: '🌲 ',
+  [NetworkNames.avalancheMainnet]: '',
+  [NetworkNames.optimismMainnet]: '',
+  [NetworkNames.optimismGoerli]: '🌲',
+  [NetworkNames.polygonMainnet]: '',
 }
