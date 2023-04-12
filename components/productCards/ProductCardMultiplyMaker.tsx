@@ -2,11 +2,17 @@ import { BigNumber } from 'bignumber.js'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
+import {
+  calculateTokenAmount,
+  ProductCard,
+  ProductCardNetworkRow,
+  ProductCardProtocolLink,
+} from './ProductCard'
 
 function personaliseCardData({
   productCardData,
@@ -44,6 +50,7 @@ function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
 export function ProductCardMultiplyMaker(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
+  const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
 
   const isGuniToken = cardData.token === 'GUNIV3DAIUSDC2' || cardData.token === 'GUNIV3DAIUSDC1'
   const maxMultiple = !isGuniToken
@@ -100,6 +107,11 @@ export function ProductCardMultiplyMaker(props: { cardData: ProductCardData }) {
         {
           title: t('system.protocol'),
           value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+        },
+        {
+          title: t('system.network'),
+          value: <ProductCardNetworkRow chain={cardData.chain} />,
+          enabled: displayNetwork,
         },
       ]}
       button={{

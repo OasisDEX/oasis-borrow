@@ -8,10 +8,11 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ProductCard, ProductCardProtocolLink } from './ProductCard'
+import { ProductCard, ProductCardNetworkRow, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
 
 type ProductCardBorrowAaveProps = {
@@ -31,7 +32,7 @@ export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) 
     getAaveAssetsPrices$,
   } = useAaveContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
-
+  const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
   const [aaveReserveState, aaveReserveStateError] = useObservable(
     aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
   )
@@ -82,6 +83,11 @@ export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) 
                 value: (
                   <ProductCardProtocolLink ilk={cardData.symbol} protocol={cardData.protocol} />
                 ),
+              },
+              {
+                title: t('system.network'),
+                value: <ProductCardNetworkRow chain={cardData.chain} />,
+                enabled: displayNetwork,
               },
             ]}
             button={{

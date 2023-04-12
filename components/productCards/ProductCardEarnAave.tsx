@@ -9,11 +9,12 @@ import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ProductCard, ProductCardProtocolLink } from './ProductCard'
+import { ProductCard, ProductCardNetworkRow, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
 
 type ProductCardEarnAaveProps = {
@@ -28,6 +29,7 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
+  const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
 
   const { earnCollateralsReserveData, aaveAvailableLiquidityInUSDC$ } = useAaveContext(
     strategy.protocol,
@@ -110,6 +112,11 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
                 value: (
                   <ProductCardProtocolLink ilk={cardData.symbol} protocol={cardData.protocol} />
                 ),
+              },
+              {
+                title: t('system.network'),
+                value: <ProductCardNetworkRow chain={cardData.chain} />,
+                enabled: displayNetwork,
               },
             ]}
             button={{

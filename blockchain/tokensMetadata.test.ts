@@ -1,6 +1,7 @@
 import { expect } from 'chai'
+import { MainNetworkNames } from 'helpers/networkNames'
 
-import { getToken, getTokens, tokens } from './tokensMetadata'
+import { getToken, getTokens, getTokensWithChain, tokens } from './tokensMetadata'
 
 const tokenKeys = [
   'symbol',
@@ -15,6 +16,7 @@ const tokenKeys = [
   'bannerIcon',
   'bannerGif',
   'tags',
+  'chain',
 ]
 
 describe('tokens metadata', () => {
@@ -29,6 +31,14 @@ describe('tokens metadata', () => {
   })
   it('should return metadata for multiple tokens', () => {
     getTokens(tokens.map((token) => token.symbol)).forEach((tokenData) => {
+      expect(tokenData).to.include.keys(tokenKeys)
+    })
+  })
+  it('should return metadata for multiple tokens, filtering the chain', () => {
+    getTokensWithChain(
+      tokens.map((token) => token.symbol),
+      MainNetworkNames.ethereumMainnet,
+    ).forEach((tokenData) => {
       expect(tokenData).to.include.keys(tokenKeys)
     })
   })

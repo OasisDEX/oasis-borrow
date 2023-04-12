@@ -1,6 +1,7 @@
 import { NetworkNames } from './networkNames'
 
-export const networkIconMap: Record<string, string> = {
+// these are used for the tab title
+export const networkTabTitleIconMap: Record<NetworkNames, string> = {
   [NetworkNames.ethereumMainnet]: '',
   [NetworkNames.ethereumHardhat]: '👷 ',
   [NetworkNames.ethereumGoerli]: '🌲 ',
