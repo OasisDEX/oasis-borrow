@@ -57,6 +57,13 @@ export const subgraphMethodsRecord: {
         poolTargetUtilization
         currentBurnEpoch
         pendingInflator
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
       }
     }
   `,

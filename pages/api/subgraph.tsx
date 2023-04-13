@@ -27,7 +27,6 @@ async function get({ req: { body } }: { req: NextApiRequest }) {
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === 'POST') {
     const response = await get({ req })
-
     return res.status(response.success ? 200 : 500).json(response)
   } else return res.status(405).end()
 }
