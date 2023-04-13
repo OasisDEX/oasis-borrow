@@ -1,5 +1,4 @@
 import { useActor } from '@xstate/react'
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
@@ -8,14 +7,14 @@ import { useManageAaveStateMachineContext } from 'features/aave/manage/container
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
+import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 interface AaveManageTabBarProps {
-  aaveReserveState: AaveV2ReserveConfigurationData
-  aaveReserveDataDebtToken: PreparedAaveReserveData
+  aaveReserveState: ReserveConfigurationData
+  aaveReserveDataDebtToken: ReserveData
   strategyConfig: IStrategyConfig
 }
 

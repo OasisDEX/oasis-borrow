@@ -15,7 +15,7 @@ import { AaveMultiplyManageComponent } from 'features/multiply/aave/components/A
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/multiply/aave/riskSliderConfig'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
@@ -199,7 +199,7 @@ export const strategies: Array<IStrategyConfig> = [
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
       featureToggle: 'AaveBorrow' as const,
       type: 'Borrow' as const,
-      protocol: LendingProtocol.AaveV2,
+      protocol: LendingProtocol.AaveV2 as AaveLendingProtocol,
       availableActions: allActionsAvailable,
     }
   }),

@@ -2484,7 +2484,7 @@
             "liquidation-price": "Liquidation Price",
             "below-current-price": "{{belowCurrentPrice}} below current price",
             "loan-to-value": "Loan to value",
-            "liquidation-threshold": "Liquidation Threshold: {{liquidationTreshold}}",
+            "liquidation-threshold": "Liquidation Threshold: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
             "position-debt": "Position debt"
           },
@@ -2551,6 +2551,21 @@
               "message": "Your lending position is below the minimum yield bearing price",
               "label": "Adjust lending price"
             }
+          }
+        }
+      },
+      "multiply": {
+        "common": {
+          "overview": {
+            "net-borrow-cost": "Net Borrow Cost",
+            "net-value": "Net Value",
+            "pnl": "P&L"
+          },
+          "footer": {
+            "total-exposure": "Total {{token}} Exposure",
+            "position-debt": "Position debt",
+            "multiple": "Multiple",
+            "buying-power": "Buying power"
           }
         }
       }

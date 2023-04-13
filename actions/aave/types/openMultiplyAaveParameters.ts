@@ -2,7 +2,7 @@ import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { ProxyType } from 'features/aave/common'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol } from 'lendingProtocols'
 
 export interface OpenMultiplyAaveParameters {
   context: Context
@@ -16,5 +16,5 @@ export interface OpenMultiplyAaveParameters {
   proxyAddress: string
   proxyType: ProxyType
   positionType: 'Multiply' | 'Earn' | 'Borrow'
-  protocol: LendingProtocol
+  protocol: AaveLendingProtocol
 }

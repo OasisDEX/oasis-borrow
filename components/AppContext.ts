@@ -315,6 +315,7 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
+import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
@@ -1534,8 +1535,8 @@ function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: s
 }
 
 export type ProtocolsServices = {
-  [LendingProtocol.AaveV2]: ReturnType<typeof getAaveV2Services>
-  [LendingProtocol.AaveV3]: ReturnType<typeof getAaveV3Services>
+  [LendingProtocol.AaveV2]: ReturnType<typeof getAaveV2Services> & AaveServices
+  [LendingProtocol.AaveV3]: ReturnType<typeof getAaveV3Services> & AaveServices
 }
 
 export type DepreciatedServices = {

@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
-import { amountFromWei } from 'blockchain/utils'
+import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV3PoolDataProvider } from 'types/web3-v1-contracts'
 
 export interface AaveV3UserReserveDataParameters {
@@ -84,7 +84,7 @@ export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3Re
   prepareArgs: ({ token }, context) => {
     return [context.tokens[token].address]
   },
-  postprocess: (result) => {
+  postprocess: (result, { token }) => {
     return {
       availableLiquidity: new BigNumber(result.totalAToken.toString()).minus(
         new BigNumber(result.totalStableDebt.toString()).plus(
@@ -93,13 +93,18 @@ export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3Re
       ),
       unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
-      totalAToken: new BigNumber(result.totalAToken.toString()),
-      totalStableDebt: new BigNumber(result.totalStableDebt.toString()),
-      totalVariableDebt: new BigNumber(result.totalVariableDebt.toString()),
-      liquidityRate: new BigNumber(result.liquidityRate.toString()),
-      variableBorrowRate: new BigNumber(result.variableBorrowRate.toString()),
-      stableBorrowRate: new BigNumber(result.stableBorrowRate.toString()),
-      averageStableBorrowRate: new BigNumber(result.averageStableBorrowRate.toString()),
+
+      totalAToken: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
+      totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
+      totalVariableDebt: amountFromWei(new BigNumber(result.totalVariableDebt.toString()), token),
+
+      liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
+      variableBorrowRate: amountFromRay(new BigNumber(result.variableBorrowRate.toString())),
+      stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
+      averageStableBorrowRate: amountFromRay(
+        new BigNumber(result.averageStableBorrowRate.toString()),
+      ),
+
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),

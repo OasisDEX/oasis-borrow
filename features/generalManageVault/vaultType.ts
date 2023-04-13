@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { jwtAuthGetToken } from 'features/shared/jwt'
-import { Protocols } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import { Observable, of } from 'rxjs'
 import { catchError, delay, map, startWith } from 'rxjs/operators'
 
@@ -31,7 +31,7 @@ export function saveVaultTypeForAccount(
   vaultId: BigNumber,
   vaultType: VaultType,
   chainId: number,
-  protocol: Protocols,
+  protocol: LendingProtocol,
   onSuccess: Function,
   onFailure: Function,
   onProgress: Function,

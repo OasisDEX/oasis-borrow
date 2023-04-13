@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 
-// TODO: add 'earn' and 'multiply' in distant future
-export const ajnaProducts: AjnaProduct[] = ['borrow', 'earn']
+export const ajnaProducts: AjnaProduct[] = ['borrow', 'earn', 'multiply']
 
 export const DEFAULT_SELECTED_TOKEN = 'ETH'
 
@@ -40,8 +39,8 @@ export const steps: {
     manage: ['manage', 'dpm', 'transaction'],
   },
   multiply: {
-    open: [],
-    manage: [],
+    open: ['risk', 'setup', 'dpm', 'transaction'],
+    manage: ['manage', 'dpm', 'transaction'],
   },
 }
 

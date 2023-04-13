@@ -1,32 +1,40 @@
 import { SystemStyleObject } from '@styled-system/css'
 import React, { ReactNode } from 'react'
-import { Box, Flex, Text } from 'theme-ui'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import {
   DetailsSectionContentCardChangePill,
   DetailsSectionContentCardChangePillProps,
 } from './DetailsSectionContentCard'
 
+interface DetailsSectionFooterItemWrapperProps {
+  children: ReactNode
+  columns?: number
+}
 interface DetailsSectionFooterItemProps {
   title: string
   value: string
   change?: DetailsSectionContentCardChangePillProps
 }
 
-export function DetailsSectionFooterItemWrapper({ children }: { children: ReactNode }) {
+export function DetailsSectionFooterItemWrapper({
+  children,
+  columns = 3,
+}: DetailsSectionFooterItemWrapperProps) {
   return (
-    <Flex
+    <Grid
       as="ul"
       sx={{
-        gap: 3,
+        columnGap: 3,
+        rowGap: 0,
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
         mt: [0, null, null, -3],
         mb: [0, null, null, -3],
         p: 0,
-        flexWrap: 'wrap',
       }}
     >
       {children}
-    </Flex>
+    </Grid>
   )
 }
 
@@ -40,16 +48,11 @@ export function DetailsSectionFooterItem({
     <Flex
       as="li"
       sx={{
-        alignItems: 'flex-start',
         flexDirection: 'column',
-        flexBasis: ['100%', null, null, '25%'],
+        alignItems: 'flex-start',
         py: 3,
         pl: '12px',
         pr: '28px',
-        '&:nth-child(-n+3)': {
-          flexGrow: 1,
-        },
-        wordWrap: 'break-word',
         ...sx,
       }}
     >

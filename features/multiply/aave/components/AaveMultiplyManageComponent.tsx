@@ -27,18 +27,16 @@ export function AaveMultiplyManageComponent({
   nextPosition,
   dpmProxy,
 }: AaveMultiplyManageComponentProps) {
-  const {
-    wrappedGetAaveReserveData$,
-    aaveReserveConfigurationData$,
-    aaveHistory$,
-  } = useAaveContext(strategyConfig.protocol)
+  const { getAaveReserveData$, aaveReserveConfigurationData$, aaveHistory$ } = useAaveContext(
+    strategyConfig.protocol,
+  )
   const _aaveHistory$ = aaveHistory$(dpmProxy!)
   const [aaveHistory, aaveHistoryError] = useObservable(_aaveHistory$)
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
-    wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
+    getAaveReserveData$({ token: strategyConfig.tokens.debt }),
   )
   const [collateralTokenReserveData, collateralTokenReserveDataError] = useObservable(
-    wrappedGetAaveReserveData$(strategyConfig.tokens.collateral),
+    getAaveReserveData$({ token: strategyConfig.tokens.collateral }),
   )
   const [debtTokenReserveConfigurationData, debtTokenReserveConfigurationDataError] = useObservable(
     aaveReserveConfigurationData$({ token: strategyConfig.tokens.debt }),
