@@ -4,11 +4,11 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { checkIfVaultEmptyAndProtectionActive } from 'helpers/functions'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { WithChildren } from 'helpers/types'
-import { TFunction } from 'i18next'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { TranslationType } from 'ts_modules/i18next'
 
 function DumbHeader({ label, tooltip }: { label: string; tooltip?: TranslateStringType }) {
   return (
@@ -252,7 +252,7 @@ function ProductHeading({ title, count }: { title: string; count: number }) {
   )
 }
 
-function getVaultActionButtonTranslation(isOwner: boolean, t: TFunction) {
+function getVaultActionButtonTranslation(isOwner: boolean, t: TranslationType) {
   return isOwner ? t('manage-position') : t('view-position')
 }
 
