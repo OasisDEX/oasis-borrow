@@ -9,12 +9,18 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
-import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
+import {
+  calculateTokenAmount,
+  ProductCard,
+  ProductCardNetworkRow,
+  ProductCardProtocolLink,
+} from './ProductCard'
 
 interface UnprofitableTooltipProps {
   value: string
@@ -63,6 +69,7 @@ interface ProductCardEarnMakerProps {
 export function ProductCardEarnMaker({ cardData }: ProductCardEarnMakerProps) {
   const { t } = useTranslation()
   const defaultDaiValue = new BigNumber(100000)
+  const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
   const { yields$ } = useAppContext()
 
   const [yields, yieldsError] = useObservable(yields$(cardData.ilk))
@@ -126,6 +133,11 @@ export function ProductCardEarnMaker({ cardData }: ProductCardEarnMakerProps) {
     {
       title: t('system.protocol'),
       value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+    },
+    {
+      title: t('system.network'),
+      value: <ProductCardNetworkRow chain={cardData.chain} />,
+      enabled: displayNetwork,
     },
   ]
 
