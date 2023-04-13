@@ -10,7 +10,7 @@ export function useTomfoolery(): [boolean, () => void] {
   const foolishnessDateEnabled = moment().isSame(foolishnessDate, 'day')
   const [mischiefEnabled, setMischief] = useLocalStorage('MischiefEnabled', true)
   return [
-    mischiefEnabled ?? (sillinessToggleEnabled || foolishnessDateEnabled),
+    mischiefEnabled ? sillinessToggleEnabled || foolishnessDateEnabled : false,
     () => setMischief(false),
   ]
 }
