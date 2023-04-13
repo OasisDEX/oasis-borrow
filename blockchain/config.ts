@@ -1,4 +1,5 @@
 import { ContractDesc } from 'features/web3Context'
+import { NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
@@ -188,7 +189,7 @@ const protoMain = {
   id: '1',
   hexId: '0x1',
   token: 'ETH',
-  name: 'ethereumMainnet',
+  name: NetworkNames.ethereumMainnet,
   label: 'Ethereum',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
@@ -338,7 +339,7 @@ const goerli: NetworkConfig = {
   id: '5',
   hexId: '0x5',
   token: 'GoerliETH',
-  name: 'ethereumGoerli',
+  name: NetworkNames.ethereumGoerli,
   label: 'Ethereum Goerli',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
@@ -485,7 +486,7 @@ const hardhat: NetworkConfig = {
   ...protoMain,
   id: '2137',
   hexId: '0x859',
-  name: 'ethereumHardhat',
+  name: NetworkNames.ethereumHardhat,
   label: 'Ethereum Hardhat',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
@@ -500,7 +501,7 @@ const arbitrum: NetworkConfig = {
   ...protoMain,
   id: '42161',
   hexId: '0xa4b1',
-  name: 'arbitrumMainnet',
+  name: NetworkNames.arbitrumMainnet,
   label: 'Arbitrum',
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
@@ -514,7 +515,7 @@ const avalanche: NetworkConfig = {
   ...protoMain,
   id: '43114',
   hexId: '0xa86a',
-  name: 'avalancheMainnet',
+  name: NetworkNames.avalancheMainnet,
   label: 'Avalanche',
   color: '#ed494a',
   icon: avalancheMainnetIcon as string,
@@ -528,7 +529,7 @@ const optimism: NetworkConfig = {
   ...protoMain,
   id: '10',
   hexId: '0xa',
-  name: 'optimismMainnet',
+  name: NetworkNames.optimismMainnet,
   label: 'Optimism',
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
@@ -542,7 +543,7 @@ const polygon: NetworkConfig = {
   ...protoMain,
   id: '137',
   hexId: '0x89',
-  name: 'polygonMainnet',
+  name: NetworkNames.polygonMainnet,
   label: 'Polygon',
   color: '#9866ed',
   icon: polygonMainnetIcon as string,

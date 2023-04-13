@@ -1,5 +1,6 @@
 import { networksByName } from 'blockchain/config'
 
+import { NetworkNames } from './networkNames'
 import { useLocalStorage } from './useLocalStorage'
 
 export function getCustomNetworkParameter() {
@@ -8,9 +9,9 @@ export function getCustomNetworkParameter() {
 }
 
 export const mainnetNetworkParameter = {
-  network: networksByName['ethereumMainnet'].name!,
-  id: networksByName['ethereumMainnet'].id!,
-  hexId: networksByName['ethereumMainnet'].hexId!,
+  network: networksByName[NetworkNames.ethereumMainnet].name!,
+  id: networksByName[NetworkNames.ethereumMainnet].id!,
+  hexId: networksByName[NetworkNames.ethereumMainnet].hexId!,
 }
 
 export const CustomNetworkStorageKey = 'CustomNetwork'

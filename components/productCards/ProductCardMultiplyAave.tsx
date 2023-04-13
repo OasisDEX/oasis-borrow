@@ -7,11 +7,12 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ProductCard, ProductCardProtocolLink } from './ProductCard'
+import { ProductCard, ProductCardNetworkRow, ProductCardProtocolLink } from './ProductCard'
 
 type ProductCardMultiplyAaveProps = {
   cardData: TokenMetadataType
@@ -23,6 +24,7 @@ const aaveMultiplyCalcValueBasis = {
 
 export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAaveProps) {
   const { t } = useTranslation()
+  const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
   const { getAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
   const [debtReserveData] = useObservable(getAaveReserveData$({ token: strategy.tokens.debt }))
@@ -83,6 +85,11 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
         {
           title: t('system.protocol'),
           value: <ProductCardProtocolLink ilk={cardData.symbol} protocol={cardData.protocol} />,
+        },
+        {
+          title: t('system.network'),
+          value: <ProductCardNetworkRow chain={cardData.chain} />,
+          enabled: displayNetwork,
         },
       ]}
       floatingLabelText={t('product-card.tags.new')}

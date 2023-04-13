@@ -1106,6 +1106,7 @@
     "manage-debt": "Manage debt",
     "manage-liquidity": "Manage liquidity ({{token}})",
     "close-position": "Close position",
+    "network": "Network",
     "in-progress": "In progress",
     "actions": {
       "common": {
