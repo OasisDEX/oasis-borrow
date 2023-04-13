@@ -7,7 +7,7 @@ import { Context } from './network'
 export function resolveENSName$(context$: Observable<Context>, address: string) {
   return context$.pipe(
     switchMap(async (context) => {
-      const provider = new ethers.providers.JsonRpcProvider(context.infuraUrl)
+      const provider = new ethers.providers.JsonRpcProvider(context.rpcCallsEndpoint)
       return await provider
         .lookupAddress(address)
         .catch((err: Error) =>

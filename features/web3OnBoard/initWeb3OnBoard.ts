@@ -31,7 +31,7 @@ export const initWeb3OnBoard = init({
     ...networks.map((network) => ({
       id: network.hexId,
       label: network.label,
-      rpcUrl: network.infuraUrl,
+      rpcUrl: network.rpcCallsEndpoint,
       token: network.token,
       color: network.color,
     })),

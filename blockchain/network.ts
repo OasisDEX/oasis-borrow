@@ -56,10 +56,10 @@ export function createContext$(
   return web3ContextConnected$.pipe(
     map((web3Context) => {
       const networkData = networksById[web3Context.chainId]
-      const web3ProviderGetPastLogs = new Web3(networkData.infuraUrl)
+      const web3ProviderGetPastLogs = new Web3(networkData.rpcCallsEndpoint)
 
       const provider = new ethers.providers.JsonRpcProvider(
-        networkData.infuraUrl,
+        networkData.rpcCallsEndpoint,
         web3Context.chainId,
       )
 

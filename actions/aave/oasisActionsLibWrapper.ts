@@ -161,7 +161,7 @@ export async function getOnChainPosition({
   debtToken,
   protocol,
 }: GetOnChainPositionParams): Promise<IPosition> {
-  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+  const provider = new providers.JsonRpcProvider(context.rpcCallsEndpoint, context.chainId)
 
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
@@ -298,7 +298,7 @@ export async function getManageAaveParameters(
     } = parameters
 
     checkContext(context, 'deposit/borrow position')
-    const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+    const provider = new providers.JsonRpcProvider(context.rpcCallsEndpoint, context.chainId)
     const addresses = getAddressesFromContext(context)
 
     const [collateral, debt] = getTokensInBaseUnit(parameters)

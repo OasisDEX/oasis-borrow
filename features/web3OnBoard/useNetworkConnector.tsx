@@ -7,7 +7,7 @@ export function useNetworkConnector(): NetworkConnector | null {
   const [customNetwork] = useCustomNetworkParameter()
   return useMemo(() => {
     return new NetworkConnector({
-      urls: { [customNetwork?.id]: networksById[customNetwork?.id].infuraUrl },
+      urls: { [customNetwork?.id]: networksById[customNetwork?.id].rpcCallsEndpoint },
       defaultChainId: parseInt(customNetwork?.id),
     })
   }, [customNetwork])

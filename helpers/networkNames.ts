@@ -30,3 +30,13 @@ export enum MainNetworkNames {
 
   polygonMainnet = 'polygonMainnet',
 }
+
+export type NetworkLabelType =
+  | 'Polygon'
+  | 'Ethereum'
+  | 'Ethereum Goerli'
+  | 'Ethereum Hardhat'
+  | 'Arbitrum'
+  | 'Avalanche'
+  | 'Optimism'
+  | 'Polygon'

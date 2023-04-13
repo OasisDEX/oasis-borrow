@@ -1,5 +1,5 @@
 import { ContractDesc } from 'features/web3Context'
-import { NetworkNames } from 'helpers/networkNames'
+import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
@@ -64,6 +64,19 @@ import {
 } from './addresses/addressesUtils'
 import { default as goerliAddresses } from './addresses/goerli.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
+
+export type NetworkConfig = {
+  id: `${number}`
+  hexId: `0x${number | string}`,
+  name: NetworkNames,
+  label: NetworkLabelType,
+  color: `#${number | string}`,
+  icon: string,
+  testnet: boolean,
+  enabled: boolean,
+  token: string,
+  rpcCallsEndpoint: string,
+}
 
 const clientId =
   Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -195,8 +208,7 @@ const protoMain = {
   icon: ethereumMainnetIcon as string,
   testnet: false,
   enabled: true,
-  infuraUrl: mainnetRpc,
-  infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
+  rpcCallsEndpoint: mainnetRpc,
   safeConfirmations: 10,
   openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
@@ -331,8 +343,6 @@ const protoMain = {
   ),
 }
 
-export type NetworkConfig = typeof protoMain
-
 const main: NetworkConfig = protoMain
 
 const goerli: NetworkConfig = {
@@ -345,8 +355,7 @@ const goerli: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   testnet: true,
   enabled: true,
-  infuraUrl: goerliRpc,
-  infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
+  rpcCallsEndpoint: goerliRpc,
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
@@ -492,8 +501,7 @@ const hardhat: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   testnet: true,
   enabled: true,
-  infuraUrl: `http://localhost:8545`,
-  infuraUrlWS: `ws://localhost:8545`,
+  rpcCallsEndpoint: `http://localhost:8545`,
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
@@ -508,7 +516,7 @@ const arbitrum: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  infuraUrl: `https://rpc.ankr.com/arbitrum`,
+  rpcCallsEndpoint: `https://rpc.ankr.com/arbitrum`,
 }
 
 const avalanche: NetworkConfig = {
@@ -522,7 +530,7 @@ const avalanche: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  infuraUrl: `https://api.avax.network/ext/bc/C/rpc`,
+  rpcCallsEndpoint: `https://api.avax.network/ext/bc/C/rpc`,
 }
 
 const optimism: NetworkConfig = {
@@ -536,7 +544,7 @@ const optimism: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  infuraUrl: `https://mainnet.optimism.io`,
+  rpcCallsEndpoint: `https://mainnet.optimism.io`,
 }
 
 const polygon: NetworkConfig = {
@@ -550,7 +558,7 @@ const polygon: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  infuraUrl: `https://polygon-rpc.com`,
+  rpcCallsEndpoint: `https://polygon-rpc.com`,
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
