@@ -57,7 +57,7 @@ export function checkMultipleVaultsFromApi$(
   protocol: string,
 ): Observable<CheckMultipleVaultsResponse> {
   return ajax({
-    url: `/api/vaults/${protocol}?${vaults.map((vault) => `id=${vault}&`).join('')}`,
+    url: `/api/vaults/${protocol.toLowerCase()}?${vaults.map((vault) => `id=${vault}&`).join('')}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
