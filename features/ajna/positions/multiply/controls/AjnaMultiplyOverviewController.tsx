@@ -38,7 +38,7 @@ export function AjnaMultiplyOverviewController() {
   const totalExposure = new BigNumber(22461.32)
   const afterTotalExposure = new BigNumber(28436.37)
   const positionDebt = new BigNumber(5)
-  const afterPositionDebt = new BigNumber(6.13)
+  const afterPositionDebt = new BigNumber(124.13)
   const multiple = new BigNumber(1.5)
   const afterMultiple = new BigNumber(1.67)
   const buyingPower = new BigNumber(1255.12)

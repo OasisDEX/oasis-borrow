@@ -26,7 +26,7 @@ export function AjnaMultiplyFormContentOpen() {
         token={collateralToken}
         tokenPrice={collateralPrice}
       />
-      <AjnaMultiplySlider />
+      <AjnaMultiplySlider disabled={!depositAmount} />
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />

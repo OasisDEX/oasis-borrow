@@ -9,7 +9,11 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-export function AjnaMultiplySlider() {
+interface AjnaMultiplySliderProps {
+  disabled?: boolean
+}
+
+export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken },
@@ -54,7 +58,7 @@ export function AjnaMultiplySlider() {
       minBoundry={min}
       maxBoundry={max}
       lastValue={resolvedValue}
-      disabled={false}
+      disabled={disabled}
       step={1}
       leftBottomLabel={t('slider.adjust-multiply.left-footer')}
       leftLabel={t('slider.adjust-multiply.left-label')}
