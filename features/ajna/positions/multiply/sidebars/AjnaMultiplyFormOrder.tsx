@@ -3,7 +3,11 @@ import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { formatAmount, formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+} from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
