@@ -36,8 +36,10 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
   )
 
   useEffect(() => {
-    if (!connected && !connectingMemo) void autoConnect()
-  }, [connected, connectingMemo, autoConnect])
+    if (!connected && !connectingMemo) {
+      void autoConnect()
+    }
+  })
 
   return { executeConnection, connected, connecting: connectingMemo }
 }

@@ -50,11 +50,14 @@ export function useBridgeConnector(): [
   }, [wallet, chains])
 
   const connectCallback = useCallback(async () => {
+    if (automaticConnector) {
+      return automaticConnector
+    }
     const _wallet = await connect()
     if (_wallet.length === 0) return
     const walletWithCorrectNetwork = await changeNetwork(_wallet[0])
     return bridgeConnector(walletWithCorrectNetwork)
-  }, [connect, changeNetwork, bridgeConnector])
+  }, [automaticConnector, connect, changeNetwork, bridgeConnector])
 
   return [automaticConnector, connectCallback]
 }

@@ -1,6 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { getAddress } from 'ethers/lib/utils'
-import { Web3ContextConnectedReadonly } from 'features/web3Context'
 import { isConnectable } from 'features/web3Context/types'
 import { useObservable } from 'helpers/observableHook'
 import { useCallback, useMemo } from 'react'
@@ -21,7 +20,6 @@ export function useBridgeConnection() {
 
   const connect = useCallback(async () => {
     const bridgeConnector = await createBridgeConnector()
-
     if (bridgeConnector && web3NotConnected && isConnectable(web3Context)) {
       try {
         await web3Context.connect(bridgeConnector, bridgeConnector.connectionKind)
@@ -34,19 +32,16 @@ export function useBridgeConnection() {
   }, [createBridgeConnector, web3Context, web3NotConnected])
 
   const autoConnect = useCallback(async () => {
-    if (autoConnector && web3NotConnected) {
+    if (autoConnector && web3NotConnected && isConnectable(web3Context)) {
       try {
-        await (web3Context as Web3ContextConnectedReadonly).connect(
-          autoConnector,
-          autoConnector.connectionKind,
-        )
+        await web3Context.connect(autoConnector, autoConnector.connectionKind)
         return getAddress(autoConnector.wallet.accounts[0].address)
       } catch (error) {
         console.error(error)
       }
     }
     return undefined
-  }, [autoConnector, web3NotConnected, web3Context])
+  }, [autoConnector, web3Context, web3NotConnected])
 
   return { connect, autoConnect }
 }
