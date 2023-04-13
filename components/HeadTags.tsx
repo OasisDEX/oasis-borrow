@@ -1,6 +1,6 @@
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
-import { networkIconMap } from 'helpers/networkIconMap'
+import { networkTabTitleIconMap } from 'helpers/networkIconMap'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -70,7 +70,7 @@ export function PageSEOTags({
     twitterImage,
   }
   const properNetworkIconMap = useNetworkSwitcher
-    ? networkIconMap
+    ? networkTabTitleIconMap
     : { hardhat: '👷 ', goerli: '🌲 ' }
   const networkParameter = useNetworkSwitcher
     ? web3OnboardNetworkParameter?.network

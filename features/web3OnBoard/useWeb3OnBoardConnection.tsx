@@ -8,7 +8,7 @@ import { useNetworkConnection } from './useNetworkConnection'
 export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boolean }) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const { connect } = useBridgeConnection()
+  const { connect, autoConnect } = useBridgeConnection()
   const { networkConnect } = useNetworkConnection()
 
   const connected = useMemo(() => {
@@ -35,5 +35,5 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
     [walletConnect, connect, networkConnect],
   )
 
-  return { executeConnection, connected, connecting: connectingMemo }
+  return { executeConnection, connected, connecting: connectingMemo, autoConnect }
 }

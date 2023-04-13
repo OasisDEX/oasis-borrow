@@ -32,12 +32,13 @@ export function ContentFooterItemsBorrow({
 
   const formatted = {
     cost: formatDecimalAsPercent(cost),
-    availableToBorrow: `${formatCryptoBalance(availableToBorrow)}`,
+    availableToBorrow: `${formatCryptoBalance(availableToBorrow)} ${quoteToken}`,
     afterAvailableToBorrow:
-      afterAvailableToBorrow && `${formatCryptoBalance(afterAvailableToBorrow)}`,
-    availableToWithdraw: `${formatCryptoBalance(availableToWithdraw)}`,
+      afterAvailableToBorrow && `${formatCryptoBalance(afterAvailableToBorrow)} ${quoteToken}`,
+    availableToWithdraw: `${formatCryptoBalance(availableToWithdraw)} ${collateralToken}`,
     afterAvailableToWithdraw:
-      afterAvailableToWithdraw && `${formatCryptoBalance(afterAvailableToWithdraw)}`,
+      afterAvailableToWithdraw &&
+      `${formatCryptoBalance(afterAvailableToWithdraw)} ${collateralToken}`,
   }
 
   return (
@@ -48,7 +49,7 @@ export function ContentFooterItemsBorrow({
       />
       <DetailsSectionFooterItem
         title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
-        value={`${formatted.availableToBorrow} ${quoteToken}`}
+        value={formatted.availableToBorrow}
         change={{
           isLoading,
           value:
@@ -59,7 +60,7 @@ export function ContentFooterItemsBorrow({
       />
       <DetailsSectionFooterItem
         title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
-        value={`${formatted.availableToWithdraw} ${collateralToken}`}
+        value={formatted.availableToWithdraw}
         change={{
           isLoading,
           value:

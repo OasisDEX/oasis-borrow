@@ -1,4 +1,5 @@
 import { ContractDesc } from 'features/web3Context'
+import { NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
@@ -20,6 +21,8 @@ import * as accountGuard from './abi/account-guard.json'
 import * as ajnaPoolInfo from './abi/ajna-pool-info.json'
 import * as ajnaPool from './abi/ajna-pool.json'
 import * as ajnaProxyActions from './abi/ajna-proxy-actions.json'
+import * as ajnaRewardsClaimer from './abi/ajna-rewards-claimer.json'
+import * as ajnaRewardsManager from './abi/ajna-rewards-manager.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBotV2 from './abi/automation-bot-v2.json'
 import * as automationBot from './abi/automation-bot.json'
@@ -52,7 +55,6 @@ import * as merkleRedeemer from './abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as operationExecutor from './abi/operation-executor.json'
 import * as otcSupport from './abi/otc-support-methods.json'
-import * as rewardsManager from './abi/rewards-manager.json'
 import * as vat from './abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -187,7 +189,7 @@ const protoMain = {
   id: '1',
   hexId: '0x1',
   token: 'ETH',
-  name: 'ethereumMainnet',
+  name: NetworkNames.ethereumMainnet,
   label: 'Ethereum',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
@@ -318,7 +320,15 @@ const protoMain = {
     'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
     'ETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
   },
-  rewardsManager: contractDesc(rewardsManager, '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476'),
+  ajnaRewardsManager: contractDesc(
+    ajnaRewardsManager,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
+  // TODO update address
+  ajnaRewardsClaimer: contractDesc(
+    ajnaRewardsClaimer,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -329,7 +339,7 @@ const goerli: NetworkConfig = {
   id: '5',
   hexId: '0x5',
   token: 'GoerliETH',
-  name: 'ethereumGoerli',
+  name: NetworkNames.ethereumGoerli,
   label: 'Ethereum Goerli',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
@@ -461,14 +471,22 @@ const goerli: NetworkConfig = {
     'WBTC-USDC': contractDesc(ajnaPool, '0x17e5a1A6450d4fB32fFFc329ca92db55293db10e'),
     'ETH-USDC': contractDesc(ajnaPool, '0xe1200AEfd60559D494d4419E17419571eF8fC1Eb'),
   },
-  rewardsManager: contractDesc(rewardsManager, '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476'),
+  ajnaRewardsManager: contractDesc(
+    ajnaRewardsManager,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
+  // TODO update address
+  ajnaRewardsClaimer: contractDesc(
+    ajnaRewardsClaimer,
+    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+  ),
 }
 
 const hardhat: NetworkConfig = {
   ...protoMain,
   id: '2137',
   hexId: '0x859',
-  name: 'ethereumHardhat',
+  name: NetworkNames.ethereumHardhat,
   label: 'Ethereum Hardhat',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
@@ -483,7 +501,7 @@ const arbitrum: NetworkConfig = {
   ...protoMain,
   id: '42161',
   hexId: '0xa4b1',
-  name: 'arbitrumMainnet',
+  name: NetworkNames.arbitrumMainnet,
   label: 'Arbitrum',
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
@@ -497,7 +515,7 @@ const avalanche: NetworkConfig = {
   ...protoMain,
   id: '43114',
   hexId: '0xa86a',
-  name: 'avalancheMainnet',
+  name: NetworkNames.avalancheMainnet,
   label: 'Avalanche',
   color: '#ed494a',
   icon: avalancheMainnetIcon as string,
@@ -511,7 +529,7 @@ const optimism: NetworkConfig = {
   ...protoMain,
   id: '10',
   hexId: '0xa',
-  name: 'optimismMainnet',
+  name: NetworkNames.optimismMainnet,
   label: 'Optimism',
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
@@ -525,7 +543,7 @@ const polygon: NetworkConfig = {
   ...protoMain,
   id: '137',
   hexId: '0x89',
-  name: 'polygonMainnet',
+  name: NetworkNames.polygonMainnet,
   label: 'Polygon',
   color: '#9866ed',
   icon: polygonMainnetIcon as string,

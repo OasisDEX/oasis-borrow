@@ -7,7 +7,6 @@ export type {
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
   Web3ContextConnecting,
-  Web3ContextConnectingHWSelectAccount,
   Web3ContextError,
   Web3ContextNotConnected,
 } from './types'

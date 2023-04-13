@@ -3,8 +3,9 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { ethers } from 'ethers'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { AjnaGenericPosition } from 'features/ajna/common/types'
+import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
@@ -43,17 +44,31 @@ export function getAjnaPosition$(
 
       const commonDependency = {
         poolInfoAddress: context.ajnaPoolInfo.address,
-        rewardsManagerAddress: context.rewardsManager.address,
+        rewardsManagerAddress: context.ajnaRewardsManager.address,
         provider: context.rpcProvider,
         getPoolData: getAjnaPoolData,
       }
 
-      return product === 'earn'
-        ? await views.ajna.getEarnPosition(commonPayload, {
+      switch (product as AjnaProduct) {
+        case 'borrow':
+          return await views.ajna.getPosition(commonPayload, commonDependency)
+        case 'earn':
+          return await views.ajna.getEarnPosition(commonPayload, {
             ...commonDependency,
             getEarnData: getAjnaEarnData,
           })
-        : await views.ajna.getPosition(commonPayload, commonDependency)
+        case 'multiply':
+          // TODO: replace with getting multiply position from lib
+          const fakeMultiplyPosition = await views.ajna.getPosition(
+            { ...commonPayload, proxyAddress: ethers.constants.AddressZero },
+            commonDependency,
+          )
+
+          return {
+            ...fakeMultiplyPosition,
+            multiply: new BigNumber(1.5),
+          }
+      }
     }),
     distinctUntilChanged(isEqual),
     shareReplay(1),

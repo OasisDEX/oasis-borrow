@@ -1,18 +1,18 @@
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentCardCurrentEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardCurrentEarnings'
+import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
+import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
+import { ContentCardTokensDeposited } from 'features/ajna/positions/common/components/contentCards/ContentCardTokensDeposited'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { ContentCardCurrentEarnings } from 'features/ajna/positions/earn/overview/ContentCardCurrentEarnings'
-import { ContentCardMaxLendingLTV } from 'features/ajna/positions/earn/overview/ContentCardMaxLendingLTV'
-import { ContentCardTokensDeposited } from 'features/ajna/positions/earn/overview/ContentCardTokensDeposited'
-import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnManage'
-import { ContentPositionLendingPrice } from 'features/ajna/positions/earn/overview/ContentPositionLendingPrice'
+import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function AjnaEarnOverviewManage() {
+export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken, quotePrice },
@@ -53,7 +53,7 @@ export function AjnaEarnOverviewManage() {
             maxLendingPercentage={position.maxRiskRatio.loanToValue}
             afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
           />
-          <ContentPositionLendingPrice
+          <ContentCardPositionLendingPrice
             isLoading={isSimulationLoading}
             collateralToken={collateralToken}
             quoteToken={quoteToken}

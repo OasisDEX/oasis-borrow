@@ -4,13 +4,13 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import { SimulateTitle } from 'components/SimulateTitle'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnOpen'
 import { averageGasWhenOpeningAjnaEarnPosition } from 'features/ajna/positions/earn/consts'
 import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/getAjnaSimulationRows'
-import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/overview/ContentFooterItemsEarnOpen'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function AjnaEarnOverviewOpen() {
+export function AjnaEarnOverviewOpenController() {
   const { t } = useTranslation()
   const {
     environment: { quoteToken, quotePrice, gasPrice, ethPrice },

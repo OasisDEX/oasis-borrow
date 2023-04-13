@@ -16,6 +16,11 @@ import {
   AjnaEarnFormState,
   useAjnaEarnFormReducto,
 } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import {
+  AjnaMultiplyFormState,
+  useAjnaMultiplyFormReducto,
+} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React, {
@@ -41,10 +46,9 @@ interface AjnaProductContextProviderPropsWithEarn {
   product: 'earn'
 }
 interface AjnaProductContextProviderPropsWithMultiply {
-  // TODO: to be replaced with useAjnaMultiplyFormReducto when availavble
-  formReducto: typeof useAjnaBorrowFormReducto
-  formDefaults: Partial<AjnaBorrowFormState>
-  position: AjnaPosition
+  formReducto: typeof useAjnaMultiplyFormReducto
+  formDefaults: Partial<AjnaMultiplyFormState>
+  position: AjnaMultiplyPosition
   product: 'multiply'
 }
 type AjnaProductDetailsContextProviderProps =
@@ -87,19 +91,33 @@ type AjnaProductContextWithEarn = AjnaProductContext<
   AjnaEarnPosition,
   ReturnType<typeof useAjnaEarnFormReducto>
 >
+type AjnaProductContextWithMultiply = AjnaProductContext<
+  AjnaMultiplyPosition,
+  ReturnType<typeof useAjnaMultiplyFormReducto>
+>
 
 const ajnaBorrowContext = React.createContext<AjnaProductContextWithBorrow | undefined>(undefined)
 const ajnaEarnContext = React.createContext<AjnaProductContextWithEarn | undefined>(undefined)
+const ajnaMultiplyContext = React.createContext<AjnaProductContextWithMultiply | undefined>(
+  undefined,
+)
 
 type PickProductType<T extends AjnaProduct> = T extends 'borrow'
   ? AjnaProductContextWithBorrow
   : T extends 'earn'
-  ? AjnaProductContextWithEarn // TODO: Add AjnaProductContextWithMultiply
+  ? AjnaProductContextWithEarn
+  : T extends 'multiply'
+  ? AjnaProductContextWithMultiply
   : never
 
 export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickProductType<T> {
   const { environment } = useAjnaGeneralContext()
-  const context = product === 'borrow' ? useContext(ajnaBorrowContext) : useContext(ajnaEarnContext)
+  const context =
+    product === 'borrow'
+      ? useContext(ajnaBorrowContext)
+      : product === 'earn'
+      ? useContext(ajnaEarnContext)
+      : useContext(ajnaMultiplyContext)
 
   if (product !== environment.product)
     throw new Error(
@@ -255,6 +273,10 @@ export function AjnaProductContextProvider({
         </ajnaEarnContext.Provider>
       )
     case 'multiply':
-      return <></>
+      return (
+        <ajnaMultiplyContext.Provider value={context as AjnaProductContextWithMultiply}>
+          {children}
+        </ajnaMultiplyContext.Provider>
+      )
   }
 }

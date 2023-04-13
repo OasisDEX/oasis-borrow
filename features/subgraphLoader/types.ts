@@ -1,12 +1,14 @@
 import { NetworkIds } from 'blockchain/networkIds'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
 
 export type Subgraphs = {
   Ajna: {
     getEarnData: { dpmProxyAddress: string }
     getPoolData: { poolAddress: string }
     getPoolsTableData: {}
+    getNftIds: { walletAddress: string }
   }
   TempGraph: {
     tempMethod: undefined
@@ -32,6 +34,7 @@ export type SubgraphsResponses = {
     getPoolsData: SubgraphBaseResponse<{
       pools: AjnaPoolsDataResponse[]
     }>
+    getNftIds: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
   }
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>

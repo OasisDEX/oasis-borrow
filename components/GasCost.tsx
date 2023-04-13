@@ -3,9 +3,9 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatPrice } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import { TFunction } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
+import { TranslationType } from 'ts_modules/i18next'
 
 import { Tooltip, useTooltip } from './Tooltip'
 
@@ -14,7 +14,7 @@ function getGasText({
   gasEstimationDai,
   gasEstimationEth,
   t,
-}: HasGasEstimation & { t: TFunction }) {
+}: HasGasEstimation & { t: TranslationType }) {
   switch (gasEstimationStatus) {
     case GasEstimationStatus.calculating:
       return <AppSpinner />

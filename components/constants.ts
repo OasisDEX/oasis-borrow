@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 
 export const WAD_PRECISION = 18
+export const NEGATIVE_WAD_PRECISION = -18
 export const RAY_PRECISION = 27
 export const RAD_PRECISION = 45
 

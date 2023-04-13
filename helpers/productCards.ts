@@ -35,6 +35,7 @@ export interface ProductCardData {
   name: string
   isFull: boolean
   protocol: TokenMetadataType['protocol']
+  chain: TokenMetadataType['chain']
 }
 
 export type ProductLandingPagesFiltersKeys =
@@ -656,6 +657,7 @@ export function createProductCardsData$(
           name: tokenMeta.name,
           isFull: ilkData.ilkDebtAvailable.lt(ilkData.debtFloor),
           protocol: tokenMeta.protocol,
+          chain: tokenMeta.chain,
         }
       })
     }),
