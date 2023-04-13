@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useBridgeConnection } from './useBridgeConnection'
 import { useNetworkConnection } from './useNetworkConnection'
@@ -35,11 +35,5 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
     [walletConnect, connect, networkConnect],
   )
 
-  useEffect(() => {
-    if (!connected && !connectingMemo) {
-      void autoConnect()
-    }
-  })
-
-  return { executeConnection, connected, connecting: connectingMemo }
+  return { executeConnection, connected, connecting: connectingMemo, autoConnect }
 }

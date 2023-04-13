@@ -2,46 +2,42 @@ import { useAppContext } from 'components/AppContextProvider'
 import { getAddress } from 'ethers/lib/utils'
 import { isConnectable } from 'features/web3Context/types'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useState } from 'react'
 
+import { BridgeConnector } from './BridgeConnector'
 import { useBridgeConnector } from './useBridgeConnector'
 
 export function useBridgeConnection() {
   const [autoConnector, createBridgeConnector] = useBridgeConnector()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const web3NotConnected = useMemo(() => {
-    return (
-      web3Context?.status === 'error' ||
-      web3Context?.status === 'notConnected' ||
-      web3Context?.status === 'connectedReadonly'
-    )
-  }, [web3Context?.status])
+  const [connector, setConnector] = useState<BridgeConnector | undefined>(undefined)
 
-  const connect = useCallback(async () => {
-    const bridgeConnector = await createBridgeConnector()
-    if (bridgeConnector && web3NotConnected && isConnectable(web3Context)) {
-      try {
-        await web3Context.connect(bridgeConnector, bridgeConnector.connectionKind)
-        return getAddress(bridgeConnector.wallet.accounts[0].address)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    return undefined
-  }, [createBridgeConnector, web3Context, web3NotConnected])
+  const connect = useCallback(
+    async (autoConnect: boolean = false) => {
+      const bridgeConnector =
+        autoConnector || (autoConnect ? undefined : await createBridgeConnector())
 
-  const autoConnect = useCallback(async () => {
-    if (autoConnector && web3NotConnected && isConnectable(web3Context)) {
-      try {
-        await web3Context.connect(autoConnector, autoConnector.connectionKind)
-        return getAddress(autoConnector.wallet.accounts[0].address)
-      } catch (error) {
-        console.error(error)
+      setConnector(bridgeConnector)
+      if (
+        bridgeConnector &&
+        isConnectable(web3Context) &&
+        web3Context &&
+        connector?.isTheSame(bridgeConnector)
+      ) {
+        try {
+          await web3Context.connect(connector, connector.connectionKind)
+          return getAddress(connector.wallet.accounts[0].address)
+        } catch (error) {
+          console.error(error)
+        }
       }
-    }
-    return undefined
-  }, [autoConnector, web3Context, web3NotConnected])
+      return undefined
+    },
+    [autoConnector, connector, createBridgeConnector, web3Context],
+  )
+
+  const autoConnect = useCallback(() => connect(true), [connect])
 
   return { connect, autoConnect }
 }
