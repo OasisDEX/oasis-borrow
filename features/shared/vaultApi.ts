@@ -95,7 +95,7 @@ export function getVaultFromApi$(
   | {}
 > {
   return ajax({
-    url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol}`,
+    url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
