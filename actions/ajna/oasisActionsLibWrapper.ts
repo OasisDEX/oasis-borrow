@@ -147,7 +147,7 @@ export async function getAjnaParameters({
         {
           ...dependencies,
           getEarnData: getAjnaEarnData,
-          rewardsManagerAddress: context.rewardsManager.address,
+          rewardsManagerAddress: context.ajnaRewardsManager.address,
         },
       )
     }

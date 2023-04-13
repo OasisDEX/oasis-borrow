@@ -3,6 +3,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import { ClaimAjnaRewardsTxData } from 'blockchain/calls/ajnaRewardsClaimer'
 import {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
@@ -355,6 +356,7 @@ export type TxData =
   | OperationExecutorTxMeta
   | CreateDPMAccount
   | OasisActionsTxData
+  | ClaimAjnaRewardsTxData
 
 export type AutomationTxData =
   | AutomationBotAddTriggerData

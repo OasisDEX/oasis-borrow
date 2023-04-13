@@ -44,7 +44,7 @@ export function getAjnaPosition$(
 
       const commonDependency = {
         poolInfoAddress: context.ajnaPoolInfo.address,
-        rewardsManagerAddress: context.rewardsManager.address,
+        rewardsManagerAddress: context.ajnaRewardsManager.address,
         provider: context.rpcProvider,
         getPoolData: getAjnaPoolData,
       }

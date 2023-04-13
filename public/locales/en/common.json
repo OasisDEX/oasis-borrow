@@ -1107,6 +1107,7 @@
     "manage-liquidity": "Manage liquidity ({{token}})",
     "close-position": "Close position",
     "network": "Network",
+    "in-progress": "In progress",
     "actions": {
       "common": {
         "close-vault": "Close vault",
@@ -2584,27 +2585,29 @@
     },
     "rewards": {
       "title": "Your Ajna token rewards",
-      "intro": "When using the Ajna protocol you are entitled to earn $AJNA tokens in 2 different ways. Read below to find out more.",
+      "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens in 2 different ways. Read below to find out more.",
       "cards": {
         "mining": {
-          "title": "$AJNA Liquidity Mining Rewards",
+          "title": "AJNA Liquidity Mining Rewards",
           "list-1": "Rewards Earn Positions only",
           "list-2": "Earn a Proportional % of pool interest generated",
           "link": "Learn more about Ajna Liquidity Mining Rewards",
           "banner": {
-            "title": "$AJNA Liquidity mining rewards on 4 positions"
-          }
+            "title": "AJNA Liquidity Mining Rewards "
+          },
+          "floatingLabel": "Exclusive to Oasis.app"
         },
         "token": {
-          "title": "$AJNA Token Rewards",
+          "title": "AJNA Token Rewards",
           "list-1": "Rewards exclusive to Oasis.app users only!",
           "list-2": "Rewards for Borrowing, Lending and Multiplying",
           "link": "Learn more about Ajna Token Rewards",
           "banner": {
-            "title": "Your $AJNA token rewards on 4 positions"
+            "title": "Your AJNA token rewards on 4 positions"
           }
         },
-        "button": "Claim AJNA Tokens"
+        "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
+        "button": "Claim AJNA tokens"
       }
     }
   }

@@ -3847,10 +3847,10 @@
     ramda "^0.28.0"
     utility-types "^3.10.0"
 
-"@oasisdex/transactions@0.1.3-alpha.0":
-  version "0.1.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.1.3-alpha.0.tgz#80bdc20e292832b5b1b703ed3498925fd88094f6"
-  integrity sha512-61mxKFGxCeGLgsvnaXdcxolTFAUc/Zkw7PaF93kpAptBImI7GUhuzCi9NXG94GmJGHZZZ3a9d3QiV9Iv6GRwBQ==
+"@oasisdex/transactions@0.1.4-alpha.0":
+  version "0.1.4-alpha.0"
+  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.1.4-alpha.0.tgz#96cf3186bb5a7783b448f06f4f541f44915129d0"
+  integrity sha512-MNXI52JEeEwcnzWbi5DzjfVqGGEP7g8AQvX6tbzygiSkdWW2Bi8HuRwqsJYXTo+byFrWkSWy09OLkzamX3dF/g==
   dependencies:
     "@types/ramda" "^0.25.38"
     bignumber.js "^9.0.1"
