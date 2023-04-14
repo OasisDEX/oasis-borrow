@@ -1,58 +1,54 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useReducer } from 'react'
 
-import { useBridgeConnection } from './useBridgeConnection'
-import { useNetworkConnection } from './useNetworkConnection'
+import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
 
 export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boolean }) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const { connect } = useBridgeConnection()
-  const { networkConnect } = useNetworkConnection()
-
-  const lockAutoConnect = useRef<boolean>(false)
+  const { connect, networkConnect } = useWeb3OnBoardConnectorContext()
+  const [autoConnectState, dispatchAutoConnect] = useReducer(
+    (state: { count: number }) => {
+      return { count: state.count + 1 }
+    },
+    { count: 0 },
+  )
 
   const connected = useMemo(() => {
     if (!walletConnect) {
+      if (autoConnectState.count < 4) {
+        return false
+      }
       return web3Context?.status === 'connectedReadonly' || web3Context?.status === 'connected'
     }
     return web3Context?.status === 'connected'
-  }, [web3Context, walletConnect])
+  }, [walletConnect, web3Context?.status, autoConnectState])
 
   const connectingMemo = useMemo(() => {
-    return (
-      web3Context === undefined || web3Context.status === 'connecting' || lockAutoConnect.current
-    )
+    return web3Context === undefined || web3Context.status === 'connecting'
   }, [web3Context])
 
   const executeConnection = useCallback(
     async (onConnect?: (account?: string) => void) => {
-      lockAutoConnect.current = true
-      let account: string | undefined = undefined
+      let account: string | undefined
       if (walletConnect) {
         account = await connect()
       } else {
-        await networkConnect()
+        account = await connect(true)
+        dispatchAutoConnect()
+        if (!account) {
+          await networkConnect()
+        }
       }
       onConnect?.(account)
-
-      lockAutoConnect.current = false
     },
     [walletConnect, connect, networkConnect],
   )
-
-  const executeAutoConnect = useCallback(async () => {
-    if (!lockAutoConnect.current) {
-      return await connect(true)
-    }
-    return undefined
-  }, [connect])
 
   return {
     executeConnection,
     connected,
     connecting: connectingMemo,
-    autoConnect: executeAutoConnect,
   }
 }
