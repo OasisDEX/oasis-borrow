@@ -4,6 +4,7 @@ import { AjnaMultiplyFormContentDepositCollateral } from 'features/ajna/position
 import { AjnaMultiplyFormContentDepositQuote } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDepositQuote'
 import { AjnaMultiplyFormContentGenerate } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentGenerate'
 import { AjnaMultiplyFormContentPayback } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentPayback'
+import { AjnaMultiplyFormContentSwitch } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentSwitch'
 import { AjnaMultiplyFormContentWithdrawCollateral } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentWithdrawCollateral'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -88,7 +89,7 @@ export function AjnaMultiplyFormContentManage() {
           {uiPill === 'generate-multiply' && <AjnaMultiplyFormContentGenerate />}
         </>
       )}
-      {uiDropdown === 'switch' && <>Switch</>}
+      {uiDropdown === 'switch' && <AjnaMultiplyFormContentSwitch />}
       {uiDropdown === 'close' && <>Close</>}
     </>
   )
