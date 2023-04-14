@@ -11,6 +11,7 @@ import {
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -109,6 +110,10 @@ function isFormValid({
     case 'earn': {
       const { action, depositAmount, withdrawAmount, price } = state as AjnaEarnFormState
 
+      const isEmptyPosition =
+        (position as AjnaEarnPosition).quoteTokenAmount.isZero() &&
+        (position as AjnaEarnPosition).price.isZero()
+
       switch (currentStep) {
         case 'setup':
         case 'manage':
@@ -116,11 +121,19 @@ function isFormValid({
             case 'open-earn':
               return !!depositAmount?.gt(0)
             case 'deposit-earn':
+              if (isEmptyPosition) {
+                return !!depositAmount?.gt(0)
+              }
+
               return (
                 !!depositAmount?.gt(0) ||
                 !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
               )
             case 'withdraw-earn':
+              if (isEmptyPosition) {
+                return !!withdrawAmount?.gt(0)
+              }
+
               return (
                 !!withdrawAmount?.gt(0) ||
                 !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
@@ -133,7 +146,20 @@ function isFormValid({
       }
     }
     case 'multiply':
-      return false
+      const { action, depositAmount } = state as AjnaMultiplyFormState
+
+      switch (currentStep) {
+        case 'setup':
+        case 'manage':
+          switch (action) {
+            case 'open-multiply':
+              return !!depositAmount?.gt(0)
+            default:
+              return false
+          }
+        default:
+          return true
+      }
   }
 }
 

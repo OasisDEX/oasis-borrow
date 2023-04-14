@@ -17,7 +17,10 @@ import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEar
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyPositionController'
 import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
-import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
+import {
+  AjnaMultiplyPosition,
+  ajnaMultiplySliderDefaults,
+} from 'features/ajna/positions/multiply/temp'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -209,6 +212,9 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
+                              uiDropdown: (ajnaPosition as AjnaEarnPosition).quoteTokenAmount.isZero()
+                                ? 'liquidity'
+                                : 'adjust',
                               price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
                             }}
                             formReducto={useAjnaEarnFormReducto}
@@ -222,6 +228,8 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-multiply' : 'deposit-multiply',
+                              // TODO: get default price from library?
+                              targetLiquidationPrice: ajnaMultiplySliderDefaults.initial,
                             }}
                             formReducto={useAjnaMultiplyFormReducto}
                             position={ajnaPosition as AjnaMultiplyPosition}
