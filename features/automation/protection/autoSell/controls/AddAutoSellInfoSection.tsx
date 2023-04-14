@@ -16,11 +16,11 @@ interface SellInfoSectionProps {
   targetRatioWithDeviationCeiling: BigNumber
   collateralAfterNextSell: {
     value: BigNumber
-    secondaryValue: BigNumber
+    change: BigNumber
   }
   outstandingDebtAfterSell: {
     value: BigNumber
-    secondaryValue: BigNumber
+    change: BigNumber
   }
   ethToBeSoldAtNextSell: BigNumber
   maxGasFee?: number
@@ -44,11 +44,11 @@ export function AddAutoSellInfoSection({
   const multipleAfterSellFormatted = multipleAfterSell.toFixed(2)
   const outstandingDebtAfterSellFormatted = formatCryptoBalance(outstandingDebtAfterSell.value)
   const nextOutstandingDebtAfterSellFormatted = formatCryptoBalance(
-    outstandingDebtAfterSell.secondaryValue,
+    outstandingDebtAfterSell.change,
   )
   const collateralAfterNextSellFormatted = formatCryptoBalance(collateralAfterNextSell.value)
   const nextCollateralAfterNextSellFormatted = formatCryptoBalance(
-    collateralAfterNextSell.secondaryValue,
+    collateralAfterNextSell.change,
   )
   const nextSellPriceFormatted = formatAmount(nextSellPrice, 'USD')
   const colRatioAfterSellFormatted = formatPercent(targetCollRatio, { precision: 2 })
@@ -84,12 +84,12 @@ export function AddAutoSellInfoSection({
         {
           label: t('auto-sell.collateral-after-next-sell'),
           value: collateralAfterNextSellFormatted,
-          secondaryValue: `${nextCollateralAfterNextSellFormatted} ${token}`,
+          change: `${nextCollateralAfterNextSellFormatted} ${token}`,
         },
         {
           label: t('auto-sell.outstanding-debt-after-next-sell'),
           value: outstandingDebtAfterSellFormatted,
-          secondaryValue: `${nextOutstandingDebtAfterSellFormatted} DAI`,
+          change: `${nextOutstandingDebtAfterSellFormatted} DAI`,
         },
         {
           label: t('auto-sell.col-to-be-sold', { token }),

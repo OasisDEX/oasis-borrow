@@ -21,17 +21,17 @@ export function CancelConstantMultipleInfoSection() {
               {
                 label: t('constant-multiple.vault-changes.target-col-ratio-after-buy-sell'),
                 value: `${constantMultipleTriggerData.targetCollRatio}%`,
-                secondaryValue: '0%',
+                change: '0%',
               },
               {
                 label: t('auto-buy.trigger-col-ratio-to-perform-buy'),
                 value: `${constantMultipleTriggerData.buyExecutionCollRatio}%`,
-                secondaryValue: '0%',
+                change: '0%',
               },
               {
                 label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
                 value: `${constantMultipleTriggerData.sellExecutionCollRatio}%`,
-                secondaryValue: '0%',
+                change: '0%',
               },
             ]
           : [

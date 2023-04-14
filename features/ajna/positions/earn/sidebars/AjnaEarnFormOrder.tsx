@@ -62,25 +62,25 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
         {
           label: t('amount-to-lend'),
           value: `${formatted.amountToLend} ${quoteToken}`,
-          secondaryValue: `${formatted.afterAmountToLend} ${quoteToken}`,
+          change: `${formatted.afterAmountToLend} ${quoteToken}`,
           isLoading,
         },
         {
           label: t('net-apy'),
           value: formatted.netApy,
-          secondaryValue: formatted.afterNetApy,
+          change: formatted.afterNetApy,
           isLoading,
         },
         {
           label: t('lending-price'),
           value: `${formatted.lendingPrice} ${collateralToken}/${quoteToken}`,
-          secondaryValue: `${formatted.afterLendingPrice} ${collateralToken}/${quoteToken}`,
+          change: `${formatted.afterLendingPrice} ${collateralToken}/${quoteToken}`,
           isLoading,
         },
         {
           label: t('max-ltv-to-lend-at'),
           value: formatted.maxLtv,
-          secondaryValue: formatted.afterMaxLtv,
+          change: formatted.afterMaxLtv,
           isLoading,
         },
         isTxSuccess && cached

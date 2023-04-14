@@ -48,12 +48,12 @@ export function CancelAutoBSInfoSection({
               {
                 label: targetLabel,
                 value: targetCollRatioFormatted,
-                secondaryValue: '0%',
+                change: '0%',
               },
               {
                 label: triggerLabel,
                 value: execCollRatioFormatted,
-                secondaryValue: '0%',
+                change: '0%',
               },
             ]
           : [

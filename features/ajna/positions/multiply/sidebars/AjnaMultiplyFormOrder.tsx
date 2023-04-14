@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { SecondaryVariantType } from 'components/infoSection/Item'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import {
@@ -47,6 +48,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const afterLoanToValue = new BigNumber(0.7141)
   const buyingCollateral = new BigNumber(1.1645)
   const sellingCollateral = new BigNumber(11.2)
+  const priceImpact = new BigNumber(0.0064)
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
@@ -60,8 +62,11 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     loanToValue: formatDecimalAsPercent(loanToValue),
     afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
     buyingCollateral: `${formatCryptoBalance(buyingCollateral)} ${collateralToken}`,
+    buyingCollateralUSD: `$${formatAmount(buyingCollateral.times(collateralPrice), 'USD')}`,
     sellingCollateral: `${formatCryptoBalance(sellingCollateral)} ${collateralToken}`,
+    sellingCollateralUSD: `$${formatAmount(sellingCollateral.times(collateralPrice), 'USD')}`,
     collateralPrice: `$${formatAmount(collateralPrice, 'USD')}`,
+    collateralPriceImpact: formatDecimalAsPercent(priceImpact),
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
@@ -74,6 +79,9 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
               {
                 label: t('vault-changes.buying-token', { token: collateralToken }),
                 value: formatted.buyingCollateral,
+                secondary: {
+                  value: formatted.buyingCollateralUSD,
+                },
                 isLoading,
               },
             ]
@@ -83,6 +91,9 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
               {
                 label: t('vault-changes.selling-token', { token: collateralToken }),
                 value: formatted.sellingCollateral,
+                secondary: {
+                  value: formatted.sellingCollateralUSD,
+                },
                 isLoading,
               },
             ]
@@ -90,7 +101,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         {
           label: t('system.total-exposure', { token: collateralToken }),
           value: formatted.totalExposure,
-          secondaryValue: formatted.afterTotalExposure,
+          change: formatted.afterTotalExposure,
           isLoading,
         },
         ...(withBuying || withSelling
@@ -98,6 +109,10 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
               {
                 label: t('vault-changes.price-impact', { token: collateralToken }),
                 value: formatted.collateralPrice,
+                secondary: {
+                  value: formatted.collateralPriceImpact,
+                  variant: 'negative' as SecondaryVariantType,
+                },
                 isLoading,
               },
             ]
@@ -105,7 +120,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         {
           label: t('system.multiple'),
           value: formatted.multiple,
-          secondaryValue: formatted.afterMultiple,
+          change: formatted.afterMultiple,
           isLoading,
         },
         ...(withSlippage
@@ -120,13 +135,13 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         {
           label: t('system.debt'),
           value: formatted.positionDebt,
-          secondaryValue: formatted.afterPositionDebt,
+          change: formatted.afterPositionDebt,
           isLoading,
         },
         {
           label: t('vault-changes.ltv'),
           value: formatted.loanToValue,
-          secondaryValue: formatted.afterLoanToValue,
+          change: formatted.afterLoanToValue,
           isLoading,
         },
         isTxSuccess && cached

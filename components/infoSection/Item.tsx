@@ -7,10 +7,12 @@ import { ReactNode, useState } from 'react'
 import React from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
+export type SecondaryVariantType = 'positive' | 'negative' | 'neutral'
+
 export interface DropDownValue {
   label?: TranslateStringType
   value: string | ReactNode
-  secondaryValue?: string
+  change?: string
 }
 
 export interface ItemProps {
@@ -20,10 +22,25 @@ export interface ItemProps {
   value?: string | BigNumber | ReactNode
   // Select element type if you wish to render custom components within a dropdown
   dropDownElementType?: 'element' | 'default'
-  secondaryValue?: string
+  change?: string
+  secondary?: {
+    value: string
+    variant?: SecondaryVariantType
+  }
   dropdownValues?: DropDownValue[]
   isLoading?: boolean
   isHeading?: boolean
+}
+
+function getSecondaryColor(variant: SecondaryVariantType): string {
+  switch (variant) {
+    case 'negative':
+      return 'critical100'
+    case 'neutral':
+      return 'neutral80'
+    case 'positive':
+      return 'success100'
+  }
 }
 
 export function InfoSectionLoadingState() {
@@ -37,7 +54,8 @@ export function Item({
   subLabel,
   dropdownValues,
   value,
-  secondaryValue,
+  change,
+  secondary,
   isLoading,
   dropDownElementType,
   labelColorPrimary,
@@ -92,7 +110,6 @@ export function Item({
             flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            columnGap: 2,
             color: 'primary100',
           }}
           as="div"
@@ -102,11 +119,19 @@ export function Item({
           ) : (
             <>
               {value && <>{React.isValidElement(value) ? value : `${value}`}</>}
-              {secondaryValue && (
+              {change && (
                 <>
-                  <Icon name="arrow_right_light" size="auto" width={10} height={7} />
-                  {`${secondaryValue}`}
+                  <Icon name="arrow_right_light" size="auto" width={10} height={7} sx={{ mx: 2 }} />
+                  {`${change}`}
                 </>
+              )}
+              {secondary && (
+                <Text
+                  as="span"
+                  sx={{ ml: 1, color: getSecondaryColor(secondary.variant || 'neutral') }}
+                >
+                  ({secondary.value})
+                </Text>
               )}
               {dropdownValues?.length && (
                 <ExpandableArrow
