@@ -1,7 +1,10 @@
 import { ActionPills } from 'components/ActionPills'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { AjnaMultiplyFormContentDeposit } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDeposit'
-import { AjnaMultiplyFormContentWithdraw } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentWithdraw'
+import { AjnaMultiplyFormContentDepositCollateral } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDepositCollateral'
+import { AjnaMultiplyFormContentDepositQuote } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDepositQuote'
+import { AjnaMultiplyFormContentGenerate } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentGenerate'
+import { AjnaMultiplyFormContentPayback } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentPayback'
+import { AjnaMultiplyFormContentWithdrawCollateral } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentWithdrawCollateral'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -23,12 +26,12 @@ export function AjnaMultiplyFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'deposit-multiply',
+                id: 'deposit-collateral-multiply',
                 label: t('vault-actions.deposit'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'deposit-multiply')
-                  updateState('action', 'deposit-multiply')
+                  updateState('uiPill', 'deposit-collateral-multiply')
+                  updateState('action', 'deposit-collateral-multiply')
                 },
               },
               {
@@ -42,8 +45,8 @@ export function AjnaMultiplyFormContentManage() {
               },
             ]}
           />
-          {uiPill === 'deposit-multiply' && <AjnaMultiplyFormContentDeposit />}
-          {uiPill === 'withdraw-multiply' && <AjnaMultiplyFormContentWithdraw />}
+          {uiPill === 'deposit-collateral-multiply' && <AjnaMultiplyFormContentDepositCollateral />}
+          {uiPill === 'withdraw-multiply' && <AjnaMultiplyFormContentWithdrawCollateral />}
         </>
       )}
       {uiDropdown === 'quote' && (
@@ -52,12 +55,12 @@ export function AjnaMultiplyFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'buy-collateral-multiply',
+                id: 'deposit-quote-multiply',
                 label: t('system.actions.multiply.buy-coll'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'buy-collateral-multiply')
-                  updateState('action', 'buy-collateral-multiply')
+                  updateState('uiPill', 'deposit-quote-multiply')
+                  updateState('action', 'deposit-quote-multiply')
                 },
               },
               {
@@ -70,19 +73,19 @@ export function AjnaMultiplyFormContentManage() {
                 },
               },
               {
-                id: 'withdraw-quote-multiply',
+                id: 'generate-multiply',
                 label: t('vault-actions.withdraw'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'withdraw-quote-multiply')
-                  updateState('action', 'withdraw-quote-multiply')
+                  updateState('uiPill', 'generate-multiply')
+                  updateState('action', 'generate-multiply')
                 },
               },
             ]}
           />
-          {uiPill === 'buy-collateral-multiply' && <>Buy</>}
-          {uiPill === 'payback-multiply' && <>Payback</>}
-          {uiPill === 'withdraw-quote-multiply' && <>Withdraw</>}
+          {uiPill === 'deposit-quote-multiply' && <AjnaMultiplyFormContentDepositQuote />}
+          {uiPill === 'payback-multiply' && <AjnaMultiplyFormContentPayback />}
+          {uiPill === 'generate-multiply' && <AjnaMultiplyFormContentGenerate />}
         </>
       )}
       {uiDropdown === 'switch' && <>Switch</>}

@@ -41,8 +41,8 @@ export function AjnaMultiplyFormController() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
-                updateState('uiPill', 'deposit-multiply')
-                updateState('action', 'deposit-multiply')
+                updateState('uiPill', 'deposit-collateral-multiply')
+                updateState('action', 'deposit-collateral-multiply')
               },
             },
             {
@@ -55,8 +55,8 @@ export function AjnaMultiplyFormController() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
-                updateState('uiPill', 'buy-collateral-multiply')
-                updateState('action', 'buy-collateral-multiply')
+                updateState('uiPill', 'deposit-quote-multiply')
+                updateState('action', 'deposit-quote-multiply')
               },
             },
             {

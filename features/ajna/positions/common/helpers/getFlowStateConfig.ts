@@ -23,6 +23,7 @@ export function getFlowStateConfig({
   switch (action) {
     case 'open-earn':
     case 'deposit-earn':
+    case 'buy-collateral-multiply':
       // THIS CONDITION IS ADDED TO BYPASS DPM & ALLOWANCE FLOW
       // WHILE IN AJNA EARN ADJUST MANAGE VIEW
       if (state.uiDropdown === 'adjust' && flow === 'manage') {
@@ -42,11 +43,14 @@ export function getFlowStateConfig({
       }
     case 'open-borrow':
     case 'deposit-borrow':
+    case 'open-multiply':
+    case 'deposit-multiply':
       return {
         amount: state.depositAmount,
         token: collateralToken,
       }
     case 'payback-borrow':
+    case 'payback-multiply':
       return {
         amount: state.paybackAmount,
         token: quoteToken,

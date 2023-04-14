@@ -5,6 +5,8 @@ import {
   AjnaFormActionsReset,
   AjnaFormActionsUpdateDeposit,
   AjnaFormActionsUpdateDpm,
+  AjnaFormActionsUpdateGenerate,
+  AjnaFormActionsUpdatePayback,
   AjnaFormActionsUpdateTargetLiquidationPrice,
   AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
@@ -15,6 +17,10 @@ export interface AjnaMultiplyFormState {
   dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  generateAmount?: BigNumber
+  generateAmountUSD?: BigNumber
+  paybackAmount?: BigNumber
+  paybackAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   targetLiquidationPrice?: BigNumber
@@ -25,6 +31,8 @@ export interface AjnaMultiplyFormState {
 export type AjnaMultiplyFormAction = ReductoActions<
   AjnaMultiplyFormState,
   | AjnaFormActionsUpdateDeposit
+  | AjnaFormActionsUpdateGenerate
+  | AjnaFormActionsUpdatePayback
   | AjnaFormActionsUpdateWithdraw
   | AjnaFormActionsUpdateTargetLiquidationPrice
   | AjnaFormActionsUpdateDpm
@@ -34,6 +42,10 @@ export type AjnaMultiplyFormAction = ReductoActions<
 export const ajnaMultiplyReset = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
+  generateAmount: undefined,
+  generateAmountUSD: undefined,
+  paybackAmount: undefined,
+  paybackAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
 }
@@ -42,7 +54,7 @@ export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
   ...ajnaMultiplyReset,
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'collateral',
-  uiPill: 'deposit-multiply',
+  uiPill: 'deposit-collateral-multiply',
 }
 
 export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyFormState>) {
@@ -61,6 +73,18 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
             ...state,
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
+          }
+        case 'update-generate':
+          return {
+            ...state,
+            generateAmount: action.generateAmount,
+            generateAmountUSD: action.generateAmountUSD,
+          }
+        case 'update-payback':
+          return {
+            ...state,
+            paybackAmount: action.paybackAmount,
+            paybackAmountUSD: action.paybackAmountUSD,
           }
         case 'update-withdraw':
           return {
