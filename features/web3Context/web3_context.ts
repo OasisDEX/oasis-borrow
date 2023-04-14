@@ -60,9 +60,11 @@ export function createWeb3Context$(chainIdToRpcUrl: {
 
         try {
           await activate(connector)
+          return true
         } catch (e) {
           console.error(`Error while connecting`, e)
           setError(new Error('Error while connecting'))
+          return false
         }
       },
       [activate, setError],

@@ -1,22 +1,29 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useReducer } from 'react'
 
-import { useBridgeConnection } from './useBridgeConnection'
-import { useNetworkConnection } from './useNetworkConnection'
+import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
 
 export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boolean }) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const { connect, autoConnect } = useBridgeConnection()
-  const { networkConnect } = useNetworkConnection()
+  const { connect, networkConnect } = useWeb3OnBoardConnectorContext()
+  const [autoConnectState, dispatchAutoConnect] = useReducer(
+    (state: { count: number }) => {
+      return { count: state.count + 1 }
+    },
+    { count: 0 },
+  )
 
   const connected = useMemo(() => {
     if (!walletConnect) {
+      if (autoConnectState.count < 4) {
+        return false
+      }
       return web3Context?.status === 'connectedReadonly' || web3Context?.status === 'connected'
     }
     return web3Context?.status === 'connected'
-  }, [web3Context, walletConnect])
+  }, [walletConnect, web3Context?.status, autoConnectState])
 
   const connectingMemo = useMemo(() => {
     return web3Context === undefined || web3Context.status === 'connecting'
@@ -24,16 +31,24 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
 
   const executeConnection = useCallback(
     async (onConnect?: (account?: string) => void) => {
-      let account: string | undefined = undefined
+      let account: string | undefined
       if (walletConnect) {
         account = await connect()
       } else {
-        await networkConnect()
+        account = await connect(true)
+        dispatchAutoConnect()
+        if (!account) {
+          await networkConnect()
+        }
       }
       onConnect?.(account)
     },
     [walletConnect, connect, networkConnect],
   )
 
-  return { executeConnection, connected, connecting: connectingMemo, autoConnect }
+  return {
+    executeConnection,
+    connected,
+    connecting: connectingMemo,
+  }
 }

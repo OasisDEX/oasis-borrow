@@ -17,12 +17,8 @@ export function useBridgeConnection() {
     async (autoConnect: boolean = false) => {
       const bridgeConnector =
         autoConnector || (autoConnect ? undefined : await createBridgeConnector())
-      if (
-        bridgeConnector &&
-        isConnectable(web3Context) &&
-        web3Context &&
-        !bridgeConnector?.isTheSame(connector.current)
-      ) {
+      const theSameConnector = bridgeConnector?.isTheSame(connector.current)
+      if (bridgeConnector && isConnectable(web3Context) && web3Context && !theSameConnector) {
         try {
           connector.current = bridgeConnector
           await web3Context.connect(bridgeConnector, bridgeConnector.connectionKind)
@@ -33,10 +29,8 @@ export function useBridgeConnection() {
       }
       return undefined
     },
-    [autoConnector, connector, createBridgeConnector, web3Context],
+    [autoConnector, createBridgeConnector, web3Context],
   )
 
-  const autoConnect = useCallback(() => connect(true), [connect])
-
-  return { connect, autoConnect }
+  return { connect }
 }
