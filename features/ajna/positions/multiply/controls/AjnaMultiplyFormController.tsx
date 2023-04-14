@@ -67,6 +67,7 @@ export function AjnaMultiplyFormController() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'switch')
+                updateState('action', 'switch-multiply')
               },
             },
             {
@@ -78,6 +79,7 @@ export function AjnaMultiplyFormController() {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'close')
                 updateState('closeTo', 'collateral')
+                updateState('action', 'close-multiply')
               },
             },
           ],

@@ -14,21 +14,39 @@ import React from 'react'
 export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralPrice, collateralToken, quoteToken },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
   const {
+    form: {
+      state: { action },
+    },
     position: { isSimulationLoading },
   } = useAjnaProductContext('multiply')
+
+  const withSlippage =
+    action &&
+    [
+      'open-multiply',
+      'deposit-collateral-multiply',
+      'deposit-quote-multiply',
+      'withdraw-multiply',
+      'close-multiply',
+    ].includes(action)
+  const withBuying = action === 'deposit-quote-multiply'
+  const withSelling = action === 'close-multiply'
 
   const totalExposure = new BigNumber(22461.32)
   const afterTotalExposure = new BigNumber(28436.37)
   const multiple = new BigNumber(1.5)
   const afterMultiple = new BigNumber(1.67)
   const slippageLimit = new BigNumber(0.005)
-  const outstandingDebt = new BigNumber(124.13)
+  const positionDebt = new BigNumber(5)
+  const afterPositionDebt = new BigNumber(124.13)
   const loanToValue = new BigNumber(0.6265)
   const afterLoanToValue = new BigNumber(0.7141)
+  const buyingCollateral = new BigNumber(1.1645)
+  const sellingCollateral = new BigNumber(11.2)
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
@@ -37,9 +55,13 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     multiple: `${multiple.toFixed(2)}x`,
     afterMultiple: afterMultiple && `${afterMultiple.toFixed(2)}x`,
     slippageLimit: formatDecimalAsPercent(slippageLimit),
-    positionDebt: `${formatCryptoBalance(outstandingDebt)} ${quoteToken}`,
+    positionDebt: `${formatCryptoBalance(positionDebt)} ${quoteToken}`,
+    afterPositionDebt: `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
     loanToValue: formatDecimalAsPercent(loanToValue),
     afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
+    buyingCollateral: `${formatCryptoBalance(buyingCollateral)} ${collateralToken}`,
+    sellingCollateral: `${formatCryptoBalance(sellingCollateral)} ${collateralToken}`,
+    collateralPrice: `$${formatAmount(collateralPrice, 'USD')}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
@@ -47,26 +69,58 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     <InfoSection
       title={t('vault-changes.order-information')}
       items={[
+        ...(withBuying
+          ? [
+              {
+                label: t('vault-changes.buying-token', { token: collateralToken }),
+                value: formatted.buyingCollateral,
+                isLoading,
+              },
+            ]
+          : []),
+        ...(withSelling
+          ? [
+              {
+                label: t('vault-changes.selling-token', { token: collateralToken }),
+                value: formatted.sellingCollateral,
+                isLoading,
+              },
+            ]
+          : []),
         {
           label: t('system.total-exposure', { token: collateralToken }),
           value: formatted.totalExposure,
           secondaryValue: formatted.afterTotalExposure,
           isLoading,
         },
+        ...(withBuying || withSelling
+          ? [
+              {
+                label: t('vault-changes.price-impact', { token: collateralToken }),
+                value: formatted.collateralPrice,
+                isLoading,
+              },
+            ]
+          : []),
         {
           label: t('system.multiple'),
           value: formatted.multiple,
           secondaryValue: formatted.afterMultiple,
           isLoading,
         },
+        ...(withSlippage
+          ? [
+              {
+                label: t('vault-changes.slippage-limit'),
+                value: formatted.slippageLimit,
+                isLoading,
+              },
+            ]
+          : []),
         {
-          label: t('vault-changes.slippage-limit'),
-          value: formatted.slippageLimit,
-          isLoading,
-        },
-        {
-          label: t('vault-changes.outstanding-debt'),
+          label: t('system.debt'),
           value: formatted.positionDebt,
+          secondaryValue: formatted.afterPositionDebt,
           isLoading,
         },
         {
