@@ -2,14 +2,13 @@ import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export function Connection({ children, walletConnect }: WithChildren & { walletConnect: boolean }) {
   const { executeConnection, connected, connecting, autoConnect } = useWeb3OnBoardConnection({
     walletConnect,
   })
   const { replace, reload } = useRouter()
-  const [connectionExecuted, setConnectionExecuted] = useState<boolean>(false)
   const handleConnected = useCallback(
     async (account?: string) => {
       if (!account && walletConnect) {
@@ -26,17 +25,14 @@ export function Connection({ children, walletConnect }: WithChildren & { walletC
   useEffect(() => {
     if (!connected && !connecting) {
       void executeConnection(handleConnected)
-      if (walletConnect) {
-        setConnectionExecuted(true)
-      }
     }
-  }, [connected, executeConnection, connecting, handleConnected, walletConnect])
+  }, [connected, executeConnection, connecting, handleConnected])
 
   useEffect(() => {
-    if (!connecting && !walletConnect && !connectionExecuted) {
+    if (!connecting && !walletConnect) {
       void autoConnect()
     }
-  }, [connecting, walletConnect, autoConnect, connectionExecuted])
+  }, [connecting, walletConnect, autoConnect])
 
   return children
 }

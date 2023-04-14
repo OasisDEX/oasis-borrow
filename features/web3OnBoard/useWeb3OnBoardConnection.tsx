@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 import { useBridgeConnection } from './useBridgeConnection'
 import { useNetworkConnection } from './useNetworkConnection'
@@ -8,8 +8,10 @@ import { useNetworkConnection } from './useNetworkConnection'
 export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boolean }) {
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const { connect, autoConnect } = useBridgeConnection()
+  const { connect } = useBridgeConnection()
   const { networkConnect } = useNetworkConnection()
+
+  const lockAutoConnect = useRef<boolean>(false)
 
   const connected = useMemo(() => {
     if (!walletConnect) {
@@ -19,11 +21,14 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
   }, [web3Context, walletConnect])
 
   const connectingMemo = useMemo(() => {
-    return web3Context === undefined || web3Context.status === 'connecting'
+    return (
+      web3Context === undefined || web3Context.status === 'connecting' || lockAutoConnect.current
+    )
   }, [web3Context])
 
   const executeConnection = useCallback(
     async (onConnect?: (account?: string) => void) => {
+      lockAutoConnect.current = true
       let account: string | undefined = undefined
       if (walletConnect) {
         account = await connect()
@@ -31,9 +36,23 @@ export function useWeb3OnBoardConnection({ walletConnect }: { walletConnect: boo
         await networkConnect()
       }
       onConnect?.(account)
+
+      lockAutoConnect.current = false
     },
     [walletConnect, connect, networkConnect],
   )
 
-  return { executeConnection, connected, connecting: connectingMemo, autoConnect }
+  const executeAutoConnect = useCallback(async () => {
+    if (!lockAutoConnect.current) {
+      return await connect(true)
+    }
+    return undefined
+  }, [connect])
+
+  return {
+    executeConnection,
+    connected,
+    connecting: connectingMemo,
+    autoConnect: executeAutoConnect,
+  }
 }
