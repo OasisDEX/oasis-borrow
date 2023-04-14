@@ -1,6 +1,6 @@
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { WithChildren } from 'helpers/types'
-import { createContext, useContext } from 'react'
+import React, { createContext, useContext } from 'react'
 
 import { useBridgeConnection } from './useBridgeConnection'
 import { useNetworkConnection } from './useNetworkConnection'
