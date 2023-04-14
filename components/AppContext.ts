@@ -80,7 +80,6 @@ import { spotIlk } from 'blockchain/calls/spot'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
-import { charterIlks, cropJoinIlks, networksById } from 'blockchain/networksConfig'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
@@ -97,6 +96,7 @@ import {
   every10Seconds$,
 } from 'blockchain/network'
 import { compareBigNumber } from 'blockchain/network'
+import { charterIlks, cropJoinIlks, networksById } from 'blockchain/networksConfig'
 import {
   createGasPrice$,
   createOraclePriceData$,

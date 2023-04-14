@@ -47,9 +47,17 @@ import {
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
 import { default as mainnetAddresses } from 'blockchain/addresses/mainnet.json'
-import { contractDesc, supportedIlks } from 'blockchain/networksConfig'
+import { contractDesc } from 'blockchain/networksConfig'
+import {
+  AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
+  AAVE_V3_POOL_GENESIS_MAINNET,
+  ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
+  supportedIlks,
+  tokensMainnet,
+} from 'blockchain/tokens/mainnet'
+import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
 
-export default {
+export const mainnetContracts = {
   safeConfirmations: 10,
   openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
@@ -146,21 +154,21 @@ export default {
   aaveV2LendingPool: contractDesc(
     aaveV2LendingPool,
     mainnetAddresses.AAVE_V2_LENDING_POOL,
-    AAVE_V2_LENDING_POOL_GENESIS.mainnet,
+    AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   ),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
   accountFactory: contractDesc(
     accountFactory,
     mainnetAddresses.ACCOUNT_FACTORY,
-    ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
+    ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
   ),
   accountGuard: contractDesc(
     accountGuard,
     mainnetAddresses.ACCOUNT_GUARD,
-    ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
+    ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS.mainnet),
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS_MAINNET),
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnetAddresses.AAVE_V3_ORACLE),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
