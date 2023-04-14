@@ -1,9 +1,6 @@
-
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
-import {
-  AjnaFormFieldPayback,
-} from 'features/ajna/positions/common/sidebars/AjnaFormFields'
+import { AjnaFormFieldPayback } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import React from 'react'
 
