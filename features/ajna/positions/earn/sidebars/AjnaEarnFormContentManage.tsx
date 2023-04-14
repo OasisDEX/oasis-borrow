@@ -14,6 +14,9 @@ export function AjnaEarnFormContentManage() {
       state: { uiDropdown, uiPill },
       updateState,
     },
+    position: {
+      currentPosition: { position },
+    },
   } = useAjnaProductContext('earn')
 
   return (
@@ -41,6 +44,7 @@ export function AjnaEarnFormContentManage() {
                   updateState('uiPill', 'withdraw-earn')
                   updateState('action', 'withdraw-earn')
                 },
+                disabled: position.quoteTokenAmount.isZero(),
               },
             ]}
           />

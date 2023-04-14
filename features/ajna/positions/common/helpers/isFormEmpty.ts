@@ -35,6 +35,10 @@ export function isFormEmpty({ product, state, position, currentStep }: IsFormEmp
         case 'setup':
           return !depositAmount && !withdrawAmount
         case 'manage':
+          if ((position as AjnaEarnPosition).quoteTokenAmount.isZero()) {
+            return !depositAmount && !withdrawAmount
+          }
+
           return (
             !depositAmount &&
             !withdrawAmount &&

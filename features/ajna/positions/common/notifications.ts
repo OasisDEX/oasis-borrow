@@ -13,6 +13,7 @@ import {
   AjnaMultiplyFormAction,
   AjnaMultiplyFormState,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { zero } from 'helpers/zero'
 import { Dispatch } from 'react'
 
 type DepositIsNotWithdrawableParams = {
@@ -24,6 +25,10 @@ type EarningNoApyParams = {
   action: () => void
 }
 
+type EmptyPositionParams = {
+  quoteToken: string
+}
+
 type NotificationCallbackWithParams<P> = (
   params: P,
   action?: () => void,
@@ -32,6 +37,7 @@ type NotificationCallbackWithParams<P> = (
 const ajnaNotifications: {
   depositIsNotWithdrawable: NotificationCallbackWithParams<DepositIsNotWithdrawableParams>
   earningNoApy: NotificationCallbackWithParams<EarningNoApyParams>
+  emptyPosition: NotificationCallbackWithParams<EmptyPositionParams>
 } = {
   depositIsNotWithdrawable: ({ action, message }) => ({
     title: {
@@ -67,6 +73,18 @@ const ajnaNotifications: {
       action,
     },
   }),
+  emptyPosition: ({ quoteToken }) => ({
+    title: {
+      translationKey: 'ajna.position-page.earn.manage.notifications.empty-position.title',
+    },
+    message: {
+      translationKey: 'ajna.position-page.earn.manage.notifications.empty-position.message',
+      params: { quoteToken },
+    },
+    icon: 'coins_cross',
+    type: 'warning',
+    closable: true,
+  }),
 }
 
 export function getAjnaNotifications({
@@ -100,9 +118,11 @@ export function getAjnaNotifications({
       const {
         price,
         pool: { highestThresholdPrice, mostOptimisticMatchingPrice },
+        quoteTokenAmount,
       } = position as AjnaEarnPosition
-      const earningNoApy = price.lt(highestThresholdPrice)
+      const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
       const depositIsNotWithdrawable = price.gt(mostOptimisticMatchingPrice)
+      const emptyPosition = quoteTokenAmount.isZero()
 
       const moveToAdjust = () => {
         dispatch({ type: 'reset' })
@@ -120,6 +140,10 @@ export function getAjnaNotifications({
       }
       if (earningNoApy) {
         notifications.push(ajnaNotifications.earningNoApy({ action: moveToAdjust }))
+      }
+
+      if (emptyPosition) {
+        notifications.push(ajnaNotifications.emptyPosition({ quoteToken }))
       }
 
       break
