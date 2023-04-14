@@ -6,6 +6,7 @@ import {
   AjnaFormActionsUpdateDeposit,
   AjnaFormActionsUpdateDpm,
   AjnaFormActionsUpdateTargetLiquidationPrice,
+  AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
@@ -14,6 +15,8 @@ export interface AjnaMultiplyFormState {
   dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
   targetLiquidationPrice?: BigNumber
   uiDropdown: AjnaMultiplyPanel
   uiPill: Exclude<AjnaMultiplyAction, 'open-multiply' | 'switch-multiply' | 'close-multiply'>
@@ -22,6 +25,7 @@ export interface AjnaMultiplyFormState {
 export type AjnaMultiplyFormAction = ReductoActions<
   AjnaMultiplyFormState,
   | AjnaFormActionsUpdateDeposit
+  | AjnaFormActionsUpdateWithdraw
   | AjnaFormActionsUpdateTargetLiquidationPrice
   | AjnaFormActionsUpdateDpm
   | AjnaFormActionsReset
@@ -30,6 +34,8 @@ export type AjnaMultiplyFormAction = ReductoActions<
 export const ajnaMultiplyReset = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
+  withdrawAmount: undefined,
+  withdrawAmountUSD: undefined,
 }
 
 export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
@@ -55,6 +61,12 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
             ...state,
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
+          }
+        case 'update-withdraw':
+          return {
+            ...state,
+            withdrawAmount: action.withdrawAmount,
+            withdrawAmountUSD: action.withdrawAmountUSD,
           }
         case 'update-target-liquidation-price':
           return {

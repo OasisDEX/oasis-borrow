@@ -1,5 +1,7 @@
 import { ActionPills } from 'components/ActionPills'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { AjnaMultiplyFormContentDeposit } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDeposit'
+import { AjnaMultiplyFormContentWithdraw } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentWithdraw'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -40,8 +42,8 @@ export function AjnaMultiplyFormContentManage() {
               },
             ]}
           />
-          {uiPill === 'deposit-multiply' && <>Deposit</>}
-          {uiPill === 'withdraw-multiply' && <>Withdraw</>}
+          {uiPill === 'deposit-multiply' && <AjnaMultiplyFormContentDeposit />}
+          {uiPill === 'withdraw-multiply' && <AjnaMultiplyFormContentWithdraw />}
         </>
       )}
       {uiDropdown === 'quote' && (
@@ -83,7 +85,6 @@ export function AjnaMultiplyFormContentManage() {
           {uiPill === 'withdraw-quote-multiply' && <>Withdraw</>}
         </>
       )}
-
       {uiDropdown === 'switch' && <>Switch</>}
       {uiDropdown === 'close' && <>Close</>}
     </>
