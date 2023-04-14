@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import { AjnaMultiplyAction, AjnaMultiplyPanel } from 'features/ajna/common/types'
+import { AjnaCloseTo, AjnaMultiplyAction, AjnaMultiplyPanel } from 'features/ajna/common/types'
 import {
   AjnaFormActionsReset,
   AjnaFormActionsUpdateDeposit,
   AjnaFormActionsUpdateDpm,
   AjnaFormActionsUpdateGenerate,
   AjnaFormActionsUpdatePayback,
-  AjnaFormActionsUpdateTargetLiquidationPrice,
   AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
@@ -24,6 +23,7 @@ export interface AjnaMultiplyFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   targetLiquidationPrice?: BigNumber
+  closeTo: AjnaCloseTo
   uiDropdown: AjnaMultiplyPanel
   uiPill: Exclude<AjnaMultiplyAction, 'open-multiply' | 'switch-multiply' | 'close-multiply'>
 }
@@ -34,7 +34,6 @@ export type AjnaMultiplyFormAction = ReductoActions<
   | AjnaFormActionsUpdateGenerate
   | AjnaFormActionsUpdatePayback
   | AjnaFormActionsUpdateWithdraw
-  | AjnaFormActionsUpdateTargetLiquidationPrice
   | AjnaFormActionsUpdateDpm
   | AjnaFormActionsReset
 >
@@ -52,6 +51,7 @@ export const ajnaMultiplyReset = {
 
 export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
   ...ajnaMultiplyReset,
+  closeTo: 'collateral',
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'collateral',
   uiPill: 'deposit-collateral-multiply',
@@ -91,11 +91,6 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
             ...state,
             withdrawAmount: action.withdrawAmount,
             withdrawAmountUSD: action.withdrawAmountUSD,
-          }
-        case 'update-target-liquidation-price':
-          return {
-            ...state,
-            targetLiquidationPrice: action.targetLiquidationPrice,
           }
         case 'update-dpm':
           return {

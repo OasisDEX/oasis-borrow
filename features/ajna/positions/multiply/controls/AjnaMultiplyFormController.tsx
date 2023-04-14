@@ -77,6 +77,7 @@ export function AjnaMultiplyFormController() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'close')
+                updateState('closeTo', 'collateral')
               },
             },
           ],

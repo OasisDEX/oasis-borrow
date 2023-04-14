@@ -36,6 +36,8 @@ export type AjnaMultiplyPanel = 'collateral' | 'quote' | 'switch' | 'close'
 export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction'
 export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
 
+export type AjnaCloseTo = 'collateral' | 'quote'
+
 export type AjnaPoolPairs = keyof Context['ajnaPoolPairs']
 
 export type AjnaPoolData = {
