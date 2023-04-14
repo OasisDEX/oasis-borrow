@@ -1,14 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import {
   ChangeVariantType,
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Box, Card, Divider, Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardNetValueModalProps {
@@ -211,6 +213,11 @@ export function ContentCardNetValue({
   changeVariant,
 }: ContentCardNetValueProps) {
   const { t } = useTranslation()
+  const { tokenPriceUSD$ } = useAppContext()
+  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([token]), [token])
+  const [tokenPrice] = useObservable(_tokenPriceUSD$)
+
+  const marketPriceResolved = tokenPrice?.[token] || marketPrice
 
   const formatted = {
     netValueUSD: `$${formatAmount(netValueUSD || zero, 'USD')}`,
@@ -224,20 +231,20 @@ export function ContentCardNetValue({
     lockedCollateral: `${formatCryptoBalance(lockedCollateral || zero)}`,
     lockedCollateralOraclePrice: `$${formatAmount(lockedCollateralUSD || zero, 'USD')}`,
     lockedCollateralMarketPrice: `$${formatAmount(
-      lockedCollateral && marketPrice ? lockedCollateral.times(marketPrice) : zero,
+      lockedCollateral && marketPriceResolved ? lockedCollateral.times(marketPriceResolved) : zero,
       'USD',
     )}`,
     debtTokenOraclePrice: `${formatCryptoBalance(debt ? debt.div(oraclePrice) : zero)}`,
     debtTokenMarketPrice: `${formatCryptoBalance(
-      debt && marketPrice ? debt.div(marketPrice) : zero,
+      debt && marketPriceResolved ? debt.div(marketPriceResolved) : zero,
     )}`,
     netValueOraclePrice: `${formatCryptoBalance(
       netValueUSD ? netValueUSD.div(oraclePrice) : zero,
     )}`,
     netValueMarketPrice: `${formatCryptoBalance(
-      netValueUSD && marketPrice ? netValueUSD.div(marketPrice) : zero,
+      netValueUSD && marketPriceResolved ? netValueUSD.div(marketPriceResolved) : zero,
     )}`,
-    marketOrOraclePrice: `$${formatAmount(marketPrice || oraclePrice, 'USD')}`,
+    marketOrOraclePrice: `$${formatAmount(marketPriceResolved || oraclePrice, 'USD')}`,
   }
 
   const contentCardModalSettings: ContentCardNetValueModalProps = {
@@ -256,9 +263,9 @@ export function ContentCardNetValue({
     netValueMarketPrice: formatted.netValueMarketPrice,
   }
 
-  if (lockedCollateral && marketPrice) {
+  if (lockedCollateral && marketPriceResolved) {
     contentCardModalSettings.lockedCollateralMarketPrice = `$${formatAmount(
-      lockedCollateral.times(marketPrice),
+      lockedCollateral.times(marketPriceResolved),
       'USD',
     )}`
   }
