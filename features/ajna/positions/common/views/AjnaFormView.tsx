@@ -84,13 +84,14 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     walletAddress,
   })
   const primaryButtonLabel = getPrimaryButtonLabelKey({
-    flow,
     currentStep,
-    product,
+    flow,
+    hasAllowance: flowState.isAllowanceReady,
     hasDpmAddress: flowState.isProxyReady,
-    walletAddress,
-    isTxSuccess,
     isTxError,
+    isTxSuccess,
+    product,
+    walletAddress,
   })
   const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
     defaultAction: async () => {
@@ -128,7 +129,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
-      label: t(primaryButtonLabel),
+      label: t(primaryButtonLabel, { token: flowState.token }),
       disabled: isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,

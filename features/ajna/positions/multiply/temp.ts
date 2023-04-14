@@ -5,3 +5,9 @@ import BigNumber from 'bignumber.js'
 export interface AjnaMultiplyPosition extends AjnaPosition {
   multiply: BigNumber
 }
+
+export const ajnaMultiplySliderDefaults = {
+  initial: new BigNumber(1500),
+  min: new BigNumber(500),
+  max: new BigNumber(5000),
+}
