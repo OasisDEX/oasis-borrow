@@ -2551,6 +2551,10 @@
               "title": "Warning your position is not earning any yield",
               "message": "Your lending position is below the minimum yield bearing price",
               "label": "Adjust lending price"
+            },
+            "empty-position": {
+              "title": "Your lending position is empty",
+              "message": "To start earning you need to provide liquidity using your quote tokens"
             }
           }
         }

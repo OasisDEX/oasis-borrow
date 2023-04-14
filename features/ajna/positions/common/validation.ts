@@ -109,6 +109,10 @@ function isFormValid({
     case 'earn': {
       const { action, depositAmount, withdrawAmount, price } = state as AjnaEarnFormState
 
+      const isEmptyPosition =
+        (position as AjnaEarnPosition).quoteTokenAmount.isZero() &&
+        (position as AjnaEarnPosition).price.isZero()
+
       switch (currentStep) {
         case 'setup':
         case 'manage':
@@ -116,11 +120,19 @@ function isFormValid({
             case 'open-earn':
               return !!depositAmount?.gt(0)
             case 'deposit-earn':
+              if (isEmptyPosition) {
+                return !!depositAmount?.gt(0)
+              }
+
               return (
                 !!depositAmount?.gt(0) ||
                 !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
               )
             case 'withdraw-earn':
+              if (isEmptyPosition) {
+                return !!withdrawAmount?.gt(0)
+              }
+
               return (
                 !!withdrawAmount?.gt(0) ||
                 !areEarnPricesEqual((position as AjnaEarnPosition).price, price)

@@ -1,4 +1,6 @@
+import { getToken } from 'blockchain/tokensMetadata'
 import { PillAccordion } from 'components/PillAccordion'
+import { getAjnaEarnWithdrawMax } from 'features/ajna/positions/borrow/helpers/getAjnaEarnWithdrawMax'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
@@ -16,7 +18,17 @@ export function AjnaEarnFormContentWithdraw() {
   const {
     form: { dispatch },
     validation: { isFormValid },
+    position: {
+      currentPosition: {
+        position: { quoteTokenAmount },
+      },
+    },
   } = useAjnaProductContext('earn')
+
+  const withdrawMax = getAjnaEarnWithdrawMax({
+    quoteTokenAmount,
+    digits: getToken(quoteToken).precision,
+  })
 
   return (
     <>
@@ -25,6 +37,7 @@ export function AjnaEarnFormContentWithdraw() {
         resetOnClear
         token={quoteToken}
         tokenPrice={quotePrice}
+        maxAmount={withdrawMax}
       />
       <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>
         <AjnaEarnSlider />
