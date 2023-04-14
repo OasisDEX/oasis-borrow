@@ -16,6 +16,13 @@ export class BridgeConnector extends AbstractConnector {
     account: string | undefined
   }
 
+  public isTheSame(other: BridgeConnector | undefined) {
+    return (
+      this.basicInfo.account === other?.basicInfo.account &&
+      this.basicInfo.chainId === other?.basicInfo.chainId
+    )
+  }
+
   constructor(public readonly wallet: WalletState, private chains: Chain[]) {
     const chainsIds = chains.map((chain) => parseInt(chain.id, 16))
     super({ supportedChainIds: chainsIds })

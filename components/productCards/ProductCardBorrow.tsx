@@ -2,11 +2,17 @@ import { BigNumber } from 'bignumber.js'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
 import { roundToThousand } from 'helpers/roundToThousand'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
+import {
+  calculateTokenAmount,
+  ProductCard,
+  ProductCardNetworkRow,
+  ProductCardProtocolLink,
+} from './ProductCard'
 
 function personaliseCardData({
   productCardData,
@@ -80,6 +86,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { cardData } = props
 
   const { maxBorrow, tokenAmount } = bannerValues(cardData)
+  const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
 
   const tagKey = productCardsConfig.borrow.tags[cardData.ilk]
 
@@ -121,6 +128,11 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
         {
           title: t('system.protocol'),
           value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+        },
+        {
+          title: t('system.network'),
+          value: <ProductCardNetworkRow chain={cardData.chain} />,
+          enabled: displayNetwork,
         },
       ]}
       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}

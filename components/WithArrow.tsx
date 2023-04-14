@@ -6,7 +6,13 @@ export function WithArrow({
   gap = 2,
   variant = 'paragraph3',
   sx,
-}: React.PropsWithChildren<{ gap?: string | number; sx?: SxStyleProp; variant?: string }>) {
+  as,
+}: React.PropsWithChildren<{
+  gap?: string | number
+  sx?: SxStyleProp
+  variant?: string
+  as?: React.ElementType
+}>) {
   return (
     <Text
       variant={variant}
@@ -23,6 +29,7 @@ export function WithArrow({
         },
         ...sx,
       }}
+      {...(as && { as })}
     >
       <Box sx={{ display: 'inline', mr: gap }}>{children}</Box>
       <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>

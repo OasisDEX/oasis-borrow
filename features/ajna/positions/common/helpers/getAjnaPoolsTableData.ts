@@ -31,7 +31,7 @@ export const getAjnaPoolsTableData = async (): Promise<AjnaPoolsTableData[]> => 
 
   const negativeWadPrecision = WAD_PRECISION * -1
 
-  if ('pools' in response && response.pools) {
+  if (response && 'pools' in response) {
     return response.pools.map(
       ({
         collateralAddress,

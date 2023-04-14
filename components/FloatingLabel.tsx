@@ -1,13 +1,22 @@
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
-import { Flex, SxStyleProp, Text } from 'theme-ui'
+import { Flex, Image, SxStyleProp, Text } from 'theme-ui'
 
 interface FloatingLabelProps {
   text: string
   flexSx?: SxStyleProp
   textSx?: SxStyleProp
+  imageUrl?: string
+  imageSx?: SxStyleProp
 }
 
-export function FloatingLabel({ text, flexSx = {}, textSx = {} }: FloatingLabelProps) {
+export function FloatingLabel({
+  text,
+  flexSx = {},
+  textSx = {},
+  imageUrl,
+  imageSx = {},
+}: FloatingLabelProps) {
   return (
     <Flex
       sx={{
@@ -22,6 +31,12 @@ export function FloatingLabel({ text, flexSx = {}, textSx = {} }: FloatingLabelP
         ...flexSx,
       }}
     >
+      {imageUrl && (
+        <Image
+          src={staticFilesRuntimeUrl(imageUrl)}
+          sx={{ transform: 'translateX(-8px)', width: '17px', ...imageSx }}
+        />
+      )}
       <Text sx={{ color: 'neutral10', fontSize: 1, fontWeight: 'heading', ...textSx }}>{text}</Text>
     </Flex>
   )

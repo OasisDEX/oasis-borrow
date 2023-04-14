@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { networksByName } from 'blockchain/config'
 import { ProtocolLongNames, TokenMetadataType } from 'blockchain/tokensMetadata'
 import { FloatingLabel } from 'components/FloatingLabel'
 import { AppLink } from 'components/Links'
-import { ProductCardLabels } from 'components/ProductCardLabels'
+import { ProductCardLabel, ProductCardLabels } from 'components/ProductCardLabels'
 import { WithArrow } from 'components/WithArrow'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -11,7 +12,7 @@ import { ProductCardData, productCardsConfig } from 'helpers/productCards'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { useWindowSize } from 'helpers/useWindowSize'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
 
@@ -79,6 +80,20 @@ interface ProductCardBannerProps {
   title: string
   description: string
   isLoading?: boolean
+}
+
+export function ProductCardNetworkRow({ chain }: Pick<ProductCardData, 'chain'>) {
+  const network = networksByName[chain]
+  if (!network) {
+    console.error('Network not found', chain)
+    return null
+  }
+  return (
+    <Flex sx={{ alignItems: 'center' }}>
+      <Image src={network.icon} sx={{ height: 3, mr: 2 }} />
+      {network.label || '-'}
+    </Flex>
+  )
 }
 
 // changed "ilk" to "strategyName" cause not everything is an ilk
@@ -216,7 +231,7 @@ export interface ProductCardProps {
   isFull: boolean
   floatingLabelText?: TranslateStringType
   inactive?: boolean
-  labels?: { title: string; value: ReactNode }[]
+  labels?: ProductCardLabel[]
   protocol?: TokenMetadataType['protocol']
 }
 

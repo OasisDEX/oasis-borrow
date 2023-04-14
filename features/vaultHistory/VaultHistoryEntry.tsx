@@ -22,9 +22,10 @@ import { interpolate } from 'helpers/interpolate'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
-import { TFunction, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
+import { TranslationType } from 'ts_modules/i18next'
 
 import { VaultHistoryEvent } from './vaultHistory'
 
@@ -46,7 +47,7 @@ function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
   return event.autoKind
 }
 
-export function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
+export function getHistoryEventTranslation(t: TranslationType, event: VaultHistoryEvent) {
   if ('triggerId' in event) {
     const resolveKind = resolveTranslationForEventsWithTriggers(event)
 
