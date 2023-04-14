@@ -1,4 +1,5 @@
 import { ContractDesc } from 'features/web3Context'
+import { clientId } from 'helpers/clientId'
 import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
@@ -77,9 +78,6 @@ export type NetworkConfig = {
   token: string,
   rpcCallsEndpoint: string,
 }
-
-const clientId =
-  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 
 export function contractDesc(
   abi: Abi[],
@@ -185,7 +183,7 @@ const AAVE_V2_LENDING_POOL_GENESIS = {
   goerli: 7480475,
 }
 
-const tokensMainnet = {
+export const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
@@ -198,7 +196,8 @@ const tokensMainnet = {
   WSTETH: contractDesc(erc20, mainnetAddresses['WSTETH']),
   RENBTC: contractDesc(erc20, mainnetAddresses['RENBTC']),
 } as Dictionary<ContractDesc>
-const protoMain = {
+
+const mainnetConfig: NetworkConfig = {
   id: '1',
   hexId: '0x1',
   token: 'ETH',
@@ -209,143 +208,9 @@ const protoMain = {
   testnet: false,
   enabled: true,
   rpcCallsEndpoint: mainnetRpc,
-  safeConfirmations: 10,
-  openVaultSafeConfirmations: 6,
-  otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
-  collaterals: getCollaterals(mainnetAddresses, supportedIlks),
-  tokens: tokensMainnet,
-  tokensMainnet,
-  joins: {
-    ...getCollateralJoinContracts(mainnetAddresses, supportedIlks),
-  },
-  getCdps: contractDesc(getCdps, mainnetAddresses.GET_CDPS),
-  mcdOsms: getOsms(mainnetAddresses, supportedIlks),
-  mcdJug: contractDesc(mcdJug, mainnetAddresses.MCD_JUG),
-  mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
-  mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
-  mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
-  mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
-  merkleRedeemer: contractDesc(merkleRedeemer, '0xd9fabf81Ed15ea71FBAd0C1f77529a4755a38054'),
-  dssCharter: contractDesc(dssCharter, '0x0000123'),
-  dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
-  otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
-  vat: contractDesc(vat, mainnetAddresses.MCD_VAT),
-  mcdJoinDai: contractDesc(mcdJoinDai, mainnetAddresses.MCD_JOIN_DAI),
-  dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
-  dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
-  dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
-  dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
-  automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
-  automationBotV2: contractDesc(automationBotV2, '0x8061c24823094E51e57A4a5cF8bEd3CCf09d316F'),
-  automationBotAggregator: contractDesc(
-    automationBotAggregator,
-    '0x5f1d184204775fBB351C4b2C61a2fD4aAbd3fB76',
-  ),
-  serviceRegistry: '0x9b4Ae7b164d195df9C4Da5d08Be88b2848b2EaDA',
-  guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
-  guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
-  guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
-  dssMultiplyProxyActions: contractDesc(
-    dssMultiplyProxyActions,
-    '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
-  ),
-  dssCropper: contractDesc(dssCropper, '0x8377CD01a5834a6EaD3b7efb482f678f2092b77e'),
-  cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
-  dssProxyActionsCropjoin: contractDesc(
-    dssProxyActionsCropjoin,
-    '0xa2f69F8B9B341CFE9BfBb3aaB5fe116C89C95bAF',
-  ),
-  defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
-  noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
-  lowerFeesExchange: contractDesc(exchange, '0xf22f17b1d2354b4f4f52e4d164e4eb5e1f0a6ba6'),
-  fmm: mainnetAddresses.MCD_FLASH,
-  etherscan: {
-    url: 'https://etherscan.io',
-    apiUrl: 'https://api.etherscan.io/api',
-    apiKey: etherscanAPIKey || '',
-  },
-  ethtx: {
-    url: 'https://ethtx.info/mainnet',
-  },
-  taxProxyRegistries: ['0xaa63c8683647ef91b3fdab4b4989ee9588da297b'],
-  dssProxyActionsDsr: contractDesc(
-    dssProxyActionsDsr,
-    '0x07ee93aEEa0a36FfF2A9B95dd22Bd6049EE54f26',
-  ),
-  magicLink: {
-    apiKey: '',
-  },
-  cacheApi: mainnetCacheUrl,
-  lidoCrvLiquidityFarmingReward: contractDesc(
-    lidoCrvLiquidityFarmingReward,
-    // address from here: https://docs.lido.fi/deployed-contracts
-    '0x99ac10631f69c753ddb595d074422a0922d9056b',
-  ),
-  aaveTokens: {
-    STETH: mainnetAddresses['STETH'],
-  } as Record<string, string>,
-  aaveV2ProtocolDataProvider: contractDesc(
-    aaveV2ProtocolDataProvider,
-    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_V2_PROTOCOL_DATA_PROVIDER,
-  ),
-  aaveV2PriceOracle: contractDesc(
-    aaveV2PriceOracle,
-    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_V2_PRICE_ORACLE,
-  ),
-  chainlinkPriceOracle: {
-    USDCUSD: contractDesc(
-      chainLinkPriceOracle,
-      // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
-      mainnetAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
-    ),
-    ETHUSD: contractDesc(chainLinkPriceOracle, mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
-  },
-  aaveV2LendingPool: contractDesc(
-    aaveV2LendingPool,
-    mainnetAddresses.AAVE_V2_LENDING_POOL,
-    AAVE_V2_LENDING_POOL_GENESIS.mainnet,
-  ),
-  operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
-  swapAddress: mainnetAddresses.SWAP,
-  accountFactory: contractDesc(
-    accountFactory,
-    mainnetAddresses.ACCOUNT_FACTORY,
-    ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
-  ),
-  accountGuard: contractDesc(
-    accountGuard,
-    mainnetAddresses.ACCOUNT_GUARD,
-    ACCOUNT_GUARD_FACTORY_GENESIS.mainnet,
-  ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS.mainnet),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnetAddresses.AAVE_V3_ORACLE),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    mainnetAddresses.AAVE_V3_POOL_DATA_PROVIDER,
-  ),
-  // TODO ajna addresses to be updated
-  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0xD2D5e508C82EFc205cAFA4Ad969a4395Babce026'),
-  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2b639Cc84e1Ad3aA92D4Ee7d2755A6ABEf300D72'),
-  ajnaPoolPairs: {
-    'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
-    'ETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
-  },
-  ajnaRewardsManager: contractDesc(
-    ajnaRewardsManager,
-    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
-  ),
-  // TODO update address
-  ajnaRewardsClaimer: contractDesc(
-    ajnaRewardsClaimer,
-    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
-  ),
 }
 
-const main: NetworkConfig = protoMain
-
-const goerli: NetworkConfig = {
+const goerliConfig: NetworkConfig = {
   id: '5',
   hexId: '0x5',
   token: 'GoerliETH',
@@ -368,7 +233,7 @@ const goerli: NetworkConfig = {
     STETH: contractDesc(erc20, goerliAddresses['STETH']),
     USDP: contractDesc(erc20, '0xd1a7a9d23f298192f8abf31243dd4f332d681d61'),
   },
-  tokensMainnet: protoMain.tokensMainnet,
+  tokensMainnet: mainnetConfig.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(goerliAddresses, supportedIlks),
     // Todo: move to goerli network config when available at changelog.makerdao.com
@@ -491,8 +356,7 @@ const goerli: NetworkConfig = {
   ),
 }
 
-const hardhat: NetworkConfig = {
-  ...protoMain,
+const hardhatConfig: NetworkConfig = {
   id: '2137',
   hexId: '0x859',
   name: NetworkNames.ethereumHardhat,
@@ -505,8 +369,7 @@ const hardhat: NetworkConfig = {
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
-const arbitrum: NetworkConfig = {
-  ...protoMain,
+const arbitrumConfig: NetworkConfig = {
   id: '42161',
   hexId: '0xa4b1',
   name: NetworkNames.arbitrumMainnet,
@@ -519,8 +382,7 @@ const arbitrum: NetworkConfig = {
   rpcCallsEndpoint: `https://rpc.ankr.com/arbitrum`,
 }
 
-const avalanche: NetworkConfig = {
-  ...protoMain,
+const avalancheConfig: NetworkConfig = {
   id: '43114',
   hexId: '0xa86a',
   name: NetworkNames.avalancheMainnet,
@@ -533,8 +395,7 @@ const avalanche: NetworkConfig = {
   rpcCallsEndpoint: `https://api.avax.network/ext/bc/C/rpc`,
 }
 
-const optimism: NetworkConfig = {
-  ...protoMain,
+const optimismConfig: NetworkConfig = {
   id: '10',
   hexId: '0xa',
   name: NetworkNames.optimismMainnet,
@@ -547,8 +408,7 @@ const optimism: NetworkConfig = {
   rpcCallsEndpoint: `https://mainnet.optimism.io`,
 }
 
-const polygon: NetworkConfig = {
-  ...protoMain,
+const polygonConfig: NetworkConfig = {
   id: '137',
   hexId: '0x89',
   name: NetworkNames.polygonMainnet,
@@ -563,7 +423,9 @@ const polygon: NetworkConfig = {
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
-export const networks = [main, hardhat, goerli, arbitrum, avalanche, optimism, polygon]
+export const networks = [
+  mainnetConfig, hardhatConfig, goerliConfig, arbitrumConfig, avalancheConfig, optimismConfig, polygonConfig
+]
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')
 export const networksByHexId = keyBy(networks, 'hexId')

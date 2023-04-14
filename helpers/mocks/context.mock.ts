@@ -1,4 +1,3 @@
-import { networksById } from 'blockchain/config'
 import {
   Context,
   ContextConnected,
@@ -6,6 +5,7 @@ import {
   createContextConnected$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import { contract, ContractDesc } from 'features/web3Context'
 import Web3 from 'web3'
 

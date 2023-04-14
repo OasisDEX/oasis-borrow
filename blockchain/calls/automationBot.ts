@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
+import { contractDesc } from 'blockchain/networksConfig'
 import {
   AccountImplementation,
   AutomationBot,

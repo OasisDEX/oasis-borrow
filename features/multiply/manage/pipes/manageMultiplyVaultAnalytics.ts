@@ -1,6 +1,6 @@
 import { Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/config'
+import { networksById } from 'blockchain/networksConfig'
 import { Context } from 'blockchain/network'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'

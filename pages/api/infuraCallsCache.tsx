@@ -1,5 +1,5 @@
 import { withSentry } from '@sentry/nextjs'
-import { networksById } from 'blockchain/config'
+import { networksById } from 'blockchain/networksConfig'
 import { BatchManager } from 'helpers/api/BatchManager'
 import { Request } from 'helpers/api/BatchManager'
 import { NextApiRequest, NextApiResponse } from 'next'

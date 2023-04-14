@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
-import { NetworkConfig, networksByName } from 'blockchain/config'
+import { NetworkConfig, networksByName } from 'blockchain/networksConfig'
 import { NetworkNames } from 'helpers/networkNames'
 import { ChainlinkPriceOracle } from 'types/web3-v1-contracts'
 

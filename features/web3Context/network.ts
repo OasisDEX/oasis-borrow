@@ -1,4 +1,4 @@
-import { networksByName } from 'blockchain/config'
+import { networksByName } from 'blockchain/networksConfig'
 import { CustomNetworkStorageKey } from 'helpers/getCustomNetworkParameter'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { getStorageValue } from 'helpers/useLocalStorage'

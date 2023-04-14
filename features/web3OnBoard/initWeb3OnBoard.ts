@@ -5,7 +5,7 @@ import ledgerModule from '@web3-onboard/ledger'
 import { init } from '@web3-onboard/react'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnectModule from '@web3-onboard/walletconnect'
-import { networks } from 'blockchain/config'
+import { networks } from 'blockchain/networksConfig'
 
 const injected = injectedModule({
   custom: [],

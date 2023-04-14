@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { contractDesc } from 'blockchain/config'
+import { contractDesc } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DsProxy, DssProxyActionsDsr, McdPot } from 'types/web3-v1-contracts'
 

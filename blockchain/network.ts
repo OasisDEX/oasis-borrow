@@ -21,7 +21,7 @@ import {
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
-import { NetworkConfig, networksById } from './config'
+import { NetworkConfig, networksById } from './networksConfig'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))
 export const every3Seconds$ = interval(3000).pipe(startWith(0))

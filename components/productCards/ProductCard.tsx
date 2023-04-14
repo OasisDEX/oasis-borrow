@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { networksByName } from 'blockchain/config'
+import { networksByName } from 'blockchain/networksConfig'
 import { ProtocolLongNames, TokenMetadataType } from 'blockchain/tokensMetadata'
 import { FloatingLabel } from 'components/FloatingLabel'
 import { AppLink } from 'components/Links'

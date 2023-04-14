@@ -5,9 +5,9 @@ import { skipCache } from 'helpers/api/skipCache'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
-import { networksById } from './config'
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
 import { JsonRpcCachedProvider } from './jsonRpcCachedProvider'
+import { networksById } from './networksConfig'
 
 function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers

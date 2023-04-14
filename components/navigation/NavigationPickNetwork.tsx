@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { NetworkConfig, networks, networksByName } from 'blockchain/config'
+import { NetworkConfig, networks, networksByName } from 'blockchain/networksConfig'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'

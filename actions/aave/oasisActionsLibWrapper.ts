@@ -11,8 +11,8 @@ import {
   ZERO,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { ethNullAddress } from 'blockchain/config'
 import { Context } from 'blockchain/network'
+import { ethNullAddress } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { providers } from 'ethers'

@@ -1,4 +1,4 @@
-import { ilksNotSupportedOnGoerli } from 'blockchain/config'
+import { ilksNotSupportedOnGoerli } from 'blockchain/networksConfig'
 import { ContextConnected } from 'blockchain/network'
 import { UIChanges } from 'components/AppContext'
 import { getProductCategoryUrl, ProductCategory } from 'config/product-categories'

@@ -1,5 +1,5 @@
 import { NetworkConnector } from '@web3-react/network-connector'
-import { networksById } from 'blockchain/config'
+import { networksById } from 'blockchain/networksConfig'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useMemo } from 'react'
 

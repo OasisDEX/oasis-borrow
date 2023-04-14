@@ -1,7 +1,7 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
-import { networksById } from 'blockchain/config'
+import { networksById } from 'blockchain/networksConfig'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { BridgeConnector } from 'features/web3OnBoard'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'

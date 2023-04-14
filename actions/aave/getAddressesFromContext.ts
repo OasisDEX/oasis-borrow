@@ -1,6 +1,6 @@
 import { AAVEStrategyAddresses, AAVEV3StrategyAddresses } from '@oasisdex/oasis-actions'
-import { ethNullAddress } from 'blockchain/config'
 import { Context } from 'blockchain/network'
+import { ethNullAddress } from 'blockchain/networksConfig'
 
 export function getAddressesFromContext(
   context: Context,
