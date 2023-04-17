@@ -80,6 +80,7 @@ import { spotIlk } from 'blockchain/calls/spot'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
@@ -96,7 +97,7 @@ import {
   every10Seconds$,
 } from 'blockchain/network'
 import { compareBigNumber } from 'blockchain/network'
-import { charterIlks, cropJoinIlks, networksById } from 'blockchain/networksConfig'
+import { networksById } from 'blockchain/networksConfig'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -110,6 +111,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
+import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
 import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
@@ -582,7 +584,7 @@ export function setupAppContext() {
     })
 
   const oracleContext$ = context$.pipe(
-    switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),
+    switchMap((ctx) => of({ ...ctx, account: getNetworkContracts(ctx.chainId).mcdSpot.address })),
     shareReplay(1),
   ) as Observable<ContextConnected>
 

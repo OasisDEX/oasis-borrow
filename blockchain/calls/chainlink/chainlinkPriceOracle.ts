@@ -1,19 +1,16 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
-import { NetworkConfig, networksByName } from 'blockchain/networksConfig'
-import { NetworkNames } from 'helpers/networkNames'
+import { MainnetContracts, mainnetContracts } from 'blockchain/contracts/mainnet'
 import { ChainlinkPriceOracle } from 'types/web3-v1-contracts'
 
 const USD_CHAINLINK_PRECISION = 8
 
 export function getChainlinkOraclePrice(
-  contractName: keyof NetworkConfig['chainlinkPriceOracle'],
+  contractName: keyof MainnetContracts['chainlinkPriceOracle'],
 ): CallDef<void, BigNumber> {
-  if (
-    !contractName ||
-    !networksByName[NetworkNames.ethereumMainnet]['chainlinkPriceOracle'][contractName]
-  ) {
+  console.log("mainnetContracts['chainlinkPriceOracle']", mainnetContracts['chainlinkPriceOracle'])
+  if (!contractName || !mainnetContracts['chainlinkPriceOracle'][contractName]) {
     throw new Error(`ChainlinkPriceOracle ${contractName} not found`)
   }
   return {

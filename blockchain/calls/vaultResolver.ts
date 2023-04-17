@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { charterIlks, cropJoinIlks } from 'blockchain/networksConfig'
+import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 

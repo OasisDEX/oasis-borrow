@@ -59,9 +59,9 @@ import {
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import { mainnetContracts } from './mainnet'
+import { MainnetContracts, mainnetContracts } from './mainnet'
 
-export const goerliContracts = {
+export const goerliContracts: MainnetContracts = {
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),

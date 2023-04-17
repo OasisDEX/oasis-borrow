@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { AaveV3Pool } from 'types/web3-v1-contracts'
 
 export interface AaveV3UserAccountData {
@@ -35,8 +36,8 @@ export const getAaveV3UserAccountData: CallDef<
   AaveV3UserAccountDataParameters,
   AaveV3UserAccountData
 > = {
-  call: (args, { contract, aaveV3Pool }) => {
-    return contract<AaveV3Pool>(aaveV3Pool).methods.getUserAccountData
+  call: (args, { contract, chainId }) => {
+    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods.getUserAccountData
   },
   prepareArgs: ({ address }) => {
     return [address]
@@ -61,8 +62,9 @@ export const getAaveV3UserConfiguration: CallDef<
   AaveV3UserConfigurationsParameters,
   AaveV3ConfigurationData
 > = {
-  call: (args, { contract, aaveV3Pool }) => {
-    return contract<AaveV3Pool>(aaveV3Pool).methods.getUserConfiguration
+  call: (args, { contract, chainId }) => {
+    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods
+      .getUserConfiguration
   },
   prepareArgs: ({ address }) => {
     return [address]
@@ -70,8 +72,8 @@ export const getAaveV3UserConfiguration: CallDef<
 }
 
 export const getAaveV3ReservesList: CallDef<void, AaveV3ConfigurationData> = {
-  call: (args, { contract, aaveV3Pool }) => {
-    return contract<AaveV3Pool>(aaveV3Pool).methods.getReservesList
+  call: (args, { contract, chainId }) => {
+    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods.getReservesList
   },
   prepareArgs: () => {
     return []
@@ -82,8 +84,9 @@ export const getEModeCategoryData: CallDef<
   GetEModeCategoryDataParameters,
   GetEModeCategoryDataResult
 > = {
-  call: (args, { contract, aaveV3Pool }) => {
-    return contract<AaveV3Pool>(aaveV3Pool).methods.getEModeCategoryData
+  call: (args, { contract, chainId }) => {
+    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods
+      .getEModeCategoryData
   },
   prepareArgs: ({ categoryId }) => {
     return [categoryId.toString()]

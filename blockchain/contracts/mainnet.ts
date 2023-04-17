@@ -191,3 +191,5 @@ export const mainnetContracts = {
     '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
   ),
 }
+
+export type MainnetContracts = typeof mainnetContracts

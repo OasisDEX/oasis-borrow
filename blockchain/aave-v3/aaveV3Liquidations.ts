@@ -1,3 +1,4 @@
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
@@ -51,8 +52,12 @@ export function getAaveV3PositionLiquidation$(
     return of([])
   }
   return context$.pipe(
-    switchMap(async ({ aaveV3Pool, rpcProvider }) => {
-      return await getLastLiquidationEvent(aaveV3Pool, rpcProvider, proxyAddress)
+    switchMap(async ({ chainId, rpcProvider }) => {
+      return await getLastLiquidationEvent(
+        getNetworkContracts(chainId).aaveV3Pool,
+        rpcProvider,
+        proxyAddress,
+      )
     }),
   )
 }

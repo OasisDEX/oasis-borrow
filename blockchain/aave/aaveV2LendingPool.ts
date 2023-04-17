@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { amountFromWei } from 'blockchain/utils'
 import { AaveV2LendingPool } from 'types/web3-v1-contracts'
 
@@ -25,8 +26,9 @@ export const getAaveV2UserAccountData: CallDef<
   AaveV2UserAccountDataParameters,
   AaveV2UserAccountData
 > = {
-  call: (args, { contract, aaveV2LendingPool }) => {
-    return contract<AaveV2LendingPool>(aaveV2LendingPool).methods.getUserAccountData
+  call: (args, { contract, chainId }) => {
+    return contract<AaveV2LendingPool>(getNetworkContracts(chainId).aaveV2LendingPool).methods
+      .getUserAccountData
   },
   prepareArgs: ({ address }) => {
     return [address]
@@ -50,8 +52,9 @@ export const getAaveV2UserConfiguration: CallDef<
   AaveV2UserConfigurationsParameters,
   AaveV2ConfigurationData
 > = {
-  call: (args, { contract, aaveV2LendingPool }) => {
-    return contract<AaveV2LendingPool>(aaveV2LendingPool).methods.getUserConfiguration
+  call: (args, { contract, chainId }) => {
+    return contract<AaveV2LendingPool>(getNetworkContracts(chainId).aaveV2LendingPool).methods
+      .getUserConfiguration
   },
   prepareArgs: ({ address }) => {
     return [address]
@@ -59,8 +62,9 @@ export const getAaveV2UserConfiguration: CallDef<
 }
 
 export const getAaveV2ReservesList: CallDef<void, AaveV2ConfigurationData> = {
-  call: (args, { contract, aaveV2LendingPool }) => {
-    return contract<AaveV2LendingPool>(aaveV2LendingPool).methods.getReservesList
+  call: (args, { contract, chainId }) => {
+    return contract<AaveV2LendingPool>(getNetworkContracts(chainId).aaveV2LendingPool).methods
+      .getReservesList
   },
   prepareArgs: () => {
     return []
