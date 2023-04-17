@@ -224,7 +224,7 @@ export function AjnaProductController({
                         {dpmPosition.product === 'multiply' && (
                           <AjnaProductContextProvider
                             formDefaults={{
-                              action: flow === 'open' ? 'open-multiply' : 'deposit-multiply',
+                              action: flow === 'open' ? 'open-multiply' : 'deposit-collateral-multiply',
                               // TODO: get default price from library?
                               targetLiquidationPrice: ajnaMultiplySliderDefaults.initial,
                             }}
