@@ -105,13 +105,13 @@ export function FlowSidebar({
 
   // wrapping up
   useEffect(() => {
-    if (isAllowanceReady && token && availableProxies.length) {
+    if (isAllowanceReady && amount && token && availableProxies.length) {
       callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(
         callbackParams,
         onEverythingReady,
       )
     }
-  }, [isAllowanceReady, availableProxies])
+  }, [isAllowanceReady, availableProxies, amount?.toString()])
 
   if (!isWalletConnected) {
     return <NoConnectionStateView noConnectionContent={noConnectionContent} />

@@ -32,7 +32,7 @@ export function getFlowStateConfig({
         }
       }
       return {
-        amount: state.depositAmount,
+        amount: state.depositAmount || zero,
         token: quoteToken,
       }
     case 'withdraw-earn':
