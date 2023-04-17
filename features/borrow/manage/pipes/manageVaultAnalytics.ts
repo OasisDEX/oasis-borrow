@@ -1,7 +1,7 @@
 import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/networksConfig'
 import { Context } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
