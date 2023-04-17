@@ -43,13 +43,9 @@ export function AddAutoSellInfoSection({
   const collateralToBeSoldAtNextSellFormatted = formatCryptoBalance(ethToBeSoldAtNextSell)
   const multipleAfterSellFormatted = multipleAfterSell.toFixed(2)
   const outstandingDebtAfterSellFormatted = formatCryptoBalance(outstandingDebtAfterSell.value)
-  const nextOutstandingDebtAfterSellFormatted = formatCryptoBalance(
-    outstandingDebtAfterSell.change,
-  )
+  const nextOutstandingDebtAfterSellFormatted = formatCryptoBalance(outstandingDebtAfterSell.change)
   const collateralAfterNextSellFormatted = formatCryptoBalance(collateralAfterNextSell.value)
-  const nextCollateralAfterNextSellFormatted = formatCryptoBalance(
-    collateralAfterNextSell.change,
-  )
+  const nextCollateralAfterNextSellFormatted = formatCryptoBalance(collateralAfterNextSell.change)
   const nextSellPriceFormatted = formatAmount(nextSellPrice, 'USD')
   const colRatioAfterSellFormatted = formatPercent(targetCollRatio, { precision: 2 })
   const ratioToPerformSellFormatted = formatPercent(execCollRatio, { precision: 2 })
