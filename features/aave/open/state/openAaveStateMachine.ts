@@ -12,8 +12,8 @@ import {
   OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ethNullAddress } from 'blockchain/networksConfig'
 import { ContextConnected } from 'blockchain/network'
+import { ethNullAddress } from 'blockchain/networksConfig'
 import { AutomationTxData } from 'components/AppContext'
 import {
   BaseAaveContext,

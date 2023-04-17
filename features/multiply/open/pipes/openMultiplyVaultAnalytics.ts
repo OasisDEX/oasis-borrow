@@ -1,7 +1,7 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/networksConfig'
 import { Context } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import { AccountDetails } from 'features/account/AccountData'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { isEqual } from 'lodash'

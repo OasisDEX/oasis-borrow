@@ -1,7 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/networksConfig'
 import { Context, every5Seconds$ } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { PositionId } from 'features/aave/types'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
