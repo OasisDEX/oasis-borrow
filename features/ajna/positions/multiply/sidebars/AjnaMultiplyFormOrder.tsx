@@ -34,7 +34,9 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       'withdraw-multiply',
       'close-multiply',
     ].includes(action)
-  const withBuying = action === 'deposit-quote-multiply'
+  // TODO: add condition for both withBuying and withSelling to check id they should be displayed for:
+  // deposit-collateral-multiply, deposit-quote-multiply, withdraw-multiply
+  const withBuying = action === 'open-multiply'
   const withSelling = action === 'close-multiply'
 
   const totalExposure = new BigNumber(22461.32)
