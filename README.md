@@ -1,11 +1,11 @@
+<div align="center">
+  <img src="https://raw.githubusercontent.com/OasisDEX/oasis-borrow/dev/public/static/img/logo_footer_v2.svg" width="500" height="500" />
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/main/graph/badge.svg?token=KMXTAUFL48)](https://app.codecov.io/gh/OasisDEX/oasis-borrow/branch/main)
 
-<br> <br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/OasisDEX/oasis-borrow/57f15f27fad34b05f94398eec8eec33bcf4ffee8/public/static/img/logo_footer_v2.svg" width="500" height="500">
 </div>
+
 <br>
 <br>
 
@@ -68,13 +68,15 @@ The application will be viewable on <http://localhost:3000> or <https://localhos
 
 ### Run staging site locally
 
-You can run the current staging site, (found at <https://staging.oasis.app>) alongside the database, by running:
+You can run the current staging site, (found at <https://staging.oasis.app>) alongside the database,
+by running:
 
 ```sh
 ./scripts/dev-with-staging.sh
 ```
 
-It will pull an additional docker container with the current staging site and will make it available at <http://0.0.0.0:3000>
+It will pull an additional docker container with the current staging site and will make it available
+at <http://0.0.0.0:3000>
 
 <br>
 
@@ -123,8 +125,8 @@ Some of the values that are used you can check in the `.env` file.
   feature if you'd like to remove that functionality at all. The values are either `0` (disabled) or
   `1` (enabled).
 
-- `SHOW_BUILD_INFO` - The value will determine whether an information about the build is displayed in
-  the footer. Currently we display only the build time and commit from which it is built. This
+- `SHOW_BUILD_INFO` - The value will determine whether an information about the build is displayed
+  in the footer. Currently we display only the build time and commit from which it is built. This
   targets deployments to staging environments so that the tam can see which version the UI reflects.
   The value is either `0` (disabled) or `1` (enabled)
 
@@ -135,7 +137,8 @@ Some of the values that are used you can check in the `.env` file.
 - `ETHERSCAN_API_KEY` - The value is used to create the corresponding etherscan endpoint. For each
   transaction, there is a url that leads to that TX details in etherscan.
 
-- `SENTRY_RELEASE` - The release in sentry.io.  Used by sentry.io to generate and upload source maps for a given release at build time, and tie those source maps to errors sent to sentry at run time.
+- `SENTRY_RELEASE` - The release in sentry.io. Used by sentry.io to generate and upload source maps
+  for a given release at build time, and tie those source maps to errors sent to sentry at run time.
 
 - `SENTRY_AUTH_TOKEN` - auth token used by sentry.io to upload source maps.
 
@@ -157,9 +160,11 @@ at _run time_
 
 - `MAILCHIMP_API_KEY` - Mailchimp API Key used to integrate Mailchimp newsletter.
 
-- `SENTRY_RELEASE` - The release in sentry.io.  Used by sentry.io to generate and upload source maps for a given release at build time, and tie those source maps to errors sent to sentry at run time.
+- `SENTRY_RELEASE` - The release in sentry.io. Used by sentry.io to generate and upload source maps
+  for a given release at build time, and tie those source maps to errors sent to sentry at run time.
 
-- `NEXT_PUBLIC_SENTRY_ENV` - The environment that sentry events are tagged as.  `production` | `staging` | `pullrequest` | `development`
+- `NEXT_PUBLIC_SENTRY_ENV` - The environment that sentry events are tagged as. `production` |
+  `staging` | `pullrequest` | `development`
 
 _Note: Make sure that you call the process that build the project with the `build-time` vars and
 make sure that you call the process that runs the application with the `run-time` vars._
@@ -169,7 +174,7 @@ make sure that you call the process that runs the application with the `run-time
 ### Hardhat
 
 In addition, we make use of hardhat in order to test the application in a controlled mainnet-like
-environment. More details can be found [here](./HARDHAT.md)
+environment. More details can be found [here](https://github.com/OasisDEX/local-evm-node)
 
 <br>
 
@@ -179,7 +184,8 @@ Current we have two containers:
 
 - `postgres-oasis-borrow` - This container contains Postgre database
 
-- `multiply-proxy-actions` - This container contains all contracts related to multiply functionality deployed to a hardhat instance
+- `multiply-proxy-actions` - This container contains all contracts related to multiply functionality
+  deployed to a hardhat instance
 
 #### Docker Containers Usage
 
@@ -196,29 +202,37 @@ cd ./scripts
 docker-compose up
 ```
 
-By executing one of the following commands you will run both containers at the same time. The process won't exit so you will be able to see the output in real time.
+By executing one of the following commands you will run both containers at the same time. The
+process won't exit so you will be able to see the output in real time.
 
 #### Docker Containers Configuration
 
-If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some environmental variables.
-For the Postgres container, you won't have the need to change them that often. Also the names are pretty explanatory
+If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some
+environmental variables. For the Postgres container, you won't have the need to change them that
+often. Also the names are pretty explanatory
 
 The configuration params for `multiply-proxy-actions` container are as follows:
 
 - `ALCHEMY_NODE` - The node that is used to read/sync data from the blockchain.
 - `ETHERSCAN_API` - Etherscan API Key that is used to get information for a transaction
 - `PRIV_KEY_MAINNET` - The private key of the first wallet address from the signer that is used
-- `TENDERLY_USERNAME` - This is the username in tenderly. It is advised to create your own registration and use your own username. Register [here](https://tenderly.co/).
-- `TENDERLY_PROJECT` - Once you have an account there is a default project - `project`. You can create other project names as well.
-- `USE_DUMMY` - By default this value is `0`. If it is set to `1` then instead of the real 1inch Exchange implementation being used, you will use the DummyExchange implementation.
-- `BLOCK_NUMBER` - There is a hardcoded number currently used - `13008355`. If you want to fork from a different one, please use this parameter.
+- `TENDERLY_USERNAME` - This is the username in tenderly. It is advised to create your own
+  registration and use your own username. Register [here](https://tenderly.co/).
+- `TENDERLY_PROJECT` - Once you have an account there is a default project - `project`. You can
+  create other project names as well.
+- `USE_DUMMY` - By default this value is `0`. If it is set to `1` then instead of the real 1inch
+  Exchange implementation being used, you will use the DummyExchange implementation.
+- `BLOCK_NUMBER` - There is a hardcoded number currently used - `13008355`. If you want to fork from
+  a different one, please use this parameter.
 
 <br>
 
 ## Multiply feature
 
-We have added multiply functionality, where generated DAI is immediately used to swap for more collateral. This utilizes the multiply proxy actions smart contract.
-The documentation for those contracts can be found [here](https://docs.google.com/document/d/1hCYIiWDc_Zm4oJasRfSZqiTk2xXpt1k7OXa52Lqd45I).
+We have added multiply functionality, where generated DAI is immediately used to swap for more
+collateral. This utilizes the multiply proxy actions smart contract. The documentation for those
+contracts can be found
+[here](https://docs.google.com/document/d/1hCYIiWDc_Zm4oJasRfSZqiTk2xXpt1k7OXa52Lqd45I).
 
 ## Contributing
 

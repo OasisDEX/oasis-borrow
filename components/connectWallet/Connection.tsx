@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
 
 export function Connection({ children, walletConnect }: WithChildren & { walletConnect: boolean }) {
-  const { executeConnection, connected, connecting, autoConnect } = useWeb3OnBoardConnection({
+  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
     walletConnect,
   })
   const { replace, reload } = useRouter()
@@ -23,14 +23,10 @@ export function Connection({ children, walletConnect }: WithChildren & { walletC
   )
 
   useEffect(() => {
-    if (!connecting && !connected) {
-      if (walletConnect) {
-        void executeConnection(handleConnected)
-      } else {
-        void autoConnect()
-      }
+    if (!connected && !connecting) {
+      void executeConnection(handleConnected)
     }
-  })
+  }, [connected, executeConnection, connecting, handleConnected])
 
   return children
 }

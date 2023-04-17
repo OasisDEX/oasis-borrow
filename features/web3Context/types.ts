@@ -16,7 +16,7 @@ export function isConnectable(
 }
 
 interface Connectable {
-  connect: (connector: AbstractConnector, connectionKind: ConnectionKind) => Promise<void>
+  connect: (connector: AbstractConnector, connectionKind: ConnectionKind) => Promise<boolean>
 }
 
 export interface Web3ContextNotConnected extends Connectable {

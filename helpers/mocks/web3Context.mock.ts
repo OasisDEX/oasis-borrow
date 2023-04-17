@@ -8,7 +8,7 @@ import Web3 from 'web3'
 
 const mockWeb3ContextNotConnected: Web3Context = {
   status: 'notConnected',
-  connect: () => Promise.resolve(),
+  connect: () => Promise.resolve(true),
 }
 
 export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
@@ -17,7 +17,7 @@ export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
   web3: new Web3(),
   chainId: 1,
   deactivate: () => null,
-  connect: () => Promise.resolve(),
+  connect: () => Promise.resolve(true),
   walletLabel: undefined,
   connectionMethod: 'web3-onboard',
 }

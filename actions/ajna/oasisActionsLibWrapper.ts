@@ -163,6 +163,7 @@ export async function getAjnaParameters({
           collateralAmount: zero,
           quoteAmount: depositAmount || zero,
           position: position as AjnaEarnPosition,
+          isStakingNft: true,
           collateralPrice,
           quotePrice,
         },

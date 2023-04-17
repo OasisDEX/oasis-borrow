@@ -21,9 +21,14 @@ import { Grid } from 'theme-ui'
 
 interface AjnaFormViewProps {
   dropdown?: SidebarSectionHeaderDropdown
+  txSuccessAction?: () => void
 }
 
-export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormViewProps>) {
+export function AjnaFormView({
+  dropdown,
+  children,
+  txSuccessAction,
+}: PropsWithChildren<AjnaFormViewProps>) {
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -84,13 +89,14 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     walletAddress,
   })
   const primaryButtonLabel = getPrimaryButtonLabelKey({
-    flow,
     currentStep,
-    product,
+    flow,
+    hasAllowance: flowState.isAllowanceReady,
     hasDpmAddress: flowState.isProxyReady,
-    walletAddress,
-    isTxSuccess,
     isTxError,
+    isTxSuccess,
+    product,
+    walletAddress,
   })
   const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
     defaultAction: async () => {
@@ -98,6 +104,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
         if (isTxSuccess) {
           setTxDetails(undefined)
           setStep(editingStep)
+          txSuccessAction && txSuccessAction()
         } else txHandler()
       } else setNextStep()
     },
@@ -128,7 +135,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
-      label: t(primaryButtonLabel),
+      label: t(primaryButtonLabel, { token: flowState.token }),
       disabled: isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,

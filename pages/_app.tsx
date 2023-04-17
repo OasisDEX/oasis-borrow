@@ -21,6 +21,7 @@ import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
+import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
@@ -187,18 +188,20 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                   {seoTags}
                   <SetupWeb3Context>
                     <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-                      <SharedUIProvider>
-                        <GasEstimationContextProvider>
-                          <NotificationSocketProvider>
-                            <WithFollowVaults>
-                              <Layout {...layoutProps}>
-                                <Component {...pageProps} />
-                                <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
-                              </Layout>
-                            </WithFollowVaults>
-                          </NotificationSocketProvider>
-                        </GasEstimationContextProvider>
-                      </SharedUIProvider>
+                      <Web3OnBoardConnectorProvider>
+                        <SharedUIProvider>
+                          <GasEstimationContextProvider>
+                            <NotificationSocketProvider>
+                              <WithFollowVaults>
+                                <Layout {...layoutProps}>
+                                  <Component {...pageProps} />
+                                  <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
+                                </Layout>
+                              </WithFollowVaults>
+                            </NotificationSocketProvider>
+                          </GasEstimationContextProvider>
+                        </SharedUIProvider>
+                      </Web3OnBoardConnectorProvider>
                     </Web3OnboardProvider>
                   </SetupWeb3Context>
                 </ModalProvider>
