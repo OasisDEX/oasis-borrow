@@ -147,8 +147,8 @@ export function FlowSidebar({
           />
         )
       default:
-        return <>adsadsa</>
+        return <></>
     }
   }
-  return <>asdasdsaaaaaa</>
+  return <></>
 }
