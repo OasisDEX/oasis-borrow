@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { contractDesc } from 'blockchain/networksConfig'
 import {
@@ -49,8 +50,8 @@ function getAddAutomationTriggerCallData(
   data: AutomationBotAddTriggerData,
   context: ContextConnected,
 ) {
-  const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).methods.addTrigger(
+  const { contract, chainId } = context
+  return contract<AutomationBot>(getNetworkContracts(chainId).automationBot).methods.addTrigger(
     data.cdpId.toString(),
     data.triggerType,
     data.replacedTriggerId,
@@ -62,9 +63,11 @@ function getAddAutomationV2TriggerCallData(
   data: AutomationBotV2AddTriggerData,
   context: ContextConnected,
 ) {
-  const { contract, automationBotV2 } = context
+  const { contract, chainId } = context
 
-  return contract<AutomationBotV2>(automationBotV2).methods.addTriggers(
+  return contract<AutomationBotV2>(
+    getNetworkContracts(chainId).automationBotV2,
+  ).methods.addTriggers(
     TriggerGroupType.SingleTrigger,
     data.continuous,
     data.replacedTriggerIds,
@@ -78,13 +81,11 @@ function getRemoveAutomationV2TriggerCallData(
   data: AutomationBotV2RemoveTriggerData,
   context: ContextConnected,
 ) {
-  const { contract, automationBotV2 } = context
+  const { contract, chainId } = context
 
-  return contract<AutomationBotV2>(automationBotV2).methods.removeTriggers(
-    data.triggersIds,
-    data.triggersData,
-    data.removeAllowance,
-  )
+  return contract<AutomationBotV2>(
+    getNetworkContracts(chainId).automationBotV2,
+  ).methods.removeTriggers(data.triggersIds, data.triggersData, data.removeAllowance)
 }
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
@@ -92,7 +93,7 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => [
-    context.automationBot.address,
+    getNetworkContracts(context.chainId).automationBot.address,
     getAddAutomationTriggerCallData(data, context).encodeABI(),
   ],
 }
@@ -103,7 +104,7 @@ export const addAutomationBotTriggerV2: TransactionDef<AutomationBotV2AddTrigger
       .methods['execute']
   },
   prepareArgs: (data, context) => [
-    context.automationBotV2.address,
+    getNetworkContracts(context.chainId).automationBotV2.address,
     getAddAutomationV2TriggerCallData(data, context).encodeABI(),
   ],
 }
@@ -114,7 +115,7 @@ export const removeAutomationBotTriggerV2: TransactionDef<AutomationBotV2RemoveT
       .methods['execute']
   },
   prepareArgs: (data, context) => [
-    context.automationBotV2.address,
+    getNetworkContracts(context.chainId).automationBotV2.address,
     getRemoveAutomationV2TriggerCallData(data, context).encodeABI(),
   ],
 }

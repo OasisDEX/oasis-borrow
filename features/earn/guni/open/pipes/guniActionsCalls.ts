@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { amountToWei } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
 import { Quote } from 'features/exchange/exchange'
@@ -35,17 +36,14 @@ export type TxChange =
     }
 
 export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
-  call: (_, { contract, guniProxyActions }) => {
-    return contract<GuniProxyActions>(guniProxyActions).methods.getOtherTokenAmount
+  call: (_, { contract, chainId }) => {
+    return contract<GuniProxyActions>(getNetworkContracts(chainId).guniProxyActions).methods
+      .getOtherTokenAmount
   },
-  prepareArgs: ({ token, leveragedAmount }, context) => {
-    const guniToken = context.tokens[token]
-    return [
-      guniToken.address,
-      context.guniResolver,
-      amountToWei(leveragedAmount, 'DAI').toFixed(0),
-      6,
-    ] // TODO: remove fixed precision
+  prepareArgs: ({ token, leveragedAmount }, { chainId }) => {
+    const { tokens, guniResolver } = getNetworkContracts(chainId)
+    const guniToken = tokens[token]
+    return [guniToken.address, guniResolver, amountToWei(leveragedAmount, 'DAI').toFixed(0), 6] // TODO: remove fixed precision
   },
   postprocess: (token2Amount: any) => new BigNumber(token2Amount).div(new BigNumber(10).pow(18)),
 }
@@ -54,8 +52,8 @@ export const getGuniMintAmount: CallDef<
   { token: string; amountOMax: BigNumber; amount1Max: BigNumber },
   { amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }
 > = {
-  call: ({ token }, { contract, tokens }) => {
-    const guniToken = tokens[token]
+  call: ({ token }, { contract, chainId }) => {
+    const guniToken = getNetworkContracts(chainId).tokens[token]
     return contract<GuniToken>(guniToken).methods.getMintAmounts
   },
   prepareArgs: ({ amountOMax, amount1Max }) => {

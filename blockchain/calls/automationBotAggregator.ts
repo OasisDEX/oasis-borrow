@@ -1,5 +1,6 @@
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { contractDesc } from 'blockchain/networksConfig'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
@@ -27,7 +28,7 @@ export const addAutomationBotAggregatorTrigger: TransactionDef<AutomationBotAddA
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => [
-    context.automationBotAggregator.address,
+    getNetworkContracts(context.chainId).automationBotAggregator.address,
     getAddAutomationAggregatotTriggerCallData(data, context).encodeABI(),
   ],
 }
@@ -36,9 +37,11 @@ function getAddAutomationAggregatotTriggerCallData(
   data: AutomationBotAddAggregatorTriggerData,
   context: ContextConnected,
 ) {
-  const { contract, automationBotAggregator } = context
+  const { contract, chainId } = context
 
-  return contract<AutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
+  return contract<AutomationBotAggregator>(
+    getNetworkContracts(chainId).automationBotAggregator,
+  ).methods.addTriggerGroup(
     CONSTANT_MULTIPLE_GROUP_TYPE,
     data.replacedTriggerIds,
     data.triggersData,
@@ -50,7 +53,7 @@ export const removeAutomationBotAggregatorTriggers: TransactionDef<AutomationBot
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => [
-    context.automationBotAggregator.address,
+    getNetworkContracts(context.chainId).automationBotAggregator.address,
     getRemoveAutomationBotAggregatorTriggersCallData(data, context).encodeABI(),
   ],
 }
@@ -59,10 +62,9 @@ function getRemoveAutomationBotAggregatorTriggersCallData(
   data: AutomationBotRemoveTriggersData,
   context: ContextConnected,
 ) {
-  const { contract, automationBotAggregator } = context
+  const { contract, chainId } = context
 
-  return contract<AutomationBotAggregator>(automationBotAggregator).methods.removeTriggers(
-    data.triggersId,
-    data.removeAllowance,
-  )
+  return contract<AutomationBotAggregator>(
+    getNetworkContracts(chainId).automationBotAggregator,
+  ).methods.removeTriggers(data.triggersId, data.removeAllowance)
 }
