@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { RAY, SECONDS_PER_YEAR } from 'components/constants'
 import { McdJug } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
@@ -10,7 +11,8 @@ export interface JugIlk {
   feeLastLevied: Date
 }
 export const jugIlk: CallDef<string, JugIlk> = {
-  call: (_, { contract, mcdJug }) => contract<McdJug>(mcdJug).methods.ilks,
+  call: (_, { contract, chainId }) =>
+    contract<McdJug>(getNetworkContracts(chainId).mcdJug).methods.ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
   postprocess: ({ 0: rawFee, 1: rawLastLevied }: any) => {
     const v = new BigNumber(rawFee).dividedBy(RAY)
@@ -23,7 +25,8 @@ export const jugIlk: CallDef<string, JugIlk> = {
 
 // BASE_COLLATERAL_FEE
 export const jugBase: CallDef<void, BigNumber> = {
-  call: (_, { contract, mcdJug }) => contract<McdJug>(mcdJug).methods.base,
+  call: (_, { contract, chainId }) =>
+    contract<McdJug>(getNetworkContracts(chainId).mcdJug).methods.base,
   prepareArgs: () => [],
   postprocess: (result: any) => new BigNumber(result),
 }

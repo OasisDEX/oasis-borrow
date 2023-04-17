@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { amountFromRay } from 'blockchain/utils'
 import { McdSpot } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
@@ -11,7 +12,8 @@ export interface SpotIlk {
 }
 
 export const spotIlk: CallDef<string, SpotIlk> = {
-  call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.ilks,
+  call: (_, { contract, chainId }) =>
+    contract<McdSpot>(getNetworkContracts(chainId).mcdSpot).methods.ilks,
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
   //  postprocess: ({ 0: pip, 1: mat }: any) => ({
   postprocess: ({ pip, mat }: any) => ({
@@ -21,7 +23,8 @@ export const spotIlk: CallDef<string, SpotIlk> = {
 }
 
 export const spotPar: CallDef<void, BigNumber> = {
-  call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.par,
+  call: (_, { contract, chainId }) =>
+    contract<McdSpot>(getNetworkContracts(chainId).mcdSpot).methods.par,
   prepareArgs: () => [],
   postprocess: (result: any) => amountFromRay(new BigNumber(result)),
 }
