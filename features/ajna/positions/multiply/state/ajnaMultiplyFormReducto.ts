@@ -25,7 +25,10 @@ export interface AjnaMultiplyFormState {
   targetLiquidationPrice?: BigNumber
   closeTo: AjnaCloseTo
   uiDropdown: AjnaMultiplyPanel
-  uiPill: Exclude<AjnaMultiplyAction, 'open-multiply' | 'switch-multiply' | 'close-multiply'>
+  uiPill: Exclude<
+    AjnaMultiplyAction,
+    'adjust' | 'open-multiply' | 'switch-multiply' | 'close-multiply'
+  >
 }
 
 export type AjnaMultiplyFormAction = ReductoActions<
@@ -53,7 +56,7 @@ export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
   ...ajnaMultiplyReset,
   closeTo: 'collateral',
   dpmAddress: ethers.constants.AddressZero,
-  uiDropdown: 'collateral',
+  uiDropdown: 'adjust',
   uiPill: 'deposit-collateral-multiply',
 }
 

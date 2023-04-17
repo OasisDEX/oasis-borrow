@@ -32,6 +32,17 @@ export function AjnaMultiplyFormController() {
           disabled: currentStep !== 'manage',
           items: [
             {
+              label: t('system.adjust-position'),
+              panel: 'adjust',
+              shortLabel: t('adjust'),
+              icon: 'circle_slider',
+              iconShrink: 2,
+              action: () => {
+                dispatch({ type: 'reset' })
+                updateState('uiDropdown', 'adjust')
+              },
+            },
+            {
               label: t('system.manage-collateral-token', {
                 token: collateralToken,
               }),

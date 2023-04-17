@@ -1,5 +1,6 @@
 import { ActionPills } from 'components/ActionPills'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { AjnaMultiplyFormContentAdjust } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentAdjust'
 import { AjnaMultiplyFormContentClose } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentClose'
 import { AjnaMultiplyFormContentDepositCollateral } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDepositCollateral'
 import { AjnaMultiplyFormContentDepositQuote } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDepositQuote'
@@ -22,6 +23,7 @@ export function AjnaMultiplyFormContentManage() {
 
   return (
     <>
+      {uiDropdown === 'adjust' && <AjnaMultiplyFormContentAdjust />}
       {uiDropdown === 'collateral' && (
         <>
           <ActionPills

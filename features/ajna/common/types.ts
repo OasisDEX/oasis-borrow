@@ -24,6 +24,7 @@ export type AjnaEarnPanel = 'adjust' | 'liquidity'
 
 export type AjnaMultiplyAction =
   | 'open-multiply'
+  | 'adjust'
   | 'deposit-collateral-multiply'
   | 'deposit-quote-multiply'
   | 'generate-multiply'
@@ -31,7 +32,7 @@ export type AjnaMultiplyAction =
   | 'withdraw-multiply'
   | 'switch-multiply'
   | 'close-multiply'
-export type AjnaMultiplyPanel = 'collateral' | 'quote' | 'switch' | 'close'
+export type AjnaMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
 
 export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction'
 export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
