@@ -37,17 +37,17 @@ export function useBridgeConnector(): [
 
   const bridgeConnector = useCallback(
     (wallet: WalletState) => {
-      return new BridgeConnector(wallet, chains)
+      return new BridgeConnector(wallet, chains, disconnect)
     },
-    [chains],
+    [chains, disconnect],
   )
 
   const automaticConnector = useMemo(() => {
     if (wallet) {
-      return new BridgeConnector(wallet, chains)
+      return new BridgeConnector(wallet, chains, disconnect)
     }
     return undefined
-  }, [wallet, chains])
+  }, [wallet, chains, disconnect])
 
   const connectCallback = useCallback(async () => {
     if (automaticConnector) {
