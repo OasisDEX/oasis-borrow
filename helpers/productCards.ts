@@ -285,7 +285,7 @@ export const productCardsConfig: {
       ],
       multiply: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
       // TODO prepare proper handling for DSR
-      earn: ['DSR', 'GUNIV3DAIUSDC2-A'],
+      earn: ['DSR'],
     },
     featuredAaveCards: {
       borrow: getAaveEnabledStrategies([
