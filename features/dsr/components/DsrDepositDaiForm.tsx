@@ -39,9 +39,9 @@ export function DsrDepositDaiFrom({
         maxAmount={maxAmount}
         showMax
         onSetMax={() =>
-          onDepositAmountChange({ target: { value: maxAmount?.toString() } } as ChangeEvent<
-            HTMLInputElement
-          >)
+          onDepositAmountChange({
+            target: { value: maxAmount?.toString() },
+          } as ChangeEvent<HTMLInputElement>)
         }
       />
       {amount && (

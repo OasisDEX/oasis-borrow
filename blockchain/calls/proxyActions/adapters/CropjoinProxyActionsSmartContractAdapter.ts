@@ -10,9 +10,7 @@ import {
   ProxyActionsAdapterType,
 } from './ProxyActionsSmartContractAdapterInterface'
 
-export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<
-  DssProxyActionsCropjoin
-> {
+export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<DssProxyActionsCropjoin> {
   AdapterType = ProxyActionsAdapterType.CROPJOIN
 
   resolveContractDesc({ chainId }: ContextConnected): ContractDesc {

@@ -52,10 +52,12 @@ const FOOTER_SECTIONS = [
   },
 ]
 
-const LangSelectComponents: Partial<SelectComponents<{
-  value: string
-  label: string
-}>> = {
+const LangSelectComponents: Partial<
+  SelectComponents<{
+    value: string
+    label: string
+  }>
+> = {
   IndicatorsContainer: () => null,
   ValueContainer: ({ children }) => <Flex sx={{ color: 'primary100' }}>{children}</Flex>,
   SingleValue: ({ children }) => <Box>{children}</Box>,

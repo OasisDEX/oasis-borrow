@@ -94,9 +94,7 @@ export type OpenAaveEvent =
 
 export function createOpenAaveStateMachine(
   openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
-  openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<
-    OpenAaveDepositBorrowParameters
-  >,
+  openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>,
   proxyStateMachine: ProxyStateMachine,
   dmpAccountStateMachine: DPMAccountStateMachine,
   allowanceStateMachine: AllowanceStateMachine,

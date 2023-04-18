@@ -125,10 +125,9 @@ export function createManageVaultAnalytics$(
     })),
   )
 
-  const collateralAllowanceTypeChanges: Observable<Pick<
-    ManageStandardBorrowVaultState,
-    'selectedCollateralAllowanceRadio'
-  >> = manageVaultState$.pipe(
+  const collateralAllowanceTypeChanges: Observable<
+    Pick<ManageStandardBorrowVaultState, 'selectedCollateralAllowanceRadio'>
+  > = manageVaultState$.pipe(
     filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
     map((state) => state.selectedCollateralAllowanceRadio),
     distinctUntilChanged(isEqual),
@@ -154,10 +153,9 @@ export function createManageVaultAnalytics$(
     })),
   )
 
-  const daiAllowanceTypeChanges: Observable<Pick<
-    ManageStandardBorrowVaultState,
-    'selectedDaiAllowanceRadio'
-  >> = manageVaultState$.pipe(
+  const daiAllowanceTypeChanges: Observable<
+    Pick<ManageStandardBorrowVaultState, 'selectedDaiAllowanceRadio'>
+  > = manageVaultState$.pipe(
     filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),
     map((state) => state.selectedDaiAllowanceRadio),
     distinctUntilChanged(isEqual),

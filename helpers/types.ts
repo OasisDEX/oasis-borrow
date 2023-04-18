@@ -19,7 +19,7 @@ export type CommonVaultState =
   | OpenGuniVaultState
 
 type Shift<A extends Array<any>> = ((...args: A) => void) extends (
-  ...args: [A[0], ...(infer R)]
+  ...args: [A[0], ...infer R]
 ) => void
   ? R
   : never

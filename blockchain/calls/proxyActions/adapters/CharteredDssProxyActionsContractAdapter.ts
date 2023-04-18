@@ -9,9 +9,7 @@ import {
   ProxyActionsAdapterType,
 } from './ProxyActionsSmartContractAdapterInterface'
 
-export class CharteredDssProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<
-  DssProxyActionsCharter
-> {
+export class CharteredDssProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<DssProxyActionsCharter> {
   AdapterType = ProxyActionsAdapterType.CHARTER
 
   resolveContractDesc(context: ContextConnected): ContractDesc {

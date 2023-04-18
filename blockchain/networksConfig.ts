@@ -11,15 +11,15 @@ import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.
 
 export type NetworkConfig = {
   id: `${number}`
-  hexId: `0x${number | string}`,
-  name: NetworkNames,
-  label: NetworkLabelType,
-  color: `#${number | string}`,
-  icon: string,
-  testnet: boolean,
-  enabled: boolean,
-  token: string,
-  rpcCallsEndpoint: string,
+  hexId: `0x${number | string}`
+  name: NetworkNames
+  label: NetworkLabelType
+  color: `#${number | string}`
+  icon: string
+  testnet: boolean
+  enabled: boolean
+  token: string
+  rpcCallsEndpoint: string
 }
 
 export function contractDesc(
@@ -124,7 +124,13 @@ const polygonConfig: NetworkConfig = {
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 export const networks = [
-  mainnetConfig, hardhatConfig, goerliConfig, arbitrumConfig, avalancheConfig, optimismConfig, polygonConfig
+  mainnetConfig,
+  hardhatConfig,
+  goerliConfig,
+  arbitrumConfig,
+  avalancheConfig,
+  optimismConfig,
+  polygonConfig,
 ]
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')

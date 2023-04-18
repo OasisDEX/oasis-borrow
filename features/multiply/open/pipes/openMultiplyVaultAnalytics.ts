@@ -66,10 +66,9 @@ export function createOpenMultiplyVaultAnalytics$(
     })),
   )
 
-  const allowanceTypeChanges: Observable<Pick<
-    MutableOpenMultiplyVaultState,
-    'selectedAllowanceRadio'
-  >> = openVaultState$.pipe(
+  const allowanceTypeChanges: Observable<
+    Pick<MutableOpenMultiplyVaultState, 'selectedAllowanceRadio'>
+  > = openVaultState$.pipe(
     map((state) => state.selectedAllowanceRadio),
     distinctUntilChanged(isEqual),
   )

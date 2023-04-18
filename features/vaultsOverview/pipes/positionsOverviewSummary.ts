@@ -134,10 +134,9 @@ export function createPositionsOverviewSummary$(
   )
 
   // calc total assets value
-  const positionsWithTotalBalance$: Observable<[
-    PositionView[],
-    BigNumber,
-  ]> = assetsAndPositions$.pipe(
+  const positionsWithTotalBalance$: Observable<
+    [PositionView[], BigNumber]
+  > = assetsAndPositions$.pipe(
     map((assetsAndPositions) => {
       const totalAssetsUsd = assetsAndPositions.reduce(
         (acc, { contentsUsd }) => acc.plus(contentsUsd || zero),
@@ -156,11 +155,9 @@ export function createPositionsOverviewSummary$(
   )
 
   // create percentage of other things
-  const withPercentageOther$: Observable<[
-    PositionView[],
-    BigNumber,
-    BigNumber,
-  ]> = positionsWithTotalBalance$.pipe(
+  const withPercentageOther$: Observable<
+    [PositionView[], BigNumber, BigNumber]
+  > = positionsWithTotalBalance$.pipe(
     map(([assetsAndPositions, totalAssetsUsd]) => {
       const top5Sum = assetsAndPositions
         .slice(0, 5)
