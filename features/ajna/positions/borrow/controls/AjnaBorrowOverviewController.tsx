@@ -25,6 +25,7 @@ export function AjnaBorrowOverviewController() {
       isSimulationLoading,
       currentPosition: { position, simulation },
     },
+    notifications,
   } = useAjnaProductContext('borrow')
 
   const changeVariant = simulation
@@ -39,6 +40,7 @@ export function AjnaBorrowOverviewController() {
     <Grid gap={2}>
       <DetailsSection
         title={t('system.overview')}
+        notifications={notifications}
         content={
           <DetailsSectionContentCardWrapper>
             <ContentCardLiquidationPrice
