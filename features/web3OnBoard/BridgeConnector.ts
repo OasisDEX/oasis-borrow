@@ -1,5 +1,5 @@
 import { Chain } from '@web3-onboard/common'
-import { EIP1193Provider, WalletState } from '@web3-onboard/core'
+import { DisconnectOptions, EIP1193Provider, WalletState } from '@web3-onboard/core'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { ConnectionKind } from 'features/web3Context'
 
@@ -16,14 +16,21 @@ export class BridgeConnector extends AbstractConnector {
     account: string | undefined
   }
 
+  private disconnectExecuted = false
+
   public isTheSame(other: BridgeConnector | undefined) {
     return (
       this.basicInfo.account === other?.basicInfo.account &&
-      this.basicInfo.chainId === other?.basicInfo.chainId
+      this.basicInfo.chainId === other?.basicInfo.chainId &&
+      this.isConnected === other?.isConnected
     )
   }
 
-  constructor(public readonly wallet: WalletState, private chains: Chain[]) {
+  constructor(
+    public readonly wallet: WalletState,
+    private chains: Chain[],
+    private disconnect: (wallet: DisconnectOptions) => Promise<WalletState[]>,
+  ) {
     const chainsIds = chains.map((chain) => parseInt(chain.id, 16))
     super({ supportedChainIds: chainsIds })
     this.basicInfo = this.getBasicInfoFromWallet()
@@ -31,6 +38,10 @@ export class BridgeConnector extends AbstractConnector {
 
   get connectionKind(): ConnectionKind {
     return 'injected'
+  }
+
+  get isConnected(): boolean {
+    return !this.disconnectExecuted
   }
 
   private getBasicInfoFromWallet() {
@@ -48,7 +59,9 @@ export class BridgeConnector extends AbstractConnector {
   }
 
   deactivate(): void {
-    this.wallet.provider.disconnect?.()
+    void this.disconnect({ label: this.wallet.label }).then(() => {
+      this.disconnectExecuted = true
+    })
   }
 
   getAccount(): Promise<string | null> {
