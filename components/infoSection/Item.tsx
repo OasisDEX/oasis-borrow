@@ -2,8 +2,10 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
+import { Tooltip, useTooltip } from 'components/Tooltip'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import { TranslateStringType } from 'helpers/translateStringType'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import React from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
@@ -30,6 +32,7 @@ export interface ItemProps {
   dropdownValues?: DropDownValue[]
   isLoading?: boolean
   isHeading?: boolean
+  tooltip?: string
 }
 
 function getSecondaryColor(variant: SecondaryVariantType): string {
@@ -59,9 +62,21 @@ export function Item({
   isLoading,
   dropDownElementType,
   labelColorPrimary,
+  tooltip,
   isHeading = false,
 }: ItemProps) {
   const [open, setOpen] = useState(false)
+  const { tooltipOpen, setTooltipOpen } = useTooltip()
+
+  const handleMouseEnter = useMemo(
+    () => (!isTouchDevice ? () => setTooltipOpen(true) : undefined),
+    [isTouchDevice],
+  )
+
+  const handleMouseLeave = useMemo(
+    () => (!isTouchDevice ? () => setTooltipOpen(false) : undefined),
+    [isTouchDevice],
+  )
 
   return (
     <Box
@@ -76,33 +91,46 @@ export function Item({
         sx={{
           cursor: !isLoading && dropdownValues?.length ? 'pointer' : 'auto',
           justifyContent: 'space-between',
+          position: 'relative',
         }}
         onClick={() => {
           !isLoading && dropdownValues?.length && setOpen(!open)
         }}
       >
         {label && (
-          <Text
-            {...(!isHeading
-              ? {
-                  as: 'p',
-                  sx: {
-                    flexShrink: 0,
-                    mr: 'auto',
-                    color: labelColorPrimary ? 'primary100' : 'neutral80',
-                  },
-                }
-              : {
-                  as: 'h4',
-                  variant: 'paragraph3',
-                  sx: {
-                    color: 'primary100',
-                    fontWeight: 'semiBold',
-                  },
-                })}
+          <Flex
+            sx={{ alignItems: 'center' }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
-            {label}
-          </Text>
+            <Text
+              {...(!isHeading
+                ? {
+                    as: 'p',
+                    sx: {
+                      flexShrink: 0,
+                      mr: 'auto',
+                      color: labelColorPrimary ? 'primary100' : 'neutral80',
+                    },
+                  }
+                : {
+                    as: 'h4',
+                    variant: 'paragraph3',
+                    sx: {
+                      color: 'primary100',
+                      fontWeight: 'semiBold',
+                    },
+                  })}
+            >
+              {label}
+            </Text>
+            {tooltip && <Icon name="question_o" size="16px" sx={{ ml: 1, color: 'neutral80' }} />}
+          </Flex>
+        )}
+        {tooltip && tooltipOpen && (
+          <Tooltip sx={{ transform: 'translateY(-100%)', right: ['0px', 'auto'], top: '-5px' }}>
+            {tooltip}
+          </Tooltip>
         )}
         <Text
           sx={{

@@ -1,5 +1,6 @@
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { getAjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowOriginationFee'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
@@ -8,6 +9,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -15,7 +17,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken },
-    steps: { isFlowStateReady },
+    steps: { isFlowStateReady, currentStep },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
   const {
@@ -26,6 +28,11 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     cached,
     cachedPosition,
     currentPosition,
+  })
+
+  const originationFee = getAjnaBorrowOriginationFee({
+    interestRate: positionData.pool.interestRate,
+    generateAmount: simulationData?.debtAmount,
   })
 
   const isLoading = !cached && isSimulationLoading
@@ -46,7 +53,9 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&
-      `${formatCryptoBalance(simulationData.debtAmount)} ${quoteToken}`,
+      `${formatCryptoBalance(
+        simulationData.debtAmount.plus(currentStep === 'setup' ? originationFee : zero),
+      )} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralAvailable,
     )} ${collateralToken}`,

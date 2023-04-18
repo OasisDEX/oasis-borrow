@@ -51,7 +51,7 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
           const { token, pair } = getTokenAndPair(pool, isEarnProduct)
 
           return {
-            asset: <DiscoverTableDataCellAsset asset={token} icons={[token]} />,
+            asset: <DiscoverTableDataCellAsset asset={pair.replace('-', '/')} icons={[token]} />,
             ...filterPoolData({
               data: ajnaPoolsTableData,
               pair,
@@ -78,7 +78,7 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
             asset: (
               <DiscoverTableDataCellInactive>
                 <DiscoverTableDataCellAsset
-                  asset={token}
+                  asset={pair.replace('-', '/')}
                   icons={[token]}
                   inactive={`(${t('coming-soon')})`}
                 />

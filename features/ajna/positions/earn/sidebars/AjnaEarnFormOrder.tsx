@@ -54,10 +54,9 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
     afterMaxLtv:
       simulationData?.price &&
       formatDecimalAsPercent(simulationData?.price.div(collateralPrice.div(quotePrice))),
-    feeWhenActionBelowLup: `$${formatAmount(feeWhenActionBelowLup, 'USD')}`,
-    totalCost: txDetails?.txCost
-      ? `$${formatAmount(txDetails.txCost.plus(feeWhenActionBelowLup), 'USD')}`
-      : '-',
+    feeWhenActionBelowLup: `${formatCryptoBalance(feeWhenActionBelowLup)} ${quoteToken}`,
+    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
+    oneDayApy: simulationData?.apy.per1d && formatDecimalAsPercent(simulationData.apy.per1d),
   }
 
   return (
@@ -88,6 +87,18 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterMaxLtv,
           isLoading,
         },
+        ...(withAjnaFee
+          ? [
+              {
+                label: t('deposit-fee'),
+                value: formatted.feeWhenActionBelowLup,
+                isLoading,
+                tooltip: t('ajna.position-page.earn.common.form.deposit-fee-tooltip', {
+                  value: formatted.oneDayApy,
+                }),
+              },
+            ]
+          : []),
         ...(isTxSuccess && cached
           ? [
               {
@@ -100,19 +111,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
           ? [
               {
                 label: t('system.max-transaction-cost'),
-                value: <GasEstimation addition={feeWhenActionBelowLup} />,
-                dropdownValues: withAjnaFee
-                  ? [
-                      {
-                        label: t('ajna.position-page.earn.common.form.ajna-fee'),
-                        value: formatted.feeWhenActionBelowLup,
-                      },
-                      {
-                        label: t('max-gas-fee'),
-                        value: <GasEstimation />,
-                      },
-                    ]
-                  : undefined,
+                value: <GasEstimation />,
                 isLoading,
               },
             ]
