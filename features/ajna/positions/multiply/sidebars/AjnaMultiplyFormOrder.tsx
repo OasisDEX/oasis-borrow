@@ -163,7 +163,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           ? [
               {
                 label: t('system.max-transaction-cost'),
-                value: <GasEstimation addition={new BigNumber(oasisFee)} />,
+                value: <GasEstimation addition={oasisFee} />,
                 dropdownValues: oasisFee
                   ? [
                       {
