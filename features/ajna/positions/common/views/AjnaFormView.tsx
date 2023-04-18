@@ -40,6 +40,7 @@ export function AjnaFormView({
       editingStep,
       isExternalStep,
       isStepWithTransaction,
+      setIsFlowStateReady,
       setNextStep,
       setStep,
       steps,
@@ -157,6 +158,7 @@ export function AjnaFormView({
         : ethers.constants.AddressZero,
     })
   }, [flowState.availableProxies])
+  useEffect(() => setIsFlowStateReady(flowState.isEverythingReady), [flowState.isEverythingReady])
   useEffect(() => {
     if (!walletAddress && steps.indexOf(currentStep) > steps.indexOf(editingStep))
       setStep(editingStep)

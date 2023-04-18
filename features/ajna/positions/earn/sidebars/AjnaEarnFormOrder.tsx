@@ -1,4 +1,6 @@
+import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -15,8 +17,10 @@ import React from 'react'
 export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
 
+  const gasEstimation = useGasEstimationContext()
   const {
     environment: { collateralToken, quoteToken, collateralPrice, quotePrice },
+    steps: { isFlowStateReady },
     tx: { txDetails, isTxSuccess },
   } = useAjnaGeneralContext()
   const {
@@ -55,6 +59,9 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
       : '-',
   }
 
+  console.log(`gasEstimation: ${gasEstimation?.usdValue}`)
+  console.log(gasEstimation)
+
   return (
     <InfoSection
       title={t('vault-changes.order-information')}
@@ -83,34 +90,35 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterMaxLtv,
           isLoading,
         },
-        isTxSuccess && cached
-          ? {
-              label: t('system.total-cost'),
-              value: formatted.totalCost,
-              isLoading,
-            }
-          : {
-              label: t('system.max-transaction-cost'),
-              value: (
-                <>
-                  <GasEstimation />
-                  {withAjnaFee && <>{` + $${formatAmount(feeWhenActionBelowLup, 'USD')}`}</>}
-                </>
-              ),
-              dropdownValues: withAjnaFee
-                ? [
-                    {
-                      label: t('max-gas-fee'),
-                      value: <GasEstimation />,
-                    },
-                    {
-                      label: t('ajna.position-page.earn.common.form.ajna-fee'),
-                      value: `$${formatAmount(feeWhenActionBelowLup, 'USD')}`,
-                    },
-                  ]
-                : undefined,
-              isLoading,
-            },
+        ...(isTxSuccess && cached
+          ? [
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]
+          : isFlowStateReady
+          ? [
+              {
+                label: t('system.max-transaction-cost'),
+                value: <GasEstimation addition={new BigNumber(feeWhenActionBelowLup)} />,
+                dropdownValues: withAjnaFee
+                  ? [
+                      {
+                        label: t('ajna.position-page.earn.common.form.ajna-fee'),
+                        value: `$${formatAmount(feeWhenActionBelowLup, 'USD')}`,
+                      },
+                      {
+                        label: t('max-gas-fee'),
+                        value: <GasEstimation />,
+                      },
+                    ]
+                  : undefined,
+                isLoading,
+              },
+            ]
+          : []),
       ]}
     />
   )

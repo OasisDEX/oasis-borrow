@@ -42,15 +42,19 @@ interface AjnaGeneralContextProviderProps {
   gasPrice: GasPriceParams
 }
 
-type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'>
+type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'> & {
+  isOwner: boolean
+}
 
 interface AjnaGeneralContextSteps {
   currentStep: AjnaSidebarStep
   editingStep: AjnaSidebarEditingStep
   isExternalStep: boolean
+  isFlowStateReady: boolean
   isStepWithTransaction: boolean
   steps: AjnaSidebarStep[]
   txStatus?: TxStatus
+  setIsFlowStateReady: Dispatch<SetStateAction<boolean>>
   setStep: (step: AjnaSidebarStep) => void
   setNextStep: () => void
   setPrevStep: () => void
@@ -67,9 +71,7 @@ interface AjnaGeneralContextTx {
 }
 
 interface AjnaGeneralContext {
-  environment: AjnaGeneralContextEnvironment & {
-    isOwner: boolean
-  }
+  environment: AjnaGeneralContextEnvironment
   steps: AjnaGeneralContextSteps
   tx: AjnaGeneralContextTx
 }
@@ -93,6 +95,7 @@ export function AjnaGeneralContextProvider({
   const { flow, collateralBalance, quoteBalance, owner } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
+  const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
   const [txDetails, setTxDetails] = useState<TxDetails>()
 
   const shiftStep = (direction: 'next' | 'prev') => {
@@ -108,7 +111,9 @@ export function AjnaGeneralContextProvider({
       steps,
       editingStep: flow === 'open' ? 'setup' : 'manage',
       isExternalStep: isExternalStep({ currentStep }),
+      isFlowStateReady,
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
+      setIsFlowStateReady,
       setStep: (step) => setCurrentStep(step),
       setNextStep: () => shiftStep('next'),
       setPrevStep: () => shiftStep('prev'),
@@ -141,7 +146,7 @@ export function AjnaGeneralContextProvider({
       steps: setupStepManager(),
       tx: setupTxManager(),
     }))
-  }, [collateralBalance, currentStep, quoteBalance, txDetails, walletAddress])
+  }, [collateralBalance, currentStep, isFlowStateReady, quoteBalance, txDetails, walletAddress])
 
   return <ajnaGeneralContext.Provider value={context}>{children}</ajnaGeneralContext.Provider>
 }

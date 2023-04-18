@@ -9,6 +9,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -16,6 +17,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken, quoteToken },
+    steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
   const {
@@ -38,6 +40,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   // deposit-collateral-multiply, deposit-quote-multiply, withdraw-multiply
   const withBuying = action === 'open-multiply'
   const withSelling = action === 'close-multiply'
+  const withOasisFee = withBuying || withSelling
 
   const totalExposure = new BigNumber(22461.32)
   const afterTotalExposure = new BigNumber(28436.37)
@@ -51,6 +54,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const buyingCollateral = new BigNumber(1.1645)
   const sellingCollateral = new BigNumber(11.2)
   const priceImpact = new BigNumber(0.0064)
+  const oasisFee = new BigNumber(withOasisFee ? 5.48 : zero)
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
@@ -69,6 +73,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     sellingCollateralUSD: `$${formatAmount(sellingCollateral.times(collateralPrice), 'USD')}`,
     collateralPrice: `$${formatAmount(collateralPrice, 'USD')}`,
     collateralPriceImpact: formatDecimalAsPercent(priceImpact),
+    oasisFee: `$${formatAmount(oasisFee, 'USD')}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
@@ -146,17 +151,35 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           change: formatted.afterLoanToValue,
           isLoading,
         },
-        isTxSuccess && cached
-          ? {
-              label: t('system.total-cost'),
-              value: formatted.totalCost,
-              isLoading,
-            }
-          : {
-              label: t('system.max-transaction-cost'),
-              value: <GasEstimation />,
-              isLoading,
-            },
+        ...(isTxSuccess && cached
+          ? [
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]
+          : isFlowStateReady
+          ? [
+              {
+                label: t('system.max-transaction-cost'),
+                value: <GasEstimation addition={new BigNumber(oasisFee)} />,
+                dropdownValues: oasisFee
+                  ? [
+                      {
+                        label: t('vault-changes.oasis-fee'),
+                        value: formatted.oasisFee,
+                      },
+                      {
+                        label: t('max-gas-fee'),
+                        value: <GasEstimation />,
+                      },
+                    ]
+                  : undefined,
+                isLoading,
+              },
+            ]
+          : []),
       ]}
     />
   )

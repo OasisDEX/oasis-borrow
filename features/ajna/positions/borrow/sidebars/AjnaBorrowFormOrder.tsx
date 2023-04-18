@@ -15,6 +15,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken },
+    steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
   const {
@@ -90,17 +91,23 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
           isLoading,
         },
-        isTxSuccess && cached
-          ? {
-              label: t('system.total-cost'),
-              value: formatted.totalCost,
-              isLoading,
-            }
-          : {
-              label: t('system.max-transaction-cost'),
-              value: <GasEstimation />,
-              isLoading,
-            },
+        ...(isTxSuccess && cached
+          ? [
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]
+          : isFlowStateReady
+          ? [
+              {
+                label: t('system.max-transaction-cost'),
+                value: <GasEstimation />,
+                isLoading,
+              },
+            ]
+          : []),
       ]}
     />
   )
