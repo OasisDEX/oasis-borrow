@@ -1,10 +1,18 @@
-import { goerliRpc, mainnetRpc } from 'config/rpcConfig'
+import {
+  arbitrumGoerliRpc,
+  arbitrumMainnetRpc,
+  goerliRpc,
+  mainnetRpc,
+  optimismGoerliRpc,
+  optimismMainnetRpc,
+  polygonMainnetRpc,
+  polygonMumbaiRpc,
+} from 'config/rpcConfig'
 import { ContractDesc } from 'features/web3Context'
 import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import arbitrumMainnetIcon from 'public/static/img/network_icons/arbitrum_mainnet.svg'
-import avalancheMainnetIcon from 'public/static/img/network_icons/avalanche_mainnet.svg'
 import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainnet.svg'
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
@@ -69,7 +77,7 @@ const hardhatConfig: NetworkConfig = {
   rpcCallsEndpoint: `http://localhost:8545`,
 }
 
-const arbitrumConfig: NetworkConfig = {
+const arbitrumMainnetConfig: NetworkConfig = {
   id: '42161',
   hexId: '0xa4b1',
   name: NetworkNames.arbitrumMainnet,
@@ -79,36 +87,23 @@ const arbitrumConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: `https://rpc.ankr.com/arbitrum`,
+  rpcCallsEndpoint: arbitrumMainnetRpc,
 }
 
-const avalancheConfig: NetworkConfig = {
-  id: '43114',
-  hexId: '0xa86a',
-  name: NetworkNames.avalancheMainnet,
-  label: 'Avalanche',
-  color: '#ed494a',
-  icon: avalancheMainnetIcon as string,
+const arbitrumGoerliConfig: NetworkConfig = {
+  id: '421613',
+  hexId: '0x66eed',
+  name: NetworkNames.arbitrumGoerli,
+  label: 'Arbitrum Goerli',
+  color: '#28a0f0',
+  icon: arbitrumMainnetIcon as string,
   testnet: false,
   enabled: true,
-  token: 'ETH',
-  rpcCallsEndpoint: `https://api.avax.network/ext/bc/C/rpc`,
+  token: 'AGOR',
+  rpcCallsEndpoint: arbitrumGoerliRpc,
 }
 
-const optimismConfig: NetworkConfig = {
-  id: '10',
-  hexId: '0xa',
-  name: NetworkNames.optimismMainnet,
-  label: 'Optimism',
-  color: '#ff3f49',
-  icon: optimismMainnetIcon as string,
-  testnet: false,
-  enabled: true,
-  token: 'ETH',
-  rpcCallsEndpoint: `https://mainnet.optimism.io`,
-}
-
-const polygonConfig: NetworkConfig = {
+const polygonMainnetConfig: NetworkConfig = {
   id: '137',
   hexId: '0x89',
   name: NetworkNames.polygonMainnet,
@@ -118,7 +113,46 @@ const polygonConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: `https://polygon-rpc.com`,
+  rpcCallsEndpoint: polygonMainnetRpc,
+}
+
+const polygonMumbaiConfig: NetworkConfig = {
+  id: '80001',
+  hexId: '0x13881',
+  name: NetworkNames.polygonMumbai,
+  label: 'Polygon Mumbai',
+  color: '#9866ed',
+  icon: polygonMainnetIcon as string,
+  testnet: false,
+  enabled: true,
+  token: 'ETH',
+  rpcCallsEndpoint: polygonMumbaiRpc,
+}
+
+const optimismMainnetConfig: NetworkConfig = {
+  id: '10',
+  hexId: '0xa',
+  name: NetworkNames.optimismMainnet,
+  label: 'Optimism',
+  color: '#ff3f49',
+  icon: optimismMainnetIcon as string,
+  testnet: false,
+  enabled: true,
+  token: 'ETH',
+  rpcCallsEndpoint: optimismMainnetRpc,
+}
+
+const optimismGoerliConfig: NetworkConfig = {
+  id: '420',
+  hexId: '0x1a4',
+  name: NetworkNames.optimismMainnet,
+  label: 'Optimism Goerli',
+  color: '#ff3f49',
+  icon: optimismMainnetIcon as string,
+  testnet: false,
+  enabled: true,
+  token: 'ETH',
+  rpcCallsEndpoint: optimismGoerliRpc,
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -139,10 +173,12 @@ export const networks = [
   mainnetConfig,
   hardhatConfig,
   goerliConfig,
-  arbitrumConfig,
-  avalancheConfig,
-  optimismConfig,
-  polygonConfig,
+  arbitrumMainnetConfig,
+  arbitrumGoerliConfig,
+  polygonMainnetConfig,
+  polygonMumbaiConfig,
+  optimismMainnetConfig,
+  optimismGoerliConfig,
 ]
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')

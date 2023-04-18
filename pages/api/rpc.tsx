@@ -1,6 +1,7 @@
 import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 import * as ethers from 'ethers'
+import { NetworkNames } from 'helpers/networkNames'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const threadId = Math.floor(Math.random() * 1000000)
@@ -60,12 +61,25 @@ const blockRecheckDelay = 3000
 
 const cache: { [key: string]: Cache } = {}
 
-function getRpcNode(network: string) {
+function getRpcNode(network: NetworkNames) {
   switch (network) {
+    // case 'hardhat': // hardhat does not request this one
     case 'mainnet':
       return `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case 'goerli':
       return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case 'arbitrum-mainnet':
+      return `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case 'arbitrum-goerli':
+      return `https://arbitrum-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case 'polygon-mainnet':
+      return `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case 'polygon-mumbai':
+      return `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case 'optimism-mainnet':
+      return `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case 'optimism-goerli':
+      return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
       throw new Error('unsupported network')
   }
@@ -142,7 +156,7 @@ const abi = [
   },
 ]
 
-async function makeCall(network: string, calls: any[]) {
+async function makeCall(network: NetworkNames, calls: any[]) {
   const callsLength = JSON.stringify(calls).length
   let config = {
     headers: {
@@ -196,7 +210,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const networkQuery = req.query.network!
   const clientIdQuery = req.query.clientId!
-  const network = networkQuery.toString()
+  const network = networkQuery.toString() as NetworkNames
   const clientId = clientIdQuery.toString()
   //withCache = req.query.withCache.toString() === "true"
 
@@ -382,7 +396,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       counters.bypassedPayloadSize += JSON.stringify(requestBody).length
       counters.bypassedCallsCount += requestBody.length
       console.log('RPC call failed, falling back to individual calls')
-      finalResponse = await makeCall(networkQuery.toString(), requestBody)
+      finalResponse = await makeCall(network, requestBody)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       console.log('RPC call failed, fallback successful')
       console.log(JSON.stringify(counters))
@@ -391,7 +405,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     if (Array.isArray(requestBody)) {
       const callsCount = requestBody.filter((call) => call.method === 'eth_call').length
       const notCallsCount = requestBody.filter((call) => call.method !== 'eth_call').length
-      finalResponse = await makeCall(networkQuery.toString(), requestBody)
+      finalResponse = await makeCall(network, requestBody)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       counters.initialTotalCalls += callsCount + notCallsCount
       if (debug) console.log('RPC no batching of Array, falling back to individual calls')
@@ -415,7 +429,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               )
             }
 
-            const result = await makeCall(networkQuery.toString(), [requestBody])
+            const result = await makeCall(network, [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
             if (withCache) {
               cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
@@ -450,7 +464,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             if (debug) console.log('Contract code from cache', requestBody.params[0])
           } else {
             if (debug) console.log('Fetching contract code', requestBody.params[0])
-            result = await makeCall(networkQuery.toString(), [requestBody])
+            result = await makeCall(network, [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
             if (withCache) cache[network].persistentCache[requestBody.params[0]] = result[0].result
           }
@@ -464,7 +478,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(requestBody).length
-          finalResponse = await makeCall(networkQuery.toString(), [requestBody])
+          finalResponse = await makeCall(network, [requestBody])
           if (Array.isArray(finalResponse) && finalResponse.length === 1) {
             finalResponse = finalResponse[0]
           }

@@ -1,5 +1,6 @@
 import { networksByName } from 'blockchain/networksConfig'
 import { CustomNetworkStorageKey } from 'helpers/getCustomNetworkParameter'
+import { NetworkNames } from 'helpers/networkNames'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { getStorageValue } from 'helpers/useLocalStorage'
 import { isNull, isUndefined, memoize } from 'lodash'
@@ -25,7 +26,7 @@ export const contract: any = memoize(
 
 export function getNetworkName(): string {
   const name = 'network'
-  const defaultNetwork = 'ethereumMainnet'
+  const defaultNetwork = NetworkNames.ethereumMainnet
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher') // not a hook :)
   const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
