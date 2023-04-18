@@ -1,14 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { v4 } from 'uuid'
+import { getRandomString } from 'helpers/getRandomString'
 
 export function generateRandomBigNumber() {
   return BigNumber.random()
 }
 
-export function generateRandomString() {
-  return v4().replaceAll('-', '')
-}
-
 export function generateRandomAddress() {
-  return `0x00${v4().replaceAll('-', '')}`
+  return `0x00${getRandomString()}`
 }

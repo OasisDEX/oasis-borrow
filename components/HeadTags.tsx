@@ -1,5 +1,6 @@
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { getRandomString } from 'helpers/getRandomString'
 import { networkTabTitleIconMap } from 'helpers/networkIconMap'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -8,7 +9,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { useTheme } from 'theme/useThemeUI'
-import { v4 as uuid } from 'uuid'
 
 export function HeadTags() {
   const { theme } = useTheme()
@@ -106,15 +106,21 @@ export function PageSEOTags({
 
       <meta
         property="og:image"
-        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}?${uuid()}`)}
+        content={staticFilesRuntimeUrl(
+          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
+        )}
       />
       <meta
         property="og:image:secure_url"
-        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}?${uuid()}`)}
+        content={staticFilesRuntimeUrl(
+          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
+        )}
       />
       <meta
         name="twitter:image"
-        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.twitterImage}?${uuid()}`)}
+        content={staticFilesRuntimeUrl(
+          `/static/img/og_images/${OGImages.twitterImage}?${getRandomString()}`,
+        )}
       />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:creator" content="@oasisdotapp" />

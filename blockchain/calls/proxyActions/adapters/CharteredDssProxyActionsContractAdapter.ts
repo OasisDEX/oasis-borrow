@@ -1,3 +1,4 @@
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { ContractDesc } from 'features/web3Context'
 import { DssProxyActionsCharter } from 'types/web3-v1-contracts'
@@ -13,7 +14,7 @@ export class CharteredDssProxyActionsContractAdapter extends ManagerlessProxyAct
   AdapterType = ProxyActionsAdapterType.CHARTER
 
   resolveContractDesc(context: ContextConnected): ContractDesc {
-    return context.dssProxyActionsCharter
+    return getNetworkContracts(context.chainId).dssProxyActionsCharter
   }
 
   claimRewards(

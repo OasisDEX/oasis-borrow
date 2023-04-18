@@ -1,2 +1,3 @@
-export const clientId =
-  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+import { getRandomString } from './getRandomString'
+
+export const clientId = getRandomString() + getRandomString()

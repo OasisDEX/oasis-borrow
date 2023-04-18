@@ -1,6 +1,6 @@
+import { getRandomString } from 'helpers/getRandomString'
 import jwt from 'jsonwebtoken'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
-import { v4 as uuid } from 'uuid'
 import * as z from 'zod'
 
 export interface ChallengeJWT {
@@ -29,7 +29,7 @@ export function makeChallenge(options: { challengeJWTSecret: string }): NextApiH
 
     const payload: ChallengeJWT = {
       address: body.address,
-      randomChallenge: uuid(),
+      randomChallenge: getRandomString(),
     }
 
     const challenge = jwt.sign(payload, options.challengeJWTSecret, {

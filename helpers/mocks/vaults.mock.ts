@@ -4,11 +4,9 @@ import { IlkData } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import { OraclePriceData } from 'blockchain/prices'
 import { createVault$, Vault } from 'blockchain/vaults'
-import {
-  generateRandomBigNumber,
-  generateRandomString,
-} from 'features/automation/optimization/autoTakeProfit/tests/utils'
+import { generateRandomBigNumber } from 'features/automation/optimization/autoTakeProfit/tests/utils'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { getRandomString } from 'helpers/getRandomString'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
@@ -190,11 +188,11 @@ export function createMockVault(options: MockVaultOptions): Vault {
   return {
     makerType: 'STANDARD',
     id: generateRandomBigNumber(),
-    owner: generateRandomString(),
+    owner: getRandomString(),
     controller: '',
     token: '',
-    ilk: generateRandomString(),
-    address: generateRandomString(),
+    ilk: getRandomString(),
+    address: getRandomString(),
     lockedCollateral: generateRandomBigNumber(),
     unlockedCollateral: generateRandomBigNumber(),
     lockedCollateralUSD: generateRandomBigNumber(),

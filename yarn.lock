@@ -5572,11 +5572,6 @@
   resolved "https://registry.yarnpkg.com/@types/use-sync-external-store/-/use-sync-external-store-0.0.3.tgz#b6725d5f4af24ace33b36fafd295136e75509f43"
   integrity sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==
 
-"@types/uuid@^7.0.3":
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-7.0.3.tgz#45cd03e98e758f8581c79c535afbd4fc27ba7ac8"
-  integrity sha512-PUdqTZVrNYTNcIhLHkiaYzoOIaUi5LFg/XLerAdgvwQrUCx+oSbtoBze1AMyvYbcwzUSNC+Isl58SM4Sm/6COw==
-
 "@types/ws@^7.4.4":
   version "7.4.7"
   resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.7.tgz#f7c390a36f7a0679aa69de2d501319f4f8d9b702"

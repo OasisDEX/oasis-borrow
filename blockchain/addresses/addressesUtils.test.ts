@@ -1,6 +1,6 @@
 import { getCollaterals, getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import mainnet from 'blockchain/addresses/mainnet.json'
-import { supportedIlks } from 'blockchain/networksConfig'
+import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { expect } from 'chai'
 
 describe('adressesUtils', () => {

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
+import { getNetworkContracts } from './contracts'
 import { ContextConnected } from './network'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
@@ -23,7 +24,7 @@ export function getCollateralLocked$(
 ): Observable<CollateralLocked> {
   return combineLatest(context$, ilkToToken$(ilk)).pipe(
     switchMap(([context, token]) => {
-      const address = context.joins[ilk]
+      const address = getNetworkContracts(context.chainId).joins[ilk]
       return balance$(token, address).pipe(map((balance) => ({ ilk, token, collateral: balance })))
     }),
   )
