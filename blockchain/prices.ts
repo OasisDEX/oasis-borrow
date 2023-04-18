@@ -8,6 +8,7 @@ import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from
 import { ajax } from 'rxjs/ajax'
 import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { getNetworkContracts } from './contracts'
 import { getToken } from './tokensMetadata'
 
 export interface Tickers {
@@ -196,8 +197,10 @@ export function createOraclePriceData$(
   { token, requestedData }: OraclePriceDataArgs,
 ): Observable<Partial<OraclePriceData>> {
   return context$.pipe(
-    switchMap(({ web3, mcdOsms }) => {
-      return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
+    switchMap(({ web3, chainId }) => {
+      return bindNodeCallback(web3.eth.getCode)(
+        getNetworkContracts(chainId).mcdOsms[token].address,
+      ).pipe(
         first(),
         switchMap((contractData) => {
           type Pipes = {

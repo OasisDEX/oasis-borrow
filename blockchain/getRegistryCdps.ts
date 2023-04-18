@@ -4,6 +4,7 @@ import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
+import { getNetworkContracts } from './contracts'
 import { Context } from './network'
 
 function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {
@@ -20,13 +21,16 @@ export function createGetRegistryCdps$(
   address: string,
 ): Observable<BigNumber[]> {
   return combineLatest(onEveryBlock$, context$).pipe(
-    switchMap(([_, { joins }]) =>
+    switchMap(([_, { chainId }]) =>
       getUserProxyAddress$(address).pipe(
         switchMap((proxyAddress) => {
           if (proxyAddress === undefined) {
             return of([])
           }
-          const supportedIlks = filterSupportedIlksOnNetwork(joins, ilks)
+          const supportedIlks = filterSupportedIlksOnNetwork(
+            getNetworkContracts(chainId).joins,
+            ilks,
+          )
 
           if (supportedIlks.length === 0) {
             return of([])
