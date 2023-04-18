@@ -94,9 +94,10 @@ function verifyAcceptance$(
 
   const token = jwtAuthGetToken(account)
 
-  return (token && token !== 'invalid'
-    ? checkAcceptance$(token, version)
-    : of({ acceptance: false, updated: false })
+  return (
+    token && token !== 'invalid'
+      ? checkAcceptance$(token, version)
+      : of({ acceptance: false, updated: false })
   ).pipe(
     switchMap(({ acceptance, updated }) => {
       if (acceptance) {

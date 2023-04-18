@@ -23,15 +23,18 @@ export type AutomationBotRemoveTriggersData = AutomationBotAggregatorBaseTrigger
   kind: TxMetaKind.removeTriggers
 }
 
-export const addAutomationBotAggregatorTrigger: TransactionDef<AutomationBotAddAggregatorTriggerData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => [
-    getNetworkContracts(context.chainId).automationBotAggregator.address,
-    getAddAutomationAggregatotTriggerCallData(data, context).encodeABI(),
-  ],
-}
+export const addAutomationBotAggregatorTrigger: TransactionDef<AutomationBotAddAggregatorTriggerData> =
+  {
+    call: ({ proxyAddress }, { contract }) => {
+      return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+        'execute(address,bytes)'
+      ]
+    },
+    prepareArgs: (data, context) => [
+      getNetworkContracts(context.chainId).automationBotAggregator.address,
+      getAddAutomationAggregatotTriggerCallData(data, context).encodeABI(),
+    ],
+  }
 
 function getAddAutomationAggregatotTriggerCallData(
   data: AutomationBotAddAggregatorTriggerData,
@@ -48,15 +51,18 @@ function getAddAutomationAggregatotTriggerCallData(
   )
 }
 
-export const removeAutomationBotAggregatorTriggers: TransactionDef<AutomationBotRemoveTriggersData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => [
-    getNetworkContracts(context.chainId).automationBotAggregator.address,
-    getRemoveAutomationBotAggregatorTriggersCallData(data, context).encodeABI(),
-  ],
-}
+export const removeAutomationBotAggregatorTriggers: TransactionDef<AutomationBotRemoveTriggersData> =
+  {
+    call: ({ proxyAddress }, { contract }) => {
+      return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+        'execute(address,bytes)'
+      ]
+    },
+    prepareArgs: (data, context) => [
+      getNetworkContracts(context.chainId).automationBotAggregator.address,
+      getRemoveAutomationBotAggregatorTriggersCallData(data, context).encodeABI(),
+    ],
+  }
 
 function getRemoveAutomationBotAggregatorTriggersCallData(
   data: AutomationBotRemoveTriggersData,

@@ -71,15 +71,15 @@ export function NotificationCard({
 }: NotificationCardProps) {
   const { t } = useTranslation()
   const isCritical = criticalNotifications.includes(notificationType)
-  const cardSx = useMemo(() => getNotificationCardSx({ isCritical, isRead }), [
-    notificationType,
-    isRead,
-  ])
+  const cardSx = useMemo(
+    () => getNotificationCardSx({ isCritical, isRead }),
+    [notificationType, isRead],
+  )
   const linkHash = useMemo(() => getEditVaultLinkHash(notificationType), [notificationType])
-  const statusDotColor = useMemo(() => getStatusDotColor({ isRead, isCritical }), [
-    isRead,
-    isCritical,
-  ])
+  const statusDotColor = useMemo(
+    () => getStatusDotColor({ isRead, isCritical }),
+    [isRead, isCritical],
+  )
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'short',

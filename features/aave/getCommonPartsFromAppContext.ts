@@ -70,11 +70,8 @@ export function getCommonPartsFromAppContext({
     commonTransactionServices,
   )
 
-  const getAvailableDPMProxy: (
-    walletAddress: string,
-  ) => Observable<UserDpmAccount | undefined> = memoize(
-    curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
-  )
+  const getAvailableDPMProxy: (walletAddress: string) => Observable<UserDpmAccount | undefined> =
+    memoize(curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$))
 
   const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
     switchMap(({ account }) => getAvailableDPMProxy(account)),

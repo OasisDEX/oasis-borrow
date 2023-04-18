@@ -48,7 +48,7 @@ function extractDpmProxyFromTxnReceipt(
           return discoveredProxy
         }
         try {
-          return (logParser.parseLog(log).args as unknown) as UserDpmAccount // args is the proxy
+          return logParser.parseLog(log).args as unknown as UserDpmAccount // args is the proxy
         } catch (e) {
           // throws when reading an event from a non AccountFactory ABI - assume no proxy from this event
           return undefined

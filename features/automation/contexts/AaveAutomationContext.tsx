@@ -24,9 +24,10 @@ export function AaveAutomationContext({
   children,
   aaveManageVault,
 }: PropsWithChildren<AaveAutomationContextProps>) {
-  const positionData = useMemo(() => getAutomationAavePositionData({ aaveManageVault }), [
-    aaveManageVault,
-  ])
+  const positionData = useMemo(
+    () => getAutomationAavePositionData({ aaveManageVault }),
+    [aaveManageVault],
+  )
 
   const commonData = useMemo(
     () => ({

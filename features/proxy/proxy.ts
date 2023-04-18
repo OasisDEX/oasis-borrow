@@ -32,7 +32,7 @@ export const PROXY_STAGES = [
   'proxySuccess',
 ] as const
 
-export type ProxyStages = typeof PROXY_STAGES[number]
+export type ProxyStages = (typeof PROXY_STAGES)[number]
 
 export function isProxyStage(stage: string): stage is ProxyStages {
   return PROXY_STAGES.includes(stage as any)

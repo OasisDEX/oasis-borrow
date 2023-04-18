@@ -69,7 +69,7 @@ export function createContext$(
         rpcProvider: provider,
         contractV2: <T>(c: ContractDesc) => {
           const contract = new ethers.Contract(c.address, c.abi, provider)
-          return (contract as any) as T
+          return contract as any as T
         },
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,
         web3ProviderGetPastLogs,

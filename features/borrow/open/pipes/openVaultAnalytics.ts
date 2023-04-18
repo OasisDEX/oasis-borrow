@@ -82,13 +82,12 @@ export function createOpenVaultAnalytics$(
     })),
   )
 
-  const allowanceTypeChanges: Observable<
-    Pick<MutableOpenVaultState, 'selectedAllowanceRadio'>
-  > = openVaultState$.pipe(
-    filter((state) => state.stage === 'allowanceWaitingForConfirmation'),
-    map((state) => state.selectedAllowanceRadio),
-    distinctUntilChanged(isEqual),
-  )
+  const allowanceTypeChanges: Observable<Pick<MutableOpenVaultState, 'selectedAllowanceRadio'>> =
+    openVaultState$.pipe(
+      filter((state) => state.stage === 'allowanceWaitingForConfirmation'),
+      map((state) => state.selectedAllowanceRadio),
+      distinctUntilChanged(isEqual),
+    )
 
   const allowanceAmountChanges: Observable<BigNumber> = openVaultState$.pipe(
     map((state) => state.allowanceAmount),

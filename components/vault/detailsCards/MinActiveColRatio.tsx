@@ -40,12 +40,8 @@ type MinActiveColRatioProps = {
 export function MinActiveColRatioCard(props: MinActiveColRatioProps) {
   const { t } = useTranslation()
   const openModal = useModal()
-  const {
-    afterPill,
-    activeCollRatioPriceUSD,
-    afterActiveCollRatioPriceUSD,
-    activeCollRatio,
-  } = props
+  const { afterPill, activeCollRatioPriceUSD, afterActiveCollRatioPriceUSD, activeCollRatio } =
+    props
   return (
     <VaultDetailsCard
       title={t('manage-insti-vault.card.min-active-coll-ratio.price')}

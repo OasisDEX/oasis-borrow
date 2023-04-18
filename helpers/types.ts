@@ -27,7 +27,7 @@ type Shift<A extends Array<any>> = ((...args: A) => void) extends (
 type GrowExpRev<
   A extends Array<any>,
   N extends number,
-  P extends Array<Array<any>>
+  P extends Array<Array<any>>,
 > = A['length'] extends N
   ? A
   : {
@@ -38,7 +38,7 @@ type GrowExpRev<
 type GrowExp<
   A extends Array<any>,
   N extends number,
-  P extends Array<Array<any>>
+  P extends Array<Array<any>>,
 > = A['length'] extends N
   ? A
   : {

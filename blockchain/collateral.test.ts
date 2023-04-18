@@ -26,9 +26,9 @@ describe('getCollateralLocked$', () => {
     expect(getStateUnpacker(result)).to.throw()
   })
   it('should return balance of token for ilk', () => {
-    const context = ({
+    const context = {
       joins: { ilk: 'address' },
-    } as unknown) as ContextConnected
+    } as unknown as ContextConnected
 
     function ilkToToken$(ilk: string) {
       if (ilk === 'ilk') {

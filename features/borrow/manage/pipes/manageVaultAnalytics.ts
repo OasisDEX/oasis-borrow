@@ -196,30 +196,31 @@ export function createManageVaultAnalytics$(
     distinctUntilChanged(isEqual),
   )
 
-  const manageVaultConfirmTransaction: Observable<ManageVaultConfirmTransaction> = manageVaultState$.pipe(
-    filter((state) => state.stage === 'manageInProgress'),
-    map(
-      ({
-        vault: { ilk },
-        depositAmount,
-        withdrawAmount,
-        generateAmount,
-        paybackAmount,
-        manageTxHash,
-      }) => ({
-        kind: 'manageVaultConfirmTransaction',
-        value: {
-          ilk: ilk,
-          collateralAmount:
-            depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
-          daiAmount:
-            generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
-          txHash: manageTxHash,
-        },
-      }),
-    ),
-    distinctUntilChanged(isEqual),
-  )
+  const manageVaultConfirmTransaction: Observable<ManageVaultConfirmTransaction> =
+    manageVaultState$.pipe(
+      filter((state) => state.stage === 'manageInProgress'),
+      map(
+        ({
+          vault: { ilk },
+          depositAmount,
+          withdrawAmount,
+          generateAmount,
+          paybackAmount,
+          manageTxHash,
+        }) => ({
+          kind: 'manageVaultConfirmTransaction',
+          value: {
+            ilk: ilk,
+            collateralAmount:
+              depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
+            daiAmount:
+              generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
+            txHash: manageTxHash,
+          },
+        }),
+      ),
+      distinctUntilChanged(isEqual),
+    )
 
   return combineLatest(context$, stageChanges)
     .pipe(

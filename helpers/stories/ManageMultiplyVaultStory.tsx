@@ -35,89 +35,90 @@ export function manageMultiplyVaultStory({
   exchangeQuote,
 }: ManageMultiplyVaultStory = {}) {
   return (
-    {
-      depositAmount,
-      withdrawAmount,
-      generateAmount,
-      paybackAmount,
-      ...otherState
-    }: Partial<MutableManageMultiplyVaultState> = defaultMutableManageMultiplyVaultState(
-      vault?.collateral,
-    ),
-  ) => () => {
-    const obs$ = mockManageMultiplyVault$({
-      account,
-      balanceInfo,
-      priceInfo,
-      vault,
-      ilkData,
-      proxyAddress,
-      collateralAllowance,
-      daiAllowance,
-      exchangeQuote,
-    })
-
-    useEffect(() => {
-      const subscription = obs$
-        .pipe(first())
-        .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
-          const newState: Partial<MutableManageMultiplyVaultState> = {
-            ...otherState,
-            ...(depositAmount && {
-              depositAmount,
-              depositAmountUSD: depositAmount.times(currentCollateralPrice),
-            }),
-            ...(withdrawAmount && {
-              withdrawAmount,
-              withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
-            }),
-            ...(generateAmount && {
-              generateAmount,
-            }),
-            ...(paybackAmount && {
-              paybackAmount,
-            }),
-          }
-
-          injectStateOverride(newState || {})
-        })
-
-      return subscription.unsubscribe()
-    }, [])
-
-    const ctx = ({
-      vaultHistory$: memoize(() => of([])),
-      context$: of({ etherscan: 'url' }),
-      generalManageVault$: memoize(() =>
-        createGeneralManageVault$(
-          () => from([]),
-          () => obs$,
-          () => obs$,
-          // @ts-ignore, don't need to mock regular here
-          () => of(EMPTY),
-          () => of(VaultType.Multiply),
-          () => of(EMPTY),
-          MOCK_VAULT_ID,
-        ),
+      {
+        depositAmount,
+        withdrawAmount,
+        generateAmount,
+        paybackAmount,
+        ...otherState
+      }: Partial<MutableManageMultiplyVaultState> = defaultMutableManageMultiplyVaultState(
+        vault?.collateral,
       ),
-      manageMultiplyVault$: () => obs$,
-      manageGuniVault$: () => obs$,
-    } as any) as AppContext
+    ) =>
+    () => {
+      const obs$ = mockManageMultiplyVault$({
+        account,
+        balanceInfo,
+        priceInfo,
+        vault,
+        ilkData,
+        proxyAddress,
+        collateralAllowance,
+        daiAllowance,
+        exchangeQuote,
+      })
 
-    return (
-      <appContext.Provider value={ctx as any}>
-        <SharedUIContext.Provider
-          value={{
-            vaultFormOpened: true,
-            setVaultFormOpened: () => null,
-            setVaultFormToggleTitle: () => null,
-          }}
-        >
-          <ManageMultiplyVaultStoryContainer title={title} />
-        </SharedUIContext.Provider>
-      </appContext.Provider>
-    )
-  }
+      useEffect(() => {
+        const subscription = obs$
+          .pipe(first())
+          .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
+            const newState: Partial<MutableManageMultiplyVaultState> = {
+              ...otherState,
+              ...(depositAmount && {
+                depositAmount,
+                depositAmountUSD: depositAmount.times(currentCollateralPrice),
+              }),
+              ...(withdrawAmount && {
+                withdrawAmount,
+                withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
+              }),
+              ...(generateAmount && {
+                generateAmount,
+              }),
+              ...(paybackAmount && {
+                paybackAmount,
+              }),
+            }
+
+            injectStateOverride(newState || {})
+          })
+
+        return subscription.unsubscribe()
+      }, [])
+
+      const ctx = {
+        vaultHistory$: memoize(() => of([])),
+        context$: of({ etherscan: 'url' }),
+        generalManageVault$: memoize(() =>
+          createGeneralManageVault$(
+            () => from([]),
+            () => obs$,
+            () => obs$,
+            // @ts-ignore, don't need to mock regular here
+            () => of(EMPTY),
+            () => of(VaultType.Multiply),
+            () => of(EMPTY),
+            MOCK_VAULT_ID,
+          ),
+        ),
+        manageMultiplyVault$: () => obs$,
+        manageGuniVault$: () => obs$,
+      } as any as AppContext
+
+      return (
+        <appContext.Provider value={ctx as any}>
+          <SharedUIContext.Provider
+            value={{
+              vaultFormOpened: true,
+              setVaultFormOpened: () => null,
+              setVaultFormToggleTitle: () => null,
+            }}
+          >
+            <ManageMultiplyVaultStoryContainer title={title} />
+          </SharedUIContext.Provider>
+        </appContext.Provider>
+      )
+    }
 }
 
 const ManageMultiplyVaultStoryContainer = ({ title }: { title?: string }) => {

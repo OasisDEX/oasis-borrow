@@ -194,9 +194,10 @@ export function AutomationContextProvider({
   })
 
   const { automationTriggersData$ } = useAppContext()
-  const autoTriggersData$ = useMemo(() => automationTriggersData$(positionData.id), [
-    positionData.id.toNumber(),
-  ])
+  const autoTriggersData$ = useMemo(
+    () => automationTriggersData$(positionData.id),
+    [positionData.id.toNumber()],
+  )
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   useStopLossStateInitialization({

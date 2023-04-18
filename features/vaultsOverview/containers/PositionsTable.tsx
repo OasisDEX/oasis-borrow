@@ -50,9 +50,10 @@ export function PositionsTable({ address }: { address: string }) {
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const { ownersPositionsList$ } = useAppContext()
   const { walletAddress } = useAccount()
-  const memoizedOwnersPositionList$ = useMemo(() => ownersPositionsList$(checksumAddress), [
-    checksumAddress,
-  ])
+  const memoizedOwnersPositionList$ = useMemo(
+    () => ownersPositionsList$(checksumAddress),
+    [checksumAddress],
+  )
   const [ownersPositionsListData, ownersPositionsListError] = useObservable(
     memoizedOwnersPositionList$,
   )
@@ -206,15 +207,18 @@ export function PositionsTableWithAjna({
 }) {
   const { t } = useTranslation()
 
-  const makerPositions = useMemo(() => getMakerPositionOfType(ownersPositionsList.makerPositions), [
-    ownersPositionsList.makerPositions,
-  ])
-  const aavePositions = useMemo(() => getAavePositionOfType(ownersPositionsList.aavePositions), [
-    ownersPositionsList.aavePositions,
-  ])
-  const ajnaPositions = useMemo(() => getAjnaPositionOfType(ownersPositionsList.ajnaPositions), [
-    ownersPositionsList.ajnaPositions,
-  ])
+  const makerPositions = useMemo(
+    () => getMakerPositionOfType(ownersPositionsList.makerPositions),
+    [ownersPositionsList.makerPositions],
+  )
+  const aavePositions = useMemo(
+    () => getAavePositionOfType(ownersPositionsList.aavePositions),
+    [ownersPositionsList.aavePositions],
+  )
+  const ajnaPositions = useMemo(
+    () => getAjnaPositionOfType(ownersPositionsList.ajnaPositions),
+    [ownersPositionsList.ajnaPositions],
+  )
 
   const parsedMakerBorrowPositions = useMemo(
     () => parseMakerBorrowPositionRows(makerPositions.borrow),
@@ -243,15 +247,18 @@ export function PositionsTableWithAjna({
     [parsedMakerMultiplyPositions, parsedAaveMultiplyPositions],
   )
 
-  const parsedMakerEarnPositions = useMemo(() => parseMakerEarnPositionRows(makerPositions.earn), [
-    makerPositions.earn,
-  ])
-  const parsedAaveEarnPositions = useMemo(() => parseAaveEarnPositionRows(aavePositions.earn), [
-    aavePositions.earn,
-  ])
-  const parsedAjnaEarnPositions = useMemo(() => parseAjnaEarnPositionRows(ajnaPositions.earn), [
-    ajnaPositions.earn,
-  ])
+  const parsedMakerEarnPositions = useMemo(
+    () => parseMakerEarnPositionRows(makerPositions.earn),
+    [makerPositions.earn],
+  )
+  const parsedAaveEarnPositions = useMemo(
+    () => parseAaveEarnPositionRows(aavePositions.earn),
+    [aavePositions.earn],
+  )
+  const parsedAjnaEarnPositions = useMemo(
+    () => parseAjnaEarnPositionRows(ajnaPositions.earn),
+    [ajnaPositions.earn],
+  )
   const parsedDsrEarnPositions = useMemo(
     () => parseDsrEarnPosition({ address, dsr: ownersPositionsList.dsrPosition }),
     [address, ownersPositionsList.dsrPosition],

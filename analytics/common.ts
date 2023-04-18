@@ -3,7 +3,7 @@ import * as mixpanel from 'mixpanel-browser'
 export const COOKIE_NAMES = ['marketing', 'analytics']
 export const COOKIE_NAMES_LOCASTORAGE_KEY = 'cookieSettings'
 
-export type CookieName = typeof COOKIE_NAMES[number]
+export type CookieName = (typeof COOKIE_NAMES)[number]
 
 interface Switch {
   enable: Function

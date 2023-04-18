@@ -19,12 +19,8 @@ interface IsFormEmptyParams {
 export function isFormEmpty({ product, state, position, currentStep }: IsFormEmptyParams): boolean {
   switch (product) {
     case 'borrow': {
-      const {
-        depositAmount,
-        generateAmount,
-        paybackAmount,
-        withdrawAmount,
-      } = state as AjnaBorrowFormState
+      const { depositAmount, generateAmount, paybackAmount, withdrawAmount } =
+        state as AjnaBorrowFormState
 
       return !depositAmount && !generateAmount && !paybackAmount && !withdrawAmount
     }

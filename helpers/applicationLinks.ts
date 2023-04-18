@@ -57,24 +57,18 @@ export const EXTERNAL_LINKS = {
       'https://kb.oasis.app/help/frequently-asked-questions#h_8073651997861662481520644',
     CURATED_TOKEN_LIST: 'https://kb.oasis.app/help/curated-token-list',
     TOKENS: {
-      ETH:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      ETH: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
       WSTETH:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
-      WBTC:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      WBTC: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
       RENBTC:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
-      LINK:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
-      MANA:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
+      LINK: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
+      MANA: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
       MATIC:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
-      GUSD:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
-      YFI:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
+      GUSD: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
+      YFI: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
       UNIV2:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
       CRVV1ETHSTETH:

@@ -19,12 +19,8 @@ export function AutoSellDetailsControl() {
 
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
-  const {
-    execCollRatio,
-    targetCollRatio,
-    maxBuyOrMinSellPrice,
-    isTriggerEnabled,
-  } = autoSellTriggerData
+  const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, isTriggerEnabled } =
+    autoSellTriggerData
   const isDebtZero = debt.isZero()
 
   const executionPrice = collateralPriceAtRatio({

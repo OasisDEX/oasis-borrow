@@ -13,11 +13,8 @@ interface OptimizationDetailsControlProps {
 export function OptimizationDetailsControl({ vaultHistory }: OptimizationDetailsControlProps) {
   const { protocol } = useAutomationContext()
 
-  const {
-    isAutoBuyAvailable,
-    isConstantMultipleAvailable,
-    isTakeProfitAvailable,
-  } = getAvailableAutomation(protocol)
+  const { isAutoBuyAvailable, isConstantMultipleAvailable, isTakeProfitAvailable } =
+    getAvailableAutomation(protocol)
 
   return (
     <>

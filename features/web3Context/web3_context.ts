@@ -34,17 +34,8 @@ export function createWeb3Context$(chainIdToRpcUrl: {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const context = useWeb3React<Web3Provider>()
 
-    const {
-      connector,
-      library,
-      chainId,
-      account,
-      activate,
-      deactivate,
-      active,
-      error,
-      setError,
-    } = context
+    const { connector, library, chainId, account, activate, deactivate, active, error, setError } =
+      context
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [activatingConnector, setActivatingConnector] = useState<AbstractConnector>()
     // eslint-disable-next-line react-hooks/rules-of-hooks

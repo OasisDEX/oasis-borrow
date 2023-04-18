@@ -143,23 +143,21 @@ export function createMakerProtocolBonusAdapter(
               cdpId,
             })
           }),
-          map(
-            (txnState: TxState<ClaimRewardData>): ClaimTxnState => {
-              switch (txnState.status) {
-                case TxStatus.CancelledByTheUser:
-                case TxStatus.Failure:
-                case TxStatus.Error:
-                  return ClaimTxnState.FAILED
-                case TxStatus.Propagating:
-                case TxStatus.WaitingForConfirmation:
-                case TxStatus.WaitingForApproval:
-                case undefined:
-                  return ClaimTxnState.PENDING
-                case TxStatus.Success:
-                  return ClaimTxnState.SUCCEEDED
-              }
-            },
-          ),
+          map((txnState: TxState<ClaimRewardData>): ClaimTxnState => {
+            switch (txnState.status) {
+              case TxStatus.CancelledByTheUser:
+              case TxStatus.Failure:
+              case TxStatus.Error:
+                return ClaimTxnState.FAILED
+              case TxStatus.Propagating:
+              case TxStatus.WaitingForConfirmation:
+              case TxStatus.WaitingForApproval:
+              case undefined:
+                return ClaimTxnState.PENDING
+              case TxStatus.Success:
+                return ClaimTxnState.SUCCEEDED
+            }
+          }),
         )
       }),
     )

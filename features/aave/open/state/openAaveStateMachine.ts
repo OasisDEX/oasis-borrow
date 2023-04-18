@@ -694,7 +694,7 @@ export function createOpenAaveStateMachine(
             ? context.userDpmAccount?.proxy
             : context.connectedProxyAddress
 
-          const contextConnected = (context.web3Context as any) as ContextConnected | undefined
+          const contextConnected = context.web3Context as any as ContextConnected | undefined
 
           const protocolVersion =
             context.strategyConfig.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
@@ -779,11 +779,8 @@ export function createOpenAaveStateMachine(
           }
         }),
         updateStopLossInitialState: assign((context) => {
-          const {
-            proxyAddress,
-            debtTokenAddress,
-            collateralTokenAddress,
-          } = extractStopLossDataInput(context)
+          const { proxyAddress, debtTokenAddress, collateralTokenAddress } =
+            extractStopLossDataInput(context)
           const stopLossLevel = context
             .reserveConfig!.liquidationThreshold.minus(aaveOffsetFromMaxDuringOpenFLow)
             .times(100)

@@ -81,62 +81,64 @@ export function createManageMultiplyVaultAnalytics$(
   context$: Observable<Context>,
   tracker: Tracker,
 ) {
-  const manageMultiplyConfirmTransaction: Observable<ManageMultiplyConfirmTransaction> = manageMultiplyVaultState$.pipe(
-    filter((state) => state.stage === 'manageInProgress'),
-    map(
-      ({
-        vault: { ilk, debt },
-        manageTxHash,
-        multiply,
-        afterMultiply,
-        originalEditingStage,
-        otherAction,
-        depositAmount,
-        withdrawAmount,
-        generateAmount,
-        paybackAmount,
-        closeVaultTo,
-        oazoFee,
-      }) => {
-        if (originalEditingStage === 'adjustPosition') {
-          return {
-            kind: 'adjustPositionConfirmTransaction',
-            value: {
-              ilk,
-              multiply: afterMultiply.minus(multiply).toFixed(3),
-              txHash: manageTxHash,
-              oasisFee: formatOazoFee(oazoFee),
-            },
-          } as AdjustPositionConfirmTransaction
-        } else if (otherAction !== 'closeVault') {
-          return {
-            kind: 'otherActionsConfirmTransaction',
-            value: {
-              ilk,
-              collateralAmount:
-                depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
-              daiAmount:
-                generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
-              txHash: manageTxHash,
-              oasisFee: formatOazoFee(oazoFee),
-            },
-          } as OtherActionsConfirmTransaction
-        } else {
-          return {
-            kind: 'closeVaultConfirmTransaction',
-            value: {
-              ilk,
-              debt: debt.toFixed(3),
-              closeTo: closeVaultTo,
-              txHash: manageTxHash,
-              oasisFee: formatOazoFee(oazoFee),
-            },
-          } as CloseVaultConfirmTransaction
-        }
-      },
-    ),
-    distinctUntilChanged(isEqual),
-  )
+  const manageMultiplyConfirmTransaction: Observable<ManageMultiplyConfirmTransaction> =
+    manageMultiplyVaultState$.pipe(
+      filter((state) => state.stage === 'manageInProgress'),
+      map(
+        ({
+          vault: { ilk, debt },
+          manageTxHash,
+          multiply,
+          afterMultiply,
+          originalEditingStage,
+          otherAction,
+          depositAmount,
+          withdrawAmount,
+          generateAmount,
+          paybackAmount,
+          closeVaultTo,
+          oazoFee,
+        }) => {
+          if (originalEditingStage === 'adjustPosition') {
+            return {
+              kind: 'adjustPositionConfirmTransaction',
+              value: {
+                ilk,
+                multiply: afterMultiply.minus(multiply).toFixed(3),
+                txHash: manageTxHash,
+                oasisFee: formatOazoFee(oazoFee),
+              },
+            } as AdjustPositionConfirmTransaction
+          } else if (otherAction !== 'closeVault') {
+            return {
+              kind: 'otherActionsConfirmTransaction',
+              value: {
+                ilk,
+                collateralAmount:
+                  depositAmount ||
+                  (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
+                daiAmount:
+                  generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
+                txHash: manageTxHash,
+                oasisFee: formatOazoFee(oazoFee),
+              },
+            } as OtherActionsConfirmTransaction
+          } else {
+            return {
+              kind: 'closeVaultConfirmTransaction',
+              value: {
+                ilk,
+                debt: debt.toFixed(3),
+                closeTo: closeVaultTo,
+                txHash: manageTxHash,
+                oasisFee: formatOazoFee(oazoFee),
+              },
+            } as CloseVaultConfirmTransaction
+          }
+        },
+      ),
+      distinctUntilChanged(isEqual),
+    )
 
   const manageMultiplyConfirm: Observable<ManageMultiplyConfirm> = manageMultiplyVaultState$.pipe(
     filter((state) => state.stage === 'manageWaitingForApproval'),

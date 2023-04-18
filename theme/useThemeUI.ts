@@ -6,4 +6,4 @@ interface ExactContextValue extends Omit<Theme, 'theme'> {
   theme: OasisTheme
 }
 
-export const useTheme = (useThemeUI as unknown) as () => ExactContextValue
+export const useTheme = useThemeUI as unknown as () => ExactContextValue

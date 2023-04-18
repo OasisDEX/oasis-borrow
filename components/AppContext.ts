@@ -442,7 +442,7 @@ export type UIChanges = {
   clear: (sub: string) => void
   configureSubject: <
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(
     subject: string,
     reducer: (prev: T, event: K) => T,
@@ -499,7 +499,7 @@ function createUIChangesSubject(): UIChanges {
 
   function configureSubject<
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(subject: string, reducer: (prev: T, event: K) => T, initialState?: T): void {
     reducers[subject] = reducer
     if (initialState) {
@@ -1431,9 +1431,9 @@ export function setupAppContext() {
   const ajnaPosition$ = memoize(
     curry(getAjnaPosition$)(context$, onEveryBlock$),
     (collateralPrice: BigNumber, quotePrice: BigNumber, dpmPositionData: DpmPositionData) =>
-      `${dpmPositionData.vaultId}-${collateralPrice
+      `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
         .decimalPlaces(2)
-        .toString()}-${quotePrice.decimalPlaces(2).toString()}`,
+        .toString()}`,
   )
 
   return {

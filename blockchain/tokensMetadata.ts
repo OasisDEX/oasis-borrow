@@ -900,7 +900,7 @@ export const tokens: TokenConfig[] = [
 export const tokensBySymbol = keyBy(tokens, 'symbol')
 
 export type TokenSymbolType = ElementOf<typeof tokens>['symbol']
-export type TokenMetadataType = typeof tokens[number]
+export type TokenMetadataType = (typeof tokens)[number]
 
 export function getToken(tokenSymbol: TokenSymbolType): TokenMetadataType {
   if (!tokensBySymbol[tokenSymbol]) {

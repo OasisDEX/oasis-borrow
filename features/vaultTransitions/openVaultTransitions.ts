@@ -33,7 +33,7 @@ export function createApplyOpenVaultTransition<
   OVS extends GenericOpenVaultState,
   MOVS,
   OVCalcs,
-  OVConds
+  OVConds,
 >(
   defaultMutableOpenVaultState: MOVS,
   defaultOpenVaultStateCalculations: OVCalcs,

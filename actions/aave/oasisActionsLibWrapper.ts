@@ -289,14 +289,8 @@ export async function getManageAaveParameters(
   parameters: ManageAaveParameters,
 ): Promise<IPositionTransition> {
   try {
-    const {
-      context,
-      proxyAddress,
-      slippage,
-      currentPosition,
-      manageTokenInput,
-      proxyType,
-    } = parameters
+    const { context, proxyAddress, slippage, currentPosition, manageTokenInput, proxyType } =
+      parameters
 
     checkContext(context, 'deposit/borrow position')
     const provider = new providers.JsonRpcProvider(context.rpcCallsEndpoint, context.chainId)

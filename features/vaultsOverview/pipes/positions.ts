@@ -270,12 +270,8 @@ export function createAavePosition$(
   aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
   walletAddress: string,
 ): Observable<AavePosition[]> {
-  const {
-    context$,
-    tickerPrices$,
-    readPositionCreatedEvents$,
-    automationTriggersData$,
-  } = environment
+  const { context$, tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } =
+    environment
   return context$.pipe(
     switchMap((context) => {
       return getNetworkId() !== NetworkIds.GOERLI

@@ -62,9 +62,10 @@ export function ProductCardsSelect({
     [],
   )
 
-  const value = useMemo(() => options.find((option) => option.name === currentFilter), [
-    currentFilter,
-  ])
+  const value = useMemo(
+    () => options.find((option) => option.name === currentFilter),
+    [currentFilter],
+  )
 
   const isSelected = useMemo(
     () => (option: ProductLandingPagesFilter) => currentFilter === option.name,

@@ -40,15 +40,8 @@ export type OpenMultiplyData = {
 }
 
 function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnected) {
-  const {
-    defaultExchange,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    fmm,
-  } = getNetworkContracts(context.chainId)
+  const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
+    getNetworkContracts(context.chainId)
   const { contract } = context
 
   const exchangeData = {
@@ -245,15 +238,8 @@ export type MultiplyAdjustData = {
   id: BigNumber
 }
 function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextConnected) {
-  const {
-    defaultExchange,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    fmm,
-  } = getNetworkContracts(context.chainId)
+  const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
+    getNetworkContracts(context.chainId)
   const { contract } = context
 
   if (data.action === 'BUY_COLLATERAL') {
@@ -400,15 +386,8 @@ export type CloseVaultData = {
 }
 
 function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) {
-  const {
-    defaultExchange,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    fmm,
-  } = getNetworkContracts(context.chainId)
+  const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
+    getNetworkContracts(context.chainId)
   const { contract } = context
 
   const {

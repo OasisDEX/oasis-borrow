@@ -79,14 +79,8 @@ export function getAaveV2Services({
   const aaveUserReserveData$ = observe(refresh$, context$, getAaveV2UserReserveData)
   const aaveUserConfiguration$ = observe(refresh$, context$, getAaveV2UserConfiguration)
   const aaveReservesList$ = observe(refresh$, context$, getAaveV2ReservesList)()
-  const aaveOracleAssetPriceData$: ({
-    token,
-  }: {
-    token: string
-  }) => Observable<BigNumber> = memoize(
-    curry(createAaveV2OracleAssetPriceData$)(refresh$, context$),
-    ({ token }) => token,
-  )
+  const aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber> =
+    memoize(curry(createAaveV2OracleAssetPriceData$)(refresh$, context$), ({ token }) => token)
 
   const getAaveOnChainPosition$ = memoize(
     (collateralToken: string, debtToken: string, proxyAddress: string) => {

@@ -30,11 +30,8 @@ export function getUserDpmProxies$(
         walletAddress,
         null,
       )
-      const proxyOwnershipTransferredFilter = accountGuardContract.filters.ProxyOwnershipTransferred(
-        walletAddress,
-        null,
-        null,
-      )
+      const proxyOwnershipTransferredFilter =
+        accountGuardContract.filters.ProxyOwnershipTransferred(walletAddress, null, null)
 
       const [userAccountCreatedEvents, userProxyOwnershipTransferredEvents] = await Promise.all([
         accountFactoryContract.queryFilter(
@@ -133,11 +130,8 @@ export function getUserDpmProxy$(
         return undefined
       }
 
-      const proxyOwnershipTransferredFilter = accountGuardContract.filters.ProxyOwnershipTransferred(
-        null,
-        null,
-        dpmProxy.proxy,
-      )
+      const proxyOwnershipTransferredFilter =
+        accountGuardContract.filters.ProxyOwnershipTransferred(null, null, dpmProxy.proxy)
 
       const userProxyOwnershipTransferredEvents = await accountGuardContract.queryFilter(
         proxyOwnershipTransferredFilter,

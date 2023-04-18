@@ -92,12 +92,11 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
   if (isGnosisSafe) {
     const sdk = new SafeAppsSDK()
 
-    const { challenge: gnosisSafeChallenge, safeTxHash, dataToSign } = await getGnosisSafeDetails(
-      sdk,
-      chainId,
-      account,
-      challenge,
-    )
+    const {
+      challenge: gnosisSafeChallenge,
+      safeTxHash,
+      dataToSign,
+    } = await getGnosisSafeDetails(sdk, chainId, account, challenge)
 
     // start polling
     const token = await new Promise<string | null>((resolve) => {

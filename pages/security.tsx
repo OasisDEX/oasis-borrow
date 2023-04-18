@@ -40,8 +40,7 @@ function SecurityPage() {
           label: t('security.category.audit.link-multiply-fmm'),
         },
         {
-          url:
-            'https://chainsecurity.com/security-audit/oasis-automation-consultancy-smart-contracts/',
+          url: 'https://chainsecurity.com/security-audit/oasis-automation-consultancy-smart-contracts/',
           label: t('security.category.audit.link-automation'),
         },
         {
