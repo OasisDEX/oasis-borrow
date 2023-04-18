@@ -42,13 +42,21 @@ export function getFlowStateConfig({
       }
     case 'open-borrow':
     case 'deposit-borrow':
+    case 'open-multiply':
+    case 'deposit-collateral-multiply':
       return {
         amount: state.depositAmount,
         token: collateralToken,
       }
     case 'payback-borrow':
+    case 'payback-multiply':
       return {
         amount: state.paybackAmount,
+        token: quoteToken,
+      }
+    case 'deposit-quote-multiply':
+      return {
+        amount: state.depositAmount,
         token: quoteToken,
       }
     default:

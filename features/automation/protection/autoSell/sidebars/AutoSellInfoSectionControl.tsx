@@ -40,11 +40,11 @@ export function AutoSellInfoSectionControl({
       nextSellPrice={executionPrice}
       collateralAfterNextSell={{
         value: lockedCollateral,
-        secondaryValue: lockedCollateral.plus(collateralDelta),
+        change: lockedCollateral.plus(collateralDelta),
       }}
       outstandingDebtAfterSell={{
         value: debt,
-        secondaryValue: debt.plus(debtDelta),
+        change: debt.plus(debtDelta),
       }}
       ethToBeSoldAtNextSell={collateralDelta.abs()}
       token={token}

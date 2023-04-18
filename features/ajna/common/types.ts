@@ -24,17 +24,20 @@ export type AjnaEarnPanel = 'adjust' | 'liquidity'
 
 export type AjnaMultiplyAction =
   | 'open-multiply'
-  | 'deposit-multiply'
-  | 'withdraw-multiply'
-  | 'payback-multiply'
+  | 'adjust'
+  | 'deposit-collateral-multiply'
   | 'deposit-quote-multiply'
-  | 'withdraw-quote-multiply'
+  | 'generate-multiply'
+  | 'payback-multiply'
+  | 'withdraw-multiply'
   | 'switch-multiply'
   | 'close-multiply'
-export type AjnaMultiplyPanel = 'collateral' | 'quote' | 'switch' | 'close'
+export type AjnaMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
 
 export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction'
 export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
+
+export type AjnaCloseTo = 'collateral' | 'quote'
 
 export type AjnaPoolPairs = keyof Context['ajnaPoolPairs']
 

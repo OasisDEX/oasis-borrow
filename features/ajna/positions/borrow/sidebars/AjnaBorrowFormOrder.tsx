@@ -57,37 +57,37 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
         {
           label: t('system.collateral-locked'),
           value: `${formatted.collateralLocked} ${collateralToken}`,
-          secondaryValue: `${formatted.afterCollateralLocked} ${collateralToken}`,
+          change: `${formatted.afterCollateralLocked} ${collateralToken}`,
           isLoading,
         },
         {
           label: t('vault-changes.ltv'),
           value: formatted.ltv,
-          secondaryValue: formatted.afterLtv,
+          change: formatted.afterLtv,
           isLoading,
         },
         {
           label: t('system.liquidation-price'),
           value: `${formatted.liquidationPrice} ${quoteToken}/${collateralToken}`,
-          secondaryValue: `${formatted.afterLiquidationPrice} ${quoteToken}/${collateralToken}`,
+          change: `${formatted.afterLiquidationPrice} ${quoteToken}/${collateralToken}`,
           isLoading,
         },
         {
           label: t('system.debt'),
           value: `${formatted.debt} ${quoteToken}`,
-          secondaryValue: `${formatted.afterDebt} ${quoteToken}`,
+          change: `${formatted.afterDebt} ${quoteToken}`,
           isLoading,
         },
         {
           label: t('system.available-to-withdraw'),
           value: `${formatted.availableToWithdraw} ${collateralToken}`,
-          secondaryValue: `${formatted.afterAvailableToWithdraw} ${collateralToken}`,
+          change: `${formatted.afterAvailableToWithdraw} ${collateralToken}`,
           isLoading,
         },
         {
           label: t('system.available-to-borrow'),
           value: `${formatted.availableToBorrow} ${quoteToken}`,
-          secondaryValue: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
+          change: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
           isLoading,
         },
         isTxSuccess && cached

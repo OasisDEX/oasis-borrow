@@ -1110,6 +1110,7 @@
     "in-progress": "In progress",
     "actions": {
       "common": {
+        "close-position": "Close position",
         "close-vault": "Close vault",
         "edit-position": "Edit Position"
       },
