@@ -77,6 +77,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
         {isStopLossEditingStage && (
+          // @ts-ignore
           <AutomationContextProvider {...automationContextProps}>
             <SidebarAdjustStopLossEditingStage {...stopLossSidebarProps} />{' '}
           </AutomationContextProvider>

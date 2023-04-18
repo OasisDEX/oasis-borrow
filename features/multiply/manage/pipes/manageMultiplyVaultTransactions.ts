@@ -235,7 +235,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { tokensMainnet, defaultExchange, walletLabel, web3 }: Context,
+  { chainId, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -252,6 +252,7 @@ export function adjustPosition(
     oneInchAmount,
   }: ManageMultiplyVaultState,
 ) {
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
   txHelpers$
     .pipe(
       first(),

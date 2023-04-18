@@ -122,6 +122,18 @@ const polygonConfig: NetworkConfig = {
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+export const emptyNetworkConfig: NetworkConfig = {
+  hexId: '0x0',
+  name: 'empty' as NetworkNames,
+  label: 'empty' as NetworkLabelType,
+  color: '#ff',
+  icon: 'empty',
+  testnet: false,
+  enabled: true,
+  id: '0',
+  token: 'ETH',
+  rpcCallsEndpoint: 'empty',
+}
 
 export const networks = [
   mainnetConfig,
