@@ -1,5 +1,4 @@
 import { GasEstimation } from 'components/GasEstimation'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -16,7 +15,6 @@ import React from 'react'
 export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
 
-  const gasEstimation = useGasEstimationContext()
   const {
     environment: { collateralToken, quoteToken, collateralPrice, quotePrice },
     steps: { isFlowStateReady },
@@ -61,9 +59,6 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
       ? `$${formatAmount(txDetails.txCost.plus(feeWhenActionBelowLup), 'USD')}`
       : '-',
   }
-
-  console.log(`gasEstimation: ${gasEstimation?.usdValue}`)
-  console.log(gasEstimation)
 
   return (
     <InfoSection
