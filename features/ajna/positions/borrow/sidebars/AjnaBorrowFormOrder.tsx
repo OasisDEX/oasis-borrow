@@ -15,6 +15,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken },
+    steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
   const {
@@ -29,24 +30,33 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
-    collateralLocked: formatCryptoBalance(positionData.collateralAmount),
-    debt: formatCryptoBalance(positionData.debtAmount),
+    collateralLocked: `${formatCryptoBalance(positionData.collateralAmount)} ${collateralToken}`,
+    afterCollateralLocked:
+      simulationData?.collateralAmount &&
+      `${formatCryptoBalance(simulationData.collateralAmount)} ${collateralToken}`,
     ltv: formatDecimalAsPercent(positionData.riskRatio.loanToValue),
-    liquidationPrice: formatCryptoBalance(positionData.liquidationPrice),
-    availableToBorrow: formatCryptoBalance(positionData.debtAvailable),
-    availableToWithdraw: formatCryptoBalance(positionData.collateralAvailable),
-    afterLiquidationPrice:
-      simulationData?.liquidationPrice && formatCryptoBalance(simulationData.liquidationPrice),
     afterLtv:
       simulationData?.riskRatio && formatDecimalAsPercent(simulationData.riskRatio.loanToValue),
-    afterDebt: simulationData?.debtAmount && formatCryptoBalance(simulationData.debtAmount),
-    afterCollateralLocked:
-      simulationData?.collateralAmount && formatCryptoBalance(simulationData.collateralAmount),
-    afterAvailableToBorrow:
-      simulationData?.debtAvailable && formatCryptoBalance(simulationData.debtAvailable),
+    liquidationPrice: `${formatCryptoBalance(
+      positionData.liquidationPrice,
+    )} ${quoteToken}/${collateralToken}`,
+    afterLiquidationPrice:
+      simulationData?.liquidationPrice &&
+      `${formatCryptoBalance(simulationData.liquidationPrice)} ${quoteToken}/${collateralToken}`,
+    debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
+    afterDebt:
+      simulationData?.debtAmount &&
+      `${formatCryptoBalance(simulationData.debtAmount)} ${quoteToken}`,
+    availableToWithdraw: `${formatCryptoBalance(
+      positionData.collateralAvailable,
+    )} ${collateralToken}`,
     afterAvailableToWithdraw:
       simulationData?.collateralAvailable &&
-      formatCryptoBalance(simulationData.collateralAvailable),
+      `${formatCryptoBalance(simulationData.collateralAvailable)} ${collateralToken}`,
+    availableToBorrow: `${formatCryptoBalance(positionData.debtAvailable)} ${quoteToken}`,
+    afterAvailableToBorrow:
+      simulationData?.debtAvailable &&
+      `${formatCryptoBalance(simulationData.debtAvailable)} ${quoteToken}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
@@ -56,8 +66,8 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       items={[
         {
           label: t('system.collateral-locked'),
-          value: `${formatted.collateralLocked} ${collateralToken}`,
-          change: `${formatted.afterCollateralLocked} ${collateralToken}`,
+          value: formatted.collateralLocked,
+          change: formatted.afterCollateralLocked,
           isLoading,
         },
         {
@@ -68,39 +78,45 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
         },
         {
           label: t('system.liquidation-price'),
-          value: `${formatted.liquidationPrice} ${quoteToken}/${collateralToken}`,
-          change: `${formatted.afterLiquidationPrice} ${quoteToken}/${collateralToken}`,
+          value: formatted.liquidationPrice,
+          change: formatted.afterLiquidationPrice,
           isLoading,
         },
         {
           label: t('system.debt'),
-          value: `${formatted.debt} ${quoteToken}`,
-          change: `${formatted.afterDebt} ${quoteToken}`,
+          value: formatted.debt,
+          change: formatted.afterDebt,
           isLoading,
         },
         {
           label: t('system.available-to-withdraw'),
-          value: `${formatted.availableToWithdraw} ${collateralToken}`,
-          change: `${formatted.afterAvailableToWithdraw} ${collateralToken}`,
+          value: formatted.availableToWithdraw,
+          change: formatted.afterAvailableToWithdraw,
           isLoading,
         },
         {
           label: t('system.available-to-borrow'),
-          value: `${formatted.availableToBorrow} ${quoteToken}`,
-          change: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
+          value: formatted.availableToBorrow,
+          change: formatted.afterAvailableToBorrow,
           isLoading,
         },
-        isTxSuccess && cached
-          ? {
-              label: t('system.total-cost'),
-              value: formatted.totalCost,
-              isLoading,
-            }
-          : {
-              label: t('system.max-transaction-cost'),
-              value: <GasEstimation />,
-              isLoading,
-            },
+        ...(isTxSuccess && cached
+          ? [
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]
+          : isFlowStateReady
+          ? [
+              {
+                label: t('system.max-transaction-cost'),
+                value: <GasEstimation />,
+                isLoading,
+              },
+            ]
+          : []),
       ]}
     />
   )

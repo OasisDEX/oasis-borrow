@@ -2478,6 +2478,24 @@
             "success-open": "Your your {{collateralToken}}/{{quoteToken}} Ajna Position was created",
             "success-manage": "Your your {{collateralToken}}/{{quoteToken}} Ajna Position was updated"
           }
+        },
+        "notifications": {
+          "time-to-liquidation": {
+            "title": "{{time}} remaining to save position from liquidation",
+            "message": "Your position is at risk of liquidation, adjust it now to save it"
+          },
+          "being-liquidated": {
+            "title": "This position is currently being liquidated",
+            "message": "You can’t change your position right now, check back on your position later to see the status"
+          },
+          "got-liquidated": {
+            "title": "This position got liquidated. You have collateral to withdraw",
+            "message": "You have collateral you can withdraw"
+          },
+          "got-partially-liquidated": {
+            "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
+            "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation"
+          }
         }
       },
       "borrow": {
@@ -2556,6 +2574,14 @@
             "empty-position": {
               "title": "Your lending position is empty",
               "message": "To start earning you need to provide liquidity using your quote tokens"
+            },
+            "lending-price-frozen": {
+              "title": "This lending price is currently frozen and borrowers are being liquidated",
+              "message": "This process can take at least 6 hours. Check Position later for updates"
+            },
+            "bucket-liquidated": {
+              "title": "This bucket got liqudited. You have collateral to withdraw",
+              "message": "This process can take at least 6 hours. Check Position later for updates"
             }
           }
         }
