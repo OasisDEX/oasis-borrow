@@ -1110,6 +1110,7 @@
     "in-progress": "In progress",
     "actions": {
       "common": {
+        "close-position": "Close position",
         "close-vault": "Close vault",
         "edit-position": "Edit Position"
       },
@@ -2589,7 +2590,9 @@
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
       "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{amount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
-      "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}."
+      "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
+      "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
+      "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount."
     },
     "rewards": {
       "title": "Your Ajna token rewards",

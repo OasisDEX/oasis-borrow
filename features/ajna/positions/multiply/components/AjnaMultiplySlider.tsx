@@ -20,8 +20,8 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
   } = useAjnaGeneralContext()
   const {
     form: {
-      dispatch,
       state: { targetLiquidationPrice },
+      updateState,
     },
   } = useAjnaProductContext('multiply')
 
@@ -53,7 +53,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
         </>
       )}
       onChange={(targetLiquidationPrice) => {
-        dispatch({ type: 'update-target-liquidation-price', targetLiquidationPrice })
+        updateState('targetLiquidationPrice', targetLiquidationPrice)
       }}
       minBoundry={min}
       maxBoundry={max}

@@ -45,7 +45,11 @@ export function SidebarSectionHeader({
     >
       <Flex sx={{ minHeight: 40, alignItems: 'center' }}>
         {typeof title === 'string' ? (
-          <Heading as="p" variant="boldParagraph2">
+          <Heading
+            as="p"
+            variant="boldParagraph2"
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+          >
             {title}
           </Heading>
         ) : (

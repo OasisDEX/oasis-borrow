@@ -20,10 +20,6 @@ export interface AjnaFormActionsUpdateWithdraw {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
 }
-export interface AjnaFormActionsUpdateTargetLiquidationPrice {
-  type: 'update-target-liquidation-price'
-  targetLiquidationPrice?: BigNumber
-}
 export interface AjnaFormActionsUpdateDpm {
   type: 'update-dpm'
   dpmAddress: string

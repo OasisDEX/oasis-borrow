@@ -33,14 +33,14 @@ export function CancelAutoTakeProfitInfoSection({
               {
                 label: t('auto-take-profit.vault-changes.trigger-col-price', { token }),
                 value: `$${formatAmount(triggerColPrice, 'USD')}`,
-                secondaryValue: 'n/a',
+                change: 'n/a',
               },
             ]
           : [
               {
                 label: t('auto-take-profit.vault-changes.trigger-col-price', { token }),
                 value: `$${formatAmount(triggerColPrice, 'USD')}`,
-                secondaryValue: 'n/a',
+                change: 'n/a',
               },
               {
                 label: t('system.collateral-ratio'),

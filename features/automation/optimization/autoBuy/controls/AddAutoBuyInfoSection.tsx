@@ -14,11 +14,11 @@ interface BuyInfoSectionProps {
   slippageLimit?: BigNumber
   collateralAfterNextBuy: {
     value: BigNumber
-    secondaryValue: BigNumber
+    change: BigNumber
   }
   outstandingDebtAfterNextBuy: {
     value: BigNumber
-    secondaryValue: BigNumber
+    change: BigNumber
   }
   collateralToBePurchased: BigNumber
   targetRatioWithDeviationFloor: BigNumber
@@ -41,10 +41,10 @@ export function AddAutoBuyInfoSection({
 
   const ratioToPerformBuyFormatted = formatPercent(execCollRatio, { precision: 2 })
   const collateralAfterNextBuyFormatted = formatCryptoBalance(collatAfterNextBuy.value)
-  const nextCollateralAfterNextBuyFormatted = formatCryptoBalance(collatAfterNextBuy.secondaryValue)
+  const nextCollateralAfterNextBuyFormatted = formatCryptoBalance(collatAfterNextBuy.change)
   const outstandingDebtAfterBuyFormatted = formatCryptoBalance(outstandingDebtAfterNextBuy.value)
   const nextOutstandingDebtAfterBuyFormatted = formatCryptoBalance(
-    outstandingDebtAfterNextBuy.secondaryValue,
+    outstandingDebtAfterNextBuy.change,
   )
   const collateralToBePurchasedFormatted = formatCryptoBalance(collateralToBePurchased)
   const targetRatioWithDeviationFloorFormatted = formatPercent(targetRatioWithDeviationFloor)
@@ -78,12 +78,12 @@ export function AddAutoBuyInfoSection({
         {
           label: t('auto-buy.collateral-after-next-buy'),
           value: collateralAfterNextBuyFormatted,
-          secondaryValue: `${nextCollateralAfterNextBuyFormatted} ${token}`,
+          change: `${nextCollateralAfterNextBuyFormatted} ${token}`,
         },
         {
           label: t('auto-buy.outstanding-debt-after-next-buy'),
           value: outstandingDebtAfterBuyFormatted,
-          secondaryValue: `${nextOutstandingDebtAfterBuyFormatted} DAI`,
+          change: `${nextOutstandingDebtAfterBuyFormatted} DAI`,
         },
         {
           label: t('auto-buy.col-to-be-purchased', { token }),

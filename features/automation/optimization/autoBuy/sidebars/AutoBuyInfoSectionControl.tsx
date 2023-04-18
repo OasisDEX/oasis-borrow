@@ -39,11 +39,11 @@ export function AutoBuyInfoSectionControl({
       nextBuyPrice={executionPrice}
       collateralAfterNextBuy={{
         value: lockedCollateral,
-        secondaryValue: lockedCollateral.plus(collateralDelta),
+        change: lockedCollateral.plus(collateralDelta),
       }}
       outstandingDebtAfterNextBuy={{
         value: debt,
-        secondaryValue: debt.plus(debtDelta),
+        change: debt.plus(debtDelta),
       }}
       collateralToBePurchased={collateralDelta.abs()}
       targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
