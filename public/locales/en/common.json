@@ -763,7 +763,7 @@
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
-    "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}.",
+    "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}. This net value doesn't include the cost of the closing fee or the difference that might happen due to slippage or price changes once you close your position. Net value of position if closed will likely be lower.",
     "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it below your Stop-Loss Loan to Value"
   },
   "aave-position-modal": {
