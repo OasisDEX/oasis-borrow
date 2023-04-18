@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
 import { DimmedList } from 'components/DImmedList'
 import { GasEstimationContext } from 'components/GasEstimationContextProvider'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
@@ -8,6 +9,7 @@ import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { WithChildren } from 'helpers/types'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
@@ -145,7 +147,10 @@ export function getEstimatedGasFeeTextOld(
   }
 }
 
-export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, withBrackets = false) {
+export function getEstimatedGasFeeText(
+  gasEstimation?: GasEstimationContext,
+  addition: BigNumber = zero,
+) {
   if (!gasEstimation) {
     return 'n/a'
   }
@@ -160,11 +165,9 @@ export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, wit
       return <InfoSectionLoadingState />
     case GasEstimationStatus.error:
     case undefined:
-      return <EstimationError withBrackets={withBrackets} />
+      return <EstimationError withBrackets={false} />
     case GasEstimationStatus.calculated:
-      const textGas = `$${formatAmount(gasEstimation?.usdValue, 'USD')}`
-
-      return withBrackets ? `(${textGas})` : textGas
+      return `$${formatAmount(gasEstimation?.usdValue.plus(addition), 'USD')}`
   }
 }
 

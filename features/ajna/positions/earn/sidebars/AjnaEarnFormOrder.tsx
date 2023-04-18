@@ -17,6 +17,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
 
   const {
     environment: { collateralToken, quoteToken, collateralPrice, quotePrice },
+    steps: { isFlowStateReady },
     tx: { txDetails, isTxSuccess },
   } = useAjnaGeneralContext()
   const {
@@ -37,19 +38,23 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
-    amountToLend: formatCryptoBalance(positionData.quoteTokenAmount),
-    maxLtv: formatDecimalAsPercent(positionData.price.div(collateralPrice.div(quotePrice))),
+    amountToLend: `${formatCryptoBalance(positionData.quoteTokenAmount)} ${quoteToken}`,
+    afterAmountToLend:
+      simulationData?.quoteTokenAmount &&
+      `${formatCryptoBalance(simulationData.quoteTokenAmount)} ${quoteToken}`,
     netApy: apyCurrentPosition.per365d
       ? formatDecimalAsPercent(apyCurrentPosition.per365d)
       : formatDecimalAsPercent(zero),
-    lendingPrice: formatCryptoBalance(positionData.price),
-    afterAmountToLend:
-      simulationData?.quoteTokenAmount && formatCryptoBalance(simulationData.quoteTokenAmount),
     afterNetApy: apySimulation?.per365d && formatDecimalAsPercent(apySimulation.per365d),
+    lendingPrice: `${formatCryptoBalance(positionData.price)} ${collateralToken}/${quoteToken}`,
+    afterLendingPrice: `${
+      simulationData?.price && formatCryptoBalance(simulationData.price)
+    } ${collateralToken}/${quoteToken}`,
+    maxLtv: formatDecimalAsPercent(positionData.price.div(collateralPrice.div(quotePrice))),
     afterMaxLtv:
       simulationData?.price &&
       formatDecimalAsPercent(simulationData?.price.div(collateralPrice.div(quotePrice))),
-    afterLendingPrice: simulationData?.price && formatCryptoBalance(simulationData.price),
+    feeWhenActionBelowLup: `$${formatAmount(feeWhenActionBelowLup, 'USD')}`,
     totalCost: txDetails?.txCost
       ? `$${formatAmount(txDetails.txCost.plus(feeWhenActionBelowLup), 'USD')}`
       : '-',
@@ -61,8 +66,8 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
       items={[
         {
           label: t('amount-to-lend'),
-          value: `${formatted.amountToLend} ${quoteToken}`,
-          change: `${formatted.afterAmountToLend} ${quoteToken}`,
+          value: formatted.amountToLend,
+          change: formatted.afterAmountToLend,
           isLoading,
         },
         {
@@ -73,8 +78,8 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
         },
         {
           label: t('lending-price'),
-          value: `${formatted.lendingPrice} ${collateralToken}/${quoteToken}`,
-          change: `${formatted.afterLendingPrice} ${collateralToken}/${quoteToken}`,
+          value: formatted.lendingPrice,
+          change: formatted.afterLendingPrice,
           isLoading,
         },
         {
@@ -83,34 +88,35 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterMaxLtv,
           isLoading,
         },
-        isTxSuccess && cached
-          ? {
-              label: t('system.total-cost'),
-              value: formatted.totalCost,
-              isLoading,
-            }
-          : {
-              label: t('system.max-transaction-cost'),
-              value: (
-                <>
-                  <GasEstimation />
-                  {withAjnaFee && <>{` + $${formatAmount(feeWhenActionBelowLup, 'USD')}`}</>}
-                </>
-              ),
-              dropdownValues: withAjnaFee
-                ? [
-                    {
-                      label: t('max-gas-fee'),
-                      value: <GasEstimation />,
-                    },
-                    {
-                      label: t('ajna.position-page.earn.common.form.ajna-fee'),
-                      value: `$${formatAmount(feeWhenActionBelowLup, 'USD')}`,
-                    },
-                  ]
-                : undefined,
-              isLoading,
-            },
+        ...(isTxSuccess && cached
+          ? [
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]
+          : isFlowStateReady
+          ? [
+              {
+                label: t('system.max-transaction-cost'),
+                value: <GasEstimation addition={feeWhenActionBelowLup} />,
+                dropdownValues: withAjnaFee
+                  ? [
+                      {
+                        label: t('ajna.position-page.earn.common.form.ajna-fee'),
+                        value: formatted.feeWhenActionBelowLup,
+                      },
+                      {
+                        label: t('max-gas-fee'),
+                        value: <GasEstimation />,
+                      },
+                    ]
+                  : undefined,
+                isLoading,
+              },
+            ]
+          : []),
       ]}
     />
   )
