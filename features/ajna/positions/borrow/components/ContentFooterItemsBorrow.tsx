@@ -48,17 +48,6 @@ export function ContentFooterItemsBorrow({
         value={formatted.cost}
       />
       <DetailsSectionFooterItem
-        title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
-        value={formatted.availableToBorrow}
-        change={{
-          isLoading,
-          value:
-            afterAvailableToBorrow &&
-            `${formatted.afterAvailableToBorrow} ${t('system.cards.common.after')}`,
-          variant: changeVariant,
-        }}
-      />
-      <DetailsSectionFooterItem
         title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
         value={formatted.availableToWithdraw}
         change={{
@@ -66,6 +55,17 @@ export function ContentFooterItemsBorrow({
           value:
             afterAvailableToWithdraw &&
             `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,
+          variant: changeVariant,
+        }}
+      />
+      <DetailsSectionFooterItem
+        title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
+        value={formatted.availableToBorrow}
+        change={{
+          isLoading,
+          value:
+            afterAvailableToBorrow &&
+            `${formatted.afterAvailableToBorrow} ${t('system.cards.common.after')}`,
           variant: changeVariant,
         }}
       />
