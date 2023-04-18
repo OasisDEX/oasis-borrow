@@ -47,13 +47,16 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     afterDebt:
       simulationData?.debtAmount &&
       `${formatCryptoBalance(simulationData.debtAmount)} ${quoteToken}`,
-    availableToWithdraw: `${formatCryptoBalance(positionData.collateralAvailable)} ${collateralToken}`,
+    availableToWithdraw: `${formatCryptoBalance(
+      positionData.collateralAvailable,
+    )} ${collateralToken}`,
     afterAvailableToWithdraw:
       simulationData?.collateralAvailable &&
       `${formatCryptoBalance(simulationData.collateralAvailable)} ${collateralToken}`,
     availableToBorrow: `${formatCryptoBalance(positionData.debtAvailable)} ${quoteToken}`,
     afterAvailableToBorrow:
-      simulationData?.debtAvailable && `${formatCryptoBalance(simulationData.debtAvailable)} ${quoteToken}`,
+      simulationData?.debtAvailable &&
+      `${formatCryptoBalance(simulationData.debtAvailable)} ${quoteToken}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
