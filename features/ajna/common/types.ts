@@ -42,7 +42,7 @@ export type AjnaCloseTo = 'collateral' | 'quote'
 export type AjnaPoolPairs = keyof AllNetworksContractsType[1]['ajnaPoolPairs']
 
 export type AjnaPoolData = {
-  [key in keyof AjnaPoolPairs]: {
+  [key in AjnaPoolPairs]: {
     '7DayNetApy': BigNumber
     '90DayNetApy': BigNumber
     annualFee: BigNumber

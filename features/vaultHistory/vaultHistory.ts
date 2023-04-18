@@ -1,5 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
@@ -610,7 +611,8 @@ export function createVaultHistory$(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ etherscan, cacheApi, ethtx }, { token, address, id }]) => {
+    switchMap(([{ chainId }, { token, address, id }]) => {
+      const { etherscan, cacheApi, ethtx } = getNetworkContracts(chainId)
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
@@ -639,7 +641,8 @@ export function createAaveHistory$(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
   return combineLatest(context$).pipe(
-    switchMap(([{ etherscan, cacheApi, ethtx }]) => {
+    switchMap(([{ chainId }]) => {
+      const { etherscan, cacheApi, ethtx } = getNetworkContracts(chainId)
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)

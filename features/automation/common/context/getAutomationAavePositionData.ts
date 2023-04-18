@@ -1,5 +1,6 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
 import { AaveManageVaultState } from 'features/automation/contexts/AaveAutomationContext'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -57,7 +58,8 @@ export function getAutomationAavePositionData({
     token: collateralToken,
     debtToken: debtToken,
     vaultType,
-    debtTokenAddress: web3Context!.tokens[debtToken].address,
-    collateralTokenAddress: web3Context!.tokens[collateralToken].address,
+    debtTokenAddress: getNetworkContracts(web3Context!.chainId).tokens[debtToken].address,
+    collateralTokenAddress: getNetworkContracts(web3Context!.chainId).tokens[collateralToken]
+      .address,
   }
 }

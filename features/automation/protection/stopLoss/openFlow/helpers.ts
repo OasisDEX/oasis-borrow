@@ -1,5 +1,6 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { OpenAaveContext } from 'features/aave/open/state'
 import { zero } from 'helpers/zero'
 
@@ -46,8 +47,10 @@ export function extractStopLossDataInput(context: OpenAaveContext): AaveStopLoss
     liquidationPrice,
     liquidationPenalty: context.strategyInfo?.liquidationBonus || zero,
     liquidationRatio,
-    debtTokenAddress: context.web3Context!.tokens[debtToken].address,
-    collateralTokenAddress: context.web3Context!.tokens[collateralToken].address,
+    debtTokenAddress: getNetworkContracts(context.web3Context!.chainId).tokens[debtToken].address,
+    collateralTokenAddress: getNetworkContracts(context.web3Context!.chainId).tokens[
+      collateralToken
+    ].address,
     stopLossLevel: context.stopLossLevel || zero,
     collateralActive: context.collateralActive || false,
   }

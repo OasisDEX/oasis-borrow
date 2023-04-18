@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ContractDesc } from 'features/web3Context'
@@ -180,7 +181,7 @@ export function createExchangeQuote$(
 ) {
   return context$.pipe(
     switchMap((context) => {
-      const { tokensMainnet } = context
+      const { tokensMainnet } = getNetworkContracts(context.chainId)
       const exchange = (context as any)[exchangeType]
 
       const dai = getTokenMetaData('DAI', tokensMainnet)

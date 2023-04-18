@@ -1,5 +1,6 @@
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context, ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -174,7 +175,7 @@ export function startTransactionService<T extends TxMeta, TResult = unknown>(
                 result: transformResult && transformResult(connectedContext, txState),
               })
             },
-            connectedContext.safeConfirmations,
+            getNetworkContracts(connectedContext.chainId).safeConfirmations,
           ),
         )
       }),
@@ -188,7 +189,10 @@ export function transactionContextService(
   return {
     etherScanUrl$: (_) =>
       context$.pipe(
-        map((c) => ({ type: 'ETHERSCAN_URL_CHANGED', etherscanUrl: c.etherscan.url })),
+        map((c) => ({
+          type: 'ETHERSCAN_URL_CHANGED',
+          etherscanUrl: getNetworkContracts(c.chainId).etherscan.url,
+        })),
         distinctUntilChanged((a, b) => a.etherscanUrl === b.etherscanUrl),
       ),
   }

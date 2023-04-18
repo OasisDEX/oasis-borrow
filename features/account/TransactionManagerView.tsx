@@ -2,6 +2,7 @@
 
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ActivityItem } from 'components/Activity'
 import { TxData } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
@@ -159,7 +160,7 @@ export function PendingTransactions() {
   }
 
   if (!context || !pendingTransactions || !pendingTransactions.length) return null
-  const { etherscan } = context
+  const { etherscan } = getNetworkContracts(context.chainId)
 
   return (
     <Grid>
@@ -189,7 +190,7 @@ export function RecentTransactions() {
   }
 
   if (!context || !recentTransactions || !recentTransactions.length) return null
-  const { etherscan } = context
+  const { etherscan } = getNetworkContracts(context.chainId)
 
   return (
     <Grid>

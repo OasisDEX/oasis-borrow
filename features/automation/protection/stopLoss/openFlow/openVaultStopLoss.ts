@@ -5,7 +5,6 @@ import {
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
@@ -225,7 +224,7 @@ export function getDataForStopLoss(
 
   const automationContextProps = {
     ethBalance,
-    context: { status: 'connected', account: '0x0', etherscan: { url: '' } } as Context,
+    context: { status: 'connected', account: '0x0', etherscan: { url: '' } },
     ethAndTokenPricesData: { ETH: currentEthPrice, [token]: currentCollateralPrice } as Tickers,
     positionData: {
       positionRatio: afterCollateralizationRatio,

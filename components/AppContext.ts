@@ -591,6 +591,7 @@ export function setupAppContext() {
   const [send, transactions$] = createSend<TxData>(
     initializedAccount$,
     onEveryBlock$,
+    // @ts-ignore
     connectedContext$,
   )
 

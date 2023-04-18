@@ -1,5 +1,6 @@
 import { views } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
@@ -31,20 +32,21 @@ export function getAjnaPosition$(
   ).pipe(
     switchMap(async ([context]) => {
       if (protocol !== 'Ajna') return null
+      const { ajnaPoolPairs, ajnaPoolInfo, ajnaRewardsManager } = getNetworkContracts(
+        context.chainId,
+      )
 
       const commonPayload = {
         collateralPrice,
         quotePrice,
         proxyAddress: proxy,
         poolAddress:
-          context.ajnaPoolPairs[
-            `${collateralToken}-${quoteToken}` as keyof typeof context.ajnaPoolPairs
-          ].address,
+          ajnaPoolPairs[`${collateralToken}-${quoteToken}` as keyof typeof ajnaPoolPairs].address,
       }
 
       const commonDependency = {
-        poolInfoAddress: context.ajnaPoolInfo.address,
-        rewardsManagerAddress: context.ajnaRewardsManager.address,
+        poolInfoAddress: ajnaPoolInfo.address,
+        rewardsManagerAddress: ajnaRewardsManager.address,
         provider: context.rpcProvider,
         getPoolData: getAjnaPoolData,
       }

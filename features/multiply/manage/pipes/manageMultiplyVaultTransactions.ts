@@ -14,6 +14,7 @@ import {
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
@@ -564,7 +565,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { tokensMainnet, defaultExchange, walletLabel, web3 }: Context,
+  { chainId, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -578,6 +579,7 @@ export function closeVault(
 ) {
   const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
     closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
 
   txHelpers$
     .pipe(

@@ -1,3 +1,4 @@
+import { getNetworkContracts } from 'blockchain/contracts'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefinitionList } from 'components/DefinitionList'
 import { useObservable } from 'helpers/observableHook'
@@ -32,8 +33,8 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
           {spitedEvents.map((item) => (
             <VaultHistoryEntry
               item={item}
-              etherscan={context?.etherscan}
-              ethtx={context?.ethtx}
+              etherscan={context ? getNetworkContracts(context.chainId).etherscan : undefined}
+              ethtx={context ? getNetworkContracts(context.chainId).ethtx : undefined}
               key={`${item.id}-${item.splitId || item.hash}`}
             />
           ))}

@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { supportedIlks } from 'blockchain/networksConfig'
 import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
+import { supportedIlks } from 'blockchain/tokens/mainnet'
 import {
   BTC_TOKENS,
   ETH_TOKENS,

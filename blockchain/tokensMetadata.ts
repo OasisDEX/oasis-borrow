@@ -3,6 +3,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
 
+import { getNetworkContracts } from './contracts'
 import { Context } from './network'
 
 export interface TokenConfig {
@@ -928,9 +929,9 @@ export function getTokensWithChain(
   throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
 }
 
-export function getTokenSymbolFromAddress(context: Context, tokenAddress: string) {
+export function getTokenSymbolFromAddress({ chainId }: Context, tokenAddress: string) {
   const token = findKey(
-    context.tokens,
+    getNetworkContracts(chainId).tokens,
     (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
   )
   if (!token) {
