@@ -13,7 +13,6 @@ import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { mockedMultiplyEvents } from 'helpers/multiply/calculations.test'
-import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -175,8 +174,4 @@ export function mockManageMultiplyVault$({
     automationTriggersData$,
     MOCK_VAULT_ID,
   )
-}
-
-export function mockManageMultiplyVault(props: MockManageMultiplyVaultProps = {}) {
-  return getStateUnpacker(mockManageMultiplyVault$(props))
 }
