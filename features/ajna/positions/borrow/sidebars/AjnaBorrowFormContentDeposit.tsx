@@ -15,12 +15,11 @@ import React from 'react'
 export function AjnaBorrowFormContentDeposit() {
   const {
     environment: { collateralBalance, collateralPrice, collateralToken, quoteToken },
-    steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
     form: {
       dispatch,
-      state: { depositAmount },
+      state: { depositAmount, generateAmount },
     },
     position: {
       currentPosition: { position, simulation },
@@ -50,7 +49,7 @@ export function AjnaBorrowFormContentDeposit() {
         maxAmount={debtMax}
         minAmount={debtMin}
       />
-      {currentStep === 'setup' && <AjnaBorrowOriginationFee />}
+      {generateAmount && <AjnaBorrowOriginationFee />}
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaBorrowFormOrder />

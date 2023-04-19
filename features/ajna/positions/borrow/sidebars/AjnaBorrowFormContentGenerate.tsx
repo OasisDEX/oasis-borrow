@@ -1,4 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { AjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/controls/AjnaBorrowOriginationFee'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
@@ -49,9 +50,12 @@ export function AjnaBorrowFormContentGenerate() {
         tokenPrice={collateralPrice}
       />
       {generateAmount && (
-        <AjnaFormContentSummary>
-          <AjnaBorrowFormOrder />
-        </AjnaFormContentSummary>
+        <>
+          <AjnaBorrowOriginationFee />
+          <AjnaFormContentSummary>
+            <AjnaBorrowFormOrder />
+          </AjnaFormContentSummary>
+        </>
       )}
     </>
   )
