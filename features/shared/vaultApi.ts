@@ -137,7 +137,7 @@ export function saveVaultUsingApi$(
       id: parseInt(id.toFixed(0)),
       type: vaultType,
       chainId,
-      protocol,
+      protocol: protocol.toLowerCase(),
     },
   }).pipe(map((_) => {}))
 }
