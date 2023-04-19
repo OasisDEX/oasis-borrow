@@ -2,10 +2,9 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
-import { Tooltip, useTooltip } from 'components/Tooltip'
-import { isTouchDevice } from 'helpers/isTouchDevice'
+import { StatefulTooltip } from 'components/Tooltip'
 import { TranslateStringType } from 'helpers/translateStringType'
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import React from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
@@ -50,8 +49,38 @@ export function InfoSectionLoadingState() {
   return <Skeleton width="88px" height="12px" color="dark" />
 }
 
-// TODO: Add tooltip and loading state
-// Note: Use this to phase out the VaultInformationContainer & VaultInformation components
+interface ItemLabelProps {
+  isHeading: boolean
+  label: string
+  labelColorPrimary?: boolean
+}
+
+function ItemLabel({ isHeading, label, labelColorPrimary }: ItemLabelProps) {
+  return (
+    <Text
+      {...(!isHeading
+        ? {
+            as: 'p',
+            sx: {
+              flexShrink: 0,
+              mr: 'auto',
+              color: labelColorPrimary ? 'primary100' : 'neutral80',
+            },
+          }
+        : {
+            as: 'h4',
+            variant: 'paragraph3',
+            sx: {
+              color: 'primary100',
+              fontWeight: 'semiBold',
+            },
+          })}
+    >
+      {label}
+    </Text>
+  )
+}
+
 export function Item({
   label,
   subLabel,
@@ -66,17 +95,6 @@ export function Item({
   isHeading = false,
 }: ItemProps) {
   const [open, setOpen] = useState(false)
-  const { tooltipOpen, setTooltipOpen } = useTooltip()
-
-  const handleMouseEnter = useMemo(
-    () => (!isTouchDevice ? () => setTooltipOpen(true) : undefined),
-    [isTouchDevice],
-  )
-
-  const handleMouseLeave = useMemo(
-    () => (!isTouchDevice ? () => setTooltipOpen(false) : undefined),
-    [isTouchDevice],
-  )
 
   return (
     <Box
@@ -97,41 +115,23 @@ export function Item({
           !isLoading && dropdownValues?.length && setOpen(!open)
         }}
       >
-        {label && (
-          <Flex
-            sx={{ alignItems: 'center' }}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <Text
-              {...(!isHeading
-                ? {
-                    as: 'p',
-                    sx: {
-                      flexShrink: 0,
-                      mr: 'auto',
-                      color: labelColorPrimary ? 'primary100' : 'neutral80',
-                    },
-                  }
-                : {
-                    as: 'h4',
-                    variant: 'paragraph3',
-                    sx: {
-                      color: 'primary100',
-                      fontWeight: 'semiBold',
-                    },
-                  })}
+        {label &&
+          (tooltip ? (
+            <StatefulTooltip
+              tooltip={tooltip}
+              containerSx={{ alignItems: 'center' }}
+              tooltipSx={{ transform: 'translateY(-100%)', right: ['0px', 'auto'], top: '-5px' }}
             >
-              {label}
-            </Text>
-            {tooltip && <Icon name="question_o" size="16px" sx={{ ml: 1, color: 'neutral80' }} />}
-          </Flex>
-        )}
-        {tooltip && tooltipOpen && (
-          <Tooltip sx={{ transform: 'translateY(-100%)', right: ['0px', 'auto'], top: '-5px' }}>
-            {tooltip}
-          </Tooltip>
-        )}
+              <ItemLabel
+                label={label}
+                labelColorPrimary={labelColorPrimary}
+                isHeading={isHeading}
+              />
+              {tooltip && <Icon name="question_o" size="16px" sx={{ ml: 1, color: 'neutral80' }} />}
+            </StatefulTooltip>
+          ) : (
+            <ItemLabel label={label} labelColorPrimary={labelColorPrimary} isHeading={isHeading} />
+          ))}
         <Text
           sx={{
             display: 'flex',
