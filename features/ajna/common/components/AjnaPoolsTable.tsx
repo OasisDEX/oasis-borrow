@@ -1,3 +1,4 @@
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { ajnaComingSoonPools } from 'features/ajna/common/consts'
@@ -41,10 +42,11 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
   selectedValue,
 }) => {
   const { t } = useTranslation()
+  const { chainId } = context
 
   const rows = useMemo(
     () => [
-      ...Object.keys(context.ajnaPoolPairs)
+      ...Object.keys(getNetworkContracts(chainId).ajnaPoolPairs)
         .map(splitPool)
         .filter((pool) => filterPools(pool, isEarnProduct, selectedValue))
         .map((pool) => {
@@ -68,7 +70,9 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
           }
         }),
       ...ajnaComingSoonPools
-        .filter((pool) => !Object.keys(context.ajnaPoolPairs || []).includes(pool))
+        .filter(
+          (pool) => !Object.keys(getNetworkContracts(chainId).ajnaPoolPairs || []).includes(pool),
+        )
         .map(splitPool)
         .filter((pools) => filterPools(pools, isEarnProduct, selectedValue))
         .map((pool) => {
@@ -102,7 +106,7 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
           }
         }),
     ],
-    [context, ajnaPoolsTableData, selectedValue, isEarnProduct],
+    [chainId, isEarnProduct, selectedValue, ajnaPoolsTableData, product, t],
   )
 
   return (

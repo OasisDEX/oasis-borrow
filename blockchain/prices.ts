@@ -8,6 +8,7 @@ import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from
 import { ajax } from 'rxjs/ajax'
 import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { getNetworkContracts } from './contracts'
 import { getToken } from './tokensMetadata'
 
 export interface Tickers {
@@ -55,32 +56,30 @@ export function createGasPrice$(
     switchMap(([{ web3 }, blockNumber]) => {
       return combineLatest(blockNativeRequest$, bindNodeCallback(web3.eth.getBlock)(blockNumber))
     }),
-    map(
-      ([blockNativeResp, block]): GasPriceParams => {
-        const blockNative = blockNativeResp as GasPriceParams
-        const gasFees = {
-          maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
-          maxPriorityFeePerGas: minersTip,
-        } as GasPriceParams
+    map(([blockNativeResp, block]): GasPriceParams => {
+      const blockNative = blockNativeResp as GasPriceParams
+      const gasFees = {
+        maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
+        maxPriorityFeePerGas: minersTip,
+      } as GasPriceParams
 
-        const network = getNetworkId()
+      const network = getNetworkId()
 
-        // Increase maxFeePerGas by 20% when on goerli
-        if (network === NetworkIds.GOERLI) {
-          gasFees.maxFeePerGas = new BigNumber((block as any).baseFeePerGas)
-            .multipliedBy(1.15)
-            .plus(minersTip)
-        }
+      // Increase maxFeePerGas by 20% when on goerli
+      if (network === NetworkIds.GOERLI) {
+        gasFees.maxFeePerGas = new BigNumber((block as any).baseFeePerGas)
+          .multipliedBy(1.15)
+          .plus(minersTip)
+      }
 
-        if (blockNative.maxFeePerGas.gt(0) && network !== NetworkIds.GOERLI) {
-          gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
-          gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
-            blockNative.maxPriorityFeePerGas,
-          )
-        }
-        return gasFees
-      },
-    ),
+      if (blockNative.maxFeePerGas.gt(0) && network !== NetworkIds.GOERLI) {
+        gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
+        gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
+          blockNative.maxPriorityFeePerGas,
+        )
+      }
+      return gasFees
+    }),
     distinctUntilChanged(isEqual),
     shareReplay(1),
   )
@@ -198,8 +197,10 @@ export function createOraclePriceData$(
   { token, requestedData }: OraclePriceDataArgs,
 ): Observable<Partial<OraclePriceData>> {
   return context$.pipe(
-    switchMap(({ web3, mcdOsms }) => {
-      return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
+    switchMap(({ web3, chainId }) => {
+      return bindNodeCallback(web3.eth.getCode)(
+        getNetworkContracts(chainId).mcdOsms[token].address,
+      ).pipe(
         first(),
         switchMap((contractData) => {
           type Pipes = {

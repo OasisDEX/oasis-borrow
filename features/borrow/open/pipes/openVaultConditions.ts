@@ -294,15 +294,14 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     collateralizationWarningThreshold,
   })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
-    {
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    vaultWillBeAtRiskLevelWarningAtNextPriceValidator({
       vaultWillBeAtRiskLevelWarning,
       inputAmountsEmpty,
       afterCollateralizationRatioAtNextPrice,
       collateralizationDangerThreshold,
       collateralizationWarningThreshold,
-    },
-  )
+    })
 
   const vaultWillBeUnderCollateralized = !!(
     generateAmount?.gt(zero) &&
@@ -345,16 +344,18 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
   const potentialGenerateAmountLessThanDebtFloor =
     !isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(debtFloor)
 
-  const isLoadingStage = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'allowanceInProgress',
-    'allowanceWaitingForApproval',
-    'txInProgress',
-    'txWaitingForApproval',
-    'stopLossTxInProgress',
-    'stopLossTxWaitingForApproval',
-  ] as OpenVaultStage[]).some((s) => s === stage)
+  const isLoadingStage = (
+    [
+      'proxyInProgress',
+      'proxyWaitingForApproval',
+      'allowanceInProgress',
+      'allowanceWaitingForApproval',
+      'txInProgress',
+      'txWaitingForApproval',
+      'stopLossTxInProgress',
+      'stopLossTxWaitingForApproval',
+    ] as OpenVaultStage[]
+  ).some((s) => s === stage)
 
   const isSuccessStage = stage === 'txSuccess'
   const isStopLossSuccessStage = stage === 'stopLossTxSuccess'
@@ -369,13 +370,12 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     allowanceAmount,
   })
 
-  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
-    {
+  const customAllowanceAmountLessThanDepositAmount =
+    customAllowanceAmountLessThanDepositAmountValidator({
       selectedAllowanceRadio,
       allowanceAmount,
       depositAmount,
-    },
-  )
+    })
 
   const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
 
@@ -404,15 +404,17 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     stage === 'stopLossTxWaitingForConfirmation' ||
     stage === 'stopLossTxSuccess'
 
-  const canRegress = ([
-    'proxyWaitingForConfirmation',
-    'proxyFailure',
-    'allowanceWaitingForConfirmation',
-    'allowanceFailure',
-    'stopLossEditing',
-    'txWaitingForConfirmation',
-    'txFailure',
-  ] as OpenVaultStage[]).some((s) => s === stage)
+  const canRegress = (
+    [
+      'proxyWaitingForConfirmation',
+      'proxyFailure',
+      'allowanceWaitingForConfirmation',
+      'allowanceFailure',
+      'stopLossEditing',
+      'txWaitingForConfirmation',
+      'txFailure',
+    ] as OpenVaultStage[]
+  ).some((s) => s === stage)
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 

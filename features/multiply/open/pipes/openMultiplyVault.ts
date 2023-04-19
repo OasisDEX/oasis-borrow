@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
@@ -412,9 +413,10 @@ export function createOpenMultiplyVault$(
                       ilk,
                       proxyAddress,
                       allowance,
-                      safeConfirmations: context.safeConfirmations,
-                      openVaultSafeConfirmations: context.openVaultSafeConfirmations,
-                      etherscan: context.etherscan.url,
+                      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
+                      openVaultSafeConfirmations: getNetworkContracts(context.chainId)
+                        .openVaultSafeConfirmations,
+                      etherscan: getNetworkContracts(context.chainId).etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,

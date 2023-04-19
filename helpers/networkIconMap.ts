@@ -7,8 +7,8 @@ export const networkTabTitleIconMap: Record<NetworkNames, string> = {
   [NetworkNames.ethereumGoerli]: '🌲 ',
   [NetworkNames.arbitrumMainnet]: '',
   [NetworkNames.arbitrumGoerli]: '🌲 ',
-  [NetworkNames.avalancheMainnet]: '',
   [NetworkNames.optimismMainnet]: '',
   [NetworkNames.optimismGoerli]: '🌲',
   [NetworkNames.polygonMainnet]: '',
+  [NetworkNames.polygonMumbai]: '🌲',
 }

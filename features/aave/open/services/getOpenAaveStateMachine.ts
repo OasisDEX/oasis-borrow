@@ -16,9 +16,7 @@ import { TransactionParametersStateMachine } from 'features/stateMachines/transa
 export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
   openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
-  openDepositBorrowParametersMachine: TransactionParametersStateMachine<
-    OpenAaveDepositBorrowParameters
-  >,
+  openDepositBorrowParametersMachine: TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>,
   dsProxyMachine: ProxyStateMachine,
   dpmProxyMachine: DPMAccountStateMachine,
   allowanceMachine: AllowanceStateMachine,

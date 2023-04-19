@@ -65,13 +65,8 @@ export function AjnaProductController({
 }: AjnaProductControllerProps) {
   const { t } = useTranslation()
   const { push } = useRouter()
-  const {
-    ajnaPosition$,
-    balancesInfoArray$,
-    dpmPositionData$,
-    tokenPriceUSD$,
-    gasPrice$,
-  } = useAppContext()
+  const { ajnaPosition$, balancesInfoArray$, dpmPositionData$, tokenPriceUSD$, gasPrice$ } =
+    useAppContext()
   const { walletAddress } = useAccount()
 
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
@@ -212,7 +207,9 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                              uiDropdown: (ajnaPosition as AjnaEarnPosition).quoteTokenAmount.isZero()
+                              uiDropdown: (
+                                ajnaPosition as AjnaEarnPosition
+                              ).quoteTokenAmount.isZero()
                                 ? 'liquidity'
                                 : 'adjust',
                               price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),

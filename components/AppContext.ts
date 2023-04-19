@@ -80,7 +80,7 @@ import { spotIlk } from 'blockchain/calls/spot'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
-import { charterIlks, cropJoinIlks, networksById } from 'blockchain/config'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
@@ -97,6 +97,7 @@ import {
   every10Seconds$,
 } from 'blockchain/network'
 import { compareBigNumber } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -110,6 +111,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
+import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
 import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
@@ -440,7 +442,7 @@ export type UIChanges = {
   clear: (sub: string) => void
   configureSubject: <
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(
     subject: string,
     reducer: (prev: T, event: K) => T,
@@ -497,7 +499,7 @@ function createUIChangesSubject(): UIChanges {
 
   function configureSubject<
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(subject: string, reducer: (prev: T, event: K) => T, initialState?: T): void {
     reducers[subject] = reducer
     if (initialState) {
@@ -540,7 +542,7 @@ function initializeUIChanges() {
 
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
-  const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
+  const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcCallsEndpoint)
   const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
 
   const account$ = createAccount$(web3Context$)
@@ -582,13 +584,14 @@ export function setupAppContext() {
     })
 
   const oracleContext$ = context$.pipe(
-    switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),
+    switchMap((ctx) => of({ ...ctx, account: getNetworkContracts(ctx.chainId).mcdSpot.address })),
     shareReplay(1),
   ) as Observable<ContextConnected>
 
   const [send, transactions$] = createSend<TxData>(
     initializedAccount$,
     onEveryBlock$,
+    // @ts-ignore
     connectedContext$,
   )
 
@@ -1429,9 +1432,9 @@ export function setupAppContext() {
   const ajnaPosition$ = memoize(
     curry(getAjnaPosition$)(context$, onEveryBlock$),
     (collateralPrice: BigNumber, quotePrice: BigNumber, dpmPositionData: DpmPositionData) =>
-      `${dpmPositionData.vaultId}-${collateralPrice
+      `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
         .decimalPlaces(2)
-        .toString()}-${quotePrice.decimalPlaces(2).toString()}`,
+        .toString()}`,
   )
 
   return {

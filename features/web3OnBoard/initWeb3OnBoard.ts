@@ -5,7 +5,7 @@ import ledgerModule from '@web3-onboard/ledger'
 import { init } from '@web3-onboard/react'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnectModule from '@web3-onboard/walletconnect'
-import { networks } from 'blockchain/config'
+import { networks } from 'blockchain/networksConfig'
 
 const injected = injectedModule({
   custom: [],
@@ -31,7 +31,7 @@ export const initWeb3OnBoard = init({
     ...networks.map((network) => ({
       id: network.hexId,
       label: network.label,
-      rpcUrl: network.infuraUrl,
+      rpcUrl: network.rpcCallsEndpoint,
       token: network.token,
       color: network.color,
     })),

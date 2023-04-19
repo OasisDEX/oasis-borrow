@@ -4,7 +4,7 @@ import { User, WeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { claimMultiple, ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { networksById } from 'blockchain/config'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { TxHelpers } from 'components/AppContext'
 import { Web3Context } from 'features/web3Context'
 import { gql, GraphQLClient } from 'graphql-request'
@@ -54,7 +54,7 @@ export function createUserReferral$(
       if (web3Context.status !== 'connected') {
         return of({ state: 'walletConnectionInProgress' } as UserReferralState)
       }
-      const { cacheApi } = networksById[web3Context.chainId]
+      const { cacheApi } = getNetworkContracts(web3Context.chainId)
 
       return combineLatest(
         getUserFromApi$(web3Context.account, trigger$),
@@ -102,32 +102,29 @@ export function createUserReferral$(
                   proofs: claimsOut.proofs,
                 })
               }),
-              map(
-                (txnState: TxState<ClaimMultipleData>): ClaimTxnState => {
-                  switch (txnState.status) {
-                    case TxStatus.CancelledByTheUser:
-                    case TxStatus.Failure:
-                    case TxStatus.Error:
-                      return ClaimTxnState.FAILED
-                    case TxStatus.Propagating:
-                    case TxStatus.WaitingForConfirmation:
-                    case TxStatus.WaitingForApproval:
-                    case undefined:
-                      return ClaimTxnState.PENDING
-                    case TxStatus.Success:
-                      return ClaimTxnState.SUCCEEDED
-                  }
-                },
-              ),
+              map((txnState: TxState<ClaimMultipleData>): ClaimTxnState => {
+                switch (txnState.status) {
+                  case TxStatus.CancelledByTheUser:
+                  case TxStatus.Failure:
+                  case TxStatus.Error:
+                    return ClaimTxnState.FAILED
+                  case TxStatus.Propagating:
+                  case TxStatus.WaitingForConfirmation:
+                  case TxStatus.WaitingForApproval:
+                  case undefined:
+                    return ClaimTxnState.PENDING
+                  case TxStatus.Success:
+                    return ClaimTxnState.SUCCEEDED
+                }
+              }),
             )
           }
 
           function claimAllFunction() {
             claimClick$.next()
           }
-          const performClaimMultiple$: Observable<
-            (() => Observable<ClaimTxnState>) | undefined
-          > = of(weeklyClaims ? performClaimMultiple : undefined)
+          const performClaimMultiple$: Observable<(() => Observable<ClaimTxnState>) | undefined> =
+            of(weeklyClaims ? performClaimMultiple : undefined)
 
           const ClaimTxnState$: Observable<ClaimTxnState | undefined> = combineLatest(
             claimClick$,

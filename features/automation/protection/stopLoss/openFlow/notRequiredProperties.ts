@@ -93,7 +93,7 @@ export const notRequiredAutomationContext: Pick<
   AutomationContextProviderProps,
   'protocol' | 'commonData'
 > = {
-  protocol: ('' as unknown) as VaultProtocol,
+  protocol: '' as unknown as VaultProtocol,
   commonData: notRequiredCommonData,
 }
 

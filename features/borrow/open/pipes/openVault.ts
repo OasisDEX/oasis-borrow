@@ -5,6 +5,7 @@ import {
   vaultActionsLogic,
   VaultActionsLogicInterface,
 } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
@@ -407,9 +408,10 @@ export function createOpenVault$(
                       ilk,
                       proxyAddress,
                       allowance,
-                      safeConfirmations: context.safeConfirmations,
-                      openVaultSafeConfirmations: context.openVaultSafeConfirmations,
-                      etherscan: context.etherscan.url,
+                      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
+                      openVaultSafeConfirmations: getNetworkContracts(context.chainId)
+                        .openVaultSafeConfirmations,
+                      etherscan: getNetworkContracts(context.chainId).etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,

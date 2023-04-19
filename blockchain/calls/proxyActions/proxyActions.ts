@@ -2,8 +2,9 @@ import { BigNumber } from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { contractDesc } from 'blockchain/config'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { contractDesc } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
@@ -39,16 +40,9 @@ export type OpenMultiplyData = {
 }
 
 function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnected) {
-  const {
-    contract,
-    defaultExchange,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    fmm,
-  } = context
+  const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
+    getNetworkContracts(context.chainId)
+  const { contract } = context
 
   const exchangeData = {
     fromTokenAddress: tokens['DAI'].address,
@@ -94,8 +88,10 @@ export const openMultiplyVault: TransactionDef<OpenMultiplyData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssMultiplyProxyActions } = context
-    return [dssMultiplyProxyActions.address, getOpenMultiplyCallData(data, context).encodeABI()]
+    return [
+      getNetworkContracts(context.chainId).dssMultiplyProxyActions.address,
+      getOpenMultiplyCallData(data, context).encodeABI(),
+    ]
   },
   options: ({ token, depositCollateral }) =>
     token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toFixed(0) } : {},
@@ -121,7 +117,6 @@ export type OpenGuniMultiplyData = {
 
 function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: ContextConnected) {
   const {
-    contract,
     joins,
     mcdJug,
     dssCdpManager,
@@ -130,9 +125,11 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     guniResolver,
     guniProxyActions,
     guniRouter,
-  } = context
+    lowerFeesExchange,
+  } = getNetworkContracts(context.chainId)
+  const { contract } = context
 
-  const exchange = context['lowerFeesExchange']
+  const exchange = lowerFeesExchange
 
   const tokenData = getToken(data.token)
 
@@ -181,8 +178,10 @@ export const openGuniMultiplyVault: TransactionDef<OpenGuniMultiplyData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { guniProxyActions } = context
-    return [guniProxyActions.address, getOpenGuniMultiplyCallData(data, context).encodeABI()]
+    return [
+      getNetworkContracts(context.chainId).guniProxyActions.address,
+      getOpenGuniMultiplyCallData(data, context).encodeABI(),
+    ]
   },
 }
 
@@ -199,7 +198,7 @@ export const reclaim: TransactionDef<ReclaimData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssProxyActions, dssCdpManager } = context
+    const { dssProxyActions, dssCdpManager } = getNetworkContracts(context.chainId)
 
     return [
       dssProxyActions.address,
@@ -239,16 +238,9 @@ export type MultiplyAdjustData = {
   id: BigNumber
 }
 function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextConnected) {
-  const {
-    contract,
-    defaultExchange,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    fmm,
-  } = context
+  const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
+    getNetworkContracts(context.chainId)
+  const { contract } = context
 
   if (data.action === 'BUY_COLLATERAL') {
     const exchangeData = {
@@ -367,8 +359,10 @@ export const adjustMultiplyVault: TransactionDef<MultiplyAdjustData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssMultiplyProxyActions } = context
-    return [dssMultiplyProxyActions.address, getMultiplyAdjustCallData(data, context).encodeABI()]
+    return [
+      getNetworkContracts(context.chainId).dssMultiplyProxyActions.address,
+      getMultiplyAdjustCallData(data, context).encodeABI(),
+    ]
   },
   options: ({ token, depositCollateral }) =>
     token === 'ETH' ? { value: amountToWei(depositCollateral, token).toFixed(0) } : {},
@@ -392,16 +386,9 @@ export type CloseVaultData = {
 }
 
 function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) {
-  const {
-    contract,
-    defaultExchange,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    fmm,
-  } = context
+  const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
+    getNetworkContracts(context.chainId)
+  const { contract } = context
 
   const {
     id,
@@ -474,7 +461,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssMultiplyProxyActions, dssProxyActions } = context
+    const { dssMultiplyProxyActions, dssProxyActions } = getNetworkContracts(context.chainId)
     if (data.exchangeData) {
       return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
     } else {
@@ -516,7 +503,6 @@ export type CloseGuniMultiplyData = {
 
 function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConnected) {
   const {
-    contract,
     guniProxyActions,
     joins,
     mcdJug,
@@ -525,9 +511,11 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     fmm,
     guniResolver,
     guniRouter,
-  } = context
+    lowerFeesExchange,
+  } = getNetworkContracts(context.chainId)
+  const { contract } = context
 
-  const exchange = context['noFeesExchange']
+  const exchange = lowerFeesExchange
 
   const { token0: token0Symbol, token1: token1Symbol } = getToken(data.token)
 
@@ -573,7 +561,7 @@ export const closeGuniVaultCall: TransactionDef<CloseGuniMultiplyData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { guniProxyActions } = context
+    const { guniProxyActions } = getNetworkContracts(context.chainId)
 
     return [guniProxyActions.address, getGuniCloseVaultData(data, context).encodeABI()]
   },

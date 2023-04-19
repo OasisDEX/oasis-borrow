@@ -71,9 +71,11 @@ export const composePipes = (p1: Pipe, p2: Pipe) => (v: string, config: { rawVal
   return tmp === false ? tmp : p2(tmp, config)
 }
 
-export const lessThanOrEqual = (max: BigNumber): Pipe => (value: string) => {
-  if (!value) {
-    return value
+export const lessThanOrEqual =
+  (max: BigNumber): Pipe =>
+  (value: string) => {
+    if (!value) {
+      return value
+    }
+    return new BigNumber(value.replace(/,/g, '')).lte(max) ? value : false
   }
-  return new BigNumber(value.replace(/,/g, '')).lte(max) ? value : false
-}

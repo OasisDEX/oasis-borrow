@@ -1,6 +1,6 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import { AllNetworksContractsType } from 'blockchain/contracts'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
@@ -39,10 +39,10 @@ export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'
 
 export type AjnaCloseTo = 'collateral' | 'quote'
 
-export type AjnaPoolPairs = keyof Context['ajnaPoolPairs']
+export type AjnaPoolPairs = keyof AllNetworksContractsType[1]['ajnaPoolPairs']
 
 export type AjnaPoolData = {
-  [key in keyof Context['ajnaPoolPairs']]: {
+  [key in AjnaPoolPairs]: {
     '7DayNetApy': BigNumber
     '90DayNetApy': BigNumber
     annualFee: BigNumber

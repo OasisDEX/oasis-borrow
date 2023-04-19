@@ -36,38 +36,27 @@ export function AutoBuyFormControl({
 
   const feature = AutomationFeatures.AUTO_BUY
   const publishType = AUTO_BUY_FORM_CHANGE
-  const {
-    isAddForm,
-    isFirstSetup,
-    isProgressStage,
-    isRemoveForm,
-    stage,
-  } = getAutomationFeatureStatus({
-    currentForm: autoBuyState.currentForm,
-    feature: AutomationFeatures.AUTO_BUY,
-    triggersId: [autoBuyTriggerData.triggerId],
-    txStatus: autoBuyState.txDetails?.txStatus,
-  })
-  const {
-    collateralDelta,
-    debtDelta,
-    isDisabled,
-    isEditing,
-    resetData,
-    executionPrice,
-  } = getAutoBSStatus({
-    autoBSState: autoBuyState,
-    autoBSTriggerData: autoBuyTriggerData,
-    isAddForm,
-    isOwner: canInteract,
-    isProgressStage,
-    isRemoveForm,
-    publishType,
-    stage,
-    debt,
-    lockedCollateral,
-    positionRatio,
-  })
+  const { isAddForm, isFirstSetup, isProgressStage, isRemoveForm, stage } =
+    getAutomationFeatureStatus({
+      currentForm: autoBuyState.currentForm,
+      feature: AutomationFeatures.AUTO_BUY,
+      triggersId: [autoBuyTriggerData.triggerId],
+      txStatus: autoBuyState.txDetails?.txStatus,
+    })
+  const { collateralDelta, debtDelta, isDisabled, isEditing, resetData, executionPrice } =
+    getAutoBSStatus({
+      autoBSState: autoBuyState,
+      autoBSTriggerData: autoBuyTriggerData,
+      isAddForm,
+      isOwner: canInteract,
+      isProgressStage,
+      isRemoveForm,
+      publishType,
+      stage,
+      debt,
+      lockedCollateral,
+      positionRatio,
+    })
   const { addTxData, textButtonHandlerExtension } = getAutoBSTxHandlers({
     autoBSState: autoBuyState,
     isAddForm,

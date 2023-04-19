@@ -441,15 +441,14 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     collateralizationWarningThreshold,
   })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
-    {
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    vaultWillBeAtRiskLevelWarningAtNextPriceValidator({
       vaultWillBeAtRiskLevelWarning,
       inputAmountsEmpty,
       afterCollateralizationRatioAtNextPrice,
       collateralizationDangerThreshold,
       collateralizationWarningThreshold,
-    },
-  )
+    })
 
   const vaultWillBeUnderCollateralized =
     afterDebt.gt(zero) &&
@@ -483,9 +482,12 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     maxWithdrawAmountAtCurrentPrice,
   })
 
-  const withdrawAmountExceedsFreeCollateralAtNextPrice = withdrawAmountExceedsFreeCollateralAtNextPriceValidator(
-    { withdrawAmount, withdrawAmountExceedsFreeCollateral, maxWithdrawAmountAtNextPrice },
-  )
+  const withdrawAmountExceedsFreeCollateralAtNextPrice =
+    withdrawAmountExceedsFreeCollateralAtNextPriceValidator({
+      withdrawAmount,
+      withdrawAmountExceedsFreeCollateral,
+      maxWithdrawAmountAtNextPrice,
+    })
 
   // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
   const generateAmountCalc = afterDebt.gt(debt) ? afterDebt.minus(debt) : zero
@@ -534,21 +536,31 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     daiAllowanceAmount,
   })
 
-  const customCollateralAllowanceAmountExceedsMaxUint256 = customCollateralAllowanceAmountExceedsMaxUint256Validator(
-    { selectedCollateralAllowanceRadio, collateralAllowanceAmount },
-  )
+  const customCollateralAllowanceAmountExceedsMaxUint256 =
+    customCollateralAllowanceAmountExceedsMaxUint256Validator({
+      selectedCollateralAllowanceRadio,
+      collateralAllowanceAmount,
+    })
 
-  const customCollateralAllowanceAmountLessThanDepositAmount = customCollateralAllowanceAmountLessThanDepositAmountValidator(
-    { selectedCollateralAllowanceRadio, collateralAllowanceAmount, depositAmount },
-  )
+  const customCollateralAllowanceAmountLessThanDepositAmount =
+    customCollateralAllowanceAmountLessThanDepositAmountValidator({
+      selectedCollateralAllowanceRadio,
+      collateralAllowanceAmount,
+      depositAmount,
+    })
 
-  const customDaiAllowanceAmountExceedsMaxUint256 = customDaiAllowanceAmountExceedsMaxUint256Validator(
-    { selectedDaiAllowanceRadio, daiAllowanceAmount },
-  )
+  const customDaiAllowanceAmountExceedsMaxUint256 =
+    customDaiAllowanceAmountExceedsMaxUint256Validator({
+      selectedDaiAllowanceRadio,
+      daiAllowanceAmount,
+    })
 
-  const customDaiAllowanceAmountLessThanPaybackAmount = customDaiAllowanceAmountLessThanPaybackAmountValidator(
-    { selectedDaiAllowanceRadio, daiAllowanceAmount, paybackAmount },
-  )
+  const customDaiAllowanceAmountLessThanPaybackAmount =
+    customDaiAllowanceAmountLessThanPaybackAmountValidator({
+      selectedDaiAllowanceRadio,
+      daiAllowanceAmount,
+      paybackAmount,
+    })
 
   const insufficientCollateralAllowance = insufficientCollateralAllowanceValidator({
     token,
@@ -565,18 +577,20 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     debtOffset,
   })
 
-  const isLoadingStage = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'collateralAllowanceWaitingForApproval',
-    'collateralAllowanceInProgress',
-    'daiAllowanceWaitingForApproval',
-    'daiAllowanceInProgress',
-    'manageInProgress',
-    'manageWaitingForApproval',
-    'borrowTransitionInProgress',
-    'borrowTransitionSuccess',
-  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+  const isLoadingStage = (
+    [
+      'proxyInProgress',
+      'proxyWaitingForApproval',
+      'collateralAllowanceWaitingForApproval',
+      'collateralAllowanceInProgress',
+      'daiAllowanceWaitingForApproval',
+      'daiAllowanceInProgress',
+      'manageInProgress',
+      'manageWaitingForApproval',
+      'borrowTransitionInProgress',
+      'borrowTransitionSuccess',
+    ] as ManageMultiplyVaultStage[]
+  ).some((s) => s === stage)
 
   const isSuccessStage = stage === 'manageSuccess'
 
@@ -634,27 +648,25 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       type: 'above',
     })
 
-  const takeProfitWillTriggerImmediatelyAfterVaultReopen = vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator(
-    {
+  const takeProfitWillTriggerImmediatelyAfterVaultReopen =
+    vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
       debt,
       afterDebt,
       nextCollateralPrice,
       type: 'above',
       isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
       executionPrice: autoTakeProfitData?.executionPrice,
-    },
-  )
+    })
 
-  const existingTakeProfitTriggerAfterVaultReopen = vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator(
-    {
+  const existingTakeProfitTriggerAfterVaultReopen =
+    vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
       debt,
       afterDebt,
       nextCollateralPrice,
       type: 'below',
       isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
       executionPrice: autoTakeProfitData?.executionPrice,
-    },
-  )
+    })
 
   const editingProgressionDisabled =
     isEditingStage &&
@@ -724,19 +736,21 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     borrowTransitionDisabled
   )
 
-  const canRegress = ([
-    'proxyWaitingForConfirmation',
-    'proxyFailure',
-    'collateralAllowanceWaitingForConfirmation',
-    'collateralAllowanceFailure',
-    'daiAllowanceWaitingForConfirmation',
-    'daiAllowanceFailure',
-    'manageWaitingForConfirmation',
-    'manageFailure',
-    'borrowTransitionEditing',
-    'borrowTransitionWaitingForConfirmation',
-    'borrowTransitionFailure',
-  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+  const canRegress = (
+    [
+      'proxyWaitingForConfirmation',
+      'proxyFailure',
+      'collateralAllowanceWaitingForConfirmation',
+      'collateralAllowanceFailure',
+      'daiAllowanceWaitingForConfirmation',
+      'daiAllowanceFailure',
+      'manageWaitingForConfirmation',
+      'manageFailure',
+      'borrowTransitionEditing',
+      'borrowTransitionWaitingForConfirmation',
+      'borrowTransitionFailure',
+    ] as ManageMultiplyVaultStage[]
+  ).some((s) => s === stage)
 
   const { stopLossTriggered, autoTakeProfitTriggered } = automationTriggeredValidator({
     vaultHistory,

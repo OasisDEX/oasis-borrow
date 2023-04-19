@@ -204,13 +204,12 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
           sliderMax,
           stopLossLevel,
         }),
-        isStopLossTriggerCloseToConstantMultipleSellTrigger: isStopLossTriggerCloseToConstantMultipleSellTrigger(
-          {
+        isStopLossTriggerCloseToConstantMultipleSellTrigger:
+          isStopLossTriggerCloseToConstantMultipleSellTrigger({
             context,
             sliderMax,
             stopLossLevel,
-          },
-        ),
+          }),
       }),
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],

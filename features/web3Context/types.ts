@@ -1,5 +1,6 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networkIds'
 import Web3 from 'web3'
 
 export type ConnectionKind = 'injected' | 'network'
@@ -37,7 +38,7 @@ export interface Web3ContextConnectedReadonly extends Connectable {
   status: 'connectedReadonly'
   connectionKind: ConnectionKind
   web3: Web3
-  chainId: number
+  chainId: NetworkIds
   deactivate: () => void
   connectionMethod: 'legacy' | 'web3-onboard'
   walletLabel?: undefined
@@ -47,7 +48,7 @@ export interface Web3ContextConnected {
   status: 'connected'
   connectionKind: ConnectionKind
   web3: Web3
-  chainId: number
+  chainId: NetworkIds
   deactivate: () => void
   account: string
   magicLinkEmail?: string

@@ -12,7 +12,7 @@ interface UseSubgraphLoader<R> {
 export async function loadSubgraph<
   S extends keyof Subgraphs,
   M extends keyof Subgraphs[S],
-  P extends Subgraphs[S][M]
+  P extends Subgraphs[S][M],
 >(
   subgraph: S,
   method: M,
@@ -35,7 +35,7 @@ export async function loadSubgraph<
 export function useSubgraphLoader<
   S extends keyof Subgraphs,
   M extends keyof Subgraphs[S],
-  P extends Subgraphs[S][M]
+  P extends Subgraphs[S][M],
 >(subgraph: S, method: M, params: P) {
   const stringifiedParams = JSON.stringify(params)
   const [state, setState] = useState<

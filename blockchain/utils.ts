@@ -23,11 +23,11 @@ export function amountFromRad(amount: BigNumber): BigNumber {
 export function funcSigTopic(v: string): string {
   // TODO remove when following issue will be fixed
   // https://github.com/ChainSafe/web3.js/pull/3587
-  return padEnd(((ethAbi as unknown) as AbiCoder).encodeFunctionSignature(v), 66, '0')
+  return padEnd((ethAbi as unknown as AbiCoder).encodeFunctionSignature(v), 66, '0')
 }
 
 export function encodeArray(array: string[]): string {
-  return ((ethAbi as unknown) as AbiCoder).encodeParameter('bytes[]', array)
+  return (ethAbi as unknown as AbiCoder).encodeParameter('bytes[]', array)
 }
 
 type TokenOrPrecision = string | number

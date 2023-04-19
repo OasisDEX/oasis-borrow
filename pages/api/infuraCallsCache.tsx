@@ -1,5 +1,5 @@
 import { withSentry } from '@sentry/nextjs'
-import { networksById } from 'blockchain/config'
+import { networksById } from 'blockchain/networksConfig'
 import { BatchManager } from 'helpers/api/BatchManager'
 import { Request } from 'helpers/api/BatchManager'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -25,10 +25,10 @@ const cache = new NodeCache({ stdTTL: 60 })
 async function infuraCallsCacheHandler(req: NextApiRequest, res: NextApiResponse) {
   const encodedBatchCallData = req.body.encoded
 
-  const infuraUrl = networksById[req.body.network.chainId].infuraUrl
+  const rpcCallsEndpoint = networksById[req.body.network.chainId].rpcCallsEndpoint
   const batchCallData: Array<Request> = JSON.parse(encodedBatchCallData)
 
-  const batchManager = new BatchManager(infuraUrl, cache, { debug: true })
+  const batchManager = new BatchManager(rpcCallsEndpoint, cache, { debug: true })
   const batchResults = await batchManager.batchCall(batchCallData)
 
   return respond(req, res, batchResults)

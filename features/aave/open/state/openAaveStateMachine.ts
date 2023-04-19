@@ -12,8 +12,8 @@ import {
   OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ethNullAddress } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
+import { ethNullAddress } from 'blockchain/networksConfig'
 import { AutomationTxData } from 'components/AppContext'
 import {
   BaseAaveContext,
@@ -94,9 +94,7 @@ export type OpenAaveEvent =
 
 export function createOpenAaveStateMachine(
   openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
-  openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<
-    OpenAaveDepositBorrowParameters
-  >,
+  openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>,
   proxyStateMachine: ProxyStateMachine,
   dmpAccountStateMachine: DPMAccountStateMachine,
   allowanceStateMachine: AllowanceStateMachine,
@@ -696,7 +694,7 @@ export function createOpenAaveStateMachine(
             ? context.userDpmAccount?.proxy
             : context.connectedProxyAddress
 
-          const contextConnected = (context.web3Context as any) as ContextConnected | undefined
+          const contextConnected = context.web3Context as any as ContextConnected | undefined
 
           const protocolVersion =
             context.strategyConfig.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
@@ -781,11 +779,8 @@ export function createOpenAaveStateMachine(
           }
         }),
         updateStopLossInitialState: assign((context) => {
-          const {
-            proxyAddress,
-            debtTokenAddress,
-            collateralTokenAddress,
-          } = extractStopLossDataInput(context)
+          const { proxyAddress, debtTokenAddress, collateralTokenAddress } =
+            extractStopLossDataInput(context)
           const stopLossLevel = context
             .reserveConfig!.liquidationThreshold.minus(aaveOffsetFromMaxDuringOpenFLow)
             .times(100)

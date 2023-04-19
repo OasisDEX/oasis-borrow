@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'
@@ -56,8 +57,8 @@ const eventSigntures: Dictionary<string[]> = {
   [DsrEventKind.dsrWithdrawal]: [EVENT_POT_EXIT, EVENT_DAI_ADAPTER_EXIT],
 }
 
-async function getBlockTimestamp(context: Context, blockNumber: number): Promise<number> {
-  const apiClient = new GraphQLClient(context.cacheApi)
+async function getBlockTimestamp({ chainId }: Context, blockNumber: number): Promise<number> {
+  const apiClient = new GraphQLClient(getNetworkContracts(chainId).cacheApi)
   const block = await apiClient.request(historicalBlockNumbers, {
     blockNumber,
   })
@@ -72,7 +73,7 @@ function createEventTypeHistory$(
 ): Observable<DsrEvent> {
   const potEvents$ = fromPromise(
     context.web3ProviderGetPastLogs.eth.getPastLogs({
-      address: context.mcdPot.address,
+      address: getNetworkContracts(context.chainId).mcdPot.address,
       topics: [eventSigntures[kind][0], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
     }),
@@ -80,7 +81,7 @@ function createEventTypeHistory$(
 
   const adapterEvents$ = fromPromise(
     context.web3ProviderGetPastLogs.eth.getPastLogs({
-      address: context.mcdJoinDai.address,
+      address: getNetworkContracts(context.chainId).mcdJoinDai.address,
       topics: [eventSigntures[kind][1], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
     }),
@@ -104,7 +105,7 @@ function createEventTypeHistory$(
         block: potEvent.blockNumber,
         txHash: potEvent.transactionHash,
         amount: joinEvent.topics && new BigNumber(joinEvent.topics[3]),
-        interactAddress: context.mcdPot.address,
+        interactAddress: getNetworkContracts(context.chainId).mcdPot.address,
         gem: 'DAI',
       }
     }),

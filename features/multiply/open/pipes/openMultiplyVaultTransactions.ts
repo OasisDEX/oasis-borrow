@@ -3,6 +3,7 @@ import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
@@ -98,7 +99,7 @@ export function setAllowance(
 
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
-  { tokensMainnet, defaultExchange }: ContextConnected,
+  { chainId }: ContextConnected,
   change: (ch: OpenMultiplyVaultChange) => void,
   {
     depositAmount,
@@ -117,6 +118,7 @@ export function multiplyVault(
     openVaultSafeConfirmations,
   }: OpenMultiplyVaultState,
 ) {
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
   return getQuote$(
     getTokenMetaData('DAI', tokensMainnet),
     getTokenMetaData(token, tokensMainnet),

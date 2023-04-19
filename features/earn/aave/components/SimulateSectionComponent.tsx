@@ -57,10 +57,10 @@ function SimulationSection({
     return swapFee.plus(gasFee)
   }, [transition, gasPrice])
 
-  const riskRatio = useMemo(() => transition?.simulation.position.riskRatio || defaultRiskRatio, [
-    defaultRiskRatio,
-    transition,
-  ])
+  const riskRatio = useMemo(
+    () => transition?.simulation.position.riskRatio || defaultRiskRatio,
+    [defaultRiskRatio, transition],
+  )
 
   const simulation = useSimulationYields({
     amount,

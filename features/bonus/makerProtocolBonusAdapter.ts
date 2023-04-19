@@ -4,6 +4,7 @@ import { TokenBalanceRawForJoinArgs } from 'blockchain/calls/erc20'
 import { ClaimRewardData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { amountFromPrecision, amountFromRay, amountToRay } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
@@ -139,27 +140,25 @@ export function createMakerProtocolBonusAdapter(
             return sendWithGasEstimation(vaultActions.claimReward, {
               kind: TxMetaKind.claimReward,
               proxyAddress: proxyAddress!,
-              gemJoinAddress: context.joins[ilk],
+              gemJoinAddress: getNetworkContracts(context.chainId).joins[ilk],
               cdpId,
             })
           }),
-          map(
-            (txnState: TxState<ClaimRewardData>): ClaimTxnState => {
-              switch (txnState.status) {
-                case TxStatus.CancelledByTheUser:
-                case TxStatus.Failure:
-                case TxStatus.Error:
-                  return ClaimTxnState.FAILED
-                case TxStatus.Propagating:
-                case TxStatus.WaitingForConfirmation:
-                case TxStatus.WaitingForApproval:
-                case undefined:
-                  return ClaimTxnState.PENDING
-                case TxStatus.Success:
-                  return ClaimTxnState.SUCCEEDED
-              }
-            },
-          ),
+          map((txnState: TxState<ClaimRewardData>): ClaimTxnState => {
+            switch (txnState.status) {
+              case TxStatus.CancelledByTheUser:
+              case TxStatus.Failure:
+              case TxStatus.Error:
+                return ClaimTxnState.FAILED
+              case TxStatus.Propagating:
+              case TxStatus.WaitingForConfirmation:
+              case TxStatus.WaitingForApproval:
+              case undefined:
+                return ClaimTxnState.PENDING
+              case TxStatus.Success:
+                return ClaimTxnState.SUCCEEDED
+            }
+          }),
         )
       }),
     )

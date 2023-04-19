@@ -33,18 +33,13 @@ export function AutoTakeProfitFormControl({
     triggerData: { autoTakeProfitTriggerData },
   } = useAutomationContext()
 
-  const {
-    isAddForm,
-    isFirstSetup,
-    isProgressStage,
-    isRemoveForm,
-    stage,
-  } = getAutomationFeatureStatus({
-    currentForm: autoTakeProfitState.currentForm,
-    feature: AutomationFeatures.AUTO_TAKE_PROFIT,
-    triggersId: [autoTakeProfitTriggerData.triggerId],
-    txStatus: autoTakeProfitState.txDetails?.txStatus,
-  })
+  const { isAddForm, isFirstSetup, isProgressStage, isRemoveForm, stage } =
+    getAutomationFeatureStatus({
+      currentForm: autoTakeProfitState.currentForm,
+      feature: AutomationFeatures.AUTO_TAKE_PROFIT,
+      triggersId: [autoTakeProfitTriggerData.triggerId],
+      txStatus: autoTakeProfitState.txDetails?.txStatus,
+    })
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
   const { closePickerConfig, isEditing, isDisabled, min, max, resetData } = getAutoTakeProfitStatus(
     {

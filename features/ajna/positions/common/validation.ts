@@ -79,13 +79,8 @@ function isFormValid({
 }): boolean {
   switch (product) {
     case 'borrow': {
-      const {
-        action,
-        generateAmount,
-        depositAmount,
-        paybackAmount,
-        withdrawAmount,
-      } = state as AjnaBorrowFormState
+      const { action, generateAmount, depositAmount, paybackAmount, withdrawAmount } =
+        state as AjnaBorrowFormState
 
       switch (currentStep) {
         case 'setup':

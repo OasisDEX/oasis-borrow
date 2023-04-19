@@ -40,12 +40,8 @@ export function warningsConstantMultipleValidation({
   constantMultipleBuyExecutionPrice: BigNumber
   nextPositionRatio: BigNumber
 }) {
-  const {
-    sellExecutionCollRatio,
-    buyExecutionCollRatio,
-    sellWithThreshold,
-    buyWithThreshold,
-  } = constantMultipleState
+  const { sellExecutionCollRatio, buyExecutionCollRatio, sellWithThreshold, buyWithThreshold } =
+    constantMultipleState
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -105,13 +101,8 @@ export function errorsConstantMultipleValidation({
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
 }) {
-  const {
-    minSellPrice,
-    maxBuyPrice,
-    txDetails,
-    buyWithThreshold,
-    sellWithThreshold,
-  } = constantMultipleState
+  const { minSellPrice, maxBuyPrice, txDetails, buyWithThreshold, sellWithThreshold } =
+    constantMultipleState
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError: txDetails?.txError })
 
   const autoBuyMaxBuyPriceNotSpecified =

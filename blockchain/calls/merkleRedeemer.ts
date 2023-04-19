@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { BytesLike } from 'ethers'
 import { MerkleRedeemer } from 'types/web3-v1-contracts'
 
@@ -19,8 +20,9 @@ export type ClaimMultipleData = {
 }
 
 export const claimMultiple: TransactionDef<ClaimMultipleData> = {
-  call: (_, { contract, merkleRedeemer }) => {
-    return contract<MerkleRedeemer>(merkleRedeemer).methods.claimMultiple
+  call: (_, { contract, chainId }) => {
+    return contract<MerkleRedeemer>(getNetworkContracts(chainId).merkleRedeemer).methods
+      .claimMultiple
   },
   prepareArgs: (data) => {
     const { weeks, amounts, proofs } = data

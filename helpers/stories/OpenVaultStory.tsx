@@ -27,61 +27,62 @@ export function openVaultStory({
   ilk = 'WBTC-A',
 }: OpenVaultStory) {
   return ({
-    depositAmount,
-    generateAmount,
-    ...otherState
-  }: Partial<MutableOpenVaultState> = defaultMutableOpenVaultState) => () => {
-    const obs$ = mockOpenVault$({
-      _ilks$,
-      balanceInfo,
-      priceInfo,
-      ilkData,
-      proxyAddress,
-      allowance,
-      ilks,
-      ilk,
-    })
+      depositAmount,
+      generateAmount,
+      ...otherState
+    }: Partial<MutableOpenVaultState> = defaultMutableOpenVaultState) =>
+    () => {
+      const obs$ = mockOpenVault$({
+        _ilks$,
+        balanceInfo,
+        priceInfo,
+        ilkData,
+        proxyAddress,
+        allowance,
+        ilks,
+        ilk,
+      })
 
-    useEffect(() => {
-      const subscription = obs$
-        .pipe(first())
-        .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
-          const newState = {
-            ...otherState,
-            ...(depositAmount && {
-              depositAmount,
-              depositAmountUSD: depositAmount.times(currentCollateralPrice),
-            }),
-            ...(generateAmount && {
-              generateAmount,
-              showGenerateOption: !generateAmount.isZero(),
-            }),
-          }
-          injectStateOverride(newState || {})
-        })
-      return subscription.unsubscribe()
-    }, [])
+      useEffect(() => {
+        const subscription = obs$
+          .pipe(first())
+          .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
+            const newState = {
+              ...otherState,
+              ...(depositAmount && {
+                depositAmount,
+                depositAmountUSD: depositAmount.times(currentCollateralPrice),
+              }),
+              ...(generateAmount && {
+                generateAmount,
+                showGenerateOption: !generateAmount.isZero(),
+              }),
+            }
+            injectStateOverride(newState || {})
+          })
+        return subscription.unsubscribe()
+      }, [])
 
-    const openVault$ = () => obs$
-    const ctx = ({
-      openVault$,
-      accountData$: of(EMPTY),
-    } as any) as AppContext
+      const openVault$ = () => obs$
+      const ctx = {
+        openVault$,
+        accountData$: of(EMPTY),
+      } as any as AppContext
 
-    return (
-      <appContext.Provider value={ctx as any}>
-        <SharedUIContext.Provider
-          value={{
-            vaultFormOpened: true,
-            setVaultFormOpened: () => null,
-            setVaultFormToggleTitle: () => null,
-          }}
-        >
-          <OpenVaultStoryContainer ilk={ilk} title={title} />
-        </SharedUIContext.Provider>
-      </appContext.Provider>
-    )
-  }
+      return (
+        <appContext.Provider value={ctx as any}>
+          <SharedUIContext.Provider
+            value={{
+              vaultFormOpened: true,
+              setVaultFormOpened: () => null,
+              setVaultFormToggleTitle: () => null,
+            }}
+          >
+            <OpenVaultStoryContainer ilk={ilk} title={title} />
+          </SharedUIContext.Provider>
+        </appContext.Provider>
+      )
+    }
 }
 
 const OpenVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {

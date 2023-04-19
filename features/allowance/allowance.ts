@@ -51,7 +51,7 @@ export const ALLOWANCE_STAGES = [
   'allowanceSuccess',
 ] as const
 
-export type AllowanceStages = typeof ALLOWANCE_STAGES[number]
+export type AllowanceStages = (typeof ALLOWANCE_STAGES)[number]
 
 export function getIsAllowanceStage(stage: string): stage is AllowanceStages {
   return ALLOWANCE_STAGES.includes(stage as any)
@@ -193,7 +193,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 }
 
 export function allowanceTransitions<
-  S extends AllowanceState & AllowanceFunctions & StateDependencies
+  S extends AllowanceState & AllowanceFunctions & StateDependencies,
 >(
   txHelpers: TxHelpers,
   change: (ch: AllowanceChanges) => void,
@@ -237,7 +237,7 @@ export function allowanceTransitions<
 }
 
 export function applyAllowanceConditions<
-  S extends AllowanceState & { depositAmount?: BigNumber; token: string }
+  S extends AllowanceState & { depositAmount?: BigNumber; token: string },
 >(state: S): S & AllowanceConditions {
   const { selectedAllowanceRadio, allowanceAmount, depositAmount, token, allowance } = state
   const customAllowanceAmountExceedsMaxUint256 = !!(

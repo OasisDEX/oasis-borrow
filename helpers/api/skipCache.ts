@@ -1,4 +1,4 @@
-import { networksByName } from 'blockchain/config'
+import { networksByName } from 'blockchain/networksConfig'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 function isLocalhost(url: string) {

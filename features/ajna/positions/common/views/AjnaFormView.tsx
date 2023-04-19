@@ -1,3 +1,4 @@
+import { getNetworkContracts } from 'blockchain/contracts'
 import { useAppContext } from 'components/AppContextProvider'
 import { FlowSidebar } from 'components/FlowSidebar'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -120,7 +121,7 @@ export function AjnaFormView({
     executeConnection,
   })
   const status = getAjnaSidebarTransactionStatus({
-    etherscan: context?.etherscan.url,
+    etherscan: context && getNetworkContracts(context.chainId).etherscan.url,
     isTxInProgress,
     isTxSuccess,
     text: t(

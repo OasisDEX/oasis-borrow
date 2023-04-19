@@ -1,7 +1,7 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import { AccountDetails } from 'features/account/AccountData'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { isEqual } from 'lodash'
@@ -66,10 +66,9 @@ export function createOpenMultiplyVaultAnalytics$(
     })),
   )
 
-  const allowanceTypeChanges: Observable<Pick<
-    MutableOpenMultiplyVaultState,
-    'selectedAllowanceRadio'
-  >> = openVaultState$.pipe(
+  const allowanceTypeChanges: Observable<
+    Pick<MutableOpenMultiplyVaultState, 'selectedAllowanceRadio'>
+  > = openVaultState$.pipe(
     map((state) => state.selectedAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
@@ -109,20 +108,21 @@ export function createOpenMultiplyVaultAnalytics$(
     distinctUntilChanged(isEqual),
   )
 
-  const openMultiplyVaultConfirmTransaction: Observable<OpenMultiplyVaultConfirmTransaction> = openVaultState$.pipe(
-    filter((state) => state.stage === 'txInProgress'),
-    map(({ ilk, depositAmount, openTxHash, multiply, oazoFee }) => ({
-      kind: 'openMultiplyVaultConfirmTransaction',
-      value: {
-        ilk: ilk,
-        collateralAmount: depositAmount,
-        multiply: multiply?.toFixed(3),
-        txHash: openTxHash,
-        oasisFee: formatOazoFee(oazoFee),
-      },
-    })),
-    distinctUntilChanged(isEqual),
-  )
+  const openMultiplyVaultConfirmTransaction: Observable<OpenMultiplyVaultConfirmTransaction> =
+    openVaultState$.pipe(
+      filter((state) => state.stage === 'txInProgress'),
+      map(({ ilk, depositAmount, openTxHash, multiply, oazoFee }) => ({
+        kind: 'openMultiplyVaultConfirmTransaction',
+        value: {
+          ilk: ilk,
+          collateralAmount: depositAmount,
+          multiply: multiply?.toFixed(3),
+          txHash: openTxHash,
+          oasisFee: formatOazoFee(oazoFee),
+        },
+      })),
+      distinctUntilChanged(isEqual),
+    )
 
   return combineLatest(context$, firstCDPChange).pipe(
     switchMap(([context, firstCDP]) =>

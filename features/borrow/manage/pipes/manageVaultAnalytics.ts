@@ -1,7 +1,7 @@
 import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
@@ -125,10 +125,9 @@ export function createManageVaultAnalytics$(
     })),
   )
 
-  const collateralAllowanceTypeChanges: Observable<Pick<
-    ManageStandardBorrowVaultState,
-    'selectedCollateralAllowanceRadio'
-  >> = manageVaultState$.pipe(
+  const collateralAllowanceTypeChanges: Observable<
+    Pick<ManageStandardBorrowVaultState, 'selectedCollateralAllowanceRadio'>
+  > = manageVaultState$.pipe(
     filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
     map((state) => state.selectedCollateralAllowanceRadio),
     distinctUntilChanged(isEqual),
@@ -154,10 +153,9 @@ export function createManageVaultAnalytics$(
     })),
   )
 
-  const daiAllowanceTypeChanges: Observable<Pick<
-    ManageStandardBorrowVaultState,
-    'selectedDaiAllowanceRadio'
-  >> = manageVaultState$.pipe(
+  const daiAllowanceTypeChanges: Observable<
+    Pick<ManageStandardBorrowVaultState, 'selectedDaiAllowanceRadio'>
+  > = manageVaultState$.pipe(
     filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),
     map((state) => state.selectedDaiAllowanceRadio),
     distinctUntilChanged(isEqual),
@@ -198,30 +196,31 @@ export function createManageVaultAnalytics$(
     distinctUntilChanged(isEqual),
   )
 
-  const manageVaultConfirmTransaction: Observable<ManageVaultConfirmTransaction> = manageVaultState$.pipe(
-    filter((state) => state.stage === 'manageInProgress'),
-    map(
-      ({
-        vault: { ilk },
-        depositAmount,
-        withdrawAmount,
-        generateAmount,
-        paybackAmount,
-        manageTxHash,
-      }) => ({
-        kind: 'manageVaultConfirmTransaction',
-        value: {
-          ilk: ilk,
-          collateralAmount:
-            depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
-          daiAmount:
-            generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
-          txHash: manageTxHash,
-        },
-      }),
-    ),
-    distinctUntilChanged(isEqual),
-  )
+  const manageVaultConfirmTransaction: Observable<ManageVaultConfirmTransaction> =
+    manageVaultState$.pipe(
+      filter((state) => state.stage === 'manageInProgress'),
+      map(
+        ({
+          vault: { ilk },
+          depositAmount,
+          withdrawAmount,
+          generateAmount,
+          paybackAmount,
+          manageTxHash,
+        }) => ({
+          kind: 'manageVaultConfirmTransaction',
+          value: {
+            ilk: ilk,
+            collateralAmount:
+              depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
+            daiAmount:
+              generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
+            txHash: manageTxHash,
+          },
+        }),
+      ),
+      distinctUntilChanged(isEqual),
+    )
 
   return combineLatest(context$, stageChanges)
     .pipe(

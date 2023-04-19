@@ -1,3 +1,4 @@
+import { getNetworkContracts } from 'blockchain/contracts'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
@@ -36,7 +37,9 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
     () =>
       uniq(
         [
-          ...(contextData ? Object.keys(contextData.ajnaPoolPairs) : []),
+          ...(contextData
+            ? Object.keys(getNetworkContracts(contextData.chainId).ajnaPoolPairs)
+            : []),
           ...ajnaComingSoonPools,
         ].map((pool) => pool.split('-')[isEarnProduct ? 1 : 0]),
       )
@@ -46,7 +49,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
           value: token,
           icon: getToken(token).iconCircle,
         })),
-    [contextData?.ajnaPoolPairs],
+    [contextData, isEarnProduct],
   )
   const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const defaultOption = options.filter((option) => option.value === defaultOptionValue)[0]

@@ -2,6 +2,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -17,7 +18,7 @@ const createProxy: ProxyObservableService = (
 ) => {
   const { proxyAddress$ } = dependencies
 
-  const safeConfirmations = contextConnected!.safeConfirmations
+  const safeConfirmations = getNetworkContracts(contextConnected!.chainId).safeConfirmations
   const sendWithGasEstimation = txHelpers!.sendWithGasEstimation
 
   return sendWithGasEstimation(createDsProxy, {

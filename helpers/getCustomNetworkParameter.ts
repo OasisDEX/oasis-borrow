@@ -1,4 +1,4 @@
-import { networksByName } from 'blockchain/config'
+import { networksByName } from 'blockchain/networksConfig'
 
 import { NetworkNames } from './networkNames'
 import { useLocalStorage } from './useLocalStorage'

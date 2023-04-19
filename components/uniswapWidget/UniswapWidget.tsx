@@ -370,7 +370,7 @@ export function UniswapWidget(props: { token?: string }) {
           font-size: 18px !important;
         }
 
-        button[color=accent] {
+        button[color='accent'] {
           border-radius: 32px !important;
         }
       `}

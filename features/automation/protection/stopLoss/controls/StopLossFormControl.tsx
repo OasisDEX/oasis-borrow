@@ -43,18 +43,13 @@ export function StopLossFormControl({
   } = useAutomationContext()
 
   const feature = AutomationFeatures.STOP_LOSS
-  const {
-    isAddForm,
-    isFirstSetup,
-    isProgressStage,
-    isRemoveForm,
-    stage,
-  } = getAutomationFeatureStatus({
-    currentForm: stopLossState.currentForm,
-    feature: AutomationFeatures.STOP_LOSS,
-    triggersId: [stopLossTriggerData.triggerId],
-    txStatus: stopLossState.txDetails?.txStatus,
-  })
+  const { isAddForm, isFirstSetup, isProgressStage, isRemoveForm, stage } =
+    getAutomationFeatureStatus({
+      currentForm: stopLossState.currentForm,
+      feature: AutomationFeatures.STOP_LOSS,
+      triggersId: [stopLossTriggerData.triggerId],
+      txStatus: stopLossState.txDetails?.txStatus,
+    })
 
   const isEditing = checkIfIsEditingStopLoss({
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,

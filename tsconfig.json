@@ -21,14 +21,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
+    "incremental": true
   },
-  "include": [
-    "**/*.js",
-    "**/*.ts",
-    "**/*.tsx",
-    "runtimeConfig.js",
-    "next-i18next.config.js"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["**/*.js", "**/*.ts", "**/*.tsx", "runtimeConfig.js", "next-i18next.config.js"],
+  "exclude": ["node_modules", "types", "coverage"]
 }

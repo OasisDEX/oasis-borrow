@@ -182,10 +182,8 @@ function TabContent({
 }) {
   const followVaultsEnabled = useFeatureToggle('FollowVaults')
 
-  const [
-    productCardsWithBalanceData,
-    productCardsWithBalanceError,
-  ] = productCardsWithBalanceObservable
+  const [productCardsWithBalanceData, productCardsWithBalanceError] =
+    productCardsWithBalanceObservable
   const ProductCard = renderProductCard
 
   return (

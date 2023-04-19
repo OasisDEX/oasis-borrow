@@ -26,12 +26,8 @@ export function PriceImpact({ tokens, transactionParameters, balance }: PriceImp
     debt: { price: debtPrice },
   } = balance
 
-  const {
-    toTokenAmount,
-    targetToken,
-    fromTokenAmount,
-    sourceToken,
-  } = transactionParameters.simulation.swap
+  const { toTokenAmount, targetToken, fromTokenAmount, sourceToken } =
+    transactionParameters.simulation.swap
 
   if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
     return <></>

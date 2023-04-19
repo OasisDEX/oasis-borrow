@@ -173,14 +173,16 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
   const generateAmountMoreThanMaxFlashAmount = afterOutstandingDebt.gt(FLASH_MINT_LIMIT_PER_TX)
 
-  const isLoadingStage = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'allowanceInProgress',
-    'allowanceWaitingForApproval',
-    'txInProgress',
-    'txWaitingForApproval',
-  ] as Stage[]).some((s) => s === stage)
+  const isLoadingStage = (
+    [
+      'proxyInProgress',
+      'proxyWaitingForApproval',
+      'allowanceInProgress',
+      'allowanceWaitingForApproval',
+      'txInProgress',
+      'txWaitingForApproval',
+    ] as Stage[]
+  ).some((s) => s === stage)
 
   const isSuccessStage = stage === 'txSuccess'
 
@@ -196,13 +198,12 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
   const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
 
-  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
-    {
+  const customAllowanceAmountLessThanDepositAmount =
+    customAllowanceAmountLessThanDepositAmountValidator({
       selectedAllowanceRadio,
       allowanceAmount,
       depositAmount,
-    },
-  )
+    })
 
   const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
 
@@ -240,14 +241,16 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
       invalidSlippage
     ) || stage === 'txSuccess'
 
-  const canRegress = ([
-    'proxyWaitingForConfirmation',
-    'proxyFailure',
-    'allowanceWaitingForConfirmation',
-    'allowanceFailure',
-    'txWaitingForConfirmation',
-    'txFailure',
-  ] as Stage[]).some((s) => s === stage)
+  const canRegress = (
+    [
+      'proxyWaitingForConfirmation',
+      'proxyFailure',
+      'allowanceWaitingForConfirmation',
+      'allowanceFailure',
+      'txWaitingForConfirmation',
+      'txFailure',
+    ] as Stage[]
+  ).some((s) => s === stage)
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 

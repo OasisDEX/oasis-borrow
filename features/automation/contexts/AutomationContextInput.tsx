@@ -36,15 +36,16 @@ export function AutomationContextInput({
   const resolvedAccount =
     contextData?.status === 'connected' && contextData.account ? contextData.account : ''
 
-  const _balanceInfo = useMemo(() => balanceInfo$(positionData.token, resolvedAccount), [
-    positionData.token,
-    resolvedAccount,
-  ])
+  const _balanceInfo = useMemo(
+    () => balanceInfo$(positionData.token, resolvedAccount),
+    [positionData.token, resolvedAccount],
+  )
   const [balanceInfoData, balanceInfoError] = useObservable(_balanceInfo)
 
-  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', positionData.token]), [
-    positionData.token,
-  ])
+  const _tokenPriceUSD$ = useMemo(
+    () => tokenPriceUSD$(['ETH', positionData.token]),
+    [positionData.token],
+  )
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
 
   return (

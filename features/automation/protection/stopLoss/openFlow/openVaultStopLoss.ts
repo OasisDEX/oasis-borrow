@@ -6,6 +6,7 @@ import {
 } from 'blockchain/calls/automationBotAggregator'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { emptyNetworkConfig } from 'blockchain/networksConfig'
 import { Tickers } from 'blockchain/prices'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
@@ -225,7 +226,15 @@ export function getDataForStopLoss(
 
   const automationContextProps = {
     ethBalance,
-    context: { status: 'connected', account: '0x0', etherscan: { url: '' } } as Context,
+    // this is just a simple workaround to make the AutomationContextProvider
+    // work, it needs to check the 'context.account' and compare it with
+    // 'commonData.controller' (which is 0x0 hardcoded in here)
+    context: {
+      ...emptyNetworkConfig,
+      status: 'connected',
+      account: '0x0',
+      etherscan: { url: '' },
+    } as any as Context,
     ethAndTokenPricesData: { ETH: currentEthPrice, [token]: currentCollateralPrice } as Tickers,
     positionData: {
       positionRatio: afterCollateralizationRatio,

@@ -1,3 +1,4 @@
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { productCardsAjna } from 'features/ajna/common/content'
 import { AjnaProductCardsData, AlternateProductCardBase } from 'features/ajna/common/types'
@@ -35,7 +36,7 @@ export function getAjnaProductCardsData$(
 ): Observable<AjnaProductCardsData> {
   return context$.pipe(
     switchMap((context) => {
-      const pairs = Object.keys(context.ajnaPoolPairs)
+      const pairs = Object.keys(getNetworkContracts(context.chainId).ajnaPoolPairs)
       const reducedTokensPerProduct = pairs.reduce(
         (acc, curr) => {
           const tokens = curr.split('-')

@@ -1,7 +1,7 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
-import { networksById } from 'blockchain/config'
+import { networksById } from 'blockchain/networksConfig'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { BridgeConnector } from 'features/web3OnBoard'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
@@ -34,17 +34,8 @@ export function createWeb3Context$(chainIdToRpcUrl: {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const context = useWeb3React<Web3Provider>()
 
-    const {
-      connector,
-      library,
-      chainId,
-      account,
-      activate,
-      deactivate,
-      active,
-      error,
-      setError,
-    } = context
+    const { connector, library, chainId, account, activate, deactivate, active, error, setError } =
+      context
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [activatingConnector, setActivatingConnector] = useState<AbstractConnector>()
     // eslint-disable-next-line react-hooks/rules-of-hooks

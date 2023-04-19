@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
@@ -561,8 +562,8 @@ export function createManageMultiplyVault$(
                     proxyAddress,
                     collateralAllowance,
                     daiAllowance,
-                    safeConfirmations: context.safeConfirmations,
-                    etherscan: context.etherscan.url,
+                    safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
+                    etherscan: getNetworkContracts(context.chainId).etherscan.url,
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,

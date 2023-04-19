@@ -5,9 +5,9 @@ import { skipCache } from 'helpers/api/skipCache'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
-import { networksById } from './config'
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
 import { JsonRpcCachedProvider } from './jsonRpcCachedProvider'
+import { networksById } from './networksConfig'
 
 function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers
@@ -23,10 +23,13 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
         if (jsonRpcBatchProvider === undefined) {
-          jsonRpcBatchProvider = new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
+          jsonRpcBatchProvider = new JsonRpcBatchProvider(
+            networksById[chainId].rpcCallsEndpoint,
+            chainId,
+          )
           provider = skipCache(chainId.toString())
             ? jsonRpcBatchProvider
-            : new JsonRpcCachedProvider(networksById[chainId].infuraUrl, chainId)
+            : new JsonRpcCachedProvider(networksById[chainId].rpcCallsEndpoint, chainId)
         } else {
           provider = jsonRpcBatchProvider
         }

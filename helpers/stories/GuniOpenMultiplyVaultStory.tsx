@@ -29,54 +29,55 @@ export function guniOpenMultiplyVaultStory({
   exchangeQuote,
 }: GuniOpenMultiplyVaultStory) {
   return ({
-    depositAmount,
-    ...otherState
-  }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenMultiplyVaultState) => () => {
-    const obs$ = mockGuniOpenEarnVault({
-      _ilks$,
-      balanceInfo,
-      priceInfo,
-      ilkData,
-      proxyAddress,
-      allowance,
-      ilks,
-      ilk,
-      exchangeQuote,
-    })
-
-    useEffect(() => {
-      const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
-        const newState = {
-          ...otherState,
-          ...(depositAmount && {
-            depositAmount,
-          }),
-        }
-        injectStateOverride(newState || {})
+      depositAmount,
+      ...otherState
+    }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenMultiplyVaultState) =>
+    () => {
+      const obs$ = mockGuniOpenEarnVault({
+        _ilks$,
+        balanceInfo,
+        priceInfo,
+        ilkData,
+        proxyAddress,
+        allowance,
+        ilks,
+        ilk,
+        exchangeQuote,
       })
-      return subscription.unsubscribe()
-    }, [])
 
-    const openGuniVault$ = () => obs$
-    const ctx = ({
-      openGuniVault$,
-      accountData$: of(EMPTY),
-    } as any) as AppContext
+      useEffect(() => {
+        const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
+          const newState = {
+            ...otherState,
+            ...(depositAmount && {
+              depositAmount,
+            }),
+          }
+          injectStateOverride(newState || {})
+        })
+        return subscription.unsubscribe()
+      }, [])
 
-    return (
-      <appContext.Provider value={ctx as any}>
-        <SharedUIContext.Provider
-          value={{
-            vaultFormOpened: true,
-            setVaultFormOpened: () => null,
-            setVaultFormToggleTitle: () => null,
-          }}
-        >
-          <GuniOpenMultiplyVaultStoryContainer ilk={'GUNIV3DAIUSDC1-A'} title={title} />
-        </SharedUIContext.Provider>
-      </appContext.Provider>
-    )
-  }
+      const openGuniVault$ = () => obs$
+      const ctx = {
+        openGuniVault$,
+        accountData$: of(EMPTY),
+      } as any as AppContext
+
+      return (
+        <appContext.Provider value={ctx as any}>
+          <SharedUIContext.Provider
+            value={{
+              vaultFormOpened: true,
+              setVaultFormOpened: () => null,
+              setVaultFormToggleTitle: () => null,
+            }}
+          >
+            <GuniOpenMultiplyVaultStoryContainer ilk={'GUNIV3DAIUSDC1-A'} title={title} />
+          </SharedUIContext.Provider>
+        </appContext.Provider>
+      )
+    }
 }
 
 const GuniOpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {

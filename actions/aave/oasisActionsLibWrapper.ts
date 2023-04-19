@@ -11,8 +11,9 @@ import {
   ZERO,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { ethNullAddress } from 'blockchain/config'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { ethNullAddress } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { providers } from 'ethers'
@@ -23,7 +24,7 @@ import { zero } from 'helpers/zero'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { checkContext } from './checkContext'
-import { getAddressesFromContext } from './getAddressesFromContext'
+import { getTokenAddresses } from './getTokenAddresses'
 import {
   AdjustAaveParameters,
   CloseAaveParameters,
@@ -77,9 +78,9 @@ async function openAave(
 
   const dependencies: Parameters<typeof strategies.aave.v2.open>[1] &
     Parameters<typeof strategies.aave.v3.open>[1] = {
-    addresses: getAddressesFromContext(context),
+    addresses: getTokenAddresses(context),
     provider: context.rpcProvider,
-    getSwapData: getOneInchCall(context.swapAddress),
+    getSwapData: getOneInchCall(getNetworkContracts(context.chainId).swapAddress),
     proxy: proxyAddress,
     user: proxyAddress !== ethNullAddress ? context.account! : ethNullAddress, // mocking the address before wallet connection
     isDPMProxy: proxyType === ProxyType.DpmProxy,
@@ -161,7 +162,7 @@ export async function getOnChainPosition({
   debtToken,
   protocol,
 }: GetOnChainPositionParams): Promise<IPosition> {
-  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+  const provider = new providers.JsonRpcProvider(context.rpcCallsEndpoint, context.chainId)
 
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
@@ -180,7 +181,7 @@ export async function getOnChainPosition({
         collateralToken: _collateralToken,
         debtToken: _debtToken,
       },
-      { addresses: getAddressesFromContext(context), provider },
+      { addresses: getTokenAddresses(context), provider },
     )
   }
 
@@ -191,7 +192,7 @@ export async function getOnChainPosition({
         collateralToken: _collateralToken,
         debtToken: _debtToken,
       },
-      { addresses: getAddressesFromContext(context), provider },
+      { addresses: getTokenAddresses(context), provider },
     )
   }
 
@@ -237,10 +238,10 @@ export async function getAdjustAaveParameters({
     }
 
     const stratDeps: strategyDependencies = {
-      addresses: getAddressesFromContext(context),
+      addresses: getTokenAddresses(context),
       currentPosition,
       provider: provider,
-      getSwapData: getOneInchCall(context.swapAddress),
+      getSwapData: getOneInchCall(getNetworkContracts(context.chainId).swapAddress),
       proxy: proxyAddress,
       user: context.account,
       isDPMProxy: proxyType === ProxyType.DpmProxy,
@@ -288,18 +289,12 @@ export async function getManageAaveParameters(
   parameters: ManageAaveParameters,
 ): Promise<IPositionTransition> {
   try {
-    const {
-      context,
-      proxyAddress,
-      slippage,
-      currentPosition,
-      manageTokenInput,
-      proxyType,
-    } = parameters
+    const { context, proxyAddress, slippage, currentPosition, manageTokenInput, proxyType } =
+      parameters
 
     checkContext(context, 'deposit/borrow position')
-    const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
-    const addresses = getAddressesFromContext(context)
+    const provider = new providers.JsonRpcProvider(context.rpcCallsEndpoint, context.chainId)
+    const addresses = getTokenAddresses(context)
 
     const [collateral, debt] = getTokensInBaseUnit(parameters)
 
@@ -326,7 +321,7 @@ export async function getManageAaveParameters(
           addresses: addresses as AAVEStrategyAddresses,
           currentPosition,
           provider: provider,
-          getSwapData: getOneInchCall(context.swapAddress),
+          getSwapData: getOneInchCall(getNetworkContracts(context.chainId).swapAddress),
           proxy: proxyAddress,
           user: context.account,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
@@ -357,7 +352,7 @@ export async function getManageAaveParameters(
           addresses: addresses as AAVEStrategyAddresses,
           currentPosition,
           provider: provider,
-          getSwapData: getOneInchCall(context.swapAddress),
+          getSwapData: getOneInchCall(getNetworkContracts(context.chainId).swapAddress),
           proxy: proxyAddress,
           user: context.account,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
@@ -408,10 +403,10 @@ export async function getCloseAaveParameters({
   }
 
   const stratDeps: closeParameters[1] = {
-    addresses: getAddressesFromContext(context) as AAVEStrategyAddresses,
+    addresses: getTokenAddresses(context) as AAVEStrategyAddresses,
     currentPosition,
     provider: context.rpcProvider,
-    getSwapData: getOneInchCall(context.swapAddress),
+    getSwapData: getOneInchCall(getNetworkContracts(context.chainId).swapAddress),
     proxy: proxyAddress,
     user: context.account,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
@@ -456,9 +451,9 @@ export async function getOpenDepositBorrowParameters(
   }
 
   const deps = {
-    addresses: getAddressesFromContext(context),
+    addresses: getTokenAddresses(context),
     provider: context.rpcProvider,
-    getSwapData: getOneInchCall(context.swapAddress),
+    getSwapData: getOneInchCall(getNetworkContracts(context.chainId).swapAddress),
     proxy: proxyAddress,
     user: context.account,
     isDPMProxy: proxyType === ProxyType.DpmProxy,

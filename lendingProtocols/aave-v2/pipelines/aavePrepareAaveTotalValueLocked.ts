@@ -52,9 +52,8 @@ export function prepareAaveTotalValueLocked$(
         ) // total variable debt in WETH
 
         const STETH_USDC_availableLiquidity = STETH_availableLiquidity.times(STETH_USDC_price) // available liquidity in STETH in USDC
-        const USDC_WETH_debt = WETH_totalStableDebt.plus(WETH_totalVariableDebt).times(
-          ETH_USDC_price,
-        ) // total debt in WETH in USDC
+        const USDC_WETH_debt =
+          WETH_totalStableDebt.plus(WETH_totalVariableDebt).times(ETH_USDC_price) // total debt in WETH in USDC
         const totalValueLocked = STETH_USDC_availableLiquidity.minus(USDC_WETH_debt) // total value locked in USDC
 
         return {

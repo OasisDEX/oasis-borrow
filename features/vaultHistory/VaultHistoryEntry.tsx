@@ -539,15 +539,16 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
         <>
           {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
             <VaultHistoryEntryDetailsItem label={t('system.coll-ratio')}>
-              {'beforeCollateralizationRatio' in event && event.beforeCollateralizationRatio.gt(0) && (
-                <>
-                  {formatPercent(event.beforeCollateralizationRatio.times(100), {
-                    precision: 2,
-                    roundMode: BigNumber.ROUND_DOWN,
-                  })}
-                  <VaultChangesInformationArrow />
-                </>
-              )}
+              {'beforeCollateralizationRatio' in event &&
+                event.beforeCollateralizationRatio.gt(0) && (
+                  <>
+                    {formatPercent(event.beforeCollateralizationRatio.times(100), {
+                      precision: 2,
+                      roundMode: BigNumber.ROUND_DOWN,
+                    })}
+                    <VaultChangesInformationArrow />
+                  </>
+                )}
               {'collateralizationRatio' in event &&
                 formatPercent(event.collateralizationRatio.times(100), {
                   precision: 2,

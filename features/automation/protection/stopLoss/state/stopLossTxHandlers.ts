@@ -32,11 +32,14 @@ export function getStopLossTxHandlers({
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
-  const addTxData = useMemo(() => prepareAddStopLossTriggerData(stopLossState), [
-    stopLossState.collateralActive,
-    stopLossState.stopLossLevel,
-    stopLossTriggerData.triggerId.toNumber(),
-  ])
+  const addTxData = useMemo(
+    () => prepareAddStopLossTriggerData(stopLossState),
+    [
+      stopLossState.collateralActive,
+      stopLossState.stopLossLevel,
+      stopLossTriggerData.triggerId.toNumber(),
+    ],
+  )
 
   function textButtonHandlerExtension() {
     if (isAddForm) {

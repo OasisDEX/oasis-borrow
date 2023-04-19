@@ -5,6 +5,7 @@ import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operator
 
 import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
+import { getNetworkContracts } from './contracts'
 import { Context } from './network'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
@@ -42,8 +43,8 @@ export function createCollateralTokens$(
 
 export function createAaveCollateralTokens$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
-    map((context) => {
-      return Object.keys(context.aaveTokens)
+    map(({ chainId }) => {
+      return Object.keys(getNetworkContracts(chainId).aaveTokens)
     }),
   )
 }

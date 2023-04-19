@@ -92,28 +92,24 @@ export function getConstantMultipleStatus({
     vaultDebt: debt,
   })
 
-  const {
-    collateralDelta: collateralToBePurchased,
-    debtDelta: debtDeltaAfterBuy,
-  } = getAutoBSVaultChange({
-    targetCollRatio: constantMultipleState.targetCollRatio,
-    execCollRatio: constantMultipleState.buyExecutionCollRatio,
-    deviation: constantMultipleState.deviation,
-    executionPrice: nextBuyPrice,
-    lockedCollateral,
-    debt,
-  })
-  const {
-    collateralDelta: collateralToBeSold,
-    debtDelta: debtDeltaAfterSell,
-  } = getAutoBSVaultChange({
-    targetCollRatio: constantMultipleState.targetCollRatio,
-    execCollRatio: constantMultipleState.sellExecutionCollRatio,
-    deviation: constantMultipleState.deviation,
-    executionPrice: nextSellPrice,
-    lockedCollateral,
-    debt,
-  })
+  const { collateralDelta: collateralToBePurchased, debtDelta: debtDeltaAfterBuy } =
+    getAutoBSVaultChange({
+      targetCollRatio: constantMultipleState.targetCollRatio,
+      execCollRatio: constantMultipleState.buyExecutionCollRatio,
+      deviation: constantMultipleState.deviation,
+      executionPrice: nextBuyPrice,
+      lockedCollateral,
+      debt,
+    })
+  const { collateralDelta: collateralToBeSold, debtDelta: debtDeltaAfterSell } =
+    getAutoBSVaultChange({
+      targetCollRatio: constantMultipleState.targetCollRatio,
+      execCollRatio: constantMultipleState.sellExecutionCollRatio,
+      deviation: constantMultipleState.deviation,
+      executionPrice: nextSellPrice,
+      lockedCollateral,
+      debt,
+    })
   const { debtDelta: debtDeltaWhenSellAtCurrentCollRatio } = getAutoBSVaultChange({
     targetCollRatio: constantMultipleState.targetCollRatio,
     execCollRatio: positionRatio.times(100),

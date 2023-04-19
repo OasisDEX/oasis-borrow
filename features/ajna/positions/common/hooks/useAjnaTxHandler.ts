@@ -43,9 +43,8 @@ export function useAjnaTxHandler(): () => void {
   } = useAjnaProductContext(product)
 
   const [txData, setTxData] = useState<AjnaTxData>()
-  const [cancelablePromise, setCancelablePromise] = useState<
-    CancelablePromise<Strategy<typeof position> | undefined>
-  >()
+  const [cancelablePromise, setCancelablePromise] =
+    useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
 

@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
-import { supportedIlks } from 'blockchain/config'
 import { IlkData } from 'blockchain/ilks'
 import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
+import { supportedIlks } from 'blockchain/tokens/mainnet'
 import {
   BTC_TOKENS,
   ETH_TOKENS,
@@ -72,7 +72,7 @@ export type ProductLandingPagesFilter = {
 }
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
-export type Ilk = typeof supportedIlks[number]
+export type Ilk = (typeof supportedIlks)[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -563,7 +563,7 @@ export function cardFiltersFromBalances(
 ): Array<ProductLandingPagesFiltersKeys> {
   return productCardsData
     .filter((cardData) => cardData.balance && cardData.balance.isGreaterThan(0))
-    .map((d) => (d.token as unknown) as ProductLandingPagesFiltersKeys)
+    .map((d) => d.token as unknown as ProductLandingPagesFiltersKeys)
 }
 
 export function createProductCardsWithBalance$(

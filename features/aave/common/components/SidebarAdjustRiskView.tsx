@@ -67,9 +67,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   }: SecondaryInputProps) {
     const { t } = useTranslation()
     const transition = state.context.transition
-    const positionTransitionHasMinConfigurableRisk = transitionHasMinConfigurableRiskRatio(
-      transition,
-    )
+    const positionTransitionHasMinConfigurableRisk =
+      transitionHasMinConfigurableRiskRatio(transition)
 
     const simulation = transition?.simulation
     const targetPosition = simulation?.position

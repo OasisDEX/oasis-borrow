@@ -3,8 +3,9 @@ import BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { contractDesc } from 'blockchain/config'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { contractDesc } from 'blockchain/networksConfig'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { AccountImplementation, DsProxy, OperationExecutor } from 'types/web3-v1-contracts'
@@ -27,7 +28,10 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
     ]
   },
   prepareArgs: (data, context) => {
-    return [context.operationExecutor.address, getCallData(data, context)]
+    return [
+      getNetworkContracts(context.chainId).operationExecutor.address,
+      getCallData(data, context),
+    ]
   },
   options: ({ token, amount = zero }) =>
     token === 'ETH' && amount.gt(zero) ? { value: amountToWei(amount, 'ETH').toFixed(0) } : {},
@@ -39,7 +43,10 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
       .methods['execute']
   },
   prepareArgs: (data, context) => {
-    return [context.operationExecutor.address, getCallData(data, context)]
+    return [
+      getNetworkContracts(context.chainId).operationExecutor.address,
+      getCallData(data, context),
+    ]
   },
   options: ({ token, amount = zero }) =>
     token === 'ETH' && amount.gt(zero) ? { value: amountToWei(amount, 'ETH').toFixed(0) } : {},
@@ -47,7 +54,7 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
   return context
-    .contract<OperationExecutor>(context.operationExecutor)
+    .contract<OperationExecutor>(getNetworkContracts(context.chainId).operationExecutor)
     .methods.executeOp(data.calls, data.operationName)
     .encodeABI()
 }

@@ -1,32 +1,47 @@
 // all the network names we use in the app
 export enum NetworkNames {
-  ethereumMainnet = 'ethereumMainnet',
-  ethereumGoerli = 'ethereumGoerli',
-  ethereumHardhat = 'ethereumHardhat',
+  ethereumMainnet = 'mainnet',
+  ethereumGoerli = 'goerli',
+  ethereumHardhat = 'hardhat',
 
-  arbitrumMainnet = 'arbitrumMainnet',
-  arbitrumGoerli = 'arbitrumGoerli',
+  arbitrumMainnet = 'arbitrum-mainnet',
+  arbitrumGoerli = 'arbitrum-goerli',
 
-  optimismMainnet = 'optimismMainnet',
-  optimismGoerli = 'optimismGoerli',
+  polygonMainnet = 'polygon-mainnet',
+  polygonMumbai = 'polygon-mumbai',
 
-  avalancheMainnet = 'avalancheMainnet',
-  polygonMainnet = 'polygonMainnet',
+  optimismMainnet = 'optimism-mainnet',
+  optimismGoerli = 'optimism-goerli',
+
+  // avalancheMainnet = 'avalanche-mainnet',
 }
 
 // main network names skipping the testnets mapping
 export enum MainNetworkNames {
-  ethereumMainnet = 'ethereumMainnet',
-  ethereumGoerli = 'ethereumMainnet',
-  ethereumHardhat = 'ethereumMainnet',
+  ethereumMainnet = 'mainnet',
+  ethereumGoerli = 'mainnet',
+  ethereumHardhat = 'mainnet',
 
-  arbitrumMainnet = 'arbitrumMainnet',
-  arbitrumGoerli = 'arbitrumMainnet',
+  arbitrumMainnet = 'arbitrum-mainnet',
+  arbitrumGoerli = 'arbitrum-mainnet',
 
-  optimismMainnet = 'optimismMainnet',
-  optimismGoerli = 'optimismMainnet',
+  polygonMainnet = 'polygon-mainnet',
+  polygonMumbai = 'polygon-mainnet',
 
-  avalancheMainnet = 'avalancheMainnet',
+  optimismMainnet = 'optimism-mainnet',
+  optimismGoerli = 'optimism-mainnet',
 
-  polygonMainnet = 'polygonMainnet',
+  // avalancheMainnet = 'avalanche-mainnet',
 }
+
+export type NetworkLabelType =
+  | 'Ethereum'
+  | 'Ethereum Goerli'
+  | 'Ethereum Hardhat'
+  | 'Arbitrum'
+  | 'Arbitrum Goerli'
+  | 'Polygon'
+  | 'Polygon Mumbai'
+  | 'Optimism'
+  | 'Optimism Goerli'
+// | 'Avalanche'

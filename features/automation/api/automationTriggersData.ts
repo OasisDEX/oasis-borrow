@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/config'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context, every5Seconds$ } from 'blockchain/network'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { PositionId } from 'features/aave/types'
@@ -21,7 +21,6 @@ import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { getNetworkId } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
@@ -69,14 +68,11 @@ export function createAutomationTriggersData(
 ): Observable<TriggersData> {
   return every5Seconds$.pipe(
     withLatestFrom(context$, proxiesRelatedWithPosition$({ vaultId: id.toNumber() })),
-    mergeMap(([, , proxies]) => {
-      const networkId = getNetworkId()
-      const networkConfig = networksById[networkId]
-
+    mergeMap(([, context, proxies]) => {
       return loadTriggerDataFromCache({
         positionId: id.toNumber(),
         proxyAddress: proxies.dpmProxy?.proxy,
-        cacheApi: networkConfig.cacheApi,
+        cacheApi: getNetworkContracts(context.chainId).cacheApi,
       })
     }),
     distinctUntilChanged((s1, s2) => {

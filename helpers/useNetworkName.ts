@@ -1,5 +1,5 @@
 import { useSetChain } from '@web3-onboard/react'
-import { networksByHexId } from 'blockchain/config'
+import { networksByHexId } from 'blockchain/networksConfig'
 
 import { mainnetNetworkParameter, useCustomNetworkParameter } from './getCustomNetworkParameter'
 

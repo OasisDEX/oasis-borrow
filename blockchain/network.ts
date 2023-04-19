@@ -21,7 +21,7 @@ import {
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
-import { NetworkConfig, networksById } from './config'
+import { NetworkConfig, networksById } from './networksConfig'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))
 export const every3Seconds$ = interval(3000).pipe(startWith(0))
@@ -56,10 +56,10 @@ export function createContext$(
   return web3ContextConnected$.pipe(
     map((web3Context) => {
       const networkData = networksById[web3Context.chainId]
-      const web3ProviderGetPastLogs = new Web3(networkData.infuraUrl)
+      const web3ProviderGetPastLogs = new Web3(networkData.rpcCallsEndpoint)
 
       const provider = new ethers.providers.JsonRpcProvider(
-        networkData.infuraUrl,
+        networkData.rpcCallsEndpoint,
         web3Context.chainId,
       )
 
@@ -69,7 +69,7 @@ export function createContext$(
         rpcProvider: provider,
         contractV2: <T>(c: ContractDesc) => {
           const contract = new ethers.Contract(c.address, c.abi, provider)
-          return (contract as any) as T
+          return contract as any as T
         },
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,
         web3ProviderGetPastLogs,

@@ -1,5 +1,6 @@
 import { AjnaEarnPosition, AjnaPosition, strategies } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
@@ -41,23 +42,24 @@ export async function getAjnaParameters({
   const collateralTokenPrecision = getToken(collateralToken).precision
 
   const { action, dpmAddress } = state
+  const addressesConfig = getNetworkContracts(context.chainId)
 
   const dependencies = {
-    ajnaProxyActions: context.ajnaProxyActions.address,
-    poolInfoAddress: context.ajnaPoolInfo.address,
+    ajnaProxyActions: addressesConfig.ajnaProxyActions.address,
+    poolInfoAddress: addressesConfig.ajnaPoolInfo.address,
     provider: rpcProvider,
-    WETH: context.tokens.ETH.address,
+    WETH: addressesConfig.tokens.ETH.address,
     getPoolData: getAjnaPoolData,
   }
 
-  if (!context.ajnaPoolPairs[tokenPair]) {
+  if (!addressesConfig.ajnaPoolPairs[tokenPair]) {
     throw new Error(`No pool for given token pair: ${tokenPair}`)
   }
 
   const commonPayload = {
     collateralTokenPrecision,
     dpmProxyAddress: dpmAddress,
-    poolAddress: context.ajnaPoolPairs[tokenPair].address,
+    poolAddress: addressesConfig.ajnaPoolPairs[tokenPair].address,
     quoteTokenPrecision,
   }
 
@@ -147,7 +149,7 @@ export async function getAjnaParameters({
         {
           ...dependencies,
           getEarnData: getAjnaEarnData,
-          rewardsManagerAddress: context.ajnaRewardsManager.address,
+          rewardsManagerAddress: getNetworkContracts(context.chainId).ajnaRewardsManager.address,
         },
       )
     }

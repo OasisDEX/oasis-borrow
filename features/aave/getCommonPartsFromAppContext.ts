@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from 'blockchain/calls/observe'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AppContext } from 'components/AppContext'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -32,8 +33,8 @@ export function getCommonPartsFromAppContext({
   contextForAddress$,
 }: AppContext) {
   const disconnectedGraphQLClient$ = context$.pipe(
-    distinctUntilKeyChanged('cacheApi'),
-    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+    distinctUntilKeyChanged('chainId'),
+    map(({ chainId }) => new GraphQLClient(getNetworkContracts(chainId).cacheApi)),
   )
 
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
@@ -70,11 +71,8 @@ export function getCommonPartsFromAppContext({
     commonTransactionServices,
   )
 
-  const getAvailableDPMProxy: (
-    walletAddress: string,
-  ) => Observable<UserDpmAccount | undefined> = memoize(
-    curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
-  )
+  const getAvailableDPMProxy: (walletAddress: string) => Observable<UserDpmAccount | undefined> =
+    memoize(curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$))
 
   const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
     switchMap(({ account }) => getAvailableDPMProxy(account)),

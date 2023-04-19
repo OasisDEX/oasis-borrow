@@ -26,11 +26,8 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) {
   const { t } = useTranslation()
-  const {
-    aaveReserveConfigurationData$,
-    aaveAvailableLiquidityInUSDC$,
-    getAaveAssetsPrices$,
-  } = useAaveContext()
+  const { aaveReserveConfigurationData$, aaveAvailableLiquidityInUSDC$, getAaveAssetsPrices$ } =
+    useAaveContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
   const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
   const [aaveReserveState, aaveReserveStateError] = useObservable(
