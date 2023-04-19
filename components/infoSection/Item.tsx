@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
+import { StatefulTooltip } from 'components/Tooltip'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { ReactNode, useState } from 'react'
 import React from 'react'
@@ -30,6 +31,7 @@ export interface ItemProps {
   dropdownValues?: DropDownValue[]
   isLoading?: boolean
   isHeading?: boolean
+  tooltip?: string
 }
 
 function getSecondaryColor(variant: SecondaryVariantType): string {
@@ -47,8 +49,38 @@ export function InfoSectionLoadingState() {
   return <Skeleton width="88px" height="12px" color="dark" />
 }
 
-// TODO: Add tooltip and loading state
-// Note: Use this to phase out the VaultInformationContainer & VaultInformation components
+interface ItemLabelProps {
+  isHeading: boolean
+  label: string
+  labelColorPrimary?: boolean
+}
+
+function ItemLabel({ isHeading, label, labelColorPrimary }: ItemLabelProps) {
+  return (
+    <Text
+      {...(!isHeading
+        ? {
+            as: 'p',
+            sx: {
+              flexShrink: 0,
+              mr: 'auto',
+              color: labelColorPrimary ? 'primary100' : 'neutral80',
+            },
+          }
+        : {
+            as: 'h4',
+            variant: 'paragraph3',
+            sx: {
+              color: 'primary100',
+              fontWeight: 'semiBold',
+            },
+          })}
+    >
+      {label}
+    </Text>
+  )
+}
+
 export function Item({
   label,
   subLabel,
@@ -59,6 +91,7 @@ export function Item({
   isLoading,
   dropDownElementType,
   labelColorPrimary,
+  tooltip,
   isHeading = false,
 }: ItemProps) {
   const [open, setOpen] = useState(false)
@@ -76,34 +109,29 @@ export function Item({
         sx={{
           cursor: !isLoading && dropdownValues?.length ? 'pointer' : 'auto',
           justifyContent: 'space-between',
+          position: 'relative',
         }}
         onClick={() => {
           !isLoading && dropdownValues?.length && setOpen(!open)
         }}
       >
-        {label && (
-          <Text
-            {...(!isHeading
-              ? {
-                  as: 'p',
-                  sx: {
-                    flexShrink: 0,
-                    mr: 'auto',
-                    color: labelColorPrimary ? 'primary100' : 'neutral80',
-                  },
-                }
-              : {
-                  as: 'h4',
-                  variant: 'paragraph3',
-                  sx: {
-                    color: 'primary100',
-                    fontWeight: 'semiBold',
-                  },
-                })}
-          >
-            {label}
-          </Text>
-        )}
+        {label &&
+          (tooltip ? (
+            <StatefulTooltip
+              tooltip={tooltip}
+              containerSx={{ alignItems: 'center' }}
+              tooltipSx={{ transform: 'translateY(-100%)', right: ['0px', 'auto'], top: '-5px' }}
+            >
+              <ItemLabel
+                label={label}
+                labelColorPrimary={labelColorPrimary}
+                isHeading={isHeading}
+              />
+              {tooltip && <Icon name="question_o" size="16px" sx={{ ml: 1, color: 'neutral80' }} />}
+            </StatefulTooltip>
+          ) : (
+            <ItemLabel label={label} labelColorPrimary={labelColorPrimary} isHeading={isHeading} />
+          ))}
         <Text
           sx={{
             display: 'flex',

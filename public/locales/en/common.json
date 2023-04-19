@@ -60,6 +60,7 @@
   "cancelling-auto-buy": "Removing Auto-Buy trigger",
   "buy": "Buy",
   "maker-vault": "Maker Vault",
+  "deposit-fee": "Deposit fee",
   "position": "Position",
   "careers": {
     "heading": "Open Roles",
@@ -2508,6 +2509,9 @@
             "collateral-locked": "Collateral locked",
             "position-debt": "Position debt"
           },
+          "form": {
+            "origination-fee": "{{quoteToken}} Origination Fee"
+          },
           "footer": {
             "annual-net-borrow-cost": "Annual net borrow cost",
             "available-to-borrow": "Available to borrow",
@@ -2526,7 +2530,8 @@
             "max-ltv-to-lend-at": "Max LTV to lend at",
             "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
             "adjust-lending-price-bucket": "Adjust lending price bucket",
-            "ajna-fee": "Ajna fee"
+            "ajna-fee": "Ajna fee",
+            "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit"
           }
         },
         "open": {

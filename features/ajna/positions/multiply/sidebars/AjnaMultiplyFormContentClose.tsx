@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
-import { EstimationOnClose } from 'components/EstimationOnClose'
+import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
@@ -60,7 +60,7 @@ export function AjnaMultiplyFormContentClose() {
       <Text as="p" variant="paragraph3" sx={{ my: 2, color: 'neutral80' }}>
         {t('vault-info-messages.closing')}
       </Text>
-      <EstimationOnClose
+      <HighlightedOrderInformation
         iconCircle={getToken(closeToToken).iconCircle}
         label={t('after-closing', { token: closeToToken })}
         value={formatted[closeTo === 'collateral' ? 'collateralOnClose' : 'quoteOnClose']}

@@ -5,21 +5,23 @@ export function getAjnaSidebarPrimaryButtonActions({
   defaultAction,
   editingStep,
   flow,
-  resolvedId,
   isTxSuccess,
+  executeConnection,
   walletAddress,
+  resolvedId,
 }: {
   currentStep: string
   defaultAction: () => void
   editingStep: string
   flow: AjnaFlow
-  resolvedId?: string
   isTxSuccess: boolean
+  executeConnection: () => void
   walletAddress?: string
+  resolvedId?: string
 }) {
   switch (true) {
     case !walletAddress && currentStep === editingStep:
-      return { url: '/connect' }
+      return { action: executeConnection }
     case isTxSuccess && flow === 'open':
       return { url: `/ajna/position/${resolvedId}` }
     default:

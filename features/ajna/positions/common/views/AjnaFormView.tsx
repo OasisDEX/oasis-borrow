@@ -11,6 +11,7 @@ import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/
 import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
+import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
@@ -60,6 +61,7 @@ export function AjnaFormView({
     position: { isSimulationLoading, resolvedId },
     validation: { isFormValid, hasErrors },
   } = useAjnaProductContext(product)
+  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
 
   const txHandler = useAjnaTxHandler()
 
@@ -115,6 +117,7 @@ export function AjnaFormView({
     resolvedId,
     isTxSuccess,
     walletAddress,
+    executeConnection,
   })
   const status = getAjnaSidebarTransactionStatus({
     etherscan: context?.etherscan.url,

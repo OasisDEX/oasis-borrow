@@ -1,4 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { AjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/controls/AjnaBorrowOriginationFee'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
@@ -18,7 +19,7 @@ export function AjnaBorrowFormContentDeposit() {
   const {
     form: {
       dispatch,
-      state: { depositAmount },
+      state: { depositAmount, generateAmount },
     },
     position: {
       currentPosition: { position, simulation },
@@ -48,6 +49,7 @@ export function AjnaBorrowFormContentDeposit() {
         maxAmount={debtMax}
         minAmount={debtMin}
       />
+      {generateAmount && <AjnaBorrowOriginationFee />}
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaBorrowFormOrder />
