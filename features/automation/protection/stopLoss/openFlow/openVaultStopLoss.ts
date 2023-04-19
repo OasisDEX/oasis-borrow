@@ -226,7 +226,7 @@ export function getDataForStopLoss(
 
   const automationContextProps = {
     ethBalance,
-    // this is just a simple hack to make the AutomationContextProvider
+    // this is just a simple workaround to make the AutomationContextProvider
     // work, it needs to check the 'context.account' and compare it with
     // 'commonData.controller' (which is 0x0 hardcoded in here)
     context: {
