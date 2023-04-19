@@ -75,7 +75,6 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenMultiplyVaultEditingState {...props} />}
         {isStopLossEditingStage && (
-          // @ts-ignore
           <AutomationContextProvider {...automationContextProps}>
             <SidebarAdjustStopLossEditingStage {...stopLossSidebarProps} />{' '}
           </AutomationContextProvider>
