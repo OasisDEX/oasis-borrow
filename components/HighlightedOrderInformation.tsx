@@ -9,7 +9,12 @@ interface EstimationOnCloseProps {
   valueSx?: SxStyleProp
 }
 
-export function EstimationOnClose({ iconCircle, label, value, valueSx }: EstimationOnCloseProps) {
+export function HighlightedOrderInformation({
+  iconCircle,
+  label,
+  value,
+  valueSx,
+}: EstimationOnCloseProps) {
   return (
     <Text
       as="p"

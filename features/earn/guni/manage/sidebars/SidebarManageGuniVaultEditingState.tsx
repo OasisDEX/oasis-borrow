@@ -1,5 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { EstimationOnClose } from 'components/EstimationOnClose'
+import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultChangesInformation'
@@ -49,7 +49,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
             {t('vault-info-messages.closing')}
           </Text>
           {!debt.isZero() && (
-            <EstimationOnClose
+            <HighlightedOrderInformation
               iconCircle={getToken('DAI').iconCircle}
               label={`${t('minimum')} ${t('after-closing', { token: 'DAI' })}`}
               value={`${formatCryptoBalance(afterCloseToDai)} DAI`}
