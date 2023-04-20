@@ -23,6 +23,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["**/*.js", "**/*.ts", "**/*.tsx", "runtimeConfig.js", "next-i18next.config.js"],
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "runtimeConfig.js", "next-i18next.config.js"],
   "exclude": ["node_modules", "types", "coverage"]
 }
