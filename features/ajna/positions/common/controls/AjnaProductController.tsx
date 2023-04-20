@@ -207,7 +207,9 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                              uiDropdown: (ajnaPosition as AjnaEarnPosition).quoteTokenAmount.isZero()
+                              uiDropdown: (
+                                ajnaPosition as AjnaEarnPosition
+                              ).quoteTokenAmount.isZero()
                                 ? 'liquidity'
                                 : 'adjust',
                               price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
