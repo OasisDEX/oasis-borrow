@@ -1,4 +1,4 @@
-import { recoverPersonalSignature } from 'eth-sig-util'
+import { recoverPersonalSignature } from '@metamask/eth-sig-util'
 import { utils } from 'ethers'
 import jwt from 'jsonwebtoken'
 import { NextApiHandler } from 'next'
@@ -88,7 +88,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
         throw new SignatureAuthError('Signature not correct')
       }
     } else {
-      const signedAddress = recoverPersonalSignature({ data: message, sig: body.signature })
+      const signedAddress = recoverPersonalSignature({ data: message, signature: body.signature })
       if (signedAddress.toLowerCase() !== challenge.address) {
         const isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
 

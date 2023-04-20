@@ -31,9 +31,8 @@ jobs:
       - name: Prettier
         run: yarn format
 
-#   Disabled for now. Need to fix tests
-#      - name: Test
-#        run: CI=true yarn coverage
+      - name: Test
+        run: CI=true yarn coverage
 
       - name: Typecheck
         run: yarn typecheck

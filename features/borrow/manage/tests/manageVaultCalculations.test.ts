@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { expect } from 'chai'
 import { HOUR } from 'components/constants'
 import {
   calcDebtScalingFactor,
@@ -57,12 +56,12 @@ describe('manageVaultCalculations', () => {
 
     const currentMaxWithdrawAmount = state().maxWithdrawAmount
 
-    expect(currentMaxWithdrawAmount.lt(one)).to.be.true
-    expect(realFreeCollateral()).to.deep.eq(one)
+    expect(currentMaxWithdrawAmount.lt(one)).toBe(true)
+    expect(realFreeCollateral()).toEqual(one)
 
     debtScalingFactor$.next(calcDebtScalingFactor(new BigNumber('1.045'), HOUR))
-    expect(realFreeCollateral().lt(one)).to.be.true
-    expect(realFreeCollateral().gt(currentMaxWithdrawAmount)).to.be.true
+    expect(realFreeCollateral().lt(one)).toBe(true)
+    expect(realFreeCollateral().gt(currentMaxWithdrawAmount)).toBe(true)
   })
 
   it('should calculate maxGenerateAmount and account for accrued debt in system', () => {
@@ -79,23 +78,23 @@ describe('manageVaultCalculations', () => {
       },
     })
 
-    expect(state().daiYieldFromTotalCollateral).to.deep.eq(new BigNumber('5000'))
+    expect(state().daiYieldFromTotalCollateral).toEqual(new BigNumber('5000'))
     const selectedMaxGenerateAmount = state().maxGenerateAmount
     const originalDebtOffset = state().vault.debtOffset
-    expect(selectedMaxGenerateAmount.lt(state().daiYieldFromTotalCollateral)).to.be.true
-    expect(state().daiYieldFromTotalCollateral.minus(selectedMaxGenerateAmount)).to.deep.eq(
+    expect(selectedMaxGenerateAmount.lt(state().daiYieldFromTotalCollateral)).toBe(true)
+    expect(state().daiYieldFromTotalCollateral.minus(selectedMaxGenerateAmount)).toEqual(
       originalDebtOffset,
     )
 
     debtScalingFactor$.next(calcDebtScalingFactor(new BigNumber('1.045'), HOUR))
 
-    expect(state().daiYieldFromTotalCollateral.lt(new BigNumber('5000'))).to.be.true
-    expect(state().daiYieldFromTotalCollateral.gt(selectedMaxGenerateAmount)).to.be.true
-    expect(state().maxGenerateAmount.lt(selectedMaxGenerateAmount)).to.be.true
-    expect(state().daiYieldFromTotalCollateral.minus(state().maxGenerateAmount)).to.deep.eq(
+    expect(state().daiYieldFromTotalCollateral.lt(new BigNumber('5000'))).toBe(true)
+    expect(state().daiYieldFromTotalCollateral.gt(selectedMaxGenerateAmount)).toBe(true)
+    expect(state().maxGenerateAmount.lt(selectedMaxGenerateAmount)).toBe(true)
+    expect(state().daiYieldFromTotalCollateral.minus(state().maxGenerateAmount)).toEqual(
       state().vault.debtOffset,
     )
-    expect(state().vault.debtOffset.gt(originalDebtOffset)).to.be.true
+    expect(state().vault.debtOffset.gt(originalDebtOffset)).toBe(true)
   })
 
   it(
@@ -121,8 +120,8 @@ describe('manageVaultCalculations', () => {
         }),
       )
 
-      expect(state().daiYieldFromTotalCollateral?.toString()).eq('1')
-      expect(state().daiYieldFromTotalCollateralAtNextPrice?.toString()).eq('101')
+      expect(state().daiYieldFromTotalCollateral.toString()).toBe('1')
+      expect(state().daiYieldFromTotalCollateralAtNextPrice.toString()).toBe('101')
     },
   )
 })

@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { amountFromRay } from 'blockchain/utils'
-import { expect } from 'chai'
 import { SECONDS_PER_YEAR } from 'features/dsr/utils/constants'
 import { calculateBreakeven, calculateYield } from 'helpers/earn/calculations'
 import { calculateEarnings } from 'helpers/earn/calculations'
 
-// TODO: [Migrating to JEST] Remove skip
+// TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
 describe.skip('Yield Calculations', () => {
   let stabilityFee: BigNumber
   let multiply: BigNumber
@@ -29,7 +28,7 @@ describe.skip('Yield Calculations', () => {
 
     const expected = new BigNumber('0.060767268119203480765725028777122528')
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 
   it('Should return correct value for 30 days period', () => {
@@ -40,7 +39,7 @@ describe.skip('Yield Calculations', () => {
 
     const expected = new BigNumber('0.236036362226332613195601087768901528')
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 })
 
@@ -55,7 +54,7 @@ describe('Breakeven Calculations', () => {
     const result = calculateBreakeven({ depositAmount, entryFees, apy })
     const expected = new BigNumber(146.0) // days
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 })
 
@@ -71,6 +70,6 @@ describe('Earnings Calculations', () => {
 
     const expected = new BigNumber(100821.917808)
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 })

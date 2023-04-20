@@ -248,6 +248,22 @@ yarn test:fix
 
 <br>
 
+## Unit tests :construction_worker:
+We are currently in the process of moving our tests from Mocha (with Chai, Enzyme, and Sinon) to Jest (with React Testing Library).
+We are also in the process of adding more tests to increase our coverage.
+We have some tests skipped for now, but we are working on fixing them.
+Skipped tests (Marked with `TODO: [Mocha -> Jest] Rewrite in Jest compatible format.`):
+- [Batch Manager](helpers/api/BatchManager.test.ts)
+- [Manage Vault Validations](features/borrow/manage/tests/manageVaultValidations.test.ts)
+- [Earn Calculations](features/earn/calculations.test.ts)
+- [Manage Multiply Vault](features/multiply/manage/tests/manageMultiplyVault.test.ts)
+- [Manage Multiply Vault - Adjust Validations](features/multiply/manage/tests/manageMultiplyVaultAdjustPositionValidations.test.ts)
+- [Manage Multiply Vault - Other Action Validations](features/multiply/manage/tests/manageMultiplyVaultOtherActionsValidations.test.ts)
+- [Open Multiply Vault](features/multiply/open/tests/openMultiplyVault.test.ts)
+- [Maker Protocol Bonus Adapter](features/bonus/makerProtocolBonusAdapter.test.ts)
+- [Blockchain Utils](blockchain/utils.test.ts)
+- [Vault Math](blockchain/vault.maths.test.ts)
+
 ## License
 
 Copyright (C) 2021 Oazo Apps Limited, Licensed under the Apache License, Version 2.0 (the

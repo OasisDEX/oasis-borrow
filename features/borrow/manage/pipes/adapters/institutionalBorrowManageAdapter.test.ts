@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { zero } from 'helpers/zero'
 
 import { increasingRisk } from './institutionalBorrowManageAdapter'
@@ -17,7 +16,7 @@ describe('InstitutionalBorrowManageAdapter', () => {
         },
       })
 
-      expect(result).eq(false)
+      expect(result).toBe(false)
     })
 
     it('shows as risk increasing when decreasing collateralisation ratio', () => {
@@ -31,7 +30,7 @@ describe('InstitutionalBorrowManageAdapter', () => {
         },
       })
 
-      expect(result).eq(true)
+      expect(result).toBe(true)
     })
 
     it('shows as risk not increasing when there are no input values', () => {
@@ -45,7 +44,7 @@ describe('InstitutionalBorrowManageAdapter', () => {
         },
       })
 
-      expect(result).eq(false)
+      expect(result).toBe(false)
     })
 
     it('shows as risk increasing when only next price col ratio decreasing', () => {
@@ -59,7 +58,7 @@ describe('InstitutionalBorrowManageAdapter', () => {
         },
       })
 
-      expect(result).eq(false)
+      expect(result).toBe(false)
     })
 
     it('shows as risk increasing when only current col ratio decreasing', () => {
@@ -73,7 +72,7 @@ describe('InstitutionalBorrowManageAdapter', () => {
         },
       })
 
-      expect(result).eq(false)
+      expect(result).toBe(false)
     })
 
     it('shows as risk not increasing when taking vault from coll ratio to zero (zero col ratio means no debt drawn - infinite col ratio)', () => {
@@ -87,7 +86,7 @@ describe('InstitutionalBorrowManageAdapter', () => {
         },
       })
 
-      expect(result).eq(false)
+      expect(result).toBe(false)
     })
 
     it('shows as risk increasing when increasing col ratio from zero (zero col ratio means no debt drawn - infinite col ratio)', () => {
@@ -101,7 +100,7 @@ describe('InstitutionalBorrowManageAdapter', () => {
         },
       })
 
-      expect(result).eq(true)
+      expect(result).toBe(true)
     })
   })
 })

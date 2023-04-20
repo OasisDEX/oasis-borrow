@@ -111,13 +111,6 @@ export interface AutomationContextProviderProps {
 }
 
 const automationTriggersDataInitialState = { isAutomationEnabled: false, triggers: [] }
-const automationContextInitialState = {
-  autoBuyTriggerData: defaultAutoBSData,
-  autoSellTriggerData: defaultAutoBSData,
-  autoTakeProfitTriggerData: defaultAutoTakeProfitData,
-  constantMultipleTriggerData: defaultConstantMultipleData,
-  stopLossTriggerData: defaultStopLossData,
-}
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
 
@@ -172,6 +165,15 @@ export function AutomationContextProvider({
       controller,
     ],
   )
+
+  // I moved it here because I had an error in test: `ReferenceError: Cannot access 'defaultAutoBSData' before initialization`
+  const automationContextInitialState = {
+    autoBuyTriggerData: defaultAutoBSData,
+    autoSellTriggerData: defaultAutoBSData,
+    autoTakeProfitTriggerData: defaultAutoTakeProfitData,
+    constantMultipleTriggerData: defaultConstantMultipleData,
+    stopLossTriggerData: defaultStopLossData,
+  }
 
   const initialAutoContext = {
     automationTriggersData: automationTriggersDataInitialState,
@@ -262,7 +264,7 @@ export function AutomationContextProvider({
         constantMultipleTriggerData: extractConstantMultipleData(resolvedAutomationTriggersData),
         stopLossTriggerData: extractStopLossData(
           resolvedAutomationTriggersData,
-          overwriteTriggersDefaults?.stopLossTriggerData,
+          overwriteTriggersDefaults.stopLossTriggerData,
         ),
       },
     }
