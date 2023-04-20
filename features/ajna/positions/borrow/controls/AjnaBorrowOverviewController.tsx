@@ -85,7 +85,7 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               cost={position.pool.interestRate}
               availableToBorrow={position.debtAvailable()}
-              afterAvailableToBorrow={simulation ? simulation.debtAvailable() : undefined}
+              afterAvailableToBorrow={simulation?.debtAvailable()}
               availableToWithdraw={position.collateralAvailable}
               afterAvailableToWithdraw={simulation?.collateralAvailable}
               changeVariant={changeVariant}
