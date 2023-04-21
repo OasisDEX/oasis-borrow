@@ -1,3 +1,4 @@
+import { ADDRESSES } from '@oasisdex/addresses'
 import * as aaveV2LendingPool from 'blockchain/abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
@@ -49,7 +50,7 @@ import {
   getCollateralTokens,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { default as goerliAddresses } from 'blockchain/addresses/goerli.json'
+import { default as oldGoerliAddresses } from 'blockchain/addresses/goerli.json'
 import { contractDesc } from 'blockchain/networksConfig'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
@@ -61,18 +62,23 @@ import { etherscanAPIKey } from 'config/runtimeConfig'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
 
+const { goerli } = ADDRESSES
+
+/**
+ * @deprecated
+ */
+const goerliAddresses = oldGoerliAddresses
+
 export const goerliContracts: MainnetContracts = {
-  safeConfirmations: 6,
-  openVaultSafeConfirmations: 6,
-  otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
-  collaterals: getCollaterals(goerliAddresses, supportedIlks),
+  otc: contractDesc(otc, goerli.common.otc),
+  collaterals: getCollaterals(goerli.common, supportedIlks),
   tokens: {
-    ...getCollateralTokens(goerliAddresses, supportedIlks),
-    WETH: contractDesc(eth, goerliAddresses.ETH),
-    DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
-    MKR: contractDesc(erc20, goerliAddresses['MCD_GOV']),
-    STETH: contractDesc(erc20, goerliAddresses['STETH']),
-    USDP: contractDesc(erc20, '0xd1a7a9d23f298192f8abf31243dd4f332d681d61'),
+    ...getCollateralTokens(goerli.common, supportedIlks),
+    WETH: contractDesc(eth, goerli.common.WETH),
+    DAI: contractDesc(erc20, goerli.common.DAI),
+    MKR: contractDesc(erc20, goerli.common.MKR),
+    STETH: contractDesc(erc20, goerli.common.STETH),
+    USDP: contractDesc(erc20, goerli.common.USDP),
   },
   tokensMainnet: mainnetContracts.tokensMainnet,
   joins: {
@@ -123,20 +129,11 @@ export const goerliContracts: MainnetContracts = {
   noFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: goerliAddresses.MCD_FLASH,
-  etherscan: {
-    url: 'https://goerli.etherscan.io',
-    apiUrl: 'https://api-goerli.etherscan.io/api',
-    apiKey: etherscanAPIKey || '',
-  },
-  ethtx: {
-    url: 'https://ethtx.info/goerli',
-  },
   taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
@@ -195,4 +192,16 @@ export const goerliContracts: MainnetContracts = {
     ajnaRewardsClaimer,
     '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
   ),
+  // NOT contracts
+  safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
+  etherscan: {
+    url: 'https://goerli.etherscan.io',
+    apiUrl: 'https://api-goerli.etherscan.io/api',
+    apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/goerli',
+  },
+  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
 }

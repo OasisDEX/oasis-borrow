@@ -1,11 +1,13 @@
+import { ADDRESSES } from '@oasisdex/addresses'
 import * as eth from 'blockchain/abi/ds-eth-token.json'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
-import { default as mainnetAddresses } from 'blockchain/addresses/mainnet.json'
 import { contractDesc } from 'blockchain/networksConfig'
 import { ContractDesc } from 'features/web3Context'
 import { Dictionary } from 'ts-essentials'
+
+const { mainnet } = ADDRESSES
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
@@ -59,17 +61,17 @@ export const supportedIlks = [
 ] as const
 
 export const tokensMainnet = {
-  ...getCollateralTokens(mainnetAddresses, supportedIlks),
-  GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
-  GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
-  WETH: contractDesc(eth, mainnetAddresses['ETH']),
-  DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-  LDO: contractDesc(erc20, '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32'),
-  MKR: contractDesc(erc20, mainnetAddresses['MCD_GOV']),
-  STETH: contractDesc(erc20, mainnetAddresses['STETH']),
-  USDP: contractDesc(erc20, '0x8E870D67F660D95d5be530380D0eC0bd388289E1'),
-  WSTETH: contractDesc(erc20, mainnetAddresses['WSTETH']),
-  RENBTC: contractDesc(erc20, mainnetAddresses['RENBTC']),
+  ...getCollateralTokens(mainnet.common, supportedIlks),
+  GUNIV3DAIUSDC1: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC1),
+  GUNIV3DAIUSDC2: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC2),
+  WETH: contractDesc(eth, mainnet.common.ETH),
+  DAI: contractDesc(erc20, mainnet.common.DAI),
+  LDO: contractDesc(erc20, mainnet.common.LDO),
+  MKR: contractDesc(erc20, mainnet.maker.McdGov),
+  STETH: contractDesc(erc20, mainnet.common.STETH),
+  USDP: contractDesc(erc20, mainnet.common.PAXUSD),
+  WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
+  RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
 } as Dictionary<ContractDesc>
 
 export const ilksNotSupportedOnGoerli = [

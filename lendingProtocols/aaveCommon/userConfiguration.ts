@@ -1,10 +1,12 @@
-import mainnet from 'blockchain/addresses/mainnet.json'
+import { ADDRESSES } from '@oasisdex/addresses'
+
+const { mainnet } = ADDRESSES
 
 export type UserConfigurationResult = {
   collateral: boolean
   borrowed: boolean
   asset: string
-  assetName: (typeof mainnet)[keyof typeof mainnet]
+  assetName: (typeof mainnet.common)[keyof typeof mainnet.common]
 }
 
 export type UserConfigurationResults = UserConfigurationResult[] & {
