@@ -1,100 +1,64 @@
+import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { guniFaq } from 'features/content/faqs/guni'
+import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
+import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
+import { getNetworkName } from 'features/web3Context'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
-import { Grid } from 'theme-ui'
+import React from 'react'
+import { Box, Card, Grid } from 'theme-ui'
 
-import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
-import {
-  getInitialVaultCollRatio,
-  getStartingSlRatio,
-} from '../../features/automation/common/helpers'
-import { extractStopLossData } from '../../features/automation/common/StopLossTriggerDataExtractor'
-import { ADD_FORM_CHANGE } from '../../features/automation/common/UITypes/AddFormChange'
-import {
-  PROTECTION_MODE_CHANGE_SUBJECT,
-  ProtectionModeChange,
-} from '../../features/automation/common/UITypes/ProtectionFormModeChange'
-import { REMOVE_FORM_CHANGE } from '../../features/automation/common/UITypes/RemoveFormChange'
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
-import { VaultBannersView } from '../../features/banners/VaultsBannersView'
-import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
-import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
-import { useUIChanges } from '../../helpers/uiChangesHook'
-import { useAppContext } from '../AppContextProvider'
-import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
-import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
-import { HistoryControl } from './HistoryControl'
-import { ProtectionControl } from './ProtectionControl'
+import { DefaultVaultHeadline } from './DefaultVaultHeadline'
+import { GeneralManageTabBar } from './GeneralManageTabBar'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
-  autoTriggersData: TriggersData
+  followButton?: FollowButtonControlProps
 }
 
 export function GeneralManageLayout({
   generalManageVault,
-  autoTriggersData,
+  followButton,
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
-  const { ilkData, vault, account } = generalManageVault.state
-  const showProtectionTab = ALLOWED_MULTIPLY_TOKENS.includes(vault.token)
-  const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
-  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
+  const { ilkData, vault, priceInfo } = generalManageVault.state
 
-  const initialVaultCollRatio = getInitialVaultCollRatio({
-    liquidationRatio: generalManageVault.state.ilkData.liquidationRatio,
-    collateralizationRatio: generalManageVault.state.vault.collateralizationRatio,
-  })
+  const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
 
-  const startingSlRatio = getStartingSlRatio({
-    stopLossLevel,
-    isStopLossEnabled,
-    initialVaultCollRatio,
-  })
+  const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
 
-  useEffect(() => {
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'close-type',
-      toCollateral: isToCollateral,
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
-    })
-    uiChanges.publish(REMOVE_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
-    })
-  }, [currentForm])
+  const headlineElement =
+    generalManageVault.type === VaultType.Earn ? (
+      <GuniVaultHeader
+        token={ilkData.token}
+        ilk={ilkData.ilk}
+        followButton={followButton}
+        shareButton
+      />
+    ) : (
+      <DefaultVaultHeadline
+        header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
+        token={[vault.token]}
+        priceInfo={priceInfo}
+        colRatio={colRatioPercnentage}
+        followButton={followButton}
+        shareButton
+      />
+    )
 
-  useEffect(() => {
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'close-type',
-      toCollateral: isToCollateral,
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
-    })
-  }, [isStopLossEnabled])
+  const positionInfo =
+    generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      <VaultBannersView id={vault.id} />
-      <VaultTabSwitch
-        defaultMode={VaultViewMode.Overview}
-        heading={t('vault.header', { ilk: vault.ilk, id: vault.id })}
-        headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
-        overViewControl={
-          <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
-        }
-        historyControl={<HistoryControl generalManageVault={generalManageVault} />}
-        protectionControl={<ProtectionControl vault={vault} ilkData={ilkData} account={account} />}
-        showProtectionTab={showProtectionTab}
+      <VaultNoticesView id={vault.id} />
+      <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>
+      <GeneralManageTabBar
+        positionInfo={positionInfo}
+        generalManageVault={generalManageVault}
+        showAutomationTabs={showAutomationTabs}
       />
     </Grid>
   )

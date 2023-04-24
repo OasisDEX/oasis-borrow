@@ -1,5 +1,3 @@
-import { contract, ContractDesc } from '@oasisdex/web3-context'
-import { networksById } from 'blockchain/config'
 import {
   Context,
   ContextConnected,
@@ -7,6 +5,8 @@ import {
   createContextConnected$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
+import { contract, ContractDesc } from 'features/web3Context'
 import Web3 from 'web3'
 
 import {
@@ -30,6 +30,9 @@ export const mockContext: Context = {
   web3ProviderGetPastLogs: {} as Web3,
   ...networksById['42'],
   ...mockWeb3ContextConnectedReadonly,
+  contractV2: () => null as any,
+  rpcProvider: null as any,
+  account: undefined,
 }
 
 export const mockContextConnected: ContextConnected = {
@@ -37,4 +40,6 @@ export const mockContextConnected: ContextConnected = {
   web3ProviderGetPastLogs: {} as Web3,
   ...networksById['42'],
   ...mockWeb3ContextConnected,
+  contractV2: () => null as any,
+  rpcProvider: null as any,
 }

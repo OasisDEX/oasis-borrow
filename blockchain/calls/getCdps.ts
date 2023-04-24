@@ -1,6 +1,6 @@
-import { GetCdps } from 'types/web3-v1-contracts/get-cdps'
-
-import { CallDef } from '../../blockchain/calls/callsHelpers'
+import { CallDef } from 'blockchain/calls/callsHelpers'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { GetCdps } from 'types/web3-v1-contracts'
 
 export interface GetCdpsArgs {
   proxyAddress: string
@@ -14,10 +14,14 @@ export interface GetCdpsResult {
 }
 
 export const getCdps: CallDef<GetCdpsArgs, GetCdpsResult> = {
-  call: ({ descending }, { contract, getCdps }) => {
+  call: ({ descending }, { contract, chainId }) => {
+    const getCdps = getNetworkContracts(chainId).getCdps
     return descending
       ? contract<GetCdps>(getCdps).methods.getCdpsDesc
       : contract<GetCdps>(getCdps).methods.getCdpsAsc
   },
-  prepareArgs: ({ proxyAddress }, { dssCdpManager }) => [dssCdpManager.address, proxyAddress],
+  prepareArgs: ({ proxyAddress }, { chainId }) => [
+    getNetworkContracts(chainId).dssCdpManager.address,
+    proxyAddress,
+  ],
 }

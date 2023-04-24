@@ -1,5 +1,7 @@
-import { errorMessagesHandler, VaultErrorMessage } from '../../../form/errorMessagesHandler'
-import { VaultWarningMessage, warningMessagesHandler } from '../../../form/warningMessagesHandler'
+import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
+
 import { ManageStandardBorrowVaultState } from './manageVault'
 
 export function validateErrors(
@@ -27,6 +29,12 @@ export function validateErrors(
     depositCollateralOnVaultUnderDebtFloor,
     ledgerWalletContractDataDisabled,
     afterCollRatioBelowStopLossRatio,
+    afterCollRatioBelowAutoSellRatio,
+    afterCollRatioAboveAutoBuyRatio,
+    afterCollRatioBelowConstantMultipleSellRatio,
+    afterCollRatioAboveConstantMultipleBuyRatio,
+    insufficientEthFundsForTx,
+    takeProfitWillTriggerImmediatelyAfterVaultReopen,
   } = state
 
   const errorMessages: VaultErrorMessage[] = []
@@ -48,6 +56,11 @@ export function validateErrors(
         withdrawCollateralOnVaultUnderDebtFloor,
         depositCollateralOnVaultUnderDebtFloor,
         afterCollRatioBelowStopLossRatio,
+        afterCollRatioBelowAutoSellRatio,
+        afterCollRatioAboveAutoBuyRatio,
+        afterCollRatioBelowConstantMultipleSellRatio,
+        afterCollRatioAboveConstantMultipleBuyRatio,
+        takeProfitWillTriggerImmediatelyAfterVaultReopen,
       }),
     )
   }
@@ -79,6 +92,7 @@ export function validateErrors(
     errorMessages.push(
       ...errorMessagesHandler({
         ledgerWalletContractDataDisabled,
+        insufficientEthFundsForTx,
       }),
     )
   }
@@ -98,6 +112,7 @@ export function validateWarnings(
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     debtIsLessThanDebtFloor,
     potentialGenerateAmountLessThanDebtFloor,
+    existingTakeProfitTriggerAfterVaultReopen,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -113,8 +128,43 @@ export function validateWarnings(
         vaultWillBeAtRiskLevelDangerAtNextPrice,
         vaultWillBeAtRiskLevelWarning,
         vaultWillBeAtRiskLevelWarningAtNextPrice,
+        existingTakeProfitTriggerAfterVaultReopen,
       }),
     )
   }
+  return { ...state, warningMessages }
+}
+
+export function finalValidation(
+  state: ManageStandardBorrowVaultState,
+): ManageStandardBorrowVaultState {
+  const {
+    vault: { token },
+    gasEstimationUsd,
+    balanceInfo: { ethBalance },
+    priceInfo: { currentEthPrice },
+    depositAmount,
+    isEditingStage,
+    isProxyStage,
+  } = state
+
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice: currentEthPrice,
+    depositAmount,
+  })
+
+  const warningMessages: VaultWarningMessage[] = [...state.warningMessages]
+
+  if (isEditingStage || isProxyStage) {
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialInsufficientEthFundsForTx,
+      }),
+    )
+  }
+
   return { ...state, warningMessages }
 }

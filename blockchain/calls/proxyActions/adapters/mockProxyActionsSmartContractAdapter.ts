@@ -1,10 +1,12 @@
+import { ContextConnected } from 'blockchain/network'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
   PayableTx,
-} from '../../../../types/web3-v1-contracts/types'
-import { ContextConnected } from '../../../network'
+} from 'types/web3-v1-contracts/types'
+
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   ProxyActionsAdapterType,
@@ -34,6 +36,12 @@ function createMockPayableTransactionObject<T>(name: string): PayableTransaction
 }
 
 export const MockProxyActionsSmartContractAdapter: ProxyActionsSmartContractAdapterInterface = {
+  claimRewards(
+    _context: ContextConnected,
+    _data: ClaimRewardData,
+  ): NonPayableTransactionObject<void> {
+    return createMockPayableTransactionObject<void>('claimRewards')
+  },
   AdapterType: ProxyActionsAdapterType.MOCK,
 
   open(_: ContextConnected, __: OpenData): NonPayableTransactionObject<string> {

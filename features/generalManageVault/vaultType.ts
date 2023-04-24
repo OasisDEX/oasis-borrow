@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { jwtAuthGetToken } from 'features/shared/jwt'
+import { LendingProtocol } from 'lendingProtocols'
 import { Observable, of } from 'rxjs'
 import { catchError, delay, map, startWith } from 'rxjs/operators'
 
@@ -13,6 +14,7 @@ export enum VaultType {
   Insti = 'insti',
   Borrow = 'borrow',
   Multiply = 'multiply',
+  Earn = 'earn',
 }
 
 export type SaveVaultType = (
@@ -20,6 +22,7 @@ export type SaveVaultType = (
   token: string,
   vaultType: VaultType,
   chainId: number,
+  protocol: string,
 ) => Observable<void>
 
 export function saveVaultTypeForAccount(
@@ -28,6 +31,7 @@ export function saveVaultTypeForAccount(
   vaultId: BigNumber,
   vaultType: VaultType,
   chainId: number,
+  protocol: LendingProtocol,
   onSuccess: Function,
   onFailure: Function,
   onProgress: Function,
@@ -36,7 +40,7 @@ export function saveVaultTypeForAccount(
   const token = jwtAuthGetToken(account)
 
   if (token) {
-    saveVaultType$(vaultId, token, vaultType, chainId)
+    saveVaultType$(vaultId, token, vaultType, chainId, protocol)
       .pipe<Function>(
         map(() => onSuccess),
         catchError(() => of(onFailure)),

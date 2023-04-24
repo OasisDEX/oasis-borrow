@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
+import { TokenSymbol } from 'components/TokenSymbol'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
@@ -10,7 +11,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Heading, Text } from 'theme-ui'
 
-import { TokenSymbol } from '../../components/TokenSymbol'
 import { CollateralPrice } from './collateralPrices'
 import {
   CollateralPricesWithFilters,
@@ -18,7 +18,11 @@ import {
 } from './collateralPricesWithFilters'
 
 function getPercentageColor(percentageChange: BigNumber) {
-  return percentageChange.isEqualTo(zero) ? 'text' : percentageChange.gt(zero) ? 'bull' : 'bear'
+  return percentageChange.isEqualTo(zero)
+    ? 'text'
+    : percentageChange.gt(zero)
+    ? 'success100'
+    : 'critical100'
 }
 
 function CellOracleUpdate({ update }: { update?: Date }) {
@@ -37,7 +41,7 @@ function CellOracleUpdate({ update }: { update?: Date }) {
 const COLLATERAL_COLUMNS: ColumnDef<CollateralPrice, CollateralPricesWithFiltersState>[] = [
   {
     headerLabel: 'oracles.token',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    header: ({ label }) => <Text variant="boldParagraph3">{label}</Text>,
     cell: ({ token }) => <TokenSymbol token={token} displaySymbol />,
   },
   {
@@ -68,7 +72,7 @@ const COLLATERAL_COLUMNS: ColumnDef<CollateralPrice, CollateralPricesWithFilters
   },
   {
     headerLabel: 'oracles.change',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    header: ({ label }) => <Text variant="boldParagraph3">{label}</Text>,
     cell: ({ percentageChange }) => (
       <Text
         sx={{
@@ -102,7 +106,7 @@ const COLLATERAL_COLUMNS: ColumnDef<CollateralPrice, CollateralPricesWithFilters
   },
   {
     headerLabel: 'oracles.oracle-type',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    header: ({ label }) => <Text variant="boldParagraph3">{label}</Text>,
     cell: ({ isStaticPrice }) => <Text>{isStaticPrice ? 'DSvalue' : 'OSM'}</Text>,
   },
 ]
@@ -136,7 +140,7 @@ export function CollateralPricesView() {
     <Grid sx={{ position: 'relative', zIndex: 1, width: '100%' }} gap={5}>
       <Grid pt={5} pb={4}>
         <Heading variant="header2">{t('oracles.header')}</Heading>
-        <Box sx={{ maxWidth: '55.5em', color: 'text.subtitle' }}>{t('oracles.description')}</Box>
+        <Box sx={{ maxWidth: '55.5em', color: 'neutral80' }}>{t('oracles.description')}</Box>
       </Grid>
       <WithErrorHandler error={collateralPricesWithError}>
         <WithLoadingIndicator

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { mockBalanceInfo$, MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock'
@@ -9,7 +10,6 @@ import { mockIlkData$, MockIlkDataProps } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
 import { Observable, of } from 'rxjs'
 
-import { createOpenMultiplyVault$ } from '../../features/multiply/open/pipes/openMultiplyVault'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { slippageLimitMock } from './slippageLimit.mock'
@@ -39,6 +39,7 @@ export interface MockOpenMultiplyVaultProps {
   ilks?: string[]
   ilk?: string
   exchangeQuote?: MockExchangeQuote
+  gasEstimationUsd?: BigNumber
 }
 
 export function mockOpenMultiplyVault({
@@ -59,6 +60,7 @@ export function mockOpenMultiplyVault({
   ilks = ['ETH-A', 'WBTC-A'],
   ilk = 'WBTC-A',
   exchangeQuote,
+  gasEstimationUsd,
 }: MockOpenMultiplyVaultProps = {}) {
   const token = ilk.split('-')[0]
 
@@ -91,6 +93,10 @@ export function mockOpenMultiplyVault({
     return _allowance$ || of(allowance)
   }
 
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
+  }
+
   const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
   return createOpenMultiplyVault$(
@@ -103,7 +109,7 @@ export function mockOpenMultiplyVault({
     ilks$,
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
-    addGasEstimationMock,
+    gasEstimationMock$,
     slippageLimitMock(),
     ilk,
   )

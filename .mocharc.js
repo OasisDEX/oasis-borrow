@@ -15,7 +15,11 @@ if (existsSync(testTsconfigPath)) {
 process.env.TS_NODE_IGNORE = '/^node_modules/((?!pg-packet-stream).)*$/'
 
 module.exports = {
-  require: ['ts-node/register/transpile-only', 'tsconfig-paths/register'],
+  require: [
+    'ts-node/register/transpile-only',
+    'tsconfig-paths/register',
+    'next/dist/build/jest/__mocks__/nextFontMock.js',
+  ],
   extension: ['ts'],
   watchExtensions: ['ts'],
   spec: [
@@ -24,11 +28,14 @@ module.exports = {
     './components/**/*.test.ts',
     './features/**/*.test.ts',
     './blockchain/**/*.test.ts',
+    './locales.test.ts',
   ],
   timeout: 1000,
 }
 
-Enzyme.configure({ adapter: new Adapter() })
+Enzyme.configure({
+  adapter: new Adapter(),
+})
 
 // do not import files that we don't care about
 function noop() {

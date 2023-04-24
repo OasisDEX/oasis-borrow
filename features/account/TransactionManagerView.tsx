@@ -2,6 +2,7 @@
 
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ActivityItem } from 'components/Activity'
 import { TxData } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
@@ -31,10 +32,10 @@ export const ICONS = {
       }}
     />
   ),
-  complete: <Icon name="checkmark" color="onSuccess" />,
-  error: <Icon name="close" color="onError" />,
-  expired: <Icon name="clock" color="onError" size={20} />,
-  warning: <Icon name="warning" color="onWarning" size={24} />,
+  complete: <Icon name="checkmark" color="success100" />,
+  error: <Icon name="close" color="critical100" />,
+  expired: <Icon name="clock" color="critical100" size={20} />,
+  warning: <Icon name="warning" color="warning100" size={24} />,
 }
 
 export function describeTxNotificationStatus(tx?: TxMgrTransaction) {
@@ -140,7 +141,7 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
         timestamp: lastChange,
         label,
         icon: isFailed ? ICONS_RECENT_TRANSACTIONS.error : getRecentTransactionIcon(transaction),
-        iconColor: 'primaryEmphasis',
+        iconColor: 'primary60',
       }}
     />
   )
@@ -159,7 +160,7 @@ export function PendingTransactions() {
   }
 
   if (!context || !pendingTransactions || !pendingTransactions.length) return null
-  const { etherscan } = context
+  const { etherscan } = getNetworkContracts(context.chainId)
 
   return (
     <Grid>
@@ -189,7 +190,7 @@ export function RecentTransactions() {
   }
 
   if (!context || !recentTransactions || !recentTransactions.length) return null
-  const { etherscan } = context
+  const { etherscan } = getNetworkContracts(context.chainId)
 
   return (
     <Grid>

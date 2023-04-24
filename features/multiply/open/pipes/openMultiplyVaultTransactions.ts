@@ -1,20 +1,23 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
+import { createDsProxy } from 'blockchain/calls/proxy'
 import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { jwtAuthGetToken } from 'features/shared/jwt'
+import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import { LendingProtocol } from 'lendingProtocols'
+import { iif, Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
-import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 export function applyOpenMultiplyVaultTransaction(
@@ -34,6 +37,14 @@ export function applyOpenMultiplyVaultTransaction(
       ...state,
       openTxHash,
       stage: 'txInProgress',
+    }
+  }
+
+  if (change.kind === 'openVaultConfirming') {
+    const { openVaultConfirmations } = change
+    return {
+      ...state,
+      openVaultConfirmations,
     }
   }
 
@@ -88,7 +99,7 @@ export function setAllowance(
 
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
-  { tokensMainnet, defaultExchange }: ContextConnected,
+  { chainId }: ContextConnected,
   change: (ch: OpenMultiplyVaultChange) => void,
   {
     depositAmount,
@@ -103,8 +114,11 @@ export function multiplyVault(
     fromTokenAmount,
     borrowedDaiAmount,
     oneInchAmount,
+    openFlowWithStopLoss,
+    openVaultSafeConfirmations,
   }: OpenMultiplyVaultState,
 ) {
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
   return getQuote$(
     getTokenMetaData('DAI', tokensMainnet),
     getTokenMetaData(token, tokensMainnet),
@@ -156,7 +170,22 @@ export function multiplyVault(
                   jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
+                  LendingProtocol.Maker,
                 ).subscribe()
+              }
+
+              if (openFlowWithStopLoss) {
+                return iif(
+                  () => (txState as any).confirmations < openVaultSafeConfirmations,
+                  of({
+                    kind: 'openVaultConfirming',
+                    openVaultConfirmations: (txState as any).confirmations,
+                  }),
+                  of({
+                    kind: 'stopLossTxWaitingForConfirmation',
+                    id: id!,
+                  }),
+                )
               }
 
               return of({
@@ -164,6 +193,7 @@ export function multiplyVault(
                 id: id!,
               })
             },
+            !openFlowWithStopLoss ? undefined : openVaultSafeConfirmations,
           ),
         ),
       ),
@@ -178,7 +208,7 @@ export function applyEstimateGas(
   state: OpenMultiplyVaultState,
 ): Observable<OpenMultiplyVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
-    const { proxyAddress, depositAmount, ilk, token, account, swap, skipFL } = state
+    const { proxyAddress, depositAmount, ilk, token, account, swap, skipFL, isProxyStage } = state
 
     const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
     const collateralAmount = swap?.status === 'SUCCESS' ? swap.collateralAmount : zero
@@ -199,6 +229,10 @@ export function applyEstimateGas(
         toTokenAmount: collateralAmount,
         fromTokenAmount: daiAmount,
       })
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

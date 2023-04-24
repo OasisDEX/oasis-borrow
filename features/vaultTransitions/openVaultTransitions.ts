@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { zero } from 'helpers/zero'
-
-import { VaultErrorMessage } from '../form/errorMessagesHandler'
 
 export type OpenVaultTransitionChange =
   | {
       kind: 'progressEditing'
     }
+  | { kind: 'progressStopLossEditing' }
+  | { kind: 'skipStopLoss' }
   | {
       kind: 'backToEditing'
     }
@@ -15,6 +16,12 @@ export type OpenVaultTransitionChange =
     }
 
 type GenericOpenVaultState = {
+  withStopLossStage: boolean
+  withProxyStep: boolean
+  withAllowanceStep: boolean
+  proxySuccess?: string
+  generateAmount?: BigNumber
+  afterOutstandingDebt?: BigNumber
   errorMessages: VaultErrorMessage[]
   proxyAddress?: any
   depositAmount?: BigNumber
@@ -26,7 +33,7 @@ export function createApplyOpenVaultTransition<
   OVS extends GenericOpenVaultState,
   MOVS,
   OVCalcs,
-  OVConds
+  OVConds,
 >(
   defaultMutableOpenVaultState: MOVS,
   defaultOpenVaultStateCalculations: OVCalcs,
@@ -49,7 +56,11 @@ export function createApplyOpenVaultTransition<
         ? 'proxyWaitingForConfirmation'
         : !hasAllowance
         ? 'allowanceWaitingForConfirmation'
+        : state.withStopLossStage &&
+          (state.generateAmount?.gt(zero) || state.afterOutstandingDebt?.gt(zero))
+        ? 'stopLossEditing'
         : 'txWaitingForConfirmation'
+
       if (canProgress) {
         return {
           ...state,
@@ -58,9 +69,41 @@ export function createApplyOpenVaultTransition<
       }
     }
 
+    if (change.kind === 'progressStopLossEditing') {
+      const { errorMessages } = state
+      const canProgress = !errorMessages.length
+
+      const stage = 'txWaitingForConfirmation'
+
+      if (canProgress) {
+        return {
+          ...state,
+          visitedStopLossStep: true,
+          stage,
+        }
+      }
+    }
+
+    if (change.kind === 'skipStopLoss') {
+      const stage = 'txWaitingForConfirmation'
+
+      return {
+        ...state,
+        stopLossSkipped: true,
+        visitedStopLossStep: true,
+        stage,
+      }
+    }
+
     if (change.kind === 'backToEditing') {
       return {
         ...state,
+        stopLossSkipped: false,
+        visitedStopLossStep: false,
+        withProxyStep: !!state.proxySuccess,
+        withAllowanceStep: false,
+        stopLossLevel: zero,
+        stopLossCloseType: 'dai',
         stage: 'editing',
       }
     }

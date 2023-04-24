@@ -1,11 +1,13 @@
-import { zero } from '../../../helpers/zero'
-import { DsProxy } from '../../../types/web3-v1-contracts/ds-proxy'
-import dsProxy from '../../abi/ds-proxy.json'
-import { contractDesc } from '../../config'
-import { ContextConnected } from '../../network'
-import { amountToWei } from '../../utils'
-import { TransactionDef } from '../callsHelpers'
+import dsProxy from 'blockchain/abi/ds-proxy.json'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { ContextConnected } from 'blockchain/network'
+import { contractDesc } from 'blockchain/networksConfig'
+import { amountToWei } from 'blockchain/utils'
+import { zero } from 'helpers/zero'
+import { DsProxy } from 'types/web3-v1-contracts'
+
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   ProxyActionsSmartContractAdapterInterface,
@@ -16,12 +18,26 @@ export interface VaultActionsLogicInterface {
   open: TransactionDef<OpenData>
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
+  claimReward: TransactionDef<ClaimRewardData>
 }
 
 export function vaultActionsLogic(
   proxyActionsSmartContractWrapper: ProxyActionsSmartContractAdapterInterface,
 ): VaultActionsLogicInterface {
   return {
+    claimReward: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        return [
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          proxyActionsSmartContractWrapper.claimRewards(context, data).encodeABI(),
+        ]
+      },
+    },
     open: {
       call: ({ proxyAddress }, { contract }) => {
         return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[

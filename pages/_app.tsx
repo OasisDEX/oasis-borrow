@@ -1,36 +1,53 @@
 import { CacheProvider, Global } from '@emotion/core'
 // @ts-ignore
 import { MDXProvider } from '@mdx-js/react'
+import { Web3OnboardProvider } from '@web3-onboard/react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
+import { adRollPixelScript } from 'analytics/adroll'
+import { trackingEvents } from 'analytics/analytics'
+import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
+import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
-import { CookieBanner } from 'components/CookieBanner'
+import { CookieBanner, SavedSettings } from 'components/CookieBanner'
+import { GasEstimationContextProvider } from 'components/GasEstimationContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
+import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
+import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
+import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
+import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { appWithTranslation } from 'next-i18next'
+import { loadFeatureToggles } from 'helpers/useFeatureToggle'
+import { useLocalStorage } from 'helpers/useLocalStorage'
+import { appWithTranslation, i18n } from 'next-i18next'
+import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
+import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
 
-import { adRollPixelScript } from '../analytics/adroll'
-import { trackingEvents } from '../analytics/analytics'
-import { LOCALSTORAGE_KEY } from '../analytics/common'
-import { mixpanelInit } from '../analytics/mixpanel'
-import { loadFeatureToggles } from '../helpers/useFeatureToggle'
-import { useLocalStorage } from '../helpers/useLocalStorage'
-import nextI18NextConfig from '../next-i18next.config.js'
+if (process.env.NODE_ENV !== 'production') {
+  if (typeof window !== 'undefined') {
+    const { applyClientHMR } = require('i18next-hmr/client')
+    applyClientHMR(() => i18n)
+  } else {
+    const { applyServerHMR } = require('i18next-hmr/server')
+    applyServerHMR(() => i18n)
+  }
+}
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
   const chainIdPromise = connector!.getChainId()
@@ -38,13 +55,10 @@ function getLibrary(provider: any, connector: AbstractConnector | undefined): We
   return new Web3(readOnlyEnhancedProvider)
 }
 
-const FTPolarFontBold = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Bold')
-const FTPolarFontMedium = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Medium')
-
 const globalStyles = `
+  ${web3OnboardStyles}
   html,
   body,
-  body > div:first-of-type,
   div#__next {
     height: 100%;
   }
@@ -58,7 +72,8 @@ const globalStyles = `
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    overflow-anchor: none
+    overflow-anchor: none;
+    overflow-x: hidden;
   }
 
   input::-webkit-outer-spin-button,
@@ -70,26 +85,8 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
-
-  @font-face {
-    font-family: 'FT Polar Trial';
-    src: url('${FTPolarFontMedium}.woff2') format('woff2'),
-        url('${FTPolarFontMedium}.woff') format('woff'),
-        url('${FTPolarFontMedium}.ttf') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'FT Polar Trial';
-    src: url('${FTPolarFontBold}.woff2') format('woff2'),
-        url('${FTPolarFontBold}.woff') format('woff'),
-        url('${FTPolarFontBold}.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
+  ${FTPolarBold.style.fontFamily}
+  ${FTPolarMedium.style.fontFamily}
 `
 
 // extending Component with static properties that can be attached to it
@@ -103,8 +100,6 @@ interface CustomAppProps {
   }
 }
 
-mixpanelInit()
-
 // script for disabling Next.js overlay for particular event errors
 // currently there is no option to configure error overlay in development mode
 const noOverlayWorkaroundScript = `
@@ -117,15 +112,42 @@ const noOverlayWorkaroundScript = `
 `
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
-  const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
-
+  const [cookiesValue, cookiesSetValue] = useLocalStorage(
+    COOKIE_NAMES_LOCASTORAGE_KEY,
+    {} as SavedSettings,
+  )
+  const mount = useRef(false)
   const Layout = Component.layout || AppLayout
 
   const layoutProps = Component.layoutProps
-  const seoTags = Component.seoTags || (
-    <PageSEOTags title="seo.default.title" description="seo.default.description" />
-  )
   const router = useRouter()
+
+  const seoTags = Component.seoTags || (
+    <PageSEOTags
+      title="seo.default.title"
+      description="seo.default.description"
+      url={router.pathname || INTERNAL_LINKS.homepage}
+    />
+  )
+
+  useEffect(() => {
+    if (router.isReady && !mount.current) {
+      mixpanelInit()
+
+      if (router.pathname === '/') {
+        const utm: { [key: string]: string | string[] | undefined } = {
+          utmSource: router.query.utm_source,
+          utmMedium: router.query.utm_medium,
+          utmCampaign: router.query.utm_campaign,
+        }
+
+        trackingEvents.landingPageView(utm)
+      } else {
+        trackingEvents.pageView(router.pathname)
+      }
+      mount.current = true
+    }
+  }, [router])
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
@@ -136,11 +158,12 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
+
     loadFeatureToggles()
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
-  }, [])
+  }, [router.events])
 
   return (
     <>
@@ -148,7 +171,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        {value?.enabledCookies?.marketing && (
+        {cookiesValue?.enabledCookies?.marketing && (
           <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
         )}
 
@@ -164,12 +187,22 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                   <HeadTags />
                   {seoTags}
                   <SetupWeb3Context>
-                    <SharedUIProvider>
-                      <Layout {...layoutProps}>
-                        <Component {...pageProps} />
-                        <CookieBanner setValue={setValue} value={value} />
-                      </Layout>
-                    </SharedUIProvider>
+                    <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+                      <Web3OnBoardConnectorProvider>
+                        <SharedUIProvider>
+                          <GasEstimationContextProvider>
+                            <NotificationSocketProvider>
+                              <WithFollowVaults>
+                                <Layout {...layoutProps}>
+                                  <Component {...pageProps} />
+                                  <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
+                                </Layout>
+                              </WithFollowVaults>
+                            </NotificationSocketProvider>
+                          </GasEstimationContextProvider>
+                        </SharedUIProvider>
+                      </Web3OnBoardConnectorProvider>
+                    </Web3OnboardProvider>
                   </SetupWeb3Context>
                 </ModalProvider>
               </AppContextProvider>

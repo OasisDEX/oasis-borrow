@@ -1,8 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
-import { disconnect } from 'components/connectWallet/ConnectWallet'
+import { disconnect } from 'components/connectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
+import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
+import { UserReferralState } from 'features/referralOverview/user'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
@@ -33,6 +35,7 @@ function getStageErrorMessage(stage: TermsAcceptanceStage) {
 
 function getButtonMessage(stage: TermsAcceptanceStage) {
   switch (stage) {
+    case 'jwtInvalidProgress':
     case 'jwtAuthInProgress':
       return 'jwt-auth-in-progress'
     case 'acceptanceSaveInProgress':
@@ -53,16 +56,22 @@ function TOSWaiting4Signature({
   return (
     <Grid gap={3}>
       <Box px={2}>
-        <Heading sx={{ textAlign: 'center', pb: 1, pt: 3, fontSize: 7 }}>
-          {t(`tos-welcome${updated ? '-updated' : ''}`)}
+        <Heading variant="header4" sx={{ textAlign: 'center', pb: 1, pt: 3 }}>
+          {stage === 'jwtAuthWaiting4Acceptance' && t(`tos-welcome${updated ? '-updated' : ''}`)}
+          {(stage === 'jwtInvalidWaiting4Acceptance' || stage === 'jwtInvalidProgress') &&
+            t(`tos-jwt-signature-expired-title`)}
         </Heading>
-        <Text mt={3} sx={{ fontWeight: '400', fontSize: '14px' }}>
-          {t('tos-jwt-signature-message')}
+        <Text mt={3} variant="paragraph3">
+          {stage === 'jwtInvalidWaiting4Acceptance' || stage === 'jwtInvalidProgress'
+            ? t('tos-jwt-signature-expired-message')
+            : t('tos-jwt-signature-message')}
         </Text>
       </Box>
       <Button
         sx={{ width: '80%', justifySelf: 'center' }}
-        disabled={stage !== 'jwtAuthWaiting4Acceptance'}
+        disabled={
+          !(stage === 'jwtAuthWaiting4Acceptance' || stage === 'jwtInvalidWaiting4Acceptance')
+        }
         onClick={acceptJwtAuth}
       >
         {t(getButtonMessage(stage))}
@@ -103,9 +112,9 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
         >
           <Text mt={3}>{t('tos-view')}</Text>
         </AppLink>
-        <Box px={2} sx={{ background: '#f6f8f9', borderRadius: '12px', p: 3, mb: 4 }}>
+        <Box px={2} sx={{ background: 'neutral30', borderRadius: '12px', p: 3, mb: 4 }}>
           <Label
-            sx={{ fontSize: 3, fontWeight: 'body', cursor: 'pointer' }}
+            sx={{ fontSize: 3, fontWeight: 'regular', cursor: 'pointer' }}
             onClick={() => setChecked(!checked)}
           >
             <Flex
@@ -115,18 +124,18 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
                 width: '25px',
                 height: '25px',
                 border: 'light',
-                borderColor: 'onSuccess',
+                borderColor: 'success100',
                 borderRadius: 'small',
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'background ease-in 0.2s',
                 ...(checked && {
-                  bg: 'success',
+                  bg: 'success10',
                 }),
               }}
             >
               {checked && (
-                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="onSuccess" />
+                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="success100" />
               )}
             </Flex>
             <Text ml={3} sx={{ flex: 1, fontWeight: '400', fontSize: '14px' }}>
@@ -170,7 +179,7 @@ const hiddenStages: TermsAcceptanceStage[] = [
   'acceptanceCheckInProgress',
 ]
 
-export function TermsOfService() {
+export function TermsOfService({ userReferral }: { userReferral?: UserReferralState }) {
   const { web3Context$, termsAcceptance$ } = useAppContext()
   const [termsAcceptance] = useObservable(termsAcceptance$)
   const [web3Context] = useObservable(web3Context$)
@@ -178,6 +187,19 @@ export function TermsOfService() {
   function disconnectHandler() {
     disconnect(web3Context)
   }
+
+  if (
+    userReferral?.state === 'newUser' &&
+    userReferral?.referrer &&
+    web3Context?.status === 'connected' &&
+    termsAcceptance?.stage === 'acceptanceAccepted'
+  )
+    return (
+      <NewReferralModal
+        account={web3Context.account}
+        userReferral={userReferral}
+      ></NewReferralModal>
+    )
 
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 
@@ -199,6 +221,8 @@ export function TermsOfService() {
               return <TOSWaiting4Acceptance {...termsAcceptance} />
             case 'jwtAuthWaiting4Acceptance':
             case 'jwtAuthInProgress':
+            case 'jwtInvalidProgress':
+            case 'jwtInvalidWaiting4Acceptance':
             case 'acceptanceSaveInProgress':
               return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnectHandler} />
             case 'acceptanceCheckFailed':
@@ -220,8 +244,10 @@ export function TermsOfService() {
 }
 
 export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
-  const { web3ContextConnected$ } = useAppContext()
+  const { web3ContextConnected$, userReferral$ } = useAppContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
+  const [userReferral] = useObservable(userReferral$)
+
   const shouldUseTermsOfService = getConfig()?.publicRuntimeConfig?.useTermsOfService
 
   if (!web3ContextConnected) {
@@ -235,7 +261,7 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   return (
     <>
       {children}
-      <TermsOfService />
+      <TermsOfService userReferral={userReferral} />
     </>
   )
 }

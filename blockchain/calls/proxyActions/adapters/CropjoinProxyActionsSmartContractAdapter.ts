@@ -1,16 +1,30 @@
-import { ContractDesc } from '@oasisdex/web3-context'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { ContextConnected } from 'blockchain/network'
+import { ContractDesc } from 'features/web3Context'
+import { DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
+import { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
 
-import { DssProxyActionsCropjoin } from '../../../../types/web3-v1-contracts/dss-proxy-actions-cropjoin'
-import { ContextConnected } from '../../../network'
 import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'
-import { ProxyActionsAdapterType } from './ProxyActionsSmartContractAdapterInterface'
+import {
+  ClaimRewardData,
+  ProxyActionsAdapterType,
+} from './ProxyActionsSmartContractAdapterInterface'
 
-export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<
-  DssProxyActionsCropjoin
-> {
+export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<DssProxyActionsCropjoin> {
   AdapterType = ProxyActionsAdapterType.CROPJOIN
 
-  resolveContractDesc(context: ContextConnected): ContractDesc {
-    return context.dssProxyActionsCropjoin
+  resolveContractDesc({ chainId }: ContextConnected): ContractDesc {
+    return getNetworkContracts(chainId).dssProxyActionsCropjoin
+  }
+
+  claimRewards(
+    context: ContextConnected,
+    data: ClaimRewardData,
+  ): NonPayableTransactionObject<void> {
+    const { contract, chainId } = context
+    const { gemJoinAddress, cdpId } = data
+    return contract<DssProxyActionsCropjoin>(
+      getNetworkContracts(chainId).dssProxyActionsCropjoin,
+    ).methods.crop(gemJoinAddress, cdpId.toString())
   }
 }

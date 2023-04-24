@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
 import { VaultIlkDetailsItem } from './VaultHeader'
 
 export interface VaultHeaderLayoutProps {
@@ -12,6 +12,7 @@ export interface VaultHeaderLayoutProps {
   debtFloor: BigNumber
   liquidationPenalty?: BigNumber
   liquidationRatio?: BigNumber
+  originationFeePercent?: BigNumber
 }
 
 export function VaultHeaderLayout({
@@ -20,6 +21,7 @@ export function VaultHeaderLayout({
   debtFloor,
   liquidationPenalty,
   liquidationRatio,
+  originationFeePercent,
 }: VaultHeaderLayoutProps) {
   const { t } = useTranslation()
   return (
@@ -29,7 +31,7 @@ export function VaultHeaderLayout({
           mb: 4,
           fontSize: 1,
           fontWeight: 'semiBold',
-          color: 'text.subtitle',
+          color: 'neutral80',
           display: ['grid', 'flex'],
           gridTemplateColumns: '1fr 1fr',
           gap: [2, 0],
@@ -82,6 +84,19 @@ export function VaultHeaderLayout({
             },
           }}
         />
+        {originationFeePercent && (
+          <VaultIlkDetailsItem
+            label={t('manage-insti-vault.origination-fee')}
+            value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}
+            tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
+            styles={{
+              tooltip: {
+                left: ['-80px', 'auto'],
+                right: ['auto', '-32px'],
+              },
+            }}
+          />
+        )}
       </Box>
     </Grid>
   )

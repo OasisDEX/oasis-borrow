@@ -1,6 +1,7 @@
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
+import { GasPriceParams, Tickers } from 'blockchain/prices'
 import { TxHelpers, TxHelpers$ } from 'components/AppContext'
 import { MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 } from 'components/Modal'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -8,7 +9,6 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import { OmitProperties, ValueOf } from 'ts-essentials'
 
-import { GasPriceParams, Ticker } from '../blockchain/prices'
 import { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {
@@ -230,35 +230,33 @@ export function transactionToX<X, Y extends TxMeta>(
           txState.status !== TxStatus.Success
         )
       }),
-      flatMap(
-        (txState: TxState<Y>): Observable<X> => {
-          switch (txState.status) {
-            case TxStatus.CancelledByTheUser:
-            case TxStatus.Failure:
-            case TxStatus.Error:
-              const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)
+      flatMap((txState: TxState<Y>): Observable<X> => {
+        switch (txState.status) {
+          case TxStatus.CancelledByTheUser:
+          case TxStatus.Failure:
+          case TxStatus.Error:
+            const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)
 
-              if (
-                (txState as ErrorTxState).error?.message?.includes('params specify an EIP-1559') &&
-                modal
-              ) {
-                modal.style.display = 'block'
-                document.documentElement.style.overflow = 'hidden'
-              }
+            if (
+              (txState as ErrorTxState).error?.message?.includes('params specify an EIP-1559') &&
+              modal
+            ) {
+              modal.style.display = 'block'
+              document.documentElement.style.overflow = 'hidden'
+            }
 
-              return isFunction(fiascoX) ? fiascoX(txState) : of(fiascoX)
-            case TxStatus.Propagating:
-            case TxStatus.WaitingForConfirmation:
-              return isFunction(waitingForConfirmationX)
-                ? waitingForConfirmationX(txState)
-                : of(waitingForConfirmationX)
-            case TxStatus.Success:
-              return successHandler ? successHandler(txState) : of()
-            default:
-              return of()
-          }
-        },
-      ),
+            return isFunction(fiascoX) ? fiascoX(txState) : of(fiascoX)
+          case TxStatus.Propagating:
+          case TxStatus.WaitingForConfirmation:
+            return isFunction(waitingForConfirmationX)
+              ? waitingForConfirmationX(txState)
+              : of(waitingForConfirmationX)
+          case TxStatus.Success:
+            return successHandler ? successHandler(txState) : of()
+          default:
+            return of()
+        }
+      }),
       startWith(startWithX),
     )
 }
@@ -285,7 +283,7 @@ export interface HasGasEstimation extends HasGasEstimationCost {
 
 export function doGasEstimation<S extends HasGasEstimation>(
   gasPrice$: Observable<GasPriceParams>,
-  tokenPricesInUSD$: Observable<Ticker>,
+  tokenPricesInUSD$: Observable<Tickers>,
   txHelpers$: TxHelpers$,
   state: S,
   call: (send: TxHelpers, state: S) => Observable<number> | undefined,
@@ -327,7 +325,7 @@ export function doGasEstimation<S extends HasGasEstimation>(
       )
     }),
     catchError((error) => {
-      console.warn('Error while estimating gas:', error.toString())
+      console.warn('Error while estimating gas:', JSON.stringify(error))
       return of({
         ...state,
         error,

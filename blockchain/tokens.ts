@@ -5,11 +5,12 @@ import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operator
 
 import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
+import { getNetworkContracts } from './contracts'
 import { Context } from './network'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export function createBalance$(
-  onEveryBlock$: Observable<number>,
+  updateInterval$: Observable<any>,
   context$: Observable<Context>,
   tokenBalance$: CallObservable<typeof tokenBalance>,
   token: string,
@@ -18,7 +19,7 @@ export function createBalance$(
   return context$.pipe(
     switchMap(({ web3 }) => {
       if (token === 'ETH') {
-        return onEveryBlock$.pipe(
+        return updateInterval$.pipe(
           switchMap(() => bindNodeCallback(web3.eth.getBalance)(address)),
           map((ethBalance: string) => amountFromWei(new BigNumber(ethBalance))),
           distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
@@ -40,12 +41,20 @@ export function createCollateralTokens$(
   )
 }
 
+export function createAaveCollateralTokens$(context$: Observable<Context>): Observable<string[]> {
+  return context$.pipe(
+    map(({ chainId }) => {
+      return Object.keys(getNetworkContracts(chainId).aaveTokens)
+    }),
+  )
+}
+
 export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
 
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
   collateralTokens$: Observable<string[]>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   address: string,
 ): Observable<TokenBalances> {
   return collateralTokens$.pipe(
@@ -55,7 +64,7 @@ export function createAccountBalance$(
           combineLatest(
             of(collateralToken),
             tokenBalance$(collateralToken, address),
-            oraclePriceData$(collateralToken),
+            oraclePriceData$({ token: collateralToken, requestedData: ['currentPrice'] }),
           ),
         ),
       ),

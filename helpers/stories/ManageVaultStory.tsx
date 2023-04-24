@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
+import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import {
   defaultMutableManageVaultState,
   MutableManageVaultState,
@@ -19,8 +20,6 @@ import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
-
 type ManageVaultStory = { title?: string } & MockManageVaultProps
 
 export function manageVaultStory({
@@ -35,95 +34,99 @@ export function manageVaultStory({
   daiAllowance,
 }: ManageVaultStory = {}) {
   return ({
-    depositAmount,
-    withdrawAmount,
-    generateAmount,
-    paybackAmount,
-    stage = 'collateralEditing',
-    ...otherState
-  }: Partial<MutableManageVaultState> = defaultMutableManageVaultState) => () => {
-    const obs$ = mockManageVault$({
-      account,
-      balanceInfo,
-      priceInfo,
-      vault,
-      ilkData,
-      proxyAddress,
-      collateralAllowance,
-      daiAllowance,
-    })
+      depositAmount,
+      withdrawAmount,
+      generateAmount,
+      paybackAmount,
+      stage = 'collateralEditing',
+      ...otherState
+    }: Partial<MutableManageVaultState> = defaultMutableManageVaultState) =>
+    () => {
+      const obs$ = mockManageVault$({
+        account,
+        balanceInfo,
+        priceInfo,
+        vault,
+        ilkData,
+        proxyAddress,
+        collateralAllowance,
+        daiAllowance,
+      })
 
-    useEffect(() => {
-      const subscription = obs$
-        .pipe(first())
-        .subscribe(
-          ({ injectStateOverride, accountIsController, priceInfo: { currentCollateralPrice } }) => {
-            const newState: Partial<MutableManageVaultState> = {
-              ...otherState,
-              ...(stage && { stage }),
-              ...(depositAmount && {
-                depositAmount,
-                depositAmountUSD: depositAmount.times(currentCollateralPrice),
-              }),
-              ...(withdrawAmount && {
-                withdrawAmount,
-                withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
-              }),
-              ...(generateAmount && {
-                generateAmount,
-              }),
-              ...(paybackAmount && {
-                paybackAmount,
-              }),
-              showDepositAndGenerateOption:
-                (stage === 'daiEditing' && !!depositAmount) ||
-                (stage === 'collateralEditing' && !!generateAmount),
-              showPaybackAndWithdrawOption:
-                accountIsController &&
-                ((stage === 'daiEditing' && !!withdrawAmount) ||
-                  (stage === 'collateralEditing' && !!paybackAmount)),
-            }
+      useEffect(() => {
+        const subscription = obs$
+          .pipe(first())
+          .subscribe(
+            ({
+              injectStateOverride,
+              accountIsController,
+              priceInfo: { currentCollateralPrice },
+            }) => {
+              const newState: Partial<MutableManageVaultState> = {
+                ...otherState,
+                ...(stage && { stage }),
+                ...(depositAmount && {
+                  depositAmount,
+                  depositAmountUSD: depositAmount.times(currentCollateralPrice),
+                }),
+                ...(withdrawAmount && {
+                  withdrawAmount,
+                  withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
+                }),
+                ...(generateAmount && {
+                  generateAmount,
+                }),
+                ...(paybackAmount && {
+                  paybackAmount,
+                }),
+                showDepositAndGenerateOption:
+                  (stage === 'daiEditing' && !!depositAmount) ||
+                  (stage === 'collateralEditing' && !!generateAmount),
+                showPaybackAndWithdrawOption:
+                  accountIsController &&
+                  ((stage === 'daiEditing' && !!withdrawAmount) ||
+                    (stage === 'collateralEditing' && !!paybackAmount)),
+              }
 
-            injectStateOverride(newState || {})
-          },
-        )
+              injectStateOverride(newState || {})
+            },
+          )
 
-      return subscription.unsubscribe()
-    }, [])
+        return subscription.unsubscribe()
+      }, [])
 
-    const ctx = ({
-      vaultMultiplyHistory$: memoize(() => of([])),
-      vaultHistory$: memoize(() => of([])),
-      context$: of({ etherscan: 'url' }),
-      generalManageVault$: memoize(() =>
-        createGeneralManageVault$(
-          () => from([]),
-          // @ts-ignore, don't need to mock Multiply here
-          () => of(EMPTY),
-          () => of(EMPTY),
-          () => obs$,
-          () => of(VaultType.Borrow),
-          () => of(EMPTY),
-          MOCK_VAULT_ID,
+      const ctx = {
+        vaultHistory$: memoize(() => of([])),
+        context$: of({ etherscan: 'url' }),
+        generalManageVault$: memoize(() =>
+          createGeneralManageVault$(
+            () => from([]),
+            // @ts-ignore, don't need to mock Multiply here
+            () => of(EMPTY),
+            () => of(EMPTY),
+            () => obs$,
+            () => of(VaultType.Borrow),
+            () => of(EMPTY),
+            MOCK_VAULT_ID,
+          ),
         ),
-      ),
-      manageVault$: () => obs$,
-    } as any) as AppContext
+        manageVault$: () => obs$,
+      } as any as AppContext
 
-    return (
-      <appContext.Provider value={ctx as any}>
-        <SharedUIContext.Provider
-          value={{
-            vaultFormOpened: true,
-            setVaultFormOpened: () => null,
-            setVaultFormToggleTitle: () => null,
-          }}
-        >
-          <ManageVaultStoryContainer title={title} vaultId={vault?.id || MOCK_VAULT_ID} />
-        </SharedUIContext.Provider>
-      </appContext.Provider>
-    )
-  }
+      return (
+        <appContext.Provider value={ctx as any}>
+          <SharedUIContext.Provider
+            value={{
+              vaultFormOpened: true,
+              setVaultFormOpened: () => null,
+              setVaultFormToggleTitle: () => null,
+            }}
+          >
+            <ManageVaultStoryContainer title={title} vaultId={vault?.id || MOCK_VAULT_ID} />
+          </SharedUIContext.Provider>
+        </appContext.Provider>
+      )
+    }
 }
 
 const ManageVaultStoryContainer = ({ title, vaultId }: { title?: string; vaultId: BigNumber }) => {

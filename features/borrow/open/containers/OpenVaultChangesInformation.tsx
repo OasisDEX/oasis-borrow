@@ -1,5 +1,6 @@
 import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { OpenFlowStopLossSummary } from 'components/OpenFlowStopLossSummary'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
@@ -7,12 +8,12 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { OpenVaultState } from '../pipes/openVault'
 
 export function OpenVaultChangesInformation(props: OpenVaultState) {
   const { t } = useTranslation()
@@ -25,8 +26,18 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
     maxGenerateAmountCurrentPrice,
     inputAmountsEmpty,
     depositAmount,
+    stopLossSkipped,
+    stopLossLevel,
+    ilkData: { liquidationRatio },
+    visitedStopLossStep,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
+  const dynamicStopLossPrice =
+    afterLiquidationPrice && liquidationRatio
+      ? afterLiquidationPrice.div(liquidationRatio).times(stopLossLevel.div(100))
+      : zero
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
@@ -102,6 +113,13 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
         }
       />
       <VaultChangesInformationEstimatedGasFee {...props} />
+      {stopLossWriteEnabled && visitedStopLossStep && !stopLossSkipped && (
+        <OpenFlowStopLossSummary
+          ratioTranslationKey="protection.stop-loss-coll-ratio"
+          stopLossLevel={stopLossLevel}
+          dynamicStopLossPrice={dynamicStopLossPrice}
+        />
+      )}
     </VaultChangesInformationContainer>
   ) : null
 }

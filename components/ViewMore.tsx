@@ -10,7 +10,7 @@ export function ViewMore({ viewMore }: ViewMoreProps) {
   const { t } = useTranslation()
 
   return (
-    <Box sx={{ borderTop: 'light', borderColor: 'muted', textAlign: 'center', py: 2 }}>
+    <Box sx={{ borderTop: 'light', borderColor: 'neutral80', textAlign: 'center', py: 2 }}>
       <Button variant="textual" onClick={viewMore}>
         {t('view-more')}
       </Button>

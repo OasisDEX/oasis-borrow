@@ -1,13 +1,17 @@
+import { AppLink } from 'components/Links'
+import {
+  getPriceChangeColor,
+  VaultDetailsCard,
+  VaultDetailsCardModal,
+} from 'components/vault/VaultDetails'
+import { PriceInfo } from 'features/shared/priceInfo'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { ModalProps, useModal } from 'helpers/modalHook'
 import { Trans } from 'next-i18next'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
-
-import { PriceInfo } from '../../../features/shared/priceInfo'
-import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
-import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { AppLink } from '../../Links'
-import { getPriceChangeColor, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 export function VaultDetailsCardCurrentPriceModal({
   close,
@@ -19,7 +23,7 @@ export function VaultDetailsCardCurrentPriceModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('manage-multiply-vault.card.current-price')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-multiply-vault.card.current-price-description')}
         </Text>
         <Card variant="vaultDetailsCardModal">
@@ -28,23 +32,23 @@ export function VaultDetailsCardCurrentPriceModal({
       </Grid>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('manage-multiply-vault.card.next-price')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {`${t('manage-multiply-vault.card.next-price-description')}`}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           <Trans
             i18nKey="manage-multiply-vault.card.more-info-oracles"
             components={[
               <AppLink
-                href="https://kb.oasis.app/help/the-oracle-security-module"
+                href={EXTERNAL_LINKS.KB.ORACLE_SECURITY}
                 withAccountPrefix={false}
                 target="_blank"
                 sx={{
                   display: 'inline-block',
-                  color: 'primary',
+                  color: 'primary100',
                   textDecoration: 'underline',
                 }}
               />,
@@ -88,7 +92,7 @@ export function VaultDetailsCardCurrentPrice({
       valueBottom={
         isStaticCollateralPrice ? null : (
           <Flex sx={{ whiteSpace: 'pre-wrap' }}>
-            <Text sx={{ color: 'text.subtitle' }}>Next </Text>
+            <Text sx={{ color: 'neutral80' }}>Next </Text>
             <Flex
               variant="paragraph2"
               sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}

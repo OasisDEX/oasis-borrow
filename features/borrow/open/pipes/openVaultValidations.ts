@@ -1,5 +1,7 @@
-import { errorMessagesHandler, VaultErrorMessage } from '../../../form/errorMessagesHandler'
-import { VaultWarningMessage, warningMessagesHandler } from '../../../form/warningMessagesHandler'
+import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
+
 import { OpenVaultState } from './openVault'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
@@ -15,8 +17,21 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     customAllowanceAmountLessThanDepositAmount,
     depositAmountExceedsCollateralBalance,
     ledgerWalletContractDataDisabled,
+    insufficientEthFundsForTx,
+    stopLossOnNearLiquidationRatio,
+    isStopLossEditingStage,
+    stopLossHigherThanCurrentOrNext,
   } = state
   const errorMessages: VaultErrorMessage[] = []
+
+  if (isStopLossEditingStage) {
+    errorMessages.push(
+      ...errorMessagesHandler({
+        stopLossOnNearLiquidationRatio,
+        stopLossHigherThanCurrentOrNext,
+      }),
+    )
+  }
 
   if (isEditingStage) {
     errorMessages.push(
@@ -44,6 +59,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     errorMessages.push(
       ...errorMessagesHandler({
         ledgerWalletContractDataDisabled,
+        insufficientEthFundsForTx,
       }),
     )
   }
@@ -60,11 +76,21 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
+    currentCollRatioCloseToStopLoss,
+    isStopLossEditingStage,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
+
+  if (isStopLossEditingStage) {
+    warningMessages.push(
+      ...warningMessagesHandler({
+        currentCollRatioCloseToStopLoss,
+      }),
+    )
+  }
 
   if (isEditingStage) {
     warningMessages.push(
@@ -77,5 +103,37 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
       }),
     )
   }
+  return { ...state, warningMessages }
+}
+
+export function finalValidation(state: OpenVaultState): OpenVaultState {
+  const {
+    token,
+    gasEstimationUsd,
+    balanceInfo: { ethBalance },
+    priceInfo: { currentEthPrice },
+    depositAmount,
+    isEditingStage,
+    isProxyStage,
+  } = state
+
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice: currentEthPrice,
+    depositAmount,
+  })
+
+  const warningMessages: VaultWarningMessage[] = [...state.warningMessages]
+
+  if (isEditingStage || isProxyStage) {
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialInsufficientEthFundsForTx,
+      }),
+    )
+  }
+
   return { ...state, warningMessages }
 }

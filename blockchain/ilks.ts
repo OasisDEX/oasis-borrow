@@ -10,9 +10,15 @@ import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
 
-export function createIlks$(context$: Observable<Context>): Observable<string[]> {
+import { getNetworkContracts } from './contracts'
+
+export function createIlksSupportedOnNetwork$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
-    map((context) => Object.keys(context.joins).filter((join) => !['DAI', 'SAI'].includes(join))),
+    map((context) =>
+      Object.keys(getNetworkContracts(context.chainId).joins).filter(
+        (join) => !['DAI', 'SAI'].includes(join),
+      ),
+    ),
   )
 }
 

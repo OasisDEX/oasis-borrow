@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-
-import { zero } from '../../helpers/zero'
+import { shareReplay } from 'rxjs/operators'
 
 export interface BalanceInfo {
   collateralBalance: BigNumber
@@ -25,6 +25,17 @@ export function createBalanceInfo$(
       ethBalance,
       daiBalance,
     })),
+  )
+}
+
+export function createBalancesArrayInfo$(
+  balance$: (token: string, address: string) => Observable<BigNumber>,
+  tokens: string[],
+  address: string | undefined,
+): Observable<BigNumber[]> {
+  return combineLatest(tokens.map((token) => (address ? balance$(token, address) : of(zero)))).pipe(
+    map((balances) => balances),
+    shareReplay(1),
   )
 }
 

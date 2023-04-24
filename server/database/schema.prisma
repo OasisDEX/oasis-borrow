@@ -17,10 +17,14 @@ model migrations {
 model TosApproval {
   id          Int      @id @default(autoincrement())
   address     String
+  signature   String
+  message     String
+  chain_id    Int
   doc_version String
   sign_date   DateTime
 
   @@unique([address, doc_version], name: "tos_approval_unique_signature")
+  @@unique([address, chain_id, doc_version])
   @@map("tos_approval")
 }
 
@@ -29,8 +33,9 @@ model Vault {
   type          VaultType
   owner_address String
   chain_id      Int?
+  protocol      String
 
-  @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
+  @@unique([vault_id, chain_id, protocol], name: "vault_vault_id_chain_id_unique_constraint")
   @@map("vault")
 }
 
@@ -38,5 +43,193 @@ enum VaultType {
   borrow
   multiply
 
-   @@map("vault_type")
+  @@map("vault_type")
+}
+
+model User {
+  address                    String        @unique
+  timestamp                  DateTime      @default(now())
+  user_that_referred_address String?
+  user_that_referred         User?         @relation("UserToUser", fields: [user_that_referred_address], references: [address])
+  referred_users             User[]        @relation("UserToUser")
+  weekly_claims              WeeklyClaim[]
+  accepted                   Boolean
+
+  @@map("user")
+}
+
+model WeeklyClaim {
+  id           Int       @id @default(autoincrement())
+  timestamp    DateTime? @default(now())
+  week_number  Int
+  user_address String
+  proof        String[]
+  amount       String
+  claimant     User      @relation(fields: [user_address], references: [address])
+
+  @@unique([week_number, user_address], name: "week_number_userAddress_unique_id")
+  @@map("weekly_claim")
+}
+
+model MerkleTree {
+  week_number Int       @unique
+  start_block Int?
+  end_block   Int?
+  timestamp   DateTime? @default(now())
+  tree_root   String
+  snapshot    String?
+
+  @@map("merkle_tree")
+}
+
+model WalletRisk {
+  address    String
+  last_check DateTime
+  is_risky   Boolean
+
+  @@unique([address], name: "wallet_risk_unique_index")
+  @@map("wallet_risk")
+}
+
+model CollateralType {
+  collateral_name     String   @unique
+  token               String
+  next_price          Decimal
+  current_price       Decimal
+  liquidation_ratio   Decimal
+  liquidation_penalty Decimal
+  rate                Decimal?
+  market_price        Decimal?
+
+  @@map("collateral_type")
+}
+
+model Discover {
+  protocol_id           String
+  position_id           String
+  collateral_type       String
+  vault_debt            Decimal
+  vault_normalized_debt Decimal?
+  vault_collateral      Decimal
+
+  yield_30d       Decimal
+  status          Json
+  last_action     Json
+  pnl_all         Decimal
+  pnl_1d          Decimal
+  pnl_7d          Decimal
+  pnl_30d         Decimal
+  pnl_365d        Decimal
+  pnl_ytd         Decimal
+  net_profit_all  Decimal
+  net_profit_1d   Decimal
+  net_profit_7d   Decimal
+  net_profit_30d  Decimal
+  net_profit_365d Decimal
+  net_profit_ytd  Decimal
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime
+
+  @@unique([protocol_id, position_id])
+  @@map("discover")
+}
+
+model HighestRiskPositions {
+  protocol_id           String
+  position_id           String
+  collateral_type       String
+  token                 String
+  collateral_ratio      Decimal
+  collateral_value      Decimal
+  liquidation_proximity Decimal
+  liquidation_price     Decimal
+  liquidation_value     Decimal
+  next_price            Decimal
+  status                Json
+  type                  VaultType?
+
+  @@unique([protocol_id, position_id], name: "protocol_id_position_id")
+  @@map("high_risk")
+}
+
+model HighestMultiplyPnl {
+  protocol_id      String
+  position_id      String
+  collateral_type  String
+  token            String
+  collateral_value Decimal
+  vault_multiple   Decimal
+  pnl_all          Decimal
+  pnl_1d           Decimal
+  pnl_7d           Decimal
+  pnl_30d          Decimal
+  pnl_365d         Decimal
+  pnl_ytd          Decimal
+  net_profit_all   Decimal
+  net_profit_1d    Decimal
+  net_profit_7d    Decimal
+  net_profit_30d   Decimal
+  net_profit_365d  Decimal
+  net_profit_ytd   Decimal
+  last_action      Json
+  type             VaultType?
+
+  @@unique([protocol_id, position_id], name: "protocol_id_position_id")
+  @@map("highest_pnl")
+}
+
+model MostYieldEarned {
+  protocol_id      String
+  position_id      String
+  collateral_type  String
+  token            String
+  collateral_value Decimal
+  net_value        Decimal
+  pnl_all          Decimal
+  pnl_1d           Decimal
+  pnl_7d           Decimal
+  pnl_30d          Decimal
+  pnl_365d         Decimal
+  pnl_ytd          Decimal
+  yield_30d        Decimal
+  last_action      Json
+  type             VaultType?
+
+  @@unique([protocol_id, position_id], name: "protocol_id_position_id")
+  @@map("most_yield")
+}
+
+model LargestDebt {
+  protocol_id           String
+  position_id           String
+  collateral_type       String
+  token                 String
+  collateral_value      Decimal
+  liquidation_proximity Decimal
+  vault_debt            Decimal
+  coll_ratio            Decimal
+  last_action           Json
+  type                  VaultType?
+
+  @@unique([protocol_id, position_id], name: "protocol_id_position_id")
+  @@map("largest_debt")
+}
+
+model UsersWhoFollowVaults {
+  user_address   String
+  vault_id       Int // relation scalar field (used in the `@relation` attribute above)
+  vault_chain_id Int
+  protocol       Protocol
+
+  @@id([user_address, vault_id, vault_chain_id, protocol])
+  @@map("users_who_follow_vaults")
+}
+
+enum Protocol {
+  maker
+  aavev2
+  aavev3
+  ajna
+
+  @@map("protocol")
 }

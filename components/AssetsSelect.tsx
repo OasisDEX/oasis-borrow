@@ -1,11 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useCallback, useMemo } from 'react'
 import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-select'
 import { Box, Flex } from 'theme-ui'
 
-import { useRedirect } from '../helpers/useRedirect'
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
 function OptionWithIcon({ innerProps, isSelected, data }: OptionProps<AssetsSelectOption>) {
@@ -15,10 +15,10 @@ function OptionWithIcon({ innerProps, isSelected, data }: OptionProps<AssetsSele
       sx={{
         py: 2,
         px: 3,
-        bg: isSelected ? 'selected' : undefined,
+        bg: isSelected ? 'interactive10' : undefined,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'secondaryAlt',
+          bg: 'neutral30',
         },
       }}
     >

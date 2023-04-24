@@ -1,9 +1,10 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { Vat } from 'types/web3-v1-contracts/vat'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { amountFromRad, amountFromRay } from 'blockchain/utils'
+import { Vat } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
-import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
 export interface VatUrnsArgs {
@@ -17,8 +18,8 @@ export interface Urn {
 }
 
 export const vatUrns: CallDef<VatUrnsArgs, Urn> = {
-  call: (_, { contract, vat }) => {
-    return contract<Vat>(vat).methods.urns
+  call: (_, { contract, chainId }) => {
+    return contract<Vat>(getNetworkContracts(chainId).vat).methods.urns
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
   postprocess: (urn: any) => ({
@@ -36,8 +37,8 @@ export interface VatIlk {
 }
 
 export const vatIlk: CallDef<string, VatIlk> = {
-  call: (_, { contract, vat }) => {
-    return contract<Vat>(vat).methods.ilks
+  call: (_, { contract, chainId }) => {
+    return contract<Vat>(getNetworkContracts(chainId).vat).methods.ilks
   },
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
   postprocess: (ilk: any) => ({
@@ -55,16 +56,16 @@ export interface VatGemArgs {
 }
 
 export const vatGem: CallDef<VatGemArgs, BigNumber> = {
-  call: (_, { contract, vat }) => {
-    return contract<Vat>(vat).methods.gem
+  call: (_, { contract, chainId }) => {
+    return contract<Vat>(getNetworkContracts(chainId).vat).methods.gem
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
   postprocess: (gem) => amountFromWei(new BigNumber(gem)),
 }
 
 export const vatLine: CallDef<{}, BigNumber> = {
-  call: (_, { contract, vat }) => {
-    return contract<Vat>(vat).methods.Line
+  call: (_, { contract, chainId }) => {
+    return contract<Vat>(getNetworkContracts(chainId).vat).methods.Line
   },
   prepareArgs: () => [],
 }

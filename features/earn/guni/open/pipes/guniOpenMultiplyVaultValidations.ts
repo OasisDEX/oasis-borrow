@@ -1,8 +1,6 @@
-import { errorMessagesHandler, VaultErrorMessage } from '../../../../form/errorMessagesHandler'
-import {
-  VaultWarningMessage,
-  warningMessagesHandler,
-} from '../../../../form/warningMessagesHandler'
+import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
+
 import { OpenGuniVaultState } from './openGuniVault'
 
 export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultState {
@@ -18,6 +16,7 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
     ledgerWalletContractDataDisabled,
     depositAmountExceedsCollateralBalance,
     invalidSlippage,
+    insufficientEthFundsForTx,
   } = state
   const errorMessages: VaultErrorMessage[] = []
 
@@ -47,6 +46,7 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
     errorMessages.push(
       ...errorMessagesHandler({
         ledgerWalletContractDataDisabled,
+        insufficientEthFundsForTx,
       }),
     )
   }

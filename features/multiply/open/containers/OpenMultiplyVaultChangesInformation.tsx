@@ -1,14 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { OpenFlowStopLossSummary } from 'components/OpenFlowStopLossSummary'
 import {
-  getEstimatedGasFeeText,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { AppSpinner } from 'helpers/AppSpinner'
 import {
   formatAmount,
@@ -16,11 +18,10 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-
-import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 
 export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultState) {
   const [showFees, setShowFees] = useState(false)
@@ -40,12 +41,23 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     buyingCollateral,
     buyingCollateralUSD,
     marketPrice,
+    stopLossSkipped,
+    stopLossLevel,
+    ilkData: { liquidationRatio },
+    afterLiquidationPrice,
+    visitedStopLossStep,
   } = props
+  const { t } = useTranslation()
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
+  const dynamicStopLossPrice =
+    afterLiquidationPrice && liquidationRatio
+      ? afterLiquidationPrice.div(liquidationRatio).times(stopLossLevel.div(100))
+      : zero
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
-  const { t } = useTranslation()
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
@@ -56,7 +68,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
             <Text>
               {formatCryptoBalance(buyingCollateral)} {token}
               {` `}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
+              <Text as="span" sx={{ color: 'neutral80' }}>
                 (${formatAmount(buyingCollateralUSD, 'USD')})
               </Text>
             </Text>
@@ -81,7 +93,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           ) : (
             <Text>
               ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-              <Text as="span" sx={{ color: 'onError' }}>
+              <Text as="span" sx={{ color: 'critical100' }}>
                 ({formatPercent(impact, { precision: 2 })})
               </Text>
             </Text>
@@ -138,7 +150,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(txFees, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -162,6 +174,13 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           />
           <VaultChangesInformationEstimatedGasFee {...props} />
         </Grid>
+      )}
+      {stopLossWriteEnabled && visitedStopLossStep && !stopLossSkipped && (
+        <OpenFlowStopLossSummary
+          ratioTranslationKey="protection.stop-loss-coll-ratio"
+          stopLossLevel={stopLossLevel}
+          dynamicStopLossPrice={dynamicStopLossPrice}
+        />
       )}
     </VaultChangesInformationContainer>
   ) : null

@@ -1,7 +1,8 @@
-import { ContractDesc } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
+import { ContractDesc } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
@@ -71,6 +72,8 @@ export function getTokenMetaData(
   }
 }
 
+export const defaultExchangeProtocols = []
+
 export function getQuote$(
   dai: TokenMetadata,
   collateral: TokenMetadata,
@@ -97,7 +100,7 @@ export function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
-    protocols: protocols || 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
+    protocols: protocols || defaultExchangeProtocols.join(','),
   })
 
   const responseBase = {
@@ -138,6 +141,7 @@ export function getQuote$(
         fromToken.decimals,
       )
       const normalizedToTokenAmount = amountFromWei(new BigNumber(toTokenAmount), toToken.decimals)
+
       return {
         ...responseBase,
         collateralAmount: amountFromWei(
@@ -177,7 +181,7 @@ export function createExchangeQuote$(
 ) {
   return context$.pipe(
     switchMap((context) => {
-      const { tokensMainnet } = context
+      const { tokensMainnet } = getNetworkContracts(context.chainId)
       const exchange = (context as any)[exchangeType]
 
       const dai = getTokenMetaData('DAI', tokensMainnet)

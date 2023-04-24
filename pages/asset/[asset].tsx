@@ -1,13 +1,17 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { PageSEOTags } from 'components/HeadTags'
 import { ProductPagesLayout } from 'components/Layouts'
 import { AssetPageContent, ASSETS_PAGES, assetsPageContentBySlug } from 'content/assets'
+import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
+import { AssetView } from 'features/asset/AssetView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import React from 'react'
-
-import { AssetView } from '../../features/asset/AssetView'
 
 export const getStaticPaths: GetStaticPaths<{ asset: string }> = async () => {
   const paths = ASSETS_PAGES.map((content) => ({ params: { asset: content.slug } })) // these paths will be generated at built time
@@ -33,21 +37,39 @@ export async function getStaticProps(
   }
 }
 
-export default function AssetPage({ content }: { content: AssetPageContent }) {
+function AssetPage({ content, asset }: { content: AssetPageContent; asset: string }) {
   const { replace } = useRouter()
+  const { t } = useTranslation()
 
   if (!content) {
-    void replace('/404')
+    void replace('/not-found')
     return null
   }
 
   return (
-    <WithConnection>
-      <WithTermsOfService>
-        <AssetView content={content} />
-      </WithTermsOfService>
-    </WithConnection>
+    <AaveContextProvider>
+      <DeferedContextProvider context={aaveContext}>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <PageSEOTags
+                title="seo.title-single-token"
+                titleParams={{
+                  product: t('seo.assets.title'),
+                  token: asset.toLocaleUpperCase(),
+                }}
+                description="seo.assets.description"
+                url={`/asset/${asset}`}
+              />
+              <AssetView content={content} />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithConnection>
+      </DeferedContextProvider>
+    </AaveContextProvider>
   )
 }
 
 AssetPage.layout = ProductPagesLayout
+
+export default AssetPage

@@ -1,14 +1,23 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
+import { mockedStopLossTrigger } from 'helpers/mocks/stopLoss.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 
-import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultAdjustPositionValidations', () => {
+  before(() => {
+    // TODO: remove after mainnet deployment
+    window.location.search = ['?network=goerli'] as any
+  })
+
+  after(() => {
+    window.location.search = [] as any
+  })
+
   // TO DO, calculations are off at current price
   it('validates if required collateralization ratio is putting vault at risk, danger or exceeding day yield', () => {
     const requiredCollRatioYield = new BigNumber('1.49')

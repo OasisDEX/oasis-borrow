@@ -1,9 +1,14 @@
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { getRandomString } from 'helpers/getRandomString'
+import { networkTabTitleIconMap } from 'helpers/networkIconMap'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import React from 'react'
-
-import { useTheme } from '../theme/useThemeUI'
+import { useTheme } from 'theme/useThemeUI'
 
 export function HeadTags() {
   const { theme } = useTheme()
@@ -23,6 +28,7 @@ interface SEOTagsType {
   url?: string
   ogImage?: string
   twitterImage?: string
+  titleParams?: Record<string, string>
 }
 
 export function PageSEONoFollow() {
@@ -33,26 +39,57 @@ export function PageSEONoFollow() {
   )
 }
 
-const APP_URL = 'https://oasis.app'
-
 export function PageSEOTags({
   title,
+  titleParams,
   description,
-  url = '/',
-  ogImage = 'og.png',
-  twitterImage = 'og_small.png',
+  url = INTERNAL_LINKS.homepage,
+  ogImage = 'og_default.png',
+  twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
   const { t } = useTranslation()
+  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
+  const [web3OnboardNetworkParameter] = useCustomNetworkParameter()
+  const { query } = useRouter()
+
+  const OGImages = {
+    [INTERNAL_LINKS.borrow]: {
+      ogImage: 'og_borrow.png',
+      twitterImage: 'twitter_preview_borrow.png',
+    },
+    [INTERNAL_LINKS.multiply]: {
+      ogImage: 'og_multiply.png',
+      twitterImage: 'twitter_preview_multiply.png',
+    },
+    [INTERNAL_LINKS.earn]: {
+      ogImage: 'og_earn.png',
+      twitterImage: 'twitter_preview_earn.png',
+    },
+  }[url] || {
+    ogImage,
+    twitterImage,
+  }
+  const properNetworkIconMap = useNetworkSwitcher
+    ? networkTabTitleIconMap
+    : { hardhat: '👷 ', goerli: '🌲 ' }
+  const networkParameter = useNetworkSwitcher
+    ? web3OnboardNetworkParameter?.network
+    : (query.network as string)
+  const tabTitle = `${
+    networkParameter
+      ? properNetworkIconMap[networkParameter as keyof typeof properNetworkIconMap]
+      : ''
+  }${titleParams ? t(title, titleParams) : t(title)}`
 
   return (
     <Head>
-      <title>{t(title)}</title>
-      <meta property="og:title" content={t(title)} />
-      <meta property="twitter:title" content={t(title)} />
+      <title>{tabTitle}</title>
+      <meta property="og:title" content={t(title)!} />
+      <meta property="twitter:title" content={t(title)!} />
 
-      <meta name="description" content={t(description)} />
-      <meta property="og:description" content={t(description)} />
-      <meta property="twitter:description" content={t(description)} />
+      <meta name="description" content={t(description)!} />
+      <meta property="og:description" content={t(description)!} />
+      <meta property="twitter:description" content={t(description)!} />
 
       <meta name="robots" content="index, follow" />
       <meta
@@ -64,16 +101,36 @@ export function PageSEOTags({
         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
       />
 
-      <meta property="og:url" content={`${APP_URL}${url}`} />
-      <link rel="canonical" href={`${APP_URL}${url}`} />
+      <meta property="og:url" content={`${INTERNAL_LINKS.appUrl}${url}`} />
+      <link rel="canonical" href={`${INTERNAL_LINKS.appUrl}${url}`} />
 
-      <meta property="og:image" content={`${APP_URL}/static/${ogImage}`} />
-      <meta property="og:image:secure_url" content={`${APP_URL}/static/${ogImage}`} />
-      <meta name="twitter:image" content={`${APP_URL}/static/${twitterImage}`} />
+      <meta
+        property="og:image"
+        content={staticFilesRuntimeUrl(
+          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
+        )}
+      />
+      <meta
+        property="og:image:secure_url"
+        content={staticFilesRuntimeUrl(
+          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
+        )}
+      />
+      <meta
+        name="twitter:image"
+        content={staticFilesRuntimeUrl(
+          `/static/img/og_images/${OGImages.twitterImage}?${getRandomString()}`,
+        )}
+      />
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:creator" content="@oasisdotapp" />
 
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="Oasis" />
+      <meta
+        name="keywords"
+        content="dapp, dao, maker, protocol, vaults, ethereum, wallet, staking, yield, farming, apy, arbitrage, liquidity, L2, L3, lending, trade, buy, protection, safe, blockchain, best, earn, passive, income, profit, bear, bull, winter, 2023"
+      />
     </Head>
   )
 }
@@ -94,48 +151,22 @@ export function PWATags() {
 
       <link rel="manifest" href="/manifest.json" />
 
-      {/* Icons */}
       <link
-        href={staticFilesRuntimeUrl('/static/icons/favicon-16.png')}
-        rel="icon"
-        type="image/png"
-        sizes="16x16"
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href={staticFilesRuntimeUrl('/static/icons/apple-touch-icon.png')}
       />
       <link
-        href={staticFilesRuntimeUrl('/static/icons/favicon-32.png')}
         rel="icon"
         type="image/png"
         sizes="32x32"
+        href={staticFilesRuntimeUrl('/static/icons/favicon-32x32.png')}
       />
       <link
-        href={staticFilesRuntimeUrl('/static/icons/favicon-96.png')}
         rel="icon"
         type="image/png"
-        sizes="96x96"
-      />
-
-      {/* iOS */}
-      <link
-        href={staticFilesRuntimeUrl('/static/icons/apple-icon-76x76.png')}
-        rel="apple-touch-icon"
-        sizes="76x76"
-      />
-      <link
-        href={staticFilesRuntimeUrl('/static/icons/apple-icon-120x120.png')}
-        rel="apple-touch-icon"
-        sizes="120x120"
-      />
-      <link
-        href={staticFilesRuntimeUrl('/static/icons/apple-icon-152x152.png')}
-        rel="apple-touch-icon"
-        sizes="152x152"
-      />
-
-      {/* Android */}
-      <link
-        href={staticFilesRuntimeUrl('/static/icons/android-icon-192x192.png')}
-        rel="icon"
-        sizes="192x192"
+        sizes="16x16"
+        href={staticFilesRuntimeUrl('/static/icons/favicon-16x16.png')}
       />
     </>
   )

@@ -1,16 +1,13 @@
-import { useAppContext } from 'components/AppContextProvider'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
+import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
-import { getAddress } from 'ethers/lib/utils'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
-import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from 'helpers/observableHook'
+import { VaultsOverviewView } from 'features/vaultsOverview/VaultOverviewView'
+import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { GetServerSidePropsContext } from 'next'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -21,37 +18,28 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-// TODO Move this to /features
-function Summary({ address }: { address: string }) {
-  const { vaultsOverview$, context$ } = useAppContext()
-  const checksumAddress = getAddress(address.toLocaleLowerCase())
-  const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
-  const [context, contextError] = useObservable(context$)
-
-  return (
-    <WithErrorHandler error={[vaultsOverviewError, contextError]}>
-      <WithLoadingIndicator value={[vaultsOverview, context]}>
-        {([vaultsOverview, context]) => (
-          <VaultsOverviewView
-            vaultsOverview={vaultsOverview}
-            context={context}
-            address={checksumAddress}
-          />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
-  )
-}
-
-export default function VaultsSummary({ address }: { address: string }) {
+function VaultsSummary({ address }: { address: string }) {
+  const { t } = useTranslation()
   return address ? (
     <WithConnection>
       <WithTermsOfService>
-        <BackgroundLight />
-        <Summary address={address} />
+        <WithWalletAssociatedRisk>
+          <PageSEOTags
+            title="seo.title-single-token"
+            titleParams={{
+              product: t('seo.owner.title'),
+              token: `${address.slice(0, 7)}...`,
+            }}
+            description="seo.multiply.description"
+            url={`/owner/${address}`}
+          />
+          <VaultsOverviewView address={address} />
+        </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithConnection>
   ) : null
 }
 
 VaultsSummary.layout = AppLayout
+
+export default VaultsSummary

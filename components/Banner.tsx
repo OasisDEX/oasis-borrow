@@ -1,52 +1,119 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { WithChildren } from 'helpers/types'
-import React from 'react'
-import { Box, IconButton, SxProps } from 'theme-ui'
+import { AppSpinner } from 'helpers/AppSpinner'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import React, { ReactNode } from 'react'
+import { Box, Button, Card, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
 
-type Closable = {
-  close: React.MouseEventHandler<any>
-  sx?: SxProps
-  withClose?: boolean
+type BannerGradientPresetsArray = { [key: string]: [string, string] }
+export const bannerGradientPresets: BannerGradientPresetsArray = {
+  autoBuy: ['#e0e7ff', '#fae2fc'],
+  autoSell: ['#fef1e1', '#fef5d6'],
+  constantMultiply: ['#ffdde7', '#ffe7f5'],
+  stopLoss: ['#ffeaea', '#fff5ea'],
+  autoTakeProfit: ['#ffe6f5', '#fff2f6'],
 }
-type BannerProps = WithChildren & Closable
 
-export function Banner({ children, close, sx, withClose = true }: BannerProps) {
+type BannerButtonProps = {
+  disabled?: boolean
+  isLoading?: boolean
+  text?: string | ReactNode
+  action: (() => void) | undefined
+}
+
+export type BannerProps = {
+  title: string | ReactNode
+  description: ReactNode | ReactNode[]
+  button?: BannerButtonProps
+  image?: {
+    src: string
+    backgroundColor?: string
+    backgroundColorEnd?: string
+    spacing?: string | number
+  }
+  sx?: SxProps
+}
+
+export function Banner({ title, description, button, image, sx }: BannerProps) {
+  const descriptionsArray = Array.isArray(description) ? description : [description]
+
   return (
-    <Box
-      sx={{
-        bg: 'white',
-        width: '100%',
-        px: 4,
-        py: 3,
-        borderRadius: 'mediumLarge',
-        boxShadow: 'banner',
-        position: 'relative',
-        background: 'white',
-        ...sx,
-      }}
-    >
-      {withClose && (
-        <IconButton
-          onClick={close}
+    <Card sx={{ borderRadius: 'large', border: 'lightMuted', p: 2, ...sx }}>
+      <Flex
+        sx={{
+          flexDirection: ['column', null, null, 'row'],
+        }}
+      >
+        <Flex
           sx={{
-            cursor: 'pointer',
-            height: 3,
-            width: 3,
-            padding: 0,
-            position: 'absolute',
-            top: 3,
-            right: 3,
-            zIndex: 1,
-            color: 'onSurface',
-            '&:hover': {
-              color: 'primary',
-            },
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            mt: [image ? 2 : 3, null, null, 3],
+            mr: [3, null, null, 0],
+            mb: 3,
+            ml: 3,
+            pr: [0, null, null, image ? 4 : 3],
+            flexGrow: 1,
           }}
         >
-          <Icon name="close_squared" size={14} />
-        </IconButton>
-      )}
-      <Box sx={{ wordBreak: 'break-all' }}>{children}</Box>
-    </Box>
+          <Heading as="h3" variant="boldParagraph1" sx={{ mb: 1 }}>
+            {title}
+          </Heading>
+          <Grid gap={2} mb={3}>
+            {descriptionsArray.map((item, index) => (
+              <Text
+                key={`banner-description-${index}`}
+                as="p"
+                sx={{
+                  fontSize: 2,
+                  lineHeight: 1.571,
+                  color: 'neutral80',
+                }}
+              >
+                {item}
+              </Text>
+            ))}
+          </Grid>
+          <Button disabled={button?.disabled} variant="tertiary" onClick={button?.action}>
+            {button?.isLoading ? (
+              <AppSpinner
+                variant="styles.spinner.medium"
+                size={20}
+                sx={{
+                  color: 'black',
+                  boxSizing: 'content-box',
+                }}
+              />
+            ) : (
+              button?.text
+            )}
+          </Button>
+        </Flex>
+        {image && (
+          <Box
+            sx={{
+              flexShrink: 0,
+              order: [-1, null, null, 0],
+              width: ['auto', null, null, '36%'],
+              m: [3, null, null, 0],
+              ...(image.spacing && { p: image.spacing }),
+              borderRadius: 'mediumLarge',
+              background: image?.backgroundColorEnd
+                ? `linear-gradient(180deg, ${image?.backgroundColor} 0%, ${image?.backgroundColorEnd} 100%)`
+                : image?.backgroundColor,
+            }}
+          >
+            <Image
+              src={staticFilesRuntimeUrl(image.src)}
+              sx={{
+                width: 'calc(100% - 24px)',
+                height: 'calc(100% - 24px)',
+                m: '12px',
+                objectFit: 'contain',
+              }}
+            />
+          </Box>
+        )}
+      </Flex>
+    </Card>
   )
 }

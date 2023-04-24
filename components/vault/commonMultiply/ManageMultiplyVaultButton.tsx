@@ -1,10 +1,9 @@
 import { trackingEvents } from 'analytics/analytics'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
-
-import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipes/manageMultiplyVault'
 
 function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string {
   const { t } = useTranslation()
@@ -192,7 +191,7 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
             <Text sx={{ position: 'relative' }} pl={2}>
               <Spinner
                 size={25}
-                color="surface"
+                color="neutral10"
                 sx={{
                   position: 'absolute',
                   left: 0,

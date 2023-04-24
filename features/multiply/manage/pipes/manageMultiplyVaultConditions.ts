@@ -1,13 +1,9 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
-import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
-import { isNullish } from 'helpers/functions'
-import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { zero } from 'helpers/zero'
-
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
-  afterCollRatioBelowStopLossRatioValidator,
+  afterCollRatioThresholdRatioValidator,
+  automationTriggeredValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -19,12 +15,14 @@ import {
   debtIsLessThanDebtFloorValidator,
   depositAndWithdrawAmountsEmptyValidator,
   depositingAllEthBalanceValidator,
+  ethFundsForTxValidator,
   generateAndPaybackAmountsEmptyValidator,
   insufficientCollateralAllowanceValidator,
   insufficientDaiAllowanceValidator,
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
+  vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -32,7 +30,12 @@ import {
   withdrawAmountExceedsFreeCollateralAtNextPriceValidator,
   withdrawAmountExceedsFreeCollateralValidator,
   withdrawCollateralOnVaultUnderDebtFloorValidator,
-} from '../../../form/commonValidators'
+} from 'features/form/commonValidators'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { isNullish } from 'helpers/functions'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
+
 import { ManageMultiplyVaultStage, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 const defaultManageVaultStageCategories = {
@@ -44,11 +47,14 @@ const defaultManageVaultStageCategories = {
   isBorrowTransitionStage: false,
 }
 
-export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultState) {
+export function applyManageVaultStageCategorisation<VS extends ManageMultiplyVaultState>(
+  state: VS,
+): VS {
   const {
     stage,
     vault: { token, debtOffset },
     depositAmount,
+    depositDaiAmount,
     daiAllowance,
     collateralAllowance,
     paybackAmount,
@@ -57,6 +63,7 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
 
   const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
   const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+  const isDepositDaiZero = depositDaiAmount ? depositDaiAmount.eq(zero) : true
 
   const depositAmountLessThanCollateralAllowance =
     collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
@@ -64,10 +71,15 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
   const paybackAmountLessThanDaiAllowance =
     daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
 
+  const depositDaiAmountLessThanDaiAllowance =
+    daiAllowance && depositDaiAmount && daiAllowance.gte(depositDaiAmount.plus(debtOffset))
+
   const hasCollateralAllowance =
     token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
 
-  const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+  const hasDaiAllowance =
+    (paybackAmountLessThanDaiAllowance || isPaybackZero) &&
+    (depositDaiAmountLessThanDaiAllowance || isDepositDaiZero)
 
   let totalSteps = initialTotalSteps
 
@@ -185,6 +197,7 @@ export interface ManageVaultConditions {
 
   depositingAllEthBalance: boolean
   depositAmountExceedsCollateralBalance: boolean
+  depositDaiAmountExceedsDaiBalance: boolean
   withdrawAmountExceedsFreeCollateral: boolean
   withdrawAmountExceedsFreeCollateralAtNextPrice: boolean
   generateAmountExceedsDaiYieldFromTotalCollateral: boolean
@@ -196,6 +209,7 @@ export interface ManageVaultConditions {
   generateAmountMoreThanMaxFlashAmount: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  isSuccessStage: boolean
   exchangeDataRequired: boolean
   shouldShowExchangeError: boolean
   isExchangeLoading: boolean
@@ -217,7 +231,17 @@ export interface ManageVaultConditions {
   highSlippage: boolean
   invalidSlippage: boolean
   stopLossTriggered: boolean
+  autoTakeProfitTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
+  afterCollRatioBelowAutoSellRatio: boolean
+  afterCollRatioAboveAutoBuyRatio: boolean
+  afterCollRatioBelowConstantMultipleSellRatio: boolean
+  afterCollRatioAboveConstantMultipleBuyRatio: boolean
+  takeProfitWillTriggerImmediatelyAfterVaultReopen: boolean
+  existingTakeProfitTriggerAfterVaultReopen: boolean
+
+  potentialInsufficientEthFundsForTx: boolean
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -244,6 +268,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   depositingAllEthBalance: false,
   depositAmountExceedsCollateralBalance: false,
+  depositDaiAmountExceedsDaiBalance: false,
   withdrawAmountExceedsFreeCollateral: false,
   withdrawAmountExceedsFreeCollateralAtNextPrice: false,
   generateAmountExceedsDaiYieldFromTotalCollateral: false,
@@ -256,6 +281,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  isSuccessStage: false,
   exchangeDataRequired: false,
   shouldShowExchangeError: false,
   isExchangeLoading: false,
@@ -278,12 +304,20 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   highSlippage: false,
   invalidSlippage: false,
   stopLossTriggered: false,
+  autoTakeProfitTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
+  afterCollRatioBelowAutoSellRatio: false,
+  afterCollRatioAboveAutoBuyRatio: false,
+  afterCollRatioBelowConstantMultipleSellRatio: false,
+  afterCollRatioAboveConstantMultipleBuyRatio: false,
+  takeProfitWillTriggerImmediatelyAfterVaultReopen: false,
+  existingTakeProfitTriggerAfterVaultReopen: false,
+
+  potentialInsufficientEthFundsForTx: false,
+  insufficientEthFundsForTx: false,
 }
 
-export function applyManageVaultConditions(
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(state: VS): VS {
   const {
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
@@ -307,14 +341,17 @@ export function applyManageVaultConditions(
     daiAllowance,
     shouldPaybackAll,
     balanceInfo: { collateralBalance, daiBalance },
+    priceInfo: { nextCollateralPrice },
     isEditingStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    isBorrowTransitionStage,
 
     buyAmount,
     sellAmount,
     paybackAmount,
     depositAmount,
+    depositDaiAmount,
     generateAmount,
     withdrawAmount,
     requiredCollRatio,
@@ -335,6 +372,10 @@ export function applyManageVaultConditions(
     invalidSlippage,
     vaultHistory,
     stopLossData,
+    autoSellData,
+    autoBuyData,
+    constantMultipleData,
+    autoTakeProfitData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -349,13 +390,20 @@ export function applyManageVaultConditions(
 
   const hasToDepositCollateralOnEmptyVault =
     lockedCollateral.eq(zero) &&
-    !(originalEditingStage === 'otherActions' && otherAction === 'depositCollateral')
+    !(
+      originalEditingStage === 'otherActions' &&
+      (otherAction === 'depositCollateral' || otherAction === 'depositDai')
+    )
+
+  const isDepositAction = otherAction === 'depositCollateral' || otherAction === 'depositDai'
+  const isWithdrawAction = otherAction === 'withdrawCollateral' || otherAction === 'withdrawDai'
+  const isDepositOrWithdrawAndMultiply =
+    (isDepositAction || isWithdrawAction) && !!requiredCollRatio?.gt(zero)
 
   const exchangeDataRequired =
     originalEditingStage === 'adjustPosition' ||
     (originalEditingStage === 'otherActions' &&
-      ((otherAction === 'closeVault' && !debt.isZero()) ||
-        (otherAction === 'depositCollateral' && !!requiredCollRatio?.gt(zero))))
+      ((otherAction === 'closeVault' && !debt.isZero()) || isDepositOrWithdrawAndMultiply))
 
   const shouldShowExchangeError = exchangeDataRequired && exchangeError
 
@@ -393,15 +441,14 @@ export function applyManageVaultConditions(
     collateralizationWarningThreshold,
   })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
-    {
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    vaultWillBeAtRiskLevelWarningAtNextPriceValidator({
       vaultWillBeAtRiskLevelWarning,
       inputAmountsEmpty,
       afterCollateralizationRatioAtNextPrice,
       collateralizationDangerThreshold,
       collateralizationWarningThreshold,
-    },
-  )
+    })
 
   const vaultWillBeUnderCollateralized =
     afterDebt.gt(zero) &&
@@ -422,6 +469,7 @@ export function applyManageVaultConditions(
   })
 
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
+  const depositDaiAmountExceedsDaiBalance = !!depositDaiAmount?.gt(daiBalance)
 
   const depositingAllEthBalance = depositingAllEthBalanceValidator({
     token,
@@ -434,9 +482,12 @@ export function applyManageVaultConditions(
     maxWithdrawAmountAtCurrentPrice,
   })
 
-  const withdrawAmountExceedsFreeCollateralAtNextPrice = withdrawAmountExceedsFreeCollateralAtNextPriceValidator(
-    { withdrawAmount, withdrawAmountExceedsFreeCollateral, maxWithdrawAmountAtNextPrice },
-  )
+  const withdrawAmountExceedsFreeCollateralAtNextPrice =
+    withdrawAmountExceedsFreeCollateralAtNextPriceValidator({
+      withdrawAmount,
+      withdrawAmountExceedsFreeCollateral,
+      maxWithdrawAmountAtNextPrice,
+    })
 
   // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
   const generateAmountCalc = afterDebt.gt(debt) ? afterDebt.minus(debt) : zero
@@ -485,21 +536,31 @@ export function applyManageVaultConditions(
     daiAllowanceAmount,
   })
 
-  const customCollateralAllowanceAmountExceedsMaxUint256 = customCollateralAllowanceAmountExceedsMaxUint256Validator(
-    { selectedCollateralAllowanceRadio, collateralAllowanceAmount },
-  )
+  const customCollateralAllowanceAmountExceedsMaxUint256 =
+    customCollateralAllowanceAmountExceedsMaxUint256Validator({
+      selectedCollateralAllowanceRadio,
+      collateralAllowanceAmount,
+    })
 
-  const customCollateralAllowanceAmountLessThanDepositAmount = customCollateralAllowanceAmountLessThanDepositAmountValidator(
-    { selectedCollateralAllowanceRadio, collateralAllowanceAmount, depositAmount },
-  )
+  const customCollateralAllowanceAmountLessThanDepositAmount =
+    customCollateralAllowanceAmountLessThanDepositAmountValidator({
+      selectedCollateralAllowanceRadio,
+      collateralAllowanceAmount,
+      depositAmount,
+    })
 
-  const customDaiAllowanceAmountExceedsMaxUint256 = customDaiAllowanceAmountExceedsMaxUint256Validator(
-    { selectedDaiAllowanceRadio, daiAllowanceAmount },
-  )
+  const customDaiAllowanceAmountExceedsMaxUint256 =
+    customDaiAllowanceAmountExceedsMaxUint256Validator({
+      selectedDaiAllowanceRadio,
+      daiAllowanceAmount,
+    })
 
-  const customDaiAllowanceAmountLessThanPaybackAmount = customDaiAllowanceAmountLessThanPaybackAmountValidator(
-    { selectedDaiAllowanceRadio, daiAllowanceAmount, paybackAmount },
-  )
+  const customDaiAllowanceAmountLessThanPaybackAmount =
+    customDaiAllowanceAmountLessThanPaybackAmountValidator({
+      selectedDaiAllowanceRadio,
+      daiAllowanceAmount,
+      paybackAmount,
+    })
 
   const insufficientCollateralAllowance = insufficientCollateralAllowanceValidator({
     token,
@@ -511,22 +572,27 @@ export function applyManageVaultConditions(
 
   const insufficientDaiAllowance = insufficientDaiAllowanceValidator({
     paybackAmount,
+    depositDaiAmount,
     daiAllowance,
     debtOffset,
   })
 
-  const isLoadingStage = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'collateralAllowanceWaitingForApproval',
-    'collateralAllowanceInProgress',
-    'daiAllowanceWaitingForApproval',
-    'daiAllowanceInProgress',
-    'manageInProgress',
-    'manageWaitingForApproval',
-    'borrowTransitionInProgress',
-    'borrowTransitionSuccess',
-  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+  const isLoadingStage = (
+    [
+      'proxyInProgress',
+      'proxyWaitingForApproval',
+      'collateralAllowanceWaitingForApproval',
+      'collateralAllowanceInProgress',
+      'daiAllowanceWaitingForApproval',
+      'daiAllowanceInProgress',
+      'manageInProgress',
+      'manageWaitingForApproval',
+      'borrowTransitionInProgress',
+      'borrowTransitionSuccess',
+    ] as ManageMultiplyVaultStage[]
+  ).some((s) => s === stage)
+
+  const isSuccessStage = stage === 'manageSuccess'
 
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
     debtFloor,
@@ -539,10 +605,67 @@ export function applyManageVaultConditions(
 
   const afterCollRatioBelowStopLossRatio =
     !!stopLossData?.isStopLossEnabled &&
-    afterCollRatioBelowStopLossRatioValidator({
+    afterCollRatioThresholdRatioValidator({
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
-      stopLossRatio: stopLossData.stopLossLevel,
+      threshold: stopLossData.stopLossLevel,
+      type: 'below',
+    })
+
+  const afterCollRatioBelowAutoSellRatio =
+    !!autoSellData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: autoSellData.execCollRatio.div(100),
+      type: 'below',
+    })
+
+  const afterCollRatioAboveAutoBuyRatio =
+    !!autoBuyData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: autoBuyData.execCollRatio.div(100),
+      type: 'above',
+    })
+
+  const afterCollRatioBelowConstantMultipleSellRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: constantMultipleData.sellExecutionCollRatio.div(100),
+      type: 'below',
+    })
+
+  const afterCollRatioAboveConstantMultipleBuyRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: constantMultipleData.buyExecutionCollRatio.div(100),
+      type: 'above',
+    })
+
+  const takeProfitWillTriggerImmediatelyAfterVaultReopen =
+    vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
+      debt,
+      afterDebt,
+      nextCollateralPrice,
+      type: 'above',
+      isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
+      executionPrice: autoTakeProfitData?.executionPrice,
+    })
+
+  const existingTakeProfitTriggerAfterVaultReopen =
+    vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
+      debt,
+      afterDebt,
+      nextCollateralPrice,
+      type: 'below',
+      isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
+      executionPrice: autoTakeProfitData?.executionPrice,
     })
 
   const editingProgressionDisabled =
@@ -554,6 +677,7 @@ export function applyManageVaultConditions(
       vaultWillBeUnderCollateralizedAtNextPrice ||
       debtWillBeLessThanDebtFloor ||
       depositAmountExceedsCollateralBalance ||
+      depositDaiAmountExceedsDaiBalance ||
       withdrawAmountExceedsFreeCollateral ||
       withdrawAmountExceedsFreeCollateralAtNextPrice ||
       depositingAllEthBalance ||
@@ -566,7 +690,18 @@ export function applyManageVaultConditions(
       shouldShowExchangeError ||
       hasToDepositCollateralOnEmptyVault ||
       invalidSlippage ||
-      afterCollRatioBelowStopLossRatio)
+      afterCollRatioBelowStopLossRatio ||
+      afterCollRatioBelowAutoSellRatio ||
+      afterCollRatioAboveAutoBuyRatio ||
+      afterCollRatioBelowConstantMultipleSellRatio ||
+      afterCollRatioAboveConstantMultipleBuyRatio ||
+      takeProfitWillTriggerImmediatelyAfterVaultReopen)
+
+  const editingProgressionDisabledForUncontrolled =
+    !accountIsController &&
+    (stage === 'adjustPosition' ||
+      (stage === 'otherActions' &&
+        ['depositDai', 'withdrawDai', 'withdrawCollateral', 'closeVault'].includes(otherAction)))
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
@@ -583,33 +718,45 @@ export function applyManageVaultConditions(
   })
 
   const potentialGenerateAmountLessThanDebtFloor =
-    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(debtFloor)
+    !isNullish(depositAmount) &&
+    maxGenerateAmountAtCurrentPrice.lt(debtFloor) &&
+    !debt.gt(debtFloor)
 
   const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
+
+  const borrowTransitionDisabled = isBorrowTransitionStage && !accountIsController
 
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
+    editingProgressionDisabledForUncontrolled ||
     collateralAllowanceProgressionDisabled ||
     daiAllowanceProgressionDisabled ||
-    isExchangeLoading
+    isExchangeLoading ||
+    borrowTransitionDisabled
   )
 
-  const canRegress = ([
-    'proxyWaitingForConfirmation',
-    'proxyFailure',
-    'collateralAllowanceWaitingForConfirmation',
-    'collateralAllowanceFailure',
-    'daiAllowanceWaitingForConfirmation',
-    'daiAllowanceFailure',
-    'manageWaitingForConfirmation',
-    'manageFailure',
-    'borrowTransitionEditing',
-    'borrowTransitionWaitingForConfirmation',
-    'borrowTransitionFailure',
-  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+  const canRegress = (
+    [
+      'proxyWaitingForConfirmation',
+      'proxyFailure',
+      'collateralAllowanceWaitingForConfirmation',
+      'collateralAllowanceFailure',
+      'daiAllowanceWaitingForConfirmation',
+      'daiAllowanceFailure',
+      'manageWaitingForConfirmation',
+      'manageFailure',
+      'borrowTransitionEditing',
+      'borrowTransitionWaitingForConfirmation',
+      'borrowTransitionFailure',
+    ] as ManageMultiplyVaultStage[]
+  ).some((s) => s === stage)
 
-  const stopLossTriggered = !!vaultHistory.length && vaultHistory[0].kind === 'STOPLOSS-TRIGGERED'
+  const { stopLossTriggered, autoTakeProfitTriggered } = automationTriggeredValidator({
+    vaultHistory,
+  })
+
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
   return {
     ...state,
@@ -634,6 +781,7 @@ export function applyManageVaultConditions(
     depositingAllEthBalance,
     generateAmountExceedsDebtCeiling,
     depositAmountExceedsCollateralBalance,
+    depositDaiAmountExceedsDaiBalance,
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,
     generateAmountExceedsDaiYieldFromTotalCollateral,
@@ -646,6 +794,7 @@ export function applyManageVaultConditions(
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    isSuccessStage,
     exchangeDataRequired,
     shouldShowExchangeError,
     isExchangeLoading,
@@ -666,6 +815,15 @@ export function applyManageVaultConditions(
 
     highSlippage,
     stopLossTriggered,
+    autoTakeProfitTriggered,
     afterCollRatioBelowStopLossRatio,
+    afterCollRatioBelowAutoSellRatio,
+    afterCollRatioAboveAutoBuyRatio,
+    afterCollRatioBelowConstantMultipleSellRatio,
+    afterCollRatioAboveConstantMultipleBuyRatio,
+    takeProfitWillTriggerImmediatelyAfterVaultReopen,
+    existingTakeProfitTriggerAfterVaultReopen,
+
+    insufficientEthFundsForTx,
   }
 }

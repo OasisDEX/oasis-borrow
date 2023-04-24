@@ -2,14 +2,22 @@ import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
 import { mockManageVault, mockManageVault$ } from 'helpers/mocks/manageVault.mock'
+import { mockedStopLossTrigger } from 'helpers/mocks/stopLoss.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 
-import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
-
 describe('manageVaultValidations', () => {
+  before(() => {
+    // TODO: remove after mainnet deployment
+    window.location.search = ['?network=goerli'] as any
+  })
+
+  after(() => {
+    window.location.search = [] as any
+  })
+
   it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
     const depositAmountExceeds = new BigNumber('2')
     const depositAmountAll = new BigNumber('1')
@@ -335,5 +343,51 @@ describe('manageVaultValidations', () => {
     state().setMainAction!('withdrawPayback')
     state().updateWithdraw!(withdrawCollateralStopLossError)
     expect(state().errorMessages).to.deep.equal(['afterCollRatioBelowStopLossRatio'])
+  })
+
+  it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
+    const depositAlmostAll = new BigNumber(10.9999)
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {},
+        vault: {
+          ilk: 'ETH-A',
+          debt: new BigNumber(5000),
+          collateral: new BigNumber(6),
+        },
+        balanceInfo: {
+          ethBalance: new BigNumber(11),
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+        gasEstimationUsd: new BigNumber(30),
+      }),
+    )
+
+    state().updateDeposit!(depositAlmostAll)
+    expect(state().warningMessages).to.deep.eq(['potentialInsufficientEthFundsForTx'])
+  })
+
+  it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
+    const depositAmount = new BigNumber(5)
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {},
+        vault: {
+          ilk: 'WBTC-A',
+          debt: new BigNumber(50000),
+          collateral: new BigNumber(6),
+        },
+        balanceInfo: {
+          ethBalance: new BigNumber(0.001),
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+        gasEstimationUsd: new BigNumber(30),
+      }),
+    )
+
+    state().updateDeposit!(depositAmount)
+    expect(state().warningMessages).to.deep.eq(['potentialInsufficientEthFundsForTx'])
   })
 })

@@ -1,7 +1,7 @@
+import { MakerVaultType } from 'blockchain/calls/vaultResolver'
+import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
 import { Observable, of, throwError } from 'rxjs'
 
-import { charterIlks, cropJoinIlks } from '../../config'
-import { MakerVaultType } from '../vaultResolver'
 import { CharteredDssProxyActionsContractAdapter } from './adapters/CharteredDssProxyActionsContractAdapter'
 import { CropjoinProxyActionsContractAdapter } from './adapters/CropjoinProxyActionsSmartContractAdapter'
 import { ProxyActionsSmartContractAdapterInterface } from './adapters/ProxyActionsSmartContractAdapterInterface'
@@ -28,7 +28,6 @@ function resolveFromMakerVaultType({
     case MakerVaultType.CHARTER:
       return of(new CharteredDssProxyActionsContractAdapter())
   }
-  throw new Error(`could not create proxy action adapter for ${makerVaultType}`)
 }
 
 function resolveFromIlk({

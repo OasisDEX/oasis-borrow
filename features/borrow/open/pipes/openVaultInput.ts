@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { isNullish } from 'helpers/functions'
+import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
@@ -55,8 +56,14 @@ export function applyOpenVaultInput(
 
   if (change.kind === 'depositUSD') {
     const { depositAmountUSD } = change
-    const { priceInfo } = state
-    const depositAmount = depositAmountUSD && depositAmountUSD.div(priceInfo.currentCollateralPrice)
+    const { priceInfo, token } = state
+    const currentCollateralPrice = priceInfo.currentCollateralPrice
+    const currencyDigits = calculateTokenPrecisionByValue({
+      token: token,
+      usdPrice: currentCollateralPrice,
+    })
+    const depositAmount =
+      depositAmountUSD && depositAmountUSD.div(priceInfo.currentCollateralPrice).dp(currencyDigits)
 
     return {
       ...state,

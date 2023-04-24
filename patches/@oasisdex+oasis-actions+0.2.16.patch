@@ -1,0 +1,13 @@
+diff --git a/node_modules/@oasisdex/oasis-actions/lib/packages/oasis-actions/src/strategies/aave/close/close.js b/node_modules/@oasisdex/oasis-actions/lib/packages/oasis-actions/src/strategies/aave/close/close.js
+index 3cfb6db..b2f2ab6 100644
+--- a/node_modules/@oasisdex/oasis-actions/lib/packages/oasis-actions/src/strategies/aave/close/close.js
++++ b/node_modules/@oasisdex/oasis-actions/lib/packages/oasis-actions/src/strategies/aave/close/close.js
+@@ -206,7 +206,7 @@ async function generateTransition(swapData, collectFeeFrom, preSwapFee, operatio
+     const amountOfTargetTokenPostSwapNormalised = (0, helpers_1.amountFromWei)(dependencies.currentPosition.collateral.amount, args.collateralToken.precision).div(expectedMarketPrice);
+     const amountOfTargetTokenPostSwap = (0, helpers_1.amountToWei)(amountOfTargetTokenPostSwapNormalised, args.debtToken.precision);
+     const postSwapFee = collectFeeFrom === 'targetToken'
+-        ? (0, helpers_1.calculateFee)(amountOfTargetTokenPostSwap, fee, new bignumber_js_1.default(constants_1.FEE_BASE))
++        ? (0, helpers_1.calculateFee)(swapData.toTokenAmount, fee, new bignumber_js_1.default(constants_1.FEE_BASE))
+         : constants_1.ZERO;
+     return {
+         transaction: {

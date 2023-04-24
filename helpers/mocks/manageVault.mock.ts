@@ -1,28 +1,30 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { CharteredDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
+import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { IlkData } from 'blockchain/ilks'
+import { InstiVault } from 'blockchain/instiVault'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  InstitutionalBorrowManageAdapter,
+  ManageInstiVaultState,
+} from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import {
   createManageVault$,
-  ManageInstiVaultState,
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
-import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
-import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
-import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
-import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
-import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
@@ -94,6 +96,7 @@ export interface MockManageVaultProps {
   daiAllowance?: BigNumber
   account?: string
   status?: 'connected'
+  gasEstimationUsd?: BigNumber
 }
 
 function buildMockDependencies({
@@ -119,6 +122,7 @@ function buildMockDependencies({
   daiAllowance,
   account = '0xVaultController',
   status = 'connected',
+  gasEstimationUsd,
 }: MockManageVaultProps = {}) {
   const token = vault && vault.ilk ? vault.ilk.split('-')[0] : 'WBTC'
 
@@ -179,7 +183,7 @@ function buildMockDependencies({
             _ilkData$: ilkData$(),
             priceInfo,
             ...vault,
-          })
+          }).vault$
         }),
       )
     )
@@ -187,6 +191,10 @@ function buildMockDependencies({
 
   function saveVaultType$() {
     return _saveVaultType$ || of(undefined)
+  }
+
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
   }
 
   return {
@@ -202,6 +210,7 @@ function buildMockDependencies({
     saveVaultType$,
     vaultHistory$,
     automationTriggersData$,
+    gasEstimationMock$,
   }
 }
 
@@ -220,6 +229,7 @@ export function mockManageVault$(
     saveVaultType$,
     vaultHistory$,
     automationTriggersData$,
+    gasEstimationMock$,
   } = buildMockDependencies(args)
 
   return createManageVault$<Vault, ManageStandardBorrowVaultState>(
@@ -232,10 +242,10 @@ export function mockManageVault$(
     ilkData$,
     vault$,
     saveVaultType$,
-    addGasEstimationMock,
+    gasEstimationMock$,
     vaultHistory$,
     () => of(StandardDssProxyActionsContractAdapter),
-    StandardBorrowManageVaultViewStateProvider,
+    StandardBorrowManageAdapter,
     automationTriggersData$,
     MOCK_VAULT_ID,
   )
@@ -259,25 +269,11 @@ export function mockManageInstiVault$(
     saveVaultType$,
     vaultHistory$,
     automationTriggersData$,
+    gasEstimationMock$,
   } = buildMockDependencies(args)
 
   function instiVault$(): Observable<InstiVault> {
-    function charterNib$() {
-      return of(new BigNumber(1))
-    }
-    function charterPeace$() {
-      return of(new BigNumber(2))
-    }
-    function charterUline$() {
-      return of(new BigNumber(3))
-    }
-    const instiVault$ = createInstiVault$(
-      () => mockVault$(),
-      charterNib$,
-      charterPeace$,
-      charterUline$,
-      new BigNumber(1),
-    )
+    const { instiVault$ } = mockVault$()
 
     return args._instiVault$ || instiVault$
   }
@@ -292,10 +288,10 @@ export function mockManageInstiVault$(
     ilkData$,
     instiVault$,
     saveVaultType$,
-    addGasEstimationMock,
+    gasEstimationMock$,
     vaultHistory$,
     () => of(new CharteredDssProxyActionsContractAdapter()),
-    InstitutionalBorrowManageVaultViewStateProvider,
+    InstitutionalBorrowManageAdapter,
     automationTriggersData$,
     MOCK_VAULT_ID,
   )

@@ -1,99 +1,70 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ProductCardBorrow } from 'components/ProductCardBorrow'
-import { ProductCardMultiply } from 'components/ProductCardMultiply'
-import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
-import { TabSwitcher, TabSwitcherTab } from 'components/TabSwitcher'
+import {
+  BorrowProductCardsContainer,
+  EarnProductCardsContainer,
+  MultiplyProductCardsContainer,
+} from 'components/productCards/ProductCardsContainer'
+import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from 'helpers/observableHook'
-import { ProductCardData } from 'helpers/productCards'
+import { getAaveEnabledStrategies } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import { ProductCardEarn } from '../../components/ProductCardEarn'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
-
-function Loader() {
-  return (
-    <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-      <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-    </Flex>
-  )
+const aaveAssets = {
+  // not putting this to ASSETS_PAGES cause we need feature toggles
+  eth: {
+    multiply: getAaveEnabledStrategies([{ strategy: 'ethusdc' }, { strategy: 'stETHusdc' }]),
+    earn: getAaveEnabledStrategies([{ strategy: 'stETHeth' }]),
+  },
+  btc: {
+    multiply: getAaveEnabledStrategies([{ strategy: 'wBTCusdc' }]),
+    earn: [],
+  },
 }
 
-function TabContent(props: {
-  type: 'borrow' | 'multiply' | 'earn'
-  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-  ilks: string[]
-  productCardsData: ProductCardData[]
-}) {
-  const ProductCard = props.renderProductCard
-  const filteredCards = props.ilks
-    .map((ilk) => props.productCardsData.find((card) => card.ilk === ilk))
-    .filter(
-      (cardData: ProductCardData | undefined): cardData is ProductCardData => cardData !== null,
-    )
-
-  return (
-    <ProductCardsWrapper>
-      {filteredCards.map((cardData) => (
-        <ProductCard cardData={cardData} key={cardData.ilk} />
-      ))}
-    </ProductCardsWrapper>
-  )
-}
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
-  const enabled = useFeatureToggle('EarnProduct')
 
-  const tabs = (productCardsData: ProductCardData[]) => {
+  const aaveStrategies = aaveAssets[content.slug as keyof typeof aaveAssets] ?? []
+  const tabs = () => {
     const borrowTab = content.borrowIlks && {
-      tabLabel: t('landing.tabs.borrow.tabLabel'),
-      tabContent: (
-        <TabContent
-          ilks={content.borrowIlks}
-          type="borrow"
-          renderProductCard={ProductCardBorrow}
-          productCardsData={productCardsData}
-        />
+      label: t('landing.tabs.maker.borrow.tabLabel'),
+      value: 'borrow',
+      content: (
+        <Box sx={{ mt: 5 }}>
+          <BorrowProductCardsContainer strategies={{ maker: content.borrowIlks, aave: [] }} />
+        </Box>
       ),
     }
 
-    const multiplyTab = content.multiplyIlks &&
-      // TODO its tricky one, during feature toggle removal an GUNIV3DAIUSDC2-A should be removed from multiplyIlks within lp-tokens
-      !(enabled && content.slug === 'lp-token') && {
-        tabLabel: t('landing.tabs.multiply.tabLabel'),
-        tabContent: (
-          <TabContent
-            ilks={content.multiplyIlks}
-            type="multiply"
-            renderProductCard={ProductCardMultiply}
-            productCardsData={productCardsData}
+    const multiplyTab = content.multiplyIlks && {
+      label: t('landing.tabs.maker.multiply.tabLabel'),
+      value: 'multiply',
+      content: (
+        <Box sx={{ mt: 5 }}>
+          <MultiplyProductCardsContainer
+            strategies={{ maker: content.multiplyIlks, aave: aaveStrategies.multiply }}
           />
-        ),
-      }
+        </Box>
+      ),
+    }
 
-    const earnTab = content.earnIlks &&
-      enabled && {
-        tabLabel: t('landing.tabs.earn.tabLabel'),
-        tabContent: (
-          <TabContent
-            ilks={content.earnIlks}
-            type="earn"
-            renderProductCard={ProductCardEarn}
-            productCardsData={productCardsData}
+    const earnTab = content.earnIlks && {
+      label: t('landing.tabs.maker.earn.tabLabel'),
+      value: 'earn',
+      content: (
+        <Box sx={{ mt: 5 }}>
+          <EarnProductCardsContainer
+            strategies={{ maker: content.earnIlks, aave: aaveStrategies.earn }}
           />
-        ),
-      }
+        </Box>
+      ),
+    }
 
-    return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSwitcherTab[]
+    return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSection[]
   }
 
   return (
@@ -107,12 +78,12 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       </Flex>
       <Flex sx={{ justifyContent: 'center' }}>
         <Box sx={{ textAlign: 'center', maxWidth: 980 }}>
-          <Text sx={{ display: 'inline', color: 'text.subtitle' }} variant="paragraph1">
+          <Text sx={{ display: 'inline', color: 'neutral80' }} variant="paragraph1">
             {t(content.descriptionKey)}
           </Text>
           <AppLink href={t(content.link)}>
-            <WithArrow sx={{ display: 'inline', color: 'link', ml: 2 }}>
-              <Text sx={{ display: 'inline', color: 'link' }} variant="paragraph1">
+            <WithArrow sx={{ display: 'inline', color: 'interactive100', ml: 2 }}>
+              <Text sx={{ display: 'inline', color: 'interactive100' }} variant="paragraph1">
                 {t('learn-more-about')} {content.symbol}
               </Text>
             </WithArrow>
@@ -120,24 +91,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
         </Box>
       </Flex>
       <Grid sx={{ flex: 1, position: 'relative', mt: 5, mb: '184px' }}>
-        <WithErrorHandler error={[productCardsDataError]}>
-          <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
-            {([productCardsData]) => {
-              return (
-                <TabSwitcher
-                  narrowTabsSx={{
-                    display: ['block', 'none'],
-                    maxWidth: '343px',
-                    width: '100%',
-                    mb: 4,
-                  }}
-                  wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
-                  tabs={tabs(productCardsData)}
-                />
-              )
-            }}
-          </WithLoadingIndicator>
-        </WithErrorHandler>
+        <TabBar useDropdownOnMobile variant="large" sections={tabs()} />
       </Grid>
     </Grid>
   )

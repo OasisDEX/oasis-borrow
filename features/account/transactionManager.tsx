@@ -41,7 +41,7 @@ export function TxTranslator({
     [key: string]: any
   }
 }) {
-  const Component = withTranslation()(({ t }: { t: TFunction }) => <>{t(i18nKey, params)}</>)
+  const Component = withTranslation()(({ t }: { t: TFunction }) => <>{t(i18nKey, params || {})}</>)
 
   return <Component />
 }
@@ -183,11 +183,8 @@ export function createTransactionManager(
     map(([transactions]) => {
       const allTransactions = transactions.map(txState2Transaction).sort(compareTransactions)
 
-      const {
-        recentTransactions,
-        pendingTransactions,
-        notificationTransaction,
-      } = filterTransactions(allTransactions)
+      const { recentTransactions, pendingTransactions, notificationTransaction } =
+        filterTransactions(allTransactions)
 
       return {
         pendingTransactions,

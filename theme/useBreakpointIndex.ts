@@ -3,7 +3,7 @@ import { theme } from 'theme'
 
 export function useBreakpointIndex() {
   const breakpoints = theme.breakpoints
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(1)
 
   useEffect(() => {
     function getIndex() {

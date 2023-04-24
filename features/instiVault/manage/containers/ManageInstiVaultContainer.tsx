@@ -1,32 +1,32 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { ChevronUpDown } from 'components/ChevronUpDown'
 import {
-  VaultChangesInformationEstimatedGasFee,
+  EstimationError,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
+import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
-import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
-import { ManageInstiVaultState } from '../../../borrow/manage/pipes/manageVault'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { manageVault$, context$ } = useAppContext()
   const {
-    vault: { id, originationFeePercent, instiIlkName },
+    vault: { id },
     clear,
-    ilkData,
+    transactionFeeETH,
     originationFeeUSD,
   } = manageVault
 
   const { t } = useTranslation()
+  const [showFees, setShowFees] = useState(false)
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -43,42 +43,50 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   return (
     <>
-      <DefaultVaultHeader
-        header={t('vault.insti-header', { ilk: instiIlkName, id })}
-        ilkData={ilkData}
-        id={id}
-      >
-        <VaultIlkDetailsItem
-          label={t('manage-insti-vault.origination-fee')}
-          value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}
-          tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
-          styles={{
-            tooltip: {
-              left: ['-80px', 'auto'],
-              right: ['auto', '-32px'],
-            },
-          }}
-        />
-      </DefaultVaultHeader>
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageInstiVaultDetails {...manageVault} />
-          <VaultHistoryView vaultHistory={manageVault.vaultHistory} />
         </Grid>
         <Box>
           <ManageVaultForm
-            hideMultiply={true}
-            extraInfo={
+            hideMultiplyTab={true}
+            txnCostDisplay={
               <>
                 <VaultChangesInformationItem
-                  label={t('manage-insti-vault.origination-fee')}
+                  label={t('transaction-fee')}
                   value={
-                    <Flex>
-                      {originationFeeUSD ? `$${formatAmount(originationFeeUSD, 'USD')}` : '$ -- '}
+                    <Flex onClick={() => setShowFees((showFees) => !showFees)}>
+                      {transactionFeeETH && !transactionFeeETH.isNaN() ? (
+                        `${formatAmount(transactionFeeETH, 'ETH')} ETH`
+                      ) : (
+                        <EstimationError withBrackets={false} />
+                      )}
+                      <ChevronUpDown isUp={showFees} size="auto" width="12px" sx={{ ml: 2 }} />
                     </Flex>
                   }
                 />
-                <VaultChangesInformationEstimatedGasFee {...manageVault} />
+                {showFees && (
+                  <Grid pl={3} gap={2}>
+                    <VaultChangesInformationItem
+                      label={t('manage-insti-vault.origination-fee')}
+                      value={
+                        <Flex>
+                          {originationFeeUSD
+                            ? `$${formatAmount(originationFeeUSD, 'USD')}`
+                            : '$ -- '}
+                        </Flex>
+                      }
+                    />
+                    <VaultChangesInformationItem
+                      label={t('vault-changes.oasis-fee')}
+                      value={<Flex>$0.00</Flex>}
+                    />
+                    <VaultChangesInformationItem
+                      label={'Estimated gas fee'}
+                      value={getEstimatedGasFeeTextOld(manageVault)}
+                    />
+                  </Grid>
+                )}
               </>
             }
             {...manageVault}

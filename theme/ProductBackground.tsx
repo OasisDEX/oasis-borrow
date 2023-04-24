@@ -1,7 +1,6 @@
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
 import { Box, Image } from 'theme-ui'
-
-import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 
 export function ProductBackground() {
   return (
@@ -11,6 +10,7 @@ export function ProductBackground() {
         left: 'calc((100% - 1617px) / 2)',
         top: 0,
         right: 0,
+        zIndex: -1,
         backgroundColor: 'white',
         overflow: 'hidden',
       }}

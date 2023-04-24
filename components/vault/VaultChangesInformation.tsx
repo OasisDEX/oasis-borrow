@@ -1,10 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Box, Flex, Grid, Text } from '@theme-ui/components'
+import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { DimmedList } from 'components/DImmedList'
+import { GasEstimationContext } from 'components/GasEstimationContextProvider'
+import { InfoSectionLoadingState } from 'components/infoSection/Item'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import { WithChildren } from 'helpers/types'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
@@ -18,7 +23,6 @@ export function VaultChangesInformationItem({
   tooltip?: ReactNode
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
-  const isTouchDevice = window && 'ontouchstart' in window
 
   const handleMouseEnter = useMemo(
     () => (!isTouchDevice ? () => setTooltipOpen(true) : undefined),
@@ -34,25 +38,37 @@ export function VaultChangesInformationItem({
 
   return (
     <Flex
+      as="li"
       sx={{
         justifyContent: 'space-between',
         alignItems: 'center',
         fontSize: 1,
         fontWeight: 'semiBold',
         cursor: tooltip ? 'pointer' : 'inherit',
+        position: 'relative',
       }}
       onClick={handleClick}
     >
       <Flex
-        sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}
+        sx={{ color: 'neutral80', justifyContent: 'flex-end', alignItems: 'center' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Box>{label}</Box>
+        <Text variant="paragraph4" sx={{ lineHeight: '16px', color: 'inherit' }}>
+          {label}
+        </Text>
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
-      {tooltip && tooltipOpen && <Tooltip sx={{ transform: 'translateY(60%)' }}>{tooltip}</Tooltip>}
-      <Box>{value}</Box>
+      {tooltip && tooltipOpen && (
+        <Tooltip sx={{ transform: 'translateY(-100%)', right: ['0px', 'auto'], top: '-5px' }}>
+          {tooltip}
+        </Tooltip>
+      )}
+      <Box sx={{ color: 'primary100' }}>
+        <Text as="div" variant="paragraph4">
+          {value}
+        </Text>
+      </Box>
     </Flex>
   )
 }
@@ -62,12 +78,14 @@ export function VaultChangesInformationContainer({
   children,
 }: { title: string } & WithChildren) {
   return (
-    <Grid>
-      <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
-        {title}
-      </Text>
+    <DimmedList>
+      <Box as="li" sx={{ listStyle: 'none' }}>
+        <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+          {title}
+        </Text>
+      </Box>
       {children}
-    </Grid>
+    </DimmedList>
   )
 }
 
@@ -75,36 +93,81 @@ export function VaultChangesInformationArrow() {
   return <Icon name="arrow_right_light" size="auto" width="10px" height="7px" sx={{ mx: 2 }} />
 }
 
-function EstimationError({ withBrackets }: { withBrackets: boolean }) {
+export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
-  return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
+  return (
+    <Text as="div" sx={{ color: 'critical100' }}>
+      {withBrackets ? `(${textError})` : textError}
+    </Text>
+  )
 }
 
-export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBrackets = false) {
+export const formatGasEstimationUSD = (gasEstimation: HasGasEstimation) => {
+  if (!gasEstimation.gasEstimationUsd) {
+    throw new Error(
+      `could not format formatGasEstimationUSD:  gasEstimation.gasEstimationUsd is ${gasEstimation.gasEstimationUsd}`,
+    )
+  }
+  return `$${formatAmount(gasEstimation.gasEstimationUsd, 'USD')}`
+}
+
+export const formatGasEstimationETH = (gasEstimation: HasGasEstimation) => {
+  if (!gasEstimation.gasEstimationEth) {
+    throw new Error(
+      `could not format formatGasEstimationETH:  gasEstimation.gasEstimationEth is ${gasEstimation.gasEstimationEth}`,
+    )
+  }
+  return `${formatAmount(gasEstimation.gasEstimationEth, 'ETH')} ETH`
+}
+
+export function getEstimatedGasFeeTextOld(
+  gasEstimation?: HasGasEstimation,
+  withBrackets = false,
+  formatFunction: (gasEstimation: HasGasEstimation) => string = formatGasEstimationUSD,
+) {
   if (!gasEstimation) {
     return <EstimationError withBrackets={withBrackets} />
   }
 
-  const { gasEstimationStatus, gasEstimationUsd } = gasEstimation
-
-  switch (gasEstimationStatus) {
+  switch (gasEstimation.gasEstimationStatus) {
     case GasEstimationStatus.calculating:
       const textPending = 'Pending...'
 
       return (
-        <Text sx={{ color: 'text.subtitle' }}>
-          {withBrackets ? `(${textPending})` : textPending}
-        </Text>
+        <Text sx={{ color: 'neutral80' }}>{withBrackets ? `(${textPending})` : textPending}</Text>
       )
     case GasEstimationStatus.error:
     case GasEstimationStatus.unknown:
     case GasEstimationStatus.unset:
-    case undefined:
       return <EstimationError withBrackets={withBrackets} />
     case GasEstimationStatus.calculated:
-      const textGas = `$${formatAmount(gasEstimationUsd as BigNumber, 'USD')}`
+      const textGas = formatFunction(gasEstimation)
 
       return withBrackets ? `(${textGas})` : textGas
+  }
+}
+
+export function getEstimatedGasFeeText(
+  gasEstimation?: GasEstimationContext,
+  addition: BigNumber = zero,
+) {
+  if (!gasEstimation) {
+    return 'n/a'
+  }
+  const status: GasEstimationStatus = gasEstimation.isCompleted
+    ? gasEstimation.isSuccessful
+      ? GasEstimationStatus.calculated
+      : GasEstimationStatus.error
+    : GasEstimationStatus.calculating
+
+  switch (status) {
+    case GasEstimationStatus.calculating:
+      return <InfoSectionLoadingState />
+    case GasEstimationStatus.error:
+    case undefined:
+      return <EstimationError withBrackets={false} />
+    case GasEstimationStatus.calculated:
+      return `$${formatAmount(gasEstimation?.usdValue.plus(addition), 'USD')}`
   }
 }
 
@@ -113,7 +176,7 @@ export function VaultChangesInformationEstimatedGasFee(props: HasGasEstimation) 
   return (
     <VaultChangesInformationItem
       label={t('max-gas-fee')}
-      value={getEstimatedGasFeeText(props)}
+      value={getEstimatedGasFeeTextOld(props)}
       tooltip={<Box>{t('gas-explanation')}</Box>}
     />
   )

@@ -3,27 +3,29 @@ import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
+  DepositAndGenerateData,
+  WithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
+import {
   adjustMultiplyVault,
   closeVaultCall,
   MultiplyAdjustData,
 } from 'blockchain/calls/proxyActions/proxyActions'
+import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
+import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
-import {
-  DepositAndGenerateData,
-  WithdrawAndPaybackData,
-} from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { StandardDssProxyActionsContractAdapter } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
-import { vaultActionsLogic } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { TxError } from '../../../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
@@ -97,10 +99,10 @@ export type ManageVaultTransactionChange =
   | DaiAllowanceChange
   | ManageChange
 
-export function applyManageVaultTransaction(
+export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+  state: VS,
+): VS {
   if (change.kind === 'proxyWaitingForApproval') {
     return {
       ...state,
@@ -233,25 +235,35 @@ export function applyManageVaultTransaction(
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { tokensMainnet, defaultExchange }: Context,
+  { chainId, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
     proxyAddress,
     vault: { ilk, token, id },
     exchangeAction,
+    depositDaiAmount,
     debtDelta,
     depositAmount,
+    withdrawAmount,
+    generateAmount,
     collateralDelta,
     slippage,
     oneInchAmount,
   }: ManageMultiplyVaultState,
 ) {
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
-        getQuote$(
+      switchMap(({ sendWithGasEstimation, send }) => {
+        const isGnosisSafe = checkIfGnosisSafe({
+          walletLabel,
+          web3,
+        })
+        const sendFn = isGnosisSafe ? send : sendWithGasEstimation
+
+        return getQuote$(
           getTokenMetaData('DAI', tokensMainnet),
           getTokenMetaData(token, tokensMainnet),
           defaultExchange.address,
@@ -261,16 +273,19 @@ export function adjustPosition(
         ).pipe(
           first(),
           switchMap((swap) =>
-            sendWithGasEstimation(adjustMultiplyVault, {
+            sendFn(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
+              depositDai: depositDaiAmount || zero,
+              withdrawCollateral: withdrawAmount || zero,
+              withdrawDai: generateAmount || zero,
               requiredDebt: debtDelta?.abs() || zero,
               borrowedCollateral: collateralDelta?.abs() || zero,
               userAddress: account!,
               proxyAddress: proxyAddress!,
               exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
               exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-              slippage: slippage,
+              slippage,
               action: exchangeAction!,
               token,
               id,
@@ -297,8 +312,8 @@ export function adjustPosition(
               ),
             ),
           ),
-        ),
-      ),
+        )
+      }),
       startWith({ kind: 'manageWaitingForApproval' } as ManageMultiplyVaultChange),
       catchError(() => of({ kind: 'manageFailure' } as ManageMultiplyVaultChange)),
     )
@@ -355,8 +370,10 @@ export function manageVaultDepositAndGenerate(
     )
     .subscribe((ch) => change(ch))
 }
+
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
+  context: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -369,8 +386,15 @@ export function manageVaultWithdrawAndPayback(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(
+      switchMap(({ sendWithGasEstimation, send }) => {
+        const { walletLabel, web3 } = context
+        const isGnosisSafe = checkIfGnosisSafe({
+          walletLabel,
+          web3,
+        })
+        const sendFn = isGnosisSafe ? send : sendWithGasEstimation
+
+        return sendFn(
           vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
           {
             kind: TxMetaKind.withdrawAndPayback,
@@ -402,8 +426,8 @@ export function manageVaultWithdrawAndPayback(
             },
             () => of({ kind: 'manageSuccess' }),
           ),
-        ),
-      ),
+        )
+      }),
     )
     .subscribe((ch) => change(ch))
 }
@@ -542,7 +566,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { tokensMainnet, defaultExchange }: Context,
+  { chainId, walletLabel, web3 }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -556,11 +580,12 @@ export function closeVault(
 ) {
   const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
     closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
 
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
+      switchMap(({ sendWithGasEstimation, send }) =>
         getQuote$(
           getTokenMetaData('DAI', tokensMainnet),
           getTokenMetaData(token, tokensMainnet),
@@ -571,7 +596,13 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) => {
-            return sendWithGasEstimation(closeVaultCall, {
+            const isGnosisSafe = checkIfGnosisSafe({
+              walletLabel,
+              web3,
+            })
+            const sendFn = isGnosisSafe ? send : sendWithGasEstimation
+
+            return sendFn(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,
@@ -617,6 +648,7 @@ export function closeVault(
 }
 
 export function applyEstimateGas(
+  context: Context,
   addGasEstimation$: AddGasEstimationFunction,
   state: ManageMultiplyVaultState,
 ): Observable<ManageMultiplyVaultState> {
@@ -625,6 +657,7 @@ export function applyEstimateGas(
       proxyAddress,
       generateAmount,
       depositAmount,
+      depositDaiAmount,
       withdrawAmount,
       paybackAmount,
       shouldPaybackAll,
@@ -637,34 +670,55 @@ export function applyEstimateGas(
       closeVaultTo,
       closeToDaiParams,
       closeToCollateralParams,
+      isProxyStage,
     } = state
+
+    /*
+    For Gnosis wallets we experienced gas estimation errors for certain actions.
+    This errors occurred within the Gnosis SDK are proved tricky to debug. Given the Gnosis t/x confirmation popup does correctly estimate gas
+    We've opted to simply disable gas estimation on our side for those wallets for select actions
+    */
+    const isGnosisSafeWallet = checkIfGnosisSafe(context)
+    const GNOSIS_GAS_ESTIMATE = undefined
+    if (isGnosisSafeWallet) return GNOSIS_GAS_ESTIMATE
 
     if (proxyAddress) {
       if (requiredCollRatio) {
-        const daiAmount =
+        const requiredDebt =
           swap?.status === 'SUCCESS'
             ? exchangeAction === 'BUY_COLLATERAL'
-              ? swap.daiAmount.div(one.minus(OAZO_FEE))
-              : swap.daiAmount
+              ? // add oazo fee because Oazo takes the fee from the pre swap amount,
+                // so that means that required debt on the vault must be increased
+                // to incorporate this fee.
+                swap.daiAmount.div(one.minus(OAZO_FEE))
+              : // remove slippage because we are selling collateral and buying DAI,
+                // and so we will only end up with the amount of DAI that is
+                // returned from the exchange minus the slippage.
+                swap.daiAmount.div(one.plus(SLIPPAGE))
             : zero
 
-        const collateralAmount =
+        const borrowedCollateral =
           swap?.status === 'SUCCESS'
             ? exchangeAction === 'BUY_COLLATERAL'
-              ? swap.collateralAmount.times(one.minus(SLIPPAGE))
+              ? // TODO: why are we removing slippage twice?
+                // see proxyActions.getMultiplyAdjustCallData - slippage is also removed there.
+                swap.collateralAmount.times(one.minus(SLIPPAGE))
               : swap.collateralAmount
             : zero
 
         return estimateGas(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
           depositCollateral: depositAmount || zero,
-          requiredDebt: daiAmount,
-          borrowedCollateral: collateralAmount,
+          depositDai: depositDaiAmount || zero,
+          withdrawCollateral: withdrawAmount || zero,
+          withdrawDai: generateAmount || zero,
+          requiredDebt: requiredDebt,
+          borrowedCollateral: borrowedCollateral,
           userAddress: account!,
           proxyAddress: proxyAddress!,
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
           exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-          slippage: slippage,
+          slippage,
           action: exchangeAction!,
           token,
           id,
@@ -724,6 +778,10 @@ export function applyEstimateGas(
           }
         }
       }
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

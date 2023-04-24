@@ -24,9 +24,4 @@ export const LANDING_PILLS = [
     label: 'YFI',
     link: '/asset/yfi',
   },
-  {
-    icon: 'uni_circle_color',
-    label: 'UNI',
-    link: '/asset/uni',
-  },
 ]

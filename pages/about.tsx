@@ -3,6 +3,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { getTeamPicsFileNames, parseMemberInfo, TeamMember } from 'features/about/about'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { sortBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +11,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
-export default function AboutPage({ members }: { members: TeamMember[] }) {
+function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
 
   return (
@@ -25,13 +26,15 @@ export default function AboutPage({ members }: { members: TeamMember[] }) {
         >
           {t('about.heading')}
         </Heading>
-        <Text variant="light">{t('about.description')}</Text>
+        <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
+          {t('about.description')}
+        </Text>
       </Box>
       <AppLink
-        href="/careers"
-        sx={{ color: 'text.focused', display: 'flex', alignItems: 'center', mt: 3 }}
+        href={EXTERNAL_LINKS.WORKABLE}
+        sx={{ color: 'primary100', display: 'flex', alignItems: 'center', mt: 3 }}
       >
-        <Text variant="paragraph1" sx={{ color: 'text.focused', fontWeight: 'semiBold' }}>
+        <Text variant="paragraph1" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
           {t('about.careers-link')}
         </Text>
         <Icon name="arrow_right" size="16px" sx={{ ml: 1 }} />
@@ -52,6 +55,8 @@ AboutPage.layoutProps = {
   topBackground: 'lighter',
   variant: 'marketingSmallContainer',
 }
+
+export default AboutPage
 
 function PortraitsGrid({ members }: { members: TeamMember[] }) {
   const PORTRAIT_SIZE = '169px'
@@ -81,8 +86,8 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
             />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <Text sx={{ color: 'primary', mb: 1 }}>{member.name}</Text>
-            <Text variant="paragraph3" sx={{ color: 'lavender' }}>
+            <Text sx={{ color: 'primary100', mb: 1 }}>{member.name}</Text>
+            <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
               {member.title}
             </Text>
           </Box>

@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { zero } from '../../../../helpers/zero'
-import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
 
 export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
@@ -43,20 +44,22 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
-      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-          colors?.sliderTrackFill
-        } ${slider.toNumber()}%, ${colors?.primaryAlt} ${slider.toNumber()}%, ${
-          colors?.primaryAlt
+      ? `linear-gradient(to right, ${colors?.interactive50} 0%, ${
+          colors?.interactive50
+        } ${slider.toNumber()}%, ${colors?.neutral60} ${slider.toNumber()}%, ${
+          colors?.neutral60
         } 100%)`
-      : 'primaryAlt'
+      : 'neutral60'
+
+  const { t } = useTranslation()
 
   return (
     <Grid gap={4}>
       <Grid gap={2}>
-        <Text variant="strong">Deposit your {token}</Text>
+        <Text variant="boldParagraph2">Deposit your {token}</Text>
         <VaultActionInput
           action="Deposit"
-          token={token}
+          currencyCode={token}
           tokenUsdPrice={currentCollateralPrice}
           showMax={true}
           hasAuxiliary={true}
@@ -67,12 +70,12 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
           onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
           maxAmount={maxDepositAmount}
           maxAuxiliaryAmount={maxDepositAmountUSD}
-          maxAmountLabel={'Balance'} // TODO add translation
+          maxAmountLabel={t('balance')}
           hasError={false}
         />
       </Grid>
       <Grid gap={2}>
-        <Text variant="strong" mb={2}>
+        <Text variant="boldParagraph2" mb={2}>
           Adjust your multiply
         </Text>
         <Box>
@@ -81,7 +84,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
               variant: 'text.paragraph4',
               justifyContent: 'space-between',
               fontWeight: 'semiBold',
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             <Grid gap={2}>
@@ -125,7 +128,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             sx={{
               variant: 'text.paragraph4',
               justifyContent: 'space-between',
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             <Text>Decrease risk</Text>

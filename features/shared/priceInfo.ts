@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { OraclePriceData } from 'blockchain/prices'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -22,10 +22,33 @@ export interface PriceInfo {
 }
 
 export function createPriceInfo$(
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   token: string,
 ): Observable<PriceInfo> {
-  return combineLatest(oraclePriceData$(token), oraclePriceData$('ETH')).pipe(
+  return combineLatest(
+    oraclePriceData$({
+      token,
+      requestedData: [
+        'currentPrice',
+        'nextPrice',
+        'isStaticPrice',
+        'currentPriceUpdate',
+        'nextPriceUpdate',
+        'percentageChange',
+      ],
+    }),
+    oraclePriceData$({
+      token: 'ETH',
+      requestedData: [
+        'currentPrice',
+        'nextPrice',
+        'isStaticPrice',
+        'currentPriceUpdate',
+        'nextPriceUpdate',
+        'percentageChange',
+      ],
+    }),
+  ).pipe(
     switchMap(
       ([
         {

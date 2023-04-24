@@ -2,13 +2,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
-  getEstimatedGasFeeText,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { AppSpinner } from 'helpers/AppSpinner'
 import {
   formatAmount,
@@ -19,8 +20,6 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-
-import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -65,7 +64,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
               <Text>
                 {formatCryptoBalance(collateralDelta?.abs() || zero)} {token}
                 {` `}
-                <Text as="span" sx={{ color: 'text.subtitle' }}>
+                <Text as="span" sx={{ color: 'neutral80' }}>
                   (${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')})
                 </Text>
               </Text>
@@ -94,7 +93,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
               ) : (
                 <Text>
                   ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-                  <Text as="span" sx={{ color: 'onError' }}>
+                  <Text as="span" sx={{ color: 'critical100' }}>
                     ({formatPercent(impact, { precision: 2 })})
                   </Text>
                 </Text>
@@ -159,7 +158,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(fees, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"

@@ -1,11 +1,10 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
-
-import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
 function manageVaultButtonText(state: ManageStandardBorrowVaultState): string {
   const { t } = useTranslation()
@@ -201,7 +200,7 @@ export function ManageVaultButton(props: ManageStandardBorrowVaultState) {
             <Text sx={{ position: 'relative' }} pl={2}>
               <Spinner
                 size={25}
-                color="surface"
+                color="neutral10"
                 sx={{
                   position: 'absolute',
                   left: 0,

@@ -2,15 +2,24 @@ import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
+import { mockedStopLossTrigger } from 'helpers/mocks/stopLoss.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 
-import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultOtherActionsValidations', () => {
+  before(() => {
+    // TODO: remove after mainnet deployment
+    window.location.search = ['?network=goerli'] as any
+  })
+
+  after(() => {
+    window.location.search = [] as any
+  })
+
   it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
     const depositAmountExceeds = new BigNumber('2')
     const depositAmountAll = new BigNumber('1')
@@ -206,7 +215,7 @@ describe('manageVaultOtherActionsValidations', () => {
     )
 
     legacyToggle(state())
-    state().setOtherAction!('depositDai')
+    state().setOtherAction!('paybackDai')
     state().updatePaybackAmount!(paybackAmount)
 
     state().progress!()
@@ -236,7 +245,7 @@ describe('manageVaultOtherActionsValidations', () => {
     )
 
     legacyToggle(state())
-    state().setOtherAction!('depositDai')
+    state().setOtherAction!('paybackDai')
     state().updatePaybackAmount!(paybackAmountExceedsVaultDebt)
 
     expect(state().errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'], '1')
@@ -263,7 +272,7 @@ describe('manageVaultOtherActionsValidations', () => {
     )
 
     legacyToggle(state())
-    state().setOtherAction!('depositDai')
+    state().setOtherAction!('paybackDai')
     state().updatePaybackAmount!(paybackAmount.plus(state().vault.debtOffset))
     expect(state().insufficientDaiAllowance).to.be.true
 

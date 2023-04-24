@@ -1,25 +1,17 @@
+import { ProductCardBorrow } from 'components/productCards/ProductCardBorrow'
+import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
+import { ProductHeader } from 'components/ProductHeader'
+import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { borrowPageCardsData, productCardsConfig } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid } from 'theme-ui'
-
-import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardBorrow } from '../../components/ProductCardBorrow'
-import { ProductCardsFilter } from '../../components/ProductCardsFilter'
-import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { ProductHeader } from '../../components/ProductHeader'
-import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
-import {
-  borrowPageCardsData,
-  productCardsConfig,
-  ProductLandingPagesFiltersKeys,
-} from '../../helpers/productCards'
+import { Grid } from 'theme-ui'
 
 export function BorrowView() {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const tab = window.location.hash.replace(/^#/, '')
+  const aaveBorrowStrategies = aaveStrategiesList('Borrow')
 
   return (
     <Grid
@@ -33,37 +25,18 @@ export function BorrowView() {
         title={t('product-page.borrow.title')}
         description={t('product-page.borrow.description')}
         link={{
-          href: 'https://kb.oasis.app/help/what-is-oasis-borrow ',
+          href: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
           text: t('product-page.borrow.link'),
         }}
+        scrollToId={tab}
       />
-
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsData]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
-          {([productCardsData]) => (
-            <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
-              {(cardsFilter: ProductLandingPagesFiltersKeys) => {
-                const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
-
-                return (
-                  <ProductCardsWrapper>
-                    {filteredCards.map((cardData) => (
-                      <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
-                    ))}
-                  </ProductCardsWrapper>
-                )
-              }}
-            </ProductCardsFilter>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <ProductCardsFilter
+        filters={productCardsConfig.borrow.cardsFilters}
+        selectedFilter={tab}
+        makerProductCardComponent={ProductCardBorrow}
+        filterCardsFunction={borrowPageCardsData}
+        otherStrategies={aaveBorrowStrategies}
+      />
     </Grid>
   )
 }

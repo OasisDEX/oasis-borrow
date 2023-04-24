@@ -1,11 +1,10 @@
-import { Web3Context, Web3ContextConnected } from '@oasisdex/web3-context'
+import { jwtAuthGetToken, JWToken } from 'features/shared/jwt'
+import { Web3Context, Web3ContextConnected } from 'features/web3Context'
+import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
 import { identity, merge, NEVER, Observable, of, Subject } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, map, repeat, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
-
-import { jwtAuthGetToken, JWToken } from './jwt'
-import { checkAcceptanceLocalStorage$, saveAcceptanceLocalStorage$ } from './termAcceptanceLocal'
 
 export type TermsAcceptanceStage =
   | 'walletConnectionInProgress'
@@ -16,6 +15,8 @@ export type TermsAcceptanceStage =
   | 'jwtAuthInProgress'
   | 'jwtAuthFailed'
   | 'jwtAuthRejected'
+  | 'jwtInvalidProgress'
+  | 'jwtInvalidWaiting4Acceptance'
   | 'acceptanceSaveInProgress'
   | 'acceptanceSaveFailed'
   | 'acceptanceAccepted'
@@ -51,11 +52,11 @@ function verifyAcceptance$(
     version: string,
   ) => Observable<{ acceptance: boolean; updated?: boolean }>,
   saveAcceptance$: (token: JWToken, version: string, email?: string) => Observable<void>,
-  jwtAuthSetupToken$: (web3: Web3, account: string) => Observable<JWToken>,
+  jwtAuthSetupToken$: (web3: Web3, account: string, isGnosisSafe: boolean) => Observable<JWToken>,
   version: string,
   web3Context: Web3ContextConnected,
 ): Observable<TermsAcceptanceState> {
-  const { account, web3, magicLinkEmail, connectionKind } = web3Context
+  const { account, web3, magicLinkEmail } = web3Context
 
   // helper function used in case when user deletes his JWT from Local storage
   // we have to recheck newly issued JWT against addresses in db that acceppted terms and then eventually save them
@@ -89,75 +90,42 @@ function verifyAcceptance$(
     )
   }
 
-  function checkAcceptanceGnosis(token: JWToken, version: string) {
-    return checkAcceptanceLocalStorage$(token, version).pipe(
-      switchMap(({ acceptance, updated }) => {
-        if (acceptance) {
-          return of({ stage: 'acceptanceAccepted' } as TermsAcceptanceState)
-        }
-
-        const accept$ = new Subject<void>()
-        return accept$.pipe(
-          switchMap(() => {
-            return saveAcceptanceLocalStorage$(token, version).pipe(
-              map(() => ({ stage: 'acceptanceAccepted' })),
-              catchError((error) =>
-                of({ stage: 'acceptanceSaveFailed', error } as TermsAcceptanceState),
-              ),
-              startWith({ stage: 'acceptanceSaveInProgress' }),
-            )
-          }),
-          startWith({
-            stage: 'acceptanceWaiting4TOSAcceptance',
-            acceptTOS: () => accept$.next(),
-            updated,
-          }),
-        )
-      }),
-      catchError((error) => withClose({ stage: 'acceptanceCheckFailed', error })),
-      startWith({ stage: 'acceptanceCheckInProgress' } as TermsAcceptanceState),
-    )
-  }
-
-  let isGnosisSafe = false
-
-  // check if current provider is Gnosis connected by WalletConnect or by dedicated web3-react-connector
-  if (connectionKind === 'walletConnect') {
-    // @ts-ignore
-    if (web3.currentProvider.wc) {
-      // @ts-ignore
-      isGnosisSafe = web3.currentProvider.wc?._peerMeta?.name.includes('Gnosis')
-    }
-  }
-
-  if (connectionKind === 'gnosisSafe') {
-    isGnosisSafe = true
-  }
-
-  if (isGnosisSafe) {
-    // temporary ToS flow for Gnosis until they implement off chain signatures
-    // saving and checking from Local storage and skipping JWT token set up
-    return checkAcceptanceGnosis(`${account}-gnosis`, version)
-  }
+  const isGnosisSafe = checkIfGnosisSafe(web3Context)
 
   const token = jwtAuthGetToken(account)
 
-  return (token
-    ? checkAcceptance$(token, version)
-    : of({ acceptance: false, updated: false })
+  return (
+    token && token !== 'invalid'
+      ? checkAcceptance$(token, version)
+      : of({ acceptance: false, updated: false })
   ).pipe(
-    switchMap(({ acceptance }) => {
+    switchMap(({ acceptance, updated }) => {
       if (acceptance) {
         return of({ stage: 'acceptanceAccepted' })
       }
 
       const jwtAuth$ = new Subject<boolean>()
+      if (updated) {
+        token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
+        return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
+          switchMap((token) => {
+            return checkAcceptance(token, version, magicLinkEmail)
+          }),
+          catchError(() => {
+            return withClose({ stage: 'jwtAuthFailed' })
+          }),
+          startWith({
+            stage: token === 'invalid' ? 'jwtInvalidProgress' : 'jwtAuthInProgress',
+          }),
+        )
+      }
       return jwtAuth$.pipe(
         switchMap((jwtAuthAccepted) => {
           if (!jwtAuthAccepted) {
             return withClose({ stage: 'jwtAuthRejected' })
           }
-          return jwtAuthSetupToken$(web3, account).pipe(
+          token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
+          return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
             switchMap((token) => {
               return checkAcceptance(token, version, magicLinkEmail)
             }),
@@ -165,12 +133,12 @@ function verifyAcceptance$(
               return withClose({ stage: 'jwtAuthFailed' })
             }),
             startWith({
-              stage: 'jwtAuthInProgress',
+              stage: token === 'invalid' ? 'jwtInvalidProgress' : 'jwtAuthInProgress',
             }),
           )
         }),
         startWith({
-          stage: 'jwtAuthWaiting4Acceptance',
+          stage: token === 'invalid' ? 'jwtInvalidWaiting4Acceptance' : 'jwtAuthWaiting4Acceptance',
           acceptJwtAuth: () => jwtAuth$.next(true),
           rejectJwtAuth: () => jwtAuth$.next(false),
         }),
@@ -188,7 +156,7 @@ function verifyAcceptance$(
 export function createTermsAcceptance$(
   web3Context$: Observable<Web3Context>,
   version: string,
-  jwtAuthSetupToken$: (web3: Web3, account: string) => Observable<JWToken>,
+  jwtAuthSetupToken$: (web3: Web3, account: string, isGnosisSafe: boolean) => Observable<JWToken>,
   checkAcceptance$: (
     token: JWToken,
     version: string,

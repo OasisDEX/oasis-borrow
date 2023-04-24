@@ -1,17 +1,18 @@
 import BigNumber from 'bignumber.js'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
-import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { zero } from 'helpers/zero'
-
-import { isNullish } from '../../../../../helpers/functions'
-import { GUNI_MAX_SLIPPAGE, GUNI_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
   customAllowanceAmountLessThanDepositAmountValidator,
+  ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
-} from '../../../../form/commonValidators'
-import { SLIPPAGE_DEFAULT, SLIPPAGE_WARNING_THRESHOLD } from '../../../../userSettings/userSettings'
+} from 'features/form/commonValidators'
+import { SLIPPAGE_DEFAULT, SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { isNullish } from 'helpers/functions'
+import { GUNI_MAX_SLIPPAGE, GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
+
 import { OpenGuniVaultState, Stage } from './openGuniVault'
 
 const defaultOpenVaultStageCategories = {
@@ -101,6 +102,7 @@ export interface GuniOpenMultiplyVaultConditions {
   potentialGenerateAmountLessThanDebtFloor: boolean
 
   isLoadingStage: boolean
+  isSuccessStage: boolean
   canProgress: boolean
   canRegress: boolean
   isExchangeLoading: boolean
@@ -108,6 +110,8 @@ export interface GuniOpenMultiplyVaultConditions {
   highSlippage: boolean
   customSlippageOverridden: boolean
   customSlippage: BigNumber
+
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultConditions = {
@@ -127,6 +131,7 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   potentialGenerateAmountLessThanDebtFloor: false,
 
   isLoadingStage: false,
+  isSuccessStage: false,
   canProgress: false,
   canRegress: false,
   isExchangeLoading: false,
@@ -134,6 +139,8 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   highSlippage: false,
   customSlippageOverridden: false,
   customSlippage: SLIPPAGE_DEFAULT,
+
+  insufficientEthFundsForTx: false,
 }
 
 export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGuniVaultState {
@@ -166,14 +173,18 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
   const generateAmountMoreThanMaxFlashAmount = afterOutstandingDebt.gt(FLASH_MINT_LIMIT_PER_TX)
 
-  const isLoadingStage = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'allowanceInProgress',
-    'allowanceWaitingForApproval',
-    'txInProgress',
-    'txWaitingForApproval',
-  ] as Stage[]).some((s) => s === stage)
+  const isLoadingStage = (
+    [
+      'proxyInProgress',
+      'proxyWaitingForApproval',
+      'allowanceInProgress',
+      'allowanceWaitingForApproval',
+      'txInProgress',
+      'txWaitingForApproval',
+    ] as Stage[]
+  ).some((s) => s === stage)
+
+  const isSuccessStage = stage === 'txSuccess'
 
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
@@ -187,13 +198,12 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
   const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
 
-  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
-    {
+  const customAllowanceAmountLessThanDepositAmount =
+    customAllowanceAmountLessThanDepositAmountValidator({
       selectedAllowanceRadio,
       allowanceAmount,
       depositAmount,
-    },
-  )
+    })
 
   const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
 
@@ -231,14 +241,18 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
       invalidSlippage
     ) || stage === 'txSuccess'
 
-  const canRegress = ([
-    'proxyWaitingForConfirmation',
-    'proxyFailure',
-    'allowanceWaitingForConfirmation',
-    'allowanceFailure',
-    'txWaitingForConfirmation',
-    'txFailure',
-  ] as Stage[]).some((s) => s === stage)
+  const canRegress = (
+    [
+      'proxyWaitingForConfirmation',
+      'proxyFailure',
+      'allowanceWaitingForConfirmation',
+      'allowanceFailure',
+      'txWaitingForConfirmation',
+      'txFailure',
+    ] as Stage[]
+  ).some((s) => s === stage)
+
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
   return {
     ...state,
@@ -257,6 +271,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     potentialGenerateAmountLessThanDebtFloor,
 
     isLoadingStage,
+    isSuccessStage,
     canProgress,
     canRegress,
     isExchangeLoading,
@@ -264,5 +279,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     highSlippage,
     invalidSlippage,
     customSlippageOverridden,
+
+    insufficientEthFundsForTx,
   }
 }

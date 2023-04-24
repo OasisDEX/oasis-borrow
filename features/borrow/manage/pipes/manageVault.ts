@@ -1,43 +1,45 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import {
+  createAutomationTriggersChange$,
+  TriggersData,
+} from 'features/automation/api/automationTriggersData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import {
   SaveVaultType,
   saveVaultTypeForAccount,
   VaultType,
 } from 'features/generalManageVault/vaultType'
+import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
+import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { HasGasEstimation } from 'helpers/form'
+import { TxError } from 'helpers/types'
+import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import {
-  vaultActionsLogic,
-  VaultActionsLogicInterface,
-} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
-import { InstiVault } from '../../../../blockchain/instiVault'
-import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { TxError } from '../../../../helpers/types'
-import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
-import {
-  createStopLossDataChange$,
-  TriggersData,
-} from '../../../automation/triggers/AutomationTriggersData'
-import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
-import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
-import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
-import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
-import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
-import { createHistoryChange$ } from './manageHistory'
-import { validateErrors, validateWarnings } from './manageVaultValidations'
-import { BorrowManageVaultViewStateProviderInterface } from './viewStateProviders/borrowManageVaultViewStateProviderInterface'
+import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
+import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
 import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
 import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
 import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
@@ -158,7 +160,7 @@ interface ManageVaultTxInfo {
   safeConfirmations: number
 }
 
-type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
+export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
   ManageVaultCalculations &
   ManageVaultConditions &
   ManageVaultEnvironment<V> &
@@ -171,13 +173,13 @@ type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
     totalSteps: number
     currentStep: number
     stopLossData?: StopLossTriggerData
+    autoBuyData?: AutoBSTriggerData
+    autoSellData?: AutoBSTriggerData
+    constantMultipleData?: ConstantMultipleTriggerData
+    autoTakeProfitData?: AutoTakeProfitTriggerData
   } & HasGasEstimation
 
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
-
-export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
-  originationFeeUSD?: BigNumber
-}
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -210,6 +212,7 @@ function addTransitions(
           state.vault.id,
           VaultType.Multiply,
           state.vault.chainId,
+          LendingProtocol.Maker,
           () => {
             window.location.reload()
             change({ kind: 'multiplyTransitionSuccess' })
@@ -379,7 +382,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   }: {
     makerVaultType: MakerVaultType
   }) => Observable<ProxyActionsSmartContractAdapterInterface>,
-  vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
+  vaultViewStateProvider: BorrowManageAdapterInterface<V, VS>,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ): Observable<VS> {
@@ -427,7 +430,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     collateralAllowance,
                   )
 
-                  const initialState = vaultViewStateProvider.createInitialVaultState({
+                  const initialState = vaultViewStateProvider.createInitialViewState({
                     vault,
                     priceInfo,
                     balanceInfo,
@@ -448,16 +451,22 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
                     createHistoryChange$(vaultHistory$, id),
-                    createStopLossDataChange$(automationTriggersData$, id),
+                    createAutomationTriggersChange$(automationTriggersData$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   return merge(change$, environmentChanges$).pipe(
-                    scan(vaultViewStateProvider.applyChange, initialState),
+                    scan<ManageVaultChange, VS>(
+                      vaultViewStateProvider.transformViewState,
+                      initialState,
+                    ),
                     map(validateErrors),
                     map(validateWarnings),
+                    map(vaultViewStateProvider.addErrorsAndWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                    map(finalValidation),
+                    map(vaultViewStateProvider.addTxnCost),
                     map(
                       curry(addTransitions)(
                         txHelpers$,

@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -47,13 +47,18 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker pull $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg API_HOST=${{ secrets.API_HOST }} \
+                     --build-arg NOTIFICATIONS_HOST=${{ secrets.NOTIFICATIONS_HOST_PROD }} \
+                     --build-arg NOTIFICATIONS_HOST_GOERLI=${{ secrets.NOTIFICATIONS_HOST_PROD_GOERLI }} \
+                     --build-arg AJNA_SUBGRAPH_URL=${{ secrets.AJNA_SUBGRAPH_URL }} \
+                     --build-arg AJNA_SUBGRAPH_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }} \
+                     --build-arg APP_FULL_DOMAIN=${{ secrets.APP_FULL_DOMAIN_PROD }} \
                      --build-arg MIXPANEL_ENV=production \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} \
                      --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_PROD }} \
                      --build-arg ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_PROD }} \
+                     --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL }} \
                      --build-arg MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }} \
                      --build-arg MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }} \
                      --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
@@ -82,4 +87,4 @@ jobs:
         ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
     - name: Invalidate CloudFront
-      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_PROD }} --paths "/*"
+      run: AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_PROD }} --paths "/*"

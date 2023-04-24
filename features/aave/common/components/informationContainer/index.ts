@@ -1,0 +1,1 @@
+export { StrategyInformationContainer } from './StrategyInformationContainer'

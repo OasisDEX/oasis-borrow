@@ -4,20 +4,19 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   createManageMultiplyVault$,
   ManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { getStateUnpacker } from 'helpers/testHelpers'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { mockedMultiplyEvents } from 'helpers/multiply/calculations.test'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
-import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
-import { mockedMultiplyEvents } from '../multiply/calculations.test'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
@@ -38,7 +37,7 @@ export interface MockManageMultiplyVaultProps {
   _priceInfo$?: Observable<PriceInfo>
   _balanceInfo$?: Observable<BalanceInfo>
   _proxyAddress$?: Observable<string | undefined>
-  _vaultMultiplyHistory$?: Observable<VaultHistoryEvent[]>
+  _vaultHistory$?: Observable<VaultHistoryEvent[]>
   _automationTriggersData$?: Observable<TriggersData>
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
@@ -56,6 +55,7 @@ export interface MockManageMultiplyVaultProps {
   account?: string
   status?: 'connected'
   exchangeQuote?: MockExchangeQuote
+  gasEstimationUsd?: BigNumber
 }
 
 export function mockManageMultiplyVault$({
@@ -65,7 +65,7 @@ export function mockManageMultiplyVault$({
   _priceInfo$,
   _balanceInfo$,
   _proxyAddress$,
-  _vaultMultiplyHistory$,
+  _vaultHistory$,
   _automationTriggersData$,
   _collateralAllowance$,
   _daiAllowance$,
@@ -82,6 +82,7 @@ export function mockManageMultiplyVault$({
   account = '0xVaultController',
   status = 'connected',
   exchangeQuote,
+  gasEstimationUsd,
 }: MockManageMultiplyVaultProps = {}): Observable<ManageMultiplyVaultState> {
   const token = vault && vault.ilk ? vault.ilk.split('-')[0] : 'WBTC'
 
@@ -115,8 +116,8 @@ export function mockManageMultiplyVault$({
     return _proxyAddress$ || of(proxyAddress)
   }
 
-  function vaultMultiplyHistory$() {
-    return _vaultMultiplyHistory$ || of(mockedMultiplyEvents)
+  function vaultHistory$() {
+    return _vaultHistory$ || of(mockedMultiplyEvents)
   }
 
   function automationTriggersData$() {
@@ -142,7 +143,7 @@ export function mockManageMultiplyVault$({
             _ilkData$: ilkData$(),
             priceInfo,
             ...vault,
-          })
+          }).vault$
         }),
       )
     )
@@ -150,6 +151,10 @@ export function mockManageMultiplyVault$({
 
   function saveVaultType$() {
     return _saveVaultType$ || of(undefined)
+  }
+
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
   }
 
   return createManageMultiplyVault$(
@@ -162,15 +167,11 @@ export function mockManageMultiplyVault$({
     ilkData$,
     vault$,
     mockExchangeQuote$(exchangeQuote),
-    addGasEstimationMock,
+    gasEstimationMock$,
     slippageLimitMock(),
-    vaultMultiplyHistory$,
+    vaultHistory$,
     saveVaultType$,
     automationTriggersData$,
     MOCK_VAULT_ID,
   )
-}
-
-export function mockManageMultiplyVault(props: MockManageMultiplyVaultProps = {}) {
-  return getStateUnpacker(mockManageMultiplyVault$(props))
 }

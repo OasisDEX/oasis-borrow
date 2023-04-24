@@ -1,11 +1,12 @@
+import { WithConnection } from 'components/connectWallet'
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { PageSEOTags } from 'components/HeadTags'
+import { ProductPagesLayout } from 'components/Layouts'
+import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
+import { EarnView } from 'features/earn/EarnView'
+import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 import React from 'react'
-
-import { WithConnection } from '../components/connectWallet/ConnectWallet'
-import { ProductPagesLayout } from '../components/Layouts'
-import { EarnView } from '../features/earn/EarnView'
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -13,20 +14,24 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function EarnPage() {
-  const enabled = useFeatureToggle('EarnProduct')
-
-  if (!enabled) {
-    const router = useRouter()
-    if (typeof window !== 'undefined') {
-      void router.push('/')
-    }
-  }
-
-  const view = enabled ? <EarnView /> : null
-
-  return <WithConnection>{view}</WithConnection>
+function EarnPage() {
+  return (
+    <AaveContextProvider>
+      <DeferedContextProvider context={aaveContext}>
+        <WithConnection>
+          <EarnView />
+          <Survey for="earn" />
+        </WithConnection>
+      </DeferedContextProvider>
+    </AaveContextProvider>
+  )
 }
 
 EarnPage.layout = ProductPagesLayout
 EarnPage.theme = 'Landing'
+
+EarnPage.seoTags = (
+  <PageSEOTags title="seo.earn.title" description="seo.earn.description" url="/earn" />
+)
+
+export default EarnPage

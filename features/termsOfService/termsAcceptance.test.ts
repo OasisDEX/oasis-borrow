@@ -1,5 +1,5 @@
-import { Web3Context } from '@oasisdex/web3-context'
 import { expect } from 'chai'
+import { Web3Context } from 'features/web3Context'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { mapValues } from 'lodash'
 import { describe, it } from 'mocha'
@@ -24,6 +24,8 @@ const defaultParams: PipelineInput = {
     connectionKind: 'injected',
     chainId: 42,
     deactivate: () => null,
+    walletLabel: 'MetaMask',
+    connectionMethod: 'web3-onboard',
   }),
   version: 'v1',
   jwtAuthSetupToken$: () => NEVER,
@@ -32,13 +34,8 @@ const defaultParams: PipelineInput = {
 }
 
 function createState$(overrides?: Partial<PipelineInput>): Observable<TermsAcceptanceState> {
-  const {
-    web3Context$,
-    version,
-    jwtAuthSetupToken$,
-    checkAcceptance$,
-    saveAcceptance$,
-  } = defaultParams
+  const { web3Context$, version, jwtAuthSetupToken$, checkAcceptance$, saveAcceptance$ } =
+    defaultParams
 
   if (!overrides) {
     return createTermsAcceptance$(
@@ -126,7 +123,6 @@ describe('termsAcceptance', () => {
         jwtAuthSetupToken$: () => of('xxx'),
       }),
     )
-    ;(state() as any).acceptJwtAuth()
     expect(state().stage).to.be.deep.eq('acceptanceWaiting4TOSAcceptance')
     expect(state().updated).to.be.deep.eq(true)
   })

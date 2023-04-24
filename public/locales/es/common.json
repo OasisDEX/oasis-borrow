@@ -8,6 +8,13 @@
     "careers-link": "Únase a nosotros",
     "pics-title": "Conozca al equipo"
   },
+  "wallet-wrong-network": "Su cartera no está en la red correcta",
+  "app-wrong-network": "La red actual de Oasis.app no está soportada por su cartera",
+  "wallet-wrong-network-desc": "Parece que su cartera está conectada a una red diferente a la de Oasis.app. Por favor, cambie manualmente la red de su cartera, o haga click en el botón inferior.",
+  "app-wrong-network-desc": "Parece que Oasis.app está en una red diferente a la de su cartera. Por favor, haga click en el botón inferior para cambiarla.",
+  "user-wrong-network-desc": "Parece que su cartera está conectada a una red diferente a la de Oasis.app. Por favor, cambie manualmente la red de su cartera.",
+  "switch-network": "Cambiar red",
+  "switch-to-mainnet": "Cambiar a la red principal de Ethereum",
   "acceptance-check-failed": "La verificación de aceptación falló",
   "acceptance-save-failed": "No se pudo guardar la aceptación",
   "acceptance-save-in-progress": "Guardando aceptación...",
@@ -18,6 +25,10 @@
   "activity": "Actividad",
   "address": "Dirección",
   "address-invalid": "Dirección no encontrada",
+  "add-stop-loss": "Agregar stop-loss",
+  "update-stop-loss": "Actualizar stop-loss",
+  "back-to-vault-overview": "Volver a la visión general del Vault",
+  "cancel-stop-loss": "Cancelar stop-loss",
   "adjust-your-position": "Ajuste su posición",
   "after": "Después",
   "after-next": "Después + Siguiente",
@@ -53,6 +64,7 @@
   "connect-email": "Conéctese con su correo electrónico",
   "connect-error": "Por favor, autorice a este sitio web a acceder a su cuenta Ethereum.",
   "connect-wallet": "Conecte su cartera",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "Ver productos",
   "connect-wallet-button": "Conecte su cartera",
   "connect-with": "{{ connectionKind }}",
@@ -86,6 +98,35 @@
   "create-your-vault": "Cree su Vault",
   "creating-proxy": "Creando Proxy",
   "creating-vault": "Creando Vault",
+  "proxy-advantages": [
+    "Permite a tu cartera interactuar con protocolos DeFi",
+    "Mayor eficiencia en consumo de gas"
+  ],
+  "dpm": {
+    "create-flow": {
+      "welcome-screen": {
+        "header": "Crear tu Smart DeFi Account",
+        "create-button": "Crear tu Smart DeFi Account",
+        "paragraph": "Para abrir una posicion en AAVE, es necesario una Smart DeFi Account para cada una. Podras gestionar multiples posiciones abriendo mas cuentas. Puedes aprender mas en nuestra <1>knowledge base</1>",
+        "retry-create-button": "Intentar crear tu Smart DeFi Account nuevamente",
+        "create-order-summary-heading": "Creando tu Smart DeFi account"
+      },
+      "proxy-creating-screen": {
+        "header": "Crear tu Smart DeFi Account",
+        "button": "Creando tu Smart DeFi account",
+        "paragraph": "Aprende mas en nuestra <1>knowledge base</1>"
+      },
+      "proxy-created-screen": {
+        "header": "Smart DeFi account creada",
+        "paragraph": "Aprende mas en nuestra <1>knowledge base</1>"
+      },
+      "bullet-points": [
+        "Multiples posiciones en Aave con la misma cartera",
+        "Habilita funciones avanzadas de Oasis.app como Automatizaciones y Refinanciamiento",
+        "Seguridad mejorada con limites establecidos y eliminados dentro de las transacciones"
+      ]
+    }
+  },
   "currency": "Moneda",
   "custom": "Personalizado",
   "dai-being-generated": "Generando Dai",
@@ -96,6 +137,7 @@
   "deposit": "Depositar",
   "disconnect": "Desconectar",
   "disconnect-magic": "Cerrar sesión",
+  "disconnect-wallet": "Desconectar cartera",
   "earning": "Ganancias",
   "edit-token-allowance": "Editar permiso de {{token}}",
   "edit-vault-details": "Editar información del Vault",
@@ -116,6 +158,14 @@
   "error-message": "Parece que hemos perdido la conexión. Haga click en el botón \"Recargar página\" para intentar nuevamente. Si este error continúa, por favor contáctenos en support@oasis.app",
   "error-button-reload": "Recargar página",
   "error-button": "Más información",
+  "exchange": {
+    "onboarding": {
+      "title": "Dígale Hola a Oasis Swap",
+      "body": "Intercambie sus tokens de forma rápida y segura en Oasis. Visite <0>las preguntas frecuentes de Oasis Swap para más información →</0>",
+      "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
+      "button": "Entendido"
+    }
+  },
   "create-ds-proxy-description-pending": "Creando proxy",
   "create-ds-proxy-description-recent": "Proxy creado",
   "create-ds-proxy-description-recent-failed": "Falló al crear proxy",
@@ -152,7 +202,9 @@
   },
   "exchange-rate": "Tasa de Cambio",
   "failed": "Fallido",
-  "fees": "Fees",
+  "fees": "Comisiones",
+  "fees-plus-gas": "Comisiones + (costo máx. de gas)",
+  "max-gas-fee": "Costo máx. de gas",
   "gas-explanation": "El importe máximo de gas es el valor máximo que será pagado por el gas en la transacción. Queremos que la transacción sea rápida, por lo tanto establecemos un precio máximo de gas del doble del precio base actual, más un adicional de prioridad que hará que su transacción se procese en el siguiente bloque el 95% de las veces. En la mayoría de los casos, pagará mucho menos que este valor máximo.",
   "featured": {
     "cheapest": "Más barato",
@@ -195,7 +247,13 @@
     "close_guni_vault_to_dai": "Cerró el Vault, saliendo a Dai",
     "close_vault_to_collateral": "Cerró el vault, saliendo a colateral",
     "sold": "Vendió",
-    "total-fees": "Total fees"
+    "total-fees": "Comisiones totales",
+    "stop-loss": "Disparador de stop-loss"
+  },
+  "triggers": {
+    "added": "agregado",
+    "removed": "eliminado",
+    "executed": "ejecutado"
   },
   "jwt-auth-failed": "Firma fallida",
   "jwt-auth-in-progress": "Esperando firma...",
@@ -276,22 +334,6 @@
         "discord": "Discord",
         "contact-us": "Contáctenos",
         "twitter": "Twitter"
-      },
-      "get-started": "Comience a usar Oasis.app",
-      "multiply": {
-        "multiply": "Multiplique sus activos",
-        "subtitle": "Puede abrir un Vault de Maker, generar Dai y comprar más colateral en una sola transacción.",
-        "open-vault": "Abrir Vault"
-      },
-      "borrow": {
-        "borrow-dai": "Pida un préstamo en Dai",
-        "choose-your-preferred-token": "Elija su token preferido para usar como garantía, y abra un Vault de Maker para obtener Dai",
-        "open-vault": "Abrir Vault"
-      },
-      "manage": {
-        "manage-your-vault": "Administrar su Vault",
-        "make-actions": "Opere en su Vault en cualquier momento",
-        "connect-your-wallet": "Conecte su cartera"
       }
     },
     "cookie-banner": {
@@ -334,6 +376,8 @@
     "stability-fee": "Tasa de estabilidad",
     "title": "Administrar Vault",
     "action": "Administrar Vault",
+    "current-price": "Precio actual de {{token}}",
+    "next-price": "Próximo precio de {{token}}",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "El Dai mínimo requerido para abrir un Vault es {{debtFloor}}. Por favor añade más colateral para generar {{debtFloor}} Dai",
       "debt-is-less-than-debt-floor": "Su deuda actual de Dai es menor al mínimo de {{debtFloor}}. No puede generar más Dai a menos que lleve su deuda por encima de este mínimo",
@@ -372,6 +416,13 @@
       "collateral-locked-oracles": "Usamos el precio actual del oráculo de Maker para calcular este valor. El precio actual de mercado de su colateral puede diferir de este precio."
     }
   },
+  "earn-vault": {
+    "headlines": {
+      "yield-7": "7 day net APY",
+      "yield-90": "90 day net APY",
+      "total-value-locked": "Total value locked"
+    }
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "El ID del Vault es un identificador único para su Vault de Maker en Oasis.app",
@@ -382,6 +433,7 @@
     },
     "card": {
       "liquidation-price-description": "El Precio de liquidación especifica el precio del colateral en el cuál su Vault se encuentra sujeto a ser liquidado. Si piensa que su Vault está muy cerca del precio de liquidación puede cambiar su Vault Multiply para tener un ratio de colateralización más alto, puede añadir más colateral, o puede pagar una parte de su deuda de Dai.",
+      "liquidation-price-description-AUTO": "El precio de liquidación es el precio del colateral en el cual el Vault es pasible de ser liquidado.",
       "liquidation-price-current": "Su precio actual de liquidación es:",
       "liquidation-percentage-below": "{{percentageBelow}} debajo del precio actual",
       "buying-power": "Poder de compra",
@@ -405,7 +457,20 @@
       "net-value-description": "El Valor Neto se calcula como el valor actual del colateral en el Vault, menos la deuda actual. Nota: Esto no será exactamente igual a la cantidad que recibirá si cierra su Vault a Dai. Esto se debe a que se aplicarán tarifas al convertir el colateral a Dai. El Valor Neto se calcula utilizando el precio de mercado del colateral en 1Inch.",
       "profit-and-loss": "P/G",
       "profit-and-loss-description": "A determinar",
-      "deposit-collateral-on-vault-under-debt-floor": "No puede depositar en su Vault mientras esté por debajo de la deuda mínima requerida de {{debtFloor}}. Para agregar más colateral, genere el suficiente Dai para que su deuda esté por encima del mínimo requerido. Más información acerca de la deuda mínima del Vault <0>aquí</0>"
+      "deposit-collateral-on-vault-under-debt-floor": "No puede depositar en su Vault mientras esté por debajo de la deuda mínima requerida de {{debtFloor}}. Para agregar más colateral, genere el suficiente Dai para que su deuda esté por encima del mínimo requerido. Más información acerca de la deuda mínima del Vault <0>aquí</0>",
+      "stop-loss-coll-ratio": "Ratio de colateralización del stop-loss",
+      "current-stop-loss-coll-ratio": "El ratio de colateralización del stop-loss actual es:",
+      "stop-loss-coll-ratio-desc": "El ratio de colateralización del stop-loss es el punto que dispara la ejecución de la protección en el Vault, a partir del ratio de colateralización en la próxima actualización de precios del OSM. Si el próximo precio dejaría el ratio de colateralización de su Vault por debajo del ratio de colateralización del stop-loss, el Vault se cerrará automáticamente.",
+      "dynamic-stop-price": "Precio de stop dinámico",
+      "dynamic-stop-loss-price": "Precio de stop-loss dinámico",
+      "dynamic-stop-loss-price-desc": "El precio de stop-loss dinámico es el precio al que se cerrará el Vault, a partir del ratio de colateralización del stop-loss. Este precio es dinámico debido a que la protección se basa en el ratio de colateralización, de tal forma que cuando se ajusten los parámetros del Vault o se acumule la tasa de estabilidad, se modificará el precio que dispara la protección.",
+      "current-dynamic-stop-loss-price": "El precio de stop-loss dinámico actual es:",
+      "max-token-on-stop-loss-trigger": "{{token}} aprox. al disparar el stop-loss",
+      "current-coll-ratio": "Ratio de colateralización actual",
+      "saving-comp-to-liquidation": "Ahorro comparado con la liquidación",
+      "above-liquidation-price": "por encima del precio de liquidación",
+      "on-next-price": "en el próximo precio",
+      "up-to": "hasta"
     },
     "action-tabs": {
       "adjust": "Ajustar",
@@ -458,9 +523,11 @@
     "blog": "Blog",
     "faq": "Preguntas Frecuentes",
     "knowledge-centre": "Centro de Conocimiento",
+    "learn": "Aprenda más",
     "oracles": "Oráculos",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
+    "oasis-borrow": "Oasis Borrow",
     "multiply": "Multiply",
     "more": "Más",
     "assets": "Activos",
@@ -485,7 +552,10 @@
   "one-of-some": "{{one}} de {{some}}",
   "onramp-leave-message": "Al hacer clic en comprar, saldrá de Oasis y será redirigido a un sitio web de terceros donde completará el proceso de compra.",
   "open-new-vault": "Abrir un nuevo Vault",
-  "open-vault": "Abrir Vault",
+  "open-vault": {
+    "title": "Abrir Vault",
+    "simulate": "Simulate"
+  },
   "or": "o",
   "outstanding-debt": "Deuda pendiente",
   "paste": "Pegar",
@@ -548,6 +618,28 @@
   "setup-proxy": "Configurar Proxy",
   "setup-wallet": "Configure su cartera",
   "show-more": "Mostrar más",
+  "slider": {
+    "adjust-multiply": {
+      "introduction-header": "Ajuste su múltiplo",
+      "left-label": "Precio de liquidación",
+      "right-label": "Ratio de colateralización",
+      "left-footer": "Disminuye el riesgo",
+      "right-footer": "Aumenta el riesgo"
+    },
+    "set-stoploss": {
+      "left-label": "Ratio de colateralización del stop-loss",
+      "right-label": "Precio de stop dinámico",
+      "left-footer": "Mayores pérdidas",
+      "right-footer": "Ejecución más probable"
+    }
+  },
+  "cancel-stoploss": {
+    "summary-header": "Resumen de cancelación de stop-loss",
+    "liquidation": "Precio de liquidación después de la cancelación",
+    "total": "Costo total de transacción",
+    "max": "Costo máximo de transacción"
+  },
+  "notice": "Aviso",
   "spots-remaining": "{{ spots }} lugares restantes",
   "start-saving": "Empiece a ahorrar",
   "system": {
@@ -571,9 +663,12 @@
     "in-my-wallet": "En mi cartera",
     "in-your-wallet": "En su cartera",
     "liquidation-penalty": "Penalidad por liquidación",
+    "liquidation-fee": "Penalización por liquidación",
     "liquidation-price": "Precio de liquidación",
     "liquidation-ratio": "Ratio de liquidación",
+    "dust-limit": "Deuda mínima",
     "min-coll-ratio": "Ratio mínimo de colateral",
+    "minimum-coll-ratio": "Ratio de colateralización mínimo",
     "stability-fee": "Tasa de estabilidad",
     "type": "Tipo",
     "vault-dai-debt": "Deuda de Dai del Vault",
@@ -582,7 +677,14 @@
     "market-price": "Precio de Mercado",
     "max-multiple": "Múltiplo Máximo",
     "variable-annual-fee": "Tasa Anual Variable",
-    "seven-day-average": "Promedio de 7 días"
+    "seven-day-average": "Promedio de 7 días",
+    "vault-protection": "Protección del Vault",
+    "date": "Fecha",
+    "overview": "Visión general",
+    "protection": "Protección",
+    "history": "Historial",
+    "vault-info": "Información del Vault",
+    "position-info": "Información de la Posición"
   },
   "token-balance": "Saldo de {{token}} ",
   "token-depositing": "Depositando {{amount}} {{token}}",
@@ -642,7 +744,9 @@
     "withdraw-collateral-on-vault-under-debt-floor": "No puede retirar de su Vault mientras está por debajo del mínimo de deuda de {{debtFloor}} Dai. Para retirar su colateral, pague el total de su deuda. Más información sobre el Minimo de Deuda del Vault <0>aquí</0>",
     "has-to-deposit-collateral-on-empty-vault": "No hay colateral depositado en el Vault. Por favor, agregue colateral en la acción 'Depositar colateral' de la pestaña 'Otras acciones'.",
     "deposit-collateral-on-vault-under-debt-floor": "No puede depositar en su Vault mientras está por debajo del mínimo de deuda de {{debtFloor}} Dai. Para agregar más colateral, genere Dai suficiente para superar la deuda mínima. Más información sobre el Minimo de Deuda del Vault <0>aquí</0>",
-    "invalid-slippage": "El valor de deslizamiento es muy alto para esta transacción, por favor reduzca el valor"
+    "invalid-slippage": "El valor de deslizamiento es muy alto para esta transacción, por favor reduzca el valor",
+    "after-coll-ratio-below-stop-loss-ratio": "No puede realizar ajustes en su Vault que dejen su posición por debajo del ratio de colateralización de stop-loss para el precio de colateral actual o siguiente.",
+    "vault-will-be-taken-under-min-active-col-ratio": "No puede realizar ajustes en su Vault que dejen su posición por debajo del ratio de colateralización activo mínimo para el precio de colateral actual o siguiente."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "El monto mínimo de Dai necesario para abrir un Vault es {{debtFloor}}. Por favor, agregue más colateral para generar al menos {{debtFloor}} Dai.",
@@ -650,7 +754,9 @@
     "vault-will-be-at-risk-level-danger": "Con esta acción, el ratio de colateralización de su Vault estará muy cerca del mínimo requerido",
     "vault-will-be-at-risk-level-danger-at-next-price": "Con esta acción, en la proxima actualización de precios, el ratio de colateralización de su Vault estará muy cerca del mínimo requerido",
     "vault-will-be-at-risk-level-warning": "Con esta acción, el ratio de colateralización de su Vault estará cerca del mínimo requerido",
-    "vault-will-be-at-risk-level-warning-at-next-price": "Con esta acción, en la proxima actualización de precios, el ratio de colateralización de su Vault estará cerca del mínimo requerido"
+    "vault-will-be-at-risk-level-warning-at-next-price": "Con esta acción, en la proxima actualización de precios, el ratio de colateralización de su Vault estará cerca del mínimo requerido",
+    "vault-is-currently-under-min-active-col-ratio": "Su Vault está por debajo del ratio de colateralización activo mínimo para el precio de colateral actual o siguiente. Puede disminuir el riesgo de la posición pero no incrementarlo.",
+    "vault-will-remain-under-min-active-col-ratio": "Está disminuyendo el riesgo de la posición, pero aún está por debajo del ratio de colateralización mínimo activo."
   },
   "vault-changes": {
     "order-information": "Información de su orden",
@@ -662,7 +768,12 @@
     "price-impact": "(Impacto en el) Precio del {{token}}",
     "slippage-limit": "Límite de deslizamiento",
     "third-party-fees": "Tasas de protocolos de terceros",
-    "oasis-fee": "Tasa de Oasis"
+    "oasis-fee": "Tasa de Oasis",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt",
+    "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
+    "slippage-from-settings": "Use slippage from settings",
+    "slippage-from-strategy": "Use slippage from strategy"
   },
   "vault-actions": {
     "deposit": "Deposita",
@@ -672,6 +783,7 @@
   },
   "vault-changed": "Vault modificado",
   "vault-history": "Historia del Vault",
+  "vault-information": "Información del Vault",
   "vaults": {
     "after": "Después ${{price}}",
     "current-price": "{{token}}/USD precio actual",
@@ -693,17 +805,19 @@
       "connected-viewer-noVaults": "{{address}} actualmente no tiene Vaults Maker.",
       "connected-viewer-withVaults": "Resumen de Vaults de Maker de {{address}}",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecte su cartera y abra un Vault",
-      "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera"
+      "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera",
+      "vault-suggestions": "{{address}}, hacer más en Oasis.app"
     },
     "number-of-vaults": "Número de Vaults",
     "subheader-no-vaults": "Abra un Vault de Maker, deposite su colateral, y tome prestado Dai o compre más colateral con su préstamo.",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "Deuda Total",
     "total-locked": "Total bloqueado",
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults en riesgo",
     "your-vaults": "Sus Vaults"
   },
-  "vault-banners": {
+  "vault-notices": {
     "ownership": {
       "header": "Está viendo el Vault de {{address}}",
       "subheader1": "Por favor conecte su cartera para abrir, manejar o ver sus Vaults",
@@ -723,9 +837,6 @@
       "subheader2": "Puede recuperar {{ amount }} {{ collateral }}",
       "subheader3": "Este Vault de Maker fue liquidado. Una parte del colateral se subastó para pagar la deuda en Dai.",
       "subheader4": "Si este es su Vault, conéctese con la dirección {{ address }} para recuperar el colateral restante."
-    },
-    "debt-ceiling-rise": {
-      "header": "El 24 de Enero el techo de deuda de este tipo de Vault pasó de {{from}} a {{to}}. Por lo tanto, las ganancias de esta posición pueden reducirse significativamente. Más información en nuestro blog."
     }
   },
   "view": "Ver",
@@ -739,9 +850,10 @@
   "withdrawn": "Retirado",
   "you-are-sending": "Está enviando",
   "your-vaults": "Sus Vaults",
-  "my-positions": "My Positions",
+  "my-positions": "Mis posiciones",
   "no-results": "Sin resultados",
   "learn-about-wallets": "Aprenda más sobre carteras",
+  "learn-more-at-oasis": "Más información en la Base de Conocimiento de Oasis.app",
   "learn-more-link": "https://ethereum.org/es/wallets/find-wallet/",
   "enter-an-amount": "Ingrese un monto",
   "enter-allowance-amount": "Ingrese un monto de autorización",
@@ -752,6 +864,7 @@
       "edit": "Configure su Vault",
       "editWithToken": "Configure su Vault {{token}}",
       "proxy": "Cree su Proxy inteligente",
+      "proxy-success": "El Proxy Inteligente fue creado con éxito",
       "allowance": "Configurar autorización de {{token}}",
       "daiAllowance": "Configurar autorización de DAI",
       "confirm": "Confirme la creación del Vault",
@@ -768,7 +881,9 @@
       "edit": "Simule su Vault configurando la cantidad de colateral a depositar y Dai a generar.",
       "edit-multiply": "Simule su Vault configurando la cantidad de colateral a depositar, y variando el factor de múltiplo.",
       "edit-multiply-dai": "Este Vault puede ser creado simplemente <1>depositando Dai</1>. La transacción creará su posición en {{token}} a partir de su depósito de Dai.",
-      "proxy": "Con su proxy inteligente podrá realizar múltiples acciones de su Vault en una transacción. Este proxy sólo necesita ser configurado una vez.",
+      "proxy": "Con su proxy inteligente podrá realizar múltiples acciones de su Vault en una transacción. Más información en la <1><2>Base de Conocimiento</2></1>",
+      "proxy-start": "Con su proxy inteligente podrá realizar múltiples acciones de su Vault en una transacción. Más información en la <1><2>Base de Conocimiento</2></1>",
+      "proxy-success": "Su Proxy inteligente fue configurado exitosamente. Más información en la <1>Base de Conocimiento →</1>",
       "allowance": "Especifique un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
       "daiAllowance": "Especifique un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
       "confirm": "Esta operación actualizará su Vault a una Vault Multiply. No requiere de una transacción. Podrá volver a la interfaz de Borrow.",
@@ -792,6 +907,7 @@
   "closing-vault-multiply": "Cerrando su Vault Multiply",
   "your-wallet": "Su cartera",
   "welcome": "Bienvenido al nuevo Oasis.app.",
+  "wallet": "Cartera",
   "read-blog-post": "Lea el post en nuestro blog",
   "visit-old-oasis": "Visitar la versión anterior de Oasis",
   "oracles": {
@@ -817,6 +933,60 @@
       "subtext": "Pedir un préstamo de hasta {{maxBorrow}} Dai por cada $100.000 de {{token}}",
       "button": "Pedir un préstamo contra {{token}}"
     }
+  },
+  "protection": {
+    "navigate-cancel": "Cancelar protección por stop-loss",
+    "navigate-adjust": "Volver a los ajustes de stop-loss",
+    "set-downside-protection": "Configurar protección por stop-loss",
+    "set-downside-protection-desc": "Establezca el ratio de colateralización en el punto que desee que su Vault se cierre automáticamente. Más información acerca del funcionamiento del Stop-Loss.",
+    "cancel-downside-protection": "Confirmación de la cancelación",
+    "cancel-downside-protection-desc": "Para cancelar la protección, necesita hacer click en el botón inferior y confirmar la transacción.",
+    "setting-downside-protection": "Configurando la protección por stop-loss",
+    "cancelling-downside-protection": "Cancelando la protección por stop-loss",
+    "setting-downside-protection-desc": "Se está configurando su Vault para agregar la protección por stop-loss. Hasta que se complete el proceso, su Vault no estará protegida de liquidaciones.",
+    "cancelling-downside-protection-desc": "La cancelación de la protección está en proceso. Cuando se confirme la transacción, la protección se habrá eliminado.",
+    "position-again-at-risk": "Su posición está nuevamente en riesgo de ser liquidada, si el colateral alcanza el precio de liquidación.",
+    "downside-protection-complete": "Protección por Stop-Loss habilitada",
+    "cancel-protection-complete": "Se completó la cancelación de la protección",
+    "downside-protection-updated": "Se actualizó la protección por stop-loss",
+    "downside-protection-complete-desc": "Se configuró correctamente la protección por stop-loss en su Vault. Más información sobre el funcionamiento de esta característica.",
+    "cancel-protection-complete-desc": "Se canceló la protección por stop-loss. Puede volverla a activar en cualquier momento. Su posición está nuevamente en riesgo de ser liquidada, si el colateral alcanza el precio de liquidación.",
+    "banner-header": "Proteja su Vault con stop-loss",
+    "banner-content": "Configure un stop-loss dinámico basado en el ratio de colateralización de su Vault, para protegerse de liquidaciones o pérdidas.",
+    "banner-button": "Proteja su Vault →",
+    "edit-vault-protection": "Editar la protección del Vault",
+    "dynamic-stop-loss-price": "Precio dinámico del stop-loss",
+    "dynamic-stop-loss": "Stop-loss dinámico",
+    "stop-loss-coll-ratio": "Ratio de colateralización del stop-loss",
+    "total-cost": "Costo total de la transacción",
+    "max-cost": "Costo máximo de la transacción",
+    "token-on-stop-loss-trigger": "{{token}} al dispararse la protección",
+    "zero-debt-heading": "Necesita generar Dai para poder activar la protección por stop-loss",
+    "zero-debt-description": "La protección por stop-loss de Oasis le permite establecer un límite de pérdidas dinámico para su Vault, basado en el ratio de colateralización. En el caso de una bajada abrupta en el precio de su colateral, esta función de protección avanzada de Oasis.app cerrará su Vault automáticamente para evitar liquidaciones o mayores pérdidas. Podrá elegir si desea cerrar a Dai o a colateral. Más información sobre el funcionamiento de esta característica.",
+    "summary-of-protection": "Resumen de la protección",
+    "on-stop-loss-trigger": "Al dispararse el stop-loss",
+    "estimated-to-receive": "Recibirá aproximadamente",
+    "saving-comp-to-liquidation": "Ahorro respecto a la liquidación",
+    "estimated-fees-on-trigger": "Comisiones aproximadas al dispararse la protección",
+    "up-to": "hasta",
+    "not-guaranteed": "El funcionamiento de la protección automática no está garantizado el 100% de las veces.",
+    "guarantee-factors": "Múltiples factores pueden afectar el proceso, entre ellos la liquidez, la volatilidad y el gas.",
+    "learn-more-about-automation": "Aprenda más sobre la protección automática y sobre cómo Oasis está construyendo el mejor producto de automatización en Ethereum →",
+    "automation-fact": "Se protegieron exitosamente {{success}} of {{total}} Vaults que usan automatización en los últimos 90 días",
+    "modal-description": "La protección por stop-loss está habilitada. Haga click en el banner para más información.",
+    "your-stop-loss-triggered": "Se disparó la protección por stop-loss",
+    "your-stop-loss-triggered-desc": "Abajo encontrará un resumen de lo que ocurrió en su Vault.",
+    "stop-loss-summary": "Resumen de stop-loss",
+    "token-sold": "{{token}} vendido",
+    "token-or-dai-withdrawn": "{{token}} / Dai extraído",
+    "reopen-position": "Reabrir posición",
+    "stop-loss-triggered": "Se disparó el stop-loss",
+    "stop-loss-triggered-desc": "La protección por stop-loss se disparó en su Vault",
+    "cancel-notice": "Cancelar la protección por stop-loss significa que su Vault no tendrá protección automática y necesitará monitorear manualmente su ratio de colateralización para evitar liquidaciones.",
+    "find-more-about-setting-stop-loss": "Aprenda más sobre cómo configurar el stop-loss →",
+    "set-stop-loss-again": "Configurar el stop-loss nuevamente",
+    "sl-triggered-gas-estimation": "Estas estimaciones sobre las comisiones están basadas en el precio aproximado tras vender su colateral para pagar su deuda cuando se dispare la protección. La comisión de Oasis está incluída.",
+    "stop-loss-on": "Stop-loss activado"
   },
   "Argentina": "Argentina",
   "Brasil": "Brasil",
@@ -990,7 +1160,28 @@
     "lowest-stabilityFee-and-cheapest": "El Vault más barato y con la menor Tasa de Estabilidad para préstamos contra {{token}}",
     "staking-rewards": "Perfecto para pedir préstamos o multiplicar exposición mientras gana recompensas por staking.",
     "great-borrowing-and-multiplying": "Perfecto para pedir préstamos o multiplicar su exposición a {{token}}",
-    "guni": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 1bps de UNI V3",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 1bps de UNI V3",
+      "GUNIV3DAIUSDC1-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 5bps de UNI V3"
+    },
+    "aave": {
+      "stETHeth": {
+        "title": "stETH/ETH AAVE",
+        "description": "Gana con tu ETH con aumentando las recompenzas de staking. Pide prestado ETH en AAVE para obtener más exposición a stETH."
+      },
+      "stETHusdc": {
+        "title": "Mayor multiple de stETH ",
+        "description": "Maximiza tu exposición a stETH con AAVE y USDC."
+      },
+      "ethusdc": {
+        "title": "Mayor multiple de ETH ",
+        "description": "Maximiza tu exposición a ETH con AAVE y USDC.."
+      },
+      "wBTCusdc": {
+        "title": "Mayor multiple de WBTC",
+        "description": "Maximiza tu exposición a WBTC con AAVE y USDC."
+      }
+    },
     "tags": {
       "lowest-fees-for-borrowing": "La menor tasa para préstamos",
       "staking-rewards": "Recompensas de staking",
@@ -1003,7 +1194,10 @@
     "borrow": "Tome un préstamo de hasta {{value}} Dai",
     "multiply": "Obtenga una exposición de hasta {{value}} {{token}}",
     "earn": "Gane {{value}} {{token}} por año",
-    "guni": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps"
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps",
+      "GUNIV3DAIUSDC1-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 5bps"
+    }
   },
   "product-page": {
     "multiply": {
@@ -1062,5 +1256,67 @@
     }
   },
   "guni-slippage-overridden": "El deslizamiento personalizado fue modificado para este Vault. Los Vaults GUNI sólo pueden ser abiertos con un deslizamiento de 0.1%.",
-  "temporary-guni-message": "El máximo múltiplo para su posición en GUNI fue incrementado por el gobierno de Maker de 20x a 50x. Para aprovechar esto, deberá cerrar su vault y abrir una nueva posición GUNI. Más información en"
+  "temporary-guni-message": "El máximo múltiplo para su posición en GUNI fue incrementado por el gobierno de Maker de 20x a 50x. Para aprovechar esto, deberá cerrar su vault y abrir una nueva posición GUNI. Más información en",
+  "claim-rewards": {
+    "title": "Recompensas por su posición en {{ bonusTokenName }}",
+    "text1": "Esta posición otorga recompensas en {{ bonusTokenName }}. Presione el botón para obtener {{ bonusAmount }}. Puede ver más información sobre estas recompensas",
+    "link-text": "aquí",
+    "text2": ".",
+    "claim-button": {
+      "claim-rewards": "Reclamar recompensas"
+    }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
+  },
+  "manage-earn": {
+    "aave": {
+      "vault-form": {
+        "adjust-risk": "Adjust Risk",
+        "deposit": "Depositar ETH",
+        "title": "Tu posición de Earn",
+        "close-title": "Cerrar posición a {{ debtToken }}",
+        "close": "Cerrar Vault",
+        "confirm-btn": "Confirmar",
+        "close-description": "Para cerrar tu Vault, una parte de tu posición será vendida para pagar la deuda pendiente. El resto de tu colateral será enviado a tu cartera",
+        "stop-close": "No ahora",
+        "token-amount-after-closing": "{{token}} luego de cerrar posición",
+        "retry-btn": "Reintentar"
+      }
+    }
+  },
+  "open-earn": {
+    "aave": {
+      "product-header": {
+        "token-pair-list": {
+          "aave-steth-eth": "AAVE stETH yield multiple",
+          "aave-wsteth-eth": "Aave wstETH yield multiple"
+        },
+        "current-yield": "Current yield",
+        "90-day-avg-yield": "90 Day Avg",
+        "total-value-locked": "Total value locked"
+      },
+      "vault-form": {
+        "title": "Configurar estrategia de Earn ",
+        "open-btn": "Abrir posición de Earn",
+        "confirm-btn": "Confirmar",
+        "retry-btn": "Reintentar",
+        "success-title": "¡Todo listo! Has abierto una posición",
+        "go-to-position": "Ir a posición",
+        "back-to-editing": "Regresar a edición",
+        "configure-multiple": {
+          "title": "Configurar tu nivel de riesgo",
+          "liquidation-price": "Precio de liquidación en {{collateralToken}}/{{debtToken}}",
+          "historical-ratio": "{{collateralToken}} / {{debtToken}} Ratio histórico",
+          "back-to-enter-eth": "Regresar a ingresar ETH",
+          "increase-risk": "Aumentar riesgo",
+          "decrease-risk": "Reducir riesgo",
+          "vault-message-ok": "Al nivel de riesgo seleccionado, si el precio de {{collateralToken}} cambia {{priceMovement}} con respecto a {{debtToken}} es poco probable que esta posición de Earn sea liquidada. La penalidad de liquidación de AAVE es por lo menos {{liquidationPenalty}}",
+          "vault-message-warning": "Al nivel de riesgo seleccionado, si el precio de  {{collateralToken}} cambia {{priceMovement}} con respecto a {{debtToken}} esta posición de Earn podría ser liquidada.  La penalidad de liquidación de AAVE es por lo menos {{liquidationPenalty}}"
+        }
+      }
+    }
+  }
 }

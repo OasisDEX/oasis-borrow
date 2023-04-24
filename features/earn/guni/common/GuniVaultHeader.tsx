@@ -1,41 +1,92 @@
+import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
+import { EarnVaultHeadline } from 'components/vault/EarnVaultHeadline'
+import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { YieldChange } from 'helpers/earn/calculations'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
+import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { DefaultVaultHeaderProps } from '../../../../components/vault/DefaultVaultHeader'
-import { VaultHeader, VaultIlkDetailsItem } from '../../../../components/vault/VaultHeader'
-import { formatCryptoBalance, formatPercent } from '../../../../helpers/formatters/format'
+export interface EarnVaultHeaderProps {
+  ilk: string
+  token: string
+  followButton?: FollowButtonControlProps
+  shareButton?: boolean
+}
 
-export function GuniVaultHeader(props: DefaultVaultHeaderProps) {
-  const {
-    ilkData: { stabilityFee, debtFloor },
-    id,
-    header,
-  } = props
+const currentDate = moment().startOf('day')
+const previousDate = currentDate.clone().subtract(1, 'day')
+
+export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnVaultHeaderProps) {
+  const { yieldsChange$, totalValueLocked$ } = useAppContext()
+  const [yieldChanges, changesError] = useObservable(yieldsChange$(currentDate, previousDate, ilk))
+  const [totalValueLocked, totalValueLockedError] = useObservable(totalValueLocked$(ilk))
+
   const { t } = useTranslation()
+
   return (
-    <VaultHeader header={header} id={id}>
-      <VaultIlkDetailsItem
-        label={t('manage-vault.stability-fee')}
-        value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.stabilityFee')}
-        styles={{
-          tooltip: {
-            left: ['auto', '-20px'],
-            right: ['-0px', 'auto'],
-          },
+    <WithErrorHandler error={[changesError, totalValueLockedError]}>
+      <WithLoadingIndicator value={[yieldChanges, totalValueLocked]} customLoader={<div />}>
+        {([_yieldsChanges, _totalValueLocked]) => {
+          const details: HeadlineDetailsProp[] = [
+            ...Object.values(_yieldsChanges.changes)
+              .filter(({ days }) => [7, 90].includes(days))
+              .map((yieldChange) => getHeadlineDetail(yieldChange)),
+            {
+              label: t('earn-vault.headlines.total-value-locked'),
+              value: `$${formatFiatBalance(_totalValueLocked.value || zero)}`,
+            },
+          ]
+          return (
+            <EarnVaultHeadline
+              header={ilk}
+              token={[token]}
+              details={details}
+              followButton={followButton}
+              shareButton={shareButton}
+            />
+          )
         }}
-      />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.dust-limit')}
-        value={`$${formatCryptoBalance(debtFloor)}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.dust-limit')}
-        styles={{
-          tooltip: {
-            left: ['-80px', 'auto'],
-            right: ['auto', '-32px'],
-          },
-        }}
-      />
-    </VaultHeader>
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
+}
+
+function getHeadlineDetail(yieldChange?: YieldChange): HeadlineDetailsProp {
+  const { t } = useTranslation()
+
+  if (!yieldChange || yieldChange.days === 0) {
+    return {
+      label: '',
+      value: '',
+      sub: '',
+      subColor: '',
+    }
+  }
+
+  const { days, change, yieldValue } = yieldChange
+
+  return {
+    label: t(`earn-vault.headlines.yield-${days}`),
+    value: getPercent(yieldValue),
+    sub: getPercent(change),
+    subColor: getSubColor(change),
+  }
+}
+
+function getPercent(value?: BigNumber) {
+  return formatPercent((value || zero).times(100), { precision: 2 })
+}
+
+function getSubColor(number: BigNumber) {
+  if (number.lt(zero)) {
+    return 'critical100'
+  }
+  return 'success100'
 }

@@ -52,6 +52,7 @@
   "connect-email": "Conecte-se com e-mail",
   "connect-error": "Por favor, autorize o site acessar sua conta Ethereum.",
   "connect-wallet": "Conecte uma carteira",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "connect-wallet-button": "Conectar carteira",
   "connect-with": "{{ connectionKind }}",
   "connect-install-metamask": "Instalar Metamask",
@@ -308,6 +309,13 @@
       "collateral-locked-oracles": "Nós usamos o preço atual dos oráculos do Maker para calcular este valor. O preço de mercado atual do seu colateral pode ser diferente deste preço."
     }
   },
+  "earn-vault": {
+    "headlines": {
+      "yield-7": "7 day net APY",
+      "yield-90": "90 day net APY",
+      "total-value-locked": "Total value locked"
+    }
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "O ID do seu Cofre (Vault) é uma referência única do seu Cofre Maker no Oasis.app.",
@@ -363,6 +371,7 @@
   "open-new-vault": "Abrir novo Cofre",
   "open-vault": {
     "title": "Abrir Cofre",
+    "simulate": "Simulate",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "O mínimo em Dai necessário para abrir um Cofre é {{debtFloor}}. Por favor, adicione mais colateral para gerar ao menos {{debtFloor}} Dai",
       "vault-will-be-at-risk-level-danger": "Com essa ação, seu Cofre estará em um Ratio de Colateralização muito próximo ao mínimo necessário",
@@ -476,7 +485,8 @@
     "vault-id": "Cofre ID",
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
-    "max-multiple": "Max Multiple"
+    "max-multiple": "Max Multiple",
+    "position-info": "Position Info"
   },
   "token-balance": "Saldo {{token}}",
   "token-depositing": "{{token}} depositando {{amount}}",
@@ -516,6 +526,23 @@
     "payback": "Pagar",
     "withdraw": "Retirar"
   },
+  "vault-changes": {
+    "order-information": "Order information",
+    "multiply": "Multiply",
+    "close-vault-information": "Close Vault Information",
+    "getting-token": "Getting {{token}}",
+    "buying-token": "Buying {{token}}",
+    "selling-token": "Selling {{token}}",
+    "price-impact": "{{token}} Price (impact)",
+    "slippage-limit": "Slippage Limit",
+    "third-party-fees": "3rd party protocol fees",
+    "oasis-fee": "Oasis fee",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt",
+    "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
+    "slippage-from-settings": "Use slippage from settings",
+    "slippage-from-strategy": "Use slippage from strategy"
+  },
   "vault-changed": "Cofre alterado!",
   "vault-history": "Histório do Cofre",
   "vaults": {
@@ -539,17 +566,19 @@
       "connected-viewer-noVaults": "{{address}} atualmente não possui Cofres Maker",
       "connected-viewer-withVaults": "Visão geral de Cofres Maker de {{address}}",
       "notConnected-noVaults": "{{address}} atualmente não possui Cofres Maker.<0/> Conecte sua carteira e abre um cofre.",
-      "notConnected-withVaults": "Visão geral de Cofres Maker de {{address}}.<0/> Conecte sua carteira."
+      "notConnected-withVaults": "Visão geral de Cofres Maker de {{address}}.<0/> Conecte sua carteira.",
+      "vault-suggestions": "{{address}}, faça mais no Oasis.app"
     },
     "number-of-vaults": "Número de Cofres",
     "subheader-no-vaults": "Abra um Cofre Maker, deposite seu colateral e gere Dai.",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "Dívida Total",
     "total-locked": "Total Travado",
     "vaults": "Cofres",
     "vaults-at-risk": "Cofres em risco",
     "your-vaults": "Seus Cofres"
   },
-  "vault-banners": {
+  "vault-notices": {
     "ownership": {
       "header": "Você está vendo o Cofre {{address}}",
       "subheader1": "Por favor, conecte sua carteira para abrir, gerir ou ver seus Cofres.",
@@ -608,7 +637,8 @@
       "collateral": "Deposite ou retire do seu cofre. Economize gás ao combinar as transações.",
       "dai": "Gere Dai a partir do colateral em seu cofre ou pague Dai. Economize gás ao combinar as transações.",
       "edit": "Simule seu cofre ao configurar a quantia de colateral a ser depositado e Dai gerado.",
-      "proxy": "Com seu Proxy inteligente, nós podemos realizar múltiplas ações em apenas uma transação no seu Cofre. O Proxy precisa ser criado apenas uma vez.",
+      "proxy": "Com seu Proxy inteligente, nós podemos realizar múltiplas ações em apenas uma transação no seu Cofre.",
+      "proxy-start": "With your smart proxy multiple actions can be performed in one transaction for your Vault. Read more in the <1>Knowledge Base</1>.",
       "allowance": "Determine a permissão (allowance) para especificar a quantia máxima de tokens que o Cofre pode interagir.",
       "daiAllowance": "Determine a permissão (allowance) para especificar a quantia máxima de tokens que o Cofre pode interagir.",
       "confirm": "Revise e verifique detalhes de seu cofre.",
@@ -796,7 +826,10 @@
     "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
-    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+      "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
+    },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
@@ -808,7 +841,10 @@
     "borrow": "Borrow up to {{value}} DAI",
     "multiply": "Get up to {{value}} {{token}} exposure",
     "earn": "Earn {{value}} {{token}} a year",
-    "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool",
+      "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
+    }
   },
   "product-page": {
     "multiply": {
@@ -823,8 +859,60 @@
     },
     "earn": {
       "title": "Oasis Earn",
-      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
       "link": "Learn more about Earn ->"
+    }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
+  },
+  "manage-earn": {
+    "aave": {
+      "vault-form": {
+        "deposit": "Deposit ETH",
+        "title": "Your Earn position",
+        "close-title": "Close position to {{ debtToken }}",
+        "close": "Close vault",
+        "confirm-btn": "Confirm",
+        "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
+        "stop-close": "Not right now",
+        "token-amount-after-closing": "{{token}} after closing",
+        "retry-btn": "Retry"
+      }
+    }
+  },
+  "open-earn": {
+    "aave": {
+      "product-header": {
+        "token-pair-list": {
+          "aave-steth-eth": "AAVE stETH yield multiple",
+          "aave-wsteth-eth": "Aave wstETH yield multiple"
+        },
+        "current-yield": "Current yield",
+        "90-day-avg-yield": "90 Day Avg",
+        "total-value-locked": "Total value locked"
+      },
+      "vault-form": {
+        "title": "Set up Earn strategy",
+        "open-btn": "Open Earn position",
+        "confirm-btn": "Confirm",
+        "retry-btn": "Retry",
+        "success-title": "All done! You've opened a position",
+        "go-to-position": "Go to position",
+        "back-to-editing": "Voltar a editar",
+        "configure-multiple": {
+          "title": "Set your risk level",
+          "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
+          "historical-ratio": "{{collateralToken}} / {{debtToken}} Historical Ratio",
+          "back-to-enter-eth": "Back to enter ETH",
+          "increase-risk": "Increase risk",
+          "decrease-risk": "Decrease risk",
+          "vault-message-ok": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position is unlikely to be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}",
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}"
+        }
+      }
     }
   }
 }

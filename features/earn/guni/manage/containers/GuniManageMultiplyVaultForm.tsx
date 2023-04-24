@@ -1,19 +1,20 @@
+import { ManageMultiplyVaultButton } from 'components/vault/commonMultiply/ManageMultiplyVaultButton'
+import {
+  ManageMultiplyVaultConfirmation,
+  ManageMultiplyVaultConfirmationStatus,
+} from 'components/vault/commonMultiply/ManageMultiplyVaultConfirmation'
+import { ManageVaultCollateralAllowance } from 'components/vault/commonMultiply/ManageVaultCollateralAllowance'
+import { ManageVaultDaiAllowance } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import React from 'react'
 
-import { ManageMultiplyVaultButton } from '../../../../../components/vault/commonMultiply/ManageMultiplyVaultButton'
-import {
-  ManageMultiplyVaultConfirmation,
-  ManageMultiplyVaultConfirmationStatus,
-} from '../../../../../components/vault/commonMultiply/ManageMultiplyVaultConfirmation'
-import { ManageVaultCollateralAllowance } from '../../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
-import { ManageVaultDaiAllowance } from '../../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
 import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 import { GuniManageMultiplyVaultEditing } from './GuniManageMultiplyVaultEditing'
 import { GuniManageMultiplyVaultFormHeader } from './GuniManageMultiplyVaultFormHeader'
@@ -34,15 +35,18 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
     otherAction,
   } = props
 
+  const gasData = extractGasDataFromState(props)
+
   const shouldDisplayActionButton =
     accountIsConnected &&
     (accountIsController ||
       (!accountIsController &&
         stage !== 'adjustPosition' &&
-        (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
+        (otherAction === 'depositCollateral' || otherAction === 'paybackDai')))
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <GuniManageMultiplyVaultFormHeader {...props} />
+      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
       {isEditingStage && <GuniManageMultiplyVaultEditing {...props} />}
       {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

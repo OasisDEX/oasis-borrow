@@ -2,20 +2,22 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { transactionToX } from 'helpers/form'
-import { zero } from 'helpers/zero'
-import { iif, Observable, of } from 'rxjs'
-import { filter, first, switchMap } from 'rxjs/operators'
-
 import {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
-} from '../../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { TxError } from '../../../../../helpers/types'
-import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
+} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import {
+  ManageStandardBorrowVaultState,
+  ManageVaultChange,
+} from 'features/borrow/manage/pipes/manageVault'
+import { transactionToX } from 'helpers/form'
+import { TxError } from 'helpers/types'
+import { zero } from 'helpers/zero'
+import { iif, Observable, of } from 'rxjs'
+import { filter, first, switchMap } from 'rxjs/operators'
 
 type ProxyChange =
   | {
@@ -468,6 +470,7 @@ export function applyEstimateGas(
       paybackAmount,
       shouldPaybackAll,
       vault: { ilk, token, id },
+      isProxyStage,
     } = state
 
     if (proxyAddress) {
@@ -495,6 +498,10 @@ export function applyEstimateGas(
           shouldPaybackAll,
         })
       }
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

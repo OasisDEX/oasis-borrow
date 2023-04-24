@@ -1,25 +1,34 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
-import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
-import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
-import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { useAutomationContext } from 'components/AutomationContextProvider'
+import { DetailsSection } from 'components/DetailsSection'
+import {
+  DetailsSectionContentCardWrapper,
+  getChangeVariant,
+} from 'components/DetailsSectionContentCard'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { MessageCard } from 'components/MessageCard'
+import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
+import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
+import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
+import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
+import { ContentFooterItemsBorrow } from 'components/vault/detailsSection/ContentFooterItemsBorrow'
 import {
   AfterPillProps,
-  getAfterPillColors,
   getCollRatioColor,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation/common/consts'
+import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
+import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
+import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
+import { BonusContainer } from 'features/bonus/BonusContainer'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatAmount } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
-
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
-import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
-import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
-import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
@@ -97,68 +106,122 @@ export function ManageVaultDetails(
   props: ManageStandardBorrowVaultState & { onBannerButtonClickHandler: () => void },
 ) {
   const {
-    vault: { id, token, liquidationPrice, lockedCollateral, lockedCollateralUSD },
+    vault: {
+      daiYieldFromLockedCollateral,
+      debt,
+      freeCollateral,
+      token,
+      liquidationPrice,
+      lockedCollateral,
+      lockedCollateralUSD,
+      collateralizationRatio,
+      ilk,
+      id,
+    },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
     afterLockedCollateralUSD,
+    collateralizationRatioAtNextPrice,
+    afterDebt,
+    afterFreeCollateral,
+    daiYieldFromTotalCollateral,
     inputAmountsEmpty,
     stage,
     stopLossTriggered,
+    autoTakeProfitTriggered,
   } = props
+  const { t } = useTranslation()
+  const {
+    triggerData: {
+      stopLossTriggerData,
+      autoBuyTriggerData: { isTriggerEnabled, maxBuyOrMinSellPrice },
+    },
+  } = useAutomationContext()
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  const automationEnabled = useFeatureToggle('Automation')
+  const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
+
+  const shouldShowOverrideAutoBuy =
+    isTriggerEnabled &&
+    maxBuyOrMinSellPrice.isZero() &&
+    vaultIdsThatAutoBuyTriggerShouldBeRecreated.includes(id.toNumber())
 
   return (
-    <Box>
-      {automationEnabled && (
-        <>
-          {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          <GetProtectionBannerControl vaultId={id} />
-          <StopLossBannerControl
-            vaultId={id}
-            liquidationPrice={liquidationPrice}
-            liquidationRatio={liquidationRatio}
-            afterLiquidationPrice={afterLiquidationPrice}
-            showAfterPill={showAfterPill}
-          />
-        </>
-      )}
-      <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCardLiquidationPrice
-          liquidationPrice={liquidationPrice}
-          liquidationRatio={liquidationRatio}
-          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-          afterLiquidationPrice={afterLiquidationPrice}
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
-          vaultId={id}
-        />
-        <VaultDetailsCardCollateralizationRatio
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
-          {...props}
-        />
-
-        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
-        <VaultDetailsCardCollateralLocked
-          depositAmountUSD={lockedCollateralUSD}
-          afterDepositAmountUSD={afterLockedCollateralUSD}
-          depositAmount={lockedCollateral}
-          token={token}
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
-        />
-      </Grid>
-      <ManageVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
+    <Grid>
+      {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
+      {autoTakeProfitEnabled && <>{autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}</>}
+      <DetailsSection
+        title={t('system.overview')}
+        content={
+          <>
+            {shouldShowOverrideAutoBuy && (
+              <Box mb={3}>
+                <MessageCard
+                  type="warning"
+                  messages={[t('vault-warnings.auto-buy-override')]}
+                  withBullet={false}
+                />
+              </Box>
+            )}
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
+                liquidationPrice={liquidationPrice}
+                liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
+                changeVariant={changeVariant}
+              />
+              <ContentCardCollateralizationRatio
+                positionRatio={collateralizationRatio}
+                nextPositionRatio={collateralizationRatioAtNextPrice}
+                afterPositionRatio={afterCollateralizationRatio}
+                changeVariant={changeVariant}
+              />
+              <ContentCardCollateralLocked
+                token={token}
+                lockedCollateralUSD={lockedCollateralUSD}
+                lockedCollateral={lockedCollateral}
+                afterLockedCollateralUSD={afterLockedCollateralUSD}
+                changeVariant={changeVariant}
+              />
+              {stopLossTriggerData.isStopLossEnabled && (
+                <ContentCardDynamicStopPriceWithColRatio
+                  slData={stopLossTriggerData}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  liquidationRatio={liquidationRatio}
+                  changeVariant={changeVariant}
+                />
+              )}
+            </DetailsSectionContentCardWrapper>
+          </>
+        }
+        footer={
+          <DetailsSectionFooterItemWrapper>
+            <ContentFooterItemsBorrow
+              token={token}
+              debt={debt}
+              freeCollateral={freeCollateral}
+              afterDebt={afterDebt}
+              afterFreeCollateral={afterFreeCollateral}
+              daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
+              daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
+              changeVariant={changeVariant}
+            />
+          </DetailsSectionFooterItemWrapper>
+        }
       />
-    </Box>
+
+      {stopLossReadEnabled && stopLossWriteEnabled && (
+        <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
+      )}
+      <BonusContainer cdpId={props.vault.id} />
+    </Grid>
   )
 }

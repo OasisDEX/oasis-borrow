@@ -1,14 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
+import { getAddConstantMultipleHistoryEventIndex } from 'features/vaultHistory/vaultHistory'
 import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { zero } from 'helpers/zero'
 
 export const OAZO_FEE = new BigNumber(0.002)
-export const OAZO_LOWER_FEE = new BigNumber(0.0004)
+// Updated from 0.0004 to 0.00005 -> https://app.shortcut.com/oazo-apps/story/6168/deploy-new-fee-tier-for-guni-and-update-contract-addresses-to-use-it
+export const OAZO_LOWER_FEE = new BigNumber(0.00005)
 export const LOAN_FEE = new BigNumber(0.0)
 export const SLIPPAGE = new BigNumber(0.005)
 export const GUNI_MAX_SLIPPAGE = new BigNumber(0.001)
-export const GUNI_SLIPPAGE = new BigNumber(0)
+export const GUNI_SLIPPAGE = new BigNumber(0.0001)
+export const STOP_LOSS_MARGIN = new BigNumber(0.02)
 
 function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
@@ -29,6 +32,8 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
       return total.plus(event.depositDai)
     case 'MOVE_DEST':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
+    case 'MOVE_SRC':
+      return total.plus(event.daiAmount.abs())
     default:
       return total
   }
@@ -53,12 +58,19 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
       return total.plus(event.exitDai)
     case 'MOVE_SRC':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
+    case 'MOVE_DEST':
+      return total.plus(event.daiAmount.abs())
     default:
       return total
   }
 }
 
-export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
+export function getCumulativeFeesUSD(
+  total: BigNumber,
+  event: VaultEvent,
+  currentIndex: number,
+  events: VaultEvent[],
+) {
   switch (event.kind) {
     case 'OPEN_MULTIPLY_VAULT':
     case 'OPEN_MULTIPLY_GUNI_VAULT':
@@ -73,7 +85,66 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
     case 'WITHDRAW':
     case 'PAYBACK':
     case 'WITHDRAW-PAYBACK':
-      return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
+    case 'basic-buy':
+    case 'basic-sell':
+    case 'stop-loss':
+      const potentialEventWithSameHash = events[currentIndex - 1]
+
+      if (!potentialEventWithSameHash || event.hash !== potentialEventWithSameHash?.hash) {
+        return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+      }
+
+      return total
+    default:
+      return total
+  }
+}
+
+export function getCumulativeOasisFeeUSD(total: BigNumber, event: VaultEvent) {
+  switch (event.kind) {
+    case 'OPEN_MULTIPLY_VAULT':
+    case 'OPEN_MULTIPLY_GUNI_VAULT':
+    case 'DECREASE_MULTIPLE':
+    case 'INCREASE_MULTIPLE':
+    case 'CLOSE_VAULT_TO_COLLATERAL':
+    case 'CLOSE_VAULT_TO_DAI':
+    case 'CLOSE_GUNI_VAULT_TO_DAI':
+      return total.plus(event.oazoFee)
+    default:
+      return total
+  }
+}
+
+function getCumulativeConstantMultipleFeeUSD(
+  total: BigNumber,
+  event: VaultEvent,
+  currentIndex: number,
+  events: VaultEvent[],
+) {
+  switch (event.kind) {
+    case 'INCREASE_MULTIPLE':
+    case 'DECREASE_MULTIPLE':
+      const potentialExecuteEvent = events[currentIndex + 1]
+
+      if (
+        'eventType' in potentialExecuteEvent &&
+        potentialExecuteEvent.eventType === 'executed' &&
+        event.hash === potentialExecuteEvent.hash
+      ) {
+        return total
+          .plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
+          .plus(event.oazoFee)
+      }
+      return total
+    case 'basic-buy':
+    case 'basic-sell':
+      const potentialEventWithSameHash = events[currentIndex - 1]
+
+      if (!potentialEventWithSameHash || event.hash !== potentialEventWithSameHash?.hash) {
+        return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+      }
+
+      return total
     default:
       return total
   }
@@ -93,4 +164,47 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
     .minus(cumulativeFeesUSD)
     .minus(cumulativeDepositUSD)
     .div(cumulativeDepositUSD)
+}
+
+export function calculateGrossEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
+  const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
+  const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+  const oasisFee = events.reduce(getCumulativeOasisFeeUSD, zero)
+
+  const earnings = currentNetValueUSD
+    .minus(cumulativeDepositUSD)
+    .plus(cumulativeWithdrawnUSD)
+    .plus(oasisFee)
+
+  return earnings.gte(zero) ? earnings : zero
+}
+
+export function calculateNetEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
+  const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
+  const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+  const cumulativeFeesUSD = events.reduce(getCumulativeFeesUSD, zero)
+
+  return currentNetValueUSD
+    .minus(cumulativeDepositUSD)
+    .plus(cumulativeWithdrawnUSD)
+    .minus(cumulativeFeesUSD)
+}
+
+export function calculatePNLFromAddConstantMultipleEvent(
+  events: VaultEvent[],
+  currentNetValueUSD: BigNumber,
+) {
+  const addConstantMultipleIndex = getAddConstantMultipleHistoryEventIndex(events)
+  const totalPnL = calculatePNL(events, currentNetValueUSD)
+  const eventsTillConstantMultiple = events.slice(addConstantMultipleIndex)
+  const PnLTillConstantMultiple = calculatePNL(eventsTillConstantMultiple, currentNetValueUSD)
+
+  return totalPnL.minus(PnLTillConstantMultiple)
+}
+
+export function calculateTotalCostOfConstantMultiple(events: VaultEvent[]) {
+  const addConstantMultipleIndex = getAddConstantMultipleHistoryEventIndex(events)
+  const eventsSinceConstantMultiple = events.slice(0, addConstantMultipleIndex)
+
+  return eventsSinceConstantMultiple.reduce(getCumulativeConstantMultipleFeeUSD, zero)
 }

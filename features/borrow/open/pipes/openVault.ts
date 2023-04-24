@@ -1,37 +1,53 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { ContextConnected } from 'blockchain/network'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { setAllowance } from 'features/allowance/setAllowance'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { curry } from 'lodash'
-import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
-
-import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import {
   vaultActionsLogic,
   VaultActionsLogicInterface,
-} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
-import { TxError } from '../../../../helpers/types'
+} from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
+import { ContextConnected } from 'blockchain/network'
+import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import {
   AllowanceChanges,
   AllowanceOption,
   applyAllowanceChanges,
-} from '../../../allowance/allowance'
-import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
-import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
-import { createProxy } from '../../../proxy/createProxy'
-import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
-import { OpenVaultTransactionChange } from '../../../shared/transactions'
+} from 'features/allowance/allowance'
+import { setAllowance } from 'features/allowance/setAllowance'
+import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
+import {
+  applyOpenVaultStopLoss,
+  OpenVaultStopLossChanges,
+  StopLossOpenFlowStages,
+} from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
+import {
+  addStopLossTrigger,
+  applyStopLossOpenFlowTransaction,
+} from 'features/automation/protection/stopLoss/openFlow/stopLossOpenFlowTransaction'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { createProxy } from 'features/proxy/createProxy'
+import { applyProxyChanges, ProxyChanges } from 'features/proxy/proxy'
+import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
+import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { OpenVaultTransactionChange } from 'features/shared/transactions'
 import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
-} from '../../../vaultTransitions/openVaultTransitions'
+} from 'features/vaultTransitions/openVaultTransitions'
+import { getNetworkName } from 'features/web3Context'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { combineApplyChanges } from 'helpers/pipelines/combineApply'
+import { TxError } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
+import { curry } from 'lodash'
+import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+
 import {
   applyOpenVaultCalculations,
   defaultOpenVaultStateCalculations,
@@ -53,7 +69,7 @@ import {
   OpenVaultSummary,
 } from './openVaultSummary'
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
-import { validateErrors, validateWarnings } from './openVaultValidations'
+import { finalValidation, validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -79,6 +95,7 @@ export type OpenVaultChange =
   | ProxyChanges
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
+  | OpenVaultStopLossChanges
 
 export type OpenVaultStage =
   | 'editing'
@@ -97,6 +114,7 @@ export type OpenVaultStage =
   | 'txInProgress'
   | 'txFailure'
   | 'txSuccess'
+  | StopLossOpenFlowStages
 
 export interface MutableOpenVaultState {
   stage: OpenVaultStage
@@ -106,12 +124,16 @@ export interface MutableOpenVaultState {
   showGenerateOption: boolean
   selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
+  stopLossSkipped: boolean
+  stopLossLevel: BigNumber
+  visitedStopLossStep: boolean
   id?: BigNumber
 }
 
 interface OpenVaultFunctions {
   progress?: () => void
   regress?: () => void
+  skipStopLoss?: () => void
   toggleGenerateOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
@@ -141,10 +163,23 @@ interface OpenVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
+  stopLossTxHash?: string
   txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
+  openVaultConfirmations?: number
   safeConfirmations: number
+  openVaultSafeConfirmations: number
+}
+
+// TODO to be moved to common
+export interface OpenVaultStopLossSetup {
+  withStopLossStage: boolean
+  setStopLossCloseType: (type: CloseVaultTo) => void
+  setStopLossLevel: (level: BigNumber) => void
+  stopLossCloseType: CloseVaultTo
+  stopLossLevel: BigNumber
+  visitedStopLossStep: boolean
 }
 
 export type OpenVaultState = MutableOpenVaultState &
@@ -158,7 +193,8 @@ export type OpenVaultState = MutableOpenVaultState &
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number
-  } & HasGasEstimation
+  } & OpenVaultStopLossSetup &
+  HasGasEstimation
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -182,6 +218,15 @@ function addTransitions(
       updateGenerateMax: () => change({ kind: 'generateMax' }),
       toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),
       progress: () => change({ kind: 'progressEditing' }),
+    }
+  }
+
+  if (state.stage === 'stopLossEditing') {
+    return {
+      ...state,
+      progress: () => change({ kind: 'progressStopLossEditing' }),
+      regress: () => change({ kind: 'backToEditing' }),
+      skipStopLoss: () => change({ kind: 'skipStopLoss' }),
     }
   }
 
@@ -253,6 +298,14 @@ function addTransitions(
     }
   }
 
+  if (state.stage === 'stopLossTxWaitingForConfirmation' || state.stage === 'stopLossTxFailure') {
+    return {
+      ...state,
+      progress: () => addStopLossTrigger(txHelpers, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
   return state
 }
 
@@ -264,6 +317,9 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
+  stopLossSkipped: false,
+  stopLossLevel: zero,
+  visitedStopLossStep: false,
 }
 
 export function createOpenVault$(
@@ -320,12 +376,30 @@ export function createOpenVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
+                    const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
+                    const network = getNetworkName()
+                    const withStopLossStage = stopLossWriteEnabled
+                      ? isSupportedAutomationIlk(network, ilk)
+                      : false
+
                     const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+                    const initialStopLossSelected = openFlowInitialStopLossLevel({
+                      liquidationRatio: ilkData.liquidationRatio,
+                    })
 
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
                       ...defaultOpenVaultConditions,
+                      withStopLossStage,
+                      setStopLossCloseType: (type: 'collateral' | 'dai') =>
+                        change({ kind: 'stopLossCloseType', type }),
+                      setStopLossLevel: (level: BigNumber) =>
+                        change({ kind: 'stopLossLevel', level }),
+                      stopLossCloseType: 'dai',
+                      stopLossLevel: initialStopLossSelected,
+                      visitedStopLossStep: false,
                       priceInfo,
                       balanceInfo,
                       ilkData,
@@ -334,8 +408,10 @@ export function createOpenVault$(
                       ilk,
                       proxyAddress,
                       allowance,
-                      safeConfirmations: context.safeConfirmations,
-                      etherscan: context.etherscan.url,
+                      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
+                      openVaultSafeConfirmations: getNetworkContracts(context.chainId)
+                        .openVaultSafeConfirmations,
+                      etherscan: getNetworkContracts(context.chainId).etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
@@ -349,6 +425,7 @@ export function createOpenVault$(
                     const apply = combineApplyChanges<OpenVaultState, OpenVaultChange>(
                       applyOpenVaultInput,
                       applyOpenVaultForm,
+                      applyOpenVaultStopLoss,
                       createApplyOpenVaultTransition<
                         OpenVaultState,
                         MutableOpenVaultState,
@@ -361,6 +438,7 @@ export function createOpenVault$(
                       ),
                       applyProxyChanges,
                       applyOpenVaultTransaction,
+                      applyStopLossOpenFlowTransaction,
                       applyAllowanceChanges,
                       applyOpenVaultEnvironment,
                       applyOpenVaultInjectedOverride,
@@ -383,6 +461,7 @@ export function createOpenVault$(
                       map(validateErrors),
                       map(validateWarnings),
                       switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                      map(finalValidation),
                       map(
                         curry(addTransitions)(
                           txHelpers,

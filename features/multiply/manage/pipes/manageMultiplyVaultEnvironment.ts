@@ -1,11 +1,11 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
+import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
+import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { SlippageChange } from 'features/userSettings/userSettings'
+import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
 
-import { StopLossChange } from '../../../automation/triggers/AutomationTriggersData'
-import { BalanceInfoChange } from '../../../shared/balanceInfo'
-import { VaultHistoryChange } from '../../../vaultHistory/vaultHistory'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 export type ManageVaultEnvironmentChange =
@@ -15,12 +15,12 @@ export type ManageVaultEnvironmentChange =
   | VaultChange
   | VaultHistoryChange
   | SlippageChange
-  | StopLossChange
+  | AutomationTriggersChange
 
-export function applyManageVaultEnvironment(
+export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+  state: VS,
+): VS {
   if (change.kind === 'priceInfo') {
     return {
       ...state,
@@ -63,10 +63,14 @@ export function applyManageVaultEnvironment(
     }
   }
 
-  if (change.kind === 'stopLossData') {
+  if (change.kind === 'automationTriggersData') {
     return {
       ...state,
       stopLossData: change.stopLossData,
+      autoSellData: change.autoSellData,
+      autoBuyData: change.autoBuyData,
+      constantMultipleData: change.constantMultipleData,
+      autoTakeProfitData: change.autoTakeProfitData,
     }
   }
 

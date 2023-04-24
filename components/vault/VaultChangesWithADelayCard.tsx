@@ -7,6 +7,7 @@ export function VaultChangesWithADelayCard() {
       {...{
         messages: ['Heads up! It can take up to 30 seconds for your Vault position to update.'],
         type: 'warning',
+        withBullet: false,
       }}
     />
   )

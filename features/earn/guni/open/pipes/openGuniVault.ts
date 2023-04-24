@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { compareBigNumber, ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -15,7 +16,10 @@ import {
   defaultAllowanceState,
 } from 'features/allowance/allowance'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TxStage } from 'features/multiply/open/pipes/openMultiplyVault' // TODO: remove
+import { finalValidation } from 'features/multiply/open/pipes/openMultiplyVaultValidations'
 import {
   addProxyTransitions,
   applyIsProxyStage,
@@ -27,8 +31,12 @@ import {
 } from 'features/proxy/proxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { combineApplyChanges } from 'helpers/pipelines/combineApply'
+import { combineTransitions } from 'helpers/pipelines/combineTransitions'
+import { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
@@ -43,12 +51,6 @@ import {
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
 
-import { combineApplyChanges } from '../../../../../helpers/pipelines/combineApply'
-import { combineTransitions } from '../../../../../helpers/pipelines/combineTransitions'
-import { TxError } from '../../../../../helpers/types'
-import { VaultErrorMessage } from '../../../../form/errorMessagesHandler'
-import { VaultWarningMessage } from '../../../../form/warningMessagesHandler'
-import { slippageChange$, UserSettingsState } from '../../../../userSettings/userSettings'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
   addFormTransitions,
@@ -197,6 +199,7 @@ export type OpenGuniVaultState = OverrideHelper &
     requiredDebt?: BigNumber
     currentPnL: BigNumber
     totalGasSpentUSD: BigNumber
+    id?: BigNumber
   } & HasGasEstimation
 
 interface GuniCalculations {
@@ -320,8 +323,6 @@ export function createOpenGuniVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
-
                     const initialState: OpenGuniVaultState = {
                       ...defaultFormState,
                       ...defaultAllowanceState,
@@ -337,8 +338,8 @@ export function createOpenGuniVault$(
                       proxyAddress,
                       allowance,
                       maxGenerateAmount: ilkDebtAvailable,
-                      safeConfirmations: context.safeConfirmations,
-                      etherscan: context.etherscan.url,
+                      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
+                      etherscan: getNetworkContracts(context.chainId).etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
                       customSlippage: slippage,
@@ -421,7 +422,7 @@ export function createOpenGuniVault$(
                             const oneInchAmount = amountWithFee.minus(contractFee)
 
                             return exchangeQuote$(
-                              tokenInfo.token1,
+                              tokenInfo.token1!,
                               state.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
@@ -438,52 +439,50 @@ export function createOpenGuniVault$(
                                   amountOMax: token0Amount,
                                   amount1Max: token1Amount,
                                 }).pipe(
-                                  map(
-                                    ({ amount0, amount1, mintAmount }): GuniTxDataChange => {
-                                      const requiredDebt = flAmount?.plus(oazoFee) || zero
+                                  map(({ amount0, amount1, mintAmount }): GuniTxDataChange => {
+                                    const requiredDebt = flAmount?.plus(oazoFee) || zero
 
-                                      const afterNetValueUSD = mintAmount
-                                        .times(priceInfo.currentCollateralPrice)
-                                        .minus(requiredDebt)
+                                    const afterNetValueUSD = mintAmount
+                                      .times(priceInfo.currentCollateralPrice)
+                                      .minus(requiredDebt)
 
-                                      const multiple = mintAmount
-                                        .times(priceInfo.currentCollateralPrice)
-                                        .div(
-                                          mintAmount
-                                            .times(priceInfo.currentCollateralPrice)
-                                            .minus(requiredDebt),
-                                        )
+                                    const multiple = mintAmount
+                                      .times(priceInfo.currentCollateralPrice)
+                                      .div(
+                                        mintAmount
+                                          .times(priceInfo.currentCollateralPrice)
+                                          .minus(requiredDebt),
+                                      )
 
-                                      return {
-                                        kind: 'guniTxData',
-                                        swap,
-                                        flAmount,
-                                        leveragedAmount,
-                                        token0Amount,
-                                        token1Amount,
-                                        amount0,
-                                        amount1,
-                                        fromTokenAmount: amountWithFee,
-                                        toTokenAmount: swap.collateralAmount,
-                                        minToTokenAmount: swap.collateralAmount.times(
-                                          one.minus(state.slippage),
-                                        ),
-                                        buyingCollateralUSD: amount1,
-                                        totalCollateral: mintAmount,
-                                        afterCollateralAmount: mintAmount,
-                                        afterOutstandingDebt: requiredDebt,
-                                        requiredDebt,
-                                        oazoFee,
-                                        totalFees: oazoFee,
-                                        gettingCollateral: mintAmount,
-                                        gettingCollateralUSD: mintAmount.times(
-                                          priceInfo.currentCollateralPrice,
-                                        ),
-                                        afterNetValueUSD,
-                                        multiply: multiple,
-                                      }
-                                    },
-                                  ),
+                                    return {
+                                      kind: 'guniTxData',
+                                      swap,
+                                      flAmount,
+                                      leveragedAmount,
+                                      token0Amount,
+                                      token1Amount,
+                                      amount0,
+                                      amount1,
+                                      fromTokenAmount: amountWithFee,
+                                      toTokenAmount: swap.collateralAmount,
+                                      minToTokenAmount: swap.collateralAmount.times(
+                                        one.minus(state.slippage),
+                                      ),
+                                      buyingCollateralUSD: amount1,
+                                      totalCollateral: mintAmount,
+                                      afterCollateralAmount: mintAmount,
+                                      afterOutstandingDebt: requiredDebt,
+                                      requiredDebt,
+                                      oazoFee,
+                                      totalFees: oazoFee,
+                                      gettingCollateral: mintAmount,
+                                      gettingCollateralUSD: mintAmount.times(
+                                        priceInfo.currentCollateralPrice,
+                                      ),
+                                      afterNetValueUSD,
+                                      multiply: multiple,
+                                    }
+                                  }),
                                 )
                               }),
                             )
@@ -494,7 +493,7 @@ export function createOpenGuniVault$(
 
                     function applyGuniDataChanges<
                       S extends TokensLpBalanceState & GuniCalculations,
-                      Ch extends GuniTxDataChange
+                      Ch extends GuniTxDataChange,
                     >(state: S, change: Ch): S {
                       if (change.kind === 'guniTxData') {
                         const { kind: _, ...data } = change
@@ -529,7 +528,7 @@ export function createOpenGuniVault$(
                         allowanceTransitions(
                           txHelpers,
                           change,
-                          { tokenToAllow: tokenInfo.token0 },
+                          { tokenToAllow: tokenInfo.token0! },
                           state,
                         ),
                       // (state) => openGuniVaultTransitions,
@@ -549,6 +548,7 @@ export function createOpenGuniVault$(
                       map(validateGuniErrors),
                       map(validateGuniWarnings),
                       switchMap(curry(applyGuniEstimateGas)(addGasEstimation$)),
+                      map(finalValidation),
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       //   ),

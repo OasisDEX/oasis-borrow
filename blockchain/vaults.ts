@@ -1,9 +1,11 @@
-import { VaultType } from '@prisma/client'
+import { UsersWhoFollowVaults, VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
-import { one, zero } from 'helpers/zero'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
@@ -14,7 +16,8 @@ import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
+import { buildPosition } from './vault.maths'
 
 BigNumber.config({
   POW_PRECISION: 100,
@@ -25,7 +28,10 @@ export interface VaultWithType extends Vault {
 }
 
 export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
-  return checkMultipleVaultsFromApi$(vaults.map((vault) => vault.id.toFixed(0))).pipe(
+  return checkMultipleVaultsFromApi$(
+    vaults.map((vault) => vault.id.toFixed(0)),
+    LendingProtocol.Maker,
+  ).pipe(
     map((res) =>
       vaults.map((vault) => ({
         ...vault,
@@ -58,13 +64,13 @@ interface CdpIdsResolver {
   (address: string): Observable<BigNumber[]>
 }
 export function createVaults$(
-  onEveryBlock$: Observable<number>,
+  refreshInterval: Observable<number>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   context$: Observable<Context>,
   cdpIdResolvers: CdpIdsResolver[],
   address: string,
 ): Observable<VaultWithType[]> {
-  return combineLatest(onEveryBlock$, context$).pipe(
+  return combineLatest(refreshInterval, context$).pipe(
     switchMap(([_, context]) =>
       combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
         map((nestedIds) => nestedIds.flat()),
@@ -73,9 +79,87 @@ export function createVaults$(
         ),
         distinctUntilChanged<Vault[]>(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
-        shareReplay(1),
       ),
     ),
+    shareReplay(1),
+  )
+}
+
+export function createVaultsFromIds$(
+  refreshInterval: Observable<number>,
+  followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  context$: Observable<Context>,
+  cdpIdResolvers: CdpIdsResolver[],
+  address: string,
+): Observable<VaultWithType[]> {
+  return combineLatest(refreshInterval, context$, followedVaults$(address)).pipe(
+    switchMap(([_, context, followedVaults]) =>
+      combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
+        switchMap(() =>
+          followedVaults.length === 0
+            ? of([])
+            : combineLatest(
+                followedVaults
+                  .filter((vault) => vault.vault_chain_id === context.chainId)
+                  .filter((vault) => vault.protocol === 'maker') // TODO: ŁW - add support for other protocols
+                  .map((followedVault) =>
+                    vault$(new BigNumber(followedVault.vault_id), context.chainId),
+                  ),
+              ),
+        ),
+        distinctUntilChanged<Vault[]>(isEqual),
+        switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
+      ),
+    ),
+    shareReplay(1),
+  )
+}
+
+export type VaultWithValue<V extends VaultWithType> = V & { value: BigNumber }
+// the value of the position in USD.  collateral prices can come from different places
+// depending on the vault type.
+export function decorateVaultsWithValue$<V extends VaultWithType>(
+  vaults$: (address: string) => Observable<V>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+    exchangeType: ExchangeType,
+  ) => Observable<Quote>,
+  userSettings$: Observable<UserSettingsState>,
+  address: string,
+): Observable<VaultWithValue<V>[]> {
+  return combineLatest(vaults$(address), userSettings$).pipe(
+    switchMap(([vaults, userSettings]: [Array<VaultWithType>, UserSettingsState]) => {
+      if (vaults.length === 0) return of([])
+      return combineLatest(
+        vaults.map((vault) => {
+          if (vault.type === 'borrow') {
+            // use price from maker oracle
+            return of({ ...vault, value: vault.lockedCollateralUSD.minus(vault.debt) })
+          } else {
+            // use price from 1inch
+            return exchangeQuote$(
+              vault.token,
+              userSettings.slippage,
+              vault.lockedCollateral,
+              'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
+              'defaultExchange',
+            ).pipe(
+              map((quote) => {
+                const collateralValue =
+                  quote.status === 'SUCCESS'
+                    ? vault.lockedCollateral.times(quote.tokenPrice)
+                    : vault.lockedCollateralUSD
+                return { ...vault, value: collateralValue.minus(vault.debt) }
+              }),
+            )
+          }
+        }),
+      )
+    }),
   )
 }
 
@@ -132,7 +216,7 @@ export function createVault$(
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   ilkToToken$: (ilk: string) => Observable<string>,
   context$: Observable<Context>,
   id: BigNumber,
@@ -144,7 +228,7 @@ export function createVault$(
           return combineLatest(
             vatUrns$({ ilk, urnAddress }),
             vatGem$({ ilk, urnAddress }),
-            oraclePriceData$(token),
+            oraclePriceData$({ token, requestedData: ['currentPrice', 'nextPrice'] }),
             ilkData$(ilk),
           ).pipe(
             switchMap(
@@ -161,86 +245,6 @@ export function createVault$(
                   ilkDebtAvailable,
                 },
               ]) => {
-                const collateralUSD = collateral.times(currentPrice)
-                const collateralUSDAtNextPrice = nextPrice
-                  ? collateral.times(nextPrice)
-                  : currentPrice
-
-                const debt = debtScalingFactor.times(normalizedDebt)
-
-                const debtOffset = !debt.isZero()
-                  ? debt
-                      .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
-                      .minus(debt)
-                      .dp(18, BigNumber.ROUND_DOWN)
-                  : new BigNumber('1e-18')
-
-                const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
-
-                const backingCollateralAtNextPrice = debt.times(liquidationRatio).div(nextPrice)
-                const backingCollateralUSD = backingCollateral.times(currentPrice)
-                const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(
-                  nextPrice,
-                )
-
-                const freeCollateral = backingCollateral.gte(collateral)
-                  ? zero
-                  : collateral.minus(backingCollateral)
-                const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(collateral)
-                  ? zero
-                  : collateral.minus(backingCollateralAtNextPrice)
-
-                const freeCollateralUSD = freeCollateral.times(currentPrice)
-                const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(nextPrice)
-
-                const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
-                const collateralizationRatioAtNextPrice = debt.isZero()
-                  ? zero
-                  : collateralUSDAtNextPrice.div(debt)
-
-                const maxAvailableDebt = collateralUSD.div(liquidationRatio)
-                const maxAvailableDebtAtNextPrice = collateralUSDAtNextPrice.div(liquidationRatio)
-
-                const availableDebt = debt.lt(collateralUSD.div(liquidationRatio))
-                  ? maxAvailableDebt.minus(debt)
-                  : zero
-
-                const availableDebtAtNextPrice = debt.lt(maxAvailableDebtAtNextPrice)
-                  ? maxAvailableDebtAtNextPrice.minus(debt)
-                  : zero
-
-                const liquidationPrice = collateral.eq(zero)
-                  ? zero
-                  : debt.times(liquidationRatio).div(collateral)
-
-                const daiYieldFromLockedCollateral = availableDebt.lt(ilkDebtAvailable)
-                  ? availableDebt
-                  : ilkDebtAvailable.gt(zero)
-                  ? ilkDebtAvailable
-                  : zero
-                const atRiskLevelWarning =
-                  collateralizationRatio.gte(collateralizationDangerThreshold) &&
-                  collateralizationRatio.lt(collateralizationWarningThreshold)
-
-                const atRiskLevelDanger =
-                  collateralizationRatio.gte(liquidationRatio) &&
-                  collateralizationRatio.lt(collateralizationDangerThreshold)
-
-                const underCollateralized =
-                  !collateralizationRatio.isZero() && collateralizationRatio.lt(liquidationRatio)
-
-                const atRiskLevelWarningAtNextPrice =
-                  collateralizationRatioAtNextPrice.gte(collateralizationDangerThreshold) &&
-                  collateralizationRatioAtNextPrice.lt(collateralizationWarningThreshold)
-
-                const atRiskLevelDangerAtNextPrice =
-                  collateralizationRatioAtNextPrice.gte(liquidationRatio) &&
-                  collateralizationRatioAtNextPrice.lt(collateralizationDangerThreshold)
-
-                const underCollateralizedAtNextPrice =
-                  !collateralizationRatioAtNextPrice.isZero() &&
-                  collateralizationRatioAtNextPrice.lt(liquidationRatio)
-
                 return of({
                   id,
                   makerType,
@@ -250,34 +254,23 @@ export function createVault$(
                   owner,
                   controller,
                   lockedCollateral: collateral,
-                  lockedCollateralUSD: collateralUSD,
-                  backingCollateral,
-                  backingCollateralUSD,
-                  freeCollateral,
-                  freeCollateralUSD,
-                  lockedCollateralUSDAtNextPrice: collateralUSDAtNextPrice,
-                  backingCollateralAtNextPrice,
-                  backingCollateralUSDAtNextPrice,
-                  freeCollateralAtNextPrice,
-                  freeCollateralUSDAtNextPrice,
                   normalizedDebt,
-                  debt,
-                  debtOffset,
-                  availableDebt,
-                  availableDebtAtNextPrice,
                   unlockedCollateral,
-                  collateralizationRatio,
-                  collateralizationRatioAtNextPrice,
-                  liquidationPrice,
-                  daiYieldFromLockedCollateral,
-
-                  atRiskLevelWarning,
-                  atRiskLevelDanger,
-                  underCollateralized,
-                  atRiskLevelWarningAtNextPrice,
-                  atRiskLevelDangerAtNextPrice,
-                  underCollateralizedAtNextPrice,
                   chainId: context.chainId,
+                  ...buildPosition({
+                    collateral,
+                    currentPrice,
+                    nextPrice,
+                    debtScalingFactor,
+                    normalizedDebt,
+                    stabilityFee,
+                    liquidationRatio,
+                    ilkDebtAvailable,
+                    collateralizationDangerThreshold,
+                    collateralizationWarningThreshold,
+                    minActiveColRatio: liquidationRatio, // user can reduce vault col ratio right down to liquidation ratio
+                    originationFee: zero,
+                  }),
                 })
               },
             ),

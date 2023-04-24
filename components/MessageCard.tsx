@@ -1,28 +1,51 @@
+import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { Card, Flex, Grid, Text } from 'theme-ui'
 
 interface NoticeCardProps {
-  messages: (string | JSX.Element)[]
-  type: 'error' | 'warning'
+  messages: (TranslateStringType | JSX.Element)[]
+  type: 'error' | 'warning' | 'ok'
   withBullet?: boolean
+  handleClick?: () => void
 }
 
-export function MessageCard({ messages, type, withBullet = true }: NoticeCardProps) {
-  const cardColor = type === 'error' ? 'danger' : 'warning'
-  const textColor = type === 'error' ? 'onError' : 'onWarning'
+const cardStyles = {
+  error: {
+    cardVariant: 'danger',
+    textColor: 'critical100',
+  },
+  warning: {
+    cardVariant: 'warning',
+    textColor: 'warning100',
+  },
+  ok: {
+    cardVariant: 'ok',
+    textColor: 'success100',
+  },
+} as const
+
+export function MessageCard({ messages, type, withBullet = true, handleClick }: NoticeCardProps) {
+  const cardStyle = cardStyles[type]
 
   if (!messages.length) return null
   return (
-    <Card variant={cardColor}>
+    <Card
+      variant={cardStyle.cardVariant}
+      onClick={handleClick}
+      sx={{
+        border: 'none',
+        cursor: handleClick ? 'pointer' : 'auto',
+      }}
+    >
       <Grid>
         {messages.map((message, idx) => (
           <Flex key={idx}>
             {withBullet && (
-              <Text pr={2} sx={{ fontSize: 2, color: textColor }}>
+              <Text pr={2} sx={{ fontSize: 2, color: cardStyle.textColor }}>
                 •
               </Text>
             )}
-            <Text sx={{ fontSize: 2, color: textColor }}>{message}</Text>
+            <Text sx={{ fontSize: 2, color: cardStyle.textColor }}>{message}</Text>
           </Flex>
         ))}
       </Grid>

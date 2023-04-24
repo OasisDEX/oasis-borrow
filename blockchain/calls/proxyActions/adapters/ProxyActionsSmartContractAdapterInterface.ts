@@ -1,11 +1,10 @@
 import { BigNumber } from 'bignumber.js'
-
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { ContextConnected } from 'blockchain/network'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
-} from '../../../../types/web3-v1-contracts/types'
-import { ContextConnected } from '../../../network'
-import { TxMetaKind } from '../../txMeta'
+} from 'types/web3-v1-contracts/types'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback
@@ -34,6 +33,13 @@ export type OpenData = {
   ilk: string
   depositAmount: BigNumber
   generateAmount: BigNumber
+  proxyAddress: string
+}
+
+export type ClaimRewardData = {
+  kind: TxMetaKind.claimReward
+  gemJoinAddress: string
+  cdpId: BigNumber
   proxyAddress: string
 }
 
@@ -126,4 +132,9 @@ export interface ProxyActionsSmartContractAdapterInterface {
   ) => NonPayableTransactionObject<string>
 
   open: (context: ContextConnected, data: OpenData) => NonPayableTransactionObject<string>
+
+  claimRewards: (
+    context: ContextConnected,
+    data: ClaimRewardData,
+  ) => NonPayableTransactionObject<void>
 }

@@ -1,7 +1,7 @@
 import { Direction } from 'helpers/form'
 import { useTranslation } from 'next-i18next'
 import React, { HTMLProps, memo, ReactNode } from 'react'
-import { Box, Button, Container, SxStyleProp } from 'theme-ui'
+import { Box, Button, Container, SxStyleProp, Text } from 'theme-ui'
 
 import { ChevronUpDown } from './ChevronUpDown'
 
@@ -37,7 +37,7 @@ export function TableContainer({
       as="table"
     >
       <Box sx={{ display: ['none', 'table-header-group'] }} as="thead">
-        <Box as="tr">{header}</Box>
+        <tr>{header}</tr>
       </Box>
       <Box sx={{ width: '100%' }} as="tbody">
         {children}
@@ -114,7 +114,7 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
       variant="paragraph2"
       sx={{
         px: 3,
-        color: 'text.muted',
+        color: 'neutral80',
         fontSize: 2,
         textAlign: 'left',
         ...sx,
@@ -148,7 +148,7 @@ const TableRow = memo(
               ':before': {
                 variant: 'text.paragraph2',
                 fontWeight: 'semiBold',
-                color: 'text.muted',
+                color: 'neutral80',
                 content: `"${t(headerLabel)}"`,
                 display: ['block', 'none'],
               },
@@ -221,20 +221,23 @@ export function TableSortHeader<K extends string>({
         visibility: ['hidden', 'visible'],
         display: ['none', 'flex'],
         alignItems: 'center',
+        color: 'neutral80',
         ...sx,
       }}
       variant="tableHeader"
       onClick={() => filters.change({ kind: 'sortBy', sortBy })}
     >
-      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary' : 'text.muted' }}>
-        {children}
+      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary100' : 'neutral80' }}>
+        <Text variant="boldParagraph3" color="inherit">
+          {children}
+        </Text>
       </Box>
       <Box>
         <ChevronUpDown
           variant="sort"
           isUp={filters.direction === 'ASC' && isSelected}
           size={12}
-          color={isSelected ? 'primary' : 'text.muted'}
+          color={isSelected ? 'primary100' : 'neutral80'}
         />
       </Box>
     </Button>

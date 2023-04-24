@@ -1,16 +1,15 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
+import { AllVaultStages } from 'features/types/vaults/AllVaultStages'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
-
-import { AllVaultStages } from '../../../features/types/vaults/AllVaultStages'
-import { zero } from '../../../helpers/zero'
 
 type SelectedCollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
 
@@ -80,7 +79,7 @@ export function ManageVaultCollateralAllowance({
                 sx={{
                   p: 1,
                   borderRadius: 'small',
-                  borderColor: 'light',
+                  borderColor: 'secondary100',
                   width: '100px',
                   fontSize: 1,
                   px: 3,

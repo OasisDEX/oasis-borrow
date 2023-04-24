@@ -1,24 +1,19 @@
+import { AppLink } from 'components/Links'
+import { ProductCardMultiplyMaker } from 'components/productCards/ProductCardMultiplyMaker'
+import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
+import { ProductHeader } from 'components/ProductHeader'
+import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { multiplyPageCardsData, productCardsConfig } from 'helpers/productCards'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid } from 'theme-ui'
-
-import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardMultiply } from '../../components/ProductCardMultiply'
-import { ProductCardsFilter } from '../../components/ProductCardsFilter'
-import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { ProductHeader } from '../../components/ProductHeader'
-import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
-import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
+import { Grid, Text } from 'theme-ui'
 
 export function MultiplyView() {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
-
-  const earnEnabled = useFeatureToggle('EarnProduct')
+  const tab = window.location.hash.replace(/^#/, '')
+  const aaveMultiplyStrategies = aaveStrategiesList('Multiply', LendingProtocol.AaveV2)
 
   return (
     <Grid
@@ -32,44 +27,36 @@ export function MultiplyView() {
         title={t('product-page.multiply.title')}
         description={t('product-page.multiply.description')}
         link={{
-          href: 'https://kb.oasis.app/help/what-is-multiply',
+          href: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
           text: t('product-page.multiply.link'),
         }}
+        scrollToId={tab}
       />
 
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsDataValue]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
+      <Text
+        variant="paragraph1"
+        sx={{
+          color: 'neutral80',
+          mt: '-50px',
+          textAlign: 'center',
+        }}
+      >
+        {t('product-page.multiply.aaveDescription')}{' '}
+        <AppLink
+          href={EXTERNAL_LINKS.BLOG.MULTIPLY_FOR_AAVE}
+          sx={{ fontSize: 4, fontWeight: 'body' }}
         >
-          {([productCardsData]) => (
-            <ProductCardsFilter
-              filters={productCardsConfig.multiply.cardsFilters.filter(
-                (f) => !(earnEnabled && f.name === 'UNI LP'),
-              )}
-            >
-              {(cardsFilter) => {
-                const filteredCards = multiplyPageCardsData({
-                  productCardsData,
-                  cardsFilter,
-                })
+          {t('product-page.multiply.aaveLink')}
+        </AppLink>
+      </Text>
 
-                return (
-                  <ProductCardsWrapper>
-                    {filteredCards.map((cardData) => (
-                      <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
-                    ))}
-                  </ProductCardsWrapper>
-                )
-              }}
-            </ProductCardsFilter>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <ProductCardsFilter
+        filters={productCardsConfig.multiply.cardsFilters}
+        selectedFilter={tab}
+        makerProductCardComponent={ProductCardMultiplyMaker}
+        filterCardsFunction={multiplyPageCardsData}
+        otherStrategies={aaveMultiplyStrategies}
+      />
     </Grid>
   )
 }

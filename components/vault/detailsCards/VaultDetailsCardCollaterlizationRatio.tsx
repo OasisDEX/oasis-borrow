@@ -1,17 +1,16 @@
 import BigNumber from 'bignumber.js'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Card, Grid, Heading, Text } from 'theme-ui'
-
-import { formatPercent } from '../../../helpers/formatters/format'
-import { ModalProps, useModal } from '../../../helpers/modalHook'
 import {
   AfterPillProps,
   getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardModal,
-} from '../VaultDetails'
+} from 'components/vault/VaultDetails'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { formatPercent } from 'helpers/formatters/format'
+import { ModalProps, useModal } from 'helpers/modalHook'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface CollaterlizationRatioProps {
   currentCollateralRatio: BigNumber
@@ -28,7 +27,7 @@ export function VaultDetailsCardCollaterlizationRatioModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('system.collateralization-ratio')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-vault.card.collateralization-ratio-calculated')}
         </Text>
         <Heading variant="header3">
@@ -40,7 +39,7 @@ export function VaultDetailsCardCollaterlizationRatioModal({
             roundMode: BigNumber.ROUND_DOWN,
           })}
         </Card>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-vault.card.collateralization-ratio-description')}
         </Text>
         <Heading variant="header3">
@@ -98,7 +97,7 @@ export function VaultDetailsCardCollateralizationRatio(
               roundMode: BigNumber.ROUND_DOWN,
             })}
           </Text>
-          <Text as="span" sx={{ color: 'text.subtitle' }}>
+          <Text as="span" sx={{ color: 'neutral80' }}>
             {` on next price`}
           </Text>
         </>

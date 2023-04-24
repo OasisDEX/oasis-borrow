@@ -1,12 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useConnectWallet } from '@web3-onboard/react'
 import BigNumber from 'bignumber.js'
+import { ContextConnected } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
-import {
-  disconnect,
-  getConnectionDetails,
-  getWalletKind,
-} from 'components/connectWallet/ConnectWallet'
+import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
+import { disconnect } from 'components/connectWallet'
 import { AppLink } from 'components/Links'
+import { useNotificationSocket } from 'components/NotificationSocketProvider'
+import { AccountDetails } from 'features/account/AccountData'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
@@ -14,7 +16,7 @@ import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import {
   Box,
@@ -22,6 +24,7 @@ import {
   Card,
   Flex,
   Grid,
+  Heading,
   Link as ThemeLink,
   SxStyleProp,
   Text,
@@ -55,11 +58,11 @@ function SlippageOptionButton({
         cursor: 'pointer',
         '&:last-child': { mr: '0px' },
         '&:hover': {
-          borderColor: 'primary',
+          borderColor: 'primary100',
           boxShadow: 'userSettingsOptionButton',
         },
         ...(active && {
-          borderColor: 'primary',
+          borderColor: 'primary100',
           boxShadow: 'userSettingsOptionButton',
         }),
       }}
@@ -104,12 +107,12 @@ function SlippageLimitMessages({
   return (
     <Grid gap={2} mb={2}>
       {warnings.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onWarning' }} key={message}>
+        <Text sx={{ ...validationMessageStyles, color: 'warning' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
       {errors.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onError' }} key={message}>
+        <Text sx={{ ...validationMessageStyles, color: 'critical100' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
@@ -142,15 +145,15 @@ function SlippageSettingsForm() {
     <>
       <Box>
         <Box>
-          <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', mb: -1 }}>
             {t('user-settings.slippage-limit.preset-description')}
           </Text>
-          <Link href="/support#using-multiply" passHref>
-            <ThemeLink target="_self" sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}>
+          <Link href={EXTERNAL_LINKS.KB.WHAT_IS_SLIPPAGE} passHref legacyBehavior>
+            <ThemeLink target="_self" sx={{ mt: -1, fontWeight: 400 }}>
               {t('user-settings.slippage-limit.read-more')}
             </ThemeLink>
           </Link>
-          <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', my: 3 }}>
+          <Text variant="paragraph4" sx={{ my: 3 }}>
             Your current slippage: {formatPercent(slippage.times(100), { precision: 2 })}
           </Text>
           <Flex>
@@ -166,7 +169,7 @@ function SlippageSettingsForm() {
         </Box>
         <Box my={3}>
           <Flex
-            sx={{ color: 'primaryEmphasis', cursor: 'pointer' }}
+            sx={{ color: 'primary60', cursor: 'pointer' }}
             onClick={() => setCustomOpened(!customOpened)}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'inherit' }}>
@@ -214,7 +217,7 @@ function SlippageSettingsForm() {
             {stage === 'inProgress' && (
               <AppSpinner
                 variant="styles.spinner.large"
-                sx={{ color: 'surface', display: 'flex', mr: 2 }}
+                sx={{ color: 'neutral10', display: 'flex', mr: 2 }}
               />
             )}
             <Text>
@@ -226,12 +229,12 @@ function SlippageSettingsForm() {
         </Button>
       )}
       {stage === 'success' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
+        <Text sx={{ ...saveStatusMessageStyles, color: 'success' }}>
           {t('user-settings.update-success')}
         </Text>
       )}
       {stage === 'failure' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
+        <Text sx={{ ...saveStatusMessageStyles, color: 'critical100' }}>
           {t('user-settings.update-failure')}
         </Text>
       )}
@@ -258,20 +261,24 @@ function WalletInfo() {
 
   if (web3Context?.status !== 'connected') return null
 
-  const { account, connectionKind } = web3Context
-  const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
+  const { account } = web3Context
 
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }} />
+        <BlockNativeAvatar small sx={{ mr: 2 }} />
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
-            <Text variant="address" sx={{ fontSize: 2 }}>
+            <Text variant="boldParagraph3" sx={{ letterSpacing: '0.02em' }}>
               {formatAddress(account, 6)}
             </Text>
             <Text
-              sx={{ color: 'link', fontSize: 1, cursor: 'pointer' }}
+              sx={{
+                color: 'interactive100',
+                fontSize: 1,
+                cursor: 'pointer',
+                fontWeight: 'semiBold',
+              }}
               onClick={() => copyToClipboard()}
             >
               {t('copy')}
@@ -284,16 +291,22 @@ function WalletInfo() {
               readOnly
             />
           </Flex>
-          <Flex>
-            {accountData && accountData.daiBalance && (
-              <>
-                <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
-                <Text variant="caption" sx={{ ml: 1, color: 'text.subtitle' }}>
-                  {formatCryptoBalance(accountData.daiBalance)}
-                </Text>
-              </>
-            )}
-          </Flex>
+
+          {accountData && accountData.daiBalance && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
+              <Text
+                variant="paragraph4"
+                sx={{
+                  ml: 1,
+                  color: 'neutral80',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {formatCryptoBalance(accountData.daiBalance)}
+              </Text>
+            </Flex>
+          )}
         </Grid>
       </Flex>
     </Grid>
@@ -304,16 +317,28 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   const { t } = useTranslation()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
+  const { socket } = useNotificationSocket()
+  const [{ wallet }, , disconnectWallet] = useConnectWallet()
+
+  const disconnectCallback = useCallback(async () => {
+    socket?.disconnect()
+    if (wallet) {
+      await disconnectWallet(wallet)
+    }
+    disconnect(web3Context)
+  }, [disconnectWallet, socket, wallet, web3Context])
 
   return (
     <Box sx={sx}>
-      <Text variant="headerSettings">{t('wallet')}</Text>
+      <Heading as="p" variant="boldParagraph1" sx={{ mb: 3 }}>
+        {t('wallet')}
+      </Heading>
       <WalletInfo />
-      <Text variant="headerSettings" sx={{ mt: 4 }}>
+      <Heading as="p" variant="boldParagraph1" sx={{ mt: 4, mb: 3 }}>
         {t('user-settings.slippage-limit.preset-title')}
-      </Text>
+      </Heading>
       <SlippageSettingsForm />
-      <Box sx={{ borderTop: '1px solid #E7EDEF', mt: 3 }} />
+      <Box variant="separator" sx={{ mt: '16px', mb: '24px' }} />
       <Button
         variant="textual"
         sx={{
@@ -322,10 +347,12 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
           display: 'flex',
           alignItems: 'center',
         }}
-        onClick={() => disconnect(web3Context)}
+        onClick={async () => {
+          await disconnectCallback()
+        }}
       >
-        <Icon name="sign_out" color="primaryEmphasis" size="auto" width={20} />
-        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primaryEmphasis', ml: 2 }}>
+        <Icon name="sign_out" color="primary60" size="auto" width={20} />
+        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primary60', ml: 2 }}>
           {t('disconnect-wallet')}
         </Text>
       </Button>
@@ -355,7 +382,12 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         >
           {t('account-privacy')}
         </AppLink>
-        <AppLink variant="settings" withAccountPrefix={false} href="/support" onClick={close}>
+        <AppLink
+          variant="settings"
+          withAccountPrefix={false}
+          href={EXTERNAL_LINKS.KB.HELP}
+          onClick={close}
+        >
           {t('account-support')}
         </AppLink>
       </Flex>
@@ -363,26 +395,37 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-export function UserSettingsButtonContents({ context, accountData, web3Context, active }: any) {
-  const { connectionKind } = web3Context
-  const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
+export interface UserSettingsButtonContentsProps {
+  context: ContextConnected
+  accountData: AccountDetails
+  active?: boolean | undefined
+}
 
+export function UserSettingsButtonContents({
+  context,
+  accountData,
+  active,
+}: UserSettingsButtonContentsProps) {
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={userIcon!} size="auto" width="42" />
-        <Text variant="address" sx={{ ml: 3 }}>
+        <BlockNativeAvatar />
+        <Text
+          as="p"
+          variant="paragraph3"
+          sx={{ ml: 3, color: 'primary100', fontWeight: 500, letterSpacing: '0.02em' }}
+        >
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>
-      <Flex sx={{ ml: 2 }}>
+      <Flex sx={{ ml: 2, transition: 'color 200ms' }}>
         <Icon
           size="auto"
           width="16"
           height="16"
           name="settings"
           sx={{ flexShrink: 0, m: '13px' }}
-          color={active ? 'primary' : 'lavender'}
+          color={active ? 'primary100' : 'inherit'}
         />
       </Flex>
     </Flex>

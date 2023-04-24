@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js'
-
-import { maxUint256 } from '../../blockchain/calls/erc20'
-import { isNullish } from '../../helpers/functions'
-import { TxError } from '../../helpers/types'
-import { zero } from '../../helpers/zero'
+import { maxUint256 } from 'blockchain/calls/erc20'
+import { AutomationKinds } from 'features/automation/common/types'
+import { mapAutomationEvents, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { isNullish } from 'helpers/functions'
+import { TxError } from 'helpers/types'
+import { zero } from 'helpers/zero'
 
 type CollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
-type DaiAllowanceRadio = 'unlimited' | 'paybackAmount' | 'custom'
+type DaiAllowanceRadio = 'unlimited' | 'actionAmount' | 'custom'
 
 export function vaultWillBeAtRiskLevelDangerValidator({
   inputAmountsEmpty,
@@ -98,6 +99,30 @@ export function depositingAllEthBalanceValidator({
   return token === 'ETH' && !!depositAmount?.eq(collateralBalance)
 }
 
+export function notEnoughETHtoPayForTx({
+  token,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  depositAmount,
+}: {
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  token?: string
+  gasEstimationUsd?: BigNumber
+  depositAmount?: BigNumber
+}) {
+  if (!gasEstimationUsd) {
+    return false
+  }
+
+  if (depositAmount && !depositAmount.isZero() && token === 'ETH') {
+    return ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd)
+  }
+
+  return ethBalance.times(ethPrice).lt(gasEstimationUsd)
+}
+
 export function customAllowanceAmountEmptyValidator({
   selectedAllowanceRadio,
   allowanceAmount,
@@ -137,6 +162,10 @@ export function customAllowanceAmountLessThanDepositAmountValidator({
 
 export function ledgerWalletContractDataDisabledValidator({ txError }: { txError?: TxError }) {
   return txError?.name === 'EthAppPleaseEnableContractData'
+}
+
+export function ethFundsForTxValidator({ txError }: { txError?: TxError }) {
+  return txError?.message === 'insufficient funds for gas * price + value'
 }
 
 export function debtIsLessThanDebtFloorValidator({
@@ -322,17 +351,25 @@ export function insufficientCollateralAllowanceValidator({
 
 export function insufficientDaiAllowanceValidator({
   paybackAmount,
+  depositDaiAmount,
   daiAllowance,
   debtOffset,
 }: {
   paybackAmount?: BigNumber
+  depositDaiAmount?: BigNumber
   daiAllowance?: BigNumber
   debtOffset: BigNumber
 }) {
+  const amountToValidate = paybackAmount?.gt(zero)
+    ? paybackAmount
+    : depositDaiAmount?.gt(zero)
+    ? depositDaiAmount
+    : zero
+
   return !!(
-    paybackAmount &&
-    !paybackAmount.isZero() &&
-    (!daiAllowance || paybackAmount.plus(debtOffset).gt(daiAllowance))
+    amountToValidate &&
+    !amountToValidate.isZero() &&
+    (!daiAllowance || amountToValidate.plus(debtOffset).gt(daiAllowance))
   )
 }
 
@@ -394,17 +431,93 @@ export function daiAllowanceProgressionDisabledValidator({
   )
 }
 
-export function afterCollRatioBelowStopLossRatioValidator({
+export function afterCollRatioThresholdRatioValidator({
   afterCollateralizationRatio,
   afterCollateralizationRatioAtNextPrice,
-  stopLossRatio,
+  threshold,
+  type,
 }: {
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
-  stopLossRatio: BigNumber
+  threshold: BigNumber
+  type: 'below' | 'above'
 }) {
-  return (
-    afterCollateralizationRatio.lt(stopLossRatio) ||
-    afterCollateralizationRatioAtNextPrice.lt(stopLossRatio)
-  )
+  if (afterCollateralizationRatio.isZero() || afterCollateralizationRatioAtNextPrice.isZero()) {
+    return false
+  }
+
+  switch (type) {
+    case 'below':
+      return (
+        afterCollateralizationRatio.lt(threshold) ||
+        afterCollateralizationRatioAtNextPrice.lte(threshold)
+      )
+    case 'above':
+      return (
+        afterCollateralizationRatio.gt(threshold) ||
+        afterCollateralizationRatioAtNextPrice.gte(threshold)
+      )
+    default:
+      return false
+  }
+}
+
+export function vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
+  debt,
+  afterDebt,
+  nextCollateralPrice,
+  type,
+  isTriggerEnabled,
+  executionPrice,
+}: {
+  debt: BigNumber
+  afterDebt: BigNumber
+  nextCollateralPrice: BigNumber
+  type: 'below' | 'above'
+  isTriggerEnabled?: boolean
+  executionPrice?: BigNumber
+}) {
+  if (!(isTriggerEnabled && executionPrice && debt.isZero() && !afterDebt.isZero())) {
+    return false
+  }
+
+  switch (type) {
+    case 'above':
+      return nextCollateralPrice.gte(executionPrice)
+    case 'below':
+      return nextCollateralPrice.lt(executionPrice)
+
+    default:
+      return false
+  }
+}
+
+export function automationTriggeredValidator({
+  vaultHistory,
+}: {
+  vaultHistory: VaultHistoryEvent[]
+}) {
+  const notTriggered = {
+    stopLossTriggered: false,
+    autoTakeProfitTriggered: false,
+  }
+
+  if (!vaultHistory.length) {
+    return notTriggered
+  }
+
+  const mappedAuto = mapAutomationEvents(vaultHistory)
+  const potentialExecutionEvent = mappedAuto[0]
+
+  if (
+    !('autoKind' in potentialExecutionEvent) ||
+    potentialExecutionEvent.eventType !== 'executed'
+  ) {
+    return notTriggered
+  }
+
+  return {
+    stopLossTriggered: potentialExecutionEvent.autoKind === AutomationKinds.STOP_LOSS,
+    autoTakeProfitTriggered: potentialExecutionEvent.autoKind === AutomationKinds.AUTO_TAKE_PROFIT,
+  }
 }

@@ -1,8 +1,7 @@
-import { BigNumber } from 'bignumber.js'
+import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
+import { billion, million, one, oneThousandth, ten, thousand, zero } from 'helpers/zero'
 import moment from 'moment'
-
-import { getToken } from '../../blockchain/tokensMetadata'
-import { billion, million, one, oneThousandth, ten, thousand, zero } from '../zero'
 
 BigNumber.config({
   FORMAT: {

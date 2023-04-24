@@ -1,10 +1,11 @@
+import { createDsProxy } from 'blockchain/calls/proxy'
+import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { OAZO_LOWER_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { one, zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { openGuniMultiplyVault } from '../../../../../blockchain/calls/proxyActions/proxyActions'
-import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
-import { AddGasEstimationFunction, TxHelpers } from '../../../../../components/AppContext'
-import { OAZO_LOWER_FEE, SLIPPAGE } from '../../../../../helpers/multiply/calculations'
-import { one, zero } from '../../../../../helpers/zero'
 import { OpenGuniVaultState } from './openGuniVault'
 
 export function applyGuniEstimateGas(
@@ -22,6 +23,7 @@ export function applyGuniEstimateGas(
       token0Amount,
       minToTokenAmount,
       requiredDebt,
+      isProxyStage,
     } = state
 
     const daiAmount =
@@ -45,6 +47,10 @@ export function applyGuniEstimateGas(
         fromTokenAmount: daiAmount,
         token0Amount: token0Amount || zero,
       })
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

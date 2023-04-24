@@ -1,0 +1,92 @@
+{
+  "rows": [
+    {
+      "asset": "ETH",
+      "liquidationPrice": 1254.39,
+      "nextOsmPrice": 1326.9,
+      "maxLiquidationAmount": 353422.43,
+      "status": {
+        "kind": 1,
+        "additionalData": {
+          "timestamp": 1666876948181
+        }
+      },
+      "cdpId": 18604
+    },
+    {
+      "asset": "WBTC",
+      "liquidationPrice": 13500.3,
+      "nextOsmPrice": 19515.03,
+      "maxLiquidationAmount": 43943422.24,
+      "status": {
+        "kind": 2
+      },
+      "cdpId": 17503
+    },
+    {
+      "asset": "WSTETH",
+      "liquidationPrice": 1320.31,
+      "nextOsmPrice": 1419.48,
+      "maxLiquidationAmount": 9231242.2,
+      "status": {
+        "kind": 3,
+        "additionalData": {
+          "tillLiquidation": 1.02
+        }
+      },
+      "cdpId": 6843
+    },
+    {
+      "asset": "ETH",
+      "liquidationPrice": 1240.74,
+      "nextOsmPrice": 1326.9,
+      "maxLiquidationAmount": 234215463.94,
+      "status": {
+        "kind": 4,
+        "additionalData": {
+          "toStopLoss": 12.61
+        }
+      },
+      "cdpId": 24300
+    },
+    {
+      "asset": "ETH",
+      "liquidationPrice": 1670.75,
+      "nextOsmPrice": 1326.9,
+      "maxLiquidationAmount": 9568049.66,
+      "status": {
+        "kind": 3,
+        "additionalData": {
+          "tillLiquidation": 21.37
+        }
+      },
+      "cdpId": 24985
+    },
+    {
+      "asset": "MANA",
+      "liquidationPrice": 0.6112,
+      "nextOsmPrice": 0.6416,
+      "maxLiquidationAmount": 12039.08,
+      "status": {
+        "kind": 3,
+        "additionalData": {
+          "tillLiquidation": 48.19
+        }
+      },
+      "cdpId": 54122
+    },
+    {
+      "asset": "CRVV1ETHSTETH",
+      "liquidationPrice": 0.92,
+      "nextOsmPrice": 1.03,
+      "maxLiquidationAmount": 3495.64,
+      "status": {
+        "kind": 3,
+        "additionalData": {
+          "tillLiquidation": 52.63
+        }
+      },
+      "cdpId": 3198
+    }
+  ]
+}

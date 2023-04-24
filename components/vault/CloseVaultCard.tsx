@@ -27,7 +27,7 @@ export function CloseVaultCard({
           ? {
               boxShadow: 'actionCard',
               border: '1px solid',
-              borderColor: 'borderSelected',
+              borderColor: 'neutral70',
             }
           : {}),
       }}

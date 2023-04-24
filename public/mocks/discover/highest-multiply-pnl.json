@@ -1,0 +1,82 @@
+{
+  "rows": [
+    {
+      "asset": "ETH",
+      "collateralValue": 1254.39,
+      "currentMultiple": 2.0,
+      "pnl": 1006030.38,
+      "activity": {
+        "kind": 1,
+        "additionalData": {
+          "timestamp": 1666269559536
+        }
+      },
+      "cdpId": 18604
+    },
+    {
+      "asset": "ETH",
+      "collateralValue": 13500.3,
+      "currentMultiple": 3.34,
+      "pnl": 394823.24,
+      "activity": {
+        "kind": 2,
+        "additionalData": {
+          "timestamp": 1666445181492
+        }
+      },
+      "cdpId": 17503
+    },
+    {
+      "asset": "MANA",
+      "collateralValue": 23676.31,
+      "currentMultiple": 2.4,
+      "pnl": 9841521.2,
+      "activity": {
+        "kind": 3,
+        "additionalData": {
+          "timestamp": 1666417150813
+        }
+      },
+      "cdpId": 6843
+    },
+    {
+      "asset": "ETH",
+      "collateralValue": 7453.74,
+      "currentMultiple": 4.08,
+      "pnl": 64857.94,
+      "activity": {
+        "kind": 4,
+        "additionalData": {
+          "timestamp": 1666696833318
+        }
+      },
+      "cdpId": 24300
+    },
+    {
+      "asset": "WBTC",
+      "collateralValue": 781232.75,
+      "currentMultiple": 1.94,
+      "pnl": 4398785.66,
+      "activity": {
+        "kind": 5,
+        "additionalData": {
+          "timestamp": 1666661517734
+        }
+      },
+      "cdpId": 24985
+    },
+    {
+      "asset": "ETH",
+      "collateralValue": 12412.74,
+      "currentMultiple": 2.98,
+      "pnl": 912840.94,
+      "activity": {
+        "kind": 6,
+        "additionalData": {
+          "timestamp": 1666409330548
+        }
+      },
+      "cdpId": 19321
+    }
+  ]
+}

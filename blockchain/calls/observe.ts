@@ -1,19 +1,19 @@
+import { Context } from 'blockchain/network'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
-import { Context } from '../network'
 import { call, CallDef } from './callsHelpers'
 
 export function observe<A, R>(
-  onEveryBlock$: Observable<number>,
+  refreshTrigger$: Observable<any>,
   connectedContext$: Observable<Context>,
   callDef: CallDef<A, R>,
   resolver?: (args: A) => string,
 ): (args: A) => Observable<R> {
   return memoize(
     (args: A) =>
-      combineLatest(connectedContext$, onEveryBlock$).pipe(
+      combineLatest(connectedContext$, refreshTrigger$).pipe(
         switchMap(([context]) => call(context, callDef)(args)),
         distinctUntilChanged(isEqual),
         shareReplay(1),

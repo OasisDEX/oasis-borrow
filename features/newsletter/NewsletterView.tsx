@@ -1,8 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { isAppContextAvailable } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { FormEvent, useState } from 'react'
 import { useEffect } from 'react'
 import { GRADIENTS } from 'theme'
@@ -28,7 +29,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
       <Box
         sx={{
           display: 'inline-flex',
-          bg: 'backgroundAlt',
+          bg: 'secondary60',
           borderRadius: '3em',
           px: 4,
           py: 3,
@@ -46,12 +47,12 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
             borderRadius: '50%',
           }}
         >
-          <Icon name="checkmark" color="surface" size={small ? 16 : 21} />
+          <Icon name="checkmark" color="neutral10" size={small ? 16 : 21} />
         </Flex>
         <Box sx={{ flex: 1, ml: 3, textAlign: 'center' }}>
           <Text
             sx={{
-              color: 'text.subtitle',
+              color: 'neutral80',
               fontSize: small ? 1 : 3,
               py: 1,
               maxWidth: '32em',
@@ -69,6 +70,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
 
 function NewsletterForm({ small }: { small?: boolean }) {
   const [inputOnFocus, setInputOnFocus] = useState(false)
+  const [gdprBoxOnHover, setGdprBoxOnHover] = useState(false)
   const [newsletterForm, setNewsletterForm] = useState<NewsletterState | undefined>(undefined)
   const { t } = useTranslation()
 
@@ -108,18 +110,18 @@ function NewsletterForm({ small }: { small?: boolean }) {
       <Flex
         sx={{
           borderRadius: '2em',
-          bg: ['transparent', 'bgPrimaryAlt'],
+          bg: ['transparent', 'neutral10'],
           border: 'light',
-          borderColor: 'newsletterInputBorder',
+          borderColor: 'secondary100',
           height: small ? '38px' : 'initial',
           justifyContent: 'space-between',
           px: 2,
         }}
       >
         <Input
-          placeholder={t('newsletter.placeholder')}
+          placeholder={t('newsletter.placeholder') as string}
           sx={{
-            bg: 'bgPrimaryAlt',
+            bg: 'neutral10',
             borderRadius: 'inherit',
             border: 'none',
             px: 3,
@@ -145,7 +147,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            color: 'primary',
+            color: 'primary100',
             '&:disabled': {
               opacity: 0.7,
             },
@@ -158,7 +160,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           disabled={!submit}
         >
           {stage === 'inProgress' ? (
-            <AppSpinner sx={{ color: 'primary' }} variant="styles.spinner.large" />
+            <AppSpinner sx={{ color: 'primary100' }} variant="styles.spinner.large" />
           ) : (
             <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
               <Text mr={1}>{t('newsletter.button')}</Text>
@@ -172,12 +174,32 @@ function NewsletterForm({ small }: { small?: boolean }) {
           )}
         </Button>
       </Flex>
-      <Box sx={{ mt: 2, minHeight: '1.3em' }}>
-        {showError && (
-          <Text sx={{ textAlign: 'left', color: 'onError', fontSize: 2 }}>
-            {errorKey ? t(`newsletter.errors.${errorKey}`) : messageResponse}
-          </Text>
-        )}
+      <Box sx={{ minHeight: small ? '137px' : '128px', mt: small ? 1 : 2 }}>
+        <Box sx={{ mt: small ? 1 : 2 }}>
+          {showError && (
+            <Text sx={{ textAlign: 'left', color: 'critical100', fontSize: 2, ml: 3 }}>
+              {errorKey ? t(`newsletter.errors.${errorKey}`) : messageResponse}
+            </Text>
+          )}
+        </Box>
+        <Box
+          sx={{ mt: small ? 1 : 2 }}
+          onMouseEnter={() => setGdprBoxOnHover(true)}
+          onMouseLeave={() => setGdprBoxOnHover(false)}
+        >
+          {(inputOnFocus || showError || gdprBoxOnHover) && (
+            <Box sx={{ p: 3, borderRadius: '16px' }} bg="secondary60">
+              <Text sx={{ textAlign: 'left', color: 'neutral80', fontSize: 2 }}>
+                <Trans
+                  i18nKey="newsletter.gdpr"
+                  components={{
+                    1: <AppLink href="/privacy" variant="inText" />,
+                  }}
+                ></Trans>
+              </Text>
+            </Box>
+          )}
+        </Box>
       </Box>
     </Box>
   )
@@ -200,10 +222,10 @@ export function NewsletterSection({ small }: { small?: boolean }) {
       }}
     >
       <Grid sx={{ textAlign: small ? 'left' : 'center' }} gap={1} mb={small ? 3 : 4}>
-        <Heading variant="header2" sx={{ fontWeight: 'body', fontSize: small ? 4 : 7 }}>
+        <Heading as={small ? 'p' : 'h3'} variant={small ? 'boldParagraph1' : 'header3'}>
           {t('newsletter.title')}
         </Heading>
-        {small && <Text sx={{ color: 'text.subtitle' }}>{t('newsletter.subtitle')}</Text>}
+        {small && <Text sx={{ color: 'neutral80' }}>{t('newsletter.subtitle')}</Text>}
       </Grid>
       {isAppContextAvailable() ? <NewsletterForm small={small} /> : null}
     </Box>

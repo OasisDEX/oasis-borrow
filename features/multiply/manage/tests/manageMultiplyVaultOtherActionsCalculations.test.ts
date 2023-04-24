@@ -1,5 +1,3 @@
-/* eslint-disable func-style */
-
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'

@@ -1,8 +1,7 @@
 import { TxHelpers } from 'components/AppContext'
 import { createProxy } from 'features/proxy/createProxy'
+import { TxError } from 'helpers/types'
 import { Observable } from 'rxjs'
-
-import { TxError } from '../../helpers/types'
 
 export interface ProxyState {
   proxyTxHash?: string
@@ -12,6 +11,7 @@ export interface ProxyState {
   progress?(): void
   regress?(): void
   isProxyStage: boolean
+  proxySuccess?: boolean
 }
 
 export const defaultProxyStage: ProxyState = {
@@ -32,7 +32,7 @@ export const PROXY_STAGES = [
   'proxySuccess',
 ] as const
 
-export type ProxyStages = typeof PROXY_STAGES[number]
+export type ProxyStages = (typeof PROXY_STAGES)[number]
 
 export function isProxyStage(stage: string): stage is ProxyStages {
   return PROXY_STAGES.includes(stage as any)
@@ -116,6 +116,7 @@ export function applyProxyChanges<S extends ProxyState & Dependencies>(
       ...state,
       proxyAddress,
       stage: 'proxySuccess',
+      proxySuccess: true,
     }
   }
 

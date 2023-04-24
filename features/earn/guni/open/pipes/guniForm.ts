@@ -2,11 +2,11 @@
 // @ts-nocheck
 import { BigNumber } from 'bignumber.js'
 import { TxHelpers } from 'components/AppContext'
+import { defaultAllowanceState } from 'features/allowance/allowance'
+import { defaultProxyStage } from 'features/proxy/proxy'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { defaultAllowanceState } from '../../../../allowance/allowance'
-import { defaultProxyStage } from '../../../../proxy/proxy'
 import { EnvironmentState } from './enviroment'
 import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
 import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
@@ -160,7 +160,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
 export function addFormTransitions<
   S extends FormFunctions &
     EnvironmentState &
-    TxStateDependencies & { stage: string /* TODO make it precise */ }
+    TxStateDependencies & { stage: string /* TODO make it precise */ },
 >(txHelpers: TxHelpers, change: (ch: any /* TODO make it precise */) => void, state: S): S {
   if (state.stage === 'editing') {
     return {

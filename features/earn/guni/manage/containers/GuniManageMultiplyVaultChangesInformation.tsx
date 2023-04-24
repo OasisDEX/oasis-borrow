@@ -1,13 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import {
-  getEstimatedGasFeeText,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { displayMultiple } from 'helpers/display-multiple'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -17,8 +19,6 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-
-import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
 
 export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -63,7 +63,7 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
               ) : (
                 <Text>
                   ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-                  <Text as="span" sx={{ color: 'onError' }}>
+                  <Text as="span" sx={{ color: 'critical100' }}>
                     ({formatPercent(impact, { precision: 2 })})
                   </Text>
                 </Text>
@@ -82,7 +82,7 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
           <Flex>
             {multiply?.toFixed(2)}x
             <VaultChangesInformationArrow />
-            {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
+            {isCloseAction ? 'n/a' : displayMultiple(afterMultiply)}
           </Flex>
         }
       />
@@ -104,7 +104,7 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(fees, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"

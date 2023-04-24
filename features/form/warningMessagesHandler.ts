@@ -5,8 +5,31 @@ export type VaultWarningMessage =
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
   | 'debtIsLessThanDebtFloor'
+  | 'potentialInsufficientEthFundsForTx'
   | 'highSlippage'
   | 'customSlippageOverridden'
+  | 'vaultIsCurrentlyUnderMinActiveColRatio'
+  | 'vaultWillRemainUnderMinActiveColRatio'
+  | 'currentCollRatioCloseToStopLoss'
+  | 'noMinSellPriceWhenStopLossEnabled'
+  | 'settingAutoBuyTriggerWithNoThreshold'
+  | 'autoSellTriggerCloseToStopLossTrigger'
+  | 'autoSellTargetCloseToAutoBuyTrigger'
+  | 'stopLossTriggerCloseToAutoSellTrigger'
+  | 'autoBuyTargetCloseToStopLossTrigger'
+  | 'autoBuyTargetCloseToAutoSellTrigger'
+  | 'autoBuyTriggeredImmediately'
+  | 'autoSellTriggeredImmediately'
+  | 'constantMultipleSellTriggerCloseToStopLossTrigger'
+  | 'stopLossTriggerCloseToConstantMultipleSellTrigger'
+  | 'addingConstantMultipleWhenAutoSellOrBuyEnabled'
+  | 'constantMultipleAutoSellTriggeredImmediately'
+  | 'constantMultipleAutoBuyTriggeredImmediately'
+  | 'autoTakeProfitTriggerLowerThanAutoBuyTrigger'
+  | 'autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger'
+  | 'autoBuyTriggerGreaterThanAutoTakeProfit'
+  | 'constantMultipleBuyTriggerGreaterThanAutoTakeProfit'
+  | 'existingTakeProfitTriggerAfterVaultReopen'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -15,8 +38,29 @@ interface WarningMessagesHandler {
   vaultWillBeAtRiskLevelWarning?: boolean
   vaultWillBeAtRiskLevelWarningAtNextPrice?: boolean
   debtIsLessThanDebtFloor?: boolean
+  potentialInsufficientEthFundsForTx?: boolean
   highSlippage?: boolean
   customSlippageOverridden?: boolean
+  currentCollRatioCloseToStopLoss?: boolean
+  noMinSellPriceWhenStopLossEnabled?: boolean
+  settingAutoBuyTriggerWithNoThreshold?: boolean
+  autoSellTriggerCloseToStopLossTrigger?: boolean
+  autoSellTargetCloseToAutoBuyTrigger?: boolean
+  stopLossTriggerCloseToAutoSellTrigger?: boolean
+  autoBuyTargetCloseToStopLossTrigger?: boolean
+  autoBuyTargetCloseToAutoSellTrigger?: boolean
+  autoSellTriggeredImmediately?: boolean
+  autoBuyTriggeredImmediately?: boolean
+  constantMultipleSellTriggerCloseToStopLossTrigger?: boolean
+  stopLossTriggerCloseToConstantMultipleSellTrigger?: boolean
+  addingConstantMultipleWhenAutoSellOrBuyEnabled?: boolean
+  constantMultipleAutoSellTriggeredImmediately?: boolean
+  constantMultipleAutoBuyTriggeredImmediately?: boolean
+  autoTakeProfitTriggerLowerThanAutoBuyTrigger?: boolean
+  autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger?: boolean
+  autoBuyTriggerGreaterThanAutoTakeProfit?: boolean
+  constantMultipleBuyTriggerGreaterThanAutoTakeProfit?: boolean
+  existingTakeProfitTriggerAfterVaultReopen?: boolean
 }
 
 export function warningMessagesHandler({
@@ -26,6 +70,27 @@ export function warningMessagesHandler({
   vaultWillBeAtRiskLevelWarning,
   vaultWillBeAtRiskLevelWarningAtNextPrice,
   debtIsLessThanDebtFloor,
+  potentialInsufficientEthFundsForTx,
+  currentCollRatioCloseToStopLoss,
+  noMinSellPriceWhenStopLossEnabled,
+  settingAutoBuyTriggerWithNoThreshold,
+  autoSellTriggerCloseToStopLossTrigger,
+  autoSellTargetCloseToAutoBuyTrigger,
+  stopLossTriggerCloseToAutoSellTrigger,
+  autoBuyTargetCloseToStopLossTrigger,
+  autoBuyTargetCloseToAutoSellTrigger,
+  autoSellTriggeredImmediately,
+  autoBuyTriggeredImmediately,
+  constantMultipleSellTriggerCloseToStopLossTrigger,
+  stopLossTriggerCloseToConstantMultipleSellTrigger,
+  addingConstantMultipleWhenAutoSellOrBuyEnabled,
+  constantMultipleAutoSellTriggeredImmediately,
+  constantMultipleAutoBuyTriggeredImmediately,
+  autoTakeProfitTriggerLowerThanAutoBuyTrigger,
+  autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger,
+  autoBuyTriggerGreaterThanAutoTakeProfit,
+  constantMultipleBuyTriggerGreaterThanAutoTakeProfit,
+  existingTakeProfitTriggerAfterVaultReopen,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -53,13 +118,88 @@ export function warningMessagesHandler({
     warningMessages.push('debtIsLessThanDebtFloor')
   }
 
-  // if (highSlippage) {
-  //   warningMessages.push('highSlippage')
-  // }
+  if (potentialInsufficientEthFundsForTx) {
+    warningMessages.push('potentialInsufficientEthFundsForTx')
+  }
 
-  // if (customSlippageOverridden) {
-  //   warningMessages.push('customSlippageOverridden')
-  // }
+  if (currentCollRatioCloseToStopLoss) {
+    warningMessages.push('currentCollRatioCloseToStopLoss')
+  }
+
+  if (noMinSellPriceWhenStopLossEnabled) {
+    warningMessages.push('noMinSellPriceWhenStopLossEnabled')
+  }
+
+  if (settingAutoBuyTriggerWithNoThreshold) {
+    warningMessages.push('settingAutoBuyTriggerWithNoThreshold')
+  }
+  if (autoSellTriggerCloseToStopLossTrigger) {
+    warningMessages.push('autoSellTriggerCloseToStopLossTrigger')
+  }
+
+  if (autoSellTargetCloseToAutoBuyTrigger) {
+    warningMessages.push('autoSellTargetCloseToAutoBuyTrigger')
+  }
+
+  if (stopLossTriggerCloseToAutoSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToAutoSellTrigger')
+  }
+
+  if (autoBuyTargetCloseToStopLossTrigger) {
+    warningMessages.push('autoBuyTargetCloseToStopLossTrigger')
+  }
+
+  if (autoBuyTargetCloseToAutoSellTrigger) {
+    warningMessages.push('autoBuyTargetCloseToAutoSellTrigger')
+  }
+
+  if (autoBuyTriggeredImmediately) {
+    warningMessages.push('autoBuyTriggeredImmediately')
+  }
+
+  if (autoSellTriggeredImmediately) {
+    warningMessages.push('autoSellTriggeredImmediately')
+  }
+
+  if (constantMultipleSellTriggerCloseToStopLossTrigger) {
+    warningMessages.push('constantMultipleSellTriggerCloseToStopLossTrigger')
+  }
+
+  if (stopLossTriggerCloseToConstantMultipleSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToConstantMultipleSellTrigger')
+  }
+
+  if (addingConstantMultipleWhenAutoSellOrBuyEnabled) {
+    warningMessages.push('addingConstantMultipleWhenAutoSellOrBuyEnabled')
+  }
+
+  if (constantMultipleAutoSellTriggeredImmediately) {
+    warningMessages.push('constantMultipleAutoSellTriggeredImmediately')
+  }
+
+  if (constantMultipleAutoBuyTriggeredImmediately) {
+    warningMessages.push('constantMultipleAutoBuyTriggeredImmediately')
+  }
+
+  if (autoTakeProfitTriggerLowerThanAutoBuyTrigger) {
+    warningMessages.push('autoTakeProfitTriggerLowerThanAutoBuyTrigger')
+  }
+
+  if (autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger) {
+    warningMessages.push('autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger')
+  }
+
+  if (autoBuyTriggerGreaterThanAutoTakeProfit) {
+    warningMessages.push('autoBuyTriggerGreaterThanAutoTakeProfit')
+  }
+
+  if (constantMultipleBuyTriggerGreaterThanAutoTakeProfit) {
+    warningMessages.push('constantMultipleBuyTriggerGreaterThanAutoTakeProfit')
+  }
+
+  if (existingTakeProfitTriggerAfterVaultReopen) {
+    warningMessages.push('existingTakeProfitTriggerAfterVaultReopen')
+  }
 
   return warningMessages
 }

@@ -1,22 +1,17 @@
 import { BigNumber } from 'bignumber.js'
-import { Context, every10Seconds$ } from 'blockchain/network'
+import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
+import { getNetworkId } from 'features/web3Context'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
+import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import {
-  catchError,
-  distinctUntilChanged,
-  first,
-  map,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { getNetworkContracts } from './contracts'
 import { getToken } from './tokensMetadata'
 
-export interface Ticker {
+export interface Tickers {
   [label: string]: BigNumber
 }
 
@@ -61,58 +56,98 @@ export function createGasPrice$(
     switchMap(([{ web3 }, blockNumber]) => {
       return combineLatest(blockNativeRequest$, bindNodeCallback(web3.eth.getBlock)(blockNumber))
     }),
-    map(
-      ([blockNativeResp, block]): GasPriceParams => {
-        const blockNative = blockNativeResp as GasPriceParams
-        const gasFees = {
-          maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
-          maxPriorityFeePerGas: minersTip,
-        } as GasPriceParams
-        if (blockNative.maxFeePerGas.gt(0)) {
-          gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
-          gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
-            blockNative.maxPriorityFeePerGas,
-          )
-        }
-        return gasFees
-      },
-    ),
+    map(([blockNativeResp, block]): GasPriceParams => {
+      const blockNative = blockNativeResp as GasPriceParams
+      const gasFees = {
+        maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
+        maxPriorityFeePerGas: minersTip,
+      } as GasPriceParams
+
+      const network = getNetworkId()
+
+      // Increase maxFeePerGas by 20% when on goerli
+      if (network === NetworkIds.GOERLI) {
+        gasFees.maxFeePerGas = new BigNumber((block as any).baseFeePerGas)
+          .multipliedBy(1.15)
+          .plus(minersTip)
+      }
+
+      if (blockNative.maxFeePerGas.gt(0) && network !== NetworkIds.GOERLI) {
+        gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
+        gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
+          blockNative.maxPriorityFeePerGas,
+        )
+      }
+      return gasFees
+    }),
     distinctUntilChanged(isEqual),
     shareReplay(1),
   )
 }
 
-const tradingTokens = ['DAI', 'ETH']
-
-export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
+export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
   switchMap(() =>
-    forkJoin(
-      tradingTokens.map((token) =>
-        ajax({
-          url: `https://api.pro.coinbase.com/products/${getToken(token).coinbaseTicker}/book`,
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-          },
-        }).pipe(
-          map(({ response }) => {
-            const bid = new BigNumber(response.bids[0][0])
-            const ask = new BigNumber(response.asks[0][0])
-            return {
-              [token]: bid.plus(ask).div(2),
-            }
-          }),
-          catchError((error) => {
-            console.log(error)
-            return of({})
-          }),
-        ),
-      ),
-    ),
+    ajax({
+      url: `${window.location.origin}/api/tokensPrices`,
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    }),
   ),
-  map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),
+  map(({ response }) => response),
   shareReplay(1),
 )
+
+function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
+  for (const label of tickerServiceLabels) {
+    if (label && tickers[label]) {
+      return tickers[label]
+    }
+  }
+
+  throw new Error(`No price data for given token`)
+}
+
+export function createTokenPriceInUSD$(
+  every10Seconds$: Observable<any>,
+  tokenTicker$: Observable<Tickers>,
+  tokens: Array<string>,
+): Observable<Tickers> {
+  return combineLatest(every10Seconds$, tokenTicker$).pipe(
+    switchMap(([_, tickers]) =>
+      forkJoin(
+        tokens.map((token) => {
+          try {
+            const {
+              coinpaprikaTicker,
+              coinbaseTicker,
+              coinGeckoTicker,
+              coinpaprikaFallbackTicker,
+            } = getToken(token)
+
+            const tokenPrice = getPrice(tickers, [
+              coinbaseTicker,
+              coinpaprikaTicker,
+              coinGeckoTicker,
+              coinpaprikaFallbackTicker,
+            ])
+
+            return of({
+              [token]: new BigNumber(tokenPrice),
+            })
+          } catch (err) {
+            console.log(`could not find price for ${token} - no ticker configured`)
+
+            return of({})
+          }
+        }),
+      ),
+    ),
+    map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),
+    shareReplay(1),
+  )
+}
 
 export interface OraclePriceData {
   currentPrice: BigNumber
@@ -148,44 +183,104 @@ export function calculatePricePercentageChange(current: BigNumber, next: BigNumb
   return current.minus(next).div(current).times(-1)
 }
 
+export type OraclePriceDataArgs = {
+  token: string
+  requestedData: Array<keyof OraclePriceData>
+}
+
 export function createOraclePriceData$(
   context$: Observable<Context>,
   pipPeek$: (token: string) => Observable<[string, boolean]>,
   pipPeep$: (token: string) => Observable<[string, boolean]>,
   pipZzz$: (token: string) => Observable<BigNumber>,
   pipHop$: (token: string) => Observable<BigNumber>,
-  token: string,
-): Observable<OraclePriceData> {
+  { token, requestedData }: OraclePriceDataArgs,
+): Observable<Partial<OraclePriceData>> {
   return context$.pipe(
-    switchMap(({ web3, mcdOsms }) => {
-      return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
+    switchMap(({ web3, chainId }) => {
+      return bindNodeCallback(web3.eth.getCode)(
+        getNetworkContracts(chainId).mcdOsms[token].address,
+      ).pipe(
         first(),
-        switchMap((contractData) =>
-          iif(
-            () => contractData.length > DSVALUE_APPROX_SIZE,
-            combineLatest(
-              pipPeek$(token),
-              pipPeep$(token),
-              pipZzz$(token),
-              pipHop$(token),
-              of(false),
-            ),
-            combineLatest(pipPeek$(token), of(undefined), of(undefined), of(undefined), of(true)),
-          ).pipe(
+        switchMap((contractData) => {
+          type Pipes = {
+            pipPeek$: typeof pipPeek$ | (() => Observable<undefined>)
+            pipPeep$: typeof pipPeep$ | (() => Observable<undefined>)
+            pipZzz$: typeof pipZzz$ | (() => Observable<undefined>)
+            pipHop$: typeof pipHop$ | (() => Observable<undefined>)
+          }
+          const pipes: Pipes = {
+            pipPeek$: () => of(undefined),
+            pipPeep$: () => of(undefined),
+            pipZzz$: () => of(undefined),
+            pipHop$: () => of(undefined),
+          }
+
+          if (requestedData.includes('currentPrice')) {
+            pipes.pipPeek$ = pipPeek$
+          }
+
+          if (requestedData.includes('nextPrice')) {
+            pipes.pipPeek$ = pipPeek$
+            pipes.pipPeep$ = pipPeep$
+          }
+
+          if (requestedData.includes('currentPriceUpdate')) {
+            pipes.pipZzz$ = pipZzz$
+          }
+
+          if (requestedData.includes('nextPriceUpdate')) {
+            pipes.pipZzz$ = pipZzz$
+            pipes.pipHop$ = pipHop$
+          }
+
+          if (requestedData.includes('priceUpdateInterval')) {
+            pipes.pipHop$ = pipHop$
+          }
+
+          if (requestedData.includes('percentageChange')) {
+            pipes.pipPeek$ = pipPeek$
+            pipes.pipPeep$ = pipPeep$
+          }
+
+          const combined$ =
+            contractData.length > DSVALUE_APPROX_SIZE
+              ? combineLatest(
+                  pipes.pipPeek$(token),
+                  pipes.pipPeep$(token),
+                  pipes.pipZzz$(token),
+                  pipes.pipHop$(token),
+                  of(false),
+                )
+              : combineLatest(
+                  pipPeek$(token),
+                  of(undefined),
+                  of(undefined),
+                  of(undefined),
+                  of(true),
+                )
+
+          return combined$.pipe(
             switchMap(([peek, peep, zzz, hop, isStaticPrice]) => {
               const currentPriceUpdate = zzz ? new Date(zzz.toNumber()) : undefined
               const nextPriceUpdate = zzz && hop ? new Date(zzz.plus(hop).toNumber()) : undefined
               const priceUpdateInterval = hop ? hop.toNumber() : undefined
-              const currentPrice = transformOraclePrice({ token, oraclePrice: peek })
+              const currentPrice = peek
+                ? transformOraclePrice({ token, oraclePrice: peek })
+                : undefined
+
               const nextPrice = peep
                 ? transformOraclePrice({ token, oraclePrice: peep })
                 : currentPrice
 
-              const percentageChange = calculatePricePercentageChange(currentPrice, nextPrice)
+              const percentageChange =
+                currentPrice && nextPrice
+                  ? calculatePricePercentageChange(currentPrice, nextPrice)
+                  : undefined
 
               return of({
                 currentPrice,
-                nextPrice: nextPrice,
+                nextPrice,
                 currentPriceUpdate,
                 nextPriceUpdate,
                 priceUpdateInterval,
@@ -193,8 +288,8 @@ export function createOraclePriceData$(
                 percentageChange,
               })
             }),
-          ),
-        ),
+          )
+        }),
       )
     }),
     shareReplay(1),

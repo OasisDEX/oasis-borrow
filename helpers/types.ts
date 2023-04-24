@@ -19,7 +19,7 @@ export type CommonVaultState =
   | OpenGuniVaultState
 
 type Shift<A extends Array<any>> = ((...args: A) => void) extends (
-  ...args: [A[0], ...(infer R)]
+  ...args: [A[0], ...infer R]
 ) => void
   ? R
   : never
@@ -27,7 +27,7 @@ type Shift<A extends Array<any>> = ((...args: A) => void) extends (
 type GrowExpRev<
   A extends Array<any>,
   N extends number,
-  P extends Array<Array<any>>
+  P extends Array<Array<any>>,
 > = A['length'] extends N
   ? A
   : {
@@ -38,7 +38,7 @@ type GrowExpRev<
 type GrowExp<
   A extends Array<any>,
   N extends number,
-  P extends Array<Array<any>>
+  P extends Array<Array<any>>,
 > = A['length'] extends N
   ? A
   : {
@@ -51,8 +51,10 @@ export type FixedSizeArray<T, N extends number> = N extends 0
   : N extends 1
   ? [T]
   : GrowExp<[T, T], N, [[T]]>
+
 export type TxError = {
   name: string
+  message?: string
 }
 
 export type Abi = Omit<AbiItem, 'type' | 'stateMutability' | 'inputs'> & {
@@ -63,3 +65,9 @@ export type Abi = Omit<AbiItem, 'type' | 'stateMutability' | 'inputs'> & {
 }
 
 export type Unbox<T> = T extends Promise<infer U> ? U : T extends Array<infer Y> ? Y : never
+
+export interface PriceServiceResponse {
+  [id: string]: string
+}
+
+export type RequiredField<T, K extends keyof T> = T & Required<Pick<T, K>>

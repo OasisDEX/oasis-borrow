@@ -3,21 +3,22 @@ import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { amountToWei } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
 import { Quote } from 'features/exchange/exchange'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { jwtAuthGetToken } from 'features/shared/jwt'
+import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
+import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
+import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { of } from 'rxjs'
 import { catchError, startWith } from 'rxjs/operators'
-import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
-import { GuniToken } from 'types/ethers-contracts/GuniToken'
-
-import { TxError } from '../../../../../helpers/types'
-import { VaultType } from '../../../../generalManageVault/vaultType'
-import { parseVaultIdFromReceiptLogs } from '../../../../shared/transactions'
-import { saveVaultUsingApi$ } from '../../../../shared/vaultApi'
-import { jwtAuthGetToken } from '../../../../termsOfService/jwt'
+import { DssGuniProxyActions as GuniProxyActions } from 'types/web3-v1-contracts'
+import { GuniToken } from 'types/web3-v1-contracts'
 
 export type TxChange =
   | { kind: 'txWaitingForApproval' }
@@ -35,17 +36,14 @@ export type TxChange =
     }
 
 export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
-  call: (_, { contract, guniProxyActions }) => {
-    return contract<GuniProxyActions>(guniProxyActions).methods.getOtherTokenAmount
+  call: (_, { contract, chainId }) => {
+    return contract<GuniProxyActions>(getNetworkContracts(chainId).guniProxyActions).methods
+      .getOtherTokenAmount
   },
-  prepareArgs: ({ token, leveragedAmount }, context) => {
-    const guniToken = context.tokens[token]
-    return [
-      guniToken.address,
-      context.guniResolver,
-      amountToWei(leveragedAmount, 'DAI').toFixed(0),
-      6,
-    ] // TODO: remove fixed precision
+  prepareArgs: ({ token, leveragedAmount }, { chainId }) => {
+    const { tokens, guniResolver } = getNetworkContracts(chainId)
+    const guniToken = tokens[token]
+    return [guniToken.address, guniResolver, amountToWei(leveragedAmount, 'DAI').toFixed(0), 6] // TODO: remove fixed precision
   },
   postprocess: (token2Amount: any) => new BigNumber(token2Amount).div(new BigNumber(10).pow(18)),
 }
@@ -54,8 +52,8 @@ export const getGuniMintAmount: CallDef<
   { token: string; amountOMax: BigNumber; amount1Max: BigNumber },
   { amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }
 > = {
-  call: ({ token }, { contract, tokens }) => {
-    const guniToken = tokens[token]
+  call: ({ token }, { contract, chainId }) => {
+    const guniToken = getNetworkContracts(chainId).tokens[token]
     return contract<GuniToken>(guniToken).methods.getMintAmounts
   },
   prepareArgs: ({ amountOMax, amount1Max }) => {
@@ -133,7 +131,6 @@ export function openGuniVault<S extends TxStateDependencies>(
         { kind: 'txWaitingForApproval' },
         (txState) => of({ kind: 'txInProgress', openTxHash: (txState as any).txHash as string }),
         (txState) => {
-          console.log('txState', txState)
           return of({
             kind: 'txFailure',
             txError:
@@ -154,6 +151,7 @@ export function openGuniVault<S extends TxStateDependencies>(
               jwtToken,
               VaultType.Multiply,
               parseInt(txState.networkId),
+              LendingProtocol.Maker,
             ).subscribe()
           }
 

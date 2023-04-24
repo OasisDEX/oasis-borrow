@@ -1,7 +1,7 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
+import { networksById } from 'blockchain/networksConfig'
 import { AccountDetails } from 'features/account/AccountData'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
@@ -82,14 +82,12 @@ export function createOpenVaultAnalytics$(
     })),
   )
 
-  const allowanceTypeChanges: Observable<Pick<
-    MutableOpenVaultState,
-    'selectedAllowanceRadio'
-  >> = openVaultState$.pipe(
-    filter((state) => state.stage === 'allowanceWaitingForConfirmation'),
-    map((state) => state.selectedAllowanceRadio),
-    distinctUntilChanged(isEqual),
-  )
+  const allowanceTypeChanges: Observable<Pick<MutableOpenVaultState, 'selectedAllowanceRadio'>> =
+    openVaultState$.pipe(
+      filter((state) => state.stage === 'allowanceWaitingForConfirmation'),
+      map((state) => state.selectedAllowanceRadio),
+      distinctUntilChanged(isEqual),
+    )
 
   const allowanceAmountChanges: Observable<BigNumber> = openVaultState$.pipe(
     map((state) => state.allowanceAmount),

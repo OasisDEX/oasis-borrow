@@ -9,6 +9,7 @@ coverage
 yalc.lock
 .vscode
 .idea
+.run
 .log
 .DS_Store
 .sentryclirc
@@ -24,6 +25,9 @@ public/worker-*.js.map
 public/sitemap.xml
 /types
 
-storybook-static
-storybook-static/*
 cache
+next-env.d.ts
+
+# xstate autogenereted files
+*.typegen.ts
+

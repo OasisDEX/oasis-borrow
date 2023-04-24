@@ -2,72 +2,64 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { NewsletterSection } from 'features/newsletter/NewsletterView'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
+import { FooterBackground } from 'theme/FooterBackground'
 
-import { FooterBackground } from '../theme/FooterBackground'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
-  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
+  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
 } = getConfig()
-
-const ROUTES = {
-  CONTACT: `${apiHost}/daiwallet/contact`,
-  SUPPORT: '/support',
-  TWITTER: 'https://twitter.com/oasisdotapp',
-  DISCORD: 'https://discord.gg/Kc2bBB59GC',
-}
 
 const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.about',
     links: [
-      { labelKey: 'nav.team', url: '/about' },
-      { labelKey: 'nav.careers', url: '/careers' },
-      { labelKey: 'nav.privacy', url: '/privacy' },
-      { labelKey: 'nav.terms', url: '/terms' },
-      { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
+      { labelKey: 'nav.team', url: INTERNAL_LINKS.about },
+      { labelKey: 'nav.careers', url: EXTERNAL_LINKS.WORKABLE },
+      { labelKey: 'nav.privacy', url: INTERNAL_LINKS.privacy },
+      { labelKey: 'nav.cookie', url: INTERNAL_LINKS.cookie },
+      { labelKey: 'nav.terms', url: INTERNAL_LINKS.terms },
+      { labelKey: 'nav.security', url: INTERNAL_LINKS.security },
     ],
   },
   {
     titleKey: 'nav.resources',
     links: [
-      { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
-      {
-        labelKey: 'nav.faq',
-        url: '/support',
-      },
+      { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG.MAIN, target: '_self' },
       // add link
-      { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
-      { labelKey: 'nav.oracles', url: '/oracles' },
+      { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.KB.HELP, target: '_blank' },
+      { labelKey: 'nav.contact', url: EXTERNAL_LINKS.KB.CONTACT, target: '_blank' },
+      { labelKey: 'nav.bug-bounty', url: EXTERNAL_LINKS.BUG_BOUNTY, target: '_blank' },
+      { labelKey: 'nav.referrals', url: INTERNAL_LINKS.referrals },
+      { labelKey: 'nav.brand-assets', url: INTERNAL_LINKS.brand },
     ],
   },
   {
     titleKey: 'nav.products',
     links: [
-      {
-        labelKey: 'nav.dai-wallet',
-        url: `${apiHost}/daiwallet`,
-        target: '_self',
-      },
-      { labelKey: 'nav.borrow', url: '/borrow' },
-      { labelKey: 'nav.multiply', url: '/multiply' },
+      { labelKey: 'nav.borrow', url: INTERNAL_LINKS.borrow },
+      { labelKey: 'nav.multiply', url: INTERNAL_LINKS.multiply },
+      { labelKey: 'nav.earn', url: INTERNAL_LINKS.earn },
     ],
   },
 ]
 
-const LangSelectComponents: Partial<SelectComponents<{
-  value: string
-  label: string
-}>> = {
+const LangSelectComponents: Partial<
+  SelectComponents<{
+    value: string
+    label: string
+  }>
+> = {
   IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
+  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary100' }}>{children}</Flex>,
   SingleValue: ({ children }) => <Box>{children}</Box>,
   Option: ({ children, innerProps }) => (
     <Box
@@ -78,7 +70,7 @@ const LangSelectComponents: Partial<SelectComponents<{
         pr: 5,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'background',
+          bg: 'neutral10',
         },
       }}
     >
@@ -131,7 +123,7 @@ export function TemporaryFooter() {
           <Text>
             Commit:{' '}
             <Link
-              href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
+              href={`${EXTERNAL_LINKS.GITHUB}/commit/${buildHash}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -148,15 +140,18 @@ export function TemporaryFooter() {
 function SocialWithLogo() {
   return (
     <Grid gap={3}>
-      <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} sx={{ height: '27px' }} />
+      <Image
+        src={staticFilesRuntimeUrl('/static/img/logo_footer_v2.svg')}
+        sx={{ height: '34px', position: 'relative', top: '-2px' }}
+      />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
-        <AppLink href={ROUTES.TWITTER}>
+        <AppLink href={EXTERNAL_LINKS.TWITTER}>
           <Icon name="twitter" size="auto" width="18px" height="16px" />
         </AppLink>
-        <AppLink href={ROUTES.DISCORD} sx={{ mx: 3 }}>
+        <AppLink href={EXTERNAL_LINKS.DISCORD} sx={{ mx: 3 }}>
           <Icon name="discord" size="auto" width="20px" height="23px" />
         </AppLink>
-        <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
+        <AppLink href={EXTERNAL_LINKS.GITHUB}>
           <Icon name="github" size="auto" width="21px" />
         </AppLink>
       </Flex>
@@ -171,8 +166,8 @@ export function Footer() {
   const { t } = useTranslation()
 
   return (
-    <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
-      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 4, pt: 2 }}>
+    <Box as="footer" sx={{ position: 'relative' }}>
+      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 0, pt: 2 }}>
         <Grid
           sx={{
             pl: 0,
@@ -187,7 +182,7 @@ export function Footer() {
           </Box>
           {FOOTER_SECTIONS.map(({ titleKey, links }) => (
             <Grid key={titleKey} as="ul" pl={0}>
-              <Text sx={{ fontSize: 4, fontWeight: 'semiBold' }}>{t(titleKey)}</Text>
+              <Text variant="boldParagraph1">{t(titleKey)}</Text>
               {links.map(({ labelKey, url, target }) => (
                 <Box key={labelKey} as="li" sx={{ listStyle: 'none' }}>
                   <AppLink variant="navFooter" href={url} target={target}>

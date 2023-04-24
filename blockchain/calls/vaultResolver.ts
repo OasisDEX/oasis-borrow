@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { charterIlks, cropJoinIlks } from 'blockchain/config'
+import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -16,6 +16,7 @@ export interface VaultResolve {
   urnAddress: string
   type: MakerVaultType
 }
+
 export function createVaultResolver$(
   cdpToIlk$: (cdpId: BigNumber) => Observable<string>,
   cdpManagerUrns$: (cdpId: BigNumber) => Observable<string>,

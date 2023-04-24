@@ -34,7 +34,6 @@ export function mixpanelInit() {
     console.debug(`[Mixpanel] Tracking initialized for ${env} env using ${config.mixpanel.token}`)
   }
   mixpanel.init(config.mixpanel.token, config.mixpanel.config)
-  mixpanel.track('Pageview', { product: 'borrow' })
 }
 
 export function mixpanelIdentify(id: string, props: any) {

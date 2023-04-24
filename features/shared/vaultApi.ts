@@ -1,22 +1,37 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { LendingProtocol } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, map, switchMap } from 'rxjs/operators'
+import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
 export function checkVaultTypeUsingApi$(
   context$: Observable<Context>,
-  id: BigNumber,
+  pillChange: Observable<MultiplyPillChange>,
+  positionInfo: { id: BigNumber; protocol: LendingProtocol },
 ): Observable<VaultType> {
-  return context$.pipe(
-    switchMap((context) => {
-      const vaultType = getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
+  const pillChange$ = pillChange.pipe(
+    startWith({ currentChange: '' } as unknown as MultiplyPillChange),
+  )
+
+  return combineLatest(context$, pillChange$).pipe(
+    switchMap(([context, pillState]) => {
+      if (pillState.currentStage === 'closeVault') {
+        return of(VaultType.Multiply)
+      }
+
+      return getVaultFromApi$(
+        positionInfo.id,
+        new BigNumber(context.chainId),
+        positionInfo.protocol,
+      ).pipe(
         map((resp) => {
           if (Object.keys(resp).length === 0) {
             return VaultType.Borrow
@@ -29,7 +44,6 @@ export function checkVaultTypeUsingApi$(
           }
         }),
       )
-      return vaultType
     }),
   )
 }
@@ -40,9 +54,10 @@ interface CheckMultipleVaultsResponse {
 
 export function checkMultipleVaultsFromApi$(
   vaults: string[],
+  protocol: string,
 ): Observable<CheckMultipleVaultsResponse> {
   return ajax({
-    url: `${basePath}/api/vaults/?${vaults.map((vault) => `id=${vault}&`).join('')}`,
+    url: `/api/vaults/${protocol.toLowerCase()}?${vaults.map((vault) => `id=${vault}&`).join('')}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -70,6 +85,7 @@ export function checkMultipleVaultsFromApi$(
 export function getVaultFromApi$(
   vaultId: BigNumber,
   chainId: BigNumber,
+  protocol: LendingProtocol,
 ): Observable<
   | {
       vaultId: BigNumber
@@ -79,19 +95,20 @@ export function getVaultFromApi$(
   | {}
 > {
   return ajax({
-    url: `${basePath}/api/vault/${vaultId}/${chainId}`,
+    url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   }).pipe(
     map((resp) => {
-      const { vaultId, type, chainId } = resp.response as {
+      const { vaultId, type, chainId, protocol } = resp.response as {
         vaultId: number
         type: VaultType
         chainId: number
+        protocol: string
       }
-      return { vaultId, type, chainId }
+      return { vaultId, type, chainId, protocol }
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {
@@ -107,6 +124,7 @@ export function saveVaultUsingApi$(
   token: string,
   vaultType: VaultType,
   chainId: number,
+  protocol: string,
 ): Observable<void> {
   return ajax({
     url: `${basePath}/api/vault`,
@@ -118,7 +136,8 @@ export function saveVaultUsingApi$(
     body: {
       id: parseInt(id.toFixed(0)),
       type: vaultType,
-      chainId: chainId,
+      chainId,
+      protocol: protocol.toLowerCase(),
     },
   }).pipe(map((_) => {}))
 }

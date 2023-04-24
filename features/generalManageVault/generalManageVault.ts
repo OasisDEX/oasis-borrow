@@ -1,17 +1,17 @@
 import BigNumber from 'bignumber.js'
+import { Vault } from 'blockchain/vaults'
+import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { LendingProtocol } from 'lendingProtocols'
 import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
-import { Vault } from '../../blockchain/vaults'
-import {
-  ManageInstiVaultState,
-  ManageStandardBorrowVaultState,
-} from '../borrow/manage/pipes/manageVault'
-import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
 
-type WithToggle<T> = T & { toggleVaultType: () => void }
+export type WithToggle<T> = T & { toggleVaultType: () => void }
 
 export type GeneralManageVaultState =
   | {
@@ -26,21 +26,31 @@ export type GeneralManageVaultState =
       type: VaultType.Multiply
       state: WithToggle<ManageMultiplyVaultState>
     }
+  | {
+      type: VaultType.Earn
+      state: WithToggle<ManageEarnVaultState>
+    }
 
 export function createGeneralManageVault$(
   manageInstiVault$: (id: BigNumber) => Observable<ManageInstiVaultState>,
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageGuniVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageVault$: (id: BigNumber) => Observable<ManageStandardBorrowVaultState>,
-  checkVaultType$: (id: BigNumber) => Observable<VaultType>,
+  checkVaultType$: ({
+    id,
+    protocol,
+  }: {
+    id: BigNumber
+    protocol: LendingProtocol
+  }) => Observable<VaultType>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<GeneralManageVaultState> {
-  return checkVaultType$(id).pipe(
+  return checkVaultType$({ id, protocol: LendingProtocol.Maker }).pipe(
     switchMap((type) => {
       return vault$(id).pipe(
         filter((vault) => vault !== undefined),
-        switchMap((vault) => {
+        switchMap(() => {
           switch (type) {
             case VaultType.Borrow:
               return manageVault$(id).pipe(
@@ -48,14 +58,12 @@ export function createGeneralManageVault$(
                 map((state) => ({ state, type })),
               )
             case VaultType.Multiply:
-              if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
-                return manageGuniVault$(id).pipe(
-                  map((state) => ({ ...state, toggleVaultType: () => {} })),
-                  map((state) => ({ state, type })),
-                )
-              }
-
               return manageMultiplyVault$(id).pipe(
+                map((state) => ({ ...state, toggleVaultType: () => {} })),
+                map((state) => ({ state, type })),
+              )
+            case VaultType.Earn:
+              return manageGuniVault$(id).pipe(
                 map((state) => ({ ...state, toggleVaultType: () => {} })),
                 map((state) => ({ state, type })),
               )

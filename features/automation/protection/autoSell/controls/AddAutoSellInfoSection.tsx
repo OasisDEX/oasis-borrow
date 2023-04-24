@@ -1,0 +1,106 @@
+import BigNumber from 'bignumber.js'
+import { GasEstimation } from 'components/GasEstimation'
+import { InfoSection } from 'components/infoSection/InfoSection'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+
+interface SellInfoSectionProps {
+  token: string
+  targetCollRatio: BigNumber
+  multipleAfterSell: BigNumber
+  execCollRatio: BigNumber
+  nextSellPrice: BigNumber
+  slippageLimit?: BigNumber
+  targetRatioWithDeviationFloor: BigNumber
+  targetRatioWithDeviationCeiling: BigNumber
+  collateralAfterNextSell: {
+    value: BigNumber
+    change: BigNumber
+  }
+  outstandingDebtAfterSell: {
+    value: BigNumber
+    change: BigNumber
+  }
+  ethToBeSoldAtNextSell: BigNumber
+  maxGasFee?: number
+}
+
+export function AddAutoSellInfoSection({
+  token,
+  targetCollRatio,
+  multipleAfterSell,
+  execCollRatio,
+  nextSellPrice,
+  collateralAfterNextSell,
+  outstandingDebtAfterSell,
+  ethToBeSoldAtNextSell,
+  targetRatioWithDeviationFloor,
+  targetRatioWithDeviationCeiling,
+  maxGasFee,
+}: SellInfoSectionProps) {
+  const { t } = useTranslation()
+  const collateralToBeSoldAtNextSellFormatted = formatCryptoBalance(ethToBeSoldAtNextSell)
+  const multipleAfterSellFormatted = multipleAfterSell.toFixed(2)
+  const outstandingDebtAfterSellFormatted = formatCryptoBalance(outstandingDebtAfterSell.value)
+  const nextOutstandingDebtAfterSellFormatted = formatCryptoBalance(outstandingDebtAfterSell.change)
+  const collateralAfterNextSellFormatted = formatCryptoBalance(collateralAfterNextSell.value)
+  const nextCollateralAfterNextSellFormatted = formatCryptoBalance(collateralAfterNextSell.change)
+  const nextSellPriceFormatted = formatAmount(nextSellPrice, 'USD')
+  const colRatioAfterSellFormatted = formatPercent(targetCollRatio, { precision: 2 })
+  const ratioToPerformSellFormatted = formatPercent(execCollRatio, { precision: 2 })
+
+  const targetRatioWithDeviationFloorFormatted = formatPercent(targetRatioWithDeviationFloor)
+  const targetRatioWithDeviationCeilingFormatted = formatPercent(targetRatioWithDeviationCeiling)
+
+  return (
+    <InfoSection
+      title={t('auto-sell.sell-title')}
+      items={[
+        {
+          label: t('auto-sell.target-col-ratio-each-sell'),
+          value: colRatioAfterSellFormatted,
+        },
+        {
+          label: t('auto-sell.target-multiple-each-sell'),
+          value: `${multipleAfterSellFormatted}x`,
+        },
+        {
+          label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
+          value: ratioToPerformSellFormatted,
+        },
+        {
+          label: t('auto-sell.next-sell-prices'),
+          value: `$${nextSellPriceFormatted}`,
+        },
+        {
+          label: t('auto-sell.target-ratio-with-deviation'),
+          value: `${targetRatioWithDeviationFloorFormatted} - ${targetRatioWithDeviationCeilingFormatted}`,
+        },
+        {
+          label: t('auto-sell.collateral-after-next-sell'),
+          value: collateralAfterNextSellFormatted,
+          change: `${nextCollateralAfterNextSellFormatted} ${token}`,
+        },
+        {
+          label: t('auto-sell.outstanding-debt-after-next-sell'),
+          value: outstandingDebtAfterSellFormatted,
+          change: `${nextOutstandingDebtAfterSellFormatted} DAI`,
+        },
+        {
+          label: t('auto-sell.col-to-be-sold', { token }),
+          value: `${collateralToBeSoldAtNextSellFormatted} ${token}`,
+        },
+        {
+          label: t('auto-sell.estimated-transaction-cost'),
+          value: <GasEstimation />,
+        },
+        (maxGasFee && {
+          label: 'Max Gas Fee',
+          value: `${maxGasFee.toString()} Gwei`,
+        }) ||
+          {},
+      ]}
+    />
+  )
+}

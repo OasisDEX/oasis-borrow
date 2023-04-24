@@ -1,4 +1,4 @@
-import { BigNumber } from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 
 export const minusOne = new BigNumber('-1')
 export const oneThousandth = new BigNumber('0.0001')

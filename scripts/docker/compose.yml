@@ -11,6 +11,8 @@ services:
       - POSTGRES_DB=db
     ports:
       - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
   localnode:
     image: oasisdexorg/multiply-proxy-actions:latest
     container_name: multiply-proxy-actions
@@ -28,3 +30,5 @@ services:
       - '8545:8545'
     volumes:
       - '../.hardhat/cache:/usr/src/mpa/cache'
+volumes:
+  db_data: {}

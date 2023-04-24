@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
 export function ManageVaultChangesInformation(
-  props: ManageStandardBorrowVaultState & { extraInfo?: ReactNode },
+  props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },
 ) {
   const { t } = useTranslation()
   const {
@@ -33,7 +33,7 @@ export function ManageVaultChangesInformation(
       token,
       daiYieldFromLockedCollateral,
     },
-    extraInfo,
+    txnCostDisplay,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -110,7 +110,7 @@ export function ManageVaultChangesInformation(
           </Flex>
         }
       />
-      {extraInfo}
+      {txnCostDisplay}
     </VaultChangesInformationContainer>
   ) : null
 }

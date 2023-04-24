@@ -1,10 +1,11 @@
 import { BigNumber } from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
+import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import React, { useEffect } from 'react'
 
-import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
-import { useAppContext } from '../AppContextProvider'
 import { GeneralManageLayout } from './GeneralManageLayout'
 
 interface GeneralManageControlProps {
@@ -12,29 +13,44 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$, automationTriggersData$ } = useAppContext()
+  const { generalManageVault$, context$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
-  const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
-  const autoTriggersData$ = automationTriggersData$(id)
-  const [autoTriggersData, autoTriggersDataError] = useObservable(autoTriggersData$)
+  const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [context] = useObservable(context$)
+
+  const account = context?.status === 'connected' ? context.account : ''
+  const chainId = context?.chainId
 
   useEffect(() => {
     return () => {
-      generalManageVault?.state.clear()
+      generalManageVaultData?.state.clear()
     }
   }, [])
 
+  const vaultHistoryCheck = generalManageVaultData?.state.vaultHistory.length || undefined
+
   return (
-    <WithErrorHandler error={[generalManageVaultError, autoTriggersDataError]}>
+    <WithErrorHandler error={[generalManageVaultError]}>
       <WithLoadingIndicator
-        value={[generalManageVault, autoTriggersData]}
+        value={[generalManageVaultData, vaultHistoryCheck]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, autoTriggersData]) => (
-          <GeneralManageLayout
-            generalManageVault={generalManageVault}
-            autoTriggersData={autoTriggersData}
-          />
+        {([generalManageVault]) => (
+          <MakerAutomationContext generalManageVault={generalManageVault}>
+            <GeneralManageLayout
+              generalManageVault={generalManageVault}
+              followButton={
+                chainId
+                  ? {
+                      followerAddress: account,
+                      vaultId: id,
+                      chainId: chainId,
+                      protocol: 'maker',
+                    }
+                  : undefined
+              }
+            />
+          </MakerAutomationContext>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>

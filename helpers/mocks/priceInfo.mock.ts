@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { OraclePriceData } from 'blockchain/prices'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { createPriceInfo$, PriceInfo } from 'features/shared/priceInfo'
 import { lastHour, nextHour } from 'helpers/time'
 import { Observable, of } from 'rxjs'
@@ -53,8 +53,8 @@ export function mockPriceInfo$({
     }),
   })
 
-  function oraclePriceData$(_token: string) {
-    return _oraclePriceData$ || _token === 'ETH' ? ethPriceInfo$ : collateralPriceInfo$
+  function oraclePriceData$({ token }: OraclePriceDataArgs) {
+    return _oraclePriceData$ || token === 'ETH' ? ethPriceInfo$ : collateralPriceInfo$
   }
   return createPriceInfo$(oraclePriceData$, token)
 }

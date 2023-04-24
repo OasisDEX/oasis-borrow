@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -51,17 +51,23 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPO_NAME: ${{ github.event.repository.name }}
         DOCKERHUB_ORG: "oasisdexorg"
+        DOCKER_BUILDKIT: 1
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker pull $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg API_HOST=${{ secrets.API_HOST_STAGING }} \
+                     --build-arg NOTIFICATIONS_HOST=${{ secrets.NOTIFICATIONS_HOST_STAGING }} \
+                     --build-arg NOTIFICATIONS_HOST_GOERLI=${{ secrets.NOTIFICATIONS_HOST_STAGING_GOERLI }} \
+                     --build-arg AJNA_SUBGRAPH_URL=${{ secrets.AJNA_SUBGRAPH_URL }} \
+                     --build-arg AJNA_SUBGRAPH_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }} \
+                     --build-arg APP_FULL_DOMAIN=${{ secrets.APP_FULL_DOMAIN_STAGING }} \
                      --build-arg MIXPANEL_ENV=staging \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \
                      --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_STAGING }} \
                      --build-arg ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_STAGING }} \
+                     --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL_STAGING }} \
                      --build-arg MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }} \
                      --build-arg MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }} \
                      --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
@@ -93,4 +99,4 @@ jobs:
         ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
     - name: Invalidate CloudFront
-      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }} --paths "/*"
+      run: AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }} --paths "/*"

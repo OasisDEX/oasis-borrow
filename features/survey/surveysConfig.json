@@ -1,0 +1,22 @@
+{
+  "multiply": {
+    "id": "H52MeocX",
+    "title": "Help shape the future of Multiply",
+    "color": "#575CFE"
+  },
+  "earn": {
+    "id": "",
+    "title": "Help shape the future of Earn",
+    "color": "#575CFE"
+  },
+  "borrow": {
+    "id": "",
+    "title": "Help shape the future of Borrow",
+    "color": "#575CFE"
+  },
+  "homepage": {
+    "id": "",
+    "title": "Help shape Oasis.app",
+    "color": "#D8D9FE"
+  }
+}

@@ -1,10 +1,19 @@
 {
-  "ignorePatterns": ["node_modules/"],
+  "ignorePatterns": ["node_modules", "types", "coverage"],
   "env": {
     "es6": true
   },
   "extends": ["typestrict"],
-  "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports"],
+  "plugins": [
+    "no-only-tests",
+    "simple-import-sort",
+    "import",
+    "react",
+    "unused-imports",
+    "deprecation",
+    "no-relative-import-paths",
+    "react-hooks"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json",
@@ -14,7 +23,6 @@
     "unused-imports/no-unused-imports-ts": "error",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "import/no-default-export": "error",
     "simple-import-sort/sort": [
       "error",
       {
@@ -34,7 +42,6 @@
         ]
       }
     ],
-    "func-style": ["error", "declaration"],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-useless-constructor": "error",
     "accessor-pairs": "error",
@@ -112,12 +119,7 @@
     "no-octal-escape": "error",
     "no-path-concat": "error",
     "no-proto": "error",
-    "no-redeclare": [
-      "error",
-      {
-        "builtinGlobals": false
-      }
-    ],
+    "@typescript-eslint/no-redeclare": "warn",
     "no-invalid-this": "off",
     "no-use-before-define": "off",
     "no-regex-spaces": "error",
@@ -186,15 +188,13 @@
       }
     ],
     "yoda": ["error", "never"],
-    "no-only-tests/no-only-tests": "error"
+    "no-only-tests/no-only-tests": "error",
+    "no-relative-import-paths/no-relative-import-paths": ["warn", { "allowSameFolder": true }],
+    "deprecation/deprecation": "warn", // or "error" to have stricter rule
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "overrides": [
-    {
-      "files": ["pages/**/*.{ts,tsx}"],
-      "rules": {
-        "import/no-default-export": "off"
-      }
-    },
     {
       "files": ["**/*.tsx"],
       "rules": {

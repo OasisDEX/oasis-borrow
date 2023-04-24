@@ -11,12 +11,12 @@ export function TextWithCheckmark({ children }: WithChildren) {
           width: '20px',
           height: '20px',
           border: '2px solid',
-          borderColor: 'onSuccess',
+          borderColor: 'success100',
           borderRadius: '50%',
           mr: 3,
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'onSuccess',
+          color: 'success100',
           flexShrink: 0,
         }}
       >

@@ -1,11 +1,12 @@
 // tslint:disable:no-console
+import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
 import {
   Web3Context,
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
-} from '@oasisdex/web3-context'
-import { contract, ContractDesc } from '@oasisdex/web3-context'
-import BigNumber from 'bignumber.js'
+} from 'features/web3Context'
+import { contract, ContractDesc } from 'features/web3Context'
 import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs'
 import {
   catchError,
@@ -20,7 +21,7 @@ import {
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
-import { NetworkConfig, networksById } from './config'
+import { NetworkConfig, networksById } from './networksConfig'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))
 export const every3Seconds$ = interval(3000).pipe(startWith(0))
@@ -29,6 +30,8 @@ export const every10Seconds$ = interval(10000).pipe(startWith(0))
 
 interface WithContractMethod {
   contract: <T>(desc: ContractDesc) => T
+  contractV2: <T>(desc: ContractDesc) => T
+  rpcProvider: ethers.providers.Provider
 }
 
 interface WithWeb3ProviderGetPastLogs {
@@ -38,7 +41,7 @@ interface WithWeb3ProviderGetPastLogs {
 export type ContextConnectedReadOnly = NetworkConfig &
   Web3ContextConnectedReadonly &
   WithContractMethod &
-  WithWeb3ProviderGetPastLogs
+  WithWeb3ProviderGetPastLogs & { account: undefined }
 
 export type ContextConnected = NetworkConfig &
   Web3ContextConnected &
@@ -52,17 +55,22 @@ export function createContext$(
 ): Observable<Context> {
   return web3ContextConnected$.pipe(
     map((web3Context) => {
-      // magic link has limit for querying block range and we can't get events in one call
-      // couldn't get information from them about what block range they allow
       const networkData = networksById[web3Context.chainId]
-      const web3ProviderGetPastLogs =
-        web3Context.connectionKind === 'magicLink'
-          ? new Web3(networkData.infuraUrl)
-          : web3Context.web3
+      const web3ProviderGetPastLogs = new Web3(networkData.rpcCallsEndpoint)
+
+      const provider = new ethers.providers.JsonRpcProvider(
+        networkData.rpcCallsEndpoint,
+        web3Context.chainId,
+      )
 
       return {
         ...networkData,
         ...web3Context,
+        rpcProvider: provider,
+        contractV2: <T>(c: ContractDesc) => {
+          const contract = new ethers.Contract(c.address, c.abi, provider)
+          return contract as any as T
+        },
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,
         web3ProviderGetPastLogs,
       } as Context

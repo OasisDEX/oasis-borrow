@@ -14,7 +14,7 @@ export function AppSpinner({
 }) {
   return (
     // fontSize: 0px used to hide empty space created below Spinner SVG
-    <Box sx={{ fontSize: '0px', textAlign: 'center' }}>
+    <Flex sx={{ fontSize: '0px', textAlign: 'center', alignItems: 'center' }}>
       <Spinner
         variant={variant || 'styles.spinner.default'}
         sx={{
@@ -25,7 +25,7 @@ export function AppSpinner({
           }),
         }}
       />
-    </Box>
+    </Flex>
   )
 }
 
@@ -67,12 +67,6 @@ export function VaultContainerSpinner() {
     </Box>
   )
 }
-
-// By specifing P you may also omit other types in tuple
-// TO DO solve issue with storybook workflow failing and use that
-// type OmitInTuple<T, P = undefined> = T extends [infer U, ...(infer Y)]
-//   ? [...(Exclude<U, P> extends never ? [] : [Exclude<U, undefined>]), ...OmitInTuple<Y>]
-//   : T
 
 type OmitInTuple<T> = T extends readonly [any, ...any[]]
   ? { [entry in keyof T]: Exclude<T[entry], undefined> }

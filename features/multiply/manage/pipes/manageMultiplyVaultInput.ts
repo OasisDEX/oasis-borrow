@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -9,6 +10,11 @@ interface DepositAmountChange {
   depositAmount?: BigNumber
 }
 
+interface DepositDaiAmountChange {
+  kind: 'depositDaiAmount'
+  depositDaiAmount?: BigNumber
+}
+
 interface DepositAmountUSDChange {
   kind: 'depositAmountUSD'
   depositAmountUSD?: BigNumber
@@ -16,6 +22,10 @@ interface DepositAmountUSDChange {
 
 interface DepositAmountMaxChange {
   kind: 'depositAmountMax'
+}
+
+interface DepositDaiAmountMaxChange {
+  kind: 'depositDaiAmountMax'
 }
 
 interface paybackAmountChange {
@@ -83,8 +93,10 @@ interface SellMaxChange {
 
 export type ManageVaultInputChange =
   | DepositAmountChange
+  | DepositDaiAmountChange
   | DepositAmountUSDChange
   | DepositAmountMaxChange
+  | DepositDaiAmountMaxChange
   | paybackAmountChange
   | PaybackAmountMaxChange
   | WithdrawAmountChange
@@ -286,6 +298,10 @@ export function applyManageVaultInput(
       requiredCollRatio: change.requiredCollRatio,
       depositAmount: state.depositAmount,
       depositAmountUSD: state.depositAmountUSD,
+      withdrawAmount: state.withdrawAmount,
+      withdrawAmountUSD: state.withdrawAmountUSD,
+      depositDaiAmount: state.depositDaiAmount,
+      generateAmount: state.generateAmount,
     }
   }
 
@@ -376,14 +392,33 @@ export function applyManageVaultInput(
   if (change.kind === 'depositAmount') {
     const {
       priceInfo: { currentCollateralPrice },
+      vault: { token },
     } = state
-
+    const currencyDigits = calculateTokenPrecisionByValue({
+      token: token,
+      usdPrice: currentCollateralPrice,
+    })
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
       depositAmount: change.depositAmount,
-      depositAmountUSD: change.depositAmount?.times(currentCollateralPrice),
+      depositAmountUSD: change.depositAmount?.times(currentCollateralPrice).dp(currencyDigits),
       showSliderController: false,
+    }
+  }
+
+  if (change.kind === 'depositDaiAmount') {
+    return {
+      ...state,
+      ...manageMultiplyInputsDefaults,
+      depositDaiAmount: change.depositDaiAmount,
+      showSliderController: true,
+      requiredCollRatio:
+        state.vault.debt.isZero() && change.depositDaiAmount?.gt(zero)
+          ? state.ilkData.liquidationRatio
+          : change.depositDaiAmount?.gt(zero)
+          ? state.vault.collateralizationRatio
+          : undefined,
     }
   }
 
@@ -413,6 +448,18 @@ export function applyManageVaultInput(
     }
   }
 
+  if (change.kind === 'depositDaiAmountMax') {
+    const { maxDepositDaiAmount } = state
+
+    return {
+      ...state,
+      ...manageMultiplyInputsDefaults,
+      depositDaiAmount: maxDepositDaiAmount,
+      showSliderController: true,
+      requiredCollRatio: state.ilkData.liquidationRatio,
+    }
+  }
+
   if (change.kind === 'paybackAmount') {
     return {
       ...state,
@@ -438,6 +485,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: change.withdrawAmount,
       withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
+      showSliderController: false,
     }
   }
 
@@ -448,6 +496,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmountUSD: change.withdrawAmountUSD,
       withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
+      showSliderController: false,
     }
   }
 
@@ -459,6 +508,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: maxWithdrawAmount,
       withdrawAmountUSD: maxWithdrawAmountUSD,
+      showSliderController: false,
     }
   }
 
@@ -467,6 +517,7 @@ export function applyManageVaultInput(
       ...state,
       ...manageMultiplyInputsDefaults,
       generateAmount: change.generateAmount,
+      showSliderController: false,
     }
   }
 
@@ -476,6 +527,7 @@ export function applyManageVaultInput(
       ...state,
       ...manageMultiplyInputsDefaults,
       generateAmount: maxGenerateAmount,
+      showSliderController: false,
     }
   }
 

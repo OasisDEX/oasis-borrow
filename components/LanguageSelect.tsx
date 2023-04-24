@@ -18,7 +18,7 @@ export function LanguageSelect(props: SelectProps) {
   const router = useRouter()
 
   const LANGUAGE_OPTIONS: LanguageSelectOption[] = (i18n.options as I18LanguageOptions).locales.map(
-    (locale) => ({
+    (locale: string) => ({
       value: locale,
       label: t(`lang-dropdown.${locale}`),
     }),

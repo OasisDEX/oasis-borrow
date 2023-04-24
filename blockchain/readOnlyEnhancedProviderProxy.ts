@@ -1,11 +1,13 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { JSONRPCRequestPayload } from 'ethereum-protocol'
+import { JSONRPCRequestPayload } from 'ethereum-types'
 import { providers } from 'ethers'
+import { skipCache } from 'helpers/api/skipCache'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
-import { networksById } from './config'
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
+import { JsonRpcCachedProvider } from './jsonRpcCachedProvider'
+import { networksById } from './networksConfig'
 
 function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers
@@ -13,14 +15,24 @@ function fixChainId(chainId: string | number) {
 }
 
 const READ_ONLY_RPC_CALLS = ['eth_call', 'eth_getTransactionReceipt', 'eth_getTransactionByHash']
-
+let jsonRpcBatchProvider: JsonRpcBatchProvider | undefined = undefined
 function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any> {
   const getReadOnlyProviderAsync = (() => {
     let provider: JsonRpcProvider | undefined = undefined
     return async function (chainIdPromise: Promise<number | string>) {
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
-        provider = new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
+        if (jsonRpcBatchProvider === undefined) {
+          jsonRpcBatchProvider = new JsonRpcBatchProvider(
+            networksById[chainId].rpcCallsEndpoint,
+            chainId,
+          )
+          provider = skipCache(chainId.toString())
+            ? jsonRpcBatchProvider
+            : new JsonRpcCachedProvider(networksById[chainId].rpcCallsEndpoint, chainId)
+        } else {
+          provider = jsonRpcBatchProvider
+        }
       }
       return provider
     }
@@ -43,7 +55,6 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
   const handler = {
     get: (target: any, name: string) => {
       if (name === 'sendAsync') {
-        // eslint-disable-next-line func-style
         const sendAsyncMaybeReadOnly = async (
           payload: JSONRPCRequestPayload,
           callback: (error: Error | null, result?: JsonRpcResponse) => void,
@@ -54,7 +65,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
             ? readOnlyProvider
             : rpcProvider
           try {
-            const result = await provider.send(payload.method, payload.params)
+            const result = await provider!.send(payload.method, payload.params)
             callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
           } catch (err) {
             callback(err as any)
@@ -62,7 +73,6 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         }
         return sendAsyncMaybeReadOnly
       } else if (name === 'request') {
-        // eslint-disable-next-line func-style
         const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
@@ -73,7 +83,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           // Gnosis Safe web3-react provider doesn't implement eth_gasPrice call
           if (payload.method === 'eth_gasPrice') {
             try {
-              const result = await provider.send(payload.method, payload.params)
+              const result = await provider!.send(payload.method, payload.params)
               return result
             } catch (err) {
               console.log(err)
@@ -81,7 +91,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
             }
           }
 
-          const result = await provider.send(payload.method, payload.params)
+          const result = await provider!.send(payload.method, payload.params)
           return result
         }
         return requestMaybeReadOnly

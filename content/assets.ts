@@ -9,8 +9,8 @@ export const ASSETS_PAGES = [
     icon: 'ether_circle_color',
     descriptionKey: 'assets.eth.description',
     link: 'assets.eth.link',
-    multiplyIlks: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
-    borrowIlks: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B', 'CRVV1ETHSTETH-A'],
+    multiplyIlks: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C', 'WSTETH-B', 'RETH-A'],
+    borrowIlks: ['ETH-C', 'ETH-A', 'WSTETH-B', 'ETH-B', 'CRVV1ETHSTETH-A', 'WSTETH-A', 'RETH-A'],
   },
   {
     slug: 'btc',
@@ -29,15 +29,8 @@ export const ASSETS_PAGES = [
     icon: 'uni_circle_color',
     descriptionKey: 'assets.lp-token.description',
     link: 'assets.lp-token.link',
-    multiplyIlks: ['GUNIV3DAIUSDC2-A'],
-    borrowIlks: [
-      'UNIV2DAIUSDC-A',
-      'UNIV2USDCETH-A',
-      'UNIV2WBTCETH-A',
-      'UNIV2WBTCDAI-A',
-      'UNIV2DAIETH-A',
-      'UNIV2UNIETH-A',
-    ],
+    earnIlks: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+    borrowIlks: ['UNIV2DAIUSDC-A', 'UNIV2USDCETH-A'],
   },
   {
     slug: 'yfi',
@@ -56,17 +49,8 @@ export const ASSETS_PAGES = [
     icon: 'dai_circle_color',
     descriptionKey: 'assets.dai.description',
     link: 'assets.dai.link',
-    earnIlks: ['GUNIV3DAIUSDC2-A'],
-  },
-  {
-    slug: 'uni',
-    header: 'Uniswap',
-    symbol: 'UNI',
-    icon: 'uni_circle_color',
-    descriptionKey: 'assets.uni.description',
-    link: 'assets.uni.link',
-    multiplyIlks: ['UNI-A'],
-    borrowIlks: ['UNI-A'],
+    // TODO prepare proper handling for DSR
+    earnIlks: ['DSR', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
   },
   {
     slug: 'link',

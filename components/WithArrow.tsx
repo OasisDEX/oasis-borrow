@@ -1,16 +1,27 @@
 import React from 'react'
 import { Box, SxStyleProp, Text } from 'theme-ui'
 
-export function WithArrow({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+export function WithArrow({
+  children,
+  gap = 2,
+  variant = 'paragraph3',
+  sx,
+  as,
+}: React.PropsWithChildren<{
+  gap?: string | number
+  sx?: SxStyleProp
+  variant?: string
+  as?: React.ElementType
+}>) {
   return (
     <Text
-      variant="paragraph3"
+      variant={variant}
       sx={{
         fontWeight: 'semiBold',
         fontSize: [1, 2],
         position: 'relative',
         '& .arrow': {
-          transition: 'ease-in-out 0.2s',
+          transition: 'transform 200ms',
           transform: 'translateX(0px)',
         },
         '&:hover .arrow': {
@@ -18,8 +29,9 @@ export function WithArrow({ children, sx }: React.PropsWithChildren<{ sx?: SxSty
         },
         ...sx,
       }}
+      {...(as && { as })}
     >
-      <Box sx={{ display: 'inline', mr: 2 }}>{children}</Box>
+      <Box sx={{ display: 'inline', mr: gap }}>{children}</Box>
       <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>
         →
       </Box>

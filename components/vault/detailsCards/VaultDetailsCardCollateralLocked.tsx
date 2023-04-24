@@ -1,13 +1,16 @@
 import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
+import {
+  AfterPillProps,
+  VaultDetailsCard,
+  VaultDetailsCardModal,
+} from 'components/vault/VaultDetails'
+import { formatAmount } from 'helpers/formatters/format'
+import { ModalProps, useModal } from 'helpers/modalHook'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
-
-import { getToken } from '../../../blockchain/tokensMetadata'
-import { formatAmount } from '../../../helpers/formatters/format'
-import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { zero } from '../../../helpers/zero'
-import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface CollateralLockedProps {
   token: string
@@ -35,7 +38,7 @@ function VaultDetailsCardCollateralLockedModal({
         <Card variant="vaultDetailsCardModal">
           {collateralLockedUSD && `$${formatAmount(collateralLockedUSD, 'USD')}`}
         </Card>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-vault.card.collateral-locked-oracles')}
         </Text>
       </Grid>
@@ -69,7 +72,7 @@ export function VaultDetailsCardCollateralLocked({
       valueBottom={
         <>
           {formatAmount(depositAmount || zero, getToken(token).symbol)}
-          <Text as="span" sx={{ color: 'text.subtitle' }}>
+          <Text as="span" sx={{ color: 'neutral80' }}>
             {` ${getToken(token).symbol}`}
           </Text>
         </>

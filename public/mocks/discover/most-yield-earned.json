@@ -1,0 +1,56 @@
+{
+  "rows": [
+    {
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 8743546.39,
+      "earningsToDate": 13244.9,
+      "30DayAvgApy": 1.2,
+      "activity": {
+        "kind": 6,
+        "additionalData": {
+          "timestamp": 1666711347163
+        }
+      },
+      "cdpId": 18604
+    },
+    {
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 6874653.31,
+      "earningsToDate": 7456.03,
+      "30DayAvgApy": 4.23,
+      "activity": {
+        "kind": 4,
+        "additionalData": {
+          "timestamp": 1666694078669
+        }
+      },
+      "cdpId": 17503
+    },
+    {
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 23056.95,
+      "earningsToDate": 4353.48,
+      "30DayAvgApy": 1.89,
+      "activity": {
+        "kind": 1,
+        "additionalData": {
+          "timestamp": 1666344750148
+        }
+      },
+      "cdpId": 6843
+    },
+    {
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 3246829.95,
+      "earningsToDate": 14657.9,
+      "30DayAvgApy": 0.94,
+      "activity": {
+        "kind": 2,
+        "additionalData": {
+          "timestamp": 1666675762966
+        }
+      },
+      "cdpId": 24300
+    }
+  ]
+}

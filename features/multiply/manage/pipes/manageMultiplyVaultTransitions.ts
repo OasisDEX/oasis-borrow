@@ -65,10 +65,10 @@ export type ManageVaultTransitionChange =
       kind: 'clear'
     }
 
-export function applyManageVaultTransition(
+export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+  state: VS,
+): VS {
   if (change.kind === 'toggleEditing') {
     const { stage } = state
 
@@ -138,21 +138,29 @@ export function applyManageVaultTransition(
       daiAllowance,
       vault: { token, debtOffset },
       depositAmount,
+      depositDaiAmount,
       paybackAmount,
     } = state
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
     const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
     const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    const isDepositDaiZero = depositDaiAmount ? depositDaiAmount.eq(zero) : true
+
     const depositAmountLessThanCollateralAllowance =
       collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
 
     const paybackAmountLessThanDaiAllowance =
       daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
 
+    const depositDaiAmountLessThanDaiAllowance =
+      daiAllowance && depositDaiAmount && daiAllowance.gte(depositDaiAmount.plus(debtOffset))
+
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
-    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+    const hasDaiAllowance =
+      (paybackAmountLessThanDaiAllowance || isPaybackZero) &&
+      (depositDaiAmountLessThanDaiAllowance || isDepositDaiZero)
 
     if (canProgress) {
       if (!hasProxy) {
@@ -264,10 +272,10 @@ export function progressAdjust(
       return manageVaultDepositAndGenerate(txHelpers$, change, state)
     }
     if (state.withdrawAmount !== undefined || state.paybackAmount !== undefined) {
-      return manageVaultWithdrawAndPayback(txHelpers$, change, state)
+      return manageVaultWithdrawAndPayback(txHelpers$, context, change, state)
     }
     if (state.otherAction === 'closeVault' && state.vault.debt.isZero()) {
-      return manageVaultWithdrawAndPayback(txHelpers$, change, {
+      return manageVaultWithdrawAndPayback(txHelpers$, context, change, {
         ...state,
         withdrawAmount: state.maxWithdrawAmount,
       })

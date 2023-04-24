@@ -12,4 +12,4 @@ docker-compose "$@" pull
 (sleep 10 && cd ../.. && DATABASE_URL="postgresql://user:pass@localhost:5432/db?schema=public" yarn migrate)&
 
 export DATABASE_URL="postgresql://user:pass@postgres-oasis-borrow:5432/db?schema=public"
-docker-compose --env-file ../../.env "$@" up
+docker-compose -p oasis-borrow --env-file ../../.env "$@" up

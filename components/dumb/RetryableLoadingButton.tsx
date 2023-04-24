@@ -9,6 +9,7 @@ export interface RetryableLoadingButtonProps {
   isLoading: boolean
   disabled: boolean
   isStopLossEnabled: boolean
+  error?: boolean
   isEditing?: boolean
 }
 
@@ -44,7 +45,7 @@ export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
           <Text sx={{ position: 'relative' }} pl={2}>
             <Spinner
               size={25}
-              color="surface"
+              color="neutral10"
               sx={{
                 position: 'absolute',
                 left: 0,
@@ -52,11 +53,11 @@ export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
                 transform: 'translate(-105%, -50%)',
               }}
             />
-            {t(isRetry ? 'retry' : props.translationKey)}
+            {t(isRetry || props.error ? 'retry' : props.translationKey)}
           </Text>
         </Flex>
       ) : (
-        <Text>{t(isRetry ? 'retry' : props.translationKey)}</Text>
+        <Text>{t(isRetry || props.error ? 'retry' : props.translationKey)}</Text>
       )}
     </Button>
   )

@@ -1,30 +1,31 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
+import { CallDef } from 'blockchain/calls/callsHelpers'
+import { closeGuniVaultCall } from 'blockchain/calls/proxyActions/proxyActions'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { getToken } from 'blockchain/tokensMetadata'
+import { Vault } from 'blockchain/vaults'
+import { TxHelpers } from 'components/AppContext'
+import { Quote } from 'features/exchange/exchange'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { ManageChange } from 'features/multiply/manage/pipes/manageMultiplyVaultTransactions'
+import { jwtAuthGetToken } from 'features/shared/jwt'
+import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
+import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { transactionToX } from 'helpers/form'
+import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
-
-import { CallDef } from '../../../../../blockchain/calls/callsHelpers'
-import { closeGuniVaultCall } from '../../../../../blockchain/calls/proxyActions/proxyActions'
-import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
-import { getToken } from '../../../../../blockchain/tokensMetadata'
-import { Vault } from '../../../../../blockchain/vaults'
-import { TxHelpers } from '../../../../../components/AppContext'
-import { transactionToX } from '../../../../../helpers/form'
-import { zero } from '../../../../../helpers/zero'
-import { GuniToken } from '../../../../../types/ethers-contracts'
-import { Quote } from '../../../../exchange/exchange'
-import { VaultType } from '../../../../generalManageVault/vaultType'
-import { ManageChange } from '../../../../multiply/manage/pipes/manageMultiplyVaultTransactions'
-import { parseVaultIdFromReceiptLogs } from '../../../../shared/transactions'
-import { saveVaultUsingApi$ } from '../../../../shared/vaultApi'
-import { jwtAuthGetToken } from '../../../../termsOfService/jwt'
+import { GuniToken } from 'types/web3-v1-contracts'
 
 export const getUnderlyingBalances: CallDef<
   { token: string },
   { amount0: BigNumber; amount1: BigNumber }
 > = {
-  call: ({ token }, { contract, tokens }) => {
-    const guniToken = tokens[token]
+  call: ({ token }, { contract, chainId }) => {
+    const guniToken = getNetworkContracts(chainId).tokens[token]
     return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
@@ -41,8 +42,8 @@ export const getUnderlyingBalances: CallDef<
 }
 
 export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
-  call: ({ token }, { contract, tokens }) => {
-    const guniToken = tokens[token]
+  call: ({ token }, { contract, chainId }) => {
+    const guniToken = getNetworkContracts(chainId).tokens[token]
     return contract<GuniToken>(guniToken).methods.totalSupply
   },
   prepareArgs: () => [],
@@ -124,6 +125,7 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
                   jwtToken,
                   VaultType.Multiply,
                   parseInt(txState.networkId),
+                  LendingProtocol.Maker,
                 ).subscribe()
               }
 

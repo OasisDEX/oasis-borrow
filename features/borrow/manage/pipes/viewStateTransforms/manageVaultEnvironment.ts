@@ -1,11 +1,13 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
+import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
+import {
+  ManageStandardBorrowVaultState,
+  ManageVaultChange,
+} from 'features/borrow/manage/pipes/manageVault'
+import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
-
-import { StopLossChange } from '../../../../automation/triggers/AutomationTriggersData'
-import { BalanceInfoChange } from '../../../../shared/balanceInfo'
-import { VaultHistoryChange } from '../../../../vaultHistory/vaultHistory'
-import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
+import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
 
 export type ManageVaultEnvironmentChange =
   | PriceInfoChange
@@ -13,7 +15,7 @@ export type ManageVaultEnvironmentChange =
   | IlkDataChange
   | VaultChange
   | VaultHistoryChange
-  | StopLossChange
+  | AutomationTriggersChange
 
 export function applyManageVaultEnvironment<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,
@@ -54,10 +56,14 @@ export function applyManageVaultEnvironment<VaultState extends ManageStandardBor
     }
   }
 
-  if (change.kind === 'stopLossData') {
+  if (change.kind === 'automationTriggersData') {
     return {
       ...state,
       stopLossData: change.stopLossData,
+      autoSellData: change.autoSellData,
+      autoBuyData: change.autoBuyData,
+      constantMultipleData: change.constantMultipleData,
+      autoTakeProfitData: change.autoTakeProfitData,
     }
   }
 

@@ -1,19 +1,18 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import {
-  getEstimatedGasFeeText,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-
-import { OpenGuniVaultState } from '../pipes/openGuniVault'
 
 export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultState) {
   const [showFees, setShowFees] = useState(false)
@@ -45,7 +44,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
             <Text>
               {formatCryptoBalance(gettingCollateral)} GUNI
               {` `}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
+              <Text as="span" sx={{ color: 'neutral80' }}>
                 (${formatAmount(gettingCollateralUSD, 'USD')})
               </Text>
             </Text>
@@ -96,7 +95,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(oazoFee, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"

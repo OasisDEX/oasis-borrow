@@ -1,18 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
+import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
+import { mockExchangeQuote$ } from 'helpers/mocks/exchangeQuote.mock'
 import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
+import { addGasEstimationMock } from 'helpers/mocks/openVault.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
+import { slippageLimitMock } from 'helpers/mocks/slippageLimit.mock'
+import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of } from 'rxjs'
-
-import { mockExchangeQuote$ } from '../../../../../helpers/mocks/exchangeQuote.mock'
-import { addGasEstimationMock } from '../../../../../helpers/mocks/openVault.mock'
-import { slippageLimitMock } from '../../../../../helpers/mocks/slippageLimit.mock'
-import { GUNI_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
-import { createOpenGuniVault$ } from '../pipes/openGuniVault'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function proxyAddress$(address: string) {
@@ -52,6 +51,10 @@ function getGuniMintAmount$() {
 
 describe('OpenGuniVault', () => {
   it('playground', () => {
+    function gasEstimationMock$<T>(state: T) {
+      return addGasEstimationMock(state)
+    }
+
     const openGuniVault$ = createOpenGuniVault$(
       of(mockContextConnected),
       of(protoTxHelpers),
@@ -63,7 +66,7 @@ describe('OpenGuniVault', () => {
       () => ilkData$(),
       mockExchangeQuote$(),
       mockOnEveryBlock,
-      addGasEstimationMock,
+      gasEstimationMock$,
       'GUNIV3DAIUSDC1',
       token1Balance$,
       getGuniMintAmount$,
@@ -76,6 +79,10 @@ describe('OpenGuniVault', () => {
   })
 
   it('uses default GUNI slippage', () => {
+    function gasEstimationMock$<T>(state: T) {
+      return addGasEstimationMock(state)
+    }
+
     const openGuniVault$ = createOpenGuniVault$(
       of(mockContextConnected),
       of(protoTxHelpers),
@@ -87,7 +94,7 @@ describe('OpenGuniVault', () => {
       () => ilkData$(),
       mockExchangeQuote$(),
       mockOnEveryBlock,
-      addGasEstimationMock,
+      gasEstimationMock$,
       'GUNIV3DAIUSDC1',
       token1Balance$,
       getGuniMintAmount$,

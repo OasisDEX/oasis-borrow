@@ -1,9 +1,11 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet'
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { LandingPageLayout } from 'components/Layouts'
+import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
+import { HomepageView } from 'features/homepage/HomepageView'
+import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-
-import { HomepageView } from '../features/homepage/HomepageView'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -11,13 +13,20 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function LandingPage() {
+function LandingPage() {
   return (
-    <WithConnection>
-      <HomepageView />
-    </WithConnection>
+    <AaveContextProvider>
+      <DeferedContextProvider context={aaveContext}>
+        <WithConnection>
+          <HomepageView />
+          <Survey for="homepage" />
+        </WithConnection>
+      </DeferedContextProvider>
+    </AaveContextProvider>
   )
 }
 
 LandingPage.layout = LandingPageLayout
 LandingPage.theme = 'Landing'
+
+export default LandingPage

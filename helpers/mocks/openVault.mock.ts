@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
@@ -8,14 +9,13 @@ import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { Observable, of } from 'rxjs'
 
-import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps, mockIlkToToken$ } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 
-export function addGasEstimationMock<T>(state: T) {
-  return of(state)
+export function addGasEstimationMock<T>(state: T, gasEstimationUsd?: BigNumber) {
+  return of({ ...state, gasEstimationUsd })
 }
 
 export interface MockOpenVaultProps {
@@ -37,6 +37,7 @@ export interface MockOpenVaultProps {
   status?: 'connected'
   ilks?: string[]
   ilk?: string
+  gasEstimationUsd?: BigNumber
 }
 
 export function mockOpenVault$({
@@ -56,6 +57,7 @@ export function mockOpenVault$({
   account = '0xVaultController',
   ilks,
   ilk = 'WBTC-A',
+  gasEstimationUsd,
 }: MockOpenVaultProps = {}) {
   const token = ilk.split('-')[0]
 
@@ -97,6 +99,10 @@ export function mockOpenVault$({
     return _allowance$ || of(allowance)
   }
 
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
+  }
+
   return createOpenVault$(
     context$,
     txHelpers$,
@@ -107,7 +113,7 @@ export function mockOpenVault$({
     ilks$,
     ilkData$,
     mockIlkToToken$,
-    addGasEstimationMock,
+    gasEstimationMock$,
     () => of(StandardDssProxyActionsContractAdapter),
     ilk,
   )

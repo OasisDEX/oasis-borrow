@@ -1,4 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
 interface HistoryEventBase {
   hash: string
@@ -64,17 +67,6 @@ interface WithdrawPaybackEvent extends HistoryEventBase {
   collateralAmount: BigNumber
   oraclePrice: BigNumber
   gasFee?: BigNumber
-}
-
-interface StopLossTriggeredEvent extends HistoryEventBase {
-  kind: 'STOPLOSS-TRIGGERED'
-  daiAmount: BigNumber
-  rate: BigNumber
-  collateralAmount: BigNumber
-  oraclePrice: BigNumber
-  slippage: BigNumber
-  gasFee: BigNumber
-  triggerType: BigNumber
 }
 
 interface AuctionStartedEvent extends HistoryEventBase {
@@ -173,6 +165,7 @@ export interface MultiplyBaseEvent {
   totalFee: BigNumber
   gasFee: BigNumber // in wei
   rate: BigNumber
+  token: string
 }
 interface OpenMultiplyEvent extends MultiplyBaseEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
@@ -202,7 +195,7 @@ interface DecreaseMultipleEvent extends MultiplyBaseEvent {
   sold: BigNumber
 }
 
-interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
+export interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_DAI'
   sold: BigNumber
   exitDai: BigNumber
@@ -214,11 +207,60 @@ interface CloseGuniVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   exitDai: BigNumber
 }
 
-interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
+export interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_COLLATERAL'
   sold: BigNumber
   exitCollateral: BigNumber
   exitDai: BigNumber
+}
+
+interface AutomationBaseEvent {
+  id: string
+  triggerId: string
+  hash: string
+  timestamp: string
+  triggerData: string
+  commandAddress: string
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
+  kind: 'basic-sell' | 'basic-buy' | 'stop-loss' | 'auto-take-profit' | 'aave-stop-loss'
+  eventType: 'added' | 'updated' | 'removed'
+  token: string
+  gasFee: BigNumber
+  ethPrice: BigNumber
+  groupId?: string
+  autoKind: string
+}
+
+type StopLossCloseEvent = CloseVaultExitDaiMultipleEvent | CloseVaultExitCollateralMultipleEvent
+
+export type StopLossExecutedEvent = StopLossCloseEvent & {
+  eventType: 'executed'
+  triggerId: string
+  triggerData: string
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  autoKind: string
+}
+
+export type AutoTakeProfitExecutedEvent = StopLossExecutedEvent
+
+export interface AutoBuyExecutedEvent extends IncreaseMultipleEvent {
+  eventType: 'executed'
+  triggerId: string
+  triggerData: string
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  autoKind: string
+}
+
+export interface AutoSellExecutedEvent extends DecreaseMultipleEvent {
+  eventType: 'executed'
+  triggerId: string
+  triggerData: string
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  autoKind: string
 }
 
 export type MultiplyEvent =
@@ -229,7 +271,13 @@ export type MultiplyEvent =
   | CloseVaultExitDaiMultipleEvent
   | CloseGuniVaultExitDaiMultipleEvent
   | CloseVaultExitCollateralMultipleEvent
-  | StopLossTriggeredEvent
+
+export type AutomationEvent =
+  | StopLossExecutedEvent
+  | AutoBuyExecutedEvent
+  | AutoSellExecutedEvent
+  | AutomationBaseEvent
+  | AutoTakeProfitExecutedEvent
 
 export interface ReturnedEvent {
   kind: string
@@ -245,6 +293,19 @@ export interface ReturnedEvent {
   txId: string
   blockId: string
   rate: string
+  urn: string
+}
+
+export interface ReturnedAutomationEvent {
+  id: string
+  triggerId: string
+  cdpId: string | null
+  hash: string
+  number: string
+  timestamp: string
+  eventType: string
+  commandAddress: string | null
+  kind: string
 }
 
 export type VaultEvent =
@@ -264,6 +325,6 @@ export type VaultEvent =
   | MoveSrcEvent
   | MoveDestEvent
   | MultiplyEvent
-  | StopLossTriggeredEvent
+  | AutomationEvent
 
 export type EventType = VaultEvent['kind']

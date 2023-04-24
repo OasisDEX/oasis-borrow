@@ -1,9 +1,9 @@
 import * as mixpanel from 'mixpanel-browser'
 
 export const COOKIE_NAMES = ['marketing', 'analytics']
-export const LOCALSTORAGE_KEY = 'cookieSettings'
+export const COOKIE_NAMES_LOCASTORAGE_KEY = 'cookieSettings'
 
-export type CookieName = typeof COOKIE_NAMES[number]
+export type CookieName = (typeof COOKIE_NAMES)[number]
 
 interface Switch {
   enable: Function
@@ -20,4 +20,10 @@ export const manageCookie: Record<CookieName, Switch> = {
     disable: () => mixpanel.opt_out_tracking(),
     // todo: delete user data https://developer.mixpanel.com/docs/managing-personal-data
   },
+}
+
+export enum ProductType {
+  BORROW = 'borrow',
+  MULTIPLY = 'multiply',
+  EARN = 'earn',
 }

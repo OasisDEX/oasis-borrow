@@ -1,6 +1,7 @@
 import { withSentry } from '@sentry/nextjs'
 import { enableMixpanelDevelopmentMode, MixpanelDevelopmentType } from 'analytics/analytics'
 import { config } from 'analytics/mixpanel'
+import { snakeCase } from 'lodash'
 import Mixpanel from 'mixpanel'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -9,15 +10,17 @@ let mixpanel: MixpanelType = Mixpanel.init(config.mixpanel.token, config.mixpane
 
 mixpanel = enableMixpanelDevelopmentMode(mixpanel)
 
-const handler = async function (req: NextApiRequest, res: NextApiResponse<{ status: number }>) {
+const handler = async function (
+  { body: { distinctId, eventBody, eventName, ...rest } }: NextApiRequest,
+  res: NextApiResponse<{ status: number }>,
+) {
   try {
-    const { eventName, eventBody, distinctId } = req.body
-
-    mixpanel.track(`be-${eventName}`, {
-      ...eventBody,
-      distinct_id: distinctId,
-      id: `be-${eventBody.id}`,
-    })
+    !rest.currentUrl.endsWith('vault-info') && // disables tracking for this particular tab
+      mixpanel.track(`${eventName}`, {
+        distinct_id: distinctId,
+        ...eventBody,
+        ...Object.keys(rest).reduce((a, v) => ({ ...a, [`$${snakeCase(v)}`]: rest[v] }), {}),
+      })
 
     res.json({ status: 200 })
   } catch (err) {
