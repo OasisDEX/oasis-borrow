@@ -67,10 +67,11 @@ export const tokensMainnet = {
   WETH: contractDesc(eth, mainnet.common.ETH),
   DAI: contractDesc(erc20, mainnet.common.DAI),
   LDO: contractDesc(erc20, mainnet.common.LDO),
-  MKR: contractDesc(erc20, mainnet.maker.McdGov),
+  MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
   STETH: contractDesc(erc20, mainnet.common.STETH),
   USDP: contractDesc(erc20, mainnet.common.PAXUSD),
   WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
+  WBTC: contractDesc(erc20, mainnet.common.WBTC),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
 } as Dictionary<ContractDesc>
 
