@@ -13,7 +13,7 @@ export function AjnaBorrowFormContentSwitch() {
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('vault-form.header.multiply-transition-position', { token: collateralToken })}
+        {t('vault-form.header.multiply-transition', { token: collateralToken })}
       </Text>
       <ListWithIcon
         icon="checkmark"
