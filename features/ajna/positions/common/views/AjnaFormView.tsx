@@ -194,7 +194,7 @@ export function AjnaFormView({
   useEffect(() => {
     if (!walletAddress && steps.indexOf(currentStep) > steps.indexOf(editingStep))
       setStep(editingStep)
-  }, [currentStep, editingStep, setStep, steps, walletAddress])
+  }, [walletAddress])
 
   return (
     <>
