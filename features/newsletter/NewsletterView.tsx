@@ -130,6 +130,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
             lineHeight: 1.2,
           }}
           value={email}
+          maxLength={320}
           onChange={(e) => {
             change({ kind: 'email', email: e.target.value })
           }}
