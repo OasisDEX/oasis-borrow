@@ -1,5 +1,4 @@
 import { ADDRESSES } from '@oasisdex/addresses'
-import * as eth from 'blockchain/abi/ds-eth-token.json'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
@@ -16,16 +15,18 @@ export const AAVE_V2_LENDING_POOL_GENESIS_GOERLI = 7480475
 const { goerli } = ADDRESSES
 
 export const tokensGoerli = {
-  ...getCollateralTokens(goerli.common, supportedIlks),
+  ...getCollateralTokens({ ...goerli.maker.pips, ...goerli.common }, supportedIlks),
   GUNIV3DAIUSDC1: contractDesc(guniToken, goerli.common.GUNIV3DAIUSDC1),
   GUNIV3DAIUSDC2: contractDesc(guniToken, goerli.common.GUNIV3DAIUSDC2),
-  WETH: contractDesc(eth, goerli.common.ETH),
+  CRVV1ETHSTETH: contractDesc(guniToken, goerli.common.CRVV1ETHSTETH),
   DAI: contractDesc(erc20, goerli.common.DAI),
   LDO: contractDesc(erc20, goerli.common.LDO),
   MKR: contractDesc(erc20, goerli.maker.common.McdGov),
   STETH: contractDesc(erc20, goerli.common.STETH),
   USDP: contractDesc(erc20, goerli.common.PAXUSD),
   WSTETH: contractDesc(erc20, goerli.common.WSTETH),
+  WETH: contractDesc(erc20, goerli.common.WETH),
+  USDC: contractDesc(erc20, goerli.common.USDC),
   WBTC: contractDesc(erc20, goerli.common.WBTC),
   RENBTC: contractDesc(erc20, goerli.common.RENBTC),
 } as Dictionary<ContractDesc>

@@ -64,7 +64,7 @@ export const mainnetContracts = {
   joins: {
     ...getCollateralJoinContracts(mainnet.maker.joins, supportedIlks),
   },
-  mcdOsms: getOsms(mainnet.common, supportedIlks),
+  mcdOsms: getOsms(mainnet.maker.pips, supportedIlks),
   tokens: tokensMainnet,
   tokensMainnet,
   otc: contractDesc(otc, mainnet.common.Otc),
@@ -79,7 +79,7 @@ export const mainnetContracts = {
   dssCharter: contractDesc(dssCharter, mainnet.common.DssCharter),
   dssCdpManager: contractDesc(dssCdpManager, mainnet.maker.common.CdpManager),
   vat: contractDesc(vat, mainnet.maker.common.Vat),
-  mcdJoinDai: contractDesc(mcdJoinDai, mainnet.maker.common.JoinDAI),
+  mcdJoinDai: contractDesc(mcdJoinDai, mainnet.maker.joins.MCD_JOIN_DAI),
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnet.mpa.core.DSProxyRegistry),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnet.mpa.core.DSProxyFactory),
   dssProxyActions: contractDesc(dssProxyActions, mainnet.common.DssProxyActions),
@@ -149,7 +149,7 @@ export const mainnetContracts = {
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.AaveOracle),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
-    mainnet.aave.v3.AaveProtocolDataProvider,
+    mainnet.aave.v3.AavePoolDataProvider,
   ),
   // TODO ajna addresses to be updated
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),

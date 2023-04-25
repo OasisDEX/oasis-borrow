@@ -67,19 +67,25 @@ export const goerliContracts: MainnetContracts = {
   tokens: tokensGoerli,
   tokensMainnet: mainnetContracts.tokensMainnet,
   joins: {
-    ...getCollateralJoinContracts(goerli.maker.joins, supportedIlks),
+    ...getCollateralJoinContracts(
+      goerli.maker.joins,
+      supportedIlks.filter(
+        // these are not supported on goerli
+        (ilk) => !['CRVV1ETHSTETH-A', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(ilk),
+      ),
+    ),
     // Todo: move to goerli network config when available at changelog.makerdao.com
     'INST-ETH-A': '0x99507A436aC9E8eB5A89001a2dFc80E343D82122',
     'INST-WBTC-A': '0xbd5978308C9BbF6d8d1D26cD1df9AA3EA83F782a',
   },
   getCdps: contractDesc(getCdps, goerli.maker.common.GetCdps),
-  mcdOsms: getOsms(goerli.common, supportedIlks),
+  mcdOsms: getOsms(goerli.maker.pips, supportedIlks),
   mcdJug: contractDesc(mcdJug, goerli.maker.common.Jug),
   mcdPot: contractDesc(mcdPot, goerli.maker.common.Pot),
   mcdEnd: contractDesc(mcdEnd, goerli.maker.common.End),
   mcdSpot: contractDesc(mcdSpot, goerli.maker.common.Spot),
   mcdDog: contractDesc(mcdDog, goerli.maker.common.Dog),
-  mcdJoinDai: contractDesc(mcdJoinDai, goerli.maker.common.JoinDAI),
+  mcdJoinDai: contractDesc(mcdJoinDai, goerli.maker.joins.MCD_JOIN_DAI),
 
   merkleRedeemer: contractDesc(merkleRedeemer, goerli.common.MerkleRedeemer),
   dssCharter: contractDesc(dssCharter, goerli.common.DssCharter),
@@ -155,10 +161,7 @@ export const goerliContracts: MainnetContracts = {
   ),
   aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
   aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    goerli.aave.v3.AaveProtocolDataProvider,
-  ),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.AavePoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
