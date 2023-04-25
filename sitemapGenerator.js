@@ -1,20 +1,11 @@
 const sitemap = require('nextjs-sitemap-generator')
 
 try {
-  sitemap({
+  void sitemap({
     baseUrl: 'https://oasis.app',
     pagesDirectory: `.next/server/pages`,
     targetDirectory: 'public/',
-    ignoredPaths: [
-      '/api',
-      '/not-found',
-      '/[address]',
-      '/terms',
-      '/privacy',
-      '/save',
-      '/errors',
-      '/aave/[address]',
-    ],
+    ignoredPaths: ['/api', '/not-found', '/[address]', '/terms', '/privacy', '/aave/[address]'],
     // other apps routes from Oasis Suite
     extraPaths: ['/blog'],
     nextConfigPath: `${__dirname}/next.config.js`,
