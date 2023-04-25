@@ -9,7 +9,6 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/not-found'
 import React from 'react'
-import { Box } from 'theme-ui'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -44,13 +43,7 @@ function Vault({ id }: { id: string }) {
     <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
-          {isValidVaultId ? (
-            <GeneralManageControl id={vaultId} />
-          ) : (
-            <Box sx={{ position: 'relative', zIndex: 1 }}>
-              <NotFoundPage />
-            </Box>
-          )}
+          {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}
         </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithConnection>
