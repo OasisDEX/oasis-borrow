@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { amountFromRay, amountFromWei, ethIsWeth } from 'blockchain/utils'
+import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV2ProtocolDataProvider } from 'types/web3-v1-contracts'
 
 export interface AaveV2UserReserveDataParameters {
@@ -47,7 +47,7 @@ export const getAaveV2UserReserveData: CallDef<
     ).methods.getUserReserveData
   },
   prepareArgs: ({ token, address }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[ethIsWeth(token)].address, address]
+    return [getNetworkContracts(chainId).tokens[token].address, address]
   },
   postprocess: (result, args) => {
     return {
@@ -82,9 +82,7 @@ export const getAaveV2ReserveData: CallDef<AaveV2ReserveDataParameters, AaveV2Re
   call: (_, { contract, chainId }) =>
     contract<AaveV2ProtocolDataProvider>(getNetworkContracts(chainId).aaveV2ProtocolDataProvider)
       .methods.getReserveData,
-  prepareArgs: ({ token }, { chainId }) => [
-    getNetworkContracts(chainId).tokens[ethIsWeth(token)].address,
-  ],
+  prepareArgs: ({ token }, { chainId }) => [getNetworkContracts(chainId).tokens[token].address],
   postprocess: (result, { token }) => {
     return {
       availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity), token),
@@ -120,7 +118,7 @@ export const getAaveV2ReserveConfigurationData: CallDef<
     ).methods.getReserveConfigurationData
   },
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[ethIsWeth(token)].address]
+    return [getNetworkContracts(chainId).tokens[token].address]
   },
   postprocess: (result) => {
     return {

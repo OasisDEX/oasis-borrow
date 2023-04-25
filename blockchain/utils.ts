@@ -61,7 +61,3 @@ export function amountToWeiRoundDown(amount: BigNumber, token: string): BigNumbe
 export function amountFromGwei(amount: BigNumber): BigNumber {
   return amount.div(new BigNumber(10).pow(9))
 }
-
-export function ethIsWeth(token: string): string {
-  return token === 'ETH' ? 'WETH' : token
-}

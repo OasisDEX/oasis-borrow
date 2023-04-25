@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ethIsWeth } from 'blockchain/utils'
 import { AaveV3Oracle } from 'types/web3-v1-contracts/'
 export interface AaveV3AssetsPricesParameters {
   tokens: string[]
@@ -19,7 +18,7 @@ export const getAaveV3AssetsPrices: CallDef<AaveV3AssetsPricesParameters, BigNum
   call: (_, { contract, chainId }) =>
     contract<AaveV3Oracle>(getNetworkContracts(chainId).aaveV3Oracle).methods.getAssetsPrices,
   prepareArgs: ({ tokens }, { chainId }) => [
-    tokens.map((token) => getNetworkContracts(chainId).tokens[ethIsWeth(token)].address),
+    tokens.map((token) => getNetworkContracts(chainId).tokens[token].address),
   ],
   // tokenPrice needs BASE_CURRENCY_UNIT
   postprocess: (tokenPrices, args) =>
@@ -39,7 +38,7 @@ export const getAaveV3OracleAssetPriceData$: CallDef<
     return contract<AaveV3Oracle>(getNetworkContracts(chainId).aaveV3Oracle).methods.getAssetPrice
   },
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[ethIsWeth(token)].address]
+    return [getNetworkContracts(chainId).tokens[token].address]
   },
   postprocess: (result, args) => {
     return new BigNumber(result).div(args.baseCurrencyUnit)

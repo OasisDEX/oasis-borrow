@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { amountFromRay, amountFromWei, ethIsWeth } from 'blockchain/utils'
+import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV3PoolDataProvider } from 'types/web3-v1-contracts'
 
 export interface AaveV3UserReserveDataParameters {
@@ -49,7 +49,7 @@ export const getAaveV3UserReserveData: CallDef<
       .methods.getUserReserveData
   },
   prepareArgs: ({ token, address }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[ethIsWeth(token)].address, address]
+    return [getNetworkContracts(chainId).tokens[token].address, address]
   },
   postprocess: (result, args) => {
     return {
@@ -85,7 +85,7 @@ export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3Re
     contract<AaveV3PoolDataProvider>(getNetworkContracts(chainId).aaveV3PoolDataProvider).methods
       .getReserveData,
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[ethIsWeth(token)].address]
+    return [getNetworkContracts(chainId).tokens[token].address]
   },
   postprocess: (result, { token }) => {
     return {
@@ -131,7 +131,7 @@ export const getAaveV3ReserveConfigurationData: CallDef<
       .methods.getReserveConfigurationData
   },
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[ethIsWeth(token)].address]
+    return [getNetworkContracts(chainId).tokens[token].address]
   },
   postprocess: (result) => {
     return {
@@ -148,7 +148,7 @@ export const getAaveV3EModeCategoryForAsset: CallDef<{ token: string }, BigNumbe
       .methods.getReserveEModeCategory
   },
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[ethIsWeth(token)].address]
+    return [getNetworkContracts(chainId).tokens[token].address]
   },
   postprocess: (result) => {
     return new BigNumber(result)
