@@ -685,7 +685,7 @@ export function HomepageView() {
                 text: t('landing.info-cards.support.discord'),
               },
               {
-                href: INTERNAL_LINKS.daiWalletContact,
+                href: EXTERNAL_LINKS.KB.CONTACT,
                 text: t('landing.info-cards.support.contact-us'),
               },
               {
