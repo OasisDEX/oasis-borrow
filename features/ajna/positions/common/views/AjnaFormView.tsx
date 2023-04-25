@@ -84,8 +84,9 @@ export function AjnaFormView({
   } = useTransition({
     action: state.action,
     positionId: resolvedId,
-    product: VaultType.Multiply,
     protocol: LendingProtocol.Ajna,
+    ...(product === 'borrow' && { product: VaultType.Multiply }),
+    ...(product === 'multiply' && { product: VaultType.Borrow }),
   })
 
   const {

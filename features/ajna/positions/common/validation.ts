@@ -151,6 +151,8 @@ function isFormValid({
           switch (action) {
             case 'open-multiply':
               return !!depositAmount?.gt(0)
+            case 'switch-multiply':
+              return true
             default:
               return false
           }
