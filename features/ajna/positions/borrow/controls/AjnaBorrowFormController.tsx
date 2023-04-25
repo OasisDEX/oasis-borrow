@@ -1,6 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentManage'
+import { AjnaBorrowFormContentTransition } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentTransition'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -77,6 +78,7 @@ export function AjnaBorrowFormController() {
       {currentStep === 'risk' && <AjnaFormContentRisk />}
       {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
       {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
+      {currentStep === 'transition' && <AjnaBorrowFormContentTransition />}
       {currentStep === 'transaction' && (
         <AjnaFormContentTransaction orderInformation={AjnaBorrowFormOrder} />
       )}

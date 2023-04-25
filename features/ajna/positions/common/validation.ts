@@ -95,6 +95,8 @@ function isFormValid({
               return !!generateAmount?.gt(0)
             case 'payback-borrow':
               return !!paybackAmount?.gt(0)
+            case 'switch-borrow':
+              return true
             default:
               return false
           }

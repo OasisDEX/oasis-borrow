@@ -2463,7 +2463,8 @@
             "risk": "Things to know before opening an Ajna position",
             "setup": "Configure your Ajna {{product}} Position",
             "manage": "Manage your Ajna {{product}} Position",
-            "transaction": "Confirm your Ajna {{product}} Position"
+            "transaction": "Confirm your Ajna {{product}} Position",
+            "transition": "Switch your Ajna {{product}} Position"
           },
           "risk": {
             "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",

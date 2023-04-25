@@ -12,10 +12,13 @@ import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/
 import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
+import { useTransition } from 'features/ajna/positions/common/hooks/useTransition'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
+import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren, useEffect } from 'react'
@@ -72,6 +75,18 @@ export function AjnaFormView({
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })
+  const {
+    isTransitionAction,
+    isTransitionInProgress,
+    isTransitionWairingForApproval,
+    setIsTransitionWairingForApproval,
+    transitionHandler,
+  } = useTransition({
+    action: state.action,
+    positionId: resolvedId,
+    product: VaultType.Multiply,
+    protocol: LendingProtocol.Ajna,
+  })
 
   const {
     isPrimaryButtonDisabled,
@@ -81,11 +96,13 @@ export function AjnaFormView({
   } = getAjnaSidebarButtonsStatus({
     currentStep,
     editingStep,
+    hasErrors,
     isAllowanceLoading: flowState.isLoading,
     isFormValid,
-    hasErrors,
     isOwner,
     isSimulationLoading,
+    isTransitionInProgress,
+    isTransitionWairingForApproval,
     isTxError,
     isTxInProgress,
     isTxStarted,
@@ -97,29 +114,40 @@ export function AjnaFormView({
     flow,
     hasAllowance: flowState.isAllowanceReady,
     hasDpmAddress: flowState.isProxyReady,
+    isTransitionInProgress,
     isTxError,
     isTxSuccess,
     product,
     walletAddress,
   })
   const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
-    defaultAction: async () => {
-      if (isStepWithTransaction) {
-        if (isTxSuccess) {
-          setTxDetails(undefined)
-          setStep(editingStep)
-          txSuccessAction && txSuccessAction()
-        } else txHandler()
-      } else setNextStep()
-    },
     currentStep,
     editingStep,
     flow,
-    resolvedId,
+    isStepWithTransaction,
+    isTransitionAction,
+    isTransitionWairingForApproval,
     isTxSuccess,
+    onConfirmTransition: transitionHandler,
+    onDefault: setNextStep,
+    onDisconnected: executeConnection,
+    onSelectTransition: txHandler,
+    onTransition: () => {
+      setStep('transition')
+      setIsTransitionWairingForApproval(true)
+    },
+    onUpdated: () => {
+      setTxDetails(undefined)
+      setStep(editingStep)
+      txSuccessAction && txSuccessAction()
+    },
+    resolvedId,
     walletAddress,
-    executeConnection,
   })
+  const textButtonAction = () => {
+    setIsTransitionWairingForApproval(false)
+    setStep(editingStep)
+  }
   const status = getAjnaSidebarTransactionStatus({
     etherscan: context && getNetworkContracts(context.chainId).etherscan.url,
     isTxInProgress,
@@ -148,7 +176,7 @@ export function AjnaFormView({
     },
     textButton: {
       label: t('back-to-editing'),
-      action: () => setStep(editingStep),
+      action: textButtonAction,
       hidden: isTextButtonHidden,
     },
     status,
@@ -166,7 +194,7 @@ export function AjnaFormView({
   useEffect(() => {
     if (!walletAddress && steps.indexOf(currentStep) > steps.indexOf(editingStep))
       setStep(editingStep)
-  }, [walletAddress])
+  }, [currentStep, editingStep, setStep, steps, walletAddress])
 
   return (
     <>
