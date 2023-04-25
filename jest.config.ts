@@ -12,6 +12,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'jest-environment-jsdom',
   setupFiles: ['jest-canvas-mock'],
   setupFilesAfterEnv: ['<rootDir>/test-configs/setup.ts'],
+  collectCoverage: true,
 }
 
 const createJestConfig = nextJest({
