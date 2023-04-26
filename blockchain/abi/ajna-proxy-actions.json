@@ -2,17 +2,17 @@
   {
     "inputs": [
       {
-        "internalType": "contract PoolInfoUtils",
+        "internalType": "contract IPoolInfoUtils",
         "name": "_poolInfoUtils",
         "type": "address"
       },
       {
-        "internalType": "contract PositionManager",
+        "internalType": "contract IPositionManager",
         "name": "_positionManager",
         "type": "address"
       },
       {
-        "internalType": "contract RewardsManager",
+        "internalType": "contract IRewardsManager",
         "name": "_rewardsManager",
         "type": "address"
       },
@@ -24,6 +24,16 @@
       {
         "internalType": "address",
         "name": "_WETH",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_ARC",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_GUARD",
         "type": "address"
       }
     ],
@@ -69,6 +79,32 @@
   },
   {
     "inputs": [],
+    "name": "ARC",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "GUARD",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "WETH",
     "outputs": [
       {
@@ -96,14 +132,14 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
       {
-        "internalType": "uint256[]",
-        "name": "tokenIds",
-        "type": "uint256[]"
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
     "name": "claimRewardsAndSendToOwner",
@@ -133,7 +169,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -161,7 +197,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -184,7 +220,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -207,7 +243,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -231,7 +267,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -255,7 +291,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -278,8 +314,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
-        "name": "pool",
+        "internalType": "contract IERC20Pool",
+        "name": "",
         "type": "address"
       },
       {
@@ -306,7 +342,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -329,7 +365,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -352,7 +388,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -382,7 +418,7 @@
     "name": "poolInfoUtils",
     "outputs": [
       {
-        "internalType": "contract PoolInfoUtils",
+        "internalType": "contract IPoolInfoUtils",
         "name": "",
         "type": "address"
       }
@@ -395,7 +431,7 @@
     "name": "positionManager",
     "outputs": [
       {
-        "internalType": "contract IPositionManagerOwnerActions",
+        "internalType": "contract IPositionManager",
         "name": "",
         "type": "address"
       }
@@ -406,7 +442,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       }
@@ -419,7 +455,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -437,7 +473,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -462,7 +498,7 @@
     "name": "rewardsManager",
     "outputs": [
       {
-        "internalType": "contract IRewardsManagerOwnerActions",
+        "internalType": "contract IRewardsManager",
         "name": "",
         "type": "address"
       }
@@ -473,7 +509,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -501,7 +537,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -534,7 +570,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -557,7 +593,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -580,7 +616,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -609,7 +645,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -642,7 +678,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -665,7 +701,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -688,7 +724,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -716,7 +752,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -749,7 +785,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -767,7 +803,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -790,7 +826,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
@@ -813,7 +849,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20Pool",
+        "internalType": "contract IERC20Pool",
         "name": "pool",
         "type": "address"
       },
