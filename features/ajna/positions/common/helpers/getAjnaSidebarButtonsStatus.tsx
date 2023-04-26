@@ -9,7 +9,7 @@ export function getAjnaSidebarButtonsStatus({
   isOwner,
   isSimulationLoading,
   isTransitionInProgress,
-  isTransitionWairingForApproval,
+  isTransitionWaitingForApproval,
   isTxError,
   isTxInProgress,
   isTxStarted,
@@ -24,7 +24,7 @@ export function getAjnaSidebarButtonsStatus({
   isOwner: boolean
   isSimulationLoading?: boolean
   isTransitionInProgress: boolean
-  isTransitionWairingForApproval: boolean
+  isTransitionWaitingForApproval: boolean
   isTxError: boolean
   isTxInProgress: boolean
   isTxStarted: boolean
@@ -52,7 +52,7 @@ export function getAjnaSidebarButtonsStatus({
   const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
   const isTextButtonHidden = !(
     (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
-    (isTransitionWairingForApproval && !isTransitionInProgress)
+    (isTransitionWaitingForApproval && !isTransitionInProgress)
   )
 
   return {

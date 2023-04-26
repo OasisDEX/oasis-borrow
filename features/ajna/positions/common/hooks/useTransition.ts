@@ -11,26 +11,37 @@ import { useState } from 'react'
 interface TransitionProps {
   action?: AjnaFormAction
   positionId?: string
-  product?: VaultType
+  product?: string
   protocol?: LendingProtocol
 }
 
-export function useTransition({ action, positionId, product, protocol }: TransitionProps) {
+export function useProductTypeTransition({
+  action,
+  positionId,
+  product,
+  protocol,
+}: TransitionProps) {
   const { reload } = useRouter()
   const { chainId, walletAddress } = useAccount()
-  const [isTransitionWairingForApproval, setIsTransitionWairingForApproval] =
+  const [isTransitionWaitingForApproval, setisTransitionWaitingForApproval] =
     useState<boolean>(false)
   const [isTransitionInProgress, setIsTransitionInProgress] = useState<boolean>(false)
+  const vaultType =
+    product === 'borrow'
+      ? VaultType.Multiply
+      : product === 'multiply'
+      ? VaultType.Borrow
+      : undefined
 
   const transitionHandler = () => {
-    const jwtToken = jwtAuthGetToken(walletAddress as string)
+    const jwtToken = jwtAuthGetToken(walletAddress || '')
 
-    if (jwtToken && positionId && product && chainId && protocol) {
+    if (jwtToken && positionId && chainId && protocol && vaultType) {
       setIsTransitionInProgress(true)
       saveVaultUsingApi$(
         new BigNumber(positionId),
         jwtToken,
-        product,
+        vaultType,
         chainId,
         protocol.toLowerCase(),
       ).subscribe(reload)
@@ -40,8 +51,8 @@ export function useTransition({ action, positionId, product, protocol }: Transit
   return {
     isTransitionAction: action === 'switch-borrow' || action === 'switch-multiply',
     isTransitionInProgress,
-    isTransitionWairingForApproval,
-    setIsTransitionWairingForApproval,
+    isTransitionWaitingForApproval,
+    setisTransitionWaitingForApproval,
     transitionHandler,
   }
 }

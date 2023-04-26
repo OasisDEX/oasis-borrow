@@ -12,7 +12,7 @@ import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/
 import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
-import { useTransition } from 'features/ajna/positions/common/hooks/useTransition'
+import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
@@ -78,10 +78,10 @@ export function AjnaFormView({
   const {
     isTransitionAction,
     isTransitionInProgress,
-    isTransitionWairingForApproval,
-    setIsTransitionWairingForApproval,
+    isTransitionWaitingForApproval,
+    setisTransitionWaitingForApproval,
     transitionHandler,
-  } = useTransition({
+  } = useProductTypeTransition({
     action: state.action,
     positionId: resolvedId,
     protocol: LendingProtocol.Ajna,
@@ -103,7 +103,7 @@ export function AjnaFormView({
     isOwner,
     isSimulationLoading,
     isTransitionInProgress,
-    isTransitionWairingForApproval,
+    isTransitionWaitingForApproval,
     isTxError,
     isTxInProgress,
     isTxStarted,
@@ -127,7 +127,7 @@ export function AjnaFormView({
     flow,
     isStepWithTransaction,
     isTransitionAction,
-    isTransitionWairingForApproval,
+    isTransitionWaitingForApproval,
     isTxSuccess,
     onConfirmTransition: transitionHandler,
     onDefault: setNextStep,
@@ -135,7 +135,7 @@ export function AjnaFormView({
     onSelectTransition: txHandler,
     onTransition: () => {
       setStep('transition')
-      setIsTransitionWairingForApproval(true)
+      setisTransitionWaitingForApproval(true)
     },
     onUpdated: () => {
       setTxDetails(undefined)
@@ -146,7 +146,7 @@ export function AjnaFormView({
     walletAddress,
   })
   const textButtonAction = () => {
-    setIsTransitionWairingForApproval(false)
+    setisTransitionWaitingForApproval(false)
     setStep(editingStep)
   }
   const status = getAjnaSidebarTransactionStatus({

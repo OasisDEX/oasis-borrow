@@ -6,7 +6,7 @@ export function getAjnaSidebarPrimaryButtonActions({
   flow,
   isStepWithTransaction,
   isTransitionAction,
-  isTransitionWairingForApproval,
+  isTransitionWaitingForApproval,
   isTxSuccess,
   onConfirmTransition,
   onDefault,
@@ -22,7 +22,7 @@ export function getAjnaSidebarPrimaryButtonActions({
   flow: AjnaFlow
   isStepWithTransaction: boolean
   isTransitionAction: boolean
-  isTransitionWairingForApproval: boolean
+  isTransitionWaitingForApproval: boolean
   isTxSuccess: boolean
   onConfirmTransition: () => void
   onDefault: () => void
@@ -40,7 +40,7 @@ export function getAjnaSidebarPrimaryButtonActions({
       return { url: `/ajna/position/${resolvedId}` }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }
-    case isTransitionWairingForApproval:
+    case isTransitionWaitingForApproval:
       return { action: onConfirmTransition }
     case isStepWithTransaction:
       return { action: onSelectTransition }
