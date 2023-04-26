@@ -13,7 +13,6 @@ import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFl
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -85,8 +84,7 @@ export function AjnaFormView({
     action: state.action,
     positionId: resolvedId,
     protocol: LendingProtocol.Ajna,
-    ...(product === 'borrow' && { product: VaultType.Multiply }),
-    ...(product === 'multiply' && { product: VaultType.Borrow }),
+    product,
   })
 
   const {
