@@ -6,6 +6,7 @@ import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sideb
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
 import { AjnaMultiplyFormContentManage } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentManage'
 import { AjnaMultiplyFormContentOpen } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentOpen'
+import { AjnaMultiplyFormContentTransition } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentTransition'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -100,6 +101,7 @@ export function AjnaMultiplyFormController() {
       {currentStep === 'risk' && <AjnaFormContentRisk />}
       {currentStep === 'setup' && <AjnaMultiplyFormContentOpen />}
       {currentStep === 'manage' && <AjnaMultiplyFormContentManage />}
+      {currentStep === 'transition' && <AjnaMultiplyFormContentTransition />}
       {currentStep === 'transaction' && (
         <AjnaFormContentTransaction orderInformation={AjnaMultiplyFormOrder} />
       )}

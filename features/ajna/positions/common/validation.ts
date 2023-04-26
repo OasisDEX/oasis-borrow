@@ -95,6 +95,8 @@ function isFormValid({
               return !!generateAmount?.gt(0)
             case 'payback-borrow':
               return !!paybackAmount?.gt(0)
+            case 'switch-borrow':
+              return true
             default:
               return false
           }
@@ -149,6 +151,8 @@ function isFormValid({
           switch (action) {
             case 'open-multiply':
               return !!depositAmount?.gt(0)
+            case 'switch-multiply':
+              return true
             default:
               return false
           }

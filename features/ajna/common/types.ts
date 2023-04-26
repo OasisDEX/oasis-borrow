@@ -10,6 +10,7 @@ export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition | AjnaMultiply
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
 export type AjnaFormState = AjnaBorrowFormState | AjnaEarnFormState | AjnaMultiplyFormState
+export type AjnaFormAction = AjnaBorrowAction | AjnaEarnAction | AjnaMultiplyAction
 
 export type AjnaBorrowAction =
   | 'open-borrow'
@@ -17,7 +18,8 @@ export type AjnaBorrowAction =
   | 'withdraw-borrow'
   | 'generate-borrow'
   | 'payback-borrow'
-export type AjnaBorrowPanel = 'collateral' | 'quote'
+  | 'switch-borrow'
+export type AjnaBorrowPanel = 'collateral' | 'quote' | 'switch'
 
 export type AjnaEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn'
 export type AjnaEarnPanel = 'adjust' | 'liquidity'
@@ -34,7 +36,7 @@ export type AjnaMultiplyAction =
   | 'close-multiply'
 export type AjnaMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
 
-export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction'
+export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
 export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
 
 export type AjnaCloseTo = 'collateral' | 'quote'
