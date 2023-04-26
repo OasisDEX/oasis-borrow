@@ -796,9 +796,9 @@
     "checkmark1": "Multiply your exposure on your {{token}}",
     "checkmark2": "Adjust risk and exposure in 1 click",
     "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
-    "checkmark4": "You can review the details of the changes on your vault before execution",
+    "checkmark4": "You can review the details of the changes on your position before execution",
     "subheader2": "Important",
-    "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks.",
+    "paragraph2": "When you multiply your position, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks.",
     "button-not-supported": "Not supported for {{token}}",
     "button-start": "Multiply this Vault",
     "button-confirm": "Take me to the Multiply interface",
@@ -1468,7 +1468,7 @@
       "manage": "Manage your vault",
       "confirm-manage": "Confirm vault changes",
       "review-manage": "Review vault changes",
-      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "multiply-transition": "Multiply your exposure on {{token}} in your position",
       "go-to-multiply": "Great, now you will go to the new Multiply interface",
       "success": "All done! You now have a vault",
       "success-manage": "All done! Your vault has been updated"
@@ -2463,7 +2463,8 @@
             "risk": "Things to know before opening an Ajna position",
             "setup": "Configure your Ajna {{product}} Position",
             "manage": "Manage your Ajna {{product}} Position",
-            "transaction": "Confirm your Ajna {{product}} Position"
+            "transaction": "Confirm your Ajna {{product}} Position",
+            "transition": "Switch your Ajna {{product}} Position"
           },
           "risk": {
             "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
@@ -2619,7 +2620,7 @@
       "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
-      "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{amount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
+      "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",

@@ -121,16 +121,6 @@ const conf = withBundleAnalyzer(
     async redirects() {
       return [
         {
-          source: '/dashboard',
-          destination: '/daiwallet/dashboard',
-          permanent: true,
-        },
-        {
-          source: '/(0x[a-fA-F0-9]{40}.*)',
-          destination: '/daiwallet/dashboard',
-          permanent: true,
-        },
-        {
           source: '/multiply/aave/open/:strategy*',
           destination: '/multiply/aave/v2/open/:strategy*',
           permanent: true,
