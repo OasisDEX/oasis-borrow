@@ -18,26 +18,26 @@ import { Button } from 'theme-ui'
 
 const splitPool = (pool: string) => pool.split('-')
 
-const filterPools = (pool: string[], isEarnProduct: boolean, selectedValue: string) =>
-  pool[isEarnProduct ? 1 : 0] === selectedValue
+const filterPools = (pool: string[], isPoolReversed: boolean, selectedValue: string) =>
+  pool[isPoolReversed ? 1 : 0] === selectedValue
 
-const getTokenAndPair = (pool: string[], isEarnProduct: boolean) => ({
-  token: pool[isEarnProduct ? 0 : 1],
+const getTokenAndPair = (pool: string[], isPoolReversed: boolean) => ({
+  token: pool[isPoolReversed ? 0 : 1],
   pair: pool.join('-'),
 })
 
 interface AjnaPoolsTableProps {
-  context: Context
   ajnaPoolsTableData: AjnaPoolData
-  selectedValue: string
-  isEarnProduct: boolean
+  context: Context
+  isPoolReversed: boolean
   product: AjnaProduct
+  selectedValue: string
 }
 
 export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
-  context,
   ajnaPoolsTableData,
-  isEarnProduct,
+  context,
+  isPoolReversed,
   product,
   selectedValue,
 }) => {
@@ -48,9 +48,9 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
     () => [
       ...Object.keys(getNetworkContracts(chainId).ajnaPoolPairs)
         .map(splitPool)
-        .filter((pool) => filterPools(pool, isEarnProduct, selectedValue))
+        .filter((pool) => filterPools(pool, isPoolReversed, selectedValue))
         .map((pool) => {
-          const { token, pair } = getTokenAndPair(pool, isEarnProduct)
+          const { token, pair } = getTokenAndPair(pool, isPoolReversed)
 
           return {
             asset: <DiscoverTableDataCellAsset asset={pair.replace('-', '/')} icons={[token]} />,
@@ -74,9 +74,9 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
           (pool) => !Object.keys(getNetworkContracts(chainId).ajnaPoolPairs || []).includes(pool),
         )
         .map(splitPool)
-        .filter((pools) => filterPools(pools, isEarnProduct, selectedValue))
+        .filter((pools) => filterPools(pools, isPoolReversed, selectedValue))
         .map((pool) => {
-          const { token, pair } = getTokenAndPair(pool, isEarnProduct)
+          const { token, pair } = getTokenAndPair(pool, isPoolReversed)
 
           return {
             asset: (
@@ -106,12 +106,12 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
           }
         }),
     ],
-    [chainId, isEarnProduct, selectedValue, ajnaPoolsTableData, product, t],
+    [chainId, isPoolReversed, selectedValue, ajnaPoolsTableData, product, t],
   )
 
   return (
     <DiscoverTableContainer tableOnly>
-      <DiscoverResponsiveTable rows={rows} skip={['icon']} />
+      <DiscoverResponsiveTable headerTranslationProps={{ token: selectedValue }} rows={rows} />
     </DiscoverTableContainer>
   )
 }

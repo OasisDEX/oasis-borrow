@@ -1,6 +1,10 @@
 import { AjnaPoolData, AjnaProduct } from 'features/ajna/common/types'
 import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellComponents'
-import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatFiatBalance,
+} from 'helpers/formatters/format'
 import React from 'react'
 
 interface FilterPoolDataParams {
@@ -47,7 +51,22 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
         }
     }
     case 'multiply': {
-      return {}
+      if (Object.keys(data).includes(pair)) {
+        const payload = data[pair as keyof typeof data]
+
+        return {
+          with50Tokens: `${formatCryptoBalance(payload.with50Tokens)} ${pair.split('-')[0]}`,
+          maxMultiple: `${payload.maxMultiply.toFixed(2)}`,
+          liquidityAvaliable: `$${formatFiatBalance(payload.liquidityAvaliable)}`,
+          annualFee: formatDecimalAsPercent(payload.annualFee),
+        }
+      } else
+        return {
+          with50Tokens: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          maxMultiple: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          liquidityAvaliable: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          annualFee: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+        }
     }
   }
 }

@@ -229,6 +229,7 @@
         "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
+        "max-multiple": "Max multiple",
         "min-ltv": "Min LTV",
         "min-position-size": "Min. position size",
         "multiple": "Multiple",
@@ -242,7 +243,8 @@
         "status": "Status",
         "tvl": "TVL",
         "variable": "Variable %",
-        "vault-debt": "Vault debt"
+        "vault-debt": "Vault debt",
+        "with-50-tokens": "With 50.00 {{token}}"
       },
       "tooltip": {
         "col-ratio": "The value of the collateral in comparison to the amount of debt. Needs to be above the minimum required to avoid liquidation.",
@@ -2438,10 +2440,11 @@
         "intro": "Select the crypto asset you want to earn for lending your {{token}}"
       },
       "multiply": {
-        "coming-soon": {
-          "title": "Ajna Multiply coming soon",
-          "intro": "We're busy building Multiply for Ajna and will be releasing it shortly. For now you can Borrow and Earn on Ajna."
-        }
+        "heading": {
+          "pre": "Multiply your",
+          "post": "exposure on Ajna"
+        },
+        "intro": "Select the debt asset you want to go long on your {{token}} against"
       }
     },
     "position-page": {

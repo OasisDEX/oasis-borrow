@@ -13,6 +13,7 @@ import { Box, Flex } from 'theme-ui'
 export interface DiscoverTableProps {
   banner?: DiscoverBanner
   follow?: DiscoverFollow
+  headerTranslationProps?: { [key: string]: string }
   isLoading?: boolean
   isSticky?: boolean
   kind?: DiscoverPages
@@ -26,6 +27,7 @@ export interface DiscoverTableProps {
 export function DiscoverTable({
   banner,
   follow,
+  headerTranslationProps,
   isLoading = false,
   isSticky = false,
   kind,
@@ -70,6 +72,7 @@ export function DiscoverTable({
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
                 follow={follow}
+                headerTranslationProps={headerTranslationProps}
                 label={label}
                 last={i + 1 === filteredRowKeys.length}
                 tooltip={tooltips.includes(label)}
@@ -111,12 +114,14 @@ export function DiscoverTable({
 export function DiscoverTableHeaderCell({
   first,
   follow,
+  headerTranslationProps,
   label,
   last,
   tooltip,
 }: {
   first: boolean
   follow?: DiscoverFollow
+  headerTranslationProps?: { [key: string]: string }
   label: string
   last: boolean
   tooltip: boolean
@@ -170,11 +175,11 @@ export function DiscoverTableHeaderCell({
           justifyContent: 'flex-end',
         }}
       >
-        {t(`discover.table.header.${kebabCase(label)}`)}
+        {t(`discover.table.header.${kebabCase(label)}`, headerTranslationProps)}
         {tooltip && (
           <StatefulTooltip
             containerSx={{ ml: 1 }}
-            tooltip={t(`discover.table.tooltip.${kebabCase(label)}`)}
+            tooltip={t(`discover.table.tooltip.${kebabCase(label)}`, headerTranslationProps)}
             tooltipSx={{
               width: '200px',
               px: 3,

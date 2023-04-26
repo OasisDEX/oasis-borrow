@@ -49,11 +49,12 @@ export type AjnaPoolData = {
     '90DayNetApy': BigNumber
     annualFee: BigNumber
     liquidityAvaliable: BigNumber
-    maxMultiply: BigNumber
     maxLtv: BigNumber
+    maxMultiply: BigNumber
     minLtv: BigNumber
     minPositionSize: BigNumber
     tvl: BigNumber
+    with50Tokens: BigNumber
   }
 }
 

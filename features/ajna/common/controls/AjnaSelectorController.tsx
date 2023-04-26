@@ -31,7 +31,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
   const [ajnaPoolsTableData, ajnaPoolsTableError] = useObservable(ajnaPoolsTableData$)
   const [hash] = useHash()
   const ref = useRef<HTMLDivElement>(null)
-  const isEarnProduct = product === 'earn'
+  const isPoolReversed = product === 'earn'
 
   const options = useMemo(
     () =>
@@ -41,7 +41,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
             ? Object.keys(getNetworkContracts(contextData.chainId).ajnaPoolPairs)
             : []),
           ...ajnaComingSoonPools,
-        ].map((pool) => pool.split('-')[isEarnProduct ? 1 : 0]),
+        ].map((pool) => pool.split('-')[isPoolReversed ? 1 : 0]),
       )
         .sort()
         .map((token) => ({
@@ -49,7 +49,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
           value: token,
           icon: getToken(token).iconCircle,
         })),
-    [contextData, isEarnProduct],
+    [contextData, isPoolReversed],
   )
   const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const defaultOption = options.filter((option) => option.value === defaultOptionValue)[0]
@@ -86,7 +86,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
                     context={context}
                     ajnaPoolsTableData={ajnaPoolsTable}
                     selectedValue={selected.value}
-                    isEarnProduct={isEarnProduct}
+                    isPoolReversed={isPoolReversed}
                     product={product}
                   />
                 )}

@@ -4,7 +4,7 @@ import { Tickers } from 'blockchain/prices'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { AjnaPoolData } from 'features/ajna/common/types'
 import { getAjnaPoolsTableData } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
-import { zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { from, Observable } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -54,6 +54,8 @@ export function getAjnaPoolsTableContent$(
                   const collateralPrice = prices[collateralToken]
                   const quotePrice = prices[quoteToken]
                   const marketPrice = collateralPrice.div(quotePrice)
+                  const maxLtv = lowestUtilizedPrice.div(marketPrice)
+                  const maxMultiply = one.plus(one.div(one.div(maxLtv).minus(one)))
 
                   return {
                     ...acc,
@@ -70,11 +72,12 @@ export function getAjnaPoolsTableContent$(
                       ),
                       annualFee: interestRate,
                       liquidityAvaliable: depositSize.minus(debt),
-                      maxMultiply: zero,
-                      maxLtv: lowestUtilizedPrice.div(marketPrice),
+                      maxLtv,
                       minLtv: highestThresholdPrice.div(marketPrice),
+                      maxMultiply,
                       minPositionSize: poolMinDebtAmount,
                       tvl: depositSize,
+                      with50Tokens: maxMultiply.times(50),
                     },
                   }
                 } catch (e) {
