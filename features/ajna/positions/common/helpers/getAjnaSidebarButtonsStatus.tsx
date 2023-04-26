@@ -3,11 +3,13 @@ import { AjnaSidebarEditingStep, AjnaSidebarStep } from 'features/ajna/common/ty
 export function getAjnaSidebarButtonsStatus({
   currentStep,
   editingStep,
+  hasErrors,
   isAllowanceLoading,
   isFormValid,
-  hasErrors,
   isOwner,
   isSimulationLoading,
+  isTransitionInProgress,
+  isTransitionWaitingForApproval,
   isTxError,
   isTxInProgress,
   isTxStarted,
@@ -16,11 +18,13 @@ export function getAjnaSidebarButtonsStatus({
 }: {
   currentStep: AjnaSidebarStep
   editingStep: AjnaSidebarEditingStep
+  hasErrors: boolean
   isAllowanceLoading: boolean
   isFormValid: boolean
-  hasErrors: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
+  isTransitionInProgress: boolean
+  isTransitionWaitingForApproval: boolean
   isTxError: boolean
   isTxInProgress: boolean
   isTxStarted: boolean
@@ -34,14 +38,22 @@ export function getAjnaSidebarButtonsStatus({
       isAllowanceLoading ||
       isSimulationLoading ||
       isTxInProgress ||
-      isTxWaitingForApproval)
+      isTxWaitingForApproval ||
+      isTransitionInProgress)
 
   const isPrimaryButtonLoading =
     !!walletAddress &&
-    (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
+    (isAllowanceLoading ||
+      isSimulationLoading ||
+      isTxInProgress ||
+      isTxWaitingForApproval ||
+      isTransitionInProgress)
 
   const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
-  const isTextButtonHidden = !(currentStep === 'transaction' && (!isTxStarted || isTxError))
+  const isTextButtonHidden = !(
+    (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
+    (isTransitionWaitingForApproval && !isTransitionInProgress)
+  )
 
   return {
     isPrimaryButtonDisabled,
