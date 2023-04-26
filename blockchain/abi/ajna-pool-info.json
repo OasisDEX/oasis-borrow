@@ -136,6 +136,74 @@
         "type": "address"
       }
     ],
+    "name": "auctionStatus",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "kickTime_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateral_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "debtToCover_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isCollateralized_",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "neutralPrice_",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ajnaPool_",
+        "type": "address"
+      }
+    ],
+    "name": "borrowFeeRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ajnaPool_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "borrower_",
+        "type": "address"
+      }
+    ],
     "name": "borrowerInfo",
     "outputs": [
       {
@@ -189,7 +257,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "bucketLPs_",
+        "name": "bucketLP_",
         "type": "uint256"
       },
       {
@@ -200,25 +268,6 @@
       {
         "internalType": "uint256",
         "name": "exchangeRate_",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "ajnaPool_",
-        "type": "address"
-      }
-    ],
-    "name": "feeRate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
         "type": "uint256"
       }
     ],
@@ -275,7 +324,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "htp_",
         "type": "uint256"
       }
     ],
@@ -329,7 +378,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "lpTokens_",
+        "name": "lp_",
         "type": "uint256"
       },
       {
@@ -338,7 +387,7 @@
         "type": "uint256"
       }
     ],
-    "name": "lpsToCollateral",
+    "name": "lpToCollateral",
     "outputs": [
       {
         "internalType": "uint256",
@@ -358,7 +407,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "lpTokens_",
+        "name": "lp_",
         "type": "uint256"
       },
       {
@@ -367,7 +416,7 @@
         "type": "uint256"
       }
     ],
-    "name": "lpsToQuoteTokens",
+    "name": "lpToQuoteTokens",
     "outputs": [
       {
         "internalType": "uint256",
@@ -608,6 +657,25 @@
       }
     ],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ajnaPool_",
+        "type": "address"
+      }
+    ],
+    "name": "unutilizedDepositFeeRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

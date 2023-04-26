@@ -22,12 +22,12 @@
   },
   {
     "inputs": [],
-    "name": "EpochNotAvailable",
+    "name": "DeployWithZeroAddress",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "ExchangeRateUpdateTooLate",
+    "name": "EpochNotAvailable",
     "type": "error"
   },
   {

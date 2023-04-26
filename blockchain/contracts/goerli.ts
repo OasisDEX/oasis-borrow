@@ -180,15 +180,15 @@ export const goerliContracts: MainnetContracts = {
     aaveV3PoolDataProvider,
     goerliAddresses.AAVE_V3_POOL_DATA_PROVIDER,
   ),
-  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0xEa36b2a4703182d07df9DdEe46BF97f9979F0cCf'),
-  ajnaProxyActions: contractDesc(ajnaProxyActions, '0xE27E4fAdE5d3A2Bf6D76D0a20d437314d9da6139'),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x1F9F7732ff409FC0AbcAAea94634A7b41F445299'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0xD28618E87b17B6f78a79edca8Fb0591E89453165'),
   ajnaPoolPairs: {
-    'WBTC-USDC': contractDesc(ajnaPool, '0x17e5a1A6450d4fB32fFFc329ca92db55293db10e'),
-    'ETH-USDC': contractDesc(ajnaPool, '0xe1200AEfd60559D494d4419E17419571eF8fC1Eb'),
+    'WBTC-USDC': contractDesc(ajnaPool, '0xc2b64ca87090fe79786a8773009d7fb1288d3db1'),
+    'ETH-USDC': contractDesc(ajnaPool, '0x3ae0ea990cb38487d7a698c68b7b520a3d57c018'),
   },
   ajnaRewardsManager: contractDesc(
     ajnaRewardsManager,
-    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
+    '0xaF9bc1F09fe561CbD00018fC352507fD23cD46E2',
   ),
   // TODO update address
   ajnaRewardsClaimer: contractDesc(
