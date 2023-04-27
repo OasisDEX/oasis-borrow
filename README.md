@@ -252,6 +252,7 @@ yarn test:fix
 We are currently in the process of moving our tests from Mocha (with Chai, Enzyme, and Sinon) to Jest (with React Testing Library).
 We are also in the process of adding more tests to increase our coverage.
 We have some tests skipped for now, but we are working on fixing them.
+**We needed to disable caching in the `build` action. Testing with collecting coverage was failing with caching enabled.**
 Skipped tests (Marked with `TODO: [Mocha -> Jest] Rewrite in Jest compatible format.`):
 - [Batch Manager](helpers/api/BatchManager.test.ts)
 - [Manage Vault Validations](features/borrow/manage/tests/manageVaultValidations.test.ts)
