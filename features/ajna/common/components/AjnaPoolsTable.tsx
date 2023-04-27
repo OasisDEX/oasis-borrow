@@ -1,16 +1,15 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
+import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
+import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
+import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
+import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
+import { AssetsTableDataCellProtocol } from 'components/assetsTable/cellComponents/AssetsTableDataCellProtocol'
 import { AppLink } from 'components/Links'
 import { ajnaComingSoonPools } from 'features/ajna/common/consts'
 import { filterPoolData } from 'features/ajna/common/helpers/filterPoolData'
 import { AjnaPoolData, AjnaProduct } from 'features/ajna/common/types'
-import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
-import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
-import {
-  DiscoverTableDataCellAsset,
-  DiscoverTableDataCellInactive,
-  DiscoverTableDataCellProtocol,
-} from 'features/discover/common/DiscoverTableDataCellComponents'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useMemo } from 'react'
 import { Button } from 'theme-ui'
@@ -52,13 +51,13 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
           const { token, pair } = getTokenAndPair(pool, isPoolReversed)
 
           return {
-            asset: <DiscoverTableDataCellAsset asset={pair.replace('-', '/')} icons={[token]} />,
+            asset: <AssetsTableDataCellAsset asset={pair.replace('-', '/')} icons={[token]} />,
             ...filterPoolData({
               data: ajnaPoolsTableData,
               pair,
               product,
             }),
-            protocol: <DiscoverTableDataCellProtocol protocol="Ajna" />,
+            protocol: <AssetsTableDataCellProtocol protocol="Ajna" />,
             action: (
               <AppLink href={`/ajna/${product}/${pair}`}>
                 <Button className="discover-action" variant="tertiary">
@@ -79,13 +78,13 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
 
           return {
             asset: (
-              <DiscoverTableDataCellInactive>
-                <DiscoverTableDataCellAsset
+              <AssetsTableDataCellInactive>
+                <AssetsTableDataCellAsset
                   asset={pair.replace('-', '/')}
                   icons={[token]}
-                  inactive={`(${t('coming-soon')})`}
+                  suffix={`(${t('coming-soon')})`}
                 />
-              </DiscoverTableDataCellInactive>
+              </AssetsTableDataCellInactive>
             ),
             ...filterPoolData({
               data: ajnaPoolsTableData,
@@ -93,15 +92,11 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
               product,
             }),
             protocol: (
-              <DiscoverTableDataCellInactive>
-                <DiscoverTableDataCellProtocol protocol="Ajna" />
-              </DiscoverTableDataCellInactive>
+              <AssetsTableDataCellInactive>
+                <AssetsTableDataCellProtocol protocol="Ajna" />
+              </AssetsTableDataCellInactive>
             ),
-            action: (
-              <Button className="discover-action" variant="tertiary" disabled={true}>
-                {t('coming-soon')}
-              </Button>
-            ),
+            action: <AssetsTableDataCellAction cta={t('coming-soon')} disabled={true} />,
           }
         }),
     ],
@@ -109,8 +104,8 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
   )
 
   return (
-    <DiscoverTableContainer tableOnly>
-      <DiscoverResponsiveTable headerTranslationProps={{ token: selectedValue }} rows={rows} />
-    </DiscoverTableContainer>
+    <AssetsTableContainer tableOnly>
+      <AssetsResponsiveTable headerTranslationProps={{ token: selectedValue }} rows={rows} />
+    </AssetsTableContainer>
   )
 }

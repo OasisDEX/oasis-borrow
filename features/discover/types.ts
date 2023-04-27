@@ -65,17 +65,3 @@ export type DiscoverTableStatusRowDataApi = DiscoverTableStatusRowData & {
     stopLossLevel?: number
   }
 }
-
-export type DiscoverTableRowData = {
-  [key: string]:
-    | string
-    | number
-    | ReactNode
-    | DiscoverTableColRatioRowData
-    | DiscoverTableActivityRowData
-    | DiscoverTableStatusRowData
-} & {
-  colRatio?: DiscoverTableColRatioRowData
-  activity?: DiscoverTableActivityRowData
-  status?: DiscoverTableStatusRowData
-}

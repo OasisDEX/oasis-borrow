@@ -1,3 +1,4 @@
+import { AssetsTableBannerProps } from 'components/assetsTable/types'
 import {
   discoverFiltersAssetItems,
   discoverMultipleFilter,
@@ -22,21 +23,13 @@ export interface DiscoverFiltersListItem {
 export interface DiscoverFiltersList {
   [key: string]: DiscoverFiltersListItem
 }
-export interface DiscoverFollow {
-  followerAddress: string
-  chainId: number
-}
-export interface DiscoverBanner {
-  icon: JSX.Element
-  link: string
-}
 export interface DiscoverPageMeta {
   kind: DiscoverPages
   endpoint: string
   iconColor: string
   iconContent: JSX.Element
   filters: DiscoverFiltersList
-  banner?: DiscoverBanner
+  banner?: AssetsTableBannerProps
 }
 
 export const discoverPagesMeta: DiscoverPageMeta[] = [

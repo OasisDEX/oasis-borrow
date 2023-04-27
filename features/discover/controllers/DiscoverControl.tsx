@@ -2,7 +2,7 @@ import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { getDiscoverData } from 'features/discover/api'
 import { DiscoverData } from 'features/discover/common/DiscoverData'
 import { DiscoverFilters } from 'features/discover/common/DiscoverFilters'
-import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
+import { AssetsTableContainer } from 'features/discover/common/DiscoverTableContainer'
 import { getDefaultSettingsState } from 'features/discover/helpers'
 import { discoverPagesMeta } from 'features/discover/meta'
 import { DiscoverFiltersSettings, DiscoverPages } from 'features/discover/types'
@@ -54,7 +54,7 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
   }, [response])
 
   return (
-    <DiscoverTableContainer>
+    <AssetsTableContainer>
       <Box ref={anchor} />
       <DiscoverFilters
         filters={filters}
@@ -70,6 +70,6 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
         response={response}
         userContext={userContext}
       />
-    </DiscoverTableContainer>
+    </AssetsTableContainer>
   )
 }

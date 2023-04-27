@@ -1,13 +1,12 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
+import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
+import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
-import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
-import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
-import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHeading'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
-  followTableSkippedHeaders,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
@@ -23,86 +22,67 @@ import React from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
-  const { context$, followedList$ } = useAppContext()
+  const { followedList$ } = useAppContext()
   const { walletAddress } = useAccount()
-  const [contextData, contextError] = useObservable(context$)
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))
 
   const isOwner = address === walletAddress
 
   return (
-    <WithErrorHandler error={[contextError, followedListError]}>
-      <WithLoadingIndicator
-        value={[contextData, followedListData]}
-        customLoader={<PositionTableLoadingState />}
-      >
-        {([context, followedMakerPositions]) => {
-          const borrowPositions = getMakerBorrowPositions({ positions: followedMakerPositions })
-          const multiplyPositions = getMakerMultiplyPositions({ positions: followedMakerPositions })
-          const earnPositions = getMakerEarnPositions({ positions: followedMakerPositions })
+    <WithErrorHandler error={[followedListError]}>
+      <WithLoadingIndicator value={[followedListData]} customLoader={<PositionTableLoadingState />}>
+        {([followedMakerPositions]) => {
+          const borrowPositions = getMakerBorrowPositions({
+            positions: followedMakerPositions,
+            followButton: true,
+            shareButton: true,
+          })
+          const multiplyPositions = getMakerMultiplyPositions({
+            positions: followedMakerPositions,
+            followButton: true,
+            shareButton: true,
+          })
+          const earnPositions = getMakerEarnPositions({
+            positions: followedMakerPositions,
+            followButton: true,
+            shareButton: true,
+          })
 
           return followedMakerPositions.length ? (
-            <DiscoverTableContainer
+            <AssetsTableContainer
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-followed-positions`, {
                 address: formatAddress(address),
               })} (${followedMakerPositions.length})`}
             >
               {borrowPositions.length > 0 && (
                 <>
-                  <DiscoverTableHeading>
+                  <AssetsTableHeading>
                     Oasis {t('nav.borrow')} ({borrowPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
-                    rows={borrowPositions}
-                    skip={followTableSkippedHeaders}
-                    tooltips={positionsTableTooltips}
-                    {...(!!walletAddress && {
-                      follow: {
-                        followerAddress: walletAddress,
-                        chainId: context.chainId,
-                      },
-                    })}
-                  />
+                  </AssetsTableHeading>
+                  <AssetsResponsiveTable rows={borrowPositions} tooltips={positionsTableTooltips} />
                 </>
               )}
               {multiplyPositions.length > 0 && (
                 <>
-                  <DiscoverTableHeading>
+                  <AssetsTableHeading>
                     Oasis {t('nav.multiply')} ({multiplyPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
+                  </AssetsTableHeading>
+                  <AssetsResponsiveTable
                     rows={multiplyPositions}
-                    skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
-                    {...(!!walletAddress && {
-                      follow: {
-                        followerAddress: walletAddress,
-                        chainId: context.chainId,
-                      },
-                    })}
                   />
                 </>
               )}
               {earnPositions.length > 0 && (
                 <>
-                  <DiscoverTableHeading>
+                  <AssetsTableHeading>
                     Oasis {t('nav.earn')} ({earnPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
-                    rows={earnPositions}
-                    skip={followTableSkippedHeaders}
-                    tooltips={positionsTableTooltips}
-                    {...(!!walletAddress && {
-                      follow: {
-                        followerAddress: walletAddress,
-                        chainId: context.chainId,
-                      },
-                    })}
-                  />
+                  </AssetsTableHeading>
+                  <AssetsResponsiveTable rows={earnPositions} tooltips={positionsTableTooltips} />
                 </>
               )}
-            </DiscoverTableContainer>
+            </AssetsTableContainer>
           ) : (
             <PositionTableEmptyState
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-followed-positions`, {

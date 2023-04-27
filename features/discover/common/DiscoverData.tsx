@@ -3,7 +3,7 @@ import { NetworkIds } from 'blockchain/networkIds'
 import { DiscoverDataResponse } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
-import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
+import { AssetsResponsiveTable } from 'components/assetsTable/DiscoverResponsiveTable'
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import { useAccount } from 'helpers/useAccount'
@@ -36,7 +36,7 @@ export function DiscoverData({
       {response?.rows ? (
         <>
           {isLoading && <DiscoverPreloader isContentLoaded />}
-          <DiscoverResponsiveTable
+          <AssetsResponsiveTable
             banner={banner}
             isLoading={isLoading}
             isSticky={isSticky}

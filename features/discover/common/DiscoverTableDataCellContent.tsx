@@ -2,8 +2,8 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { DiscoverTableDataCellAsset } from 'features/discover/common/DiscoverTableDataCellComponents'
-import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
+import { AssetsTableDataCellAsset } from 'features/discover/common/DiscoverTableDataCellComponents'
+import { AssetsTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
 import { DiscoverFollow } from 'features/discover/meta'
@@ -47,30 +47,30 @@ export function DiscoverTableDataCellContent({
       )[0]
 
       return (
-        <DiscoverTableDataCellAsset
+        <AssetsTableDataCellAsset
           asset={
             (primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset) as string
           }
-          id={primitives.cdpId as string}
+          positionId={primitives.cdpId as string}
           follow={follow}
           icons={[(primitives?.icon || asset?.value || primitives?.asset) as string]}
         />
       )
     case 'status':
       return (
-        <DiscoverTableDataCellPill status={row.status}>
+        <AssetsTableDataCellPill status={row.status}>
           {t(`discover.table.status.${row.status?.kind}`, {
             ...parsePillAdditionalData(i18n.language, row.status),
           })}
-        </DiscoverTableDataCellPill>
+        </AssetsTableDataCellPill>
       )
     case 'activity':
       return (
-        <DiscoverTableDataCellPill activity={row.activity}>
+        <AssetsTableDataCellPill activity={row.activity}>
           {t(`discover.table.activity.${row.activity?.kind}`, {
             ...parsePillAdditionalData(i18n.language, row.activity),
           })}
-        </DiscoverTableDataCellPill>
+        </AssetsTableDataCellPill>
       )
     case 'cdpId':
     case 'url':

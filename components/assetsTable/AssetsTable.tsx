@@ -1,44 +1,45 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
+import {
+  AssetsTableHeaderTranslationProps,
+  AssetsTableProps,
+  AssetsTableRowData,
+} from 'components/assetsTable/types'
 import { StatefulTooltip } from 'components/Tooltip'
-import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
-import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
-import { DiscoverBanner, DiscoverFollow } from 'features/discover/meta'
-import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment, isValidElement } from 'react'
+import React, { Fragment } from 'react'
 import { Box, Flex } from 'theme-ui'
 
-export interface DiscoverTableProps {
-  banner?: DiscoverBanner
-  follow?: DiscoverFollow
-  headerTranslationProps?: { [key: string]: string }
-  isLoading?: boolean
-  isSticky?: boolean
-  kind?: DiscoverPages
-  rows: DiscoverTableRowData[]
-  skip?: string[]
-  tooltips?: string[]
-  onBannerClick?: (link: string) => void
-  onPositionClick?: (cdpId: string) => void
+interface AssetsTableHeaderCellProps {
+  first: boolean
+  headerTranslationProps?: AssetsTableHeaderTranslationProps
+  label: string
+  last: boolean
+  tooltip: boolean
 }
 
-export function DiscoverTable({
+interface AssetsTableDataRowProps {
+  row: AssetsTableRowData
+  rowKeys: string[]
+}
+
+interface AssetsTableDataCellProps {
+  label: string
+  row: AssetsTableRowData
+}
+
+export function AssetsTable({
   banner,
-  follow,
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
-  kind,
   rows,
-  skip = [],
   tooltips = [],
-  onPositionClick,
-  onBannerClick,
-}: DiscoverTableProps) {
-  const filteredRowKeys = Object.keys(rows[0]).filter((key) => !skip.includes(key))
-  const rowsForBanner = Math.min(rows.length - 1, 9)
+}: AssetsTableProps) {
+  const rowKeys = Object.keys(rows[0])
+  const bannerRows = Math.min(rows.length - 1, 9)
 
   return (
     <Box
@@ -67,14 +68,13 @@ export function DiscoverTable({
           }}
         >
           <tr>
-            {filteredRowKeys.map((label, i) => (
-              <DiscoverTableHeaderCell
+            {rowKeys.map((label, i) => (
+              <AssetsTableHeaderCell
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
-                follow={follow}
                 headerTranslationProps={headerTranslationProps}
                 label={label}
-                last={i + 1 === filteredRowKeys.length}
+                last={i + 1 === rowKeys.length}
                 tooltip={tooltips.includes(label)}
               />
             ))}
@@ -90,16 +90,11 @@ export function DiscoverTable({
         >
           {rows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <DiscoverTableDataRow
-                filteredRowKeys={filteredRowKeys}
-                follow={follow}
-                row={row}
-                onPositionClick={onPositionClick}
-              />
-              {kind && banner && i === Math.floor(rowsForBanner / 2) && (
+              <AssetsTableDataRow row={row} rowKeys={rowKeys} />
+              {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
-                    <DiscoverTableBanner kind={kind} onBannerClick={onBannerClick} {...banner} />
+                    <AssetsTableBanner {...banner} />
                   </td>
                 </tr>
               )}
@@ -111,21 +106,13 @@ export function DiscoverTable({
   )
 }
 
-export function DiscoverTableHeaderCell({
+export function AssetsTableHeaderCell({
   first,
-  follow,
   headerTranslationProps,
   label,
   last,
   tooltip,
-}: {
-  first: boolean
-  follow?: DiscoverFollow
-  headerTranslationProps?: { [key: string]: string }
-  label: string
-  last: boolean
-  tooltip: boolean
-}) {
+}: AssetsTableHeaderCellProps) {
   const { t } = useTranslation()
 
   return (
@@ -135,7 +122,6 @@ export function DiscoverTableHeaderCell({
         position: 'relative',
         px: '12px',
         py: '20px',
-        ...(first && follow && { pl: '80px' }),
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',
@@ -199,17 +185,7 @@ export function DiscoverTableHeaderCell({
   )
 }
 
-export function DiscoverTableDataRow({
-  row,
-  filteredRowKeys,
-  follow,
-  onPositionClick,
-}: {
-  filteredRowKeys: string[]
-  follow?: DiscoverFollow
-  row: DiscoverTableRowData
-  onPositionClick?: (cdpId: string) => void
-}) {
+export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
   return (
     <Box
       as="tr"
@@ -221,30 +197,14 @@ export function DiscoverTableDataRow({
         },
       }}
     >
-      {filteredRowKeys.map((label, i) => (
-        <DiscoverTableDataCell
-          key={getRowKey(i, row)}
-          follow={follow}
-          label={label}
-          row={row}
-          onPositionClick={onPositionClick}
-        />
+      {rowKeys.map((label, i) => (
+        <AssetsTableDataCell key={getRowKey(i, row)} label={label} row={row} />
       ))}
     </Box>
   )
 }
 
-export function DiscoverTableDataCell({
-  follow,
-  label,
-  row,
-  onPositionClick,
-}: {
-  follow?: DiscoverFollow
-  label: string
-  row: DiscoverTableRowData
-  onPositionClick?: (cdpId: string) => void
-}) {
+export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
   return (
     <Box
       as="td"
@@ -257,16 +217,7 @@ export function DiscoverTableDataCell({
         },
       }}
     >
-      {!isValidElement(row[label]) ? (
-        <DiscoverTableDataCellContent
-          follow={follow}
-          label={label}
-          onPositionClick={onPositionClick}
-          row={row}
-        />
-      ) : (
-        row[label]
-      )}
+      {row[label]}
     </Box>
   )
 }

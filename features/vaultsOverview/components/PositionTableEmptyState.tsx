@@ -1,4 +1,4 @@
-import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
+import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { ReactNode } from 'react'
 import { Flex, Heading, Image, Text } from 'theme-ui'
@@ -13,7 +13,7 @@ export function PositionTableEmptyState({
   content: ReactNode
 }) {
   return (
-    <DiscoverTableContainer title={title}>
+    <AssetsTableContainer title={title}>
       <Flex
         sx={{
           flexDirection: 'column',
@@ -35,6 +35,6 @@ export function PositionTableEmptyState({
           {content}
         </Text>
       </Flex>
-    </DiscoverTableContainer>
+    </AssetsTableContainer>
   )
 }
