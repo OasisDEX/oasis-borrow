@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-import { AjnaPoolData } from 'features/ajna/common/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 
 export const productCardsAjna = {
@@ -88,29 +86,4 @@ export const productCardsAjna = {
     },
   ],
   multiply: [],
-}
-
-export const ajnaPoolDummyData: AjnaPoolData = {
-  'ETH-USDC': {
-    '7DayNetApy': new BigNumber(Math.random() * 10),
-    '90DayNetApy': new BigNumber(Math.random() * 10),
-    annualFee: new BigNumber(Math.random() * 10),
-    liquidityAvaliable: new BigNumber(Math.random() * 10000000),
-    maxLtv: new BigNumber(Math.random() * 100),
-    maxMultiply: new BigNumber(Math.random() * 10),
-    minLtv: new BigNumber(Math.random() * 100),
-    minPositionSize: new BigNumber(Math.random() * 1000),
-    tvl: new BigNumber(Math.random() * 10000000),
-  },
-  'WBTC-USDC': {
-    '7DayNetApy': new BigNumber(Math.random() * 10),
-    '90DayNetApy': new BigNumber(Math.random() * 10),
-    annualFee: new BigNumber(Math.random() * 10),
-    liquidityAvaliable: new BigNumber(Math.random() * 10000000),
-    maxLtv: new BigNumber(Math.random() * 100),
-    maxMultiply: new BigNumber(Math.random() * 10),
-    minLtv: new BigNumber(Math.random() * 100),
-    minPositionSize: new BigNumber(Math.random() * 1000),
-    tvl: new BigNumber(Math.random() * 10000000),
-  },
 }

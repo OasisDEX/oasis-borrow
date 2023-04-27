@@ -2,7 +2,6 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { ajnaComingSoonPools } from 'features/ajna/common/consts'
-import { ajnaPoolDummyData } from 'features/ajna/common/content'
 import { filterPoolData } from 'features/ajna/common/helpers/filterPoolData'
 import { AjnaPoolData, AjnaProduct } from 'features/ajna/common/types'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
@@ -89,7 +88,7 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
               </DiscoverTableDataCellInactive>
             ),
             ...filterPoolData({
-              data: ajnaPoolDummyData,
+              data: ajnaPoolsTableData,
               pair,
               product,
             }),
