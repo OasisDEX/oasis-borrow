@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { calculatePNL } from 'helpers/multiply/calculations'
-import { mockedMultiplyEvents } from 'helpers/multiply/calculations.test'
+import { mockedMultiplyEvents } from 'helpers/multiply/calculations.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 
 describe('Multiply calculations', () => {
@@ -24,6 +23,6 @@ describe('Multiply calculations', () => {
     )
 
     const pnl = calculatePNL(mockedMultiplyEvents, state().netValueUSD)
-    expect(pnl.decimalPlaces(20)).to.be.deep.equal(new BigNumber('0.27552238805970149253'))
+    expect(pnl.decimalPlaces(20)).toEqual(new BigNumber('0.27552238805970149253'))
   })
 })

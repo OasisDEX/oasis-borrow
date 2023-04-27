@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { OraclePriceData } from 'blockchain/prices'
-import { expect } from 'chai'
 import { mockIlkData } from 'helpers/mocks/ilks.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of } from 'rxjs'
@@ -154,7 +153,7 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of(['WBTC-A']), mockIlkData$, mockOraclePriceData$, ['WBTC-A']),
     )
 
-    expect(state()[0]).to.eql({
+    expect(state()[0]).toEqual({
       background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
       bannerGif: '/static/img/tokens/Maker_WBTC.gif',
       bannerIcon: '/static/img/tokens/maker_wbtc.png',
@@ -162,6 +161,7 @@ describe('createProductCardsData$', () => {
       ilk: 'WBTC-A',
       liquidationRatio: wbtcA.liquidationRatio,
       liquidityAvailable: wbtcA.ilkDebtAvailable,
+      chain: 'mainnet',
       debtFloor: wbtcA.debtFloor,
       name: 'Wrapped Bitcoin',
       protocol: 'maker',
@@ -183,7 +183,7 @@ describe('createProductCardsData$', () => {
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
 
-    expect(landingPageData).to.eql([
+    expect(landingPageData).toEqual([
       {
         token: wbtcB.token,
         ilk: wbtcB.ilk,
@@ -192,6 +192,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wbtcB.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/Maker_WBTC.gif',
         bannerIcon: '/static/img/tokens/maker_wbtc.png',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -207,6 +208,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: ethB.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/MAKER_ETH.gif',
         bannerIcon: '/static/img/tokens/maker_eth.png',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
@@ -222,6 +224,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: wstethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wstethA.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/Maker_stETH.gif',
         bannerIcon: '/static/img/tokens/maker_steth.png',
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
@@ -247,7 +250,7 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'Featured',
     })
 
-    expect(multiplyPageData).to.eql([
+    expect(multiplyPageData).toEqual([
       {
         token: wbtcB.token,
         ilk: wbtcB.ilk,
@@ -256,6 +259,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wbtcB.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/Maker_WBTC.gif',
         bannerIcon: '/static/img/tokens/maker_wbtc.png',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -271,6 +275,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: ethB.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/MAKER_ETH.gif',
         bannerIcon: '/static/img/tokens/maker_eth.png',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
@@ -286,6 +291,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: wstethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wstethA.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/Maker_stETH.gif',
         bannerIcon: '/static/img/tokens/maker_steth.png',
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
@@ -309,7 +315,7 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'ETH',
     })
 
-    expect(multiplyPageData).to.eql([
+    expect(multiplyPageData).toEqual([
       {
         token: ethA.token,
         ilk: ethA.ilk,
@@ -318,6 +324,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: ethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: ethA.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/MAKER_ETH.gif',
         bannerIcon: '/static/img/tokens/maker_eth.png',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
@@ -333,6 +340,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: wstethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wstethA.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/Maker_stETH.gif',
         bannerIcon: '/static/img/tokens/maker_steth.png',
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
@@ -353,7 +361,7 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'Featured',
     })
 
-    expect(borrowPageData[0]).to.eql({
+    expect(borrowPageData[0]).toEqual({
       token: wbtcC.token,
       ilk: wbtcC.ilk,
       liquidationRatio: wbtcC.liquidationRatio,
@@ -361,6 +369,7 @@ describe('createProductCardsData$', () => {
       stabilityFee: wbtcC.stabilityFee,
       currentCollateralPrice: new BigNumber('550'),
       debtFloor: wbtcC.debtFloor,
+      chain: 'mainnet',
       bannerGif: '/static/img/tokens/Maker_WBTC.gif',
       bannerIcon: '/static/img/tokens/maker_wbtc.png',
       background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -385,10 +394,10 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'Featured',
     })
 
-    expect(borrowPageData[0].ilk).to.eql(wbtcC.ilk)
-    expect(borrowPageData[1].ilk).to.eql(ethC.ilk)
-    expect(borrowPageData[2].ilk).to.eql(wstethB.ilk)
-    expect(borrowPageData[3].ilk).to.eql(crv.ilk)
+    expect(borrowPageData[0].ilk).toEqual(wbtcC.ilk)
+    expect(borrowPageData[1].ilk).toEqual(ethC.ilk)
+    expect(borrowPageData[2].ilk).toEqual(wstethB.ilk)
+    expect(borrowPageData[3].ilk).toEqual(crv.ilk)
   })
 
   it('should return correct borrow page token product data', () => {
@@ -401,7 +410,7 @@ describe('createProductCardsData$', () => {
 
     const borrowPageData = borrowPageCardsData({ ilkToTokenMapping: state(), cardsFilter: 'BTC' })
 
-    expect(borrowPageData).to.eql([
+    expect(borrowPageData).toEqual([
       {
         token: renbtc.token,
         ilk: renbtc.ilk,
@@ -411,6 +420,7 @@ describe('createProductCardsData$', () => {
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: renbtc.debtFloor,
         bannerIcon: '/static/img/tokens/renBTC.png',
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/renBTC.gif',
         background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
         name: 'renBTC',
@@ -425,6 +435,7 @@ describe('createProductCardsData$', () => {
         stabilityFee: wbtcA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wbtcA.debtFloor,
+        chain: 'mainnet',
         bannerGif: '/static/img/tokens/Maker_WBTC.gif',
         bannerIcon: '/static/img/tokens/maker_wbtc.png',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -441,19 +452,19 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'ETH',
     })
 
-    expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
-    expect(borrowPageData[1].ilk).to.eql(ethA.ilk)
-    expect(borrowPageData[2].ilk).to.eql(wstethA.ilk)
-    expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
+    expect(borrowPageData[0].ilk).toEqual(ethC.ilk)
+    expect(borrowPageData[1].ilk).toEqual(ethA.ilk)
+    expect(borrowPageData[2].ilk).toEqual(wstethA.ilk)
+    expect(borrowPageData[3].ilk).toEqual(ethB.ilk)
 
     const multiplyCardData = multiplyPageCardsData({
       ilkToTokenMapping: ilkToEntryToken,
       cardsFilter: 'BTC',
     })
 
-    expect(multiplyCardData[0].ilk).to.eql(wbtcB.ilk)
-    expect(multiplyCardData[1].ilk).to.eql(wbtcA.ilk)
-    expect(multiplyCardData[2].ilk).to.eql(renbtc.ilk)
-    expect(multiplyCardData[3].ilk).to.eql(wbtcC.ilk)
+    expect(multiplyCardData[0].ilk).toEqual(wbtcB.ilk)
+    expect(multiplyCardData[1].ilk).toEqual(wbtcA.ilk)
+    expect(multiplyCardData[2].ilk).toEqual(renbtc.ilk)
+    expect(multiplyCardData[3].ilk).toEqual(wbtcC.ilk)
   })
 })

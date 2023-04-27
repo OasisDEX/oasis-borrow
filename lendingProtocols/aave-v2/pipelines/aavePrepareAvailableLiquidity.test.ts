@@ -3,7 +3,6 @@ import {
   AaveV2ReserveDataParameters,
   AaveV2ReserveDataReply,
 } from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import { expect } from 'chai'
 import { zero } from 'helpers/zero'
 import { of, throwError } from 'rxjs'
 
@@ -25,7 +24,7 @@ describe('prepareAaveAvailableLiquidityInUSDC$', () => {
       usdcEthPrice$,
       reserveDataToken,
     ).subscribe((value) => {
-      expect(value.toString()).to.deep.equal(new BigNumber(20).toString())
+      expect(value.toString()).toEqual(new BigNumber(20).toString())
       done()
     })
   })
@@ -39,7 +38,7 @@ describe('prepareAaveAvailableLiquidityInUSDC$', () => {
       usdcEthPrice$,
       reserveDataToken,
     ).subscribe((value) => {
-      expect(value).to.deep.equal(zero)
+      expect(value).toEqual(zero)
       done()
     })
   })

@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { expect } from 'chai'
 import { mockVault$ } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
@@ -30,8 +29,8 @@ describe('instiVault$', () => {
     charterPeace$.next(new BigNumber(6))
     charterUline$.next(new BigNumber(11))
 
-    expect(state().originationFeePercent.toString()).to.eq('2')
-    expect(state().activeCollRatio.toString()).to.eq('6')
+    expect(state().originationFeePercent.toString()).toBe('2')
+    expect(state().activeCollRatio.toString()).toBe('6')
   })
 
   it('takes the debt ceiling/available ilk debt from the charter contract', () => {
@@ -47,6 +46,6 @@ describe('instiVault$', () => {
     })
 
     const state = getStateUnpacker(instiVault$)
-    expect(state().daiYieldFromLockedCollateral.toString()).to.eq('800000000')
+    expect(state().daiYieldFromLockedCollateral.toString()).toBe('800000000')
   })
 })

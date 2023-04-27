@@ -1,23 +1,22 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import { getCollaterals, getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
-import { expect } from 'chai'
 
 const { mainnet } = ADDRESSES
 
 describe('adressesUtils', () => {
-  it('should filter collaterals correctly', async function () {
+  it('should filter collaterals correctly', async () => {
     const actual = getCollaterals({ PIP_ETH: '', PIP_XYZ: '', XYZ_WBTC: '' }, supportedIlks)
-    expect(actual).to.be.not.undefined
-    expect(actual.length).to.be.equal(1)
-    expect(actual[0]).to.be.equal('ETH')
+    expect(actual).toBeDefined()
+    expect(actual.length).toBe(1)
+    expect(actual[0]).toBe('ETH')
   })
-  it('should filter collateral tokens correctly', async function () {
+  it('should filter collateral tokens correctly', async () => {
     const collaterals = getCollaterals(mainnet.common, supportedIlks)
     const tokens = getCollateralTokens(mainnet.common, supportedIlks)
-    expect(Object.keys(tokens).length).to.be.equal(collaterals.length)
+    expect(Object.keys(tokens).length).toBe(collaterals.length)
     Object.keys(tokens).forEach((element, idx) => {
-      expect(element).to.be.equal(collaterals[idx])
+      expect(element).toBe(collaterals[idx])
     })
   })
 })

@@ -1,5 +1,4 @@
 import { AssertionError } from 'assert'
-import { expect } from 'chai'
 import { UIChanges } from 'components/AppContext'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -54,13 +53,13 @@ describe('asset actions', () => {
 
     const state = getStateUnpacker(assetActions$)
 
-    expect(state().length).eq(2)
+    expect(state().length).toBe(2)
 
     const borrowAction = state()[1]
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
-    expect(borrowAction.text).eq('Borrow')
-    expect(borrowAction.icon).eq('collateral')
-    expect(borrowAction.path).eq('/borrow')
+    expect(borrowAction.text).toBe('Borrow')
+    expect(borrowAction.icon).toBe('collateral')
+    expect(borrowAction.path).toBe('/borrow')
   })
 
   it('shows moth borrow and multiply action', () => {
@@ -83,19 +82,19 @@ describe('asset actions', () => {
 
     const state = getStateUnpacker(assetActions$)
 
-    expect(state().length).eq(3)
+    expect(state().length).toBe(3)
 
     const borrowAction = state()[1]
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
-    expect(borrowAction.text).eq('Borrow')
-    expect(borrowAction.icon).eq('collateral')
-    expect(borrowAction.path).eq('/borrow')
+    expect(borrowAction.text).toBe('Borrow')
+    expect(borrowAction.icon).toBe('collateral')
+    expect(borrowAction.path).toBe('/borrow')
 
     const multiplyAction = state()[2]
     assertAssetAction(isUrlAction(multiplyAction), 'borrow action is not url asset action')
-    expect(multiplyAction.text).eq('Multiply')
-    expect(multiplyAction.icon).eq('copy')
-    expect(multiplyAction.path).eq('/multiply')
+    expect(multiplyAction.text).toBe('Multiply')
+    expect(multiplyAction.icon).toBe('copy')
+    expect(multiplyAction.path).toBe('/multiply')
   })
 
   it('includes swaps', () => {
@@ -119,8 +118,8 @@ describe('asset actions', () => {
     const state = getStateUnpacker(assetActions$)
     const swapAction = state()[0]
     assertAssetAction(isOnClickAction(swapAction), 'swap action is not onclick asset action')
-    expect(swapAction.text).eq('Swap')
-    expect(swapAction.icon).eq('exchange')
-    expect(swapAction.onClick).to.not.be.undefined
+    expect(swapAction.text).toBe('Swap')
+    expect(swapAction.icon).toBe('exchange')
+    expect(swapAction.onClick).toBeDefined()
   })
 })

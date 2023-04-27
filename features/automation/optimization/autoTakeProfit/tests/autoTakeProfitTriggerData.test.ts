@@ -1,6 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import {
   AutoTakeProfitFormChange,
   AutoTakeProfitResetData,
@@ -20,7 +19,7 @@ describe('autoTakeProfit Form Change tests', () => {
     it('handles empty input and returns correct value', (done) => {
       const result = extractAutoTakeProfitData([] as any)
 
-      expect(result).to.deep.equal(defaultAutoTakeProfitData)
+      expect(result).toEqual(defaultAutoTakeProfitData)
 
       done()
     })
@@ -28,7 +27,7 @@ describe('autoTakeProfit Form Change tests', () => {
     it('handles correct input and returns correct value', (done) => {
       const result = extractAutoTakeProfitData([] as any)
 
-      expect(result).to.deep.equal(defaultAutoTakeProfitData)
+      expect(result).toEqual(defaultAutoTakeProfitData)
 
       done()
     })
@@ -96,7 +95,7 @@ describe('autoTakeProfit Form Change tests', () => {
 
       const result = pickTriggerWithLowestExecutionPrice(triggers)
 
-      expect(result).to.deep.equal(expectedResult)
+      expect(result).toEqual(expectedResult)
 
       done()
     })
@@ -131,7 +130,7 @@ describe('autoTakeProfit Form Change tests', () => {
       } as AutoTakeProfitResetData
 
       const result = prepareAutoTakeProfitResetData(autoTakeProfitState, triggerData)
-      expect(result).to.deep.equal(expectedResult)
+      expect(result).toEqual(expectedResult)
 
       done()
     })

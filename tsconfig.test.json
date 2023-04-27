@@ -1,12 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "allowJs": true,
     "module": "commonjs",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react"
   },
   "exclude": [],
-  "ts-node": {
-    "transpileOnly": true
-  }
 }

@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 
 import { AaveUserConfigurationResult, createAaveUserConfiguration } from './aaveUserConfiguration'
 
@@ -19,8 +18,8 @@ describe('AaveUserConfiguration', () => {
   ) {
     const interestingRow = results.find((row) => row.asset === asset && row.assetName === assetName)
 
-    expect(interestingRow?.collateral).to.equal(isCollateral)
-    expect(interestingRow?.borrowed).to.equal(isBorrowed)
+    expect(interestingRow?.collateral).toBe(isCollateral)
+    expect(interestingRow?.borrowed).toBe(isBorrowed)
   }
 
   it('parses debt and collateral', () => {

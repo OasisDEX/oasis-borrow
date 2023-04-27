@@ -1,5 +1,3 @@
-import { expect } from 'chai'
-
 import {
   configureLocalStorageForTests,
   FT_LOCAL_STORAGE_KEY,
@@ -10,9 +8,9 @@ import {
 describe('useFeatureEnabled', () => {
   describe('loading feature toggles', () => {
     it('creates the features and sets to disabled in local storage on first load', () => {
-      expect(localStorage.getItem(FT_LOCAL_STORAGE_KEY)).to.be.null
+      expect(localStorage.getItem(FT_LOCAL_STORAGE_KEY)).toBeNull()
       loadFeatureToggles()
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).toMatchObject({
         TestFeature: false,
       })
     })
@@ -21,11 +19,11 @@ describe('useFeatureEnabled', () => {
       configureLocalStorageForTests({
         TestFeature: false,
       })
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).not.to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).not.toMatchObject({
         AnotherTestFeature: true,
       })
       loadFeatureToggles(['AnotherTestFeature'])
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).toMatchObject({
         AnotherTestFeature: true,
       })
     })
@@ -34,11 +32,11 @@ describe('useFeatureEnabled', () => {
       configureLocalStorageForTests({
         TestFeature: true,
       })
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).toMatchObject({
         TestFeature: true,
       })
       loadFeatureToggles()
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).toMatchObject({
         TestFeature: true,
       })
     })
@@ -47,21 +45,21 @@ describe('useFeatureEnabled', () => {
       configureLocalStorageForTests({
         TestFeature: false,
       })
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).toMatchObject({
         TestFeature: false,
       })
       loadFeatureToggles(['TestFeature'])
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).toMatchObject({
         TestFeature: false,
       })
     })
 
     it('sets new enabled features as disabled in local storage, but the feature is enabled', () => {
       loadFeatureToggles()
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).toMatchObject({
         AnotherTestFeature: false,
       })
-      expect(useFeatureToggle('AnotherTestFeature')).to.be.true
+      expect(useFeatureToggle('AnotherTestFeature')).toBe(true)
     })
   })
 
@@ -71,7 +69,7 @@ describe('useFeatureEnabled', () => {
         TestFeature: true,
       })
       loadFeatureToggles()
-      expect(useFeatureToggle('TestFeature')).to.be.true
+      expect(useFeatureToggle('TestFeature')).toBe(true)
     })
 
     it('enables feature when enabled in code and disabled in local storage', () => {
@@ -79,7 +77,7 @@ describe('useFeatureEnabled', () => {
         AnotherTestFeature: false,
       })
       loadFeatureToggles()
-      expect(useFeatureToggle('AnotherTestFeature')).to.be.true
+      expect(useFeatureToggle('AnotherTestFeature')).toBe(true)
     })
 
     it('disables feature when disabled in code and localstorage', () => {
@@ -87,7 +85,7 @@ describe('useFeatureEnabled', () => {
         TestFeature: false,
       })
       loadFeatureToggles()
-      expect(useFeatureToggle('TestFeature')).to.be.false
+      expect(useFeatureToggle('TestFeature')).toBe(false)
     })
   })
 
