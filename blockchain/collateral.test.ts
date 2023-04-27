@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of, throwError } from 'rxjs'
 
@@ -31,7 +30,7 @@ describe('getTotalValueLocked$', () => {
 
     const state = getStateUnpacker(result)()
 
-    expect(state).to.eql({
+    expect(state).toEqual({
       value: new BigNumber(6),
     })
   })

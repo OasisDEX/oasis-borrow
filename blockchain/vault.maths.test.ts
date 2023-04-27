@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { zero } from 'helpers/zero'
 
 import { buildPosition, collateralPriceAtRatio } from './vault.maths'
 
-// TODO: [Migrating to JEST] - Remove skip
+//TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
 describe.skip('vault maths', () => {
   describe('collateralPriceAtRatioThreshold', () => {
     it('converts', () => {
@@ -14,7 +13,7 @@ describe.skip('vault maths', () => {
         collateral: new BigNumber(1000),
       })
 
-      expect(colRatioPriceUsd.toString()).equal('0.15')
+      expect(colRatioPriceUsd.toString()).toBe('0.15')
     })
 
     it('handles zero collateral', () => {
@@ -24,7 +23,7 @@ describe.skip('vault maths', () => {
         collateral: zero,
       })
 
-      expect(colRatioPriceUsd.toString()).equal('0')
+      expect(colRatioPriceUsd.toString()).toBe('0')
     })
   })
 
@@ -48,7 +47,7 @@ describe.skip('vault maths', () => {
 
       const result = buildPosition(args)
 
-      expect(result.daiYieldFromLockedCollateral.toString()).eq('50')
+      expect(result.daiYieldFromLockedCollateral.toString()).toBe('50')
     })
   })
 })

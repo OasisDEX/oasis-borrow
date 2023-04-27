@@ -1,9 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { expect } from 'chai'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one } from 'helpers/zero'
-import { describe } from 'mocha'
 
 import { MockProxyActionsSmartContractAdapter } from './adapters/mockProxyActionsSmartContractAdapter'
 import { vaultActionsLogic } from './vaultActionsLogic'
@@ -52,8 +50,8 @@ describe('vaultActionsLogic', () => {
       const actualMethodName = JSON.parse(methodCalled).method
 
       it(testName, () => {
-        expect(actualMethodName).to.eq(expectedMethodName)
-        expect(proxyActionAddress).to.eq('0x-mock-dss-proxy-action-address')
+        expect(actualMethodName).toBe(expectedMethodName)
+        expect(proxyActionAddress).toBe('0x-mock-dss-proxy-action-address')
       })
     }
 
@@ -201,8 +199,8 @@ describe('vaultActionsLogic', () => {
       const actualMethodName = JSON.parse(methodCalled).method
 
       it(testName, () => {
-        expect(actualMethodName).to.eq(expectedMethodCalled)
-        expect(proxyActionAddress).to.eq('0x-mock-dss-proxy-action-address')
+        expect(actualMethodName).toBe(expectedMethodCalled)
+        expect(proxyActionAddress).toBe('0x-mock-dss-proxy-action-address')
       })
     }
 
@@ -298,8 +296,8 @@ describe('vaultActionsLogic', () => {
       const actualMethodName = JSON.parse(methodCalled).method
 
       it(testName, () => {
-        expect(actualMethodName).to.eq(expectedMethod)
-        expect(proxyActionAddress).to.eq('0x-mock-dss-proxy-action-address')
+        expect(actualMethodName).toBe(expectedMethod)
+        expect(proxyActionAddress).toBe('0x-mock-dss-proxy-action-address')
       })
     }
 

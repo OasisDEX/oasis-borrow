@@ -1,7 +1,6 @@
 /* eslint-disable func-style */
 
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -39,7 +38,7 @@ describe('Adjust multiply calculations', () => {
       .times(oraclePrice)
       .div(debt.plus(debtDelta).plus(loanFee))
 
-    expect(afterCollateralizationRatio).to.deep.eq(requiredCollRatio)
+    expect(afterCollateralizationRatio).toEqual(requiredCollRatio)
   })
 
   it('Increase multiply deposit collateral', () => {
@@ -74,7 +73,7 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
   it('Increase multiply deposit dai', () => {
@@ -108,9 +107,9 @@ describe('Adjust multiply calculations', () => {
       .times(oraclePrice)
       .div(debt.plus(debtDelta).plus(loanFee))
 
-    expect(
-      roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP),
-    ).to.deep.eq(requiredCollRatio)
+    expect(roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP)).toEqual(
+      requiredCollRatio,
+    )
   })
 
   it('Decrease multiply', () => {
@@ -142,9 +141,9 @@ describe('Adjust multiply calculations', () => {
       .times(oraclePrice)
       .div(debt.plus(debtDelta))
 
-    expect(
-      roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP),
-    ).to.deep.eq(requiredCollRatio)
+    expect(roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP)).toEqual(
+      requiredCollRatio,
+    )
   })
 
   it('Decrease multiply withdraw collateral', () => {
@@ -179,7 +178,7 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
   it('Decrease multiply withdraw dai', () => {
@@ -214,7 +213,7 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
   it('Calculates net value USD, after net value USD, after collateral delta USD using market price', () => {
@@ -239,18 +238,16 @@ describe('Adjust multiply calculations', () => {
     )
 
     // expect to have different market price and oracle price for this test
-    expect(state().priceInfo.currentCollateralPrice.decimalPlaces(20)).to.not.deep.equal(
+    expect(state().priceInfo.currentCollateralPrice.decimalPlaces(20)).not.toEqual(
       state().marketPrice,
     )
-    expect(state().collateralDelta).to.deep.equal(zero)
-    expect(state().collateralDeltaUSD).to.deep.equal(zero)
-    expect(state().netValueUSD.decimalPlaces(20)).to.deep.equal(expectedNetValueUSD)
+    expect(state().collateralDelta).toEqual(zero)
+    expect(state().collateralDeltaUSD).toEqual(zero)
+    expect(state().netValueUSD.decimalPlaces(20)).toEqual(expectedNetValueUSD)
 
     state().updateRequiredCollRatio!(afterCollRatio)
-    expect(state().collateralDelta!.decimalPlaces(20)).to.deep.equal(expectedAfterCollateralDelta)
-    expect(state().collateralDeltaUSD!.decimalPlaces(20)).to.deep.equal(
-      expectedAfterCollateralDeltaUSD,
-    )
-    expect(state().afterNetValueUSD.decimalPlaces(20)).to.deep.equal(expectedAfterNetValueUSD)
+    expect(state().collateralDelta!.decimalPlaces(20)).toEqual(expectedAfterCollateralDelta)
+    expect(state().collateralDeltaUSD!.decimalPlaces(20)).toEqual(expectedAfterCollateralDeltaUSD)
+    expect(state().afterNetValueUSD.decimalPlaces(20)).toEqual(expectedAfterNetValueUSD)
   })
 })

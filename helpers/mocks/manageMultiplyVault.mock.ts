@@ -12,7 +12,7 @@ import {
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { mockedMultiplyEvents } from 'helpers/multiply/calculations.test'
+import { mockedMultiplyEvents } from 'helpers/multiply/calculations.mock'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'

@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { LendingProtocol } from 'lendingProtocols'
@@ -17,7 +16,7 @@ describe('checkOasisPositionType', () => {
         { id: new BigNumber(1), protocol: LendingProtocol.Maker },
       ),
     )
-    expect(state()).to.eq(VaultType.Multiply)
+    expect(state()).toBe(VaultType.Multiply)
   })
   it('returns insti type vault if hardcoded as a charter ilk', () => {
     const state = getStateUnpacker(
@@ -28,6 +27,6 @@ describe('checkOasisPositionType', () => {
         { id: new BigNumber(1), protocol: LendingProtocol.Maker },
       ),
     )
-    expect(state()).to.eq(VaultType.Insti)
+    expect(state()).toBe(VaultType.Insti)
   })
 })

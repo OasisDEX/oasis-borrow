@@ -14,13 +14,13 @@ jobs:
         with:
           node-version: 16
 
-      - name: Cache YARN dependencies
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-yarn-cache-
+#      - name: Cache YARN dependencies
+#        uses: actions/cache@v3
+#        with:
+#          path: node_modules
+#          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock', '**/package.json') }}
+#          restore-keys: |
+#            ${{ runner.OS }}-yarn-cache-
 
       - name: Install
         run: yarn --no-progress --non-interactive --frozen-lockfile
@@ -31,39 +31,12 @@ jobs:
       - name: Prettier
         run: yarn format
 
-#   Disabled for now. Need to fix tests
-#      - name: Test
-#        run: CI=true yarn coverage
-
       - name: Typecheck
         run: yarn typecheck
 
-#  test-e2e:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Cache YARN dependencies
-#        uses: actions/cache@v3
-#        with:
-#          path: node_modules
-#          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
-#          restore-keys: |
-#            ${{ runner.OS }}-yarn-cache-
-#
-#      - name: Install
-#        run: yarn --no-progress --non-interactive --frozen-lockfile
-#
-#      - name: Run deps
-#        run: |
-#          cd ./scripts
-#          docker-compose up -d
-#          sleep 10
-#
-#      - name: Test-e2e
-#        run: yarn test:e2e
+      - name: Test
+        run: CI=true yarn test
 
-# Few tips github actions
-  # - name: Setup SSH debug session
-  #   uses: mxschmitt/action-tmate@v2
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
 

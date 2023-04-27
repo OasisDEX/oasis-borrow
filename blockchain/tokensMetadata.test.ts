@@ -1,4 +1,3 @@
-import { expect } from 'chai'
 import { MainNetworkNames } from 'helpers/networkNames'
 
 import { getToken, getTokens, getTokensWithChain, tokens } from './tokensMetadata'
@@ -21,17 +20,21 @@ const tokenKeys = [
 
 describe('tokens metadata', () => {
   it('hardcoded tokens should have proper keys', () => {
-    expect(tokens).to.be.an('array')
+    expect(Array.isArray(tokens)).toBe(true)
     tokens.forEach((tokenData) => {
-      expect(tokenData).to.include.keys(tokenKeys)
+      const keys = Object.keys(tokenData)
+      expect(keys).toEqual(expect.arrayContaining(tokenKeys))
     })
   })
   it('should return token metadata', () => {
-    expect(getToken('ETH')).to.include.keys(tokenKeys)
+    const tokenData = getToken('ETH')
+    const keys = Object.keys(tokenData)
+    expect(keys).toEqual(expect.arrayContaining(tokenKeys))
   })
   it('should return metadata for multiple tokens', () => {
     getTokens(tokens.map((token) => token.symbol)).forEach((tokenData) => {
-      expect(tokenData).to.include.keys(tokenKeys)
+      const keys = Object.keys(tokenData)
+      expect(keys).toEqual(expect.arrayContaining(tokenKeys))
     })
   })
   it('should return metadata for multiple tokens, filtering the chain', () => {
@@ -39,7 +42,8 @@ describe('tokens metadata', () => {
       tokens.map((token) => token.symbol),
       MainNetworkNames.ethereumMainnet,
     ).forEach((tokenData) => {
-      expect(tokenData).to.include.keys(tokenKeys)
+      const keys = Object.keys(tokenData)
+      expect(keys).toEqual(expect.arrayContaining(tokenKeys))
     })
   })
 })

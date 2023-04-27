@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
@@ -22,7 +21,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('ownership')
+    expect(state().banner).toBe('ownership')
   })
 
   it('should assign liquidatingNextPrice banner', () => {
@@ -47,7 +46,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('liquidatingNextPrice')
+    expect(state().banner).toBe('liquidatingNextPrice')
   })
 
   it('should assign liquidating banner', () => {
@@ -65,7 +64,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('liquidating')
+    expect(state().banner).toBe('liquidating')
   })
 
   it('should assign liquidated banner', () => {
@@ -92,7 +91,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('liquidated')
+    expect(state().banner).toBe('liquidated')
   })
 
   it('should assign liquidated banner for LIQ 2.0', () => {
@@ -120,7 +119,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('liquidated')
+    expect(state().banner).toBe('liquidated')
   })
 
   it('should not assign liquidated banner for vault liquidated more than week earlier', () => {
@@ -147,7 +146,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('ownership')
+    expect(state().banner).toBe('ownership')
   })
 
   it('should assign liquidating banner even when vault was liquidated last week', () => {
@@ -179,7 +178,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('liquidating')
+    expect(state().banner).toBe('liquidating')
   })
 
   it('should assign liquidatingNextPrice banner even when vault was liquidated last week', () => {
@@ -218,6 +217,6 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
-    expect(state().banner).to.be.eq('liquidatingNextPrice')
+    expect(state().banner).toBe('liquidatingNextPrice')
   })
 })

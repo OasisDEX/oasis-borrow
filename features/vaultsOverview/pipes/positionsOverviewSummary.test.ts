@@ -1,29 +1,30 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
-import sinon from 'sinon'
 
 import { createPositionsOverviewSummary$, Position, PositionView } from './positionsOverviewSummary'
 
 describe('positionsOverviewSummary', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('calculates proportions correctly, maps usd, and sorts values', () => {
-    const mockBalances = {
+    const mockBalances: Record<string, BigNumber | undefined> = {
       ETH: new BigNumber(1),
       WBTC: new BigNumber(5),
     }
 
-    const walletBalance$ = sinon
-      .stub()
-      .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
+    const walletBalance$ = jest.fn((token: string) => of(mockBalances[token] || zero))
 
-    const tokenPriceUsd$ = sinon.stub().returns(
+    const tokenPriceUsd$ = jest.fn(() =>
       of({
         ETH: new BigNumber(2),
         WBTC: new BigNumber(6),
       }),
     )
+
     const obsv$ = createPositionsOverviewSummary$(
       walletBalance$,
       tokenPriceUsd$,
@@ -37,16 +38,22 @@ describe('positionsOverviewSummary', () => {
     const wbtc = state().assetsAndPositions[0]
     const eth = state().assetsAndPositions[1]
 
-    expect(wbtc.token, 'orders values by usd').eq('WBTC')
-    expect(eth.token, 'orders values by usd').eq('ETH')
-    expect(wbtc.contentsUsd?.toString(), 'calculates usd value').eq('30')
-    expect(eth.contentsUsd?.toString(), 'calculates usd value').eq('2')
-    expect(wbtc.proportion?.toString(), 'calculates proportion').eq('93.75')
-    expect(eth.proportion?.toString(), 'calculates proportion').eq('6.25')
+    // 'orders values by usd'
+    expect(wbtc.token).toBe('WBTC')
+    // 'orders values by usd'
+    expect(eth.token).toBe('ETH')
+    // 'calculates usd value'
+    expect(wbtc.contentsUsd?.toString()).toBe('30')
+    // 'calculates usd value'
+    expect(eth.contentsUsd?.toString()).toBe('2')
+    // 'calculates proportion'
+    expect(wbtc.proportion?.toString()).toBe('93.75')
+    // 'calculates proportion'
+    expect(eth.proportion?.toString()).toBe('6.25')
   })
 
   it('calculates the other proportion correctly', () => {
-    const mockBalances = {
+    const mockBalances: Record<string, BigNumber | undefined> = {
       ETH: new BigNumber(16),
       WBTC: new BigNumber(5),
       STETH: new BigNumber(5),
@@ -55,13 +62,11 @@ describe('positionsOverviewSummary', () => {
       // these two tokens included in 'other' proportion
       BAT: new BigNumber(5),
       RENBTC: new BigNumber(4),
-    }
+    } satisfies Record<string, BigNumber>
 
-    const walletBalance$ = sinon
-      .stub()
-      .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
+    const walletBalance$ = jest.fn((token: string) => of(mockBalances[token] || zero))
 
-    const tokenPriceUsd$ = sinon.stub().returns(
+    const tokenPriceUsd$ = jest.fn(() =>
       of({
         ETH: new BigNumber(1),
         WBTC: new BigNumber(1),
@@ -72,6 +77,7 @@ describe('positionsOverviewSummary', () => {
         RENBTC: new BigNumber(1),
       }),
     )
+
     const obsv$ = createPositionsOverviewSummary$(
       walletBalance$,
       tokenPriceUsd$,
@@ -82,19 +88,17 @@ describe('positionsOverviewSummary', () => {
 
     const state = getStateUnpacker(obsv$)
 
-    expect(state().percentageOther.toString()).eq('10')
+    expect(state().percentageOther.toString()).toBe('10')
   })
 
   it('includes the maker positions', () => {
-    const mockBalances = {
+    const mockBalances: Record<string, BigNumber | undefined> = {
       ETH: new BigNumber(1),
     }
 
-    const walletBalance$ = sinon
-      .stub()
-      .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
+    const walletBalance$ = jest.fn((token: string) => of(mockBalances[token] || zero))
 
-    const tokenPriceUsd$ = sinon.stub().returns(
+    const tokenPriceUsd$ = jest.fn(() =>
       of({
         ETH: new BigNumber(6),
       }),
@@ -131,19 +135,19 @@ describe('positionsOverviewSummary', () => {
 
     expect(earnPosition.token)
 
-    expect(earnPosition.token).eq('DAI')
-    expect(earnPosition.contentsUsd?.toString()).eq('7')
-    expect((earnPosition as PositionView).title).eq('DAI-A Oasis Earn')
-    expect((earnPosition as PositionView).url).eq('example.com/earn')
+    expect(earnPosition.token).toBe('DAI')
+    expect(earnPosition.contentsUsd?.toString()).toBe('7')
+    expect((earnPosition as PositionView).title).toBe('DAI-A Oasis Earn')
+    expect((earnPosition as PositionView).url).toBe('example.com/earn')
 
-    expect(ethInWallet.token).eq('ETH')
-    expect(ethInWallet.contentsUsd?.toString()).eq('6')
+    expect(ethInWallet.token).toBe('ETH')
+    expect(ethInWallet.contentsUsd?.toString()).toBe('6')
 
-    expect(multiplyPosition.token).eq('ETH')
-    expect(multiplyPosition.contentsUsd?.toString()).eq('5')
-    expect((multiplyPosition as PositionView).title).eq('ETH-A Oasis Multiply')
-    expect((multiplyPosition as PositionView).url).eq('example.com/eth')
+    expect(multiplyPosition.token).toBe('ETH')
+    expect(multiplyPosition.contentsUsd?.toString()).toBe('5')
+    expect((multiplyPosition as PositionView).title).toBe('ETH-A Oasis Multiply')
+    expect((multiplyPosition as PositionView).url).toBe('example.com/eth')
 
-    expect(state().totalValueUsd.toString()).eq('18')
+    expect(state().totalValueUsd.toString()).toBe('18')
   })
 })
