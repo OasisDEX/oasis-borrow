@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
+import { NetworkNames } from 'helpers/networkNames'
 import { Feature } from 'helpers/useFeatureToggle'
 import { AaveLendingProtocol } from 'lendingProtocols'
 import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
@@ -23,6 +24,7 @@ export type ManagePositionAvailableActions =
   | 'close'
 
 export interface IStrategyConfig {
+  network: NetworkNames
   name: string
   urlSlug: string
   proxyType: ProxyType

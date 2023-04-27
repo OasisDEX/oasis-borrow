@@ -4,6 +4,7 @@ import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { NetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
@@ -86,7 +87,7 @@ export function setupAaveV2Context(appContext: AppContext) {
       balance$,
       aaveOracleAssetPriceData$,
       chainLinkETHUSDOraclePrice$,
-      getSupportedTokens(LendingProtocol.AaveV2),
+      getSupportedTokens(LendingProtocol.AaveV2, NetworkNames.ethereumMainnet),
     ),
   )
 
