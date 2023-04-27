@@ -2,6 +2,7 @@ import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { NetworkNames } from 'helpers/networkNames'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
@@ -88,7 +89,7 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
       balance$,
       aaveOracleAssetPriceData$,
       () => of(one), // aave v3 base is already in USD
-      getSupportedTokens(LendingProtocol.AaveV3),
+      getSupportedTokens(LendingProtocol.AaveV3, NetworkNames.ethereumMainnet),
     ),
   )
 
