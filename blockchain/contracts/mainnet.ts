@@ -1,3 +1,4 @@
+import { ADDRESSES } from '@oasisdex/addresses'
 import * as aaveV2LendingPool from 'blockchain/abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
@@ -46,7 +47,6 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { default as mainnetAddresses } from 'blockchain/addresses/mainnet.json'
 import { contractDesc } from 'blockchain/networksConfig'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
@@ -57,57 +57,115 @@ import {
 } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
 
+const { mainnet } = ADDRESSES
+
 export const mainnetContracts = {
-  safeConfirmations: 10,
-  openVaultSafeConfirmations: 6,
-  otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
-  collaterals: getCollaterals(mainnetAddresses, supportedIlks),
+  collaterals: getCollaterals(mainnet.common, supportedIlks),
+  joins: {
+    ...getCollateralJoinContracts(mainnet.maker.joins, supportedIlks),
+  },
+  mcdOsms: getOsms(mainnet.maker.pips, supportedIlks),
   tokens: tokensMainnet,
   tokensMainnet,
-  joins: {
-    ...getCollateralJoinContracts(mainnetAddresses, supportedIlks),
-  },
-  getCdps: contractDesc(getCdps, mainnetAddresses.GET_CDPS),
-  mcdOsms: getOsms(mainnetAddresses, supportedIlks),
-  mcdJug: contractDesc(mcdJug, mainnetAddresses.MCD_JUG),
-  mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
-  mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
-  mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
-  mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
-  merkleRedeemer: contractDesc(merkleRedeemer, '0xd9fabf81Ed15ea71FBAd0C1f77529a4755a38054'),
-  dssCharter: contractDesc(dssCharter, '0x0000123'),
-  dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
-  otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
-  vat: contractDesc(vat, mainnetAddresses.MCD_VAT),
-  mcdJoinDai: contractDesc(mcdJoinDai, mainnetAddresses.MCD_JOIN_DAI),
-  dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
-  dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
-  dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
-  dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
-  automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
-  automationBotV2: contractDesc(automationBotV2, '0x8061c24823094E51e57A4a5cF8bEd3CCf09d316F'),
+  otc: contractDesc(otc, mainnet.common.Otc),
+  otcSupportMethods: contractDesc(otcSupport, mainnet.common.OtcSupportMethods),
+  getCdps: contractDesc(getCdps, mainnet.maker.common.GetCdps),
+  mcdJug: contractDesc(mcdJug, mainnet.maker.common.Jug),
+  mcdPot: contractDesc(mcdPot, mainnet.maker.common.Pot),
+  mcdEnd: contractDesc(mcdEnd, mainnet.maker.common.End),
+  mcdSpot: contractDesc(mcdSpot, mainnet.maker.common.Spot),
+  mcdDog: contractDesc(mcdDog, mainnet.maker.common.Dog),
+  merkleRedeemer: contractDesc(merkleRedeemer, mainnet.common.MerkleRedeemer),
+  dssCharter: contractDesc(dssCharter, mainnet.common.DssCharter),
+  dssCdpManager: contractDesc(dssCdpManager, mainnet.maker.common.CdpManager),
+  vat: contractDesc(vat, mainnet.maker.common.Vat),
+  mcdJoinDai: contractDesc(mcdJoinDai, mainnet.maker.joins.MCD_JOIN_DAI),
+  dsProxyRegistry: contractDesc(dsProxyRegistry, mainnet.mpa.core.DSProxyRegistry),
+  dsProxyFactory: contractDesc(dsProxyFactory, mainnet.mpa.core.DSProxyFactory),
+  dssProxyActions: contractDesc(dssProxyActions, mainnet.common.DssProxyActions),
+  dssProxyActionsCharter: contractDesc(
+    dssProxyActionsCharter,
+    mainnet.common.DssProxyActionsCharter,
+  ),
+  automationBot: contractDesc(automationBot, mainnet.automation.AutomationBot),
+  automationBotV2: contractDesc(automationBotV2, mainnet.automation.AutomationBotV2),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
-    '0x5f1d184204775fBB351C4b2C61a2fD4aAbd3fB76',
+    mainnet.automation.AutomationBotAggregator,
   ),
-  serviceRegistry: '0x9b4Ae7b164d195df9C4Da5d08Be88b2848b2EaDA',
-  guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
-  guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
-  guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
+  serviceRegistry: mainnet.common.ServiceRegistry,
+  guniProxyActions: contractDesc(guniProxyActions, mainnet.common.GuniProxyActions),
+  guniResolver: mainnet.common.GuniResolver,
+  guniRouter: mainnet.common.GuniRouter,
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
+    mainnet.common.DssMultiplyProxyActions,
   ),
-  dssCropper: contractDesc(dssCropper, '0x8377CD01a5834a6EaD3b7efb482f678f2092b77e'),
-  cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
+  dssCropper: contractDesc(dssCropper, mainnet.common.DssCropper),
+  cdpRegistry: contractDesc(cdpRegistry, mainnet.common.CdpRegistry),
   dssProxyActionsCropjoin: contractDesc(
     dssProxyActionsCropjoin,
-    '0xa2f69F8B9B341CFE9BfBb3aaB5fe116C89C95bAF',
+    mainnet.common.DssProxyActionsCropjoin,
   ),
-  defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
-  noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
-  lowerFeesExchange: contractDesc(exchange, '0xf22f17b1d2354b4f4f52e4d164e4eb5e1f0a6ba6'),
-  fmm: mainnetAddresses.MCD_FLASH,
+  dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, mainnet.common.DssProxyActionsDsr),
+  defaultExchange: contractDesc(exchange, mainnet.common.DefaultExchange),
+  noFeesExchange: contractDesc(exchange, mainnet.common.NoFeesExchange),
+  lowerFeesExchange: contractDesc(exchange, mainnet.common.LowerFeesExchange),
+  fmm: mainnet.maker.common.FlashMintModule,
+  lidoCrvLiquidityFarmingReward: contractDesc(
+    lidoCrvLiquidityFarmingReward,
+    mainnet.common.LidoCrvLiquidityFarmingReward,
+  ),
+  aaveTokens: {
+    STETH: mainnet.common.STETH,
+  } as Record<string, string>,
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
+    mainnet.aave.v2.ProtocolDataProvider,
+  ),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.PriceOracle),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
+    ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
+  },
+  aaveV2LendingPool: contractDesc(
+    aaveV2LendingPool,
+    mainnet.aave.v2.LendingPool,
+    AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
+  ),
+  operationExecutor: contractDesc(operationExecutor, mainnet.mpa.core.OperationExecutor),
+  swapAddress: mainnet.mpa.core.Swap,
+  accountFactory: contractDesc(
+    accountFactory,
+    mainnet.mpa.core.AccountFactory,
+    ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
+  ),
+  accountGuard: contractDesc(
+    accountGuard,
+    mainnet.mpa.core.AccountGuard,
+    ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
+  ),
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.AaveOracle),
+  aaveV3PoolDataProvider: contractDesc(
+    aaveV3PoolDataProvider,
+    mainnet.aave.v3.AavePoolDataProvider,
+  ),
+  // TODO ajna addresses to be updated
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, mainnet.ajna.AjnaProxyActions),
+  ajnaPoolPairs: {
+    'ETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHUSDC),
+    'WBTC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCUSDC),
+  },
+  ajnaRewardsManager: contractDesc(ajnaRewardsManager, mainnet.ajna.AjnaRewardsManager),
+  // TODO update address
+  ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, mainnet.ajna.AjnaRewardsClaimer),
+  // not contracts
+  cacheApi: mainnetCacheUrl,
+  safeConfirmations: 10,
+  openVaultSafeConfirmations: 6,
+  taxProxyRegistries: [],
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -116,80 +174,9 @@ export const mainnetContracts = {
   ethtx: {
     url: 'https://ethtx.info/mainnet',
   },
-  taxProxyRegistries: ['0xaa63c8683647ef91b3fdab4b4989ee9588da297b'],
-  dssProxyActionsDsr: contractDesc(
-    dssProxyActionsDsr,
-    '0x07ee93aEEa0a36FfF2A9B95dd22Bd6049EE54f26',
-  ),
   magicLink: {
     apiKey: '',
   },
-  cacheApi: mainnetCacheUrl,
-  lidoCrvLiquidityFarmingReward: contractDesc(
-    lidoCrvLiquidityFarmingReward,
-    // address from here: https://docs.lido.fi/deployed-contracts
-    '0x99ac10631f69c753ddb595d074422a0922d9056b',
-  ),
-  aaveTokens: {
-    STETH: mainnetAddresses['STETH'],
-  } as Record<string, string>,
-  aaveV2ProtocolDataProvider: contractDesc(
-    aaveV2ProtocolDataProvider,
-    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_V2_PROTOCOL_DATA_PROVIDER,
-  ),
-  aaveV2PriceOracle: contractDesc(
-    aaveV2PriceOracle,
-    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_V2_PRICE_ORACLE,
-  ),
-  chainlinkPriceOracle: {
-    USDCUSD: contractDesc(
-      chainLinkPriceOracle,
-      // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
-      mainnetAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
-    ),
-    ETHUSD: contractDesc(chainLinkPriceOracle, mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
-  },
-  aaveV2LendingPool: contractDesc(
-    aaveV2LendingPool,
-    mainnetAddresses.AAVE_V2_LENDING_POOL,
-    AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
-  ),
-  operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
-  swapAddress: mainnetAddresses.SWAP,
-  accountFactory: contractDesc(
-    accountFactory,
-    mainnetAddresses.ACCOUNT_FACTORY,
-    ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
-  ),
-  accountGuard: contractDesc(
-    accountGuard,
-    mainnetAddresses.ACCOUNT_GUARD,
-    ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
-  ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS_MAINNET),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnetAddresses.AAVE_V3_ORACLE),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    mainnetAddresses.AAVE_V3_POOL_DATA_PROVIDER,
-  ),
-  // TODO ajna addresses to be updated
-  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x1F9F7732ff409FC0AbcAAea94634A7b41F445299'),
-  ajnaProxyActions: contractDesc(ajnaProxyActions, '0xD28618E87b17B6f78a79edca8Fb0591E89453165'),
-  ajnaPoolPairs: {
-    'WBTC-USDC': contractDesc(ajnaPool, '0xc2b64ca87090fe79786a8773009d7fb1288d3db1'),
-    'ETH-USDC': contractDesc(ajnaPool, '0x3ae0ea990cb38487d7a698c68b7b520a3d57c018'),
-  },
-  ajnaRewardsManager: contractDesc(
-    ajnaRewardsManager,
-    '0xaF9bc1F09fe561CbD00018fC352507fD23cD46E2',
-  ),
-  // TODO update address
-  ajnaRewardsClaimer: contractDesc(
-    ajnaRewardsClaimer,
-    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
-  ),
 }
 
 export type MainnetContracts = typeof mainnetContracts

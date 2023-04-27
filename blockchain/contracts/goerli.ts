@@ -1,3 +1,4 @@
+import { ADDRESSES } from '@oasisdex/addresses'
 import * as aaveV2LendingPool from 'blockchain/abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from 'blockchain/abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from 'blockchain/abi/aave-v2-protocol-data-provider.json'
@@ -16,7 +17,6 @@ import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
-import * as eth from 'blockchain/abi/ds-eth-token.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from 'blockchain/abi/ds-proxy-registry.json'
 import * as dssCdpManager from 'blockchain/abi/dss-cdp-manager.json'
@@ -27,7 +27,6 @@ import * as dssProxyActionsCharter from 'blockchain/abi/dss-proxy-actions-charte
 import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
-import * as erc20 from 'blockchain/abi/erc20.json'
 import * as exchange from 'blockchain/abi/exchange.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
 import * as lidoCrvLiquidityFarmingReward from 'blockchain/abi/lido-crv-liquidity-farming-reward.json'
@@ -46,83 +45,137 @@ import * as vat from 'blockchain/abi/vat.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
-  getCollateralTokens,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { default as goerliAddresses } from 'blockchain/addresses/goerli.json'
 import { contractDesc } from 'blockchain/networksConfig'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
   AAVE_V3_POOL_GENESIS_GOERLI,
   ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
+  tokensGoerli,
 } from 'blockchain/tokens/goerli'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
 
+const { goerli } = ADDRESSES
+
 export const goerliContracts: MainnetContracts = {
-  safeConfirmations: 6,
-  openVaultSafeConfirmations: 6,
-  otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
-  collaterals: getCollaterals(goerliAddresses, supportedIlks),
-  tokens: {
-    ...getCollateralTokens(goerliAddresses, supportedIlks),
-    WETH: contractDesc(eth, goerliAddresses.ETH),
-    DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
-    MKR: contractDesc(erc20, goerliAddresses['MCD_GOV']),
-    STETH: contractDesc(erc20, goerliAddresses['STETH']),
-    USDP: contractDesc(erc20, '0xd1a7a9d23f298192f8abf31243dd4f332d681d61'),
-  },
+  otc: contractDesc(otc, goerli.common.Otc),
+  collaterals: getCollaterals(goerli.common, supportedIlks),
+  tokens: tokensGoerli,
   tokensMainnet: mainnetContracts.tokensMainnet,
   joins: {
-    ...getCollateralJoinContracts(goerliAddresses, supportedIlks),
+    ...getCollateralJoinContracts(
+      goerli.maker.joins,
+      supportedIlks.filter(
+        // these are not supported on goerli
+        (ilk) => !['CRVV1ETHSTETH-A', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(ilk),
+      ),
+    ),
     // Todo: move to goerli network config when available at changelog.makerdao.com
     'INST-ETH-A': '0x99507A436aC9E8eB5A89001a2dFc80E343D82122',
     'INST-WBTC-A': '0xbd5978308C9BbF6d8d1D26cD1df9AA3EA83F782a',
   },
-  getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
-  mcdOsms: getOsms(goerliAddresses, supportedIlks),
-  mcdPot: contractDesc(mcdPot, goerliAddresses.MCD_POT),
-  mcdJug: contractDesc(mcdJug, goerliAddresses.MCD_JUG),
-  mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
-  mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
-  mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
-  merkleRedeemer: contractDesc(merkleRedeemer, '0x23440aC6c8a10EA89132da74B705CBc6D99a805b'),
-  dssCharter: contractDesc(dssCharter, '0x7ea0d7ea31C544a472b55D19112e016Ba6708288'),
-  dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
-  otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
-  vat: contractDesc(vat, goerliAddresses.MCD_VAT),
-  mcdJoinDai: contractDesc(mcdJoinDai, goerliAddresses.MCD_JOIN_DAI),
-  dsProxyRegistry: contractDesc(dsProxyRegistry, goerliAddresses.PROXY_REGISTRY),
-  dsProxyFactory: contractDesc(dsProxyFactory, goerliAddresses.PROXY_FACTORY),
-  dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
+  getCdps: contractDesc(getCdps, goerli.maker.common.GetCdps),
+  mcdOsms: getOsms(goerli.maker.pips, supportedIlks),
+  mcdJug: contractDesc(mcdJug, goerli.maker.common.Jug),
+  mcdPot: contractDesc(mcdPot, goerli.maker.common.Pot),
+  mcdEnd: contractDesc(mcdEnd, goerli.maker.common.End),
+  mcdSpot: contractDesc(mcdSpot, goerli.maker.common.Spot),
+  mcdDog: contractDesc(mcdDog, goerli.maker.common.Dog),
+  mcdJoinDai: contractDesc(mcdJoinDai, goerli.maker.joins.MCD_JOIN_DAI),
+
+  merkleRedeemer: contractDesc(merkleRedeemer, goerli.common.MerkleRedeemer),
+  dssCharter: contractDesc(dssCharter, goerli.common.DssCharter),
+  dssCdpManager: contractDesc(dssCdpManager, goerli.maker.common.CdpManager),
+  otcSupportMethods: contractDesc(otcSupport, goerli.common.OtcSupportMethods),
+  vat: contractDesc(vat, goerli.maker.common.Vat),
+  dsProxyRegistry: contractDesc(dsProxyRegistry, goerli.mpa.core.DSProxyRegistry),
+  dsProxyFactory: contractDesc(dsProxyFactory, goerli.mpa.core.DSProxyFactory),
+  dssProxyActions: contractDesc(dssProxyActions, goerli.common.DssProxyActions),
   dssProxyActionsCharter: contractDesc(
     dssProxyActionsCharter,
-    '0xfFb896D7BEf704DF73abc9A2EBf295CE236c5919',
+    goerli.common.DssProxyActionsCharter,
   ),
-  cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
-  dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
+  cdpRegistry: contractDesc(cdpRegistry, goerli.common.CdpRegistry),
+  dssProxyActionsCropjoin: contractDesc(
+    dssProxyActionsCropjoin,
+    goerli.common.DssProxyActionsCropjoin,
+  ),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',
+    goerli.common.DssMultiplyProxyActions,
   ),
-  guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
-  dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
-  guniResolver: '0x',
-  guniRouter: '0x',
-  automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
-  automationBotV2: contractDesc(automationBotV2, '0x0'),
+  guniProxyActions: contractDesc(guniProxyActions, goerli.common.GuniProxyActions), // TODO: add address
+  dssCropper: contractDesc(dssCropper, goerli.common.DssCropper),
+  guniResolver: goerli.common.GuniResolver,
+  guniRouter: goerli.common.GuniRouter,
+
+  automationBot: contractDesc(automationBot, goerli.automation.AutomationBot),
+  automationBotV2: contractDesc(automationBotV2, goerli.automation.AutomationBotV2),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
-    '0xeb3c922A805FAEEac8f311E1AdF34fBC518099ab',
+    goerli.automation.AutomationBotAggregator,
   ),
-  serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
-  defaultExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
-  lowerFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
-  noFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
+
+  serviceRegistry: goerli.common.ServiceRegistry,
+  defaultExchange: contractDesc(exchange, goerli.common.DefaultExchange),
+  noFeesExchange: contractDesc(exchange, goerli.common.NoFeesExchange),
+  lowerFeesExchange: contractDesc(exchange, goerli.common.LowerFeesExchange),
   // Currently this is not supported on Goerli - no deployed contract
-  fmm: goerliAddresses.MCD_FLASH,
+  fmm: goerli.maker.common.FlashMintModule,
+  dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerli.common.DssProxyActionsDsr),
+  lidoCrvLiquidityFarmingReward: contractDesc(
+    lidoCrvLiquidityFarmingReward,
+    goerli.common.LidoCrvLiquidityFarmingReward,
+  ),
+  aaveTokens: {},
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
+    goerli.aave.v2.ProtocolDataProvider,
+  ),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, goerli.aave.v2.PriceOracle),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_USDCUSD),
+    ETHUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_ETHUSD),
+  },
+  aaveV2LendingPool: contractDesc(
+    aaveV2LendingPool,
+    goerli.aave.v2.LendingPool,
+    AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
+  ),
+
+  operationExecutor: contractDesc(operationExecutor, goerli.mpa.core.OperationExecutor),
+  swapAddress: goerli.mpa.core.Swap,
+  accountFactory: contractDesc(
+    accountFactory,
+    goerli.mpa.core.AccountFactory,
+    ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
+  ),
+  accountGuard: contractDesc(
+    accountGuard,
+    goerli.mpa.core.AccountGuard,
+    ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
+  ),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.AaveOracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.AavePoolDataProvider),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
+  ajnaPoolPairs: {
+    'ETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHUSDC),
+    'WBTC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCUSDC),
+  },
+  ajnaRewardsManager: contractDesc(ajnaRewardsManager, goerli.ajna.AjnaRewardsManager),
+  // TODO update address
+  ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, goerli.ajna.AjnaRewardsClaimer),
+  // NOT contracts
+  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
+  safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
+  taxProxyRegistries: [],
   etherscan: {
     url: 'https://goerli.etherscan.io',
     apiUrl: 'https://api-goerli.etherscan.io/api',
@@ -131,68 +184,7 @@ export const goerliContracts: MainnetContracts = {
   ethtx: {
     url: 'https://ethtx.info/goerli',
   },
-  taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
-  dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
-  lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
-  aaveTokens: {},
-  aaveV2ProtocolDataProvider: contractDesc(
-    aaveV2ProtocolDataProvider,
-    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    goerliAddresses.AAVE_V2_PROTOCOL_DATA_PROVIDER,
-  ),
-  aaveV2PriceOracle: contractDesc(
-    aaveV2PriceOracle,
-    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    goerliAddresses.AAVE_V2_PRICE_ORACLE,
-  ),
-  chainlinkPriceOracle: {
-    USDCUSD: contractDesc(
-      chainLinkPriceOracle,
-      // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
-      goerliAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
-    ),
-    ETHUSD: contractDesc(chainLinkPriceOracle, goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
-  },
-  aaveV2LendingPool: contractDesc(
-    aaveV2LendingPool,
-    goerliAddresses.AAVE_V2_LENDING_POOL,
-    AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
-  ),
-  operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
-  swapAddress: goerliAddresses.SWAP,
-  accountFactory: contractDesc(
-    accountFactory,
-    goerliAddresses.ACCOUNT_FACTORY,
-    ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
-  ),
-  accountGuard: contractDesc(
-    accountGuard,
-    goerliAddresses.ACCOUNT_GUARD,
-    ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
-  ),
-  aaveV3Pool: contractDesc(aaveV3Pool, goerliAddresses.AAVE_V3_POOL, AAVE_V3_POOL_GENESIS_GOERLI),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, goerliAddresses.AAVE_V3_ORACLE),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    goerliAddresses.AAVE_V3_POOL_DATA_PROVIDER,
-  ),
-  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x1F9F7732ff409FC0AbcAAea94634A7b41F445299'),
-  ajnaProxyActions: contractDesc(ajnaProxyActions, '0xD28618E87b17B6f78a79edca8Fb0591E89453165'),
-  ajnaPoolPairs: {
-    'WBTC-USDC': contractDesc(ajnaPool, '0xc2b64ca87090fe79786a8773009d7fb1288d3db1'),
-    'ETH-USDC': contractDesc(ajnaPool, '0x3ae0ea990cb38487d7a698c68b7b520a3d57c018'),
-  },
-  ajnaRewardsManager: contractDesc(
-    ajnaRewardsManager,
-    '0xaF9bc1F09fe561CbD00018fC352507fD23cD46E2',
-  ),
-  // TODO update address
-  ajnaRewardsClaimer: contractDesc(
-    ajnaRewardsClaimer,
-    '0xEd6890d748e62ddbb3f80e7256Deeb2fBb853476',
-  ),
 }

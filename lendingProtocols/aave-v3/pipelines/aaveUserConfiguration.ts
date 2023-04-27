@@ -1,19 +1,21 @@
+import { ADDRESSES } from '@oasisdex/addresses'
 import BigNumber from 'bignumber.js'
 import { AaveV3UserConfigurationsParameters } from 'blockchain/aave-v3'
-import mainnet from 'blockchain/addresses/mainnet.json'
 import { curry } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
+const { mainnet } = ADDRESSES
+
 const reserveNamesDictionary = Object.fromEntries(
-  Object.entries(mainnet).map((mainnetEntry) => mainnetEntry.reverse()),
+  Object.entries(mainnet.common).map((mainnetEntry) => mainnetEntry.reverse()),
 )
 
 export type AaveUserConfigurationResult = {
   collateral: boolean
   borrowed: boolean
   asset: string
-  assetName: (typeof mainnet)[keyof typeof mainnet]
+  assetName: (typeof mainnet.common)[keyof typeof mainnet.common]
 }
 
 export type AaveUserConfigurationResults = AaveUserConfigurationResult[] & {
