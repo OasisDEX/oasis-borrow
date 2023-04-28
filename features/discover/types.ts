@@ -1,5 +1,3 @@
-import { ReactNode } from 'react'
-
 export enum DiscoverPages {
   HIGHEST_RISK_POSITIONS = 'highest-risk-positions',
   HIGHEST_MULTIPLY_PNL = 'highest-multiply-pnl',

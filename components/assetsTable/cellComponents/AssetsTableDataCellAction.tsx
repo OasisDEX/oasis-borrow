@@ -14,21 +14,25 @@ interface AssetsTableDataCellActionProps {
   cta?: string
   disabled?: boolean
   link?: string
+  newTab?: boolean
   shareButton?: boolean
+  onClick?: () => void
 }
 
 export function AssetsTableDataCellAction({
   cta = 'View',
   disabled = false,
   link,
+  newTab = false,
   shareButton,
+  onClick,
 }: AssetsTableDataCellActionProps) {
   return (
     <Flex sx={{ justifyContent: 'flex-end' }}>
       {link ? (
         <>
-          <AppLink href={link} sx={{ flexGrow: [1, null, null, 'initial'] }}>
-            <AssetsTableDataCellAction cta={cta} disabled={disabled} />
+          <AppLink href={link} sx={{ flexGrow: [1, null, null, 'initial'] }} internalInNewTab={newTab}>
+            <AssetsTableDataCellAction cta={cta} disabled={disabled} onClick={onClick} />
           </AppLink>
           {shareButton && (
             <AppLink
@@ -58,7 +62,7 @@ export function AssetsTableDataCellAction({
           )}
         </>
       ) : (
-        <Button variant="tertiary" sx={{ width: ['100%', null, null, 'auto'] }} disabled={disabled}>
+        <Button variant="tertiary" sx={{ width: ['100%', null, null, 'auto'] }} disabled={disabled} onClick={onClick}>
           {cta}
         </Button>
       )}

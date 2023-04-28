@@ -29,7 +29,7 @@ export interface DiscoverPageMeta {
   iconColor: string
   iconContent: JSX.Element
   filters: DiscoverFiltersList
-  banner?: AssetsTableBannerProps
+  banner: AssetsTableBannerProps
 }
 
 export const discoverPagesMeta: DiscoverPageMeta[] = [
@@ -52,8 +52,11 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       size: discoverSizeFilter,
     },
     banner: {
-      link: INTERNAL_LINKS.multiply,
+      cta: `discover.table.banner.${DiscoverPages.HIGHEST_RISK_POSITIONS}.cta`,
+      description: `discover.table.banner.${DiscoverPages.HIGHEST_RISK_POSITIONS}.description`,
       icon: discoverBannerIcons[DiscoverPages.HIGHEST_RISK_POSITIONS],
+      link: INTERNAL_LINKS.multiply,
+      title: `discover.table.banner.${DiscoverPages.HIGHEST_RISK_POSITIONS}.title`,
     },
   },
   {
@@ -76,8 +79,11 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       time: discoverTimeFilter,
     },
     banner: {
+      cta: `discover.table.banner.${DiscoverPages.HIGHEST_MULTIPLY_PNL}.cta`,
+      description: `discover.table.banner.${DiscoverPages.HIGHEST_MULTIPLY_PNL}.description`,
       link: INTERNAL_LINKS.multiply,
       icon: discoverBannerIcons[DiscoverPages.HIGHEST_MULTIPLY_PNL],
+      title: `discover.table.banner.${DiscoverPages.HIGHEST_MULTIPLY_PNL}.title`,
     },
   },
   {
@@ -94,8 +100,11 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       time: discoverTimeFilter,
     },
     banner: {
+      cta: `discover.table.banner.${DiscoverPages.MOST_YIELD_EARNED}.cta`,
+      description: `discover.table.banner.${DiscoverPages.MOST_YIELD_EARNED}.description`,
       link: INTERNAL_LINKS.earn,
       icon: discoverBannerIcons[DiscoverPages.MOST_YIELD_EARNED],
+      title: `discover.table.banner.${DiscoverPages.MOST_YIELD_EARNED}.title`,
     },
   },
   {
@@ -117,8 +126,11 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
       size: discoverSizeFilter,
     },
     banner: {
+      cta: `discover.table.banner.${DiscoverPages.LARGEST_DEBT}.cta`,
+      description: `discover.table.banner.${DiscoverPages.LARGEST_DEBT}.description`,
       link: INTERNAL_LINKS.borrow,
       icon: discoverBannerIcons[DiscoverPages.LARGEST_DEBT],
+      title: `discover.table.banner.${DiscoverPages.LARGEST_DEBT}.title`,
     },
   },
 ]

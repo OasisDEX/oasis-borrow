@@ -1,7 +1,9 @@
 import {
   DiscoverApiErrors,
   DiscoverFiltersSettings,
-  DiscoverTableRowData,
+  DiscoverTableActivityRowData,
+  DiscoverTableColRatioRowData,
+  DiscoverTableStatusRowData,
 } from 'features/discover/types'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'
@@ -12,12 +14,26 @@ import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
 
+export type DiscoverDataResponseRowValue =
+  | string
+  | number
+  | DiscoverTableColRatioRowData
+  | DiscoverTableActivityRowData
+  | DiscoverTableStatusRowData
+export type DiscoverDataResponseRow = {
+  [key: string]: DiscoverDataResponseRowValue
+} & {
+  colRatio?: DiscoverTableColRatioRowData
+  activity?: DiscoverTableActivityRowData
+  status?: DiscoverTableStatusRowData
+}
+
 export interface DiscoverDataResponseError {
   code: DiscoverApiErrors
   reason?: string
 }
 export interface DiscoverDataResponse {
-  rows: DiscoverTableRowData[]
+  rows: DiscoverDataResponseRow[]
   error?: DiscoverDataResponseError
 }
 

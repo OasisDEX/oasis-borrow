@@ -1,13 +1,17 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
+import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { getDiscoverData } from 'features/discover/api'
 import { DiscoverData } from 'features/discover/common/DiscoverData'
 import { DiscoverFilters } from 'features/discover/common/DiscoverFilters'
-import { AssetsTableContainer } from 'features/discover/common/DiscoverTableContainer'
-import { getDefaultSettingsState } from 'features/discover/helpers'
+import { getDefaultSettingsState } from 'features/discover/helpers/getDefaultSettingsState'
+import { parseBannerData } from 'features/discover/helpers/parseBannerData'
+import { parseDiscoverRowData } from 'features/discover/helpers/parseDiscoverRowData'
 import { discoverPagesMeta } from 'features/discover/meta'
 import { DiscoverFiltersSettings, DiscoverPages } from 'features/discover/types'
+import { useAccount } from 'helpers/useAccount'
 import { keyBy } from 'lodash'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
@@ -18,15 +22,30 @@ interface DiscoverControlProps {
 }
 
 export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
+  const { i18n } = useTranslation()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const anchor = useRef<HTMLDivElement>(null)
-  const { banner, endpoint, filters } = keyBy(discoverPagesMeta, 'kind')[kind]
+  const { banner: rawBanner, endpoint, filters } = keyBy(discoverPagesMeta, 'kind')[kind]
   const [settings, setSettings] = useState<DiscoverFiltersSettings>(
     getDefaultSettingsState({ filters, kind }),
   )
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const { chainId, walletAddress } = useAccount()
 
   const response = getDiscoverData(endpoint, settings)
+  const rows =
+    response?.rows &&
+    parseDiscoverRowData({
+      chainId,
+      kind,
+      lang: i18n.language,
+      rows: response.rows,
+      walletAddress,
+    })
+  const banner = parseBannerData({
+    banner: rawBanner,
+    onClick: () => trackingEvents.discover.clickedTableBanner(kind, rawBanner.link, userContext),
+  })
   const isSticky = (response && response?.rows?.length > 2) || false
 
   const onChangeHandler = useCallback(
@@ -64,11 +83,10 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
       />
       <DiscoverData
         banner={banner}
+        error={response?.error}
         isLoading={isLoading}
         isSticky={isSticky}
-        kind={kind}
-        response={response}
-        userContext={userContext}
+        rows={rows}
       />
     </AssetsTableContainer>
   )

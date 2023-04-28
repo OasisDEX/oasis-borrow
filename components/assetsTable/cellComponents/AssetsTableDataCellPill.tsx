@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { Text } from 'theme-ui'
 
-const pillColors = {
+export const pillColors = {
   critical: { color: 'critical100', backgroundColor: 'critical10' },
   warning: { color: 'warning100', backgroundColor: 'warning10' },
   success: { color: 'success100', backgroundColor: 'success10' },

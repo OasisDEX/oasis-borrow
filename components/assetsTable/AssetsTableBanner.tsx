@@ -32,7 +32,7 @@ export function AssetsTableBanner({
           {description}
         </Text>
       </Box>
-      <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'] }}>
+      <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'], ml: 'auto' }}>
         <AppLink
           href={link}
           internalInNewTab={true}

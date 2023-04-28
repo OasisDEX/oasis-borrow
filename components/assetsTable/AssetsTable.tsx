@@ -1,12 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
+import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import {
   AssetsTableHeaderTranslationProps,
   AssetsTableProps,
   AssetsTableRowData,
 } from 'components/assetsTable/types'
 import { StatefulTooltip } from 'components/Tooltip'
-import { getRowKey } from 'features/discover/helpers'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
