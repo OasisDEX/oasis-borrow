@@ -17,9 +17,14 @@ import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainne
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
+export type NetworkConfigId = `${number}`
+export type NetworkConfigHexId = `0x${number | string}`
+
 export type NetworkConfig = {
-  id: `${number}`
-  hexId: `0x${number | string}`
+  id: NetworkConfigId
+  hexId: NetworkConfigHexId
+  testnetHexId?: NetworkConfigHexId
+  mainnetHexId?: NetworkConfigHexId
   name: NetworkNames
   label: NetworkLabelType
   color: `#${number | string}`
@@ -41,6 +46,7 @@ export function contractDesc(
 const mainnetConfig: NetworkConfig = {
   id: '1',
   hexId: '0x1',
+  testnetHexId: '0x5',
   token: 'ETH',
   name: NetworkNames.ethereumMainnet,
   label: 'Ethereum',
@@ -54,6 +60,7 @@ const mainnetConfig: NetworkConfig = {
 const goerliConfig: NetworkConfig = {
   id: '5',
   hexId: '0x5',
+  mainnetHexId: '0x1',
   token: 'GoerliETH',
   name: NetworkNames.ethereumGoerli,
   label: 'Ethereum Goerli',
@@ -72,7 +79,7 @@ const hardhatConfig: NetworkConfig = {
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
   testnet: true,
-  enabled: true,
+  enabled: false,
   token: 'ETH',
   rpcCallsEndpoint: `http://localhost:8545`,
 }
@@ -80,6 +87,7 @@ const hardhatConfig: NetworkConfig = {
 const arbitrumMainnetConfig: NetworkConfig = {
   id: '42161',
   hexId: '0xa4b1',
+  testnetHexId: '0x66eed',
   name: NetworkNames.arbitrumMainnet,
   label: 'Arbitrum',
   color: '#28a0f0',
@@ -93,11 +101,12 @@ const arbitrumMainnetConfig: NetworkConfig = {
 const arbitrumGoerliConfig: NetworkConfig = {
   id: '421613',
   hexId: '0x66eed',
+  mainnetHexId: '0xa4b1',
   name: NetworkNames.arbitrumGoerli,
   label: 'Arbitrum Goerli',
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
-  testnet: false,
+  testnet: true,
   enabled: true,
   token: 'AGOR',
   rpcCallsEndpoint: arbitrumGoerliRpc,
@@ -106,6 +115,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
 const polygonMainnetConfig: NetworkConfig = {
   id: '137',
   hexId: '0x89',
+  testnetHexId: '0x13881',
   name: NetworkNames.polygonMainnet,
   label: 'Polygon',
   color: '#9866ed',
@@ -119,11 +129,12 @@ const polygonMainnetConfig: NetworkConfig = {
 const polygonMumbaiConfig: NetworkConfig = {
   id: '80001',
   hexId: '0x13881',
+  mainnetHexId: '0x89',
   name: NetworkNames.polygonMumbai,
   label: 'Polygon Mumbai',
   color: '#9866ed',
   icon: polygonMainnetIcon as string,
-  testnet: false,
+  testnet: true,
   enabled: true,
   token: 'ETH',
   rpcCallsEndpoint: polygonMumbaiRpc,
@@ -132,6 +143,7 @@ const polygonMumbaiConfig: NetworkConfig = {
 const optimismMainnetConfig: NetworkConfig = {
   id: '10',
   hexId: '0xa',
+  testnetHexId: '0x1a4',
   name: NetworkNames.optimismMainnet,
   label: 'Optimism',
   color: '#ff3f49',
@@ -145,11 +157,12 @@ const optimismMainnetConfig: NetworkConfig = {
 const optimismGoerliConfig: NetworkConfig = {
   id: '420',
   hexId: '0x1a4',
+  mainnetHexId: '0xa',
   name: NetworkNames.optimismMainnet,
   label: 'Optimism Goerli',
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
-  testnet: false,
+  testnet: true,
   enabled: true,
   token: 'ETH',
   rpcCallsEndpoint: optimismGoerliRpc,

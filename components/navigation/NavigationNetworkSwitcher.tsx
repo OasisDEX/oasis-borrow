@@ -1,26 +1,32 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { ConnectedChain } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { NetworkConfig, networks, networksByName } from 'blockchain/networksConfig'
+import {
+  NetworkConfig,
+  NetworkConfigHexId,
+  networks,
+  networksByHexId,
+  networksByName,
+} from 'blockchain/networksConfig'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { isTestnet } from 'helpers/isTestnet'
 import { useObservable } from 'helpers/observableHook'
 import { useNetworkName } from 'helpers/useNetworkName'
-import { env } from 'process'
 import React, { useCallback } from 'react'
 import { Box, Button, Image } from 'theme-ui'
 
 import { NavigationOrb } from './NavigationMenuOrb'
 
-const filterNetworks = (network: NetworkConfig) => {
-  const isDev = env.NODE_ENV !== 'production'
-  const showTestnetsParam =
-    window && new URLSearchParams(window.location.search).get('testnets') !== null
-  if (network['enabled']) {
-    return !network['testnet'] || isDev || showTestnetsParam
+const filterNetworksAccordingToWalletNetwork =
+  (connectedChain: ConnectedChain | null) => (network: NetworkConfig) => {
+    if (!connectedChain) {
+      return !network.testnet
+    }
+
+    return isTestnet(connectedChain) ? network.testnet : !network.testnet
   }
-  return false
-}
 
 export function NavigationNetworkSwitcher() {
   const { web3Context$ } = useAppContext()
@@ -29,8 +35,8 @@ export function NavigationNetworkSwitcher() {
   const [, setCustomNetwork] = useCustomNetworkParameter()
   const [web3Context] = useObservable(web3Context$)
   const changeChain = useCallback(
-    (networkName: string) => () => {
-      const network = networksByName[networkName]
+    (networkHexId: NetworkConfigHexId) => () => {
+      const network = networksByHexId[networkHexId]
       if (connectedChain) {
         // wallet is connected, change it there so it updates everywhere
         setChain({ chainId: network.hexId! })
@@ -56,6 +62,12 @@ export function NavigationNetworkSwitcher() {
     },
     [connectedChain, setChain, setCustomNetwork, web3Context?.status],
   )
+
+  const toggleChains = (currentConnectedChain: ConnectedChain) =>
+    changeChain(
+      (networksByHexId[currentConnectedChain.id].testnetHexId as NetworkConfigHexId) ||
+        (networksByHexId[currentConnectedChain.id].mainnetHexId as NetworkConfigHexId),
+    )
   return (
     <NavigationOrb
       customIcon={NavigationNetworkSwitcherIcon}
@@ -76,50 +88,58 @@ export function NavigationNetworkSwitcher() {
               overflow: 'hidden',
             }}
           >
-            {networks.filter(filterNetworks).map((network) => {
-              const isCurrentNetwork = network.name === currentNetworkName
-              return (
-                <Button
-                  variant="networkPicker"
-                  sx={{
-                    fontWeight: isCurrentNetwork ? '600' : '400',
-                    whiteSpace: 'pre',
-                    color: isCurrentNetwork ? 'primary100' : 'neutral80',
-                    ':hover': {
-                      color: 'primary100',
-                    },
-                  }}
-                  onClick={changeChain(network.name)}
-                  disabled={
-                    !usableChains.map(({ label }) => label).includes(network.label) || settingChain
-                  }
-                  key={network.hexId}
-                >
-                  <Image
-                    src={network.icon}
+            {networks
+              .filter(filterNetworksAccordingToWalletNetwork(connectedChain))
+              .map((network) => {
+                const isCurrentNetwork = network.name === currentNetworkName
+                return (
+                  <Button
+                    variant="networkPicker"
                     sx={{
-                      mr: 3,
-                      minWidth: 4,
-                      minHeight: 4,
+                      fontWeight: isCurrentNetwork ? '600' : '400',
+                      whiteSpace: 'pre',
+                      color: isCurrentNetwork ? 'primary100' : 'neutral80',
+                      ':hover': {
+                        color: 'primary100',
+                      },
                     }}
-                  />
-                  {network.label}
-                  <Box
-                    sx={{
-                      width: '100%',
-                      textAlign: 'right',
-                      position: 'relative',
-                      opacity: isCurrentNetwork ? 1 : 0,
-                      left: isCurrentNetwork ? 0 : 2,
-                      transition: '0.2s opacity, 0.2s left',
-                      mb: '-3px',
-                    }}
+                    onClick={changeChain(network.hexId)}
+                    disabled={
+                      !usableChains.map(({ label }) => label).includes(network.label) ||
+                      settingChain
+                    }
+                    key={network.hexId}
                   >
-                    <Icon name="tick" color="interactive100" />
-                  </Box>
-                </Button>
-              )
-            })}
+                    <Image
+                      src={network.icon}
+                      sx={{
+                        mr: 3,
+                        minWidth: 4,
+                        minHeight: 4,
+                      }}
+                    />
+                    {network.label}
+                    <Box
+                      sx={{
+                        width: '100%',
+                        textAlign: 'right',
+                        position: 'relative',
+                        opacity: isCurrentNetwork ? 1 : 0,
+                        left: isCurrentNetwork ? 0 : 2,
+                        transition: '0.2s opacity, 0.2s left',
+                        mb: '-3px',
+                      }}
+                    >
+                      <Icon name="tick" color="interactive100" />
+                    </Box>
+                  </Button>
+                )
+              })}
+            {connectedChain && (
+              <Button variant="bean" sx={{ fontSize: 2 }} onClick={toggleChains(connectedChain)}>
+                Change to {isTestnet(connectedChain) ? 'main net' : 'test net'}
+              </Button>
+            )}
           </Box>
           {settingChain && <AppSpinnerWholePage />}
         </>
