@@ -4,7 +4,7 @@ import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableDataCellProtection } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskProtection'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
-import { AssetsTableRowData } from 'components/assetsTable/types'
+import { AssetsTableFollowButtonProps, AssetsTableRowData } from 'components/assetsTable/types'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -39,7 +39,7 @@ export const followTableSkippedHeaders = [
 ]
 
 interface GetPositionParams {
-  followButton?: boolean
+  followButton?: AssetsTableFollowButtonProps
   shareButton?: boolean
 }
 interface GetMakerPositionParams extends GetPositionParams {
@@ -137,6 +137,7 @@ export function getAjnaPositionOfType(positions: AjnaPositionDetails[]) {
 
 export function getMakerBorrowPositions({
   positions,
+  followButton,
   shareButton,
 }: GetMakerPositionParams): AssetsTableRowData[] {
   return getMakerPositionOfType(positions).borrow.map(
@@ -154,7 +155,14 @@ export function getMakerBorrowPositions({
       stopLossData,
       token,
     }) => ({
-      asset: <AssetsTableDataCellAsset asset={ilk} icons={[token]} positionId={id.toString()} />,
+      asset: (
+        <AssetsTableDataCellAsset
+          asset={ilk}
+          icons={[token]}
+          positionId={id.toString()}
+          followButton={followButton}
+        />
+      ),
       colRatio: (
         <AssetsTableDataCellRiskRatio
           level={collateralizationRatio.times(100).toNumber()}
@@ -172,15 +180,14 @@ export function getMakerBorrowPositions({
           link={`/${id.toString()}`}
         />
       ),
-      action: (
-        <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />
-      ),
+      action: <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />,
     }),
   )
 }
 
 export function getMakerMultiplyPositions({
   positions,
+  followButton,
   shareButton,
 }: GetMakerPositionParams): AssetsTableRowData[] {
   return getMakerPositionOfType(positions).multiply.map(
@@ -197,7 +204,14 @@ export function getMakerMultiplyPositions({
       token,
       value,
     }) => ({
-      asset: <AssetsTableDataCellAsset asset={ilk} icons={[token]} positionId={id.toString()} />,
+      asset: (
+        <AssetsTableDataCellAsset
+          asset={ilk}
+          icons={[token]}
+          positionId={id.toString()}
+          followButton={followButton}
+        />
+      ),
       netUSDValue: `$${formatFiatBalance(value)}`,
       currentMultiple: `${calculateMultiply({ debt, lockedCollateralUSD }).toFixed(2)}x`,
       liquidationPrice: `$${formatFiatBalance(liquidationPrice)}`,
@@ -209,30 +223,34 @@ export function getMakerMultiplyPositions({
           link={`/${id.toString()}`}
         />
       ),
-      action: (
-        <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />
-      ),
+      action: <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />,
     }),
   )
 }
 
 export function getMakerEarnPositions({
   positions,
+  followButton,
   shareButton,
 }: GetMakerPositionParams): AssetsTableRowData[] {
   return getMakerPositionOfType(positions).earn.map(
     ({ debt, history, id, ilk, ilkDebtAvailable, lockedCollateralUSD, token, value }) => {
       return {
-        asset: <AssetsTableDataCellAsset asset={ilk} icons={[token]} positionId={id.toString()} />,
+        asset: (
+          <AssetsTableDataCellAsset
+            asset={ilk}
+            icons={[token]}
+            positionId={id.toString()}
+            followButton={followButton}
+          />
+        ),
         netUSDValue: `$${formatFiatBalance(value)}`,
         pnl: `${formatPercent(calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100), {
           precision: 2,
         })}`,
         liquidity: `${formatCryptoBalance(ilkDebtAvailable)} DAI`,
         protection: <AssetsTableDataCellInactive />,
-        action: (
-          <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />
-        ),
+        action: <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />,
       }
     },
   )
@@ -243,16 +261,7 @@ export function getAaveMultiplyPositions({
   shareButton,
 }: GetAavePositionParams): AssetsTableRowData[] {
   return getAavePositionOfType(positions).multiply.map(
-    ({
-      fundingCost,
-      id,
-      liquidationPrice,
-      multiple,
-      netValue,
-      title,
-      token,
-      url,
-    }) => {
+    ({ fundingCost, id, liquidationPrice, multiple, netValue, title, token, url }) => {
       return {
         asset: <AssetsTableDataCellAsset asset={title} icons={[token]} positionId={id} />,
         netUSDValue: `$${formatFiatBalance(netValue)}`,
@@ -260,9 +269,7 @@ export function getAaveMultiplyPositions({
         liquidationPrice: `$${formatFiatBalance(liquidationPrice)}`,
         fundingCost: `${fundingCost.toFixed(2)}%`,
         protection: <AssetsTableDataCellInactive />,
-        action: (
-          <AssetsTableDataCellAction link={url} shareButton={shareButton} />
-        ),
+        action: <AssetsTableDataCellAction link={url} shareButton={shareButton} />,
       }
     },
   )
@@ -280,9 +287,7 @@ export function getAaveEarnPositions({
         pnl: <AssetsTableDataCellInactive />,
         liquidity: `${formatCryptoBalance(liquidity)} USDC`,
         protection: <AssetsTableDataCellInactive />,
-        action: (
-          <AssetsTableDataCellAction link={url} shareButton={shareButton} />
-        ),
+        action: <AssetsTableDataCellAction link={url} shareButton={shareButton} />,
       }
     },
   )
@@ -302,9 +307,7 @@ export function getDsrPosition({
       pnl: <AssetsTableDataCellInactive />,
       liquidity: 'Unlimited',
       protection: <AssetsTableDataCellInactive />,
-      action: (
-        <AssetsTableDataCellAction link={`/earn/dsr/${address}`} shareButton={shareButton} />
-      ),
+      action: <AssetsTableDataCellAction link={`/earn/dsr/${address}`} shareButton={shareButton} />,
     },
   ]
 

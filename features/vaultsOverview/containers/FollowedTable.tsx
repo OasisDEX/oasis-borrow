@@ -23,11 +23,12 @@ import React from 'react'
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
   const { followedList$ } = useAppContext()
-  const { walletAddress } = useAccount()
+  const { chainId, walletAddress } = useAccount()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))
 
   const isOwner = address === walletAddress
+  const showFollowButton = !!chainId && !!walletAddress
 
   return (
     <WithErrorHandler error={[followedListError]}>
@@ -35,18 +36,24 @@ export function FollowedTable({ address }: { address: string }) {
         {([followedMakerPositions]) => {
           const borrowPositions = getMakerBorrowPositions({
             positions: followedMakerPositions,
-            followButton: true,
             shareButton: true,
+            ...(showFollowButton && {
+              followButton: { chainId, followerAddress: walletAddress },
+            }),
           })
           const multiplyPositions = getMakerMultiplyPositions({
             positions: followedMakerPositions,
-            followButton: true,
             shareButton: true,
+            ...(showFollowButton && {
+              followButton: { chainId, followerAddress: walletAddress },
+            }),
           })
           const earnPositions = getMakerEarnPositions({
             positions: followedMakerPositions,
-            followButton: true,
             shareButton: true,
+            ...(showFollowButton && {
+              followButton: { chainId, followerAddress: walletAddress },
+            }),
           })
 
           return followedMakerPositions.length ? (
@@ -60,7 +67,11 @@ export function FollowedTable({ address }: { address: string }) {
                   <AssetsTableHeading>
                     Oasis {t('nav.borrow')} ({borrowPositions.length})
                   </AssetsTableHeading>
-                  <AssetsResponsiveTable rows={borrowPositions} tooltips={positionsTableTooltips} />
+                  <AssetsResponsiveTable
+                    rows={borrowPositions}
+                    tooltips={positionsTableTooltips}
+                    isWithFollow={showFollowButton}
+                  />
                 </>
               )}
               {multiplyPositions.length > 0 && (
@@ -71,6 +82,7 @@ export function FollowedTable({ address }: { address: string }) {
                   <AssetsResponsiveTable
                     rows={multiplyPositions}
                     tooltips={positionsTableTooltips}
+                    isWithFollow={showFollowButton}
                   />
                 </>
               )}
@@ -79,7 +91,11 @@ export function FollowedTable({ address }: { address: string }) {
                   <AssetsTableHeading>
                     Oasis {t('nav.earn')} ({earnPositions.length})
                   </AssetsTableHeading>
-                  <AssetsResponsiveTable rows={earnPositions} tooltips={positionsTableTooltips} />
+                  <AssetsResponsiveTable
+                    rows={earnPositions}
+                    tooltips={positionsTableTooltips}
+                    isWithFollow={showFollowButton}
+                  />
                 </>
               )}
             </AssetsTableContainer>

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { AssetsTableFollowButtonProps } from 'components/assetsTable/types'
 import { TokensGroup } from 'components/TokensGroup'
 import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import { allDefined } from 'helpers/allDefined'
@@ -7,10 +8,7 @@ import { Flex, Text } from 'theme-ui'
 
 interface AssetsTableDataCellAssetProps {
   asset: string
-  follow?: {
-    followerAddress: string
-    chainId: number
-  }
+  followButton?: AssetsTableFollowButtonProps
   icons?: string[]
   positionId?: string
   prefix?: string
@@ -19,7 +17,7 @@ interface AssetsTableDataCellAssetProps {
 
 export function AssetsTableDataCellAsset({
   asset,
-  follow,
+  followButton,
   icons = [],
   positionId,
   prefix,
@@ -29,10 +27,10 @@ export function AssetsTableDataCellAsset({
 
   return (
     <Flex sx={{ alignItems: 'center' }}>
-      {follow && positionId && (
+      {followButton && positionId && (
         <FollowButtonControl
-          chainId={follow.chainId}
-          followerAddress={follow.followerAddress}
+          chainId={followButton.chainId}
+          followerAddress={followButton.followerAddress}
           vaultId={new BigNumber(positionId)}
           short
           sx={{

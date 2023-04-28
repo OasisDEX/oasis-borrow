@@ -15,6 +15,7 @@ import { Box, Flex } from 'theme-ui'
 interface AssetsTableHeaderCellProps {
   first: boolean
   headerTranslationProps?: AssetsTableHeaderTranslationProps
+  isWithFollow: boolean
   label: string
   last: boolean
   tooltip: boolean
@@ -35,6 +36,7 @@ export function AssetsTable({
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
+  isWithFollow = false,
   rows,
   tooltips = [],
 }: AssetsTableProps) {
@@ -73,6 +75,7 @@ export function AssetsTable({
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
                 headerTranslationProps={headerTranslationProps}
+                isWithFollow={isWithFollow}
                 label={label}
                 last={i + 1 === rowKeys.length}
                 tooltip={tooltips.includes(label)}
@@ -109,6 +112,7 @@ export function AssetsTable({
 export function AssetsTableHeaderCell({
   first,
   headerTranslationProps,
+  isWithFollow,
   label,
   last,
   tooltip,
@@ -122,6 +126,7 @@ export function AssetsTableHeaderCell({
         position: 'relative',
         px: '12px',
         py: '20px',
+        ...(first && isWithFollow && { pl: '80px' }),
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',
