@@ -15,6 +15,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networksConfig'
 import { AutomationTxData } from 'components/AppContext'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
 import {
   BaseAaveContext,
   BaseAaveEvent,
@@ -24,7 +25,6 @@ import {
 } from 'features/aave/common/BaseAaveContext'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { isUserWalletConnected } from 'features/aave/helpers'
-import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,

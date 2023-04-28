@@ -7,7 +7,7 @@ import {
   ProductCardsWrapper,
 } from 'components/productCards/ProductCardsWrapper'
 import { ProductHeader } from 'components/ProductHeader'
-import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { aaveStrategiesList } from 'features/aave'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
