@@ -3,6 +3,7 @@ import { AssetsTableFollowButtonProps } from 'components/assetsTable/types'
 import { TokensGroup } from 'components/TokensGroup'
 import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import { allDefined } from 'helpers/allDefined'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'theme-ui'
 

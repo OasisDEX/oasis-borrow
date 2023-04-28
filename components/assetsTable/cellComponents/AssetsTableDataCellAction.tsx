@@ -6,6 +6,7 @@ import {
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
 import getConfig from 'next/config'
+import React from 'react'
 import { Button, Flex } from 'theme-ui'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath
@@ -31,7 +32,11 @@ export function AssetsTableDataCellAction({
     <Flex sx={{ justifyContent: 'flex-end' }}>
       {link ? (
         <>
-          <AppLink href={link} sx={{ flexGrow: [1, null, null, 'initial'] }} internalInNewTab={newTab}>
+          <AppLink
+            href={link}
+            sx={{ flexGrow: [1, null, null, 'initial'] }}
+            internalInNewTab={newTab}
+          >
             <AssetsTableDataCellAction cta={cta} disabled={disabled} onClick={onClick} />
           </AppLink>
           {shareButton && (
@@ -62,7 +67,12 @@ export function AssetsTableDataCellAction({
           )}
         </>
       ) : (
-        <Button variant="tertiary" sx={{ width: ['100%', null, null, 'auto'] }} disabled={disabled} onClick={onClick}>
+        <Button
+          variant="tertiary"
+          sx={{ width: ['100%', null, null, 'auto'] }}
+          disabled={disabled}
+          onClick={onClick}
+        >
           {cta}
         </Button>
       )}

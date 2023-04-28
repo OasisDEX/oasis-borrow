@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { formatPercent } from 'helpers/formatters/format'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 const assetsTableDataCellProtocolBackgrounds = {

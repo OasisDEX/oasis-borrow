@@ -15,6 +15,7 @@ import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsLis
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
+import React from 'react'
 
 export const positionsTableTooltips = [
   'collateralLocked',

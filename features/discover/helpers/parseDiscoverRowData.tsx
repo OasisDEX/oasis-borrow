@@ -16,7 +16,7 @@ import {
 } from 'features/discover/types'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import i18n from 'i18next'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { Trans } from 'react-i18next'
 import { timeAgo } from 'utils'
 
