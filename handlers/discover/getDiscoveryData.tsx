@@ -1,4 +1,9 @@
-import { DiscoverApiErrors, DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
+import {
+  DiscoverApiErrors,
+  DiscoverPages,
+  DiscoverTableActivityRowData,
+  DiscoverTableStatusRowData,
+} from 'features/discover/types'
 import {
   getColRatio,
   getGenericArrayFilter,
@@ -42,7 +47,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             liquidationPrice: item.liquidation_price.toNumber(),
             nextOsmPrice: item.next_price.toNumber(),
             maxLiquidationAmount: item.liquidation_value.toNumber(),
-            status: getStatus(item) as DiscoverTableRowData['status'],
+            status: getStatus(item) as DiscoverTableStatusRowData,
             cdpId: item.position_id,
           })),
         }
@@ -68,7 +73,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             collateralValue: item.collateral_value.toNumber(),
             currentMultiple: item.vault_multiple.toNumber(),
             pnl: item[timeSignature].times(100).toNumber(),
-            activity: item.last_action as DiscoverTableRowData['activity'],
+            activity: item.last_action as DiscoverTableActivityRowData,
             cdpId: item.position_id,
           })),
         }
@@ -91,7 +96,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             netValue: item.net_value.toNumber(),
             earningsToDate: item[timeSignature].toNumber(),
             '30DayAvgApy': item.yield_30d.times(100).toNumber(),
-            activity: item.last_action as DiscoverTableRowData['activity'],
+            activity: item.last_action as DiscoverTableActivityRowData,
             cdpId: item.position_id,
           })),
         }
@@ -112,7 +117,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             collateralValue: item.collateral_value.toNumber(),
             vaultDebt: item.vault_debt.toNumber(),
             colRatio: getColRatio(item),
-            activity: item.last_action as DiscoverTableRowData['activity'],
+            activity: item.last_action as DiscoverTableActivityRowData,
             cdpId: item.position_id,
           })),
         }

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { Heading } from 'theme-ui'
 
-export function DiscoverTableHeading({ children }: PropsWithChildren<{}>) {
+export function AssetsTableHeading({ children }: PropsWithChildren<{}>) {
   return (
     <Heading
       as="h3"

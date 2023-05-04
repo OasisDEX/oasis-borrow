@@ -1,12 +1,18 @@
 import React, { PropsWithChildren } from 'react'
 import { Box, Heading } from 'theme-ui'
 
-export function DiscoverTableContainer({
+interface AssetsTableContainerProps {
+  padded?: boolean
+  tableOnly?: boolean
+  title?: string
+}
+
+export function AssetsTableContainer({
   children,
   padded = false,
   tableOnly,
   title,
-}: PropsWithChildren<{ padded?: boolean; tableOnly?: boolean; title?: string }>) {
+}: PropsWithChildren<AssetsTableContainerProps>) {
   return (
     <Box
       sx={{

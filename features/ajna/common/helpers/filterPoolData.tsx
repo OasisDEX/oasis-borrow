@@ -1,5 +1,5 @@
+import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AjnaPoolData, AjnaProduct } from 'features/ajna/common/types'
-import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellComponents'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -27,10 +27,10 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
         }
       } else
         return {
-          minPositionSize: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          maxLtv: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          liquidityAvaliable: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          annualFee: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          minPositionSize: <AssetsTableDataCellInactive />,
+          maxLtv: <AssetsTableDataCellInactive />,
+          liquidityAvaliable: <AssetsTableDataCellInactive />,
+          annualFee: <AssetsTableDataCellInactive />,
         }
     case 'earn': {
       if (Object.keys(data).includes(pair)) {
@@ -44,10 +44,10 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
         }
       } else
         return {
-          '90DayNetApy': <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          '7DayNetApy': <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          tvl: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          minLtv: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          '90DayNetApy': <AssetsTableDataCellInactive />,
+          '7DayNetApy': <AssetsTableDataCellInactive />,
+          tvl: <AssetsTableDataCellInactive />,
+          minLtv: <AssetsTableDataCellInactive />,
         }
     }
     case 'multiply': {
@@ -62,10 +62,10 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
         }
       } else
         return {
-          with50Tokens: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          maxMultiple: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          liquidityAvaliable: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          annualFee: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          with50Tokens: <AssetsTableDataCellInactive />,
+          maxMultiple: <AssetsTableDataCellInactive />,
+          liquidityAvaliable: <AssetsTableDataCellInactive />,
+          annualFee: <AssetsTableDataCellInactive />,
         }
     }
   }

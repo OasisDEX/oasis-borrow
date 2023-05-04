@@ -1,9 +1,9 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
+import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
+import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
-import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
-import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
-import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHeading'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
@@ -17,7 +17,6 @@ import {
   getMakerEarnPositions,
   getMakerMultiplyPositions,
   getMakerPositionOfType,
-  positionsTableSkippedHeaders,
   positionsTableTooltips,
 } from 'features/vaultsOverview/helpers'
 import {
@@ -73,7 +72,7 @@ export function PositionsTable({ address }: { address: string }) {
           if (ajnaEnabled) amountOfPositions += ownersPositionsList.ajnaPositions.length
 
           return amountOfPositions ? (
-            <DiscoverTableContainer
+            <AssetsTableContainer
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-positions`, {
                 address: formatAddress(address),
               })} (${amountOfPositions})`}
@@ -89,7 +88,7 @@ export function PositionsTable({ address }: { address: string }) {
                   ownersPositionsList={ownersPositionsList}
                 />
               )}
-            </DiscoverTableContainer>
+            </AssetsTableContainer>
           ) : (
             <PositionTableEmptyState
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-positions`, {
@@ -128,30 +127,24 @@ export function PositionsTableWithoutAjna({
   const dsrPosition = getDsrPosition({
     dsr: ownersPositionsList.dsrPosition,
     address,
-    skipShareButton: true,
   })
   const borrowPositions = getMakerBorrowPositions({
     positions: ownersPositionsList.makerPositions,
-    skipShareButton: true,
   })
   const multiplyPositions = [
     ...getMakerMultiplyPositions({
       positions: ownersPositionsList.makerPositions,
-      skipShareButton: true,
     }),
     ...getAaveMultiplyPositions({
       positions: ownersPositionsList.aavePositions,
-      skipShareButton: true,
     }),
   ]
   const earnPositions = [
     ...getMakerEarnPositions({
       positions: ownersPositionsList.makerPositions,
-      skipShareButton: true,
     }),
     ...getAaveEarnPositions({
       positions: ownersPositionsList.aavePositions,
-      skipShareButton: true,
     }),
     ...dsrPosition,
   ]
@@ -160,38 +153,26 @@ export function PositionsTableWithoutAjna({
     <>
       {borrowPositions.length > 0 && (
         <>
-          <DiscoverTableHeading>
+          <AssetsTableHeading>
             Oasis {t('nav.borrow')} ({borrowPositions.length})
-          </DiscoverTableHeading>
-          <DiscoverResponsiveTable
-            rows={borrowPositions}
-            skip={positionsTableSkippedHeaders}
-            tooltips={positionsTableTooltips}
-          />
+          </AssetsTableHeading>
+          <AssetsResponsiveTable rows={borrowPositions} tooltips={positionsTableTooltips} />
         </>
       )}
       {multiplyPositions.length > 0 && (
         <>
-          <DiscoverTableHeading>
+          <AssetsTableHeading>
             Oasis {t('nav.multiply')} ({multiplyPositions.length})
-          </DiscoverTableHeading>
-          <DiscoverResponsiveTable
-            rows={multiplyPositions}
-            skip={positionsTableSkippedHeaders}
-            tooltips={positionsTableTooltips}
-          />
+          </AssetsTableHeading>
+          <AssetsResponsiveTable rows={multiplyPositions} tooltips={positionsTableTooltips} />
         </>
       )}
       {earnPositions.length > 0 && (
         <>
-          <DiscoverTableHeading>
+          <AssetsTableHeading>
             Oasis {t('nav.earn')} ({earnPositions.length})
-          </DiscoverTableHeading>
-          <DiscoverResponsiveTable
-            rows={earnPositions}
-            skip={positionsTableSkippedHeaders}
-            tooltips={positionsTableTooltips}
-          />
+          </AssetsTableHeading>
+          <AssetsResponsiveTable rows={earnPositions} tooltips={positionsTableTooltips} />
         </>
       )}
     </>
@@ -283,26 +264,26 @@ export function PositionsTableWithAjna({
     <>
       {borrowPositionsRows.length > 0 && (
         <>
-          <DiscoverTableHeading>
+          <AssetsTableHeading>
             Oasis {t('nav.borrow')} ({borrowPositionsRows.length})
-          </DiscoverTableHeading>
-          <DiscoverResponsiveTable rows={borrowPositionsRows} />
+          </AssetsTableHeading>
+          <AssetsResponsiveTable rows={borrowPositionsRows} />
         </>
       )}
       {multiplyPositionsRows.length > 0 && (
         <>
-          <DiscoverTableHeading>
+          <AssetsTableHeading>
             Oasis {t('nav.multiply')} ({multiplyPositionsRows.length})
-          </DiscoverTableHeading>
-          <DiscoverResponsiveTable rows={multiplyPositionsRows} />
+          </AssetsTableHeading>
+          <AssetsResponsiveTable rows={multiplyPositionsRows} />
         </>
       )}
       {earnPositionsRows.length > 0 && (
         <>
-          <DiscoverTableHeading>
+          <AssetsTableHeading>
             Oasis {t('nav.earn')} ({earnPositionsRows.length})
-          </DiscoverTableHeading>
-          <DiscoverResponsiveTable rows={earnPositionsRows} />
+          </AssetsTableHeading>
+          <AssetsResponsiveTable rows={earnPositionsRows} />
         </>
       )}
     </>

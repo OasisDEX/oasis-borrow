@@ -1,15 +1,15 @@
 import { AjnaPosition } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
-import { AppLink } from 'components/Links'
-import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
+import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
+import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import {
-  DiscoverTableDataCellAsset,
-  DiscoverTableDataCellInactive,
-  DiscoverTableDataCellProtocol,
-  DiscoverTableDataCellProtocols,
-  DiscoverTableDataCellRiskRatio,
-} from 'features/discover/common/DiscoverTableDataCellComponents'
-import { DiscoverTableRowData } from 'features/discover/types'
+  AssetsTableDataCellProtocol,
+  AssetsTableDataCellProtocols,
+} from 'components/assetsTable/cellComponents/AssetsTableDataCellProtocol'
+import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
+import { AssetsTableRowData } from 'components/assetsTable/types'
+import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getDsrValue, getFundingCost } from 'features/vaultsOverview/helpers'
@@ -20,13 +20,13 @@ import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
-import { Button, Text } from 'theme-ui'
+import { Text } from 'theme-ui'
 
 interface PositionTableRow {
   asset: string
   icons: string[]
   id: string
-  protocol: DiscoverTableDataCellProtocols
+  protocol: AssetsTableDataCellProtocols
   url: string
 }
 
@@ -232,7 +232,7 @@ export function parseDsrEarnPosition({
     : []
 }
 
-export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverTableRowData[] {
+export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTableRowData[] {
   return rows.map(
     ({
       asset,
@@ -247,11 +247,11 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
       variable,
       url,
     }) => ({
-      asset: <DiscoverTableDataCellAsset asset={asset} icons={icons} id={id} />,
-      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
+      asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
+      protocol: <AssetsTableDataCellProtocol protocol={protocol} />,
       riskRatio: (
         <>
-          <DiscoverTableDataCellRiskRatio
+          <AssetsTableDataCellRiskRatio
             level={level.toNumber()}
             isAtRiskDanger={isAtRiskDanger}
             isAtRiskWarning={isAtRiskWarning}
@@ -261,78 +261,50 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): DiscoverT
           </Text>
         </>
       ),
-      debt: (
-        <>
-          {formatCryptoBalance(debt)} {debtToken}
-        </>
-      ),
-      collateralLocked: (
-        <>
-          {formatCryptoBalance(collateralLocked)} {collateralToken}
-        </>
-      ),
-      variable: <>{formatPercent(variable, { precision: 2 })}</>,
+      debt: `${formatCryptoBalance(debt)} ${debtToken}`,
+      collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
+      variable: `${formatPercent(variable, { precision: 2 })}`,
       // automation: '',
-      action: (
-        <AppLink href={url} sx={{ flexGrow: [1, null, null, 'initial'] }}>
-          <Button className="discover-action" variant="tertiary">
-            View
-          </Button>
-        </AppLink>
-      ),
+      action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
 }
-export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): DiscoverTableRowData[] {
+export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): AssetsTableRowData[] {
   return rows.map(
     ({ asset, fundingCost, icons, id, liquidationPrice, multiple, netValue, protocol, url }) => ({
-      asset: <DiscoverTableDataCellAsset asset={asset} icons={icons} id={id} />,
-      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
-      netValue: <>${formatCryptoBalance(netValue)}</>,
-      multiple: <>{multiple.toFixed(2)}x</>,
-      liquidationPrice: <>${formatCryptoBalance(liquidationPrice)}</>,
-      fundingCost: <>{formatPercent(fundingCost, { precision: 2 })}</>,
+      asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
+      protocol: <AssetsTableDataCellProtocol protocol={protocol} />,
+      netValue: `$${formatCryptoBalance(netValue)}`,
+      multiple: `${multiple.toFixed(2)}x`,
+      liquidationPrice: `$${formatCryptoBalance(liquidationPrice)}`,
+      fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
       // automation: '',
-      action: (
-        <AppLink href={url} sx={{ flexGrow: [1, null, null, 'initial'] }}>
-          <Button className="discover-action" variant="tertiary">
-            View
-          </Button>
-        </AppLink>
-      ),
+      action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
 }
-export function getEarnPositionRows(rows: PositionTableEarnRow[]): DiscoverTableRowData[] {
+export function getEarnPositionRows(rows: PositionTableEarnRow[]): AssetsTableRowData[] {
   return rows.map(
     ({ asset, icons, id, liquidity, liquidityToken, netValue, pnl, protocol, url }) => ({
-      asset: <DiscoverTableDataCellAsset asset={asset} icons={icons} id={id} />,
-      protocol: <DiscoverTableDataCellProtocol protocol={protocol} />,
+      asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
+      protocol: <AssetsTableDataCellProtocol protocol={protocol} />,
       netValue: BigNumber.isBigNumber(netValue) ? (
-        <>${formatCryptoBalance(netValue)}</>
+        `$${formatCryptoBalance(netValue)}`
       ) : (
-        <DiscoverTableDataCellInactive>{netValue || 'Soon'}</DiscoverTableDataCellInactive>
+        <AssetsTableDataCellInactive>{netValue}</AssetsTableDataCellInactive>
       ),
       pnl: BigNumber.isBigNumber(pnl) ? (
-        <>${formatCryptoBalance(pnl)}</>
+        `$${formatCryptoBalance(pnl)}`
       ) : (
-        <DiscoverTableDataCellInactive>{pnl || 'Soon'}</DiscoverTableDataCellInactive>
+        <AssetsTableDataCellInactive>{pnl}</AssetsTableDataCellInactive>
       ),
       liquidity: BigNumber.isBigNumber(liquidity) ? (
-        <>
-          {formatCryptoBalance(liquidity)} {liquidityToken}
-        </>
+        `${formatCryptoBalance(liquidity)} ${liquidityToken}`
       ) : (
-        <DiscoverTableDataCellInactive>{liquidity || 'Soon'}</DiscoverTableDataCellInactive>
+        <AssetsTableDataCellInactive>{liquidity}</AssetsTableDataCellInactive>
       ),
       // automation: '',
-      action: (
-        <AppLink href={url} sx={{ flexGrow: [1, null, null, 'initial'] }}>
-          <Button className="discover-action" variant="tertiary">
-            View
-          </Button>
-        </AppLink>
-      ),
+      action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
 }

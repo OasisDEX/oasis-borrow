@@ -1,13 +1,12 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
+import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
+import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
-import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
-import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
-import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHeading'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
-  followTableSkippedHeaders,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
@@ -23,86 +22,83 @@ import React from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
-  const { context$, followedList$ } = useAppContext()
-  const { walletAddress } = useAccount()
-  const [contextData, contextError] = useObservable(context$)
+  const { followedList$ } = useAppContext()
+  const { chainId, walletAddress } = useAccount()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))
 
   const isOwner = address === walletAddress
+  const showFollowButton = !!chainId && !!walletAddress
 
   return (
-    <WithErrorHandler error={[contextError, followedListError]}>
-      <WithLoadingIndicator
-        value={[contextData, followedListData]}
-        customLoader={<PositionTableLoadingState />}
-      >
-        {([context, followedMakerPositions]) => {
-          const borrowPositions = getMakerBorrowPositions({ positions: followedMakerPositions })
-          const multiplyPositions = getMakerMultiplyPositions({ positions: followedMakerPositions })
-          const earnPositions = getMakerEarnPositions({ positions: followedMakerPositions })
+    <WithErrorHandler error={[followedListError]}>
+      <WithLoadingIndicator value={[followedListData]} customLoader={<PositionTableLoadingState />}>
+        {([followedMakerPositions]) => {
+          const borrowPositions = getMakerBorrowPositions({
+            positions: followedMakerPositions,
+            shareButton: true,
+            ...(showFollowButton && {
+              followButton: { chainId, followerAddress: walletAddress },
+            }),
+          })
+          const multiplyPositions = getMakerMultiplyPositions({
+            positions: followedMakerPositions,
+            shareButton: true,
+            ...(showFollowButton && {
+              followButton: { chainId, followerAddress: walletAddress },
+            }),
+          })
+          const earnPositions = getMakerEarnPositions({
+            positions: followedMakerPositions,
+            shareButton: true,
+            ...(showFollowButton && {
+              followButton: { chainId, followerAddress: walletAddress },
+            }),
+          })
 
           return followedMakerPositions.length ? (
-            <DiscoverTableContainer
+            <AssetsTableContainer
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-followed-positions`, {
                 address: formatAddress(address),
               })} (${followedMakerPositions.length})`}
             >
               {borrowPositions.length > 0 && (
                 <>
-                  <DiscoverTableHeading>
+                  <AssetsTableHeading>
                     Oasis {t('nav.borrow')} ({borrowPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
+                  </AssetsTableHeading>
+                  <AssetsResponsiveTable
                     rows={borrowPositions}
-                    skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
-                    {...(!!walletAddress && {
-                      follow: {
-                        followerAddress: walletAddress,
-                        chainId: context.chainId,
-                      },
-                    })}
+                    isWithFollow={showFollowButton}
                   />
                 </>
               )}
               {multiplyPositions.length > 0 && (
                 <>
-                  <DiscoverTableHeading>
+                  <AssetsTableHeading>
                     Oasis {t('nav.multiply')} ({multiplyPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
+                  </AssetsTableHeading>
+                  <AssetsResponsiveTable
                     rows={multiplyPositions}
-                    skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
-                    {...(!!walletAddress && {
-                      follow: {
-                        followerAddress: walletAddress,
-                        chainId: context.chainId,
-                      },
-                    })}
+                    isWithFollow={showFollowButton}
                   />
                 </>
               )}
               {earnPositions.length > 0 && (
                 <>
-                  <DiscoverTableHeading>
+                  <AssetsTableHeading>
                     Oasis {t('nav.earn')} ({earnPositions.length})
-                  </DiscoverTableHeading>
-                  <DiscoverResponsiveTable
+                  </AssetsTableHeading>
+                  <AssetsResponsiveTable
                     rows={earnPositions}
-                    skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
-                    {...(!!walletAddress && {
-                      follow: {
-                        followerAddress: walletAddress,
-                        chainId: context.chainId,
-                      },
-                    })}
+                    isWithFollow={showFollowButton}
                   />
                 </>
               )}
-            </DiscoverTableContainer>
+            </AssetsTableContainer>
           ) : (
             <PositionTableEmptyState
               title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-followed-positions`, {
