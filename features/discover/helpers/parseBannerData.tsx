@@ -1,7 +1,7 @@
 import { AssetsTableBannerProps } from 'components/assetsTable/types'
 import { useTranslation } from 'react-i18next'
 
-interface parseBannerDataParams {
+interface ParseBannerDataParams {
   banner: AssetsTableBannerProps
   onClick?: () => void
 }
@@ -9,7 +9,7 @@ interface parseBannerDataParams {
 export function parseBannerData({
   banner: { cta, description, title, ...rest },
   onClick,
-}: parseBannerDataParams): AssetsTableBannerProps {
+}: ParseBannerDataParams): AssetsTableBannerProps {
   const { t } = useTranslation()
 
   return {

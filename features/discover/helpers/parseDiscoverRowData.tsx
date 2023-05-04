@@ -20,7 +20,7 @@ import React, { ReactNode } from 'react'
 import { Trans } from 'react-i18next'
 import { timeAgo } from 'utils'
 
-interface parseDiscoverCellDataParams {
+interface ParseDiscoverCellDataParams {
   chainId?: number
   kind: DiscoverPages
   label: string
@@ -37,14 +37,14 @@ interface parseDiscoverRowDataParams {
   walletAddress?: string
 }
 
-function parseDiscoverCellData({
+function ParseDiscoverCellData({
   chainId,
   kind,
   label,
   lang,
   row,
   walletAddress,
-}: parseDiscoverCellDataParams): ReactNode {
+}: ParseDiscoverCellDataParams): ReactNode {
   const stringified = Object.keys(row)
     .filter((item) => typeof row[item] === 'string' || typeof row[item] === 'number')
     .reduce<{ [key: string]: string }>((a, v) => ({ ...a, [v]: row[v] as string }), {})
@@ -146,7 +146,7 @@ export function parseDiscoverRowData({
     return Object.keys(row).reduce<AssetsTableRowData>(
       (a, v) => ({
         ...a,
-        [v]: parseDiscoverCellData({ kind, lang, label: v, row, chainId, walletAddress }),
+        [v]: ParseDiscoverCellData({ kind, lang, label: v, row, chainId, walletAddress }),
       }),
       {},
     )
