@@ -1,24 +1,31 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
+import { sortRows } from 'components/assetsTable/helpers/sortRows'
 import {
   AssetsTableHeaderTranslationProps,
   AssetsTableProps,
   AssetsTableRowData,
+  AssetsTableSortableCell,
+  AssetsTableSortingSettings,
 } from 'components/assetsTable/types'
+import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { StatefulTooltip } from 'components/Tooltip'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface AssetsTableHeaderCellProps {
+  isSortable: boolean
   first: boolean
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isWithFollow: boolean
   label: string
   last: boolean
+  sortingSettings?: AssetsTableSortingSettings
   tooltip: boolean
+  onSort?: (label: string) => void
 }
 
 interface AssetsTableDataRowProps {
@@ -40,8 +47,22 @@ export function AssetsTable({
   rows,
   tooltips = [],
 }: AssetsTableProps) {
+  const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
   const rowKeys = Object.keys(rows[0])
   const bannerRows = Math.min(rows.length - 1, 9)
+
+  const sortedRows = useMemo(
+    () => (sortingSettings ? sortRows({ rows, sortingSettings }) : rows),
+    [sortingSettings, rows],
+  )
+
+  function onSortHandler(label: string) {
+    if (sortingSettings?.direction === undefined || sortingSettings?.key !== label)
+      setSortingSettings({ direction: 'desc', key: label })
+    else if (sortingSettings?.direction === 'desc')
+      setSortingSettings({ direction: 'asc', key: label })
+    else setSortingSettings(undefined)
+  }
 
   return (
     <Box
@@ -73,12 +94,15 @@ export function AssetsTable({
             {rowKeys.map((label, i) => (
               <AssetsTableHeaderCell
                 key={getRowKey(i, rows[0])}
+                isSortable={(rows[0][label] as AssetsTableSortableCell).sortable !== undefined}
                 first={i === 0}
                 headerTranslationProps={headerTranslationProps}
                 isWithFollow={isWithFollow}
                 label={label}
                 last={i + 1 === rowKeys.length}
+                sortingSettings={sortingSettings}
                 tooltip={tooltips.includes(label)}
+                onSort={onSortHandler}
               />
             ))}
           </tr>
@@ -91,7 +115,7 @@ export function AssetsTable({
             transition: '200ms opacity',
           }}
         >
-          {rows.map((row, i) => (
+          {sortedRows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
               <AssetsTableDataRow row={row} rowKeys={rowKeys} />
               {banner && i === Math.floor(bannerRows / 2) && (
@@ -110,14 +134,18 @@ export function AssetsTable({
 }
 
 export function AssetsTableHeaderCell({
+  isSortable,
   first,
   headerTranslationProps,
   isWithFollow,
   label,
   last,
+  sortingSettings,
   tooltip,
+  onSort,
 }: AssetsTableHeaderCellProps) {
   const { t } = useTranslation()
+  const isActive = isSortable && label === sortingSettings?.key
 
   return (
     <Box
@@ -133,9 +161,6 @@ export function AssetsTableHeaderCell({
         lineHeight: '10px',
         textAlign: 'left',
         whiteSpace: 'nowrap',
-        '&:first-child > span': {
-          justifyContent: 'flex-start',
-        },
       }}
     >
       <Box
@@ -158,33 +183,57 @@ export function AssetsTableHeaderCell({
         }}
       />
       <Flex
-        as="span"
         sx={{
           position: 'relative',
           alignItems: 'center',
           width: '100%',
-          justifyContent: 'flex-end',
+          justifyContent: first ? 'flex-start' : 'flex-end',
         }}
       >
-        {t(`discover.table.header.${kebabCase(label)}`, headerTranslationProps)}
-        {tooltip && (
-          <StatefulTooltip
-            containerSx={{ ml: 1 }}
-            tooltip={t(`discover.table.tooltip.${kebabCase(label)}`, headerTranslationProps)}
-            tooltipSx={{
-              width: '200px',
-              px: 3,
-              py: 2,
-              borderRadius: 'medium',
-              border: 'none',
-              whiteSpace: 'initial',
-              color: 'neutral80',
-              lineHeight: 'body',
-            }}
-          >
-            <Icon name="question_o" size={16} color="neutral80" />
-          </StatefulTooltip>
-        )}
+        <Flex
+          sx={{
+            alignItems: 'center',
+            color: isActive ? 'primary100' : 'neutral80',
+            transition: '200ms color',
+            ...(isSortable && {
+              cursor: 'pointer',
+              userSelect: 'none',
+              '&:hover': { color: 'primary100' },
+            }),
+          }}
+          onClick={() => {
+            if (isSortable && onSort) onSort(label)
+          }}
+        >
+          {t(`discover.table.header.${kebabCase(label)}`, headerTranslationProps)}
+          {tooltip && (
+            <StatefulTooltip
+              containerSx={{ ml: 1 }}
+              tooltip={t(`discover.table.tooltip.${kebabCase(label)}`, headerTranslationProps)}
+              tooltipSx={{
+                width: '200px',
+                px: 3,
+                py: 2,
+                borderRadius: 'medium',
+                border: 'none',
+                whiteSpace: 'initial',
+                color: 'neutral80',
+                lineHeight: 'body',
+              }}
+            >
+              <Icon name="question_o" size={16} color="neutral80" />
+            </StatefulTooltip>
+          )}
+          {isSortable && (
+            <Flex sx={{ flexDirection: 'column', rowGap: '2px', ml: 2 }}>
+              <ExpandableArrow
+                direction={isActive && sortingSettings?.direction === 'asc' ? 'up' : 'down'}
+                size={10}
+                color={isActive ? 'primary100' : 'neutral80'}
+              />
+            </Flex>
+          )}
+        </Flex>
       </Flex>
     </Box>
   )
@@ -222,7 +271,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
         },
       }}
     >
-      {row[label]}
+      {(row[label] as AssetsTableSortableCell).value || row[label]}
     </Box>
   )
 }
