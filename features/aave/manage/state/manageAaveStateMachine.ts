@@ -7,6 +7,7 @@ import {
   callOperationExecutorWithDsProxy,
   OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import {
   BaseAaveContext,
   BaseAaveEvent,
@@ -18,7 +19,6 @@ import {
 } from 'features/aave/common'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { PositionId } from 'features/aave/types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'

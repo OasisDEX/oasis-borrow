@@ -1,5 +1,5 @@
 import { useActor } from '@xstate/react'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useAaveContext } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'

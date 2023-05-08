@@ -37,6 +37,5 @@ jobs:
       - name: Test
         run: CI=true yarn test
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v3

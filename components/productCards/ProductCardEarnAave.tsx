@@ -1,7 +1,7 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useAaveContext } from 'features/aave'
 import { useSimulationYields } from 'features/aave/common/hooks/useSimulationYields'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'

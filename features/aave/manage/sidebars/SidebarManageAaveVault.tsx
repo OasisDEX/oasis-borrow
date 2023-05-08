@@ -18,6 +18,7 @@ import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionH
 import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { Skeleton } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ManagePositionAvailableActions } from 'features/aave/common'
 import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
@@ -28,7 +29,6 @@ import {
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'

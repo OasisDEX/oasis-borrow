@@ -1,6 +1,6 @@
+import { loadStrategyFromTokens } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { loadStrategyFromTokens } from 'features/aave/strategyConfig'
 import { PositionId } from 'features/aave/types'
 import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'

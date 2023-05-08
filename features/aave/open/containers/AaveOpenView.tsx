@@ -1,7 +1,7 @@
 import { useActor } from '@xstate/react'
 import { PageSEOTags } from 'components/HeadTags'
 import { TabBar } from 'components/TabBar'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useAaveContext } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { SidebarOpenAaveVault } from 'features/aave/open/sidebars/SidebarOpenAaveVault'
