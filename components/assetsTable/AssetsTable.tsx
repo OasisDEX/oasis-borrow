@@ -98,13 +98,13 @@ export function AssetsTable({
                 sortingDirection={sortingDirection}
                 sortingKey={sortingKey}
                 tooltip={tooltips.includes(label)}
-                onSort={(label) => {
-                  if (label !== sortingKey || sortingDirection === undefined) {
+                onSort={(selectedLabel) => {
+                  if (selectedLabel !== sortingKey || sortingDirection === undefined) {
                     setSortingDirection('desc')
-                    setSortingKey(label)
+                    setSortingKey(selectedLabel)
                   } else if (sortingDirection === 'desc') {
                     setSortingDirection('asc')
-                    setSortingKey(label)
+                    setSortingKey(selectedLabel)
                   } else {
                     setSortingDirection(undefined)
                     setSortingKey(undefined)
