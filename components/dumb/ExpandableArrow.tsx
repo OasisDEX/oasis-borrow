@@ -39,7 +39,7 @@ export function ExpandableArrow({
           height: '0.58823em',
           borderBottom: '0.75588em solid',
           borderBottomColor: color,
-          transition: 'transform 200ms',
+          transition: 'transform 200ms, border-color 200ms',
         },
         '&::before': {
           transform: direction === 'down' ? 'rotate(-135deg)' : 'rotate(-45deg)',
