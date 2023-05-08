@@ -17,8 +17,10 @@ interface HeaderSelectorProps {
   defaultOption?: HeaderSelectorOption
   gradient?: [string, string]
   options: HeaderSelectorOption[]
+  overwriteOption?: HeaderSelectorOption
   parentRef: RefObject<HTMLDivElement>
   withHeaders?: boolean
+  valueAsLabel?: boolean
   onChange?: (selected: HeaderSelectorOption) => void
 }
 
@@ -26,8 +28,10 @@ export function HeaderSelector({
   defaultOption,
   gradient,
   options,
+  overwriteOption,
   parentRef,
   withHeaders,
+  valueAsLabel,
   onChange,
 }: HeaderSelectorProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
@@ -50,7 +54,10 @@ export function HeaderSelector({
     }
   }
 
-  useEffect(setDropdownPosition, [parentRef, selected])
+  useEffect(setDropdownPosition, [selected])
+  useEffect(() => {
+    if (overwriteOption) setSelected(overwriteOption)
+  }, [overwriteOption])
 
   return (
     <Box sx={{ display: 'inline-flex', zIndex: 2 }} ref={ref}>
@@ -91,7 +98,7 @@ export function HeaderSelector({
             }
           }
         >
-          {selected.title}
+          {valueAsLabel ? selected.value : selected.title}
         </Text>
         <ExpandableArrow
           direction={isOpen ? 'up' : 'down'}
@@ -157,9 +164,7 @@ export function HeaderSelector({
                 if (onChange) onChange(option)
               }}
             >
-              {option.icon && (
-                <Icon size={36} sx={{ flexShrink: 0, mr: 3 }} name={option.icon} />
-              )}
+              {option.icon && <Icon size={36} sx={{ flexShrink: 0, mr: 3 }} name={option.icon} />}
               <Flex sx={{ flexDirection: 'column' }}>
                 <Text as="span" sx={{ fontSize: withHeaders ? 3 : 2, fontWeight: 'semiBold' }}>
                   {option.title}

@@ -1,11 +1,15 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { HeaderSelector } from 'components/HeaderSelector'
+import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
 import { useTranslation } from 'next-i18next'
 import React, { useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 // TODO: remove when connected to real data
 const tokenOptions = {
+  all: {
+    title: 'All assets',
+    value: 'all assets',
+  },
   ETH: {
     title: 'Ether',
     description: 'ETH',
@@ -50,7 +54,7 @@ export function NaturalLanguageSelectorController() {
         value: t('nav.borrow').toLowerCase(),
         icon: 'selectBorrow',
       },
-      tokens: [tokenOptions.ETH, tokenOptions.WBTC, tokenOptions.USDC],
+      tokens: [tokenOptions.all, tokenOptions.ETH, tokenOptions.WBTC, tokenOptions.USDC],
     },
     {
       product: {
@@ -59,7 +63,13 @@ export function NaturalLanguageSelectorController() {
         value: t('nav.multiply').toLowerCase(),
         icon: 'selectMultiply',
       },
-      tokens: [tokenOptions.ETH, tokenOptions.stETH, tokenOptions.DAI, tokenOptions.USDC],
+      tokens: [
+        tokenOptions.all,
+        tokenOptions.ETH,
+        tokenOptions.stETH,
+        tokenOptions.DAI,
+        tokenOptions.USDC,
+      ],
     },
     {
       product: {
@@ -68,11 +78,13 @@ export function NaturalLanguageSelectorController() {
         value: t('nav.earn').toLowerCase(),
         icon: 'selectEarn',
       },
-      tokens: [tokenOptions.WBTC, tokenOptions.ETH, tokenOptions.stETH],
+      tokens: [tokenOptions.all, tokenOptions.WBTC, tokenOptions.ETH, tokenOptions.stETH],
     },
   ]
 
+  const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
   const [product, setProduct] = useState<string>(options[0].product.value)
+  const [token, setToken] = useState<string>(options[0].tokens[0].value)
   const ref = useRef<HTMLDivElement>(null)
 
   return (
@@ -86,13 +98,26 @@ export function NaturalLanguageSelectorController() {
           withHeaders={true}
           onChange={(selected) => {
             setProduct(selected.value)
+
+            setOverwriteOption(
+              !options
+                .filter((option) => option.product.value === selected.value)[0]
+                .tokens.some((option) => option.value === token)
+                ? options.filter((option) => option.product.value === selected.value)[0].tokens[0]
+                : undefined,
+            )
           }}
         />
         with
         <HeaderSelector
           gradient={['#2a30ee', '#a4a6ff']}
           options={options.filter((option) => option.product.value === product)[0].tokens}
+          overwriteOption={overwriteOption}
           parentRef={ref}
+          valueAsLabel={true}
+          onChange={(selected) => {
+            setToken(selected.value)
+          }}
         />
       </Heading>
     </Box>

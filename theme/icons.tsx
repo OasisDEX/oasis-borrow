@@ -2405,7 +2405,7 @@ const userWalletIcons = {
 const oasisCreateIcons = {
   selectBorrow: {
     path: (
-      <>
+      <g fill="none">
         <path
           d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05887 27.9411 0 18 0C8.05887 0 0 8.05887 0 18C0 27.9411 8.05887 36 18 36Z"
           fill="#878BFC"
@@ -2438,7 +2438,7 @@ const oasisCreateIcons = {
           d="M14 16C12.8954 16 12 16.8954 12 18V23C12 24.1046 12.8954 25 14 25H22C23.1046 25 24 24.1046 24 23V18C24 16.8954 23.1046 16 22 16H14ZM18 20C18.5523 20 19 19.5523 19 19C19 18.4477 18.5523 18 18 18C17.4477 18 17 18.4477 17 19C17 19.5523 17.4477 20 18 20Z"
           fill="white"
         />
-      </>
+      </g>
     ),
     viewBox: '0 0 36 36',
   },
@@ -2483,6 +2483,49 @@ const oasisCreateIcons = {
       </>
     ),
     viewBox: '0 0 36 36',
+  },
+  allAssets: {
+    path: (
+      <>
+        <circle cx="13" cy="13" r="13" fill="#EDEDFF" />
+        <circle cx="7" cy="10" r="1" fill="#575CFE" />
+        <circle cx="7" cy="16" r="1" fill="#575CFE" />
+        <rect x="11" y="9" width="8" height="2" rx="1" fill="#878BFC" />
+        <rect x="11" y="15" width="8" height="2" rx="1" fill="#878BFC" />
+      </>
+    ),
+    viewBox: '0 0 26 26',
+  },
+  allNetworks: {
+    path: (
+      <>
+        <circle cx="13" cy="13" r="13" fill="#EDEDFF" />
+        <circle cx="9" cy="9" r="2" fill="#878BFC" />
+        <circle cx="9" cy="17" r="2" fill="#575CFE" />
+        <circle cx="17" cy="9" r="2" fill="#575CFE" />
+        <circle cx="17" cy="17" r="2" fill="#878BFC" />
+      </>
+    ),
+    viewBox: '0 0 26 26',
+  },
+  allProtocols: {
+    path: (
+      <>
+        <circle cx="13" cy="13" r="13" fill="#EDEDFF" />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M9 19C9 19.5523 9.44772 20 10 20H16C17.6569 20 19 18.6569 19 17V10C19 9.25972 18.5978 8.61337 18 8.26756V16C18 17.6569 16.6569 19 15 19H9ZM9 18H15C16.1046 18 17 17.1046 17 16V8H11C9.89543 8 9 8.89543 9 10V18Z"
+          fill="#575CFE"
+        />
+        <path
+          d="M7 8C7 6.89543 7.89543 6 9 6H15C16.1046 6 17 6.89543 17 8V16C17 17.1046 16.1046 18 15 18H9C7.89543 18 7 17.1046 7 16V8Z"
+          fill="#878BFC"
+        />
+        <rect x="9" y="10" width="6" height="1" rx="0.5" fill="#EDEDFF" />
+      </>
+    ),
+    viewBox: '0 0 26 26',
   },
 }
 
