@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getTokens } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { AaveContextProvider, isAaveContextAvailable } from 'features/aave/AaveContextProvider'
+import { AaveContextProvider, isAaveContextAvailable } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'

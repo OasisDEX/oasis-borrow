@@ -1,7 +1,7 @@
 import { getTokens } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
-import { getAaveStrategy } from 'features/aave/strategyConfig'
+import { getAaveStrategy } from 'features/aave'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
