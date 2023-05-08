@@ -56,6 +56,14 @@ export function AssetsTable({
     [sortingSettings, rows],
   )
 
+  function onSortHandler(label: string) {
+    if (sortingSettings?.direction === undefined || sortingSettings?.key !== label)
+      setSortingSettings({ direction: 'desc', key: label })
+    else if (sortingSettings?.direction === 'desc')
+      setSortingSettings({ direction: 'asc', key: label })
+    else setSortingSettings(undefined)
+  }
+
   return (
     <Box
       sx={{
@@ -94,16 +102,7 @@ export function AssetsTable({
                 last={i + 1 === rowKeys.length}
                 sortingSettings={sortingSettings}
                 tooltip={tooltips.includes(label)}
-                onSort={(selectedLabel) => {
-                  if (
-                    sortingSettings?.direction === undefined ||
-                    sortingSettings?.key !== selectedLabel
-                  )
-                    setSortingSettings({ direction: 'desc', key: selectedLabel })
-                  else if (sortingSettings?.direction === 'desc')
-                    setSortingSettings({ direction: 'asc', key: selectedLabel })
-                  else setSortingSettings(undefined)
-                }}
+                onSort={onSortHandler}
               />
             ))}
           </tr>
