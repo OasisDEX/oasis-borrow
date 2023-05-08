@@ -1,7 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { LandingPageLayout } from 'components/Layouts'
-import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
+import { aaveContext, AaveContextProvider } from 'features/aave'
 import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

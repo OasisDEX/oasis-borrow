@@ -1,7 +1,7 @@
 import { ProductCardBorrow } from 'components/productCards/ProductCardBorrow'
 import { ProductCardsFilter } from 'components/productCards/ProductCardsFilter'
 import { ProductHeader } from 'components/ProductHeader'
-import { aaveStrategiesList } from 'features/aave/strategyConfig'
+import { aaveStrategiesList } from 'features/aave'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { borrowPageCardsData, productCardsConfig } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'

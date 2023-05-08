@@ -9,8 +9,8 @@ import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import {
   AllowanceStateMachine,

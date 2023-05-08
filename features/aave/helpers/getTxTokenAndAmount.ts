@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { BaseAaveContext } from 'features/aave/common'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { zero } from 'helpers/zero'
 
 export function getTxTokenAndAmount(context: BaseAaveContext) {

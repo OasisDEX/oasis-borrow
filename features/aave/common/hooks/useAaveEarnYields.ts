@@ -1,5 +1,5 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useAaveContext } from 'features/aave'
 import { AaveLendingProtocol } from 'lendingProtocols'
 import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
 import { useEffect, useState } from 'react'

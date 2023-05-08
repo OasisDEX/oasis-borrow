@@ -1,6 +1,6 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { useAaveContext } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
