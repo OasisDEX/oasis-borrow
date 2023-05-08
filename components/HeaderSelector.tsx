@@ -3,11 +3,13 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import React, { RefObject, useEffect, useRef, useState } from 'react'
-import { Box, Flex, Grid, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 export interface HeaderSelectorOption {
   icon?: string
-  label: string
+  title: string
+  description?: string
+  balance?: string
   value: string
 }
 
@@ -16,6 +18,7 @@ interface HeaderSelectorProps {
   gradient?: [string, string]
   options: HeaderSelectorOption[]
   parentRef: RefObject<HTMLDivElement>
+  withHeaders?: boolean
   onChange?: (selected: HeaderSelectorOption) => void
 }
 
@@ -24,6 +27,7 @@ export function HeaderSelector({
   gradient,
   options,
   parentRef,
+  withHeaders,
   onChange,
 }: HeaderSelectorProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
@@ -46,7 +50,7 @@ export function HeaderSelector({
     }
   }
 
-  useEffect(setDropdownPosition, [selected])
+  useEffect(setDropdownPosition, [parentRef, selected])
 
   return (
     <Box sx={{ display: 'inline-flex', zIndex: 2 }} ref={ref}>
@@ -55,7 +59,7 @@ export function HeaderSelector({
         sx={{
           alignItems: 'center',
           mx: 2,
-          px: 2,
+          px: 1,
           borderBottom: '1px solid',
           borderBottomColor: 'neutral80',
           lineHeight: 'loose',
@@ -87,7 +91,7 @@ export function HeaderSelector({
             }
           }
         >
-          {selected.label}
+          {selected.title}
         </Text>
         <ExpandableArrow
           direction={isOpen ? 'up' : 'down'}
@@ -106,12 +110,13 @@ export function HeaderSelector({
           pointerEvents: 'none',
         }}
       >
-        <Grid
+        <Flex
           ref={dropdownRef}
           as="ul"
           sx={{
-            gap: 0,
-            gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)'],
+            rowGap: 2,
+            flexDirection: 'column',
+            maxWidth: '360px',
             mt: '12px',
             p: 3,
             bg: 'neutral10',
@@ -124,8 +129,6 @@ export function HeaderSelector({
             transition: 'opacity 200ms, transform 200ms',
             listStyle: 'none',
             fontFamily: 'body',
-            fontSize: 3,
-            fontWeight: 'regular',
             lineHeight: 'body',
             letterSpacing: 0,
             textAlign: 'left',
@@ -137,12 +140,13 @@ export function HeaderSelector({
               key={i}
               as="li"
               sx={{
-                px: 3,
+                px: '12px',
                 py: 2,
                 borderRadius: 'medium',
                 cursor: 'pointer',
                 transition: 'background-color 200ms',
                 alignItems: 'center',
+                bg: selected.value === option.value ? 'neutral30' : 'transparent',
                 '&:hover': {
                   bg: 'neutral30',
                 },
@@ -154,12 +158,21 @@ export function HeaderSelector({
               }}
             >
               {option.icon && (
-                <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={option.icon} />
+                <Icon size={36} sx={{ flexShrink: 0, mr: 3 }} name={option.icon} />
               )}
-              {option.label}
+              <Flex sx={{ flexDirection: 'column' }}>
+                <Text as="span" sx={{ fontSize: withHeaders ? 3 : 2, fontWeight: 'semiBold' }}>
+                  {option.title}
+                </Text>
+                {option.description && (
+                  <Text as="span" sx={{ fontSize: 2 }}>
+                    {option.description}
+                  </Text>
+                )}
+              </Flex>
             </Flex>
           ))}
-        </Grid>
+        </Flex>
       </Flex>
     </Box>
   )
