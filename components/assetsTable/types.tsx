@@ -11,6 +11,11 @@ export interface AssetsTableBannerProps {
 
 export type AssetsTableSortingDirection = 'asc' | 'desc'
 
+export interface AssetsTableSortingSettings {
+  direction: AssetsTableSortingDirection
+  key: string
+}
+
 export interface AssetsTableHeaderTranslationProps {
   [key: string]: string
 }

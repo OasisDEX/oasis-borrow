@@ -7,7 +7,7 @@ import {
   AssetsTableProps,
   AssetsTableRowData,
   AssetsTableSortableCell,
-  AssetsTableSortingDirection,
+  AssetsTableSortingSettings,
 } from 'components/assetsTable/types'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { StatefulTooltip } from 'components/Tooltip'
@@ -23,8 +23,7 @@ interface AssetsTableHeaderCellProps {
   isWithFollow: boolean
   label: string
   last: boolean
-  sortingDirection?: AssetsTableSortingDirection
-  sortingKey?: string
+  sortingSettings?: AssetsTableSortingSettings
   tooltip: boolean
   onSort?: (label: string) => void
 }
@@ -48,15 +47,13 @@ export function AssetsTable({
   rows,
   tooltips = [],
 }: AssetsTableProps) {
-  const [sortingDirection, setSortingDirection] = useState<AssetsTableSortingDirection>()
-  const [sortingKey, setSortingKey] = useState<string>()
+  const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
   const rowKeys = Object.keys(rows[0])
   const bannerRows = Math.min(rows.length - 1, 9)
 
   const sortedRows = useMemo(
-    () =>
-      sortingDirection && sortingKey ? sortRows({ rows, sortingKey, sortingDirection }) : rows,
-    [sortingDirection, sortingKey, rows],
+    () => (sortingSettings ? sortRows({ rows, sortingSettings }) : rows),
+    [sortingSettings, rows],
   )
 
   return (
@@ -95,20 +92,17 @@ export function AssetsTable({
                 isWithFollow={isWithFollow}
                 label={label}
                 last={i + 1 === rowKeys.length}
-                sortingDirection={sortingDirection}
-                sortingKey={sortingKey}
+                sortingSettings={sortingSettings}
                 tooltip={tooltips.includes(label)}
                 onSort={(selectedLabel) => {
-                  if (selectedLabel !== sortingKey || sortingDirection === undefined) {
-                    setSortingDirection('desc')
-                    setSortingKey(selectedLabel)
-                  } else if (sortingDirection === 'desc') {
-                    setSortingDirection('asc')
-                    setSortingKey(selectedLabel)
-                  } else {
-                    setSortingDirection(undefined)
-                    setSortingKey(undefined)
-                  }
+                  if (
+                    sortingSettings?.direction === undefined ||
+                    sortingSettings?.key !== selectedLabel
+                  )
+                    setSortingSettings({ direction: 'desc', key: selectedLabel })
+                  else if (sortingSettings?.direction === 'desc')
+                    setSortingSettings({ direction: 'asc', key: selectedLabel })
+                  else setSortingSettings(undefined)
                 }}
               />
             ))}
@@ -147,13 +141,12 @@ export function AssetsTableHeaderCell({
   isWithFollow,
   label,
   last,
-  sortingDirection,
-  sortingKey,
+  sortingSettings,
   tooltip,
   onSort,
 }: AssetsTableHeaderCellProps) {
   const { t } = useTranslation()
-  const isActive = isSortable && label === sortingKey
+  const isActive = isSortable && label === sortingSettings?.key
 
   return (
     <Box
@@ -235,7 +228,7 @@ export function AssetsTableHeaderCell({
           {isSortable && (
             <Flex sx={{ flexDirection: 'column', rowGap: '2px', ml: 2 }}>
               <ExpandableArrow
-                direction={isActive && sortingDirection === 'asc' ? 'up' : 'down'}
+                direction={isActive && sortingSettings?.direction === 'asc' ? 'up' : 'down'}
                 size={10}
                 color={isActive ? 'primary100' : 'neutral80'}
               />
