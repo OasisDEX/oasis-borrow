@@ -1,66 +1,43 @@
-import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
-import { NetworkIds } from 'blockchain/networkIds'
-import { DiscoverDataResponse } from 'features/discover/api'
+import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
+import { AssetsTableBannerProps, AssetsTableRowData } from 'components/assetsTable/types'
+import { DiscoverDataResponseError } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
-import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
-import { DiscoverBanner } from 'features/discover/meta'
-import { DiscoverPages } from 'features/discover/types'
 import { useAccount } from 'helpers/useAccount'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Box } from 'theme-ui'
 
 interface DiscoverDataProps {
-  banner?: DiscoverBanner
+  banner?: AssetsTableBannerProps
+  error?: DiscoverDataResponseError
   isLoading: boolean
   isSticky: boolean
-  kind: DiscoverPages
-  response?: DiscoverDataResponse
-  userContext: MixpanelUserContext
+  rows?: AssetsTableRowData[]
 }
 
-export function DiscoverData({
-  banner,
-  isLoading,
-  isSticky,
-  kind,
-  response,
-  userContext,
-}: DiscoverDataProps) {
-  const followVaultsEnabled = useFeatureToggle('FollowVaults')
-  const { walletAddress } = useAccount()
+export function DiscoverData({ banner, error, isLoading, isSticky, rows }: DiscoverDataProps) {
+  const { chainId, walletAddress } = useAccount()
 
   return (
     <Box sx={{ position: 'relative' }}>
-      {response?.rows ? (
+      {rows ? (
         <>
           {isLoading && <DiscoverPreloader isContentLoaded />}
-          <DiscoverResponsiveTable
+          <AssetsResponsiveTable
             banner={banner}
             isLoading={isLoading}
             isSticky={isSticky}
-            kind={kind}
-            rows={response.rows}
-            {...(followVaultsEnabled &&
+            rows={rows}
+            {...(!!chainId &&
               !!walletAddress && {
-                follow: {
-                  followerAddress: walletAddress,
-                  chainId: NetworkIds.MAINNET,
-                },
+                isWithFollow: true,
               })}
-            onBannerClick={(link) => {
-              trackingEvents.discover.clickedTableBanner(kind, link, userContext)
-            }}
-            onPositionClick={(cdpId) => {
-              trackingEvents.discover.viewPosition(kind, cdpId)
-            }}
           />
         </>
       ) : isLoading ? (
         <DiscoverPreloader />
       ) : (
-        <DiscoverError error={response?.error} />
+        <DiscoverError error={error} />
       )}
     </Box>
   )
