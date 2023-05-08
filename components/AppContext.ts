@@ -97,6 +97,7 @@ import {
   every10Seconds$,
 } from 'blockchain/network'
 import { compareBigNumber } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
 import {
   createGasPrice$,
@@ -584,7 +585,9 @@ export function setupAppContext() {
     })
 
   const oracleContext$ = context$.pipe(
-    switchMap((ctx) => of({ ...ctx, account: getNetworkContracts(ctx.chainId).mcdSpot.address })),
+    switchMap((ctx) =>
+      of({ ...ctx, account: getNetworkContracts(NetworkIds.MAINNET, ctx.chainId).mcdSpot.address }),
+    ),
     shareReplay(1),
   ) as Observable<ContextConnected>
 

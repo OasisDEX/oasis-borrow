@@ -16,6 +16,7 @@ import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLog
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
@@ -252,7 +253,7 @@ export function adjustPosition(
     oneInchAmount,
   }: ManageMultiplyVaultState,
 ) {
-  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
   txHelpers$
     .pipe(
       first(),
@@ -580,7 +581,7 @@ export function closeVault(
 ) {
   const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
     closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
-  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
 
   txHelpers$
     .pipe(

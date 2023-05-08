@@ -10,6 +10,7 @@ import {
 } from '@oasisdex/transactions'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context, ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { GasPrice$ } from 'blockchain/prices'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -38,7 +39,7 @@ export function callAbstractContext<D, R, CC extends Context>(
         context,
       )(...prepareArgs(args, context)).call(
         // spot neccessary to read osms in readonly
-        { from: getNetworkContracts(context.chainId).mcdSpot.address },
+        { from: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdSpot.address },
       ),
     ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)))
   }

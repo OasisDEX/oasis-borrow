@@ -3,6 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getToken } from 'blockchain/tokensMetadata'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
@@ -276,8 +277,10 @@ export function createManageGuniVault$(
                       proxyAddress,
                       collateralAllowance,
                       daiAllowance,
-                      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
-                      etherscan: getNetworkContracts(context.chainId).etherscan.url,
+                      safeConfirmations: getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+                        .safeConfirmations,
+                      etherscan: getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan
+                        .url,
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultManageVaultSummary,

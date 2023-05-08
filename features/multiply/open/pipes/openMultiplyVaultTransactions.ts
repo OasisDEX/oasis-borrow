@@ -5,6 +5,7 @@ import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActio
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -118,7 +119,7 @@ export function multiplyVault(
     openVaultSafeConfirmations,
   }: OpenMultiplyVaultState,
 ) {
-  const { tokensMainnet, defaultExchange } = getNetworkContracts(chainId)
+  const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
   return getQuote$(
     getTokenMetaData('DAI', tokensMainnet),
     getTokenMetaData(token, tokensMainnet),

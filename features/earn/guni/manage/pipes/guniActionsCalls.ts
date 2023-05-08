@@ -4,6 +4,7 @@ import { CallDef } from 'blockchain/calls/callsHelpers'
 import { closeGuniVaultCall } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
@@ -25,7 +26,7 @@ export const getUnderlyingBalances: CallDef<
   { amount0: BigNumber; amount1: BigNumber }
 > = {
   call: ({ token }, { contract, chainId }) => {
-    const guniToken = getNetworkContracts(chainId).tokens[token]
+    const guniToken = getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]
     return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
@@ -43,7 +44,7 @@ export const getUnderlyingBalances: CallDef<
 
 export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
   call: ({ token }, { contract, chainId }) => {
-    const guniToken = getNetworkContracts(chainId).tokens[token]
+    const guniToken = getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]
     return contract<GuniToken>(guniToken).methods.totalSupply
   },
   prepareArgs: () => [],

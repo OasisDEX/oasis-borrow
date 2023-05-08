@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { compareBigNumber, ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import {
@@ -338,8 +339,10 @@ export function createOpenGuniVault$(
                       proxyAddress,
                       allowance,
                       maxGenerateAmount: ilkDebtAvailable,
-                      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
-                      etherscan: getNetworkContracts(context.chainId).etherscan.url,
+                      safeConfirmations: getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+                        .safeConfirmations,
+                      etherscan: getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan
+                        .url,
                       errorMessages: [],
                       warningMessages: [],
                       customSlippage: slippage,

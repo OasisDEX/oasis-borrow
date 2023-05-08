@@ -4,6 +4,7 @@ import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-con
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
+import { NetworkIds } from './networkIds'
 
 export interface UserDpmAccount {
   proxy: string
@@ -21,7 +22,7 @@ export function getUserDpmProxies$(
 
   return context$.pipe(
     switchMap(async ({ chainId, rpcProvider }) => {
-      const { accountFactory, accountGuard } = getNetworkContracts(chainId)
+      const { accountFactory, accountGuard } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
         rpcProvider,
@@ -102,7 +103,7 @@ export function getUserDpmProxy$(
 ): Observable<UserDpmAccount | undefined> {
   return context$.pipe(
     switchMap(async ({ chainId, rpcProvider }) => {
-      const { accountFactory, accountGuard } = getNetworkContracts(chainId)
+      const { accountFactory, accountGuard } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
         rpcProvider,
@@ -160,7 +161,7 @@ export function getPositionIdFromDpmProxy$(
 ): Observable<string | undefined> {
   return context$.pipe(
     switchMap(async ({ chainId, rpcProvider }) => {
-      const { accountFactory } = getNetworkContracts(chainId)
+      const { accountFactory } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
         rpcProvider,

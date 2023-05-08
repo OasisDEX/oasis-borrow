@@ -2,7 +2,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ConnectedChain } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import {
-  NetworkConfig,
   NetworkConfigHexId,
   networks,
   networksByHexId,
@@ -11,22 +10,17 @@ import {
 import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
-import { isTestnet } from 'helpers/isTestnet'
+import {
+  filterNetworksAccordingToWalletNetwork,
+  getOppositeNetworkHexIdByHexId,
+  isTestnet,
+} from 'helpers/networkHelpers'
 import { useObservable } from 'helpers/observableHook'
 import { useNetworkName } from 'helpers/useNetworkName'
 import React, { useCallback } from 'react'
 import { Box, Button, Image } from 'theme-ui'
 
 import { NavigationOrb } from './NavigationMenuOrb'
-
-const filterNetworksAccordingToWalletNetwork =
-  (connectedChain: ConnectedChain | null) => (network: NetworkConfig) => {
-    if (!connectedChain) {
-      return !network.testnet
-    }
-
-    return isTestnet(connectedChain) ? network.testnet : !network.testnet
-  }
 
 export function NavigationNetworkSwitcher() {
   const { web3Context$ } = useAppContext()
@@ -64,10 +58,8 @@ export function NavigationNetworkSwitcher() {
   )
 
   const toggleChains = (currentConnectedChain: ConnectedChain) =>
-    changeChain(
-      (networksByHexId[currentConnectedChain.id].testnetHexId as NetworkConfigHexId) ||
-        (networksByHexId[currentConnectedChain.id].mainnetHexId as NetworkConfigHexId),
-    )
+    changeChain(getOppositeNetworkHexIdByHexId(currentConnectedChain.id)!)
+
   return (
     <NavigationOrb
       customIcon={NavigationNetworkSwitcherIcon}

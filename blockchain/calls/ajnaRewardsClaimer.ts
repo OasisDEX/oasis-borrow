@@ -1,5 +1,6 @@
 import { TxMeta } from '@oasisdex/transactions'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { AjnaRewardsClaimer } from 'types/web3-v1-contracts'
 
 import { TransactionDef } from './callsHelpers'
@@ -12,8 +13,9 @@ export interface ClaimAjnaRewardsTxData extends TxMeta {
 
 export const claimAjnaRewards: TransactionDef<ClaimAjnaRewardsTxData> = {
   call: (_, { contract, chainId }) => {
-    return contract<AjnaRewardsClaimer>(getNetworkContracts(chainId).ajnaRewardsClaimer).methods
-      .claimRewardsAndSendToOwner
+    return contract<AjnaRewardsClaimer>(
+      getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaRewardsClaimer,
+    ).methods.claimRewardsAndSendToOwner
   },
   prepareArgs: (data) => {
     const { nftIds } = data
