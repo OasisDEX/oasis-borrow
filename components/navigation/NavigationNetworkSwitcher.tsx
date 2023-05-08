@@ -9,13 +9,19 @@ import {
 } from 'blockchain/networksConfig'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
-import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import {
+  CustomNetworkStorageKey,
+  mainnetNetworkParameter,
+  useCustomNetworkParameter,
+} from 'helpers/getCustomNetworkParameter'
 import {
   filterNetworksAccordingToWalletNetwork,
   getOppositeNetworkHexIdByHexId,
   isTestnet,
+  isTestnetEnabled,
 } from 'helpers/networkHelpers'
 import { useObservable } from 'helpers/observableHook'
+import { getStorageValue } from 'helpers/useLocalStorage'
 import { useNetworkName } from 'helpers/useNetworkName'
 import React, { useCallback } from 'react'
 import { Box, Button, Image } from 'theme-ui'
@@ -59,6 +65,9 @@ export function NavigationNetworkSwitcher() {
 
   const toggleChains = (currentConnectedChain: ConnectedChain) =>
     changeChain(getOppositeNetworkHexIdByHexId(currentConnectedChain.id)!)
+  const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
+  const { hexId: customNetworkHexId } = (customNetworkData ||
+    mainnetNetworkParameter) as typeof mainnetNetworkParameter
 
   return (
     <NavigationOrb
@@ -127,8 +136,17 @@ export function NavigationNetworkSwitcher() {
                   </Button>
                 )
               })}
-            {connectedChain && (
-              <Button variant="bean" sx={{ fontSize: 2 }} onClick={toggleChains(connectedChain)}>
+            {(connectedChain || isTestnetEnabled()) && (
+              <Button
+                variant="bean"
+                sx={{ fontSize: 2 }}
+                onClick={toggleChains(
+                  connectedChain || {
+                    id: customNetworkHexId as ConnectedChain['id'],
+                    namespace: 'evm',
+                  },
+                )}
+              >
                 Change to {isTestnet(connectedChain) ? 'main net' : 'test net'}
               </Button>
             )}

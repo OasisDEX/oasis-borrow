@@ -8,7 +8,7 @@ export function useNetworkConnector(): NetworkConnector | null {
   return useMemo(() => {
     return new NetworkConnector({
       urls: { [customNetwork?.id]: networksById[customNetwork?.id].rpcCallsEndpoint },
-      defaultChainId: parseInt(customNetwork?.id),
+      defaultChainId: parseInt(customNetwork?.id as unknown as string),
     })
   }, [customNetwork])
 }

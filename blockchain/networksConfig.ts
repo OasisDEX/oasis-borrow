@@ -193,10 +193,9 @@ export const emptyNetworkConfig: NetworkConfig = {
   rpcCallsEndpoint: 'empty',
 }
 
-export const networks = [
-  mainnetConfig,
-  hardhatConfig,
-  goerliConfig,
+export const mainnetNetworks = [mainnetConfig, hardhatConfig, goerliConfig]
+
+export const L2Networks = [
   arbitrumMainnetConfig,
   arbitrumGoerliConfig,
   polygonMainnetConfig,
@@ -204,6 +203,9 @@ export const networks = [
   optimismMainnetConfig,
   optimismGoerliConfig,
 ]
+
+export const networks = [...mainnetNetworks, ...L2Networks]
+
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')
 export const networksByHexId = keyBy(networks, 'hexId')

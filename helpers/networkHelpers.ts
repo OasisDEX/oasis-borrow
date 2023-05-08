@@ -9,6 +9,10 @@ import {
 } from 'blockchain/networksConfig'
 import { env } from 'process'
 
+import { mainnetNetworkParameter } from './getCustomNetworkParameter'
+import { CustomNetworkStorageKey } from './getCustomNetworkParameter'
+import { getStorageValue } from './useLocalStorage'
+
 export const isTestnetEnabled = () => {
   const isDev = env.NODE_ENV !== 'production'
   const showTestnetsParam =
@@ -66,3 +70,15 @@ export const filterNetworksAccordingToWalletNetwork =
 
     return isTestnet(connectedChain) ? network.testnet : !network.testnet
   }
+
+export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: NetworkIds) {
+  const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
+  const { id } = (customNetworkData || mainnetNetworkParameter) as typeof mainnetNetworkParameter
+  const isTestnet = isTestnetNetworkId(connectedChainId || id)
+  if (!networksById[networkId]) {
+    throw new Error('Invalid contract chain id provided or not implemented yet')
+  }
+  return isTestnet
+    ? networksById[networksById[networkId].testnetId!].rpcCallsEndpoint
+    : networksById[networkId].rpcCallsEndpoint
+}
