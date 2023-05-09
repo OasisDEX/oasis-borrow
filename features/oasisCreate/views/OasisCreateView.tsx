@@ -3,6 +3,7 @@ import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContaine
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import { OasisCreateProduct } from 'pages/oasis-create/[product]'
 import React, { useState } from 'react'
@@ -10,6 +11,12 @@ import { Box, Text } from 'theme-ui'
 
 interface OasisCreateViewProps {
   product: OasisCreateProduct
+}
+
+const LINKS_MAP = {
+  borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
+  multiply: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
+  earn: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
 }
 
 export function OasisCreateView({ product }: OasisCreateViewProps) {
@@ -43,7 +50,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           }}
         >
           {t(`oasis-create.intro.${product}`)}{' '}
-          <AppLink href={'#'}>
+          <AppLink href={LINKS_MAP[product]}>
             <WithArrow
               variant="paragraph2"
               sx={{
