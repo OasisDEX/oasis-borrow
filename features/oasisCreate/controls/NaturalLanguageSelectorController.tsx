@@ -1,7 +1,9 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
 import { useTranslation } from 'next-i18next'
-import React, { useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+import { OasisCreateProduct } from 'pages/oasis-create/[product]'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 // TODO: remove when connected to real data
@@ -42,7 +44,17 @@ const tokenOptions = {
   },
 }
 
-export function NaturalLanguageSelectorController() {
+interface NaturalLanguageSelectorControllerProps {
+  product: OasisCreateProduct
+  url?: string
+  onChange?: (product: string, token: string) => void
+}
+
+export function NaturalLanguageSelectorController({
+  product,
+  url,
+  onChange,
+}: NaturalLanguageSelectorControllerProps) {
   const { t } = useTranslation()
 
   // TODO: replace with actual data taken from **somewhere**
@@ -51,7 +63,7 @@ export function NaturalLanguageSelectorController() {
       product: {
         title: t('nav.borrow'),
         description: t('oasis-create.select.borrow'),
-        value: t('nav.borrow').toLowerCase(),
+        value: 'borrow',
         icon: 'selectBorrow',
       },
       tokens: [tokenOptions.all, tokenOptions.ETH, tokenOptions.WBTC, tokenOptions.USDC],
@@ -60,7 +72,7 @@ export function NaturalLanguageSelectorController() {
       product: {
         title: t('nav.multiply'),
         description: t('oasis-create.select.multiply'),
-        value: t('nav.multiply').toLowerCase(),
+        value: 'multiply',
         icon: 'selectMultiply',
       },
       tokens: [
@@ -75,48 +87,55 @@ export function NaturalLanguageSelectorController() {
       product: {
         title: t('nav.earn'),
         description: t('oasis-create.select.earn'),
-        value: t('nav.earn').toLowerCase(),
+        value: 'earn',
         icon: 'selectEarn',
       },
       tokens: [tokenOptions.all, tokenOptions.WBTC, tokenOptions.ETH, tokenOptions.stETH],
     },
   ]
 
+  const defaultProductOption = options.filter((option) => option.product.value === product)[0]
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
-  const [product, setProduct] = useState<string>(options[0].product.value)
-  const [token, setToken] = useState<string>(options[0].tokens[0].value)
+  const [selectedProduct, setSelectedProduct] = useState<string>(defaultProductOption.product.value)
+  const [selectedToken, setSelectedToken] = useState<string>(defaultProductOption.tokens[0].value)
   const ref = useRef<HTMLDivElement>(null)
+  const { push } = useRouter()
+
+  useEffect(() => {
+    onChange && onChange(selectedProduct, selectedToken)
+  }, [selectedProduct, selectedToken])
 
   return (
     <Box ref={ref}>
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
         I want to
         <HeaderSelector
+          defaultOption={options.filter((option) => option.product.value === product)[0].product}
           gradient={['#2a30ee', '#a4a6ff']}
           options={options.map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
-            setProduct(selected.value)
-
+            setSelectedProduct(selected.value)
             setOverwriteOption(
               !options
                 .filter((option) => option.product.value === selected.value)[0]
-                .tokens.some((option) => option.value === token)
+                .tokens.some((option) => option.value === selectedToken)
                 ? options.filter((option) => option.product.value === selected.value)[0].tokens[0]
                 : undefined,
             )
+            void push(`${url}${selected.value}`)
           }}
         />
         with
         <HeaderSelector
           gradient={['#2a30ee', '#a4a6ff']}
-          options={options.filter((option) => option.product.value === product)[0].tokens}
+          options={options.filter((option) => option.product.value === selectedProduct)[0].tokens}
           overwriteOption={overwriteOption}
           parentRef={ref}
           valueAsLabel={true}
           onChange={(selected) => {
-            setToken(selected.value)
+            setSelectedToken(selected.value)
           }}
         />
       </Heading>

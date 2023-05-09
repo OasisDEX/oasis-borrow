@@ -56,7 +56,10 @@ export function HeaderSelector({
 
   useEffect(setDropdownPosition, [selected])
   useEffect(() => {
-    if (overwriteOption) setSelected(overwriteOption)
+    if (overwriteOption) {
+      setSelected(overwriteOption)
+      if (onChange) onChange(overwriteOption)
+    }
   }, [overwriteOption])
 
   return (
@@ -113,6 +116,7 @@ export function HeaderSelector({
           position: 'absolute',
           left,
           right: '-100%',
+          maxWidth: '100%',
           mt: '1.35em',
           pointerEvents: 'none',
         }}
