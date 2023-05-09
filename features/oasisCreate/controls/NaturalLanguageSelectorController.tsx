@@ -124,7 +124,7 @@ export function NaturalLanguageSelectorController({
                 ? options.filter((option) => option.product.value === selected.value)[0].tokens[0]
                 : undefined,
             )
-            void push(`${url}${selected.value}`)
+            if (url) void push(`${url}${selected.value}`)
           }}
         />
         with
