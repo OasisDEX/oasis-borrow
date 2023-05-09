@@ -35,7 +35,7 @@ export type NetworkConfig = {
   testnet: boolean
   enabled: boolean
   token: string
-  rpcCallsEndpoint: string
+  rpcUrl: string
 }
 
 export function contractDesc(
@@ -58,7 +58,7 @@ const mainnetConfig: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   testnet: false,
   enabled: true,
-  rpcCallsEndpoint: mainnetRpc,
+  rpcUrl: mainnetRpc,
 }
 
 const goerliConfig: NetworkConfig = {
@@ -73,20 +73,7 @@ const goerliConfig: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   testnet: true,
   enabled: true,
-  rpcCallsEndpoint: goerliRpc,
-}
-
-const hardhatConfig: NetworkConfig = {
-  id: NetworkIds.HARDHAT,
-  hexId: '0x859',
-  name: NetworkNames.ethereumHardhat,
-  label: 'Ethereum Hardhat',
-  color: '#728aee',
-  icon: ethereumMainnetIcon as string,
-  testnet: true,
-  enabled: false,
-  token: 'ETH',
-  rpcCallsEndpoint: `http://localhost:8545`,
+  rpcUrl: goerliRpc,
 }
 
 const arbitrumMainnetConfig: NetworkConfig = {
@@ -101,7 +88,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: arbitrumMainnetRpc,
+  rpcUrl: arbitrumMainnetRpc,
 }
 
 const arbitrumGoerliConfig: NetworkConfig = {
@@ -116,7 +103,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   testnet: true,
   enabled: true,
   token: 'AGOR',
-  rpcCallsEndpoint: arbitrumGoerliRpc,
+  rpcUrl: arbitrumGoerliRpc,
 }
 
 const polygonMainnetConfig: NetworkConfig = {
@@ -131,7 +118,7 @@ const polygonMainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: polygonMainnetRpc,
+  rpcUrl: polygonMainnetRpc,
 }
 
 const polygonMumbaiConfig: NetworkConfig = {
@@ -146,13 +133,13 @@ const polygonMumbaiConfig: NetworkConfig = {
   testnet: true,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: polygonMumbaiRpc,
+  rpcUrl: polygonMumbaiRpc,
 }
 
 const optimismMainnetConfig: NetworkConfig = {
   id: NetworkIds.OPTIMISMMAINNET,
   hexId: '0xa',
-  testnetHexId: '0x1a4',
+  testnetHexId: '0x1A4',
   testnetId: NetworkIds.OPTIMISMGOERLI,
   name: NetworkNames.optimismMainnet,
   label: 'Optimism',
@@ -161,12 +148,12 @@ const optimismMainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: optimismMainnetRpc,
+  rpcUrl: optimismMainnetRpc,
 }
 
 const optimismGoerliConfig: NetworkConfig = {
   id: NetworkIds.OPTIMISMGOERLI,
-  hexId: '0x1a4',
+  hexId: '0x1A4',
   mainnetHexId: '0xa',
   mainnetId: NetworkIds.OPTIMISMMAINNET,
   name: NetworkNames.optimismGoerli,
@@ -176,7 +163,7 @@ const optimismGoerliConfig: NetworkConfig = {
   testnet: true,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: optimismGoerliRpc,
+  rpcUrl: optimismGoerliRpc,
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -190,10 +177,10 @@ export const emptyNetworkConfig: NetworkConfig = {
   enabled: true,
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
-  rpcCallsEndpoint: 'empty',
+  rpcUrl: 'empty',
 }
 
-export const mainnetNetworks = [mainnetConfig, hardhatConfig, goerliConfig]
+export const mainnetNetworks = [mainnetConfig, goerliConfig]
 
 export const L2Networks = [
   arbitrumMainnetConfig,
@@ -203,6 +190,19 @@ export const L2Networks = [
   optimismMainnetConfig,
   optimismGoerliConfig,
 ]
+
+export const defaultHardhatConfig: NetworkConfig = {
+  id: NetworkIds.HARDHAT,
+  hexId: '0x859',
+  name: NetworkNames.ethereumMainnet, // these are being overridden
+  label: 'Ethereum', // these are being overridden
+  color: '#728aee',
+  icon: ethereumMainnetIcon as string,
+  testnet: true,
+  enabled: false,
+  token: 'ETH',
+  rpcUrl: '',
+}
 
 export const networks = [...mainnetNetworks, ...L2Networks]
 

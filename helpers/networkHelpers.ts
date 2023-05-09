@@ -7,6 +7,8 @@ import {
   networksByHexId,
   networksById,
 } from 'blockchain/networksConfig'
+import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
+import { keyBy } from 'lodash'
 import { env } from 'process'
 
 import { mainnetNetworkParameter } from './getCustomNetworkParameter'
@@ -37,12 +39,20 @@ export const isTestnetNetworkId = (walletChainId: NetworkIds) => {
     .includes(walletChainId)
 }
 
+export const isTestnetNetworkHexId = (networkHexId: NetworkConfigHexId) => {
+  return networks
+    .filter((network) => network.testnet)
+    .map((network) => network.hexId)
+    .includes(networkHexId)
+}
+
 export const getOppositeNetworkHexIdByHexId = (
   currentConnectedChainHexId: ConnectedChain['id'],
 ) => {
+  const networksListByHexId = { ...networksByHexId, ...keyBy(hardhatNetworkConfigs, 'hexId') }
   return (
-    networksByHexId[currentConnectedChainHexId].testnetHexId ||
-    networksByHexId[currentConnectedChainHexId].mainnetHexId
+    networksListByHexId[currentConnectedChainHexId].testnetHexId ||
+    networksListByHexId[currentConnectedChainHexId].mainnetHexId
   )
 }
 
@@ -71,6 +81,11 @@ export const filterNetworksAccordingToWalletNetwork =
     return isTestnet(connectedChain) ? network.testnet : !network.testnet
   }
 
+export const filterNetworksAccordingToSavedNetwork =
+  (customNetworkHexId: NetworkConfigHexId) => (network: NetworkConfig) => {
+    return isTestnetNetworkHexId(customNetworkHexId) ? network.testnet : !network.testnet
+  }
+
 export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: NetworkIds) {
   const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
   const { id } = (customNetworkData || mainnetNetworkParameter) as typeof mainnetNetworkParameter
@@ -79,6 +94,6 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
   return isTestnet
-    ? networksById[networksById[networkId].testnetId!].rpcCallsEndpoint
-    : networksById[networkId].rpcCallsEndpoint
+    ? networksById[networksById[networkId].testnetId!].rpcUrl
+    : networksById[networkId].rpcUrl
 }

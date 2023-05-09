@@ -1,5 +1,7 @@
 import { useSetChain } from '@web3-onboard/react'
 import { networksByHexId } from 'blockchain/networksConfig'
+import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
+import { keyBy } from 'lodash'
 
 import { mainnetNetworkParameter, useCustomNetworkParameter } from './getCustomNetworkParameter'
 
@@ -16,5 +18,5 @@ export function useNetworkName() {
     console.error('Returning Ethereum Mainnet.')
     return mainnetNetworkParameter.network
   }
-  return networksByHexId[filteredChain[0].id].name
+  return { ...networksByHexId, ...keyBy(hardhatNetworkConfigs, 'hexId') }[filteredChain[0].id].name
 }

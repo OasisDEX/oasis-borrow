@@ -1,24 +1,29 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ConnectedChain } from '@web3-onboard/core'
-import { useConnectWallet, useSetChain } from '@web3-onboard/react'
+import { useSetChain } from '@web3-onboard/react'
 import {
+  defaultHardhatConfig,
+  NetworkConfig,
   NetworkConfigHexId,
   networks,
   networksByHexId,
-  networksByName,
 } from 'blockchain/networksConfig'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppSpinner, AppSpinnerWholePage } from 'helpers/AppSpinner'
+import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
+import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import {
   CustomNetworkStorageKey,
   mainnetNetworkParameter,
   useCustomNetworkParameter,
 } from 'helpers/getCustomNetworkParameter'
+import { useModal } from 'helpers/modalHook'
 import {
+  filterNetworksAccordingToSavedNetwork,
   filterNetworksAccordingToWalletNetwork,
   getOppositeNetworkHexIdByHexId,
   isTestnet,
   isTestnetEnabled,
+  isTestnetNetworkHexId,
 } from 'helpers/networkHelpers'
 import { useObservable } from 'helpers/observableHook'
 import { getStorageValue } from 'helpers/useLocalStorage'
@@ -27,16 +32,25 @@ import React, { useCallback } from 'react'
 import { Box, Button, Image } from 'theme-ui'
 
 import { NavigationOrb } from './NavigationMenuOrb'
+import { NavigationNetworkSwitcherIcon } from './NavigationNetworkSwitcherIcon'
+import { NavigationNetworkSwitcherModal } from './NavigationNetworkSwitcherModal'
 
 export function NavigationNetworkSwitcher() {
   const { web3Context$ } = useAppContext()
-  const [{ chains: usableChains, settingChain, connectedChain }, setChain] = useSetChain()
+  const [{ settingChain, connectedChain }, setChain] = useSetChain()
   const currentNetworkName = useNetworkName()
   const [, setCustomNetwork] = useCustomNetworkParameter()
   const [web3Context] = useObservable(web3Context$)
+  const openModal = useModal()
   const changeChain = useCallback(
     (networkHexId: NetworkConfigHexId) => () => {
-      const network = networksByHexId[networkHexId]
+      let network = networksByHexId[networkHexId]
+      if (!network) {
+        // this means that is hardhat
+        network = hardhatNetworkConfigs.find(
+          (config) => config.hexId === networkHexId,
+        )! as NetworkConfig
+      }
       if (connectedChain) {
         // wallet is connected, change it there so it updates everywhere
         setChain({ chainId: network.hexId! })
@@ -69,6 +83,49 @@ export function NavigationNetworkSwitcher() {
   const { hexId: customNetworkHexId } = (customNetworkData ||
     mainnetNetworkParameter) as typeof mainnetNetworkParameter
 
+  const handleNetworkButton = (network: NetworkConfig) => {
+    const isCurrentNetwork = network.name === currentNetworkName
+    return (
+      <Button
+        variant="networkPicker"
+        sx={{
+          fontWeight: isCurrentNetwork ? '600' : '400',
+          whiteSpace: 'pre',
+          color: isCurrentNetwork ? 'primary100' : 'neutral80',
+          ':hover': {
+            color: 'primary100',
+          },
+        }}
+        onClick={changeChain(network.hexId)}
+        disabled={settingChain}
+        key={network.hexId}
+      >
+        <Image
+          src={network.icon}
+          sx={{
+            mr: 3,
+            minWidth: 4,
+            minHeight: 4,
+          }}
+        />
+        {network.label}
+        <Box
+          sx={{
+            width: '100%',
+            textAlign: 'right',
+            position: 'relative',
+            opacity: isCurrentNetwork ? 1 : 0,
+            left: isCurrentNetwork ? 0 : 2,
+            transition: '0.2s opacity, 0.2s left',
+            mb: '-3px',
+          }}
+        >
+          <Icon name="tick" color="interactive100" />
+        </Box>
+      </Button>
+    )
+  }
+
   return (
     <NavigationOrb
       customIcon={NavigationNetworkSwitcherIcon}
@@ -90,80 +147,55 @@ export function NavigationNetworkSwitcher() {
             }}
           >
             {networks
-              .filter(filterNetworksAccordingToWalletNetwork(connectedChain))
-              .map((network) => {
-                const isCurrentNetwork = network.name === currentNetworkName
-                return (
-                  <Button
-                    variant="networkPicker"
-                    sx={{
-                      fontWeight: isCurrentNetwork ? '600' : '400',
-                      whiteSpace: 'pre',
-                      color: isCurrentNetwork ? 'primary100' : 'neutral80',
-                      ':hover': {
-                        color: 'primary100',
-                      },
-                    }}
-                    onClick={changeChain(network.hexId)}
-                    disabled={
-                      !usableChains.map(({ label }) => label).includes(network.label) ||
-                      settingChain
-                    }
-                    key={network.hexId}
-                  >
-                    <Image
-                      src={network.icon}
-                      sx={{
-                        mr: 3,
-                        minWidth: 4,
-                        minHeight: 4,
-                      }}
-                    />
-                    {network.label}
-                    <Box
-                      sx={{
-                        width: '100%',
-                        textAlign: 'right',
-                        position: 'relative',
-                        opacity: isCurrentNetwork ? 1 : 0,
-                        left: isCurrentNetwork ? 0 : 2,
-                        transition: '0.2s opacity, 0.2s left',
-                        mb: '-3px',
-                      }}
-                    >
-                      <Icon name="tick" color="interactive100" />
-                    </Box>
-                  </Button>
-                )
-              })}
+              .filter(
+                connectedChain
+                  ? filterNetworksAccordingToWalletNetwork(connectedChain)
+                  : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
+              )
+              .map(handleNetworkButton)}
+            {hardhatNetworkConfigs.map((config) =>
+              handleNetworkButton({ ...defaultHardhatConfig, ...config } as NetworkConfig),
+            )}
             {(connectedChain || isTestnetEnabled()) && (
-              <Button
-                variant="bean"
-                sx={{ fontSize: 2 }}
-                onClick={toggleChains(
-                  connectedChain || {
-                    id: customNetworkHexId as ConnectedChain['id'],
-                    namespace: 'evm',
-                  },
-                )}
-              >
-                Change to {isTestnet(connectedChain) ? 'main net' : 'test net'}
-              </Button>
+              <>
+                <Button
+                  variant="bean"
+                  sx={{ fontSize: 2 }}
+                  onClick={toggleChains(
+                    connectedChain || {
+                      id: customNetworkHexId as ConnectedChain['id'],
+                      namespace: 'evm',
+                    },
+                  )}
+                >
+                  <Box sx={{ width: '100%' }}>
+                    {(() => {
+                      if (connectedChain) {
+                        return `Change to ${
+                          isTestnet(connectedChain) ? 'main net 🏠' : 'test net 🌲'
+                        }`
+                      }
+                      if (isTestnetNetworkHexId(customNetworkHexId)) {
+                        return 'Change to main net 🏠'
+                      }
+                      return 'Change to test net 🌲'
+                    })()}
+                  </Box>
+                </Button>
+
+                <Button
+                  variant="bean"
+                  sx={{ fontSize: 2 }}
+                  onClick={() => openModal(NavigationNetworkSwitcherModal, {})}
+                >
+                  <Box sx={{ width: '100%' }}>Hardhat setting 👷‍♂️</Box>
+                </Button>
+              </>
             )}
           </Box>
           {settingChain && <AppSpinnerWholePage />}
         </>
       )}
     </NavigationOrb>
-  )
-}
-
-function NavigationNetworkSwitcherIcon(_isOpen: boolean) {
-  const [{ connecting: isWalletConnecting }] = useConnectWallet()
-  const currentNetworkName = useNetworkName()
-  return isWalletConnecting ? (
-    <AppSpinner />
-  ) : (
-    <Image src={networksByName[currentNetworkName].icon} sx={{ width: '42px', height: '42px' }} />
   )
 }

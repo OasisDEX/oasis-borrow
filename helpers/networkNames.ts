@@ -2,7 +2,6 @@
 export enum NetworkNames {
   ethereumMainnet = 'mainnet',
   ethereumGoerli = 'goerli',
-  ethereumHardhat = 'hardhat',
 
   arbitrumMainnet = 'arbitrum-mainnet',
   arbitrumGoerli = 'arbitrum-goerli',
@@ -12,36 +11,29 @@ export enum NetworkNames {
 
   optimismMainnet = 'optimism-mainnet',
   optimismGoerli = 'optimism-goerli',
-
-  // avalancheMainnet = 'avalanche-mainnet',
 }
 
 // main network names skipping the testnets mapping
 export enum MainNetworkNames {
-  ethereumMainnet = 'mainnet',
-  ethereumGoerli = 'mainnet',
-  ethereumHardhat = 'mainnet',
+  ethereumMainnet = NetworkNames.ethereumMainnet,
+  ethereumGoerli = NetworkNames.ethereumMainnet,
 
-  arbitrumMainnet = 'arbitrum-mainnet',
-  arbitrumGoerli = 'arbitrum-mainnet',
+  arbitrumMainnet = NetworkNames.arbitrumMainnet,
+  arbitrumGoerli = NetworkNames.arbitrumMainnet,
 
-  polygonMainnet = 'polygon-mainnet',
-  polygonMumbai = 'polygon-mainnet',
+  polygonMainnet = NetworkNames.polygonMainnet,
+  polygonMumbai = NetworkNames.polygonMainnet,
 
-  optimismMainnet = 'optimism-mainnet',
-  optimismGoerli = 'optimism-mainnet',
-
-  // avalancheMainnet = 'avalanche-mainnet',
+  optimismMainnet = NetworkNames.optimismMainnet,
+  optimismGoerli = NetworkNames.optimismMainnet,
 }
 
 export type NetworkLabelType =
   | 'Ethereum'
   | 'Ethereum Goerli'
-  | 'Ethereum Hardhat'
   | 'Arbitrum'
   | 'Arbitrum Goerli'
   | 'Polygon'
   | 'Polygon Mumbai'
   | 'Optimism'
   | 'Optimism Goerli'
-// | 'Avalanche'
