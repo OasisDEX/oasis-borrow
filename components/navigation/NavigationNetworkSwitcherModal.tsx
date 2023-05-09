@@ -12,7 +12,6 @@ import { Box, Button, Flex, Image, Input, Text } from 'theme-ui'
 
 export function NavigationNetworkSwitcherModal({ close }: ModalProps<{}>) {
   const [hardhatSettings, setHardhatSettings] = useCustomHardhatParameter()
-  console.log('hardhatSettings', hardhatSettings)
   const handleHardhatUpdate =
     (field: CustomHardhatParameterFieldsType) =>
     (networkName: NetworkNames) =>
