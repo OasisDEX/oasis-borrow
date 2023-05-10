@@ -15,6 +15,7 @@ import { Box, Grid, Text } from 'theme-ui'
 
 interface OasisCreateViewProps {
   product: OasisCreateProduct
+  
 }
 
 const LINKS_MAP = {
