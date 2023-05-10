@@ -106,15 +106,8 @@ export function PromoCard({
           ))}
         </Flex>
       )}
-      {link && (
-        <AppLink href={link.href} sx={{ display: 'inline-block', mt: 2 }}>
-          <WithArrow variant="paragraph3" sx={{ color: 'interactive100', fontWeight: 'regular' }}>
-            {link.label}
-          </WithArrow>
-        </AppLink>
-      )}
       {data && (
-        <Flex as="ul" sx={{ listStyle: 'none', mx: 0, mt: 3, p: 0 }}>
+        <Flex as="ul" sx={{ flexDirection: 'column', listStyle: 'none', mx: 0, mt: 3, p: 0 }}>
           {data.map(({ label, value, variant = 'neutral' }) => (
             <Flex as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text as="span" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -128,6 +121,13 @@ export function PromoCard({
             </Flex>
           ))}
         </Flex>
+      )}
+      {link && (
+        <AppLink href={link.href} sx={{ display: 'inline-block', mt: 2 }}>
+          <WithArrow variant="paragraph3" sx={{ color: 'interactive100', fontWeight: 'regular' }}>
+            {link.label}
+          </WithArrow>
+        </AppLink>
       )}
     </Box>
   )
