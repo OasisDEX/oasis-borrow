@@ -17,13 +17,11 @@ export function AssetsTableContainer({
     <Box
       sx={{
         backgroundColor: 'neutral10',
-        borderRadius: 'large',
-        boxShadow: 'buttonMenu',
+        borderTop: '1px solid',
+        borderBottom: '1px solid',
+        borderColor: 'neutral20',
         ...(padded && { p: 4 }),
-        ...(tableOnly && {
-          pt: '12px',
-          overflow: 'hidden',
-        }),
+        ...(tableOnly && { overflow: 'hidden' }),
       }}
     >
       {title && (
