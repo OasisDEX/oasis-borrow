@@ -11,7 +11,7 @@ export function NavigationNetworkSwitcherIcon(_isOpen: boolean) {
     <AppSpinner />
   ) : (
     <Image
-      src={networksByName[currentNetworkName.replace(' Hardhat', '')].icon}
+      src={networksByName[currentNetworkName.replace('-hardhat', '')].icon}
       sx={{ width: '42px', height: '42px' }}
     />
   )

@@ -61,6 +61,7 @@ export function NavigationNetworkSwitcher() {
                 id: network.id!,
                 hexId: network.hexId!,
               })
+            window && window.location.reload() // duh
           })
           .catch(console.error)
         return
@@ -83,7 +84,7 @@ export function NavigationNetworkSwitcher() {
   const { hexId: customNetworkHexId } = (customNetworkData ||
     mainnetNetworkParameter) as typeof mainnetNetworkParameter
 
-  const handleNetworkButton = (network: NetworkConfig) => {
+  const handleNetworkButton = (isHardhat?: boolean) => (network: NetworkConfig) => {
     const isCurrentNetwork = network.name === currentNetworkName
     return (
       <Button
@@ -94,7 +95,27 @@ export function NavigationNetworkSwitcher() {
           color: isCurrentNetwork ? 'primary100' : 'neutral80',
           ':hover': {
             color: 'primary100',
+            ...(isHardhat && {
+              '::before': {
+                top: '-5px',
+                left: '-5px',
+              },
+            }),
           },
+          ...(isHardhat && {
+            '::before': {
+              content: '"👷‍♂️"',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '36px',
+              height: '36px',
+              display: 'block',
+              zIndex: '1',
+              transform: 'rotate(-40deg)',
+              transition: '0.2s top, 0.2s left',
+            },
+          }),
         }}
         onClick={changeChain(network.hexId)}
         disabled={settingChain}
@@ -106,6 +127,8 @@ export function NavigationNetworkSwitcher() {
             mr: 3,
             minWidth: 4,
             minHeight: 4,
+            position: 'relative',
+            zIndex: '2',
           }}
         />
         {network.label}
@@ -152,9 +175,9 @@ export function NavigationNetworkSwitcher() {
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
                   : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
               )
-              .map(handleNetworkButton)}
+              .map(handleNetworkButton(false))}
             {hardhatNetworkConfigs.map((config) =>
-              handleNetworkButton({ ...defaultHardhatConfig, ...config } as NetworkConfig),
+              handleNetworkButton(true)({ ...defaultHardhatConfig, ...config } as NetworkConfig),
             )}
             {(connectedChain || isTestnetEnabled()) && (
               <>
@@ -188,7 +211,7 @@ export function NavigationNetworkSwitcher() {
                   sx={{ fontSize: 2 }}
                   onClick={() => openModal(NavigationNetworkSwitcherModal, {})}
                 >
-                  <Box sx={{ width: '100%' }}>Hardhat setting 👷‍♂️</Box>
+                  <Box sx={{ width: '100%' }}>Hardhat settings 👷‍♂️</Box>
                 </Button>
               </>
             )}

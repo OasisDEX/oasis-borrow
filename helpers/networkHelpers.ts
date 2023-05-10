@@ -48,7 +48,7 @@ export const isTestnetNetworkHexId = (networkHexId: NetworkConfigHexId) => {
 }
 
 export const isHardhatSetForNetworkId = (networkId: NetworkIds) => {
-  const networkName = networksById[networkId].name
+  const networkName = networksById[networkId]?.name
   return !!hardhatSettings[networkName]
 }
 
@@ -78,7 +78,7 @@ export const getContractNetworkByWalletNetwork = (
   if (walletChainId === contractChainId) return contractChainId
   // then if its network overriden by hardhat, we pass the hardhat network
   // doesnt matter if we're even connected
-  if (isHardhatSetForNetworkId(contractChainId)) {
+  if (!isTestnetNetworkId(walletChainId) && isHardhatSetForNetworkId(contractChainId)) {
     const networkName = networksById[contractChainId].name
     return Number(hardhatSettings[networkName].id) as NetworkIds
   }
@@ -107,8 +107,13 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
   const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
   const { id } = (customNetworkData || mainnetNetworkParameter) as typeof mainnetNetworkParameter
   const isTestnet = isTestnetNetworkId(connectedChainId || id)
+  const isHardhatSet = isHardhatSetForNetworkId(networkId)
   if (!networksById[networkId]) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
+  }
+  if (isHardhatSet) {
+    const networkName = networksById[networkId].name
+    return hardhatSettings[networkName].url
   }
   return isTestnet
     ? networksById[networksById[networkId].testnetId!].rpcUrl

@@ -1,7 +1,7 @@
 import { NetworkNames } from './networkNames'
 
 // these are used for the tab title
-export const networkTabTitleIconMap: Record<NetworkNames, string> = {
+export const networkTabTitleIconMap: Record<NetworkNames | 'hardhat', string> = {
   [NetworkNames.ethereumMainnet]: '',
   [NetworkNames.ethereumGoerli]: '🌲 ',
   [NetworkNames.arbitrumMainnet]: '',
@@ -10,4 +10,5 @@ export const networkTabTitleIconMap: Record<NetworkNames, string> = {
   [NetworkNames.optimismGoerli]: '🌲',
   [NetworkNames.polygonMainnet]: '',
   [NetworkNames.polygonMumbai]: '🌲',
+  hardhat: '👷‍♂️ ',
 }

@@ -1,11 +1,12 @@
 import { NetworkIds } from 'blockchain/networkIds'
-import { NetworkConfigHexId, networksByName } from 'blockchain/networksConfig'
+import { NetworkConfigHexId, networksById, networksByName } from 'blockchain/networksConfig'
 import {
   CustomHardhatParameterType,
   CustomHardhatStorageKey,
 } from 'helpers/getCustomNetworkParameter'
 import { NetworkNames } from 'helpers/networkNames'
 import { getStorageValue } from 'helpers/useLocalStorage'
+import { keyBy } from 'lodash'
 
 export const hardhatSettings = getStorageValue<CustomHardhatParameterType>(
   CustomHardhatStorageKey,
@@ -21,10 +22,13 @@ export const hardhatNetworkConfigs = hardhatSettingsKeys.map((hardhatNetworkName
     hexId: `0x${Number(hardhatConfig.id).toString(16)}` as NetworkConfigHexId,
     label: `${originalNetworkConfig.label} Hardhat`,
     rpcUrl: hardhatConfig.url,
-    name: `${originalNetworkConfig.name} Hardhat`,
+    name: `${originalNetworkConfig.name}-hardhat`,
     token: originalNetworkConfig.token,
     color: originalNetworkConfig.color,
+    icon: originalNetworkConfig.icon,
     testnetHexId: originalNetworkConfig.testnetHexId,
     mainnetHexId: originalNetworkConfig.mainnetHexId,
   }
 })
+
+export const hardhatNetworksById = { ...networksById, ...keyBy(hardhatNetworkConfigs, 'id') }
