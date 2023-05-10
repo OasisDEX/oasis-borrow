@@ -16,6 +16,14 @@ export enum NetworkNames {
   // avalancheMainnet = 'avalanche-mainnet',
 }
 
+// main network names without deviations
+export enum BaseNetworkNames {
+  Ethereum = NetworkNames.ethereumMainnet,
+  Arbitrum = NetworkNames.arbitrumMainnet,
+  Polygon = NetworkNames.polygonMainnet,
+  Optimism = NetworkNames.optimismMainnet,
+}
+
 // main network names skipping the testnets mapping
 export enum MainNetworkNames {
   ethereumMainnet = 'mainnet',

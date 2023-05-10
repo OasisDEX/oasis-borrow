@@ -12,9 +12,13 @@ import { ContractDesc } from 'features/web3Context'
 import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
+import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
 import arbitrumMainnetIcon from 'public/static/img/network_icons/arbitrum_mainnet.svg'
+import ethereumMainnetBadge from 'public/static/img/network_icons/ethereum_badge_mainnet.svg'
 import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainnet.svg'
+import optimismMainnetBadge from 'public/static/img/network_icons/optimism_badge_mainnet.svg'
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
+import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
 export type NetworkConfig = {
@@ -24,6 +28,7 @@ export type NetworkConfig = {
   label: NetworkLabelType
   color: `#${number | string}`
   icon: string
+  badge: string
   testnet: boolean
   enabled: boolean
   token: string
@@ -46,6 +51,7 @@ const mainnetConfig: NetworkConfig = {
   label: 'Ethereum',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
+  badge: ethereumMainnetBadge as string,
   testnet: false,
   enabled: true,
   rpcCallsEndpoint: mainnetRpc,
@@ -59,6 +65,7 @@ const goerliConfig: NetworkConfig = {
   label: 'Ethereum Goerli',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
+  badge: ethereumMainnetBadge as string,
   testnet: true,
   enabled: true,
   rpcCallsEndpoint: goerliRpc,
@@ -71,6 +78,7 @@ const hardhatConfig: NetworkConfig = {
   label: 'Ethereum Hardhat',
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
+  badge: ethereumMainnetBadge as string,
   testnet: true,
   enabled: true,
   token: 'ETH',
@@ -84,6 +92,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   label: 'Arbitrum',
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
+  badge: arbitrumMainnetBadge as string,
   testnet: false,
   enabled: true,
   token: 'ETH',
@@ -97,6 +106,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   label: 'Arbitrum Goerli',
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
+  badge: arbitrumMainnetBadge as string,
   testnet: false,
   enabled: true,
   token: 'AGOR',
@@ -110,6 +120,7 @@ const polygonMainnetConfig: NetworkConfig = {
   label: 'Polygon',
   color: '#9866ed',
   icon: polygonMainnetIcon as string,
+  badge: polygonMainnetBadge as string,
   testnet: false,
   enabled: true,
   token: 'ETH',
@@ -123,6 +134,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   label: 'Polygon Mumbai',
   color: '#9866ed',
   icon: polygonMainnetIcon as string,
+  badge: polygonMainnetBadge as string,
   testnet: false,
   enabled: true,
   token: 'ETH',
@@ -136,6 +148,7 @@ const optimismMainnetConfig: NetworkConfig = {
   label: 'Optimism',
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
+  badge: optimismMainnetBadge as string,
   testnet: false,
   enabled: true,
   token: 'ETH',
@@ -149,6 +162,7 @@ const optimismGoerliConfig: NetworkConfig = {
   label: 'Optimism Goerli',
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
+  badge: optimismMainnetBadge as string,
   testnet: false,
   enabled: true,
   token: 'ETH',
@@ -162,6 +176,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   label: 'empty' as NetworkLabelType,
   color: '#ff',
   icon: 'empty',
+  badge: 'empty',
   testnet: false,
   enabled: true,
   id: '0',

@@ -5,6 +5,12 @@ export enum LendingProtocol {
   Maker = 'Maker',
 }
 
+export type LendingProtocolLabelType =
+  | 'Aave V2'
+  | 'Aave V3'
+  | 'Ajna'
+  | 'Maker'
+
 export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
 
 export const checkIfAave = (protocol: LendingProtocol): protocol is AaveLendingProtocol => {
