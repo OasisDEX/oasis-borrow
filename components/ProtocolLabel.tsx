@@ -5,7 +5,7 @@ import { protocolsByName } from 'lendingProtocols/protocolConfigs'
 import React from 'react'
 import { Box, Flex, Image } from 'theme-ui'
 
-interface ProtocolLabelProps {
+export interface ProtocolLabelProps {
   network: BaseNetworkNames
   protocol: LendingProtocol
 }
