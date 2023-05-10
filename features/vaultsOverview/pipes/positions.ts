@@ -60,7 +60,7 @@ export function createMakerPositions$(
           token: vault.token,
           contentsUsd: vault.value,
           title: makerPositionName(vault),
-          url: `/${vault.id}`,
+          url: `/ethereum/maker/${vault.id}`,
         }
       })
     }),
@@ -200,7 +200,7 @@ function buildAaveViewModel(
           token: collateralToken,
           debtToken,
           title: title,
-          url: `/aave/${mapAaveProtocol(protocol)}/${positionId}`,
+          url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, //TODO: Proper network handling
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,

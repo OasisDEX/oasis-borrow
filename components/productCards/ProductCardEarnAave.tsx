@@ -33,6 +33,7 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
 
   const { earnCollateralsReserveData, aaveAvailableLiquidityInUSDC$ } = useAaveContext(
     strategy.protocol,
+    strategy.network,
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(
     earnCollateralsReserveData[strategy.tokens.collateral],
@@ -120,7 +121,7 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
               },
             ]}
             button={{
-              link: `/earn/aave/${protocolVersion}/open/${cardData.symbol}`,
+              link: `/${strategy.network}/aave/${protocolVersion}/earn/${cardData.symbol}`,
               text: t('nav.earn'),
             }}
             background={cardData.background}

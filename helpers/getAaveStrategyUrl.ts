@@ -1,9 +1,11 @@
 import { ProductType } from 'features/aave/common'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
+import { NetworkNames } from './networkNames'
+
 type AaveVersionProps = {
+  network: NetworkNames
   protocol: AaveLendingProtocol
-  action?: 'open' // others?
   strategyType: ProductType
   slug: string
 }
@@ -15,11 +17,6 @@ export function mapAaveProtocol(protocol: AaveVersionProps['protocol']) {
   }[protocol]
 }
 
-export function getAaveStrategyUrl({
-  protocol,
-  action = 'open',
-  strategyType,
-  slug,
-}: AaveVersionProps) {
-  return `/${strategyType.toLocaleLowerCase()}/aave/${mapAaveProtocol(protocol)}/${action}/${slug}`
+export function getAaveStrategyUrl({ protocol, strategyType, slug, network }: AaveVersionProps) {
+  return `/${network}/aave/${mapAaveProtocol(protocol)}/${strategyType.toLocaleLowerCase()}/${slug}`
 }

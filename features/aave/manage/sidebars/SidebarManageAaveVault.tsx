@@ -557,6 +557,7 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
         protocol: state.context.strategyConfig.protocol,
         slug: state.context.strategyConfig.urlSlug,
         strategyType: state.context.strategyConfig.type,
+        network: state.context.strategyConfig.network,
       }),
     },
   }

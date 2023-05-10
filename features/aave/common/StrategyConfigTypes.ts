@@ -17,6 +17,23 @@ export enum ProxyType {
 
 export type ProductType = 'Multiply' | 'Earn' | 'Borrow'
 
+export function isSupportedProductType(value: string): value is ProductType {
+  return ['Multiply'.toLowerCase(), 'Earn'.toLowerCase(), 'Borrow'.toLowerCase()].includes(
+    value.toLowerCase(),
+  )
+}
+
+export function getSurveyType(value: ProductType): 'earn' | 'multiply' | 'borrow' {
+  switch (value) {
+    case 'Earn':
+      return 'earn'
+    case 'Multiply':
+      return 'multiply'
+    case 'Borrow':
+      return 'borrow'
+  }
+}
+
 export type ManagePositionAvailableActions =
   | 'adjust'
   | 'manage-debt'

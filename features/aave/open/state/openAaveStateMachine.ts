@@ -700,8 +700,8 @@ export function createOpenAaveStateMachine(
             context.strategyConfig.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
 
           const address = shouldUseDpmProxy
-            ? `/aave/${protocolVersion}/${context.userDpmAccount?.vaultId}`
-            : `/aave/${protocolVersion}/${contextConnected?.account}`
+            ? `/${context.strategyConfig.network}/aave/${protocolVersion}/${context.userDpmAccount?.vaultId}`
+            : `/${context.strategyConfig.network}/aave/${protocolVersion}/${contextConnected?.account}`
 
           return {
             effectiveProxyAddress: proxyAddressToUse,
