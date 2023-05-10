@@ -9,6 +9,7 @@ export function AnimatedWrapper({ children }: PropsWithChildren<{}>) {
         flex: 1,
         ...slideInAnimation,
         position: 'relative',
+        zIndex: 2,
       }}
     >
       {children}

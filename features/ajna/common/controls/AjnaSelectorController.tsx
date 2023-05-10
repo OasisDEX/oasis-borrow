@@ -48,7 +48,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
       )
         .sort()
         .map((token) => ({
-          label: token,
+          title: token,
           value: token,
           icon: getToken(token).iconCircle,
         })),
