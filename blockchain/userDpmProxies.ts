@@ -27,7 +27,6 @@ export function getUserDpmProxies$(
         accountFactory.address,
         rpcProvider,
       )
-      console.log('chainId, rpcProvider', chainId, rpcProvider)
       const accountGuardContract = AccountGuard__factory.connect(accountGuard.address, rpcProvider)
       const accountCreatedFilter = accountFactoryContract.filters.AccountCreated(
         null,
