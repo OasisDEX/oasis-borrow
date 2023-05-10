@@ -8,6 +8,7 @@ import {
   networksById,
 } from 'blockchain/networksConfig'
 import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
+import { hardhatSettings } from 'features/web3OnBoard/hardhatConfigList'
 import { keyBy } from 'lodash'
 import { env } from 'process'
 
@@ -46,13 +47,21 @@ export const isTestnetNetworkHexId = (networkHexId: NetworkConfigHexId) => {
     .includes(networkHexId)
 }
 
+export const isHardhatSetForNetworkId = (networkId: NetworkIds) => {
+  const networkName = networksById[networkId].name
+  return !!hardhatSettings[networkName]
+}
+
 export const getOppositeNetworkHexIdByHexId = (
   currentConnectedChainHexId: ConnectedChain['id'],
 ) => {
   const networksListByHexId = { ...networksByHexId, ...keyBy(hardhatNetworkConfigs, 'hexId') }
+  const networkConfig = networksListByHexId[currentConnectedChainHexId]
+  if (!networkConfig)
+    console.log('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
   return (
-    networksListByHexId[currentConnectedChainHexId].testnetHexId ||
-    networksListByHexId[currentConnectedChainHexId].mainnetHexId
+    (networkConfig && (networkConfig.testnetHexId || networkConfig.mainnetHexId)) ||
+    networksById['1'].hexId
   )
 }
 
@@ -67,6 +76,14 @@ export const getContractNetworkByWalletNetwork = (
   // sounds silly, but this just passes the parameter for regular network
   // unless youre on testnet, then it passes the testnet network
   if (walletChainId === contractChainId) return contractChainId
+  // then if its network overriden by hardhat, we pass the hardhat network
+  // doesnt matter if we're even connected
+  if (isHardhatSetForNetworkId(contractChainId)) {
+    const networkName = networksById[contractChainId].name
+    return Number(hardhatSettings[networkName].id) as NetworkIds
+  }
+
+  // finally, if youre on testnet, and the contract is on mainnet, it passes the testnet network
   return isTestnetNetworkId(walletChainId)
     ? getOppositeNetworkIdById(contractChainId)
     : contractChainId

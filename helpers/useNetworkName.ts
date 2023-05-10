@@ -13,9 +13,13 @@ export function useNetworkName() {
     return customNetworkName.network || mainnetNetworkParameter.network
   }
   if (!filteredChain[0]) {
-    console.error(`Chain not configured:
-    ${JSON.stringify({ chains, connectedChain }, null, 4)}`)
-    console.error('Returning Ethereum Mainnet.')
+    console.warn(
+      `Returning Ethereum Mainnet because the chain is not configured: ${JSON.stringify(
+        { chains, connectedChain },
+        null,
+        4,
+      )}`,
+    )
     return mainnetNetworkParameter.network
   }
   return { ...networksByHexId, ...keyBy(hardhatNetworkConfigs, 'hexId') }[filteredChain[0].id].name

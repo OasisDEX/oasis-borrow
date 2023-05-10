@@ -3,7 +3,9 @@ import { Modal } from 'components/Modal'
 import {
   CustomHardhatParameterFieldsType,
   CustomHardhatParameterType,
+  mainnetNetworkParameter,
   useCustomHardhatParameter,
+  useCustomNetworkParameter,
 } from 'helpers/getCustomNetworkParameter'
 import { ModalProps } from 'helpers/modalHook'
 import { NetworkNames } from 'helpers/networkNames'
@@ -11,6 +13,7 @@ import React from 'react'
 import { Box, Button, Flex, Image, Input, Text } from 'theme-ui'
 
 export function NavigationNetworkSwitcherModal({ close }: ModalProps<{}>) {
+  const [, setCustomNetwork] = useCustomNetworkParameter()
   const [hardhatSettings, setHardhatSettings] = useCustomHardhatParameter()
   const handleHardhatUpdate =
     (field: CustomHardhatParameterFieldsType) =>
@@ -98,6 +101,7 @@ export function NavigationNetworkSwitcherModal({ close }: ModalProps<{}>) {
             sx={{ width: '100%', mr: 2 }}
             onClick={() => {
               setHardhatSettings({} as CustomHardhatParameterType)
+              setCustomNetwork(mainnetNetworkParameter)
               window.location.reload()
             }}
           >
