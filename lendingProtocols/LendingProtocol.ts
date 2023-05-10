@@ -5,11 +5,7 @@ export enum LendingProtocol {
   Maker = 'Maker',
 }
 
-export type LendingProtocolLabelType =
-  | 'Aave V2'
-  | 'Aave V3'
-  | 'Ajna'
-  | 'Maker'
+export type LendingProtocolLabelType = 'Aave V2' | 'Aave V3' | 'Ajna' | 'Maker'
 
 export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
 
