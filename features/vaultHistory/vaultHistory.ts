@@ -2,6 +2,7 @@ import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { Vault } from 'blockchain/vaults'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
@@ -612,7 +613,7 @@ export function createVaultHistory$(
   )
   return combineLatest(context$, vault$(vaultId)).pipe(
     switchMap(([{ chainId }, { token, address, id }]) => {
-      const { etherscan, cacheApi, ethtx } = getNetworkContracts(chainId)
+      const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
@@ -642,7 +643,7 @@ export function createAaveHistory$(
   )
   return combineLatest(context$).pipe(
     switchMap(([{ chainId }]) => {
-      const { etherscan, cacheApi, ethtx } = getNetworkContracts(chainId)
+      const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)

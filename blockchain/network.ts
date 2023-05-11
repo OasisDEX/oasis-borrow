@@ -7,6 +7,7 @@ import {
   Web3ContextConnectedReadonly,
 } from 'features/web3Context'
 import { contract, ContractDesc } from 'features/web3Context'
+import { getNetworkRpcEndpoint } from 'helpers/networkHelpers'
 import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs'
 import {
   catchError,
@@ -21,6 +22,7 @@ import {
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
+import { NetworkIds } from './networkIds'
 import { NetworkConfig, networksById } from './networksConfig'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))
@@ -56,10 +58,12 @@ export function createContext$(
   return web3ContextConnected$.pipe(
     map((web3Context) => {
       const networkData = networksById[web3Context.chainId]
-      const web3ProviderGetPastLogs = new Web3(networkData.rpcCallsEndpoint)
+      const web3ProviderGetPastLogs = new Web3(
+        getNetworkRpcEndpoint(NetworkIds.MAINNET, web3Context.chainId),
+      )
 
       const provider = new ethers.providers.JsonRpcProvider(
-        networkData.rpcCallsEndpoint,
+        getNetworkRpcEndpoint(NetworkIds.MAINNET, web3Context.chainId),
         web3Context.chainId,
       )
 

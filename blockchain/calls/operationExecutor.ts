@@ -5,6 +5,7 @@ import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { contractDesc } from 'blockchain/networksConfig'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
@@ -29,7 +30,7 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
   },
   prepareArgs: (data, context) => {
     return [
-      getNetworkContracts(context.chainId).operationExecutor.address,
+      getNetworkContracts(NetworkIds.MAINNET, context.chainId).operationExecutor.address,
       getCallData(data, context),
     ]
   },
@@ -44,7 +45,7 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
   },
   prepareArgs: (data, context) => {
     return [
-      getNetworkContracts(context.chainId).operationExecutor.address,
+      getNetworkContracts(NetworkIds.MAINNET, context.chainId).operationExecutor.address,
       getCallData(data, context),
     ]
   },
@@ -54,7 +55,9 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
   return context
-    .contract<OperationExecutor>(getNetworkContracts(context.chainId).operationExecutor)
+    .contract<OperationExecutor>(
+      getNetworkContracts(NetworkIds.MAINNET, context.chainId).operationExecutor,
+    )
     .methods.executeOp(data.calls, data.operationName)
     .encodeABI()
 }

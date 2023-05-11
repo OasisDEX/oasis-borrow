@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { gql, GraphQLClient } from 'graphql-request'
 import moment from 'moment'
 import { Observable } from 'rxjs'
@@ -47,7 +48,7 @@ export function createMakerOracleTokenPrices$(
   return context$.pipe(
     first(),
     switchMap(({ chainId }) => {
-      const apiClient = new GraphQLClient(getNetworkContracts(chainId).cacheApi)
+      const apiClient = new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
       return apiClient.request(makerOraclePrice, {
         token,
         date: timestamp.toISOString(),
@@ -73,7 +74,7 @@ export function createMakerOracleTokenPricesForDates$(
   return context$.pipe(
     first(),
     switchMap(({ chainId }) => {
-      const apiClient = new GraphQLClient(getNetworkContracts(chainId).cacheApi)
+      const apiClient = new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
       return apiClient.request(makerOraclePriceInMultipleDates, {
         token,
         dates: timestamps.map((t) => t.toISOString()),

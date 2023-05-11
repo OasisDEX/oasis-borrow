@@ -5,6 +5,7 @@ import type { ElementOf } from 'ts-essentials'
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
+import { NetworkIds } from './networkIds'
 
 export interface TokenConfig {
   symbol: string
@@ -931,7 +932,7 @@ export function getTokensWithChain(
 
 export function getTokenSymbolFromAddress({ chainId }: Context, tokenAddress: string) {
   const token = findKey(
-    getNetworkContracts(chainId).tokens,
+    getNetworkContracts(NetworkIds.MAINNET, chainId).tokens,
     (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
   )
   if (!token) {

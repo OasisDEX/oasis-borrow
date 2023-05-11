@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { AaveV3Pool } from 'types/web3-v1-contracts'
 
 export interface AaveV3UserAccountData {
@@ -37,7 +38,8 @@ export const getAaveV3UserAccountData: CallDef<
   AaveV3UserAccountData
 > = {
   call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods.getUserAccountData
+    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
+      .getUserAccountData
   },
   prepareArgs: ({ address }) => {
     return [address]
@@ -63,7 +65,7 @@ export const getAaveV3UserConfiguration: CallDef<
   AaveV3ConfigurationData
 > = {
   call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods
+    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
       .getUserConfiguration
   },
   prepareArgs: ({ address }) => {
@@ -73,7 +75,8 @@ export const getAaveV3UserConfiguration: CallDef<
 
 export const getAaveV3ReservesList: CallDef<void, AaveV3ConfigurationData> = {
   call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods.getReservesList
+    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
+      .getReservesList
   },
   prepareArgs: () => {
     return []
@@ -85,7 +88,7 @@ export const getEModeCategoryData: CallDef<
   GetEModeCategoryDataResult
 > = {
   call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(chainId).aaveV3Pool).methods
+    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
       .getEModeCategoryData
   },
   prepareArgs: ({ categoryId }) => {

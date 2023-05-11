@@ -2,6 +2,7 @@ import { views } from '@oasisdex/oasis-actions-poc'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
@@ -33,6 +34,7 @@ export function getAjnaPosition$(
     switchMap(async ([context]) => {
       if (protocol !== 'Ajna') return null
       const { ajnaPoolPairs, ajnaPoolInfo, ajnaRewardsManager } = getNetworkContracts(
+        NetworkIds.MAINNET,
         context.chainId,
       )
 

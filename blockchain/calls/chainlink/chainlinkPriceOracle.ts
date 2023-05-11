@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { MainnetContracts, mainnetContracts } from 'blockchain/contracts/mainnet'
+import { NetworkIds } from 'blockchain/networkIds'
 import { ChainlinkPriceOracle } from 'types/web3-v1-contracts'
 
 const USD_CHAINLINK_PRECISION = 8
@@ -16,7 +17,7 @@ export function getChainlinkOraclePrice(
   return {
     call: (_, { contract, chainId }) =>
       contract<ChainlinkPriceOracle>(
-        getNetworkContracts(chainId).chainlinkPriceOracle[contractName],
+        getNetworkContracts(NetworkIds.MAINNET, chainId).chainlinkPriceOracle[contractName],
       ).methods.latestAnswer,
     prepareArgs: () => [],
     postprocess: (answer) => {

@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV2ProtocolDataProvider } from 'types/web3-v1-contracts'
 
@@ -43,11 +44,11 @@ export const getAaveV2UserReserveData: CallDef<
 > = {
   call: (args, { contract, chainId }) => {
     return contract<AaveV2ProtocolDataProvider>(
-      getNetworkContracts(chainId).aaveV2ProtocolDataProvider,
+      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2ProtocolDataProvider,
     ).methods.getUserReserveData
   },
   prepareArgs: ({ token, address }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[token].address, address]
+    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address, address]
   },
   postprocess: (result, args) => {
     return {
@@ -80,9 +81,12 @@ export const getAaveV2UserReserveData: CallDef<
 
 export const getAaveV2ReserveData: CallDef<AaveV2ReserveDataParameters, AaveV2ReserveDataReply> = {
   call: (_, { contract, chainId }) =>
-    contract<AaveV2ProtocolDataProvider>(getNetworkContracts(chainId).aaveV2ProtocolDataProvider)
-      .methods.getReserveData,
-  prepareArgs: ({ token }, { chainId }) => [getNetworkContracts(chainId).tokens[token].address],
+    contract<AaveV2ProtocolDataProvider>(
+      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2ProtocolDataProvider,
+    ).methods.getReserveData,
+  prepareArgs: ({ token }, { chainId }) => [
+    getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address,
+  ],
   postprocess: (result, { token }) => {
     return {
       availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity), token),
@@ -114,11 +118,11 @@ export const getAaveV2ReserveConfigurationData: CallDef<
 > = {
   call: (args, { contract, chainId }) => {
     return contract<AaveV2ProtocolDataProvider>(
-      getNetworkContracts(chainId).aaveV2ProtocolDataProvider,
+      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2ProtocolDataProvider,
     ).methods.getReserveConfigurationData
   },
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[token].address]
+    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
   },
   postprocess: (result) => {
     return {

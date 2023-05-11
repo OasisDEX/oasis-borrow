@@ -25,10 +25,10 @@ const cache = new NodeCache({ stdTTL: 60 })
 async function infuraCallsCacheHandler(req: NextApiRequest, res: NextApiResponse) {
   const encodedBatchCallData = req.body.encoded
 
-  const rpcCallsEndpoint = networksById[req.body.network.chainId].rpcCallsEndpoint
+  const rpcUrl = networksById[req.body.network.chainId].rpcUrl
   const batchCallData: Array<Request> = JSON.parse(encodedBatchCallData)
 
-  const batchManager = new BatchManager(rpcCallsEndpoint, cache, { debug: true })
+  const batchManager = new BatchManager(rpcUrl, cache, { debug: true })
   const batchResults = await batchManager.batchCall(batchCallData)
 
   return respond(req, res, batchResults)

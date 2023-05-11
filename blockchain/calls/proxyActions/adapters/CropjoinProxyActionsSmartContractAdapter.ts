@@ -1,5 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { ContractDesc } from 'features/web3Context'
 import { DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
 import { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
@@ -14,7 +15,7 @@ export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActions
   AdapterType = ProxyActionsAdapterType.CROPJOIN
 
   resolveContractDesc({ chainId }: ContextConnected): ContractDesc {
-    return getNetworkContracts(chainId).dssProxyActionsCropjoin
+    return getNetworkContracts(NetworkIds.MAINNET, chainId).dssProxyActionsCropjoin
   }
 
   claimRewards(
@@ -24,7 +25,7 @@ export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActions
     const { contract, chainId } = context
     const { gemJoinAddress, cdpId } = data
     return contract<DssProxyActionsCropjoin>(
-      getNetworkContracts(chainId).dssProxyActionsCropjoin,
+      getNetworkContracts(NetworkIds.MAINNET, chainId).dssProxyActionsCropjoin,
     ).methods.crop(gemJoinAddress, cdpId.toString())
   }
 }

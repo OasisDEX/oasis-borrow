@@ -4,6 +4,7 @@ import { map, switchMap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
 import { ContextConnected } from './network'
+import { NetworkIds } from './networkIds'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export interface CollateralLocked {
@@ -24,7 +25,7 @@ export function getCollateralLocked$(
 ): Observable<CollateralLocked> {
   return combineLatest(context$, ilkToToken$(ilk)).pipe(
     switchMap(([context, token]) => {
-      const address = getNetworkContracts(context.chainId).joins[ilk]
+      const address = getNetworkContracts(NetworkIds.MAINNET, context.chainId).joins[ilk]
       return balance$(token, address).pipe(map((balance) => ({ ilk, token, collateral: balance })))
     }),
   )

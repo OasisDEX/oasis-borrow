@@ -6,6 +6,7 @@ import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultA
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { amountFromPrecision, amountFromRay, amountToRay } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -140,7 +141,7 @@ export function createMakerProtocolBonusAdapter(
             return sendWithGasEstimation(vaultActions.claimReward, {
               kind: TxMetaKind.claimReward,
               proxyAddress: proxyAddress!,
-              gemJoinAddress: getNetworkContracts(context.chainId).joins[ilk],
+              gemJoinAddress: getNetworkContracts(NetworkIds.MAINNET, context.chainId).joins[ilk],
               cdpId,
             })
           }),
