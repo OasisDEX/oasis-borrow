@@ -1,23 +1,24 @@
 import { Skeleton } from 'components/Skeleton'
 import React from 'react'
-import { Box, Card, Flex, Grid } from 'theme-ui'
+import { Box, Flex, Grid } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 export function AssetsAndPositionsOverviewLoadingState() {
   const breakpointIndex = useBreakpointIndex()
 
   return (
-    <Card variant="positionsPage">
+    <Box
+      sx={{
+        p: 4,
+        borderTop: '1px solid',
+        borderBottom: '1px solid',
+        borderColor: 'neutral20',
+        bg: 'neutral10',
+      }}
+    >
       <Grid gap={0} sx={{ gridTemplateColumns: ['100%', '40% 60%'] }}>
         {breakpointIndex !== 0 && (
-          <Box
-            sx={{
-              mr: '48px',
-              pr: '48px',
-              borderRight: 'solid 1px',
-              borderRightColor: 'neutral20',
-            }}
-          >
+          <Box sx={{ mr: '96px' }}>
             <Skeleton count={2} />
             <Skeleton width="120px" height="48px" sx={{ mt: 3 }} />
           </Box>
@@ -34,6 +35,6 @@ export function AssetsAndPositionsOverviewLoadingState() {
           </Flex>
         </Box>
       </Grid>
-    </Card>
+    </Box>
   )
 }

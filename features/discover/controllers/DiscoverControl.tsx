@@ -76,7 +76,7 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
   return (
     <AssetsTableContainer>
       <Box ref={anchor} />
-      <AssetsFiltersContainer isSticky={isSticky}>
+      <AssetsFiltersContainer isSticky={isSticky} gridTemplateColumns="repeat(4, 205px)">
         {Object.keys(filters).map((key) => (
           <DiscoverFilter filter={key} item={filters[key]} key={key} onChange={onChangeHandler} />
         ))}

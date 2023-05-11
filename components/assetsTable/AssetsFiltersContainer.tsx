@@ -1,13 +1,15 @@
 import { PropsWithChildren } from 'react'
 import { theme } from 'theme'
-import { Box, Flex } from 'theme-ui'
+import { Box,  Grid } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface AssetsFiltersContainerProps {
+  gridTemplateColumns: string
   isSticky: boolean
 }
 
 export function AssetsFiltersContainer({
+  gridTemplateColumns,
   children,
   isSticky,
 }: PropsWithChildren<AssetsFiltersContainerProps>) {
@@ -29,7 +31,7 @@ export function AssetsFiltersContainer({
         zIndex: 2,
       }}
     >
-      <Flex sx={{ gap: '12px' }}>{children}</Flex>
+      <Grid sx={{ gap: '12px', gridTemplateColumns }}>{children}</Grid>
     </Box>
   )
 }

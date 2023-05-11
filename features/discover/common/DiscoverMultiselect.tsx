@@ -21,7 +21,8 @@ export function DiscoverMultiselect({
   const didMountRef = useRef(false)
   const [values, setValues] = useState<string[]>([])
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
-  const ref = useOutsideElementClickHandler(() => setIsOpen(false))
+  const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (didMountRef.current)
@@ -49,7 +50,7 @@ export function DiscoverMultiselect({
   }
 
   return (
-    <Box sx={{ position: 'relative', userSelect: 'none' }} ref={ref}>
+    <Box sx={{ position: 'relative', userSelect: 'none' }} ref={outsideRef}>
       <Box
         sx={{
           position: 'relative',
@@ -101,9 +102,9 @@ export function DiscoverMultiselect({
         sx={{
           position: 'absolute',
           top: '100%',
-          right: 0,
           left: 0,
           maxHeight: '340px',
+          minWidth: '100%',
           mt: 1,
           py: '12px',
           px: 0,
@@ -118,6 +119,22 @@ export function DiscoverMultiselect({
           transition: 'opacity 200ms, transform 200ms',
           overflowY: 'auto',
           zIndex: 1,
+          '&::-webkit-scrollbar': {
+            width: '6px',
+            borderRadius: 'large',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'secondary100',
+            borderRadius: 'large',
+          },
+          '&::-webkit-scrollbar-track': {
+            my: '12px',
+            backgroundColor:
+              scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
+                ? 'secondary60'
+                : 'transparent',
+            borderRadius: 'large',
+          },
         }}
       >
         <DiscoverMultiselectItem
@@ -171,6 +188,7 @@ export function DiscoverMultiselectItem({
         color: isDisabled ? 'neutral80' : 'primary100',
         transition: 'color 200ms, background-color 200ms',
         cursor: isDisabled ? 'default' : 'pointer',
+        whiteSpace: 'nowrap',
         '&:hover': {
           backgroundColor: isDisabled ? 'transparent' : 'neutral30',
         },

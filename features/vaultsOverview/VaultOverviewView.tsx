@@ -14,7 +14,7 @@ export function VaultsOverviewView({ address }: { address: string }) {
   const followVaultsEnabled = useFeatureToggle('FollowVaults')
 
   return (
-    <Grid sx={{ flex: 1, zIndex: 1, gap: 4, mt: [0, 4], mb: 5 }} key={address}>
+    <Grid sx={{ flex: 1, zIndex: 1, gap: '48px', mt: [0, 4], mb: 5 }} key={address}>
       <VaultOwnershipNotice address={address} />
       <AssetsAndPositionsOverview address={address} />
       {!followVaultsEnabled ? (
