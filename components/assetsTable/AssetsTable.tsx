@@ -87,7 +87,7 @@ export function AssetsTable({
             ...(isSticky && {
               position: 'sticky',
               zIndex: 1,
-              top: '120px',
+              top: '88px',
             }),
           }}
         >

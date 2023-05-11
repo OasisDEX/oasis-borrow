@@ -4,6 +4,7 @@ import { AppLayout } from 'components/Layouts'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultOverviewView'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { WithChildren } from 'helpers/types'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -40,6 +41,8 @@ function VaultsSummary({ address }: { address: string }) {
   ) : null
 }
 
-VaultsSummary.layout = AppLayout
+VaultsSummary.layout = ({ children }: WithChildren) => (
+  <AppLayout shortBackground={true}>{children}</AppLayout>
+)
 
 export default VaultsSummary
