@@ -16,7 +16,6 @@ interface PromoCardProps {
     label: string
     variant?: PromoCardVariant
   }[]
-
   link?: {
     href: string
     label: string
