@@ -20,7 +20,11 @@ export const ilkTokenAddress: CallDef<string, string> = {
 export function createIlkToToken$(context$: Observable<Context>, ilk: string): Observable<string> {
   return context$.pipe(
     switchMap((context) =>
-      defer(() => call(context, ilkTokenAddress)(ilk)).pipe(
+      defer(() => {
+        return getNetworkContracts(NetworkIds.MAINNET, context.chainId).joins[ilk]
+          ? call(context, ilkTokenAddress)(ilk)
+          : undefined
+      }).pipe(
         map((tokenAddress) => {
           const tokenDescription = Object.entries(
             getNetworkContracts(NetworkIds.MAINNET, context.chainId).tokens,
