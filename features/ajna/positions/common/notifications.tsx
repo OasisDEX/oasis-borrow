@@ -5,6 +5,12 @@ import {
   AjnaBorrowFormAction,
   AjnaBorrowFormState,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import { AjnaLiquidationNotificationWithLink } from 'features/ajna/positions/common/components/AjnaLiquidationNotificationWithLink'
+import {
+  AjnaBorrowishPositionAuction,
+  AjnaEarnPositionAuction,
+  AjnaPositionAuction,
+} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import {
   AjnaEarnFormAction,
   AjnaEarnFormState,
@@ -14,7 +20,7 @@ import {
   AjnaMultiplyFormState,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { zero } from 'helpers/zero'
-import { Dispatch } from 'react'
+import React, { Dispatch } from 'react'
 
 type DepositIsNotWithdrawableParams = {
   message: { collateralToken: string; quoteToken: string }
@@ -33,6 +39,10 @@ type TimeToLiquidationParams = {
   time: string
 }
 
+type LendingPriceFrozenParams = {
+  quoteToken: string
+}
+
 type NotificationCallbackWithParams<P> = (
   params: P,
   action?: () => void,
@@ -46,8 +56,9 @@ const ajnaNotifications: {
   beingLiquidated: NotificationCallbackWithParams<null>
   gotLiquidated: NotificationCallbackWithParams<null>
   gotPartiallyLiquidated: NotificationCallbackWithParams<null>
-  lendingPriceFrozen: NotificationCallbackWithParams<null>
-  bucketLiquidated: NotificationCallbackWithParams<null>
+  gotBadDebtLiquidated: NotificationCallbackWithParams<null>
+  lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
+  collateralToWithdraw: NotificationCallbackWithParams<null>
 } = {
   depositIsNotWithdrawable: ({ action, message }) => ({
     title: {
@@ -112,7 +123,9 @@ const ajnaNotifications: {
       translationKey: 'ajna.position-page.common.notifications.being-liquidated.title',
     },
     message: {
-      translationKey: 'ajna.position-page.common.notifications.being-liquidated.message',
+      component: (
+        <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.being-liquidated.message" />
+      ),
     },
     icon: 'coins_cross',
     type: 'error',
@@ -123,7 +136,9 @@ const ajnaNotifications: {
       translationKey: 'ajna.position-page.common.notifications.got-liquidated.title',
     },
     message: {
-      translationKey: 'ajna.position-page.common.notifications.got-liquidated.message',
+      component: (
+        <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.got-liquidated.message" />
+      ),
     },
     icon: 'coins_cross',
     type: 'error',
@@ -134,29 +149,51 @@ const ajnaNotifications: {
       translationKey: 'ajna.position-page.common.notifications.got-partially-liquidated.title',
     },
     message: {
-      translationKey: 'ajna.position-page.common.notifications.got-partially-liquidated.message',
+      component: (
+        <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.got-partially-liquidated.message" />
+      ),
     },
     icon: 'coins_cross',
     type: 'error',
     closable: true,
   }),
-  lendingPriceFrozen: () => ({
+  gotBadDebtLiquidated: () => ({
     title: {
-      translationKey: 'ajna.position-page.common.notifications.got-partially-liquidated.title',
+      translationKey: 'ajna.position-page.common.notifications.bad-debt-liquidation.title',
     },
     message: {
-      translationKey: 'ajna.position-page.common.notifications.got-partially-liquidated.message',
+      component: (
+        <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.bad-debt-liquidation.message" />
+      ),
     },
     icon: 'coins_cross',
     type: 'error',
     closable: true,
   }),
-  bucketLiquidated: () => ({
+  lendingPriceFrozen: ({ quoteToken }) => ({
     title: {
-      translationKey: 'ajna.position-page.earn.manage.notifications.bucket-liquidated.title',
+      translationKey: 'ajna.position-page.earn.manage.notifications.lending-price-frozen.title',
     },
     message: {
-      translationKey: 'ajna.position-page.earn.manage.notifications.bucket-liquidated.message',
+      component: (
+        <AjnaLiquidationNotificationWithLink
+          translationKey="ajna.position-page.earn.manage.notifications.lending-price-frozen.message"
+          values={{ quoteToken }}
+        />
+      ),
+    },
+    icon: 'coins_cross',
+    type: 'error',
+    closable: true,
+  }),
+  collateralToWithdraw: () => ({
+    title: {
+      translationKey: 'ajna.position-page.earn.manage.notifications.collateral-to-withdraw.title',
+    },
+    message: {
+      component: (
+        <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.earn.manage.notifications.collateral-to-withdraw.message" />
+      ),
     },
     icon: 'coins_cross',
     type: 'error',
@@ -166,6 +203,7 @@ const ajnaNotifications: {
 
 export function getAjnaNotifications({
   position,
+  positionAuction,
   collateralToken,
   quoteToken,
   dispatch,
@@ -173,6 +211,7 @@ export function getAjnaNotifications({
   product,
 }: {
   position: AjnaGenericPosition
+  positionAuction: AjnaPositionAuction
   collateralToken: string
   quoteToken: string
   dispatch:
@@ -190,11 +229,31 @@ export function getAjnaNotifications({
   switch (product) {
     case 'multiply':
     case 'borrow':
-      // TODO adjust it when data source available
-      // notifications.push(ajnaNotifications.timeToLiquidation({ time: '4 days' }))
-      // notifications.push(ajnaNotifications.beingLiquidated(null))
-      // notifications.push(ajnaNotifications.gotLiquidated(null))
-      // notifications.push(ajnaNotifications.gotPartiallyLiquidated(null))
+      const borrowishPositionAuction = positionAuction as AjnaBorrowishPositionAuction
+
+      if (borrowishPositionAuction.isDuringGraceTime) {
+        notifications.push(
+          ajnaNotifications.timeToLiquidation({
+            time: borrowishPositionAuction.graceTimeRemaining,
+          }),
+        )
+      }
+
+      if (borrowishPositionAuction.isBeingLiquidated) {
+        notifications.push(ajnaNotifications.beingLiquidated(null))
+      }
+
+      if (borrowishPositionAuction.isPartiallyLiquidated) {
+        notifications.push(ajnaNotifications.gotPartiallyLiquidated(null))
+      }
+
+      if (borrowishPositionAuction.isLiquidated) {
+        notifications.push(ajnaNotifications.gotLiquidated(null))
+      }
+
+      if (borrowishPositionAuction.isBadDebt) {
+        notifications.push(ajnaNotifications.gotBadDebtLiquidated(null))
+      }
       break
     case 'earn': {
       const {
@@ -205,6 +264,7 @@ export function getAjnaNotifications({
       const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
       const depositIsNotWithdrawable = price.gt(mostOptimisticMatchingPrice)
       const emptyPosition = quoteTokenAmount.isZero()
+      const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
 
       const moveToAdjust = () => {
         dispatch({ type: 'reset' })
@@ -228,9 +288,13 @@ export function getAjnaNotifications({
         notifications.push(ajnaNotifications.emptyPosition({ quoteToken }))
       }
 
-      // TODO adjust it when data source available
-      // notifications.push(ajnaNotifications.lendingPriceFrozen(null))
-      // notifications.push(ajnaNotifications.bucketLiquidated(null))
+      if (earnPositionAuction.isBucketFrozen) {
+        notifications.push(ajnaNotifications.lendingPriceFrozen({ quoteToken }))
+      }
+
+      if (earnPositionAuction.isCollateralToWithdraw) {
+        notifications.push(ajnaNotifications.collateralToWithdraw(null))
+      }
 
       break
     }
