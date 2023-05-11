@@ -28,7 +28,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
             getNetworkRpcEndpoint(NetworkIds.MAINNET, chainId),
             chainId,
           )
-          provider = skipCache(chainId.toString())
+          provider = skipCache(chainId)
             ? jsonRpcBatchProvider
             : new JsonRpcCachedProvider(getNetworkRpcEndpoint(NetworkIds.MAINNET, chainId), chainId)
         } else {

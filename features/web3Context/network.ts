@@ -1,6 +1,6 @@
 import { networksByName } from 'blockchain/networksConfig'
 import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
-import { CustomNetworkStorageKey } from 'helpers/getCustomNetworkParameter'
+import { CustomNetworkStorageKey, mainnetNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { NetworkNames } from 'helpers/networkNames'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { getStorageValue } from 'helpers/useLocalStorage'
@@ -30,7 +30,10 @@ export function getNetworkName(): string {
   const defaultNetwork = NetworkNames.ethereumMainnet
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher') // not a hook :)
-  const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
+  const customNetworkData = getStorageValue<typeof mainnetNetworkParameter>(
+    CustomNetworkStorageKey,
+    '',
+  )
   if (useNetworkSwitcher && customNetworkData) {
     return customNetworkData.network || defaultNetwork
   }

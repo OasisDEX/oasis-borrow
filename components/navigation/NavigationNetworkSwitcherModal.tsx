@@ -13,7 +13,7 @@ import { NetworkNames } from 'helpers/networkNames'
 import React from 'react'
 import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
 
-export function NavigationNetworkSwitcherModal({ _close }: ModalProps<{}>) {
+export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>) {
   const [, setCustomNetwork] = useCustomNetworkParameter()
   const [hardhatSettings, setHardhatSettings] = useCustomHardhatParameter()
   const handleHardhatUpdate =

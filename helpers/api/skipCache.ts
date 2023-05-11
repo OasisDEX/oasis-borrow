@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networkIds'
 import { networksByName } from 'blockchain/networksConfig'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
@@ -5,11 +6,11 @@ function isLocalhost(url: string) {
   return url.includes('localhost') || url.includes('127.0.0.1')
 }
 
-function isUsingHardhat(chainId: string) {
+function isUsingHardhat(chainId: NetworkIds) {
   return chainId === networksByName['hardhat'].id
 }
 
-export function skipCache(chainId: string) {
+export function skipCache(chainId: NetworkIds) {
   // is NOT localHost & is using hardhat
   // server side will be unable to access hardhat node so we skip cache
 
