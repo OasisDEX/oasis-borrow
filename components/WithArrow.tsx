@@ -31,8 +31,10 @@ export function WithArrow({
       }}
       {...(as && { as })}
     >
-      <Box sx={{ display: 'inline', mr: gap }}>{children}</Box>
-      <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>
+      <Box as="span" sx={{ mr: gap }}>
+        {children}
+      </Box>
+      <Box as="span" className="arrow" sx={{ position: 'absolute' }}>
         →
       </Box>
     </Text>
