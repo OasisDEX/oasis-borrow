@@ -3,6 +3,7 @@ import { createAccount, CreateDPMAccount } from 'blockchain/calls/accountFactory
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
@@ -41,7 +42,7 @@ function extractDpmProxyFromTxnReceipt(
 ): UserDpmAccount | undefined {
   if ('receipt' in txnReceipt) {
     const logParser = new ethers.utils.Interface(
-      getNetworkContracts(context.chainId).accountFactory.abi.default,
+      getNetworkContracts(NetworkIds.MAINNET, context.chainId).accountFactory.abi.default,
     )
 
     // find proxy address event

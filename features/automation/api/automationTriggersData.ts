@@ -2,6 +2,7 @@ import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context, every5Seconds$ } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { PositionId } from 'features/aave/types'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
@@ -72,7 +73,7 @@ export function createAutomationTriggersData(
       return loadTriggerDataFromCache({
         positionId: id.toNumber(),
         proxyAddress: proxies.dpmProxy?.proxy,
-        cacheApi: getNetworkContracts(context.chainId).cacheApi,
+        cacheApi: getNetworkContracts(NetworkIds.MAINNET, context.chainId).cacheApi,
       })
     }),
     distinctUntilChanged((s1, s2) => {

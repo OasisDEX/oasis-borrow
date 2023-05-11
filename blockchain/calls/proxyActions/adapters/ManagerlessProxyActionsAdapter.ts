@@ -1,5 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
 import { ContractDesc } from 'features/web3Context'
 import { DssProxyActionsCharter, DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
@@ -44,7 +45,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
 
   openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {
     const { contract } = context
-    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     const { generateAmount, ilk } = data
     return contract<DssProxyActionsType>(
       this.resolveContractDesc(context),
@@ -62,7 +63,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     data: OpenData,
   ): NonPayableTransactionObject<string> {
     const { contract } = context
-    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     const { depositAmount, generateAmount, token, ilk } = data
     return contract<DssProxyActionsType>(
       this.resolveContractDesc(context),
@@ -77,7 +78,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
   }
 
   draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
-    const { mcdJoinDai, mcdJug } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, mcdJug } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.draw(
@@ -92,7 +93,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
-    const { joins } = getNetworkContracts(context.chainId)
+    const { joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.freeETH(
@@ -106,7 +107,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
-    const { joins } = getNetworkContracts(context.chainId)
+    const { joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.freeGem(
@@ -117,7 +118,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
   }
 
   lockETH(context: ContextConnected, data: DepositAndGenerateData): PayableTransactionObject<void> {
-    const { joins } = getNetworkContracts(context.chainId)
+    const { joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.lockETH(joins[data.ilk], data.id.toString())
@@ -127,7 +128,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: DepositAndGenerateData,
   ): PayableTransactionObject<void> {
-    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.lockETHAndDraw(
@@ -143,7 +144,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: DepositAndGenerateData,
   ): NonPayableTransactionObject<void> {
-    const { joins } = getNetworkContracts(context.chainId)
+    const { joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.lockGem(
@@ -157,7 +158,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: DepositAndGenerateData,
   ): NonPayableTransactionObject<void> {
-    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, mcdJug, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.lockGemAndDraw(
@@ -171,7 +172,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
   }
 
   wipe(context: ContextConnected, data: WithdrawAndPaybackData): NonPayableTransactionObject<void> {
-    const { mcdJoinDai } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.wipe(
@@ -185,7 +186,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
-    const { mcdJoinDai } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.wipeAll(mcdJoinDai.address, data.id.toString())
@@ -195,7 +196,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
-    const { mcdJoinDai, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.wipeAllAndFreeETH(
@@ -210,7 +211,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
-    const { mcdJoinDai, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.wipeAllAndFreeGem(
@@ -225,7 +226,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
-    const { mcdJoinDai, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.wipeAndFreeETH(
@@ -241,7 +242,7 @@ export abstract class ManagerlessProxyActionsContractAdapter<
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
-    const { mcdJoinDai, joins } = getNetworkContracts(context.chainId)
+    const { mcdJoinDai, joins } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
     return context
       .contract<DssProxyActionsType>(this.resolveContractDesc(context))
       .methods.wipeAndFreeGem(

@@ -1,4 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
@@ -38,7 +39,9 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
       uniq(
         [
           ...(contextData
-            ? Object.keys(getNetworkContracts(contextData.chainId).ajnaPoolPairs)
+            ? Object.keys(
+                getNetworkContracts(NetworkIds.MAINNET, contextData.chainId).ajnaPoolPairs,
+              )
             : []),
           ...ajnaComingSoonPools,
         ].map((pool) => pool.split('-')[isPoolReversed ? 1 : 0]),

@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import { claimMultiple, ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { TxHelpers } from 'components/AppContext'
 import { Web3Context } from 'features/web3Context'
 import { gql, GraphQLClient } from 'graphql-request'
@@ -54,7 +55,7 @@ export function createUserReferral$(
       if (web3Context.status !== 'connected') {
         return of({ state: 'walletConnectionInProgress' } as UserReferralState)
       }
-      const { cacheApi } = getNetworkContracts(web3Context.chainId)
+      const { cacheApi } = getNetworkContracts(NetworkIds.MAINNET, web3Context.chainId)
 
       return combineLatest(
         getUserFromApi$(web3Context.account, trigger$),

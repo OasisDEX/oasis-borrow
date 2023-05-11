@@ -2,6 +2,7 @@ import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { Tickers } from 'blockchain/prices'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
@@ -152,7 +153,7 @@ export function AutomationContextProvider({
     () => ({
       canInteract: context.status === 'connected' && context.account === controller,
       ethBalance,
-      etherscanUrl: getNetworkContracts(context.chainId).etherscan.url,
+      etherscanUrl: getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url,
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
       tokenMarketPrice: tokenPriceResolved,

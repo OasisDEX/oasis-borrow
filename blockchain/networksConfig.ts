@@ -17,9 +17,17 @@ import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainne
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
+import { NetworkIds } from './networkIds'
+
+export type NetworkConfigHexId = `0x${number | string}`
+
 export type NetworkConfig = {
-  id: `${number}`
-  hexId: `0x${number | string}`
+  id: NetworkIds
+  hexId: NetworkConfigHexId
+  testnetHexId?: NetworkConfigHexId
+  mainnetHexId?: NetworkConfigHexId
+  testnetId?: NetworkIds
+  mainnetId?: NetworkIds
   name: NetworkNames
   label: NetworkLabelType
   color: `#${number | string}`
@@ -27,7 +35,7 @@ export type NetworkConfig = {
   testnet: boolean
   enabled: boolean
   token: string
-  rpcCallsEndpoint: string
+  rpcUrl: string
 }
 
 export function contractDesc(
@@ -39,8 +47,10 @@ export function contractDesc(
 }
 
 const mainnetConfig: NetworkConfig = {
-  id: '1',
+  id: NetworkIds.MAINNET,
   hexId: '0x1',
+  testnetHexId: '0x5',
+  testnetId: NetworkIds.GOERLI,
   token: 'ETH',
   name: NetworkNames.ethereumMainnet,
   label: 'Ethereum',
@@ -48,12 +58,14 @@ const mainnetConfig: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   testnet: false,
   enabled: true,
-  rpcCallsEndpoint: mainnetRpc,
+  rpcUrl: mainnetRpc,
 }
 
 const goerliConfig: NetworkConfig = {
-  id: '5',
+  id: NetworkIds.GOERLI,
   hexId: '0x5',
+  mainnetHexId: '0x1',
+  mainnetId: NetworkIds.MAINNET,
   token: 'GoerliETH',
   name: NetworkNames.ethereumGoerli,
   label: 'Ethereum Goerli',
@@ -61,25 +73,14 @@ const goerliConfig: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   testnet: true,
   enabled: true,
-  rpcCallsEndpoint: goerliRpc,
-}
-
-const hardhatConfig: NetworkConfig = {
-  id: '2137',
-  hexId: '0x859',
-  name: NetworkNames.ethereumHardhat,
-  label: 'Ethereum Hardhat',
-  color: '#728aee',
-  icon: ethereumMainnetIcon as string,
-  testnet: true,
-  enabled: true,
-  token: 'ETH',
-  rpcCallsEndpoint: `http://localhost:8545`,
+  rpcUrl: goerliRpc,
 }
 
 const arbitrumMainnetConfig: NetworkConfig = {
-  id: '42161',
+  id: NetworkIds.ARBITRUMMAINNET,
   hexId: '0xa4b1',
+  testnetHexId: '0x66eed',
+  testnetId: NetworkIds.ARBITRUMGOERLI,
   name: NetworkNames.arbitrumMainnet,
   label: 'Arbitrum',
   color: '#28a0f0',
@@ -87,25 +88,29 @@ const arbitrumMainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: arbitrumMainnetRpc,
+  rpcUrl: arbitrumMainnetRpc,
 }
 
 const arbitrumGoerliConfig: NetworkConfig = {
-  id: '421613',
+  id: NetworkIds.ARBITRUMGOERLI,
   hexId: '0x66eed',
+  mainnetHexId: '0xa4b1',
+  mainnetId: NetworkIds.ARBITRUMMAINNET,
   name: NetworkNames.arbitrumGoerli,
   label: 'Arbitrum Goerli',
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
-  testnet: false,
+  testnet: true,
   enabled: true,
   token: 'AGOR',
-  rpcCallsEndpoint: arbitrumGoerliRpc,
+  rpcUrl: arbitrumGoerliRpc,
 }
 
 const polygonMainnetConfig: NetworkConfig = {
-  id: '137',
+  id: NetworkIds.POLYGONMAINNET,
   hexId: '0x89',
+  testnetHexId: '0x13881',
+  testnetId: NetworkIds.POLYGONMUMBAI,
   name: NetworkNames.polygonMainnet,
   label: 'Polygon',
   color: '#9866ed',
@@ -113,25 +118,29 @@ const polygonMainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: polygonMainnetRpc,
+  rpcUrl: polygonMainnetRpc,
 }
 
 const polygonMumbaiConfig: NetworkConfig = {
-  id: '80001',
+  id: NetworkIds.POLYGONMUMBAI,
   hexId: '0x13881',
+  mainnetHexId: '0x89',
+  mainnetId: NetworkIds.POLYGONMAINNET,
   name: NetworkNames.polygonMumbai,
   label: 'Polygon Mumbai',
   color: '#9866ed',
   icon: polygonMainnetIcon as string,
-  testnet: false,
+  testnet: true,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: polygonMumbaiRpc,
+  rpcUrl: polygonMumbaiRpc,
 }
 
 const optimismMainnetConfig: NetworkConfig = {
-  id: '10',
+  id: NetworkIds.OPTIMISMMAINNET,
   hexId: '0xa',
+  testnetHexId: '0x1A4',
+  testnetId: NetworkIds.OPTIMISMGOERLI,
   name: NetworkNames.optimismMainnet,
   label: 'Optimism',
   color: '#ff3f49',
@@ -139,20 +148,22 @@ const optimismMainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: optimismMainnetRpc,
+  rpcUrl: optimismMainnetRpc,
 }
 
 const optimismGoerliConfig: NetworkConfig = {
-  id: '420',
-  hexId: '0x1a4',
-  name: NetworkNames.optimismMainnet,
+  id: NetworkIds.OPTIMISMGOERLI,
+  hexId: '0x1A4',
+  mainnetHexId: '0xa',
+  mainnetId: NetworkIds.OPTIMISMMAINNET,
+  name: NetworkNames.optimismGoerli,
   label: 'Optimism Goerli',
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
-  testnet: false,
+  testnet: true,
   enabled: true,
   token: 'ETH',
-  rpcCallsEndpoint: optimismGoerliRpc,
+  rpcUrl: optimismGoerliRpc,
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -164,15 +175,14 @@ export const emptyNetworkConfig: NetworkConfig = {
   icon: 'empty',
   testnet: false,
   enabled: true,
-  id: '0',
+  id: NetworkIds.EMPTYNET,
   token: 'ETH',
-  rpcCallsEndpoint: 'empty',
+  rpcUrl: 'empty',
 }
 
-export const networks = [
-  mainnetConfig,
-  hardhatConfig,
-  goerliConfig,
+export const mainnetNetworks = [mainnetConfig, goerliConfig]
+
+export const L2Networks = [
   arbitrumMainnetConfig,
   arbitrumGoerliConfig,
   polygonMainnetConfig,
@@ -180,6 +190,22 @@ export const networks = [
   optimismMainnetConfig,
   optimismGoerliConfig,
 ]
+
+export const defaultHardhatConfig: NetworkConfig = {
+  id: NetworkIds.HARDHAT,
+  hexId: '0x859',
+  name: NetworkNames.ethereumMainnet, // these are being overridden
+  label: 'Ethereum', // these are being overridden
+  color: '#728aee',
+  icon: ethereumMainnetIcon as string,
+  testnet: true,
+  enabled: false,
+  token: 'ETH',
+  rpcUrl: '',
+}
+
+export const networks = [...mainnetNetworks, ...L2Networks]
+
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')
 export const networksByHexId = keyBy(networks, 'hexId')

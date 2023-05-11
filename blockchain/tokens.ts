@@ -7,6 +7,7 @@ import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
+import { NetworkIds } from './networkIds'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export function createBalance$(
@@ -44,7 +45,7 @@ export function createCollateralTokens$(
 export function createAaveCollateralTokens$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
     map(({ chainId }) => {
-      return Object.keys(getNetworkContracts(chainId).aaveTokens)
+      return Object.keys(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveTokens)
     }),
   )
 }

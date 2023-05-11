@@ -2,6 +2,7 @@ import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { contractDesc } from 'blockchain/networksConfig'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import { AutomationBotAggregator, DsProxy } from 'types/web3-v1-contracts'
@@ -31,7 +32,7 @@ export const addAutomationBotAggregatorTrigger: TransactionDef<AutomationBotAddA
       ]
     },
     prepareArgs: (data, context) => [
-      getNetworkContracts(context.chainId).automationBotAggregator.address,
+      getNetworkContracts(NetworkIds.MAINNET, context.chainId).automationBotAggregator.address,
       getAddAutomationAggregatotTriggerCallData(data, context).encodeABI(),
     ],
   }
@@ -43,7 +44,7 @@ function getAddAutomationAggregatotTriggerCallData(
   const { contract, chainId } = context
 
   return contract<AutomationBotAggregator>(
-    getNetworkContracts(chainId).automationBotAggregator,
+    getNetworkContracts(NetworkIds.MAINNET, chainId).automationBotAggregator,
   ).methods.addTriggerGroup(
     CONSTANT_MULTIPLE_GROUP_TYPE,
     data.replacedTriggerIds,
@@ -59,7 +60,7 @@ export const removeAutomationBotAggregatorTriggers: TransactionDef<AutomationBot
       ]
     },
     prepareArgs: (data, context) => [
-      getNetworkContracts(context.chainId).automationBotAggregator.address,
+      getNetworkContracts(NetworkIds.MAINNET, context.chainId).automationBotAggregator.address,
       getRemoveAutomationBotAggregatorTriggersCallData(data, context).encodeABI(),
     ],
   }
@@ -71,6 +72,6 @@ function getRemoveAutomationBotAggregatorTriggersCallData(
   const { contract, chainId } = context
 
   return contract<AutomationBotAggregator>(
-    getNetworkContracts(chainId).automationBotAggregator,
+    getNetworkContracts(NetworkIds.MAINNET, chainId).automationBotAggregator,
   ).methods.removeTriggers(data.triggersId, data.removeAllowance)
 }

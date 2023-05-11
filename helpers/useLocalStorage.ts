@@ -1,11 +1,12 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useEventCallback, useEventListener } from 'usehooks-ts'
 
-export function getStorageValue(key: string, defaultValue: unknown) {
+export function getStorageValue<V>(key: string, defaultValue: unknown) {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem(key)
-    return saved !== null ? JSON.parse(saved) : defaultValue
+    return saved !== null ? (JSON.parse(saved) as V) : (defaultValue as V)
   }
+  return defaultValue as V
 }
 
 type SetValue<T> = Dispatch<SetStateAction<T>>

@@ -1,5 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
@@ -69,7 +70,7 @@ export function getAaveV2PositionLiquidation$(
     switchMap(
       async ({ chainId, rpcProvider }) =>
         await getLastLiquidationEvent(
-          getNetworkContracts(chainId).aaveV2LendingPool,
+          getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2LendingPool,
           rpcProvider,
           proxyAddress,
         ),

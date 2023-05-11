@@ -1,18 +1,32 @@
-import { SendFunction, TxMeta } from '@oasisdex/transactions'
-import {
-  CallDef as CallDefAbstractContext,
-  createSendTransaction as createSendTransactionAbstractContext,
-  createSendWithGasConstraints1559 as createSendWithGasConstraintsAbstractContext,
-  estimateGas as estimateGasAbstractContext,
-  EstimateGasFunction as EstimateGasFunctionAbstractContext,
-  SendTransactionFunction as SendTransactionFunctionAbstractContext,
-  TransactionDef as TransactionDefAbstractContext,
-} from '@oasisdex/transactions'
+import { SendFunction, TxMeta, TxState } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context, ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { GasPrice$ } from 'blockchain/prices'
-import { from, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { combineLatest, from, Observable } from 'rxjs'
+import { first, map, switchMap } from 'rxjs/operators'
+
+export type TxOptions = { to?: string; value?: string; from?: string; gas?: number }
+export type ArgsType = Array<string | string[] | number | number[] | boolean>
+export interface CallDefAbstractContext<A, R, C extends Context> {
+  call: (args: A, context: C, account?: string) => any
+  prepareArgs: (args: A, context: C, account?: string) => any[]
+  postprocess?: (r: R, a: A) => R
+}
+
+export interface TransactionDefAbstractContext<A extends TxMeta, CC extends ContextConnected> {
+  call?: (args: A, context: CC, account?: string) => any
+  prepareArgs: (args: A, context: CC, account?: string) => ArgsType
+  options?: (args: A) => TxOptions
+}
+
+export type EstimateGasFunctionAbstractContext<A extends TxMeta, CC extends ContextConnected> = <
+  B extends A,
+>(
+  def: TransactionDefAbstractContext<B, CC>,
+  args: B,
+) => Observable<number>
 
 export type CallDef<A, R> = CallDefAbstractContext<A, R, Context>
 
@@ -22,14 +36,106 @@ export type EstimateGasFunction<A extends TxMeta> = EstimateGasFunctionAbstractC
   A,
   ContextConnected
 >
+export type SendTransactionFunctionAbstractContext<
+  A extends TxMeta,
+  CC extends ContextConnected,
+> = <B extends A>(def: TransactionDefAbstractContext<B, CC>, args: B) => Observable<TxState<B>>
+
 export type SendTransactionFunction<A extends TxMeta> = SendTransactionFunctionAbstractContext<
   A,
   ContextConnected
 >
 
+type GasPriceParams = {
+  maxFeePerGas: BigNumber
+  maxPriorityFeePerGas: BigNumber
+}
+type GasPrice1559$ = Observable<GasPriceParams>
+
+export function createSendTransactionAbstractContext<A extends TxMeta, CC extends ContextConnected>(
+  send: SendFunction<A>,
+  context: CC,
+): SendTransactionFunctionAbstractContext<A, CC> {
+  return <B extends A>(
+    { call, prepareArgs, options }: TransactionDefAbstractContext<B, CC>,
+    args: B,
+  ): Observable<TxState<B>> => {
+    return send(context.account, context.id as unknown as string, args, () =>
+      call
+        ? call(
+            args,
+            context,
+            context.account,
+          )(...prepareArgs(args, context, context.account)).send({
+            from: context.account,
+            ...(options ? options(args) : {}),
+          })
+        : context.web3.eth.sendTransaction({
+            from: context.account,
+            ...(options ? options(args) : {}),
+          }),
+    ) as Observable<TxState<B>>
+  }
+}
+
+export function createSendWithGasConstraintsAbstractContext<
+  A extends TxMeta,
+  CC extends ContextConnected,
+>(send: SendFunction<A>, context: CC, gasPrice$: GasPrice1559$, gasMultiplier?: number) {
+  return <B extends A>(
+    callData: TransactionDefAbstractContext<B, ContextConnected>,
+    args: B,
+  ): Observable<TxState<B>> => {
+    return combineLatest(estimateGas(context, callData, args, gasMultiplier), gasPrice$).pipe(
+      first(),
+      switchMap(([gas, gasPrice]) => {
+        return createSendTransaction(send, context)(
+          {
+            ...callData,
+            options: (args1: B) => ({
+              ...(callData.options ? callData.options(args1) : {}),
+              gas,
+              maxPriorityFeePerGas: gasPrice.maxPriorityFeePerGas.toFixed(0),
+              maxFeePerGas: gasPrice.maxFeePerGas.toFixed(0),
+            }),
+          },
+          args,
+        )
+      }),
+    )
+  }
+}
+
+export function estimateGasAbstractContext<A extends TxMeta, CC extends ContextConnected>(
+  context: CC,
+  { call, prepareArgs, options }: TransactionDefAbstractContext<A, CC>,
+  args: A,
+  gasMultiplier?: number,
+): Observable<number> {
+  const result = from<number[]>(
+    (call
+      ? call(
+          args,
+          context,
+          context.status === 'connected' ? context.account : undefined,
+        )(...prepareArgs(args, context, context.account))
+      : context.web3.eth
+    ).estimateGas({
+      from: context.account,
+      ...(options ? options(args) : {}),
+    }),
+  ).pipe(
+    map((e: number) => {
+      return gasMultiplier ? Math.floor(e * gasMultiplier) : Math.floor(e)
+    }),
+  )
+
+  return result as Observable<number>
+}
+
 export function callAbstractContext<D, R, CC extends Context>(
   context: CC,
-  { call, prepareArgs, postprocess }: CallDefAbstractContext<D, R, CC>,
+  { call, prepareArgs, postprocess }: CallDefAbstractContext<D, R, Context>,
 ): (args: D) => Observable<R> {
   return (args: D) => {
     return from<R>(
@@ -38,7 +144,7 @@ export function callAbstractContext<D, R, CC extends Context>(
         context,
       )(...prepareArgs(args, context)).call(
         // spot neccessary to read osms in readonly
-        { from: getNetworkContracts(context.chainId).mcdSpot.address },
+        { from: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdSpot.address },
       ),
     ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)))
   }

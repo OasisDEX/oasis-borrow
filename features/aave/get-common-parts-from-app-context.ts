@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from 'blockchain/calls/observe'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AppContext } from 'components/AppContext'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -34,7 +35,9 @@ export function getCommonPartsFromAppContext({
 }: AppContext) {
   const disconnectedGraphQLClient$ = context$.pipe(
     distinctUntilKeyChanged('chainId'),
-    map(({ chainId }) => new GraphQLClient(getNetworkContracts(chainId).cacheApi)),
+    map(
+      ({ chainId }) => new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi),
+    ),
   )
 
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ContractDesc } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
@@ -181,7 +182,7 @@ export function createExchangeQuote$(
 ) {
   return context$.pipe(
     switchMap((context) => {
-      const contracts = getNetworkContracts(context.chainId)
+      const contracts = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
       const tokensMainnet = contracts.tokensMainnet
       const exchange = contracts[exchangeType]
 
