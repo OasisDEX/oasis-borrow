@@ -96,18 +96,20 @@ export function createVaultsFromIds$(
   return combineLatest(refreshInterval, context$, followedVaults$(address)).pipe(
     switchMap(([_, context, followedVaults]) =>
       combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
-        switchMap(() =>
-          followedVaults.length === 0
-            ? of([])
-            : combineLatest(
-                followedVaults
-                  .filter((vault) => vault.vault_chain_id === context.chainId)
-                  .filter((vault) => vault.protocol === 'maker') // TODO: ŁW - add support for other protocols
-                  .map((followedVault) =>
-                    vault$(new BigNumber(followedVault.vault_id), context.chainId),
-                  ),
-              ),
-        ),
+        switchMap(() => {
+          const filteredVaults = followedVaults
+            .filter((vault) => vault.vault_chain_id === context.chainId)
+            .filter((vault) => vault.protocol === 'maker') // TODO: ŁW - add support for other protocols
+            .map((followedVault) => {
+              if (followedVault) {
+                return vault$(new BigNumber(followedVault.vault_id), context.chainId)
+              }
+
+              return null
+            })
+
+          return filteredVaults.length === 0 ? of([]) : combineLatest(filteredVaults)
+        }),
         distinctUntilChanged<Vault[]>(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
       ),
