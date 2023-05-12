@@ -11,7 +11,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { useWindowSize } from 'helpers/useWindowSize'
-import { LendingProtocolLongName } from 'lendingProtocols'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
@@ -110,7 +110,7 @@ export function ProductCardProtocolLink({
     <Box sx={{ paddingRight: '10px' }}>
       <AppLink href={link}>
         <WithArrow variant="styles.a" gap="1">
-          {LendingProtocolLongName[protocol]}
+          {LendingProtocolLabel[protocol]}
         </WithArrow>
       </AppLink>
     </Box>
