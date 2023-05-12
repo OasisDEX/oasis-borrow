@@ -77,7 +77,11 @@ export function PageSEOTags({
     : (query.network as string)
   const tabTitle = `${
     networkParameter
-      ? properNetworkIconMap[networkParameter as keyof typeof properNetworkIconMap]
+      ? properNetworkIconMap[
+          networkParameter.includes('hardhat')
+            ? 'hardhat'
+            : (networkParameter as keyof typeof properNetworkIconMap)
+        ]
       : ''
   }${titleParams ? t(title, titleParams) : t(title)}`
 

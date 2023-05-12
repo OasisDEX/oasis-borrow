@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV3PoolDataProvider } from 'types/web3-v1-contracts'
 
@@ -45,11 +46,12 @@ export const getAaveV3UserReserveData: CallDef<
   AaveV3UserReserveData
 > = {
   call: (args, { contract, chainId }) => {
-    return contract<AaveV3PoolDataProvider>(getNetworkContracts(chainId).aaveV3PoolDataProvider)
-      .methods.getUserReserveData
+    return contract<AaveV3PoolDataProvider>(
+      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
+    ).methods.getUserReserveData
   },
   prepareArgs: ({ token, address }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[token].address, address]
+    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address, address]
   },
   postprocess: (result, args) => {
     return {
@@ -82,10 +84,11 @@ export const getAaveV3UserReserveData: CallDef<
 
 export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3ReserveDataReply> = {
   call: (_, { contract, chainId }) =>
-    contract<AaveV3PoolDataProvider>(getNetworkContracts(chainId).aaveV3PoolDataProvider).methods
-      .getReserveData,
+    contract<AaveV3PoolDataProvider>(
+      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
+    ).methods.getReserveData,
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[token].address]
+    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
   },
   postprocess: (result, { token }) => {
     return {
@@ -127,11 +130,12 @@ export const getAaveV3ReserveConfigurationData: CallDef<
   AaveV3ReserveConfigurationData
 > = {
   call: (args, { contract, chainId }) => {
-    return contract<AaveV3PoolDataProvider>(getNetworkContracts(chainId).aaveV3PoolDataProvider)
-      .methods.getReserveConfigurationData
+    return contract<AaveV3PoolDataProvider>(
+      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
+    ).methods.getReserveConfigurationData
   },
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[token].address]
+    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
   },
   postprocess: (result) => {
     return {
@@ -144,11 +148,12 @@ export const getAaveV3ReserveConfigurationData: CallDef<
 
 export const getAaveV3EModeCategoryForAsset: CallDef<{ token: string }, BigNumber> = {
   call: (args, { contract, chainId }) => {
-    return contract<AaveV3PoolDataProvider>(getNetworkContracts(chainId).aaveV3PoolDataProvider)
-      .methods.getReserveEModeCategory
+    return contract<AaveV3PoolDataProvider>(
+      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
+    ).methods.getReserveEModeCategory
   },
   prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(chainId).tokens[token].address]
+    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
   },
   postprocess: (result) => {
     return new BigNumber(result)

@@ -1,5 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
@@ -44,7 +45,7 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
 
   const rows = useMemo(
     () => [
-      ...Object.keys(getNetworkContracts(chainId).ajnaPoolPairs)
+      ...Object.keys(getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaPoolPairs)
         .map(splitPool)
         .filter((pool) => filterPools(pool, isPoolReversed, selectedValue))
         .map((pool) => {
@@ -69,7 +70,10 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
         }),
       ...ajnaComingSoonPools
         .filter(
-          (pool) => !Object.keys(getNetworkContracts(chainId).ajnaPoolPairs || []).includes(pool),
+          (pool) =>
+            !Object.keys(
+              getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaPoolPairs || [],
+            ).includes(pool),
         )
         .map(splitPool)
         .filter((pools) => filterPools(pools, isPoolReversed, selectedValue))

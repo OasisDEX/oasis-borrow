@@ -2,14 +2,12 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { reclaim, ReclaimData } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ContextConnected } from 'blockchain/network'
+import { Context, ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
 import { TxError } from 'helpers/types'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { scan, startWith, switchMap } from 'rxjs/operators'
-
-import { Context } from '@oasisdex/transactions/lib/src/callHelpersContextParametrized'
 
 export type ReclaimChange =
   | { kind: 'reclaimWaitingForApproval' }

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'
@@ -58,7 +59,7 @@ const eventSigntures: Dictionary<string[]> = {
 }
 
 async function getBlockTimestamp({ chainId }: Context, blockNumber: number): Promise<number> {
-  const apiClient = new GraphQLClient(getNetworkContracts(chainId).cacheApi)
+  const apiClient = new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
   const block = await apiClient.request(historicalBlockNumbers, {
     blockNumber,
   })
@@ -73,7 +74,7 @@ function createEventTypeHistory$(
 ): Observable<DsrEvent> {
   const potEvents$ = fromPromise(
     context.web3ProviderGetPastLogs.eth.getPastLogs({
-      address: getNetworkContracts(context.chainId).mcdPot.address,
+      address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdPot.address,
       topics: [eventSigntures[kind][0], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
     }),
@@ -81,7 +82,7 @@ function createEventTypeHistory$(
 
   const adapterEvents$ = fromPromise(
     context.web3ProviderGetPastLogs.eth.getPastLogs({
-      address: getNetworkContracts(context.chainId).mcdJoinDai.address,
+      address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdJoinDai.address,
       topics: [eventSigntures[kind][1], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
     }),
@@ -105,7 +106,7 @@ function createEventTypeHistory$(
         block: potEvent.blockNumber,
         txHash: potEvent.transactionHash,
         amount: joinEvent.topics && new BigNumber(joinEvent.topics[3]),
-        interactAddress: getNetworkContracts(context.chainId).mcdPot.address,
+        interactAddress: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdPot.address,
         gem: 'DAI',
       }
     }),

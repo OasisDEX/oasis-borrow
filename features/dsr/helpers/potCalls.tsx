@@ -4,34 +4,35 @@ import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { contractDesc } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DsProxy, DssProxyActionsDsr, McdPot } from 'types/web3-v1-contracts'
 
 export const pie: CallDef<string, BigNumber> = {
   call: (_, { contract, chainId }) =>
-    contract<McdPot>(getNetworkContracts(chainId).mcdPot).methods.pie,
+    contract<McdPot>(getNetworkContracts(NetworkIds.MAINNET, chainId).mcdPot).methods.pie,
   prepareArgs: (proxyAddress) => [proxyAddress],
   postprocess: (result) => new BigNumber(result),
 }
 
 export const Pie: CallDef<void, BigNumber> = {
   call: (_, { contract, chainId }) =>
-    contract<McdPot>(getNetworkContracts(chainId).mcdPot).methods.Pie,
+    contract<McdPot>(getNetworkContracts(NetworkIds.MAINNET, chainId).mcdPot).methods.Pie,
   prepareArgs: () => [],
   postprocess: (result) => new BigNumber(result),
 }
 
 export const dsr: CallDef<void, BigNumber> = {
   call: (_, { contract, chainId }) =>
-    contract<McdPot>(getNetworkContracts(chainId).mcdPot).methods.dsr,
+    contract<McdPot>(getNetworkContracts(NetworkIds.MAINNET, chainId).mcdPot).methods.dsr,
   prepareArgs: () => [],
   postprocess: (result) => new BigNumber(result),
 }
 
 export const chi: CallDef<void, BigNumber> = {
   call: (_, { contract, chainId }) =>
-    contract<McdPot>(getNetworkContracts(chainId).mcdPot).methods.chi,
+    contract<McdPot>(getNetworkContracts(NetworkIds.MAINNET, chainId).mcdPot).methods.chi,
   prepareArgs: () => [],
   postprocess: (result) => new BigNumber(result),
 }
@@ -48,7 +49,10 @@ export const join: TransactionDef<DsrJoinData> = {
   prepareArgs: (data, context) => {
     const { amount } = data
     const { contract } = context
-    const { dssProxyActionsDsr, mcdJoinDai, mcdPot } = getNetworkContracts(context.chainId)
+    const { dssProxyActionsDsr, mcdJoinDai, mcdPot } = getNetworkContracts(
+      NetworkIds.MAINNET,
+      context.chainId,
+    )
     return [
       dssProxyActionsDsr.address,
       contract<DssProxyActionsDsr>(dssProxyActionsDsr)
@@ -74,7 +78,10 @@ export const exit: TransactionDef<DsrExitData> = {
   prepareArgs: (data, context) => {
     const { amount } = data
     const { contract } = context
-    const { dssProxyActionsDsr, mcdJoinDai, mcdPot } = getNetworkContracts(context.chainId)
+    const { dssProxyActionsDsr, mcdJoinDai, mcdPot } = getNetworkContracts(
+      NetworkIds.MAINNET,
+      context.chainId,
+    )
     return [
       dssProxyActionsDsr.address,
       contract<DssProxyActionsDsr>(dssProxyActionsDsr)
@@ -98,7 +105,10 @@ export const exitAll: TransactionDef<DsrExitAllData> = {
     contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)'],
   prepareArgs: (data, context) => {
     const { contract } = context
-    const { dssProxyActionsDsr, mcdJoinDai, mcdPot } = getNetworkContracts(context.chainId)
+    const { dssProxyActionsDsr, mcdJoinDai, mcdPot } = getNetworkContracts(
+      NetworkIds.MAINNET,
+      context.chainId,
+    )
     return [
       dssProxyActionsDsr.address,
       contract<DssProxyActionsDsr>(dssProxyActionsDsr)

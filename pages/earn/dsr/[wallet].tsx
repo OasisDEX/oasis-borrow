@@ -1,4 +1,3 @@
-import { ProtocolLongNames } from 'blockchain/tokensMetadata'
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
@@ -7,6 +6,7 @@ import { DsrViewContainer } from 'features/dsr/containers/DsrViewContainer'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -33,7 +33,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
               title="seo.title-dsr"
               titleParams={{
                 product: t('seo.earn.title'),
-                protocol: ProtocolLongNames.maker,
+                protocol: LendingProtocolLabel.Maker,
               }}
               description="seo.multiply.description"
               url="/earn/dsr"

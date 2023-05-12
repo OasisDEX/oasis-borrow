@@ -6,6 +6,7 @@ import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operator
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
+import { NetworkIds } from './networkIds'
 
 function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {
   const supportedIlks = Object.keys(joins)
@@ -28,7 +29,7 @@ export function createGetRegistryCdps$(
             return of([])
           }
           const supportedIlks = filterSupportedIlksOnNetwork(
-            getNetworkContracts(chainId).joins,
+            getNetworkContracts(NetworkIds.MAINNET, chainId).joins,
             ilks,
           )
 

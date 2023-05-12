@@ -1,10 +1,12 @@
 import { MainNetworkNames } from 'helpers/networkNames'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { LendingProtocol } from 'lendingProtocols'
 import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
+import { NetworkIds } from './networkIds'
 
 export interface TokenConfig {
   symbol: string
@@ -30,18 +32,12 @@ export interface TokenConfig {
   background: string
   digitsInstant?: number
   safeCollRatio?: number
-  protocol: 'maker' | 'aaveV2' | 'aaveV3'
+  protocol: LendingProtocol
   chain: MainNetworkNames
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
-
-export enum ProtocolLongNames {
-  maker = 'Maker',
-  aaveV2 = 'Aave V2',
-  aaveV3 = 'Aave V3',
-}
 
 export const tokens: TokenConfig[] = [
   {
@@ -58,7 +54,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -75,7 +71,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_steth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_stETH.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -93,7 +89,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -111,7 +107,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -131,7 +127,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/MAKER_ETH.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -147,7 +143,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -169,7 +165,7 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_WBTC.gif'),
     tags: [],
     rootToken: 'BTC',
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -191,7 +187,7 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/renBTC.gif'),
     tags: [],
     rootToken: 'BTC',
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -207,7 +203,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -223,7 +219,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -241,7 +237,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_mana.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_MANA.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -257,7 +253,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -273,7 +269,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -289,7 +285,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -305,7 +301,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -323,7 +319,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_link.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_LINK.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -341,7 +337,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_gusd.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_GUSD.gif'),
     tags: ['stablecoin'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -357,7 +353,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -376,7 +372,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/usdc.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/usdc.gif'),
     tags: ['stablecoin'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -393,7 +389,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -412,7 +408,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_yfi.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_YFI.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -430,7 +426,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -447,7 +443,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -464,7 +460,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.gif'),
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -481,7 +477,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.gif'),
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -498,7 +494,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_eth.gif'),
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -515,7 +511,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.gif'),
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -532,7 +528,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -549,7 +545,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.gif'),
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -566,7 +562,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -583,7 +579,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.gif'),
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -600,7 +596,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -617,7 +613,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -636,7 +632,7 @@ export const tokens: TokenConfig[] = [
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -655,7 +651,7 @@ export const tokens: TokenConfig[] = [
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -674,7 +670,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_matic.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_MATIC.gif'),
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -695,7 +691,7 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/Maker_stETH.gif'),
     tags: [],
     rootToken: 'ETH',
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -714,7 +710,7 @@ export const tokens: TokenConfig[] = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -731,7 +727,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.gif'),
     tags: ['lp-token'],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -748,7 +744,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
-    protocol: 'aaveV2',
+    protocol: LendingProtocol.AaveV2,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -765,7 +761,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
-    protocol: 'aaveV2',
+    protocol: LendingProtocol.AaveV2,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -782,7 +778,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_ETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
     tags: [],
-    protocol: 'aaveV2',
+    protocol: LendingProtocol.AaveV2,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -799,7 +795,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_WBTC.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_WBTC_v2.gif'),
     tags: [],
-    protocol: 'aaveV2',
+    protocol: LendingProtocol.AaveV2,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -816,7 +812,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_v3_stETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v3.gif'),
     tags: [],
-    protocol: 'aaveV3',
+    protocol: LendingProtocol.AaveV3,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -833,7 +829,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_ETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
     tags: [],
-    protocol: 'aaveV2',
+    protocol: LendingProtocol.AaveV2,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -852,7 +848,7 @@ export const tokens: TokenConfig[] = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.gif'),
     rootToken: 'ETH',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -874,7 +870,7 @@ export const tokens: TokenConfig[] = [
     coinpaprikaTicker: 'cbeth-coinbase-wrapped-staked-eth',
     rootToken: 'ETH',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
@@ -892,7 +888,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: '',
     bannerGif: '',
     tags: [],
-    protocol: 'maker',
+    protocol: LendingProtocol.Maker,
     chain: MainNetworkNames.ethereumMainnet,
   },
 ]
@@ -931,7 +927,7 @@ export function getTokensWithChain(
 
 export function getTokenSymbolFromAddress({ chainId }: Context, tokenAddress: string) {
   const token = findKey(
-    getNetworkContracts(chainId).tokens,
+    getNetworkContracts(NetworkIds.MAINNET, chainId).tokens,
     (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
   )
   if (!token) {

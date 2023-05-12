@@ -26,6 +26,7 @@ function AaveHeader({
   const { t } = useTranslation()
   const { getAaveAssetsPrices$, chainlinkUSDCUSDOraclePrice$ } = useAaveContext(
     strategyConfig.protocol,
+    strategyConfig.network,
   )
   const [positionTokenPrices, positionTokenPricesError] = useObservable(
     getAaveAssetsPrices$({

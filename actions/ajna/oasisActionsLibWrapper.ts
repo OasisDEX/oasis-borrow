@@ -2,6 +2,7 @@ import { AjnaEarnPosition, AjnaPosition, strategies } from '@oasisdex/oasis-acti
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaGenericPosition, AjnaPoolPairs } from 'features/ajna/common/types'
@@ -42,7 +43,7 @@ export async function getAjnaParameters({
   const collateralTokenPrecision = getToken(collateralToken).precision
 
   const { action, dpmAddress } = state
-  const addressesConfig = getNetworkContracts(context.chainId)
+  const addressesConfig = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
 
   const dependencies = {
     ajnaProxyActions: addressesConfig.ajnaProxyActions.address,
@@ -149,7 +150,8 @@ export async function getAjnaParameters({
         {
           ...dependencies,
           getEarnData: getAjnaEarnData,
-          rewardsManagerAddress: getNetworkContracts(context.chainId).ajnaRewardsManager.address,
+          rewardsManagerAddress: getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+            .ajnaRewardsManager.address,
         },
       )
     }

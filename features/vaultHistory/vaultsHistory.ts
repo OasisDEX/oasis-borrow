@@ -2,6 +2,7 @@ import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import {
   AutoBSTriggerData,
@@ -165,7 +166,7 @@ export function vaultsWithHistory$(
     switchMap(() => combineLatest(context$, vaults$(address))),
     distinctUntilChanged(isEqual),
     switchMap(([{ chainId }, vaults]: [Context, VaultWithValue<VaultWithType>[]]) => {
-      const apiClient = makeClient(getNetworkContracts(chainId).cacheApi)
+      const apiClient = makeClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
       return from(
         getDataFromCache(
           apiClient,

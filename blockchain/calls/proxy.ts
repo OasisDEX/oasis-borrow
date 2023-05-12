@@ -2,6 +2,7 @@ import { nullAddress } from '@oasisdex/utils'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { contractDesc } from 'blockchain/networksConfig'
 import { isEqual } from 'lodash'
 import { combineLatest, defer, Observable, of } from 'rxjs'
@@ -21,7 +22,8 @@ import { TxMetaKind } from './txMeta'
 
 export const proxyAddress: CallDef<string, string> = {
   call: (_, { chainId, contract }) =>
-    contract<DsProxyRegistry>(getNetworkContracts(chainId).dsProxyRegistry).methods.proxies,
+    contract<DsProxyRegistry>(getNetworkContracts(NetworkIds.MAINNET, chainId).dsProxyRegistry)
+      .methods.proxies,
   prepareArgs: (address) => [address],
 }
 
@@ -90,7 +92,8 @@ export type CreateDsProxyData = {
 
 export const createDsProxy: TransactionDef<CreateDsProxyData> = {
   call: (_, { chainId, contract }) =>
-    contract<DsProxyRegistry>(getNetworkContracts(chainId).dsProxyRegistry).methods['build()'],
+    contract<DsProxyRegistry>(getNetworkContracts(NetworkIds.MAINNET, chainId).dsProxyRegistry)
+      .methods['build()'],
   prepareArgs: () => [],
 }
 

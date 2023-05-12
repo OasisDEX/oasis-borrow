@@ -4,13 +4,13 @@ import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
-import { NavigationPickNetwork } from 'components/navigation/NavigationPickNetwork'
+import { NavigationNetworkSwitcher } from 'components/navigation/NavigationNetworkSwitcher'
 import { ConnectButton } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import { Flex } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 export const otherAssets = [
@@ -188,12 +188,20 @@ export function AjnaNavigationController() {
             {isViewBelowXl && <MyPositionsOrb />}
             {/* <SwapOrb /> */}
             <NotificationsOrb />
-            {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
+            {useNetworkSwitcher ? (
+              <Box sx={{ mr: 2 }}>
+                <NavigationNetworkSwitcher />
+              </Box>
+            ) : null}
             {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>
         ) : (
           <Flex sx={{ alignItems: 'center' }}>
-            {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
+            {useNetworkSwitcher ? (
+              <Box sx={{ mr: 2 }}>
+                <NavigationNetworkSwitcher />
+              </Box>
+            ) : null}
             {!isViewBelowL && <ConnectButton />}
           </Flex>
         )

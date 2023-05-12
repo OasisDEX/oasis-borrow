@@ -33,7 +33,8 @@ import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } fr
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { getSupportedTokens } from './strategy-config'
 
-export function setupAavev3Context(appContext: AppContext): AaveContext {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function setupAaveV3Context(appContext: AppContext, network: NetworkNames): AaveContext {
   const {
     userSettings$,
     txHelpers$,
