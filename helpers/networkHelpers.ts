@@ -80,7 +80,7 @@ export const getContractNetworkByWalletNetwork = (
   // doesnt matter if we're even connected
   if (!isTestnetNetworkId(walletChainId) && isHardhatSetForNetworkId(contractChainId)) {
     const networkName = networksById[contractChainId].name
-    return Number(hardhatSettings[networkName].id) as NetworkIds
+    return Number(hardhatSettings[networkName]!.id) as NetworkIds
   }
 
   // finally, if youre on testnet, and the contract is on mainnet, it passes the testnet network
@@ -113,7 +113,7 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
   }
   if (isHardhatSet) {
     const networkName = networksById[networkId].name
-    return hardhatSettings[networkName].url
+    return hardhatSettings[networkName]!.url
   }
   return isTestnet
     ? networksById[networksById[networkId].testnetId!].rpcUrl
