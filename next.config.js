@@ -157,7 +157,7 @@ const baseConfig = {
         permanent: true,
       },
       {
-        source: '/:vault(\\d{1,})*',
+        source: '/:vault(\\d+)',
         destination: '/ethereum/maker/:vault*',
         permanent: false,
       },
