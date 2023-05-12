@@ -1,11 +1,11 @@
 import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import { AppLink } from 'components/Links'
 import { AjnaGenericPosition, AjnaProduct, AjnaUpdateState } from 'features/ajna/common/types'
 import {
   AjnaBorrowFormAction,
   AjnaBorrowFormState,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import { AjnaLiquidationNotificationWithLink } from 'features/ajna/positions/common/components/AjnaLiquidationNotificationWithLink'
 import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
@@ -19,8 +19,32 @@ import {
   AjnaMultiplyFormAction,
   AjnaMultiplyFormState,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { zero } from 'helpers/zero'
-import React, { Dispatch } from 'react'
+import { Trans } from 'next-i18next'
+import React, { Dispatch, FC } from 'react'
+
+interface AjnaLiquidationNotificationWithLinkProps {
+  translationKey: string
+  values?: { [key: string]: string }
+}
+
+const AjnaLiquidationNotificationWithLink: FC<AjnaLiquidationNotificationWithLinkProps> = ({
+  translationKey,
+  values,
+}) => (
+  <Trans
+    i18nKey={translationKey}
+    values={values}
+    components={[
+      <AppLink
+        sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
+        // TODO update link to ajna liquidations once available
+        href={EXTERNAL_LINKS.KB.HELP}
+      />,
+    ]}
+  />
+)
 
 type DepositIsNotWithdrawableParams = {
   message: { collateralToken: string; quoteToken: string }
