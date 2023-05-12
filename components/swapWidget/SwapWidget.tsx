@@ -1,37 +1,42 @@
-import '@uniswap/widgets/fonts.css'
-
-import { SwapWidget, SwapWidgetSkeleton, Theme as UniswapWidgetTheme } from '@uniswap/widgets'
+import { LiFiWidget, WidgetConfig } from '@lifi/widget'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { tokenList } from 'components/uniswapWidget/tokenList'
+import { Skeleton } from 'components/Skeleton'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
-import { keyBy } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
-import { theme } from 'theme'
+// import { theme } from 'theme'
 import { Box, Button, Flex, Image, SxProps, Text } from 'theme-ui'
 
-const { colors, radii } = theme
+// const { colors, radii } = theme
 
-const widgetTheme: UniswapWidgetTheme = {
-  accent: colors.primary100,
-  primary: colors.primary100,
-  container: colors.neutral10,
-  active: colors.primary100,
-  interactive: colors.neutral10,
-  module: colors.neutral30,
-  dialog: colors.neutral10,
-  success: colors.success10,
-  error: colors.critical10,
-  tokenColorExtraction: false,
-  borderRadius: {
-    small: radii.mediumLarge,
-    medium: radii.mediumLarge,
-    large: radii.mediumLarge,
+// const widgetTheme: SwapWidgetTheme = {
+//   accent: colors.primary100,
+//   primary: colors.primary100,
+//   container: colors.neutral10,
+//   active: colors.primary100,
+//   interactive: colors.neutral10,
+//   module: colors.neutral30,
+//   dialog: colors.neutral10,
+//   success: colors.success10,
+//   error: colors.critical10,
+//   tokenColorExtraction: false,
+//   borderRadius: {
+//     small: radii.mediumLarge,
+//     medium: radii.mediumLarge,
+//     large: radii.mediumLarge,
+//   },
+//   fontFamily: 'Inter',
+// }
+
+const widgetConfig: WidgetConfig = {
+  integrator: 'testing oasis',
+  containerStyle: {
+    border: '1px solid rgb(234, 234, 234)',
+    borderRadius: '16px',
   },
-  fontFamily: 'Inter',
 }
 
 function scrollbarBg(hexColor: string) {
@@ -295,13 +300,9 @@ const OnboardingGraphic = () => (
   </Box>
 )
 
-const tokenToTokenAddress = keyBy(tokenList.tokens, 'symbol')
-
-export function UniswapWidget(props: { token?: string }) {
+export function SwapWidget() {
   const { web3ContextConnected$ } = useAppContext()
   const widgetWrapperRef = useRef(null)
-
-  const requestTokenAddress = props.token && tokenToTokenAddress[props.token]?.address
 
   const [web3Context] = useObservable(web3ContextConnected$)
   const [isOnboarded, setAsOnboarded] = useOnboarding('Exchange')
@@ -356,7 +357,7 @@ export function UniswapWidget(props: { token?: string }) {
   if (!web3Provider) {
     return (
       <Box sx={wrapperCss}>
-        <SwapWidgetSkeleton theme={widgetTheme} width={420} />
+        <Skeleton />
       </Box>
     )
   }
@@ -410,18 +411,7 @@ export function UniswapWidget(props: { token?: string }) {
           </Button>
         </Flex>
       )}
-      <SwapWidget
-        /* @ts-ignore */
-        permit2
-        theme={widgetTheme}
-        tokenList={tokenList.tokens}
-        convenienceFee={20}
-        convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
-        defaultInputTokenAddress={requestTokenAddress}
-        width={420}
-        hideConnectionUI
-        dialog={widgetWrapperRef.current}
-      />
+      <LiFiWidget integrator="Your dApp/company name" config={widgetConfig} />
     </Box>
   )
 }

@@ -5,7 +5,7 @@ import { getProductCategoryUrl, ProductCategory } from 'config/product-categorie
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
-} from 'features/uniswapWidget/SwapWidgetChange'
+} from 'features/swapWidget/SwapWidgetChange'
 import { Web3Context } from 'features/web3Context'
 import { mapTokenToFilter, supportedEarnIlks } from 'helpers/productCards'
 import { map as mapLodash, omit, reduce } from 'lodash'

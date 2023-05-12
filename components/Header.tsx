@@ -11,7 +11,7 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   SwapWidgetState,
-} from 'features/uniswapWidget/SwapWidgetChange'
+} from 'features/swapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { ConnectButton } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -33,7 +33,7 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 import { useAppContext } from './AppContextProvider'
 import { NavigationNetworkSwitcher } from './navigation/NavigationNetworkSwitcher'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
-import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidgetShowHide'
+import { SwapWidgetShowHide } from './swapWidget/SwapWidgetShowHide'
 
 function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -235,7 +235,7 @@ function UserDesktopMenu() {
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
-  const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
+  const showNewSwapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
   const contextAccountDetails: ContextAccountDetails = { context, accountData }
 
@@ -287,7 +287,7 @@ function UserDesktopMenu() {
               ':hover': { color: 'primary100' },
             }}
           >
-            {showNewUniswapWidgetBeacon && (
+            {showNewSwapWidgetBeacon && (
               <Icon
                 name="new_beacon"
                 sx={{
@@ -306,7 +306,7 @@ function UserDesktopMenu() {
               color={widgetOpen ? 'primary100' : 'inherit'}
             />
           </Button>
-          <UniswapWidgetShowHide />
+          <SwapWidgetShowHide />
         </Box>
         {useNetworkSwitcher ? (
           <Box sx={{ mr: 2 }}>
@@ -404,7 +404,7 @@ function ConnectedHeader() {
                   color={widgetOpen ? 'primary100' : 'inherit'}
                 />
               </Button>
-              <UniswapWidgetShowHide
+              <SwapWidgetShowHide
                 sxWrapper={{
                   position: 'fixed',
                   top: '50%',

@@ -3,15 +3,15 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   SwapWidgetState,
-} from 'features/uniswapWidget/SwapWidgetChange'
+} from 'features/swapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useEffect } from 'react'
 import { Box, SxStyleProp } from 'theme-ui'
 
-import { UniswapWidgetNoSsr } from './UniswapWidgetNoSsr'
+import { SwapWidgetNoSsr } from './SwapWidgetNoSsr'
 
-export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
+export function SwapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
   const { uiChanges } = useAppContext()
 
   const clickawayRef = useOutsideElementClickHandler(() =>
@@ -55,7 +55,7 @@ export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
           ...props.sxWrapper,
         }}
       >
-        <UniswapWidgetNoSsr token={swapWidgetChange.token} />
+        <SwapWidgetNoSsr token={swapWidgetChange.token} />
       </Box>
     )
   }

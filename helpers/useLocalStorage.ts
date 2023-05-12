@@ -25,11 +25,11 @@ export function useLocalStorage<T>(
 
     try {
       const item = window.localStorage.getItem(key)
-      const parsedItem = parseJSON<T>(item)
+      const parsedItem = item ? parseJSON<T>(item) : initialValue
       if (isValid) {
         return isValid(parsedItem) ? parsedItem : initialValue
       } else {
-        return initialValue
+        return parsedItem ?? initialValue
       }
     } catch (error) {
       console.warn(`Error reading localStorage key “${key}”:`, error)
