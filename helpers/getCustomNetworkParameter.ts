@@ -1,6 +1,7 @@
-import { networksByName } from 'blockchain/networksConfig'
+import { NetworkConfig, networksByName } from 'blockchain/networksConfig'
+import { Dispatch, SetStateAction } from 'react'
 
-import { NetworkNames } from './networkNames'
+import { isSupportedNetwork, NetworkNames } from './networkNames'
 import { useLocalStorage } from './useLocalStorage'
 
 export type CustomHardhatParameterFieldsType = 'url' | 'id'
@@ -14,7 +15,9 @@ export function getCustomNetworkParameter() {
   return customNetwork ? { network: customNetwork } : undefined
 }
 
-export const mainnetNetworkParameter = {
+type CustomNetworkParameterType = Pick<NetworkConfig, 'id' | 'hexId'> & { network: NetworkNames }
+
+export const mainnetNetworkParameter: CustomNetworkParameterType = {
   network: networksByName[NetworkNames.ethereumMainnet].name,
   id: networksByName[NetworkNames.ethereumMainnet].id,
   hexId: networksByName[NetworkNames.ethereumMainnet].hexId,
@@ -23,8 +26,26 @@ export const mainnetNetworkParameter = {
 export const CustomNetworkStorageKey = 'CustomNetwork'
 export const CustomHardhatStorageKey = 'HardhatNetwork'
 
-export function useCustomNetworkParameter() {
-  return useLocalStorage(CustomNetworkStorageKey, mainnetNetworkParameter)
+function isValidCustomNetworkParameter(
+  element?: CustomNetworkParameterType,
+): element is CustomNetworkParameterType {
+  if (!element) {
+    return false
+  }
+  return !!isSupportedNetwork(element.network)
+}
+
+export function useCustomNetworkParameter(): [
+  CustomNetworkParameterType,
+  Dispatch<SetStateAction<CustomNetworkParameterType | null>>,
+] {
+  const [state, setState] = useLocalStorage(
+    CustomNetworkStorageKey,
+    mainnetNetworkParameter,
+    isValidCustomNetworkParameter,
+  )
+
+  return [state, setState]
 }
 
 export function useCustomHardhatParameter() {
