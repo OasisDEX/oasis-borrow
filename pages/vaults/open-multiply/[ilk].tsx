@@ -6,7 +6,7 @@ import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { supportedMultiplyIlks } from 'helpers/productCards'
-import { LendingProtocolLongName } from 'lendingProtocols'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -39,7 +39,7 @@ function OpenVault({ ilk }: { ilk: string }) {
             title="seo.title-product-w-tokens"
             titleParams={{
               product: t('seo.multiply.title'),
-              protocol: LendingProtocolLongName.Maker,
+              protocol: LendingProtocolLabel.Maker,
               token1: ilk,
               token2: 'DAI',
             }}
