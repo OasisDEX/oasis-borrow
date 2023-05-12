@@ -117,7 +117,7 @@ function AaveOpenContainer({
 }
 
 export function AaveOpenView({ config }: { config: IStrategyConfig }) {
-  const { aaveStateMachine } = useAaveContext(config.protocol)
+  const { aaveStateMachine } = useAaveContext(config.protocol, config.network)
   const { t } = useTranslation()
   return (
     <>

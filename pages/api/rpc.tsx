@@ -64,41 +64,41 @@ const cache: { [key: string]: Cache } = {}
 function getRpcNode(network: NetworkNames) {
   switch (network) {
     // case 'hardhat': // hardhat does not request this one
-    case 'mainnet':
+    case NetworkNames.ethereumMainnet:
       return `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case 'goerli':
+    case NetworkNames.ethereumGoerli:
       return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case 'arbitrum-mainnet':
+    case NetworkNames.arbitrumMainnet:
       return `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case 'arbitrum-goerli':
+    case NetworkNames.arbitrumGoerli:
       return `https://arbitrum-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case 'polygon-mainnet':
+    case NetworkNames.polygonMainnet:
       return `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case 'polygon-mumbai':
+    case NetworkNames.polygonMumbai:
       return `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case 'optimism-mainnet':
+    case NetworkNames.optimismMainnet:
       return `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case 'optimism-goerli':
+    case NetworkNames.optimismGoerli:
       return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
       throw new Error('unsupported network')
   }
 }
-function getSpotAddress(network: string) {
+function getSpotAddress(network: NetworkNames) {
   switch (network) {
-    case 'mainnet':
+    case NetworkNames.ethereumMainnet:
       return `0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3`
-    case 'goerli':
+    case NetworkNames.ethereumGoerli:
       return `0xACe2A9106ec175bd56ec05C9E38FE1FDa8a1d758`
     default:
       throw new Error('unsupported network')
   }
 }
-function getMulticall(network: string) {
+function getMulticall(network: NetworkNames) {
   switch (network) {
-    case 'mainnet':
+    case NetworkNames.ethereumMainnet:
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
-    case 'goerli':
+    case NetworkNames.ethereumGoerli:
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     default:
       throw new Error('unsupported network')
@@ -343,7 +343,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         )
         let z = 0
         data = dataFromMulticall.map((x: [boolean, string]) => {
-          if (x[0] === false) {
+          if (!x[0]) {
             return failedMultiCallsRepsonse[z++].result
           } else {
             return x[1]
@@ -417,7 +417,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         if (
           (Date.now() - cache[network].lastBlockNumberFetchTimestamp > blockRecheckDelay ||
             !withCache) &&
-          (cache[network].locked === false || !withCache)
+          (!cache[network].locked || !withCache)
         ) {
           try {
             if (withCache) {
