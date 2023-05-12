@@ -40,13 +40,15 @@ function AavePositionHeader({
 }) {
   const { t } = useTranslation()
 
-  const minYields = useAaveEarnYields(minimumRiskRatio, strategy.protocol, ['7Days'])
-  const maxYields = useAaveEarnYields(maxRisk || minimumRiskRatio, strategy.protocol, [
+  const minYields = useAaveEarnYields(minimumRiskRatio, strategy.protocol, strategy.network, [
     '7Days',
-    '7DaysOffset',
-    '90Days',
-    '90DaysOffset',
   ])
+  const maxYields = useAaveEarnYields(
+    maxRisk || minimumRiskRatio,
+    strategy.protocol,
+    strategy.network,
+    ['7Days', '7DaysOffset', '90Days', '90DaysOffset'],
+  )
 
   const headlineDetails = []
   if (minYields && maxYields) {
@@ -116,6 +118,7 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }) {
     const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext(
       strategyConfig.protocol,
+      strategyConfig.network,
     )
     const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
     const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(

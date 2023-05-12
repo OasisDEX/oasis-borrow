@@ -27,7 +27,7 @@ export function useSimulationYields({
   fees,
 }: useSimulationYieldsParams): SimulationYields | undefined {
   const [simulations, setSimulations] = useState<SimulationYields>()
-  const yields = useAaveEarnYields(riskRatio, strategy.protocol, fields)
+  const yields = useAaveEarnYields(riskRatio, strategy.protocol, strategy.network, fields)
 
   useEffect(() => {
     if (yields && amount) {

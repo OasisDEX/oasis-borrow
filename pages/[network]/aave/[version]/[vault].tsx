@@ -10,8 +10,9 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { isSupportedNetwork, NetworkNames } from 'helpers/networkNames'
 import { useObservable } from 'helpers/observableHook'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, checkIfAave } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -21,18 +22,42 @@ import { Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const network = ctx.query.network as string
+  const version = ctx.query.version as string
+  const protocol = `Aave${version.toUpperCase()}`
+
+  if (checkIfAave(protocol) && isSupportedNetwork(network)) {
+    return {
+      props: {
+        ...(await serverSideTranslations(ctx.locale!, ['common'])),
+        vault: ctx.query.vault || null,
+        network: network,
+        protocol: protocol,
+      },
+    }
+  }
+
   return {
-    props: {
-      ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      vault: ctx.query.vault || null,
+    redirect: {
+      permanent: false,
+      destination: '/not-found',
     },
   }
 }
 
-function WithStrategy(positionId: PositionId) {
+function WithStrategy({
+  positionId,
+  protocol,
+  network,
+}: {
+  positionId: PositionId
+  protocol: AaveLendingProtocol
+  network: NetworkNames
+}) {
   const { t } = useTranslation()
   const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
-    LendingProtocol.AaveV3,
+    protocol,
+    network,
   )
   const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId))
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
@@ -86,7 +111,15 @@ function safeGetAddress(address: string | undefined) {
   return undefined
 }
 
-function Position({ vault }: { vault: string }) {
+function Position({
+  vault,
+  protocol,
+  network,
+}: {
+  vault: string
+  network: NetworkNames
+  protocol: AaveLendingProtocol
+}) {
   const { replace } = useRouter()
 
   const address: string | undefined = safeGetAddress(vault)
@@ -101,7 +134,11 @@ function Position({ vault }: { vault: string }) {
     <AaveContextProvider>
       <WithConnection>
         <WithTermsOfService>
-          <WithStrategy walletAddress={address} vaultId={vaultId} />
+          <WithStrategy
+            positionId={{ walletAddress: address, vaultId }}
+            protocol={protocol}
+            network={network}
+          />
         </WithTermsOfService>
       </WithConnection>
     </AaveContextProvider>
