@@ -1,12 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PropsWithChildren } from 'react'
-import { Box } from 'theme-ui'
+import { Box, SxProps } from 'theme-ui'
 
 export type DrawerMenuProps = {
   isOpen: boolean
   onClose: () => void
   position?: 'left' | 'right'
   overlay?: boolean
+  sxOverride?: Partial<SxProps['sx']>
 }
 
 export const DrawerMenu = ({
@@ -15,6 +16,7 @@ export const DrawerMenu = ({
   onClose,
   position = 'left',
   overlay = false,
+  sxOverride = {},
 }: PropsWithChildren<DrawerMenuProps>) => {
   const isPositionLeft = position === 'left'
   const isPositionRight = position === 'right'
@@ -28,7 +30,7 @@ export const DrawerMenu = ({
           right: isPositionRight ? 0 : 'auto',
           bottom: 0,
           width: ['100%', 'auto'],
-          minWidth: '50%',
+          minWidth: ['50%', 'auto'],
           p: 3,
           bg: 'neutral10',
           boxShadow: 'buttonMenu',
@@ -48,6 +50,7 @@ export const DrawerMenu = ({
             boxShadow: 'inset 0 -20px 10px -10px white, inset 0 20px 10px -10px white',
             pointerEvents: 'none',
           },
+          ...sxOverride,
         }}
       >
         {children}
@@ -80,7 +83,7 @@ export const DrawerMenu = ({
           />
         </Box>
       </Box>
-      {overlay && (
+      {overlay && isOpen && (
         <Box
           sx={{
             position: 'fixed',

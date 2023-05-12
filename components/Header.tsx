@@ -240,6 +240,7 @@ function UserDesktopMenu() {
   const contextAccountDetails: ContextAccountDetails = { context, accountData }
 
   const showHeaderSettings = getShowHeaderSettings(contextAccountDetails)
+  console.log('showHeaderSettings', showHeaderSettings)
 
   const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
@@ -404,16 +405,7 @@ function ConnectedHeader() {
                   color={widgetOpen ? 'primary100' : 'inherit'}
                 />
               </Button>
-              <SwapWidgetShowHide
-                sxWrapper={{
-                  position: 'fixed',
-                  top: '50%',
-                  left: '50%',
-                  right: 'unset',
-                  bottom: 'unset',
-                  transform: 'translateX(-50%) translateY(-50%)',
-                }}
-              />
+              <SwapWidgetShowHide />
               <MobileMenu />
             </Flex>
             <WalletPanelMobile />

@@ -1,4 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { DrawerMenu } from 'components/DrawerMenu'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
@@ -7,16 +8,19 @@ import {
 import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useEffect } from 'react'
-import { Box, SxStyleProp } from 'theme-ui'
+import { Box } from 'theme-ui'
 
+import { swapWidgetConfig } from './swapWidgetConfig'
 import { SwapWidgetNoSsr } from './SwapWidgetNoSsr'
 
-export function SwapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
+export function SwapWidgetShowHide() {
   const { uiChanges } = useAppContext()
 
-  const clickawayRef = useOutsideElementClickHandler(() =>
-    uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, { type: 'close' }),
-  )
+  const swapWidgetClose = () => {
+    uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, { type: 'close' })
+  }
+
+  const clickawayRef = useOutsideElementClickHandler(swapWidgetClose)
 
   const [swapWidgetChange] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
@@ -29,36 +33,23 @@ export function SwapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
         clickawayRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
     }
-  }, [swapWidgetChange])
+  }, [clickawayRef, swapWidgetChange])
 
-  if (swapWidgetChange && swapWidgetChange.isOpen) {
-    return (
-      <Box
-        ref={clickawayRef}
-        sx={{
+  return (
+    <Box ref={clickawayRef}>
+      <DrawerMenu
+        position="right"
+        isOpen={swapWidgetChange ? swapWidgetChange.isOpen : false}
+        onClose={swapWidgetClose}
+        overlay
+        sxOverride={{
+          backgroundColor: swapWidgetConfig.theme?.palette?.background?.default,
+          minWidth: ['100%', '430px'],
           p: 0,
-          position: 'absolute',
-          top: 'auto',
-          left: 'auto',
-          right: '240px',
-          bottom: 0,
-          width: '420px',
-          transform: 'translateY(calc(100% + 10px))',
-          bg: 'neutral10',
-          boxShadow: 'elevation',
-          borderRadius: 'mediumLarge',
-          border: 'none',
-          overflowX: 'visible',
-          zIndex: 0,
-          minWidth: 7,
-          minHeight: 7,
-          ...props.sxWrapper,
         }}
       >
-        <SwapWidgetNoSsr token={swapWidgetChange.token} />
-      </Box>
-    )
-  }
-
-  return <></>
+        <SwapWidgetNoSsr />
+      </DrawerMenu>
+    </Box>
+  )
 }

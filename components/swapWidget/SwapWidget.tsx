@@ -1,4 +1,4 @@
-import { LiFiWidget, WidgetConfig } from '@lifi/widget'
+import { LiFiWidget } from '@lifi/widget'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Skeleton } from 'components/Skeleton'
@@ -6,69 +6,10 @@ import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useRef } from 'react'
-// import { theme } from 'theme'
-import { Box, Button, Flex, Image, SxProps, Text } from 'theme-ui'
+import React from 'react'
+import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
-// const { colors, radii } = theme
-
-// const widgetTheme: SwapWidgetTheme = {
-//   accent: colors.primary100,
-//   primary: colors.primary100,
-//   container: colors.neutral10,
-//   active: colors.primary100,
-//   interactive: colors.neutral10,
-//   module: colors.neutral30,
-//   dialog: colors.neutral10,
-//   success: colors.success10,
-//   error: colors.critical10,
-//   tokenColorExtraction: false,
-//   borderRadius: {
-//     small: radii.mediumLarge,
-//     medium: radii.mediumLarge,
-//     large: radii.mediumLarge,
-//   },
-//   fontFamily: 'Inter',
-// }
-
-const widgetConfig: WidgetConfig = {
-  integrator: 'testing oasis',
-  containerStyle: {
-    border: '1px solid rgb(234, 234, 234)',
-    borderRadius: '16px',
-  },
-}
-
-function scrollbarBg(hexColor: string) {
-  return `radial-gradient( closest-corner at 0.25em 0.25em, ${hexColor} 0.25em, transparent 0.25em ), linear-gradient( to bottom, ${hexColor}00 0.25em, ${hexColor} 0.25em, ${hexColor} calc(100% - 0.25em), ${hexColor}00 calc(100% - 0.25em) ), radial-gradient( closest-corner at 0.25em calc(100% - 0.25em), ${hexColor} 0.25em, ${hexColor}00 0.25em )`
-}
-
-const cssPaths = (() => {
-  const main = 'div > div:nth-of-type(2) > div:nth-of-type(2)'
-  const tokenSelAndSettings = 'div > div:nth-of-type(1)'
-
-  return {
-    main: {
-      wrapper: ` > div`,
-      swapBtn: `${main} > div:nth-of-type(2) > div > button`,
-      token1Btn: `${main} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button`,
-      token2Btn: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
-      input1: `${main} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div > input`,
-      input2: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > input`,
-    },
-    // token select
-    tokenSel: {
-      // hoverAppended is for expanding the hover effect through the scrollbar (we'll hide it)
-      hoverAppended: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(1)`,
-      option: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
-      search: `${tokenSelAndSettings} input[inputmode=text]`,
-      scrollbar: `${tokenSelAndSettings} .scrollbar`,
-    },
-    settings: {
-      tooltip: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(1).caption`,
-    },
-  }
-})()
+import { swapWidgetConfig } from './swapWidgetConfig'
 
 const OnboardingGraphic = () => (
   <Box sx={{ position: 'relative' }}>
@@ -302,8 +243,6 @@ const OnboardingGraphic = () => (
 
 export function SwapWidget() {
   const { web3ContextConnected$ } = useAppContext()
-  const widgetWrapperRef = useRef(null)
-
   const [web3Context] = useObservable(web3ContextConnected$)
   const [isOnboarded, setAsOnboarded] = useOnboarding('Exchange')
   const { t } = useTranslation()
@@ -311,71 +250,16 @@ export function SwapWidget() {
   const web3Provider =
     web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
 
-  const { main, tokenSel, settings } = cssPaths
-
-  const wrapperCss: SxProps['sx'] = {
-    '.subhead': { fontWeight: 'medium' },
-    [main.wrapper]: {
-      border: 'none',
-      py: 3,
-    },
-    [main.swapBtn]: {
-      border: '3px solid',
-      borderColor: 'neutral20',
-      ':hover': { borderColor: 'primary100', bg: 'neutral10' },
-    },
-    [main.token1Btn + '[color="interactive100"], ' + main.token2Btn + '[color="interactive100"]']: {
-      border: '1px solid',
-      borderColor: 'neutral20',
-      ':hover': { borderColor: 'primary100', bg: 'neutral10' },
-    },
-    [tokenSel.hoverAppended]: { display: 'none' },
-    [tokenSel.option]: {
-      bg: 'transparent',
-      ':hover': { bg: 'neutral20' },
-      borderRadius: '8px',
-      '.subhead': { fontWeight: 'semiBold' },
-    },
-    [tokenSel.search]: {
-      borderColor: 'neutral20',
-      borderRadius: 'medium',
-      ':hover': { bg: 'neutral10' },
-      ':focus': { borderColor: 'primary100' },
-      '::placeholder': { color: 'neutral80' },
-    },
-    [tokenSel.scrollbar]: {
-      '::-webkit-scrollbar-thumb': {
-        background: scrollbarBg('#A8A9B1'),
-        backgroundClip: 'padding-box',
-      },
-    },
-    [settings.tooltip]: {
-      display: 'block',
-    },
-  }
-
   if (!web3Provider) {
     return (
-      <Box sx={wrapperCss}>
+      <Box sx={{ minWidth: '390px' }}>
         <Skeleton />
       </Box>
     )
   }
 
   return (
-    <Box
-      sx={wrapperCss}
-      ref={widgetWrapperRef}
-      css={`
-        ${main.token1Btn} > div > div, ${main.token2Btn} > div > div {
-          font-size: 18px !important;
-        }
-
-        button[color='accent'] {
-          border-radius: 32px !important;
-        }
-      `}
-    >
+    <Box>
       {!isOnboarded && (
         <Flex
           sx={{
@@ -411,7 +295,7 @@ export function SwapWidget() {
           </Button>
         </Flex>
       )}
-      <LiFiWidget integrator="Your dApp/company name" config={widgetConfig} />
+      <LiFiWidget integrator="Your dApp/company name" config={swapWidgetConfig} />
     </Box>
   )
 }
