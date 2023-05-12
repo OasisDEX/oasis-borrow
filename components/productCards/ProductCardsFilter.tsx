@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getTokens } from 'blockchain/tokensMetadata'
+import { getTokens, TokenConfig } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AaveContextProvider, isAaveContextAvailable } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
@@ -14,6 +14,7 @@ import {
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
 } from 'helpers/productCards'
+import { LendingProtocol } from 'lendingProtocols'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
@@ -37,6 +38,8 @@ type FilterCardsFunction = ({
   ilkToTokenMapping: Array<IlkTokenMap>
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) => Array<IlkTokenMap>
+
+type StrategyConfigWithTokenMeta = TokenConfig & IStrategyConfig
 
 export function ProductCardsFilter({
   filters,
@@ -72,10 +75,12 @@ export function ProductCardsFilter({
 
   const aaveStrategies = otherStrategies
   const aaveStrategyTokens = getTokens(aaveStrategies.map(({ name }) => name))
-  const aaveStrategyConfigPlusTokenMeta = aaveStrategies.map((strategy, index) => ({
-    ...strategy,
-    ...aaveStrategyTokens[index],
-  }))
+  const aaveStrategyConfigPlusTokenMeta: StrategyConfigWithTokenMeta[] = aaveStrategies.map(
+    (strategy, index) => ({
+      ...aaveStrategyTokens[index],
+      ...strategy,
+    }),
+  )
 
   return (
     <>
@@ -133,7 +138,7 @@ export function ProductCardsFilter({
                 {aaveStrategyConfigPlusTokenMeta
                   .filter(({ protocol, name }) => {
                     return (
-                      protocol === 'aaveV2' &&
+                      protocol === LendingProtocol.AaveV2 &&
                       (name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()) ||
                         currentFilter.toLocaleUpperCase() === 'FEATURED')
                     )
@@ -143,7 +148,13 @@ export function ProductCardsFilter({
                       case 'Borrow':
                         return <ProductCardBorrowAave key={cardData.symbol} cardData={cardData} />
                       case 'Multiply':
-                        return <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData} />
+                        return (
+                          <ProductCardMultiplyAave
+                            key={cardData.symbol}
+                            cardData={cardData}
+                            strategy={cardData}
+                          />
+                        )
                       default:
                         return null
                     }

@@ -9,6 +9,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
 
@@ -64,7 +65,7 @@ export function ProductCardEarnDsr() {
         },
         {
           title: t('system.protocol'),
-          value: <ProductCardProtocolLink ilk={'DAI'} protocol="maker" />,
+          value: <ProductCardProtocolLink ilk={'DAI'} protocol={LendingProtocol.Maker} />,
         },
         {
           title: t('system.network'),
@@ -78,7 +79,7 @@ export function ProductCardEarnDsr() {
         onClick: handleClick,
       }}
       background="#E0F9F0"
-      protocol="maker"
+      protocol={LendingProtocol.Maker}
       isFull={false}
     />
   )

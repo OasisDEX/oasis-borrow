@@ -58,6 +58,7 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
                   return (
                     <ProductCardMultiplyAave
                       cardData={tokenData}
+                      strategy={aaveStrategy}
                       key={`ProductCardMultiplyAave_${tokenData.symbol}`}
                     />
                   )

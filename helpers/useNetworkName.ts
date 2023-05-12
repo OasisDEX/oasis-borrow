@@ -4,13 +4,17 @@ import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
 import { keyBy } from 'lodash'
 
 import { mainnetNetworkParameter, useCustomNetworkParameter } from './getCustomNetworkParameter'
+import { isSupportedNetwork } from './networkNames'
 
 export function useNetworkName() {
   const [{ chains, connectedChain }] = useSetChain()
   const [customNetworkName] = useCustomNetworkParameter()
   const filteredChain = chains.filter(({ id }) => id === connectedChain?.id)
   if (!connectedChain) {
-    return customNetworkName.network || mainnetNetworkParameter.network
+    if (isSupportedNetwork(customNetworkName.network)) {
+      return customNetworkName.network
+    }
+    return mainnetNetworkParameter.network
   }
   if (!filteredChain[0]) {
     console.warn(

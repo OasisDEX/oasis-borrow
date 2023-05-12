@@ -1,15 +1,15 @@
 // all the network names we use in the app
 export enum NetworkNames {
-  ethereumMainnet = 'mainnet',
-  ethereumGoerli = 'goerli',
+  ethereumMainnet = 'ethereum',
+  ethereumGoerli = 'ethereum-goerli',
 
-  arbitrumMainnet = 'arbitrum-mainnet',
+  arbitrumMainnet = 'arbitrum',
   arbitrumGoerli = 'arbitrum-goerli',
 
-  polygonMainnet = 'polygon-mainnet',
+  polygonMainnet = 'polygon',
   polygonMumbai = 'polygon-mumbai',
 
-  optimismMainnet = 'optimism-mainnet',
+  optimismMainnet = 'optimism',
   optimismGoerli = 'optimism-goerli',
 }
 
@@ -45,3 +45,7 @@ export type NetworkLabelType =
   | 'Polygon Mumbai'
   | 'Optimism'
   | 'Optimism Goerli'
+
+export function isSupportedNetwork(value: string): value is NetworkNames {
+  return Object.values<string>(NetworkNames).includes(value)
+}

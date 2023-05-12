@@ -29,6 +29,7 @@ export function AaveMultiplyManageComponent({
 }: AaveMultiplyManageComponentProps) {
   const { getAaveReserveData$, aaveReserveConfigurationData$, aaveHistory$ } = useAaveContext(
     strategyConfig.protocol,
+    strategyConfig.network,
   )
   const _aaveHistory$ = aaveHistory$(dpmProxy!)
   const [aaveHistory, aaveHistoryError] = useObservable(_aaveHistory$)

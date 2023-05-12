@@ -11,7 +11,13 @@ export function getStorageValue<V>(key: string, defaultValue: unknown) {
 
 type SetValue<T> = Dispatch<SetStateAction<T>>
 
-export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T | null>] {
+type isValidFunction<T> = (element?: T) => element is T
+
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+  isValid?: isValidFunction<T>,
+): [T, SetValue<T | null>] {
   const readValue = useCallback((): T => {
     if (typeof window === 'undefined') {
       return initialValue
@@ -19,12 +25,17 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T
 
     try {
       const item = window.localStorage.getItem(key)
-      return item ? (parseJSON(item) as T) : initialValue
+      const parsedItem = parseJSON<T>(item)
+      if (isValid) {
+        return isValid(parsedItem) ? parsedItem : initialValue
+      } else {
+        return initialValue
+      }
     } catch (error) {
       console.warn(`Error reading localStorage key “${key}”:`, error)
       return initialValue
     }
-  }, [initialValue, key])
+  }, [initialValue, isValid, key])
 
   const [storedValue, setStoredValue] = useState<T>(readValue)
   const setValue: SetValue<T | null> = useEventCallback((value) => {
