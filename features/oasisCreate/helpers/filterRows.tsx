@@ -5,6 +5,7 @@ import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { OasisCreateItem, OasisCreateItemBasics, ProductType } from 'features/oasisCreate/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
+import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { Trans } from 'react-i18next'
 
@@ -119,14 +120,12 @@ export function filterRows(
 
   return rows.map((row) => {
     const { label, network, primaryToken, protocol, secondaryToken, url } = row
+    const assets = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
+
+    if (product === 'earn' && protocol === LendingProtocol.Ajna) assets.reverse()
 
     return {
-      collateralDebt: (
-        <AssetsTableDataCellAsset
-          asset={label}
-          icons={primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]}
-        />
-      ),
+      collateralDebt: <AssetsTableDataCellAsset asset={label} icons={assets} />,
       ...filterProduct(row, product),
       protocolNetwork: (
         <ProtocolLabel

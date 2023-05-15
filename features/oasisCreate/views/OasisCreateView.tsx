@@ -2,6 +2,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
+import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
 import { AppLink } from 'components/Links'
 import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
@@ -31,19 +32,17 @@ const LINKS_MAP = {
 
 export function OasisCreateView({ product }: OasisCreateViewProps) {
   const { t } = useTranslation()
-  const [selectedProduct, setSelectedProduct] = useState<ProductType>()
+  const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>()
 
   const rows = useMemo(
     () =>
-      selectedProduct && selectedToken
-        ? filterRows(oasisCreateData, selectedProduct, {
-            // protocol: LendingProtocol.Ajna,
-            ...(selectedToken !== ALL_ASSETS && {
-              groupToken: selectedToken,
-            }),
-          })
-        : [],
+      filterRows(oasisCreateData, selectedProduct, {
+        // protocol: LendingProtocol.Ajna,
+        ...(selectedToken !== ALL_ASSETS && {
+          groupToken: selectedToken,
+        }),
+      }),
     [selectedProduct, selectedToken],
   )
 
@@ -58,9 +57,9 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
         <NaturalLanguageSelectorController
           product={product}
           url="/oasis-create/"
-          onChange={(product, token) => {
-            setSelectedProduct(product)
-            setSelectedToken(token)
+          onChange={(_selectedProduct, _selectedToken) => {
+            setSelectedProduct(_selectedProduct)
+            setSelectedToken(_selectedToken)
           }}
         />
         <Text
@@ -72,8 +71,8 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
             color: 'neutral80',
           }}
         >
-          {t(`oasis-create.intro.${product}`)}{' '}
-          <AppLink href={LINKS_MAP[product]}>
+          {t(`oasis-create.intro.${selectedProduct}`)}{' '}
+          <AppLink href={LINKS_MAP[selectedProduct]}>
             <WithArrow
               variant="paragraph2"
               sx={{
@@ -83,7 +82,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
                 fontWeight: 'regular',
               }}
             >
-              Oasis.app {t(`nav.${product}`)}
+              Oasis.app {t(`nav.${selectedProduct}`)}
             </WithArrow>
           </AppLink>
         </Text>
@@ -111,12 +110,17 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
         />
       </Grid>
       <AssetsTableContainer tableOnly>
-        {rows.length > 0 && (
+        {rows.length > 0 ? (
           <AssetsResponsiveTable
             rows={rows}
             headerTranslationProps={{
               ...(selectedToken && { token: selectedToken === ALL_ASSETS ? 'ETH' : selectedToken }),
             }}
+          />
+        ) : (
+          <AssetsTableNoResults
+            header="There are no items matching your filters"
+            content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean iaculis lorem in feugiat mattis."
           />
         )}
       </AssetsTableContainer>

@@ -6,7 +6,7 @@ import React, { RefObject, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
 export interface HeaderSelectorOption {
-  icon?: string
+  icon?: string | [string, string]
   title: string
   description?: string
   balance?: string
@@ -151,6 +151,7 @@ export function HeaderSelector({
               key={i}
               as="li"
               sx={{
+                position: 'relative',
                 px: '12px',
                 py: 2,
                 borderRadius: 'medium',
@@ -160,6 +161,7 @@ export function HeaderSelector({
                 bg: selected.value === option.value ? 'neutral30' : 'transparent',
                 '&:hover': {
                   bg: 'neutral30',
+                  svg: { opacity: 1 },
                 },
               }}
               onClick={() => {
@@ -168,7 +170,27 @@ export function HeaderSelector({
                 if (onChange) onChange(option)
               }}
             >
-              {option.icon && <Icon size={36} sx={{ flexShrink: 0, mr: 3 }} name={option.icon} />}
+              {option.icon && (
+                <Icon
+                  size={36}
+                  sx={{ flexShrink: 0, mr: 3 }}
+                  name={Array.isArray(option.icon) ? option.icon[0] : option.icon}
+                />
+              )}
+              {Array.isArray(option.icon) && (
+                <Icon
+                  size={36}
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    m: 'auto',
+                    opacity: selected.value === option.value ? 1 : 0,
+                    transition: '200ms opacity',
+                  }}
+                  name={option.icon[1]}
+                />
+              )}
               <Flex sx={{ flexDirection: 'column' }}>
                 <Text as="span" sx={{ fontSize: withHeaders ? 3 : 2, fontWeight: 'semiBold' }}>
                   {option.title}

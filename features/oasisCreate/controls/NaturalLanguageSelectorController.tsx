@@ -20,29 +20,23 @@ const tokenOptions = {
     value: 'ETH',
     icon: getToken('ETH').iconCircle,
   },
-  USDC: {
-    title: 'USDCoin',
-    description: 'USDC',
-    value: 'USDC',
-    icon: getToken('USDC').iconCircle,
-  },
   WBTC: {
     title: 'Wrapped BTC',
     description: 'WBTC',
     value: 'WBTC',
     icon: getToken('WBTC').iconCircle,
   },
+  USDC: {
+    title: 'USDCoin',
+    description: 'USDC',
+    value: 'USDC',
+    icon: getToken('USDC').iconCircle,
+  },
   DAI: {
     title: 'DAI stablecoin',
     description: 'DAI',
     value: 'DAI',
     icon: getToken('DAI').iconCircle,
-  },
-  stETH: {
-    title: 'Staked ETH',
-    description: 'stETH',
-    value: 'stETH',
-    icon: getToken('WSTETH').iconCircle,
   },
 }
 
@@ -60,13 +54,13 @@ export function NaturalLanguageSelectorController({
   const { t } = useTranslation()
 
   // TODO: replace with actual data taken from **somewhere**
-  const options = [
+  const options: { product: HeaderSelectorOption; tokens: HeaderSelectorOption[] }[] = [
     {
       product: {
         title: t('nav.borrow'),
         description: t('oasis-create.select.borrow'),
         value: 'borrow',
-        icon: 'selectBorrow',
+        icon: ['selectBorrow', 'selectBorrowActive'],
       },
       tokens: [tokenOptions.all, tokenOptions.ETH, tokenOptions.WBTC, tokenOptions.USDC],
     },
@@ -75,30 +69,32 @@ export function NaturalLanguageSelectorController({
         title: t('nav.multiply'),
         description: t('oasis-create.select.multiply'),
         value: 'multiply',
-        icon: 'selectMultiply',
+        icon: ['selectMultiply', 'selectMultiplyActive'],
       },
-      tokens: [
-        tokenOptions.all,
-        tokenOptions.ETH,
-        tokenOptions.stETH,
-        tokenOptions.DAI,
-        tokenOptions.USDC,
-      ],
+      tokens: [tokenOptions.all, tokenOptions.ETH, tokenOptions.WBTC, tokenOptions.USDC],
     },
     {
       product: {
         title: t('nav.earn'),
         description: t('oasis-create.select.earn'),
         value: 'earn',
-        icon: 'selectEarn',
+        icon: ['selectEarn', 'selectEarnActive'],
       },
-      tokens: [tokenOptions.all, tokenOptions.WBTC, tokenOptions.ETH, tokenOptions.stETH],
+      tokens: [
+        tokenOptions.all,
+        tokenOptions.ETH,
+        tokenOptions.WBTC,
+        tokenOptions.DAI,
+        tokenOptions.USDC,
+      ],
     },
   ]
 
   const defaultProductOption = options.filter((option) => option.product.value === product)[0]
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
-  const [selectedProduct, setSelectedProduct] = useState<ProductType>(defaultProductOption.product.value as ProductType)
+  const [selectedProduct, setSelectedProduct] = useState<ProductType>(
+    defaultProductOption.product.value as ProductType,
+  )
   const [selectedToken, setSelectedToken] = useState<string>(defaultProductOption.tokens[0].value)
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
@@ -112,7 +108,7 @@ export function NaturalLanguageSelectorController({
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
         I want to
         <HeaderSelector
-          defaultOption={options.filter((option) => option.product.value === product)[0].product}
+          defaultOption={defaultProductOption.product}
           gradient={['#2a30ee', '#a4a6ff']}
           options={options.map((option) => option.product)}
           parentRef={ref}
