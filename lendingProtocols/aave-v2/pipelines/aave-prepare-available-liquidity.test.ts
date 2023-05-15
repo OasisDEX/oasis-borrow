@@ -6,7 +6,7 @@ import {
 import { zero } from 'helpers/zero'
 import { of, throwError } from 'rxjs'
 
-import { prepareAaveAvailableLiquidityInUSDC$ } from './aavePrepareAvailableLiquidity'
+import { aaveAvailableLiquidityInUSDC$ } from './aave-available-liquidity-in-usdc'
 
 describe('prepareAaveAvailableLiquidityInUSDC$', () => {
   const getAaveReserveData$ = () =>
@@ -18,7 +18,7 @@ describe('prepareAaveAvailableLiquidityInUSDC$', () => {
   const reserveDataToken = { token: 'TEST' } as AaveV2ReserveDataParameters
 
   it('should return the correct value', (done) => {
-    prepareAaveAvailableLiquidityInUSDC$(
+    aaveAvailableLiquidityInUSDC$(
       getAaveReserveData$,
       getTokenPrice$,
       usdcEthPrice$,
@@ -32,7 +32,7 @@ describe('prepareAaveAvailableLiquidityInUSDC$', () => {
   it('should return zero on error', (done) => {
     const getAaveReserveData$ = () => throwError(new Error('Test error'))
 
-    prepareAaveAvailableLiquidityInUSDC$(
+    aaveAvailableLiquidityInUSDC$(
       getAaveReserveData$,
       getTokenPrice$,
       usdcEthPrice$,

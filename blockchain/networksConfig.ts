@@ -8,6 +8,7 @@ import {
   polygonMainnetRpc,
   polygonMumbaiRpc,
 } from 'config/rpcConfig'
+import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
@@ -36,6 +37,7 @@ export type NetworkConfig = {
   enabled: boolean
   token: string
   rpcUrl: string
+  readProvider: ethers.providers.Provider
 }
 
 export function contractDesc(
@@ -59,6 +61,7 @@ const mainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   rpcUrl: mainnetRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(mainnetRpc),
 }
 
 const goerliConfig: NetworkConfig = {
@@ -74,6 +77,7 @@ const goerliConfig: NetworkConfig = {
   testnet: true,
   enabled: true,
   rpcUrl: goerliRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(goerliRpc),
 }
 
 const arbitrumMainnetConfig: NetworkConfig = {
@@ -89,6 +93,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumMainnetRpc),
 }
 
 const arbitrumGoerliConfig: NetworkConfig = {
@@ -104,6 +109,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumGoerliRpc),
 }
 
 const polygonMainnetConfig: NetworkConfig = {
@@ -119,6 +125,7 @@ const polygonMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMainnetRpc),
 }
 
 const polygonMumbaiConfig: NetworkConfig = {
@@ -134,6 +141,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMumbaiRpc),
 }
 
 const optimismMainnetConfig: NetworkConfig = {
@@ -149,6 +157,7 @@ const optimismMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(optimismMainnetRpc),
 }
 
 const optimismGoerliConfig: NetworkConfig = {
@@ -164,6 +173,7 @@ const optimismGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(optimismGoerliRpc),
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -178,6 +188,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
   rpcUrl: 'empty',
+  readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
 }
 
 export const mainnetNetworks = [mainnetConfig, goerliConfig]
@@ -202,6 +213,7 @@ export const defaultHardhatConfig: NetworkConfig = {
   enabled: false,
   token: 'ETH',
   rpcUrl: '',
+  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
 }
 
 export const networks = [...mainnetNetworks, ...L2Networks]

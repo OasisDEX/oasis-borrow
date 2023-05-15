@@ -30,9 +30,8 @@ export const mockContext: Context = {
   web3ProviderGetPastLogs: {} as Web3,
   ...networksById['42'],
   ...mockWeb3ContextConnectedReadonly,
-  contractV2: () => null as any,
-  rpcProvider: null as any,
   account: undefined,
+  rpcProvider: {} as any,
 }
 
 export const mockContextConnected: ContextConnected = {
@@ -40,6 +39,5 @@ export const mockContextConnected: ContextConnected = {
   web3ProviderGetPastLogs: {} as Web3,
   ...networksById['42'],
   ...mockWeb3ContextConnected,
-  contractV2: () => null as any,
-  rpcProvider: null as any,
+  rpcProvider: {} as any,
 }

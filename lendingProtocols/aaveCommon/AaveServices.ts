@@ -20,12 +20,8 @@ export interface AaveServices {
   getAaveReserveData$: (args: { token: string }) => Observable<ReserveData>
   getAaveAssetsPrices$: (args: { tokens: string[] }) => Observable<BigNumber[]>
   aaveAvailableLiquidityInUSDC$: (args: { token: string }) => Observable<BigNumber>
-  aaveLiquidations$: (proxyAddress: string) => Observable<LiquidationCallEvent[]>
+  aaveLiquidations$: (args: { proxyAddress: string }) => Observable<LiquidationCallEvent[]>
   aaveUserAccountData$: (args: UserAccountDataArgs) => Observable<UserAccountData>
   aaveProxyConfiguration$: (proxyAddress: string) => Observable<UserConfigurationResults>
-  convertToAaveOracleAssetPrice$: (args: {
-    token: string
-    amount: BigNumber
-  }) => Observable<BigNumber>
-  aaveOracleAssetPriceData$: (args: { token: string }) => Observable<BigNumber>
+  aaveOracleAssetPriceData$: (args: { token: string; amount?: BigNumber }) => Observable<BigNumber>
 }

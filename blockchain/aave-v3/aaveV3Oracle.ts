@@ -1,50 +1,44 @@
 import BigNumber from 'bignumber.js'
-import { CallDef } from 'blockchain/calls/callsHelpers'
-import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
-import { AaveV3Oracle } from 'types/web3-v1-contracts/'
-export interface AaveV3AssetsPricesParameters {
+import { one } from 'helpers/zero'
+import { AaveV3Oracle__factory } from 'types/ethers-contracts/'
+
+import { BaseParameters, getNetworkMapping } from './utils'
+
+export interface AaveV3AssetsPricesParameters extends BaseParameters {
   tokens: string[]
-  baseCurrencyUnit: BigNumber
 }
 
-export const getAaveV3OracleBaseCurrencyUnit: CallDef<void, BigNumber> = {
-  call: (_, { contract, chainId }) =>
-    contract<AaveV3Oracle>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Oracle).methods
-      .BASE_CURRENCY_UNIT,
-  prepareArgs: () => [],
-  postprocess: (baseCurrencyUnit) => new BigNumber(baseCurrencyUnit),
-}
-
-export const getAaveV3AssetsPrices: CallDef<AaveV3AssetsPricesParameters, BigNumber[]> = {
-  call: (_, { contract, chainId }) =>
-    contract<AaveV3Oracle>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Oracle).methods
-      .getAssetsPrices,
-  prepareArgs: ({ tokens }, { chainId }) => [
-    tokens.map((token) => getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address),
-  ],
-  // tokenPrice needs BASE_CURRENCY_UNIT
-  postprocess: (tokenPrices, args) =>
-    tokenPrices.map((tokenPrice) => new BigNumber(tokenPrice).div(args.baseCurrencyUnit)),
-}
-
-export type AaveV3OracleAssetPriceDataParameters = {
+export interface AaveV3OracleAssetPriceDataParameters extends BaseParameters {
   token: string
-  baseCurrencyUnit: BigNumber
+  amount?: BigNumber
 }
 
-export const getAaveV3OracleAssetPriceData$: CallDef<
-  AaveV3OracleAssetPriceDataParameters,
-  BigNumber
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3Oracle>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Oracle)
-      .methods.getAssetPrice
-  },
-  prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
-  },
-  postprocess: (result, args) => {
-    return new BigNumber(result).div(args.baseCurrencyUnit)
-  },
+const networkMappings = {
+  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Oracle__factory, NetworkIds.MAINNET),
+}
+
+export function getAaveV3AssetsPrices({
+  tokens,
+  networkId,
+}: AaveV3AssetsPricesParameters): Promise<BigNumber[]> {
+  const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]
+  const tokenAddresses = tokens.map((token) => tokenMappings[token].address)
+  return contract.getAssetsPrices(tokenAddresses).then((result) => {
+    return result.map((tokenPriceInBaseCurrency) =>
+      new BigNumber(tokenPriceInBaseCurrency.toString()).div(baseCurrencyUnit),
+    )
+  })
+}
+
+export function getAaveV3OracleAssetPrice({
+  token,
+  amount = one,
+  networkId,
+}: AaveV3OracleAssetPriceDataParameters) {
+  const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]
+  const tokenAddress = tokenMappings[token].address
+  return contract.getAssetPrice(tokenAddress).then((result) => {
+    return new BigNumber(result.toString()).times(amount).div(baseCurrencyUnit)
+  })
 }

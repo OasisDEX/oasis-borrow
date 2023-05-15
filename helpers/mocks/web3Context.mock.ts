@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import {
   Web3Context,
   Web3ContextConnected,
@@ -31,6 +32,7 @@ export const mockWeb3ContextConnected: Web3ContextConnected = {
   account: '0xUserAddress',
   walletLabel: 'MetaMask',
   connectionMethod: 'web3-onboard',
+  transactionProvider: {} as ethers.Signer,
 }
 
 export interface MockWeb3ContextProps {

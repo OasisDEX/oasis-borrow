@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
+import { networksById } from 'blockchain/networksConfig'
 import { amountFromWei } from 'blockchain/utils'
-import { AaveV2LendingPool } from 'types/web3-v1-contracts'
+import { AaveV2LendingPool__factory } from 'types/ethers-contracts'
 
 export interface AaveV2UserAccountData {
   totalCollateralETH: BigNumber
@@ -23,19 +23,23 @@ export type AaveV2UserConfigurationsParameters = {
 }
 export type AaveV2ConfigurationData = string[]
 
-export const getAaveV2UserAccountData: CallDef<
-  AaveV2UserAccountDataParameters,
-  AaveV2UserAccountData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV2LendingPool>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2LendingPool,
-    ).methods.getUserAccountData
-  },
-  prepareArgs: ({ address }) => {
-    return [address]
-  },
-  postprocess: (result) => {
+export type AaveV2GetUserAccountDataParameters = {
+  address: string
+}
+
+export type AaveV2GetUserConfigurationParameters = {
+  address: string
+}
+
+const factory = AaveV2LendingPool__factory
+const rpcProvider = networksById[NetworkIds.MAINNET].readProvider
+const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2LendingPool.address
+const contract = factory.connect(address, rpcProvider)
+
+export function getAaveV2UserAccountData({
+  address,
+}: AaveV2GetUserAccountDataParameters): Promise<AaveV2UserAccountData> {
+  return contract.getUserAccountData(address).then((result) => {
     return {
       totalCollateralETH: amountFromWei(new BigNumber(result.totalCollateralETH.toString()), 'ETH'),
       totalDebtETH: amountFromWei(new BigNumber(result.totalDebtETH.toString()), 'ETH'),
@@ -47,30 +51,18 @@ export const getAaveV2UserAccountData: CallDef<
       ltv: new BigNumber(result.ltv.toString()),
       healthFactor: new BigNumber(result.healthFactor.toString()),
     }
-  },
+  })
 }
 
-export const getAaveV2UserConfiguration: CallDef<
-  AaveV2UserConfigurationsParameters,
-  AaveV2ConfigurationData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV2LendingPool>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2LendingPool,
-    ).methods.getUserConfiguration
-  },
-  prepareArgs: ({ address }) => {
-    return [address]
-  },
+export function getAaveV2UserConfiguration({
+  address,
+}: AaveV2GetUserConfigurationParameters): Promise<AaveV2ConfigurationData> {
+  return contract.getUserConfiguration(address).then((result) => {
+    // TODO: Check it.
+    return [result.toString()]
+  })
 }
 
-export const getAaveV2ReservesList: CallDef<void, AaveV2ConfigurationData> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV2LendingPool>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2LendingPool,
-    ).methods.getReservesList
-  },
-  prepareArgs: () => {
-    return []
-  },
+export function getAaveV2ReservesList(): Promise<AaveV2ConfigurationData> {
+  return contract.getReservesList()
 }

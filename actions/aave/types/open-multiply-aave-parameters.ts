@@ -1,11 +1,10 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
 import { ProxyType } from 'features/aave/common'
 import { AaveLendingProtocol } from 'lendingProtocols'
+import { NetworkIds } from '../../../blockchain/networkIds'
 
 export interface OpenMultiplyAaveParameters {
-  context: Context
   amount: BigNumber
   collateralToken: string
   debtToken: string
@@ -14,7 +13,9 @@ export interface OpenMultiplyAaveParameters {
   riskRatio: IRiskRatio
   slippage: BigNumber
   proxyAddress: string
+  userAddress: string
   proxyType: ProxyType
   positionType: 'Multiply' | 'Earn' | 'Borrow'
   protocol: AaveLendingProtocol
+  networkId: NetworkIds
 }

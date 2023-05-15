@@ -1,30 +1,15 @@
-import { getOnChainPosition } from 'actions/aave/oasisActionsLibWrapper'
-import { BigNumber } from 'bignumber.js'
-import {
-  createConvertToAaveV3OracleAssetPrice$,
-  getAaveV3AssetsPrices,
-  getAaveV3EModeCategoryForAsset,
-  getAaveV3OracleAssetPriceData$,
-  getAaveV3OracleBaseCurrencyUnit,
-  getAaveV3PositionLiquidation$,
-  getAaveV3ReserveConfigurationData,
-  getAaveV3ReserveData,
-  getAaveV3ReservesList,
-  getAaveV3UserAccountData,
-  getAaveV3UserConfiguration,
-  getAaveV3UserReserveData,
-  getEModeCategoryData,
-} from 'blockchain/aave-v3'
-import { observe } from 'blockchain/calls/observe'
-import { Context } from 'blockchain/network'
+import * as blockchainCalls from 'blockchain/aave-v3'
+import { NetworkIds } from 'blockchain/networkIds'
+import { UserAccountData, UserAccountDataArgs } from 'lendingProtocols/aaveCommon'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
+import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { from, Observable } from 'rxjs'
-import { shareReplay, switchMap } from 'rxjs/operators'
+import { Observable } from 'rxjs'
 
 import {
+  aaveV3OnChainPosition,
   getAaveProtocolData$,
   getAaveProxyConfiguration$,
   getReserveConfigurationDataWithEMode$,
@@ -33,123 +18,103 @@ import {
 } from './pipelines'
 
 interface AaveV3ServicesDependencies {
-  context$: Observable<Context>
   refresh$: Observable<unknown>
   once$: Observable<unknown>
+  networkId: NetworkIds.MAINNET
 }
 
 export function getAaveV3Services({
-  context$,
   refresh$,
-  once$,
+  networkId,
 }: AaveV3ServicesDependencies): AaveServices {
-  const getAaveV3BaseCurrencyUnit$ = observe(once$, context$, getAaveV3OracleBaseCurrencyUnit)()
-
-  const aaveLiquidations$ = memoize(curry(getAaveV3PositionLiquidation$)(context$))
-
-  const aaveV3UserAccountData$ = observe(refresh$, context$, getAaveV3UserAccountData, (args) =>
-    JSON.stringify(args),
+  const assetsPrices$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3AssetsPrices,
+    networkId,
+  )
+  const assetPrice$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3OracleAssetPrice,
+    networkId,
   )
 
-  const aaveUserAccountData$ = memoize(
-    curry(mapAaveUserAccountData$)(aaveV3UserAccountData$, getAaveV3BaseCurrencyUnit$),
-    (args) => JSON.stringify(args),
+  const aaveReserveConfigurationData$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3ReserveConfigurationData,
+    networkId,
   )
 
-  const getAaveReserveData$ = observe(once$, context$, getAaveV3ReserveData)
-
-  const getAaveV3EModeCategoryForAsset$ = observe(once$, context$, getAaveV3EModeCategoryForAsset)
-  const getEModeCategoryData$ = observe(once$, context$, getEModeCategoryData)
-
-  const aaveOracleAssetPriceWithBaseCurrencyUnit$: ({
-    token,
-  }: {
-    token: string
-  }) => Observable<BigNumber> = memoize(
-    ({ token }: { token: string }) => {
-      return getAaveV3BaseCurrencyUnit$.pipe(
-        switchMap((baseCurrencyUnit) => {
-          return aaveOracleAssetPriceData$({ token, baseCurrencyUnit })
-        }),
-      )
-    },
-    ({ token }) => token,
+  const getAaveV3EModeCategoryForAsset$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3EModeCategoryForAsset,
+    networkId,
   )
 
-  const getAaveAssetsPricesBase$ = observe(refresh$, context$, getAaveV3AssetsPrices, (args) =>
-    args.tokens.join(''),
+  const aaveLiquidations$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3PositionLiquidation,
+    networkId,
   )
 
-  const getAaveAssetsPrices$ = memoize(
-    ({ tokens }: { tokens: string[] }) => {
-      return getAaveV3BaseCurrencyUnit$.pipe(
-        switchMap((baseCurrencyUnit) => getAaveAssetsPricesBase$({ tokens, baseCurrencyUnit })),
-      )
-    },
-    ({ tokens }) => tokens.join(''),
+  const aaveUserAccountData$: (args: UserAccountDataArgs) => Observable<UserAccountData> =
+    makeObservableForNetworkId(
+      refresh$,
+      curry(mapAaveUserAccountData$)(blockchainCalls.getAaveV3UserAccountData),
+      networkId,
+    )
+
+  const getAaveReserveData$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3ReserveData,
+    networkId,
+  )
+
+  const getEModeCategoryData$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getEModeCategoryData,
+    networkId,
   )
 
   const aaveAvailableLiquidityInUSDC$ = memoize(
     curry(prepareaaveAvailableLiquidityInUSDC$)(
       getAaveReserveData$,
-      getAaveAssetsPrices$({ tokens: ['WETH'] }),
+      assetPrice$({ token: 'WETH' }),
     ),
     ({ token }) => token,
   )
 
-  const aaveUserReserveData$ = observe(refresh$, context$, getAaveV3UserReserveData)
-  const aaveUserConfiguration$ = observe(refresh$, context$, getAaveV3UserConfiguration)
-  const aaveReservesList$ = observe(refresh$, context$, getAaveV3ReservesList)()
-  const aaveOracleAssetPriceData$ = observe(
+  const aaveUserReserveData$ = makeObservableForNetworkId(
     refresh$,
-    context$,
-    getAaveV3OracleAssetPriceData$,
-    ({ token }) => token,
+    blockchainCalls.getAaveV3UserReserveData,
+    networkId,
   )
+  const aaveUserConfiguration$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3UserConfigurations,
+    networkId,
+  )
+  const aaveReservesList$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getAaveV3ReservesList,
+    networkId,
+  )({})
 
-  const getAaveOnChainPosition$ = memoize(
-    (collateralToken: string, debtToken: string, proxyAddress: string) => {
-      return context$.pipe(
-        switchMap((context) => {
-          return from(
-            getOnChainPosition({
-              context,
-              proxyAddress,
-              collateralToken,
-              debtToken,
-              protocol: LendingProtocol.AaveV3,
-            }),
-          )
-        }),
-        shareReplay(1),
-      )
-    },
-    (collateralToken: string, debtToken: string, proxyAddress: string) =>
-      collateralToken + debtToken + proxyAddress,
-  )
+  const onChainPosition$ = makeObservableForNetworkId(refresh$, aaveV3OnChainPosition, networkId)
 
   const aaveProtocolData$ = memoize(
     curry(getAaveProtocolData$)(
       aaveUserReserveData$,
       aaveUserAccountData$,
-      aaveOracleAssetPriceWithBaseCurrencyUnit$,
+      assetPrice$,
       aaveUserConfiguration$,
       aaveReservesList$,
-      getAaveOnChainPosition$,
-      getAaveV3BaseCurrencyUnit$,
+      onChainPosition$,
     ),
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
   const aaveProxyConfiguration$ = memoize(
     curry(getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
-  )
-
-  const aaveReserveConfigurationData$ = observe(
-    refresh$,
-    context$,
-    getAaveV3ReserveConfigurationData,
-    ({ token }) => token,
   )
 
   const reserveConfigurationDataWithEMode$ = memoize(
@@ -161,22 +126,16 @@ export function getAaveV3Services({
     (args: { token: string }) => args.token,
   )
 
-  const convertToAaveOracleAssetPrice$ = memoize(
-    curry(createConvertToAaveV3OracleAssetPrice$)(aaveOracleAssetPriceWithBaseCurrencyUnit$),
-    (args: { token: string }) => args.token,
-  )
-
   return {
     protocol: LendingProtocol.AaveV3,
+    aaveReserveConfigurationData$: reserveConfigurationDataWithEMode$,
+    getAaveReserveData$,
+    aaveAvailableLiquidityInUSDC$,
     aaveLiquidations$,
     aaveUserAccountData$,
-    aaveAvailableLiquidityInUSDC$,
-    aaveProtocolData$,
     aaveProxyConfiguration$,
-    getAaveAssetsPrices$,
-    aaveReserveConfigurationData$: reserveConfigurationDataWithEMode$,
-    convertToAaveOracleAssetPrice$,
-    aaveOracleAssetPriceData$: aaveOracleAssetPriceWithBaseCurrencyUnit$,
-    getAaveReserveData$,
+    aaveProtocolData$,
+    aaveOracleAssetPriceData$: assetPrice$,
+    getAaveAssetsPrices$: assetsPrices$,
   }
 }

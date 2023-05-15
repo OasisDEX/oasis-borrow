@@ -3,15 +3,17 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { ProxyType } from 'features/aave/common'
 import { AaveLendingProtocol } from 'lendingProtocols'
+import { NetworkIds } from '../../../blockchain/networkIds'
 
 export interface CloseAaveParameters {
-  context: Context
   currentPosition: IPosition
   slippage: BigNumber
   proxyAddress: string
+  userAddress: string
   token: string
   amount: BigNumber
   proxyType: ProxyType
   shouldCloseToCollateral: boolean
   protocol: AaveLendingProtocol
+  networkId: NetworkIds
 }

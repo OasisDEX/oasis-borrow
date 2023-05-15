@@ -1,15 +1,18 @@
 import { AAVETokens } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
 import { ProxyType } from 'features/aave/common'
+import { AaveLendingProtocol } from '../../../lendingProtocols'
+import { NetworkIds } from '../../../blockchain/networkIds'
 
 export interface OpenAaveDepositBorrowParameters {
-  context: Context
   collateralToken: AAVETokens
   debtToken: AAVETokens
   slippage: BigNumber
   collateralAmount: BigNumber
   borrowAmount: BigNumber
   proxyAddress: string
+  userAddress: string
   proxyType: ProxyType
+  protocol: AaveLendingProtocol
+  networkId: NetworkIds
 }

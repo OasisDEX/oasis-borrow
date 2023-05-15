@@ -1,6 +1,7 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networkIds'
+import { ethers } from 'ethers'
 import Web3 from 'web3'
 
 export type ConnectionKind = 'injected' | 'network'
@@ -48,6 +49,7 @@ export interface Web3ContextConnected {
   status: 'connected'
   connectionKind: ConnectionKind
   web3: Web3
+  transactionProvider: ethers.Signer
   chainId: NetworkIds
   deactivate: () => void
   account: string

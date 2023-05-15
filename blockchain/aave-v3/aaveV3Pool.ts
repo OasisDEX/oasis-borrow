@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { CallDef } from 'blockchain/calls/callsHelpers'
-import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
-import { AaveV3Pool } from 'types/web3-v1-contracts'
+import { AaveV3Pool__factory } from 'types/ethers-contracts'
+
+import { BaseParameters, getNetworkMapping } from './utils'
 
 export interface AaveV3UserAccountData {
   totalCollateralBase: BigNumber
@@ -13,7 +13,7 @@ export interface AaveV3UserAccountData {
   healthFactor: BigNumber
 }
 
-export interface GetEModeCategoryDataParameters {
+export interface GetEModeCategoryDataParameters extends BaseParameters {
   categoryId: BigNumber
 }
 
@@ -23,28 +23,26 @@ export interface GetEModeCategoryDataResult {
   liquidationBonus: BigNumber
 }
 
-export interface AaveV3UserAccountDataParameters {
+export interface AaveV3UserAccountDataParameters extends BaseParameters {
   address: string
-  baseCurrencyUnit: BigNumber
 }
 
-export type AaveV3UserConfigurationsParameters = {
+export interface AaveV3UserConfigurationsParameters extends BaseParameters {
   address: string
 }
 export type AaveV3ConfigurationData = string[]
 
-export const getAaveV3UserAccountData: CallDef<
-  AaveV3UserAccountDataParameters,
-  AaveV3UserAccountData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
-      .getUserAccountData
-  },
-  prepareArgs: ({ address }) => {
-    return [address]
-  },
-  postprocess: (result, { baseCurrencyUnit }) => {
+const networkMappings = {
+  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET),
+}
+
+export function getAaveV3UserAccountData({
+  networkId,
+  address,
+}: AaveV3UserAccountDataParameters): Promise<AaveV3UserAccountData> {
+  const { contract, baseCurrencyUnit } = networkMappings[networkId]
+
+  return contract.getUserAccountData(address).then((result) => {
     return {
       totalCollateralBase: new BigNumber(result.totalCollateralBase.toString()).div(
         baseCurrencyUnit,
@@ -57,48 +55,38 @@ export const getAaveV3UserAccountData: CallDef<
       ltv: new BigNumber(result.ltv.toString()),
       healthFactor: new BigNumber(result.healthFactor.toString()),
     }
-  },
+  })
 }
 
-export const getAaveV3UserConfiguration: CallDef<
-  AaveV3UserConfigurationsParameters,
-  AaveV3ConfigurationData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
-      .getUserConfiguration
-  },
-  prepareArgs: ({ address }) => {
-    return [address]
-  },
+export function getAaveV3UserConfigurations({
+  networkId,
+  address,
+}: AaveV3UserConfigurationsParameters): Promise<AaveV3ConfigurationData> {
+  const { contract } = networkMappings[networkId]
+  return contract.getUserConfiguration(address).then((result) => {
+    return result.map((value) => value.toString())
+  })
 }
 
-export const getAaveV3ReservesList: CallDef<void, AaveV3ConfigurationData> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
-      .getReservesList
-  },
-  prepareArgs: () => {
-    return []
-  },
+export function getAaveV3ReservesList({
+  networkId,
+}: BaseParameters): Promise<AaveV3ConfigurationData> {
+  const { contract } = networkMappings[networkId]
+  return contract.getReservesList().then((result) => {
+    return result.map((value) => value.toString())
+  })
 }
 
-export const getEModeCategoryData: CallDef<
-  GetEModeCategoryDataParameters,
-  GetEModeCategoryDataResult
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3Pool>(getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool).methods
-      .getEModeCategoryData
-  },
-  prepareArgs: ({ categoryId }) => {
-    return [categoryId.toString()]
-  },
-  postprocess: (result) => {
+export function getEModeCategoryData({
+  networkId,
+  categoryId,
+}: GetEModeCategoryDataParameters): Promise<GetEModeCategoryDataResult> {
+  const { contract } = networkMappings[networkId]
+  return contract.getEModeCategoryData(categoryId.toString()).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000),
       liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000),
       liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10100 -> 100 -> -> 0.01
     }
-  },
+  })
 }

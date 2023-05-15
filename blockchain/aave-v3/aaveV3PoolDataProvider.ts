@@ -1,16 +1,16 @@
-import { BigNumber } from 'bignumber.js'
-import { CallDef } from 'blockchain/calls/callsHelpers'
-import { getNetworkContracts } from 'blockchain/contracts'
+import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networkIds'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
-import { AaveV3PoolDataProvider } from 'types/web3-v1-contracts'
+import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'
 
-export interface AaveV3UserReserveDataParameters {
+import { BaseParameters, getNetworkMapping } from './utils'
+
+export interface AaveV3UserReserveDataParameters extends BaseParameters {
   token: string
   address: string
 }
 
-export interface AaveV3ReserveDataParameters {
+export interface AaveV3ReserveDataParameters extends BaseParameters {
   token: AaveV3UserReserveDataParameters['token']
 }
 
@@ -25,7 +25,7 @@ export interface AaveV3UserReserveData {
   usageAsCollateralEnabled: boolean
 }
 
-export type AaveV3ReserveDataReply = {
+export interface AaveV3ReserveDataReply {
   availableLiquidity: BigNumber
   unbacked: BigNumber
   accruedToTreasuryScaled: BigNumber
@@ -41,121 +41,104 @@ export type AaveV3ReserveDataReply = {
   lastUpdateTimestamp: BigNumber
 }
 
-export const getAaveV3UserReserveData: CallDef<
-  AaveV3UserReserveDataParameters,
-  AaveV3UserReserveData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3PoolDataProvider>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
-    ).methods.getUserReserveData
-  },
-  prepareArgs: ({ token, address }, { chainId }) => {
-    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address, address]
-  },
-  postprocess: (result, args) => {
-    return {
-      currentATokenBalance: amountFromWei(
-        new BigNumber(result.currentATokenBalance.toString()),
-        args.token,
-      ),
-      currentStableDebt: amountFromWei(
-        new BigNumber(result.currentStableDebt.toString()),
-        args.token,
-      ),
-      currentVariableDebt: amountFromWei(
-        new BigNumber(result.currentVariableDebt.toString()),
-        args.token,
-      ),
-      principalStableDebt: amountFromWei(
-        new BigNumber(result.principalStableDebt.toString()),
-        args.token,
-      ),
-      scaledVariableDebt: amountFromWei(
-        new BigNumber(result.scaledVariableDebt.toString()),
-        args.token,
-      ),
-      stableBorrowRate: new BigNumber(result.stableBorrowRate.toString()),
-      liquidityRate: new BigNumber(result.liquidityRate.toString()),
-      usageAsCollateralEnabled: result.usageAsCollateralEnabled,
-    }
-  },
+export interface AaveV3ReserveConfigurationParameters extends BaseParameters {
+  token: string
 }
 
-export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3ReserveDataReply> = {
-  call: (_, { contract, chainId }) =>
-    contract<AaveV3PoolDataProvider>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
-    ).methods.getReserveData,
-  prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
-  },
-  postprocess: (result, { token }) => {
-    return {
-      availableLiquidity: new BigNumber(result.totalAToken.toString()).minus(
-        new BigNumber(result.totalStableDebt.toString()).plus(
-          new BigNumber(result.totalVariableDebt.toString()),
-        ),
-      ),
-      unbacked: new BigNumber(result.unbacked.toString()),
-      accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
-
-      totalAToken: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
-      totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
-      totalVariableDebt: amountFromWei(new BigNumber(result.totalVariableDebt.toString()), token),
-
-      liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
-      variableBorrowRate: amountFromRay(new BigNumber(result.variableBorrowRate.toString())),
-      stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
-      averageStableBorrowRate: amountFromRay(
-        new BigNumber(result.averageStableBorrowRate.toString()),
-      ),
-
-      liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
-      variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
-      lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
-    }
-  },
-}
-
-export type AaveV3ReserveConfigurationData = {
+export interface AaveV3ReserveConfigurationData {
   ltv: BigNumber
   liquidationThreshold: BigNumber
   liquidationBonus: BigNumber
   // .... could add more things here.  see https://etherscan.io/address/0x7B4EB56E7CD4b454BA8ff71E4518426369a138a3#readContract
 }
 
-export const getAaveV3ReserveConfigurationData: CallDef<
-  { token: string },
-  AaveV3ReserveConfigurationData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3PoolDataProvider>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
-    ).methods.getReserveConfigurationData
-  },
-  prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
-  },
-  postprocess: (result) => {
-    return {
-      ltv: new BigNumber(result.ltv).div(10000), // 6900 -> 0.69
-      liquidationThreshold: new BigNumber(result.liquidationThreshold).div(10000), // 8100 -> 0.81
-      liquidationBonus: new BigNumber(result.liquidationBonus).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
-    }
-  },
+const networkMappings = {
+  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3PoolDataProvider__factory, NetworkIds.MAINNET),
 }
 
-export const getAaveV3EModeCategoryForAsset: CallDef<{ token: string }, BigNumber> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV3PoolDataProvider>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3PoolDataProvider,
-    ).methods.getReserveEModeCategory
-  },
-  prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
-  },
-  postprocess: (result) => {
-    return new BigNumber(result)
-  },
+export function getAaveV3UserReserveData({
+  token,
+  address,
+  networkId,
+}: AaveV3UserReserveDataParameters): Promise<AaveV3UserReserveData> {
+  const { contract, tokenMappings } = networkMappings[networkId]
+  const tokenAddress = tokenMappings[token].address
+  return contract.getUserReserveData(tokenAddress, address).then((result) => {
+    return {
+      currentATokenBalance: amountFromWei(
+        new BigNumber(result.currentATokenBalance.toString()),
+        token,
+      ),
+      currentStableDebt: amountFromWei(new BigNumber(result.currentStableDebt.toString()), token),
+      currentVariableDebt: amountFromWei(
+        new BigNumber(result.currentVariableDebt.toString()),
+        token,
+      ),
+      principalStableDebt: amountFromWei(
+        new BigNumber(result.principalStableDebt.toString()),
+        token,
+      ),
+      scaledVariableDebt: amountFromWei(new BigNumber(result.scaledVariableDebt.toString()), token),
+      stableBorrowRate: new BigNumber(result.stableBorrowRate.toString()),
+      liquidityRate: new BigNumber(result.liquidityRate.toString()),
+      usageAsCollateralEnabled: result.usageAsCollateralEnabled,
+    }
+  })
+}
+
+export function getAaveV3ReserveData({
+  token,
+  networkId,
+}: AaveV3ReserveDataParameters): Promise<AaveV3ReserveDataReply> {
+  const { contract, tokenMappings } = networkMappings[networkId]
+  const tokenAddress = tokenMappings[token].address
+  return contract.getReserveData(tokenAddress).then((result) => {
+    return {
+      availableLiquidity: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
+      unbacked: amountFromWei(new BigNumber(result.unbacked.toString()), token),
+      accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
+      totalAToken: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
+      totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
+      totalVariableDebt: amountFromWei(new BigNumber(result.totalVariableDebt.toString()), token),
+      liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
+      variableBorrowRate: amountFromRay(new BigNumber(result.variableBorrowRate.toString())),
+      stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
+      averageStableBorrowRate: amountFromRay(
+        new BigNumber(result.averageStableBorrowRate.toString()),
+      ),
+      liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
+      variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
+      lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
+    }
+  })
+}
+
+export function getAaveV3ReserveConfigurationData({
+  networkId,
+  token,
+}: AaveV3ReserveConfigurationParameters): Promise<AaveV3ReserveConfigurationData> {
+  const { contract, tokenMappings } = networkMappings[networkId]
+  const tokenAddress = tokenMappings[token].address
+  return contract.getReserveConfigurationData(tokenAddress).then((result) => {
+    return {
+      ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
+      liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000), // 8100 -> 0.81
+      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).div(10000), // 10500 -> 1.05
+    }
+  })
+}
+
+export interface AaveV3EModeForAssetParameters extends BaseParameters {
+  token: string
+}
+
+export function getAaveV3EModeCategoryForAsset({
+  token,
+  networkId,
+}: AaveV3EModeForAssetParameters): Promise<BigNumber> {
+  const { contract, tokenMappings } = networkMappings[networkId]
+  const address = tokenMappings[token].address
+  return contract.getReserveEModeCategory(address).then((result) => {
+    return new BigNumber(result.toString())
+  })
 }
