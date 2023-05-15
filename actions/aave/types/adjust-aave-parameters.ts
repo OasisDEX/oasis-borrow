@@ -1,6 +1,5 @@
 import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
 import { ProductType, ProxyType } from 'features/aave/common'
 import { AaveLendingProtocol } from 'lendingProtocols'
 import { NetworkIds } from '../../../blockchain/networkIds'
