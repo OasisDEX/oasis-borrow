@@ -65,7 +65,6 @@ export const getAjnaPositionAuction$ = ({
             auction.alreadyTaken
 
           const isLiquidated =
-            auction.collateral.gt(zero) &&
             auction.debtToCover.isZero() &&
             !auction.inLiquidation &&
             auction.alreadyTaken
