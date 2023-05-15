@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Box, SxProps } from 'theme-ui'
 
 export type DrawerMenuProps = {
@@ -57,11 +57,12 @@ export const DrawerMenu = ({
         <Box
           sx={{
             position: 'absolute',
+            bottom: [null, 3],
+            top: [3, null],
             right: 0,
-            bottom: 3,
-            left: 0,
-            width: '58px',
-            margin: 'auto',
+            left: [3, 0],
+            width: ['40px', '58px'],
+            margin: [null, 'auto'],
             color: 'neutral80',
             overflow: 'hidden',
             cursor: 'pointer',
@@ -73,7 +74,7 @@ export const DrawerMenu = ({
         >
           <Icon
             name="mobile_menu_close"
-            size={58}
+            size={[40, 58]}
             sx={{
               p: 1,
               borderRadius: 'circle',

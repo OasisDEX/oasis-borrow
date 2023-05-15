@@ -8,12 +8,13 @@ export const swapWidgetConfig: WidgetConfig = {
   integrator: 'Oasis.app',
   containerStyle: {
     border: 'none',
-    height: '80%',
-    maxHeight: '80%',
     // @ts-ignore
+    height: ['100%', '80%'],
+    // @ts-ignore
+    maxHeight: ['100%', '80%'],
     '& > div': {
-      maxHeight: '80%',
-      height: '80%',
+      maxHeight: ['100%', '80%'],
+      height: ['100%', '80%'],
     },
   },
   appearance: 'light',

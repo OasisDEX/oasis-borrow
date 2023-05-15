@@ -1,6 +1,7 @@
 import { AppLink } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
+import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
