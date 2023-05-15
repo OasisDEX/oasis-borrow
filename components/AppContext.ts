@@ -87,6 +87,7 @@ import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
+  compareBigNumber,
   ContextConnected,
   createAccount$,
   createContext$,
@@ -96,7 +97,6 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { compareBigNumber } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
 import {
@@ -623,12 +623,10 @@ export function setupAppContext() {
 
   // protocols
   const aaveV2 = getAaveV2Services({
-    context$,
     refresh$: onEveryBlock$,
-    once$,
   })
 
-  const aaveV3 = getAaveV3Services({ context$, refresh$: onEveryBlock$, once$ })
+  const aaveV3 = getAaveV3Services({ refresh$: onEveryBlock$, networkId: NetworkIds.MAINNET })
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))

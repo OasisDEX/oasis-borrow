@@ -19,7 +19,6 @@ import {
 
 interface AaveV3ServicesDependencies {
   refresh$: Observable<unknown>
-  once$: Observable<unknown>
   networkId: NetworkIds.MAINNET
 }
 
