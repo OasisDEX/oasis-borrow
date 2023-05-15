@@ -13,7 +13,6 @@ const borrowOrMultiplyDefault = {
   isBeingLiquidated: false,
   isPartiallyLiquidated: false,
   isLiquidated: false,
-  isBadDebt: false,
 }
 
 export type AjnaBorrowishPositionAuction = {
@@ -22,7 +21,6 @@ export type AjnaBorrowishPositionAuction = {
   isBeingLiquidated: boolean
   isPartiallyLiquidated: boolean
   isLiquidated: boolean
-  isBadDebt: boolean
 }
 
 export type AjnaEarnPositionAuction = {
@@ -52,29 +50,23 @@ export const getAjnaPositionAuction$ = ({
 
           const isDuringGraceTime = auction.endOfGracePeriod - new Date().getTime() > 0
 
-          const isBadDebt =
-            auction.debtToCover.gt(zero) &&
-            auction.collateral.isZero() &&
-            auction.inLiquidation &&
-            auction.alreadyTaken
-
           const isPartiallyLiquidated =
             auction.collateral.gt(zero) &&
             auction.debtToCover.gt(zero) &&
             !auction.inLiquidation &&
-            auction.alreadyTaken
+            !!auction.endOfGracePeriod
 
           const isLiquidated =
             auction.debtToCover.isZero() &&
             !auction.inLiquidation &&
-            auction.alreadyTaken
+            !!auction.endOfGracePeriod &&
+            !isPartiallyLiquidated
 
           const graceTimeRemaining = timeAgo({
             to: new Date(auction.endOfGracePeriod),
           })
 
-          const isBeingLiquidated =
-            !isDuringGraceTime && !isBadDebt && auction.inLiquidation && !auction.alreadyTaken
+          const isBeingLiquidated = !isDuringGraceTime && auction.inLiquidation
 
           return {
             isDuringGraceTime,
@@ -82,7 +74,6 @@ export const getAjnaPositionAuction$ = ({
             isBeingLiquidated,
             isPartiallyLiquidated,
             isLiquidated,
-            isBadDebt,
           }
         }
         case 'earn': {

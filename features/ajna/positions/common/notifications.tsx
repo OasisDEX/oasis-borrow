@@ -80,7 +80,6 @@ const ajnaNotifications: {
   beingLiquidated: NotificationCallbackWithParams<null>
   gotLiquidated: NotificationCallbackWithParams<null>
   gotPartiallyLiquidated: NotificationCallbackWithParams<null>
-  gotBadDebtLiquidated: NotificationCallbackWithParams<null>
   lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
   collateralToWithdraw: NotificationCallbackWithParams<null>
 } = {
@@ -181,19 +180,6 @@ const ajnaNotifications: {
     type: 'error',
     closable: true,
   }),
-  gotBadDebtLiquidated: () => ({
-    title: {
-      translationKey: 'ajna.position-page.common.notifications.bad-debt-liquidation.title',
-    },
-    message: {
-      component: (
-        <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.bad-debt-liquidation.message" />
-      ),
-    },
-    icon: 'coins_cross',
-    type: 'error',
-    closable: true,
-  }),
   lendingPriceFrozen: ({ quoteToken }) => ({
     title: {
       translationKey: 'ajna.position-page.earn.manage.notifications.lending-price-frozen.title',
@@ -273,10 +259,6 @@ export function getAjnaNotifications({
 
       if (borrowishPositionAuction.isLiquidated) {
         notifications.push(ajnaNotifications.gotLiquidated(null))
-      }
-
-      if (borrowishPositionAuction.isBadDebt) {
-        notifications.push(ajnaNotifications.gotBadDebtLiquidated(null))
       }
       break
     case 'earn': {
