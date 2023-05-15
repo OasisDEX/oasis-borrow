@@ -2,6 +2,7 @@ import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { contractDesc } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Erc20 } from 'types/web3-v1-contracts'
@@ -22,7 +23,8 @@ export interface TokenBalanceArgs {
 
 export const tokenBalance: CallDef<TokenBalanceArgs, BigNumber> = {
   call: ({ token }, { contract, chainId }) =>
-    contract<Erc20>(getNetworkContracts(chainId).tokens[token]).methods.balanceOf,
+    contract<Erc20>(getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]).methods
+      .balanceOf,
   prepareArgs: ({ account }) => [account],
   postprocess: (result, { token }) =>
     amountFromWei(new BigNumber(result), getToken(token).precision),
@@ -38,7 +40,9 @@ export const tokenBalanceRawForJoin: CallDef<TokenBalanceRawForJoinArgs, BigNumb
     const cd = contractDesc(erc20, tokenAddress)
     return contract<Erc20>(cd).methods.balanceOf
   },
-  prepareArgs: ({ ilk }, { chainId }) => [getNetworkContracts(chainId).joins[ilk]],
+  prepareArgs: ({ ilk }, { chainId }) => [
+    getNetworkContracts(NetworkIds.MAINNET, chainId).joins[ilk],
+  ],
   postprocess: (result) => new BigNumber(result),
 }
 
@@ -50,7 +54,8 @@ interface TokenAllowanceArgs {
 
 export const tokenAllowance: CallDef<TokenAllowanceArgs, BigNumber> = {
   call: ({ token }, { contract, chainId }) =>
-    contract<Erc20>(getNetworkContracts(chainId).tokens[token]).methods.allowance,
+    contract<Erc20>(getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]).methods
+      .allowance,
   prepareArgs: ({ owner, spender }) => [owner, spender],
   postprocess: (result: any) => amountFromWei(new BigNumber(result)),
 }
@@ -64,7 +69,7 @@ export type ApproveData = {
 
 export const approve: TransactionDef<ApproveData> = {
   call: ({ token }, { chainId, contract }) =>
-    contract<Erc20>(getNetworkContracts(chainId).tokens[token]).methods.approve,
+    contract<Erc20>(getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]).methods.approve,
   prepareArgs: ({ spender, amount }) => [spender, amountToWei(amount).toFixed(0)],
 }
 
@@ -76,7 +81,7 @@ export type DisapproveData = {
 
 export const disapprove: TransactionDef<DisapproveData> = {
   call: ({ token }, { chainId, contract }) =>
-    contract<Erc20>(getNetworkContracts(chainId).tokens[token]).methods.approve,
+    contract<Erc20>(getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]).methods.approve,
   prepareArgs: ({ spender }) => [spender, 0],
 }
 

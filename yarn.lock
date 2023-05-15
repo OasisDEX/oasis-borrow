@@ -1269,7 +1269,7 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.1"
 
-"@ethersproject/abi@5.7.0", "@ethersproject/abi@^5.0.1", "@ethersproject/abi@^5.7.0":
+"@ethersproject/abi@5.7.0", "@ethersproject/abi@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.7.0.tgz#b3f3e045bbbeed1af3947335c247ad625a44e449"
   integrity sha512-351ktp42TiRcYB3H1OP8yajPeAQstMW/yCFokj/AthP9bLHzQFPlOrxOcwYEDkUAICmOHljvN4K39OMTMUa9RA==
@@ -5901,17 +5901,6 @@
     encoding "^0.1.13"
     utf-8-validate "^5.0.8"
 
-"@unstoppabledomains/resolution@^8.0":
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/@unstoppabledomains/resolution/-/resolution-8.5.0.tgz#7f65146fb3bc69bfae8699c4ed1c61f3d6f0096c"
-  integrity sha512-csqExbiK8F5mRKoHlDZjGuIEuvi63O8PSyhUcGhnTi76Il5fCREAGNVdTiRxagPPYoxCO+Xmf6kThwtmiws1Ow==
-  dependencies:
-    "@ethersproject/abi" "^5.0.1"
-    bn.js "^4.4.0"
-    cross-fetch "^3.1.4"
-    crypto-js "^4.1.1"
-    elliptic "^6.5.4"
-
 "@vibrant/color@^3.2.1-alpha.1":
   version "3.2.1-alpha.1"
   resolved "https://registry.yarnpkg.com/@vibrant/color/-/color-3.2.1-alpha.1.tgz#1bcee4545d2276d36f9a1acb42ab3485a9b489ec"
@@ -6434,12 +6423,11 @@
     ethers "5.5.4"
     joi "17.9.1"
 
-"@web3-onboard/core@^2.16.2":
-  version "2.16.2"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.16.2.tgz#49b46d539e54d170e445065ff4017d8a53c90835"
-  integrity sha512-ONIMVt35i2kEJclCa9L8Gf2q71nIogtyyvXZTQuxZXvlN1DSECTXir6xuzb9iezd8QuxWBdtZcWzLZnf5KimkQ==
+"@web3-onboard/core@^2.17.0":
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.17.0.tgz#5c0a0114e1d53cfc473f9b0aef5bae355b50e502"
+  integrity sha512-N6LKiNVjHHOqEdh9RrRAhlWid3bm6SqaCyMcfbqcJceWL53V4nFMTleutIX/YGZbqfms27p6oTAk1xZ0470L+g==
   dependencies:
-    "@unstoppabledomains/resolution" "^8.0"
     "@web3-onboard/common" "^2.3.1"
     bignumber.js "^9.0.0"
     bnc-sdk "^4.6.7"
@@ -6494,13 +6482,13 @@
     "@web3-onboard/common" "^2.3.1"
     rxjs "^7.5.2"
 
-"@web3-onboard/react@^2.7.2":
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/react/-/react-2.7.2.tgz#69d20f415557c01462e516f1f87269d6e629c4d3"
-  integrity sha512-IbCk1zLX+1QggJeOXAQPf1WSO9exaiEKNFWg/M1JVw6KwydpwBY6TcPcrcB0gVOWQ3ZC/WtcstWs63dEo5xI5A==
+"@web3-onboard/react@^2.8.0":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/react/-/react-2.8.1.tgz#763f08f89e02752a8f692fafcdeaa4b7eb15d6df"
+  integrity sha512-kPw2Fk38HTpIyqzI3iE5V+1js4N769svnM+0fxBeZivqFU4+F9WjzkQf4iAV9f0wh7UZJpA8ZUISvfEWlqfsyQ==
   dependencies:
     "@web3-onboard/common" "^2.3.1"
-    "@web3-onboard/core" "^2.16.2"
+    "@web3-onboard/core" "^2.17.0"
     use-sync-external-store "1.0.0"
 
 "@web3-onboard/trezor@^2.3.5":

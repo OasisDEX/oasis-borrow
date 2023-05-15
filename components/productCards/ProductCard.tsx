@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { networksByName } from 'blockchain/networksConfig'
-import { ProtocolLongNames, TokenMetadataType } from 'blockchain/tokensMetadata'
+import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { FloatingLabel } from 'components/FloatingLabel'
 import { AppLink } from 'components/Links'
 import { ProductCardLabel, ProductCardLabels } from 'components/ProductCardLabels'
@@ -11,6 +11,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { useWindowSize } from 'helpers/useWindowSize'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
@@ -109,7 +110,7 @@ export function ProductCardProtocolLink({
     <Box sx={{ paddingRight: '10px' }}>
       <AppLink href={link}>
         <WithArrow variant="styles.a" gap="1">
-          {ProtocolLongNames[protocol]}
+          {LendingProtocolLabel[protocol]}
         </WithArrow>
       </AppLink>
     </Box>

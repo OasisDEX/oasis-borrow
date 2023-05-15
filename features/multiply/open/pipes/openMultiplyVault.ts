@@ -3,6 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import {
@@ -413,10 +414,14 @@ export function createOpenMultiplyVault$(
                       ilk,
                       proxyAddress,
                       allowance,
-                      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
-                      openVaultSafeConfirmations: getNetworkContracts(context.chainId)
-                        .openVaultSafeConfirmations,
-                      etherscan: getNetworkContracts(context.chainId).etherscan.url,
+                      safeConfirmations: getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+                        .safeConfirmations,
+                      openVaultSafeConfirmations: getNetworkContracts(
+                        NetworkIds.MAINNET,
+                        context.chainId,
+                      ).openVaultSafeConfirmations,
+                      etherscan: getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan
+                        .url,
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,

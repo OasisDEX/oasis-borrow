@@ -1,4 +1,3 @@
-import { ProtocolLongNames } from 'blockchain/tokensMetadata'
 import { WithWalletConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
@@ -6,6 +5,7 @@ import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { supportedBorrowIlks } from 'helpers/productCards'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -38,7 +38,7 @@ function OpenVault({ ilk }: { ilk: string }) {
             title="seo.title-product-w-tokens"
             titleParams={{
               product: t('seo.borrow.title'),
-              protocol: ProtocolLongNames.maker,
+              protocol: LendingProtocolLabel.Maker,
               token1: ilk,
               token2: 'DAI',
             }}

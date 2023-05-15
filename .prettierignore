@@ -6,3 +6,7 @@ package.json
 types
 i18next.d.ts
 .yalc
+coverage
+.idea
+.run
+.swc

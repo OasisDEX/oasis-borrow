@@ -2,12 +2,13 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-types'
 import { providers } from 'ethers'
 import { skipCache } from 'helpers/api/skipCache'
+import { getNetworkRpcEndpoint } from 'helpers/networkHelpers'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
 import { JsonRpcCachedProvider } from './jsonRpcCachedProvider'
-import { networksById } from './networksConfig'
+import { NetworkIds } from './networkIds'
 
 function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers
@@ -24,12 +25,12 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         const chainId = fixChainId(await chainIdPromise)
         if (jsonRpcBatchProvider === undefined) {
           jsonRpcBatchProvider = new JsonRpcBatchProvider(
-            networksById[chainId].rpcCallsEndpoint,
+            getNetworkRpcEndpoint(NetworkIds.MAINNET, chainId),
             chainId,
           )
-          provider = skipCache(chainId.toString())
+          provider = skipCache(chainId)
             ? jsonRpcBatchProvider
-            : new JsonRpcCachedProvider(networksById[chainId].rpcCallsEndpoint, chainId)
+            : new JsonRpcCachedProvider(getNetworkRpcEndpoint(NetworkIds.MAINNET, chainId), chainId)
         } else {
           provider = jsonRpcBatchProvider
         }

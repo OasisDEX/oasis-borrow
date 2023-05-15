@@ -1,4 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networkIds'
 import { Vault } from 'blockchain/vaults'
 import {
   defaultMutableManageVaultState,
@@ -89,8 +90,8 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       proxyAddress,
       collateralAllowance,
       daiAllowance,
-      safeConfirmations: getNetworkContracts(context.chainId).safeConfirmations,
-      etherscan: getNetworkContracts(context.chainId).etherscan.url,
+      safeConfirmations: getNetworkContracts(NetworkIds.MAINNET, context.chainId).safeConfirmations,
+      etherscan: getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url,
       errorMessages: [],
       warningMessages: [],
       summary: defaultManageVaultSummary,

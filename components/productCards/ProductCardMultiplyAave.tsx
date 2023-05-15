@@ -1,13 +1,15 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
-import { getAaveStrategy, useAaveContext } from 'features/aave'
+import { useAaveContext } from 'features/aave'
+import { IStrategyConfig } from 'features/aave/common'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -15,21 +17,26 @@ import { ProductCard, ProductCardNetworkRow, ProductCardProtocolLink } from './P
 
 type ProductCardMultiplyAaveProps = {
   cardData: TokenMetadataType
+  strategy: IStrategyConfig
 }
 
 const aaveMultiplyCalcValueBasis = {
   amount: new BigNumber(100),
 }
 
-export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAaveProps) {
+export function ProductCardMultiplyAave({ cardData, strategy }: ProductCardMultiplyAaveProps) {
   const { t } = useTranslation()
   const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
-  const { getAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext()
-  const [strategy] = getAaveStrategy(cardData.symbol)
+  const { getAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
+    strategy.protocol,
+    strategy.network,
+  )
   const [debtReserveData] = useObservable(getAaveReserveData$({ token: strategy.tokens.debt }))
   const [collateralReserveConfigurationData] = useObservable(
     aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
   )
+
+  const protocolVersion = strategy.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
 
   const maximumMultiple =
     collateralReserveConfigurationData?.ltv &&
@@ -93,7 +100,7 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
       ]}
       floatingLabelText={t('product-card.tags.new')}
       button={{
-        link: `/multiply/aave/v2/open/${strategy.urlSlug}`,
+        link: `/${strategy.network}/aave/${protocolVersion}/multiply/${strategy.urlSlug}`,
         text: t('nav.multiply'),
       }}
       background={cardData.background}

@@ -199,7 +199,7 @@ export function createOraclePriceData$(
   return context$.pipe(
     switchMap(({ web3, chainId }) => {
       return bindNodeCallback(web3.eth.getCode)(
-        getNetworkContracts(chainId).mcdOsms[token].address,
+        getNetworkContracts(NetworkIds.MAINNET, chainId).mcdOsms[token].address,
       ).pipe(
         first(),
         switchMap((contractData) => {

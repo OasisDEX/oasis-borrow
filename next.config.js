@@ -142,9 +142,24 @@ const baseConfig = {
         permanent: true,
       },
       {
+        source: '/:type/aave/:version/open/:strategy*',
+        destination: '/ethereum/aave/:version/:type/:strategy*',
+        permanent: false,
+      },
+      {
+        source: '/aave/:version/:vault*',
+        destination: '/ethereum/aave/:version/:vault*',
+        permanent: false,
+      },
+      {
         source: '/careers(.*)',
         destination: 'https://oasisapp.workable.com/',
         permanent: true,
+      },
+      {
+        source: '/:vault(\\d+)',
+        destination: '/ethereum/maker/:vault*',
+        permanent: false,
       },
     ]
   },

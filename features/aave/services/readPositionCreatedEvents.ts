@@ -1,5 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networkIds'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { LendingProtocol } from 'lendingProtocols'
@@ -35,7 +36,7 @@ function getPositionCreatedEventForProxyAddress(
 
   return dpmWithPositionCreatedEvent.queryFilter(
     filter,
-    getNetworkContracts(context.chainId).accountGuard.genesisBlock,
+    getNetworkContracts(NetworkIds.MAINNET, context.chainId).accountGuard.genesisBlock,
     'latest',
   )
 }

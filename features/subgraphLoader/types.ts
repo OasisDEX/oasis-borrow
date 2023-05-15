@@ -49,6 +49,13 @@ export type SubgraphsRecord = {
     [NetworkIds.MAINNET]: string
     [NetworkIds.HARDHAT]: string
     [NetworkIds.GOERLI]: string
+    [NetworkIds.ARBITRUMMAINNET]: ''
+    [NetworkIds.ARBITRUMGOERLI]: ''
+    [NetworkIds.POLYGONMAINNET]: ''
+    [NetworkIds.POLYGONMUMBAI]: ''
+    [NetworkIds.OPTIMISMMAINNET]: ''
+    [NetworkIds.OPTIMISMGOERLI]: ''
+    [NetworkIds.EMPTYNET]: ''
   }
 }
 export type SubgraphMethodsRecord = { [key in keyof Subgraphs['Ajna' & 'Temp']]: string }

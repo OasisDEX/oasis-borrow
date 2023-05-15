@@ -32,6 +32,7 @@ export type Feature =
   | 'UseNetworkSwitcher'
   | 'UseNetworkRowProductCard'
   | 'OptimismAaveV3'
+  | 'OasisCreate'
   | '🌞'
 
 const configuredFeatures: Record<Feature, boolean> = {
@@ -63,6 +64,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcher: false,
   UseNetworkRowProductCard: false,
   OptimismAaveV3: false,
+  OasisCreate: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
 }
 

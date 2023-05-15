@@ -6,6 +6,7 @@ import { defer, from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
+import { NetworkIds } from './networkIds'
 
 export function createTokenBalance$(
   { contract, chainId }: Context,
@@ -15,7 +16,9 @@ export function createTokenBalance$(
   return defer(() =>
     from(
       // @ts-ignore
-      contract(getNetworkContracts(chainId).tokens[token]).methods.balanceOf(account).call(),
+      contract(getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token])
+        .methods.balanceOf(account)
+        .call(),
     ).pipe(
       map((balance: any) => {
         return amountFromWei(new BigNumber(balance), getToken(token).precision)

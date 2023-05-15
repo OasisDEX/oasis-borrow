@@ -13,12 +13,18 @@ import { ViewPositionSectionComponent } from 'features/earn/aave/components/View
 import { adjustRiskSliders } from 'features/earn/aave/riskSliderConfig'
 import { AaveMultiplyManageComponent } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/multiply/aave/riskSliderConfig'
-import { NetworkNames } from 'helpers/networkNames'
+import { isSupportedNetwork, NetworkNames } from 'helpers/networkNames'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
-import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, isLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
-import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
+import {
+  isSupportedProductType,
+  IStrategyConfig,
+  ManagePositionAvailableActions,
+  ProductType,
+  ProxyType,
+} from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { DebtInput } from './open/components/DebtInput'
@@ -354,6 +360,34 @@ export function getSupportedTokens(protocol: LendingProtocol, network: NetworkNa
         .flatMap((tokens) => tokens),
     ),
   )
+}
+
+export function isSupportedStrategy(
+  network: string | NetworkNames,
+  protocol: string | LendingProtocol,
+  product: string | ProductType,
+  strategy: string,
+): [true, IStrategyConfig] | [false, undefined] {
+  if (
+    isSupportedNetwork(network) &&
+    isLendingProtocol(protocol) &&
+    isSupportedProductType(product)
+  ) {
+    const definedStrategy = strategies.find(
+      (s) =>
+        s.network === network &&
+        s.protocol === protocol &&
+        s.urlSlug.toLowerCase() === strategy.toLowerCase() &&
+        s.type.toLowerCase() === product.toLowerCase(),
+    )
+    if (definedStrategy) {
+      return [true, definedStrategy]
+    } else {
+      return [false, undefined]
+    }
+  }
+
+  return [false, undefined]
 }
 
 export function convertDefaultRiskRatioToActualRiskRatio(

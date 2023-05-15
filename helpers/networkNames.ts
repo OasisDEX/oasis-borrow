@@ -1,47 +1,51 @@
 // all the network names we use in the app
 export enum NetworkNames {
-  ethereumMainnet = 'mainnet',
-  ethereumGoerli = 'goerli',
-  ethereumHardhat = 'hardhat',
+  ethereumMainnet = 'ethereum',
+  ethereumGoerli = 'ethereum-goerli',
 
-  arbitrumMainnet = 'arbitrum-mainnet',
+  arbitrumMainnet = 'arbitrum',
   arbitrumGoerli = 'arbitrum-goerli',
 
-  polygonMainnet = 'polygon-mainnet',
+  polygonMainnet = 'polygon',
   polygonMumbai = 'polygon-mumbai',
 
-  optimismMainnet = 'optimism-mainnet',
+  optimismMainnet = 'optimism',
   optimismGoerli = 'optimism-goerli',
+}
 
-  // avalancheMainnet = 'avalanche-mainnet',
+// main network names without deviations
+export enum BaseNetworkNames {
+  Ethereum = NetworkNames.ethereumMainnet,
+  Arbitrum = NetworkNames.arbitrumMainnet,
+  Polygon = NetworkNames.polygonMainnet,
+  Optimism = NetworkNames.optimismMainnet,
 }
 
 // main network names skipping the testnets mapping
 export enum MainNetworkNames {
-  ethereumMainnet = 'mainnet',
-  ethereumGoerli = 'mainnet',
-  ethereumHardhat = 'mainnet',
+  ethereumMainnet = NetworkNames.ethereumMainnet,
+  ethereumGoerli = NetworkNames.ethereumMainnet,
 
-  arbitrumMainnet = 'arbitrum-mainnet',
-  arbitrumGoerli = 'arbitrum-mainnet',
+  arbitrumMainnet = NetworkNames.arbitrumMainnet,
+  arbitrumGoerli = NetworkNames.arbitrumMainnet,
 
-  polygonMainnet = 'polygon-mainnet',
-  polygonMumbai = 'polygon-mainnet',
+  polygonMainnet = NetworkNames.polygonMainnet,
+  polygonMumbai = NetworkNames.polygonMainnet,
 
-  optimismMainnet = 'optimism-mainnet',
-  optimismGoerli = 'optimism-mainnet',
-
-  // avalancheMainnet = 'avalanche-mainnet',
+  optimismMainnet = NetworkNames.optimismMainnet,
+  optimismGoerli = NetworkNames.optimismMainnet,
 }
 
 export type NetworkLabelType =
   | 'Ethereum'
   | 'Ethereum Goerli'
-  | 'Ethereum Hardhat'
   | 'Arbitrum'
   | 'Arbitrum Goerli'
   | 'Polygon'
   | 'Polygon Mumbai'
   | 'Optimism'
   | 'Optimism Goerli'
-// | 'Avalanche'
+
+export function isSupportedNetwork(value: string): value is NetworkNames {
+  return Object.values<string>(NetworkNames).includes(value)
+}

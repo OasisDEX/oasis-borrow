@@ -31,7 +31,7 @@ import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } fr
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
-import { NavigationPickNetwork } from './navigation/NavigationPickNetwork'
+import { NavigationNetworkSwitcher } from './navigation/NavigationNetworkSwitcher'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidgetShowHide'
 
@@ -308,7 +308,11 @@ function UserDesktopMenu() {
           </Button>
           <UniswapWidgetShowHide />
         </Box>
-        {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
+        {useNetworkSwitcher ? (
+          <Box sx={{ mr: 2 }}>
+            <NavigationNetworkSwitcher />
+          </Box>
+        ) : null}
 
         {showHeaderSettings && (
           <ButtonDropdown
@@ -791,7 +795,11 @@ function DisconnectedHeader() {
         <BasicHeader variant="appContainer">
           <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
-            {useNetworkSwitcher ? <NavigationPickNetwork /> : null}
+            {useNetworkSwitcher ? (
+              <Box sx={{ mr: 2 }}>
+                <NavigationNetworkSwitcher />
+              </Box>
+            ) : null}
             <ConnectButton />
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}
