@@ -13,8 +13,12 @@ export enum NetworkNames {
   optimismGoerli = 'optimism-goerli',
 }
 
-export function isSupportedNetwork(value: string): value is NetworkNames {
-  return Object.values<string>(NetworkNames).includes(value)
+// main network names without deviations
+export enum BaseNetworkNames {
+  Ethereum = NetworkNames.ethereumMainnet,
+  Arbitrum = NetworkNames.arbitrumMainnet,
+  Polygon = NetworkNames.polygonMainnet,
+  Optimism = NetworkNames.optimismMainnet,
 }
 
 // main network names skipping the testnets mapping
@@ -41,3 +45,7 @@ export type NetworkLabelType =
   | 'Polygon Mumbai'
   | 'Optimism'
   | 'Optimism Goerli'
+
+export function isSupportedNetwork(value: string): value is NetworkNames {
+  return Object.values<string>(NetworkNames).includes(value)
+}

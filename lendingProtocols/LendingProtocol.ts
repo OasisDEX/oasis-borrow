@@ -5,7 +5,7 @@ export enum LendingProtocol {
   Maker = 'Maker',
 }
 
-export enum LendingProtocolLongName {
+export enum LendingProtocolLabel {
   AaveV2 = 'Aave V2',
   AaveV3 = 'Aave V3',
   Ajna = 'Ajna',
