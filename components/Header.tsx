@@ -240,7 +240,6 @@ function UserDesktopMenu() {
   const contextAccountDetails: ContextAccountDetails = { context, accountData }
 
   const showHeaderSettings = getShowHeaderSettings(contextAccountDetails)
-  console.log('showHeaderSettings', showHeaderSettings)
 
   const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 

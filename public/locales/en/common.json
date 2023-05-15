@@ -321,7 +321,8 @@
   "error-button": "More info",
   "exchange": {
     "onboarding": {
-      "title": "Say Hello to Oasis Swap & Bridge",
+      "title": "Oasis Swap & Bridge",
+      "subtitle": "Say Hello to Oasis Swap & Bridge",
       "body": "Quickly and securely swap and bridge tokens directly on Oasis with our partner LiFi. Visit <0>Oasis Swap FAQ's to read more →</0>",
       "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
       "button": "Got it"
