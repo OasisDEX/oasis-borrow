@@ -18,15 +18,16 @@ export function SwapWidgetShowHide() {
   const { uiChanges } = useAppContext()
   const [wallet] = useConnectWallet()
 
-  const swapWidgetClose = useCallback(() => {
-    uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, { type: 'close' })
-  }, [uiChanges])
-
-  const clickawayRef = useOutsideElementClickHandler(swapWidgetClose)
-
   const [swapWidgetChange] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
+
+  const swapWidgetClose = useCallback(() => {
+    swapWidgetChange?.isOpen &&
+      uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, { type: 'close' })
+  }, [swapWidgetChange?.isOpen, uiChanges])
+
+  const clickawayRef = useOutsideElementClickHandler(swapWidgetClose)
 
   useEffect(() => {
     if (swapWidgetChange?.isOpen && clickawayRef?.current) {

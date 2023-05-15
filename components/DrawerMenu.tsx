@@ -57,8 +57,8 @@ export const DrawerMenu = ({
         <Box
           sx={{
             position: 'absolute',
-            bottom: [null, 3],
-            top: [3, null],
+            bottom: ['auto', 3],
+            top: [3, 'auto'],
             right: 0,
             left: [3, 0],
             width: ['40px', '58px'],
