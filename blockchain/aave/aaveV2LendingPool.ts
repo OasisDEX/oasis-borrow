@@ -58,8 +58,7 @@ export function getAaveV2UserConfiguration({
   address,
 }: AaveV2GetUserConfigurationParameters): Promise<AaveV2ConfigurationData> {
   return contract.getUserConfiguration(address).then((result) => {
-    // TODO: Check it.
-    return [result.toString()]
+    return result.map((item) => item.toString())
   })
 }
 
