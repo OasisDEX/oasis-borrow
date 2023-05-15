@@ -88,6 +88,7 @@ export function PromoCard({
         >
           {pills.map(({ label, variant = 'neutral' }) => (
             <Flex
+              key={label}
               as="li"
               variant="text.paragraph4"
               sx={{
@@ -108,7 +109,7 @@ export function PromoCard({
       {data && (
         <Flex as="ul" sx={{ flexDirection: 'column', listStyle: 'none', mx: 0, mt: 3, p: 0 }}>
           {data.map(({ label, value, variant = 'neutral' }) => (
-            <Flex as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
+            <Flex key={label} as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text as="span" variant="paragraph3" sx={{ color: 'neutral80' }}>
                 {label}
               </Text>

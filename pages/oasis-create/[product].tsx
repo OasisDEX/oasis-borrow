@@ -1,15 +1,13 @@
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { ProductPagesLayout } from 'components/Layouts'
+import { ProductType } from 'features/oasisCreate/types'
 import { OasisCreateView } from 'features/oasisCreate/views/OasisCreateView'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-export const oasisCreateProducts = ['borrow', 'multiply', 'earn'] as const
-export type OasisCreateProduct = (typeof oasisCreateProducts)[number]
-
-function OasisCreatePage({ product }: { product: OasisCreateProduct }) {
+function OasisCreatePage({ product }: { product: ProductType }) {
   return (
     <WithConnection>
       <WithFeatureToggleRedirect feature="OasisCreate">
@@ -26,7 +24,9 @@ export default OasisCreatePage
 export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   const paths =
     locales
-      ?.map((locale) => oasisCreateProducts.map((product) => ({ params: { product }, locale })))
+      ?.map((locale) =>
+        Object.values(ProductType).map((product) => ({ params: { product }, locale })),
+      )
       .flat() || []
 
   return {
@@ -36,7 +36,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const isOasisCreateProduct = oasisCreateProducts.includes(params?.product as OasisCreateProduct)
+  const isOasisCreateProduct = Object.values(ProductType).includes(params?.product as ProductType)
 
   return {
     ...(!isOasisCreateProduct && { notFound: true }),

@@ -1,16 +1,18 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
+import { ProductType } from 'features/oasisCreate/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import { OasisCreateProduct } from 'pages/oasis-create/[product]'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
+
+export const ALL_ASSETS = 'all assets'
 
 // TODO: remove when connected to real data
 const tokenOptions = {
   all: {
     title: 'All assets',
-    value: 'all assets',
+    value: ALL_ASSETS,
   },
   ETH: {
     title: 'Ether',
@@ -45,9 +47,9 @@ const tokenOptions = {
 }
 
 interface NaturalLanguageSelectorControllerProps {
-  product: OasisCreateProduct
+  product: ProductType
   url?: string
-  onChange?: (product: string, token: string) => void
+  onChange?: (product: ProductType, token: string) => void
 }
 
 export function NaturalLanguageSelectorController({
@@ -96,7 +98,7 @@ export function NaturalLanguageSelectorController({
 
   const defaultProductOption = options.filter((option) => option.product.value === product)[0]
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
-  const [selectedProduct, setSelectedProduct] = useState<string>(defaultProductOption.product.value)
+  const [selectedProduct, setSelectedProduct] = useState<ProductType>(defaultProductOption.product.value as ProductType)
   const [selectedToken, setSelectedToken] = useState<string>(defaultProductOption.tokens[0].value)
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
@@ -116,7 +118,7 @@ export function NaturalLanguageSelectorController({
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
-            setSelectedProduct(selected.value)
+            setSelectedProduct(selected.value as ProductType)
             setOverwriteOption(
               !options
                 .filter((option) => option.product.value === selected.value)[0]

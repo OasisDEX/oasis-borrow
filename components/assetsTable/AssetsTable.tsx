@@ -267,7 +267,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
     <Box
       as="td"
       sx={{
-        p: '8px 12px',
+        p: '14px 12px',
         textAlign: 'right',
         whiteSpace: 'nowrap',
         '&:first-child': {

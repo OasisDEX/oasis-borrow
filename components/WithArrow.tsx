@@ -15,8 +15,10 @@ export function WithArrow({
 }>) {
   return (
     <Text
+      as="span"
       variant={variant}
       sx={{
+        display: 'block',
         fontWeight: 'semiBold',
         fontSize: [1, 2],
         position: 'relative',
