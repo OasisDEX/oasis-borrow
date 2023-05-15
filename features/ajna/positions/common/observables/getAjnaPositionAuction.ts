@@ -1,4 +1,4 @@
-import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaPositionAuction } from 'features/ajna/rewards/helpers/getAjnaPositionAuction'

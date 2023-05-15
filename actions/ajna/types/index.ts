@@ -1,4 +1,4 @@
-import { Strategy } from '@oasisdex/oasis-actions-poc/src/types/common'
+import { Strategy } from '@oasisdex/dma-library'
 
 export interface AjnaTxData {
   data: string

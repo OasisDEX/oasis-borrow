@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'

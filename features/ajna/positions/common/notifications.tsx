@@ -1,4 +1,4 @@
-import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
 import { AjnaGenericPosition, AjnaProduct, AjnaUpdateState } from 'features/ajna/common/types'
