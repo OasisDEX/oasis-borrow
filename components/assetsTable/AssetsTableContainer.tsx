@@ -3,14 +3,12 @@ import { Box, Heading } from 'theme-ui'
 
 interface AssetsTableContainerProps {
   padded?: boolean
-  tableOnly?: boolean
   title?: string
 }
 
 export function AssetsTableContainer({
   children,
   padded = false,
-  tableOnly,
   title,
 }: PropsWithChildren<AssetsTableContainerProps>) {
   return (
@@ -21,7 +19,6 @@ export function AssetsTableContainer({
         borderBottom: '1px solid',
         borderColor: 'neutral20',
         ...(padded && { p: 4 }),
-        ...(tableOnly && { overflow: 'hidden' }),
       }}
     >
       {title && (

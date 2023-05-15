@@ -31,3 +31,10 @@ export interface OasisCreateItemDetails {
 }
 
 export type OasisCreateItem = OasisCreateItemBasics & OasisCreateItemDetails
+
+export interface OasisCreateFilters {
+  groupToken?: string
+  secondaryToken?: string[]
+  network?: string[]
+  protocol?: string[]
+}

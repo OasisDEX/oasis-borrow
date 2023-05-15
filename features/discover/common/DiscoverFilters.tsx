@@ -29,7 +29,7 @@ export function DiscoverFilter({
         <GenericMultiselect
           {...item}
           onChange={(value) => {
-            onChange(filter, value)
+            onChange(filter, value.join(','))
           }}
         />
       )

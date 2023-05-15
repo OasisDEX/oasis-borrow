@@ -1,9 +1,11 @@
+import { networksByName } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
+import { GenericMultiselect } from 'components/GenericMultiselect'
 import { AppLink } from 'components/Links'
 import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
@@ -13,10 +15,13 @@ import {
 } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
 import { oasisCreateData } from 'features/oasisCreate/data'
 import { filterRows } from 'features/oasisCreate/helpers/filterRows'
-import { ProductType } from 'features/oasisCreate/types'
+import { parseRows } from 'features/oasisCreate/helpers/parseRows'
+import { OasisCreateFilters, ProductType } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
+import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
+import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -35,17 +40,67 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
   const { t } = useTranslation()
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>()
+  const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
 
-  const rows = useMemo(
+  const rowsFilteredByToken = useMemo(
     () =>
       filterRows(oasisCreateData, selectedProduct, {
-        // protocol: LendingProtocol.Ajna,
-        ...(selectedToken !== ALL_ASSETS && {
-          groupToken: selectedToken,
-        }),
+        ...(selectedToken !== ALL_ASSETS && { groupToken: selectedToken }),
       }),
     [selectedProduct, selectedToken],
   )
+  const rowsFilteredByAll = useMemo(
+    () => filterRows(oasisCreateData, selectedProduct, selectedFilters),
+    [selectedProduct, selectedFilters],
+  )
+  const parsedRows = useMemo(
+    () => parseRows(rowsFilteredByAll, selectedProduct),
+    [rowsFilteredByAll, selectedProduct],
+  )
+  const debtTokens = useMemo(
+    () =>
+      uniq(rowsFilteredByToken.map((item) => item.secondaryToken)).map((item) => ({
+        label: item,
+        value: item,
+        icon: getToken(item).iconCircle,
+      })),
+    [rowsFilteredByToken],
+  )
+  const networks = [
+    {
+      label: networksByName[BaseNetworkNames.Ethereum].label,
+      value: networksByName[BaseNetworkNames.Ethereum].name,
+      image: networksByName[BaseNetworkNames.Ethereum].icon,
+    },
+    {
+      label: networksByName[BaseNetworkNames.Arbitrum].label,
+      value: networksByName[BaseNetworkNames.Arbitrum].name,
+      image: networksByName[BaseNetworkNames.Arbitrum].icon,
+    },
+    {
+      label: networksByName[BaseNetworkNames.Optimism].label,
+      value: networksByName[BaseNetworkNames.Optimism].name,
+      image: networksByName[BaseNetworkNames.Optimism].icon,
+    },
+  ]
+  const protocols = [
+    {
+      label: lendingProtocolsByName[LendingProtocol.Maker].label,
+      value: lendingProtocolsByName[LendingProtocol.Maker].name,
+    },
+    {
+      label: lendingProtocolsByName[LendingProtocol.AaveV2].label,
+      value: lendingProtocolsByName[LendingProtocol.AaveV2].name,
+    },
+    {
+      label: lendingProtocolsByName[LendingProtocol.AaveV3].label,
+      value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
+    },
+    {
+      label: lendingProtocolsByName[LendingProtocol.Ajna].label,
+      value: lendingProtocolsByName[LendingProtocol.Ajna].name,
+    },
+  ]
 
   return (
     <AnimatedWrapper>
@@ -61,6 +116,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           onChange={(_selectedProduct, _selectedToken) => {
             setSelectedProduct(_selectedProduct)
             setSelectedToken(_selectedToken)
+            setSelectedFilters({})
           }}
         />
         <Text
@@ -110,16 +166,46 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           link={{ href: EXTERNAL_LINKS.KB.HELP, label: t('learn-more') }}
         />
       </Grid>
-      <AssetsTableContainer tableOnly>
-        <AssetsFiltersContainer gridTemplateColumns="205px auto 205px 205px">
-          <Box>asd</Box>
+      <AssetsTableContainer>
+        <AssetsFiltersContainer
+          key={`${selectedProduct}-${selectedToken}`}
+          gridTemplateColumns="205px auto 205px 205px"
+        >
+          <GenericMultiselect
+            label={t('oasis-create.filters.debt-tokens')}
+            options={debtTokens}
+            onChange={(value) => {
+              setSelectedFilters({
+                ...selectedFilters,
+                secondaryToken: value,
+              })
+            }}
+          />
           <Box />
-          <Box>asd</Box>
-          <Box>asd</Box>
+          <GenericMultiselect
+            label={t('oasis-create.filters.networks')}
+            options={networks}
+            onChange={(value) => {
+              setSelectedFilters({
+                ...selectedFilters,
+                network: value,
+              })
+            }}
+          />
+          <GenericMultiselect
+            label={t('oasis-create.filters.protocols')}
+            options={protocols}
+            onChange={(value) => {
+              setSelectedFilters({
+                ...selectedFilters,
+                protocol: value,
+              })
+            }}
+          />
         </AssetsFiltersContainer>
-        {rows.length > 0 ? (
+        {parsedRows.length > 0 ? (
           <AssetsResponsiveTable
-            rows={rows}
+            rows={parsedRows}
             headerTranslationProps={{
               ...(selectedToken && { token: selectedToken === ALL_ASSETS ? 'ETH' : selectedToken }),
             }}

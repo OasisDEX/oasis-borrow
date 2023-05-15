@@ -2682,6 +2682,11 @@
       "long": "Long only",
       "passive": "Passive",
       "short": "Short only"
+    },
+    "filters": {
+      "debt-tokens": "Debt Tokens",
+      "networks": "Networks",
+      "protocols": "Protocols"
     }
   }
 }

@@ -1,23 +1,23 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
-import { GenericSelectOption } from 'components/GenericSelect'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
-import { Box, Text } from 'theme-ui'
+import { Box, Flex, Image, Text } from 'theme-ui'
 
 export interface GenericMultiselectOption {
+  icon?: string
+  image?: string
   label: string
   value: string
-  icon?: string
 }
 
 export interface GenericMultiselectProps {
   label: string
   options: GenericMultiselectOption[]
-  onChange: (value: string) => void
+  onChange: (value: string[]) => void
 }
 
 export function GenericMultiselect({ label, options, onChange }: GenericMultiselectProps) {
@@ -30,8 +30,7 @@ export function GenericMultiselect({ label, options, onChange }: GenericMultisel
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (didMountRef.current)
-      onChange((values.length ? values : options.map((item) => item.value)).join(','))
+    if (didMountRef.current) onChange(values.length ? values : options.map((item) => item.value))
     else didMountRef.current = true
   }, [values])
 
@@ -103,16 +102,13 @@ export function GenericMultiselect({ label, options, onChange }: GenericMultisel
         </Text>
       </Box>
       <Box
-        as="ul"
         sx={{
           position: 'absolute',
           top: '100%',
           left: 0,
-          maxHeight: '340px',
           minWidth: '100%',
           mt: 1,
-          py: '12px',
-          px: 0,
+          p: '12px',
           border: '1px solid',
           borderColor: 'secondary100',
           borderRadius: 'large',
@@ -122,52 +118,67 @@ export function GenericMultiselect({ label, options, onChange }: GenericMultisel
           transform: isOpen ? 'translateY(0)' : 'translateY(-5px)',
           pointerEvents: isOpen ? 'auto' : 'none',
           transition: 'opacity 200ms, transform 200ms',
-          overflowY: 'auto',
-          zIndex: 1,
-          '&::-webkit-scrollbar': {
-            width: '6px',
-            borderRadius: 'large',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'secondary100',
-            borderRadius: 'large',
-          },
-          '&::-webkit-scrollbar-track': {
-            my: '12px',
-            backgroundColor:
-              scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
-                ? 'secondary60'
-                : 'transparent',
-            borderRadius: 'large',
-          },
         }}
       >
-        <DiscoverMultiselectItem
-          hasCheckbox={false}
-          isDisabled={values.length === 0}
-          label={t('clear-selection')}
-          onClick={() => {
-            setValues([])
-            setIsOpen(false)
+        <Flex
+          ref={scrollRef}
+          as="ul"
+          sx={{
+            flexDirection: 'column',
+            rowGap: 2,
+            maxHeight: '340px',
+            pl: 0,
+            pr:
+              scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
+                ? '12px'
+                : 0,
+            overflowY: 'auto',
+            zIndex: 1,
+            '&::-webkit-scrollbar': {
+              width: '6px',
+              borderRadius: 'large',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'secondary100',
+              borderRadius: 'large',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor:
+                scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
+                  ? 'secondary60'
+                  : 'transparent',
+              borderRadius: 'large',
+            },
           }}
-          value=""
-        />
-        {options.map((option) => (
-          <DiscoverMultiselectItem
-            isSelected={values.includes(option.value)}
-            key={option.value}
-            onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
-            {...option}
+        >
+          <GenericMultiselectItem
+            hasCheckbox={false}
+            isDisabled={values.length === 0}
+            label={t('clear-selection')}
+            onClick={() => {
+              setValues([])
+              setIsOpen(false)
+            }}
+            value=""
           />
-        ))}
+          {options.map((option) => (
+            <GenericMultiselectItem
+              isSelected={values.includes(option.value)}
+              key={option.value}
+              onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
+              {...option}
+            />
+          ))}
+        </Flex>
       </Box>
     </Box>
   )
 }
 
-export function DiscoverMultiselectItem({
+export function GenericMultiselectItem({
   hasCheckbox = true,
   icon,
+  image,
   isDisabled = false,
   isSelected = false,
   label,
@@ -178,7 +189,7 @@ export function DiscoverMultiselectItem({
   isDisabled?: boolean
   isSelected?: boolean
   onClick: (value: string) => void
-} & GenericSelectOption) {
+} & GenericMultiselectOption) {
   return (
     <Box
       as="li"
@@ -191,6 +202,7 @@ export function DiscoverMultiselectItem({
         pl: hasCheckbox ? '48px' : '16px',
         fontSize: 3,
         color: isDisabled ? 'neutral80' : 'primary100',
+        borderRadius: 'medium',
         transition: 'color 200ms, background-color 200ms',
         cursor: isDisabled ? 'default' : 'pointer',
         whiteSpace: 'nowrap',
@@ -234,7 +246,18 @@ export function DiscoverMultiselectItem({
           />
         </Box>
       )}
-      {icon && <Icon size={32} sx={{ flexShrink: 0, my: '-4px', mr: '12px' }} name={icon} />}
+      {(icon || image) && (
+        <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}>
+          {icon && <Icon size={32} name={icon} sx={{ verticalAlign: 'bottom' }} />}
+          {image && (
+            <Image
+              src={image}
+              alt={label}
+              sx={{ width: '26px', height: '26px', verticalAlign: 'bottom' }}
+            />
+          )}
+        </Box>
+      )}
       {label}
     </Box>
   )
