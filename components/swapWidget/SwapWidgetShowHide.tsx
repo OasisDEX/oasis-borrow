@@ -1,3 +1,4 @@
+import { useConnectWallet } from '@web3-onboard/react'
 import { useAppContext } from 'components/AppContextProvider'
 import { DrawerMenu } from 'components/DrawerMenu'
 import {
@@ -7,7 +8,7 @@ import {
 } from 'features/swapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Box } from 'theme-ui'
 
 import { swapWidgetConfig } from './swapWidgetConfig'
@@ -15,10 +16,11 @@ import { SwapWidgetNoSsr } from './SwapWidgetNoSsr'
 
 export function SwapWidgetShowHide() {
   const { uiChanges } = useAppContext()
+  const [wallet] = useConnectWallet()
 
-  const swapWidgetClose = () => {
+  const swapWidgetClose = useCallback(() => {
     uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, { type: 'close' })
-  }
+  }, [uiChanges])
 
   const clickawayRef = useOutsideElementClickHandler(swapWidgetClose)
 
@@ -34,6 +36,12 @@ export function SwapWidgetShowHide() {
       }
     }
   }, [clickawayRef, swapWidgetChange])
+
+  useEffect(() => {
+    if (!wallet) {
+      swapWidgetClose()
+    }
+  }, [wallet, swapWidgetClose])
 
   return (
     <Box ref={clickawayRef}>

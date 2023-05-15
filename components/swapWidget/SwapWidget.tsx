@@ -2,22 +2,21 @@ import { LiFiWalletManagement, supportedWallets } from '@lifi/wallet-management'
 import { LiFiWidget } from '@lifi/widget'
 import { useWallets } from '@web3-onboard/react'
 import { useAppContext } from 'components/AppContextProvider'
-import { Skeleton } from 'components/Skeleton'
 import { useObservable } from 'helpers/observableHook'
 import { useOnboarding } from 'helpers/useOnboarding'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 import { swapWidgetConfig } from './swapWidgetConfig'
 import { SwapWidgetOnboarding } from './SwapWidgetOnboarding'
-
-const liFiWalletManagement = new LiFiWalletManagement()
+import { SwapWidgetSkeleton } from './SwapWidgetSkeleton'
 
 export function SwapWidget() {
   const { web3ContextConnected$ } = useAppContext()
   const [web3Context] = useObservable(web3ContextConnected$)
   const [isOnboarded] = useOnboarding('Exchange')
   const activeOnboardWallets = useWallets()
+  const liFiWalletManagement = useMemo(() => new LiFiWalletManagement(), [])
 
   const web3Provider =
     web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
@@ -33,22 +32,26 @@ export function SwapWidget() {
       await liFiWalletManagement.connect(activeWallets[0])
     }
     void autoConnectLiFi()
-  }, [activeOnboardWallets])
+  }, [activeOnboardWallets, liFiWalletManagement])
 
   if (!web3Provider) {
-    return (
-      <Box sx={{ minWidth: '390px' }}>
-        <Skeleton />
-      </Box>
-    )
+    return <SwapWidgetSkeleton />
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        height: '100%',
+        '& > div': {
+          maxHeight: '100%',
+          height: '100%',
+        },
+      }}
+    >
       {!isOnboarded ? (
         <SwapWidgetOnboarding />
       ) : (
-        <LiFiWidget integrator="Your dApp/company name" config={swapWidgetConfig} />
+        <LiFiWidget integrator={swapWidgetConfig.integrator} config={swapWidgetConfig} />
       )}
     </Box>
   )
