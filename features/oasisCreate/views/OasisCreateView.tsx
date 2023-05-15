@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
+import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
@@ -110,6 +111,12 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
         />
       </Grid>
       <AssetsTableContainer tableOnly>
+        <AssetsFiltersContainer gridTemplateColumns="205px auto 205px 205px">
+          <Box>asd</Box>
+          <Box />
+          <Box>asd</Box>
+          <Box>asd</Box>
+        </AssetsFiltersContainer>
         {rows.length > 0 ? (
           <AssetsResponsiveTable
             rows={rows}

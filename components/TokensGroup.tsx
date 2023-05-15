@@ -11,16 +11,7 @@ interface TokensGroupProps {
 export function TokensGroup({ sx, tokens }: TokensGroupProps) {
   return (
     <Box sx={{ position: 'relative', zIndex: 0, ...sx }}>
-      <Flex
-        as="ul"
-        sx={{
-          minWidth: '44px',
-          justifyContent: 'center',
-          m: 0,
-          p: 0,
-          listStyle: 'none',
-        }}
-      >
+      <Flex as="ul" sx={{ m: 0, p: 0, listStyle: 'none' }}>
         {tokens.map((token, i) => (
           <Box
             key={i}
@@ -32,7 +23,11 @@ export function TokensGroup({ sx, tokens }: TokensGroupProps) {
               '&:last-child': { mr: 0 },
             }}
           >
-            <Icon size={30} name={getToken(token).iconCircle} sx={{ verticalAlign: 'bottom' }} />
+            <Icon
+              size={tokens.length > 1 ? 30 : 44}
+              name={getToken(token).iconCircle}
+              sx={{ verticalAlign: 'bottom' }}
+            />
           </Box>
         ))}
       </Flex>

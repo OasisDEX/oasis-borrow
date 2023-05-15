@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { GenericSelectOption } from 'components/GenericSelect'
-import { DiscoverFiltersListItem } from 'features/discover/meta'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
@@ -9,13 +8,19 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Box, Text } from 'theme-ui'
 
-export function DiscoverMultiselect({
-  label,
-  onChange,
-  options,
-}: {
+export interface GenericMultiselectOption {
+  label: string
+  value: string
+  icon?: string
+}
+
+export interface GenericMultiselectProps {
+  label: string
+  options: GenericMultiselectOption[]
   onChange: (value: string) => void
-} & DiscoverFiltersListItem) {
+}
+
+export function GenericMultiselect({ label, options, onChange }: GenericMultiselectProps) {
   const { t } = useTranslation()
 
   const didMountRef = useRef(false)

@@ -1,5 +1,5 @@
+import { GenericMultiselect } from 'components/GenericMultiselect'
 import { GenericSelect } from 'components/GenericSelect'
-import { DiscoverMultiselect } from 'features/discover/common/DiscoverMultiselect'
 import { DiscoverFiltersListItem } from 'features/discover/meta'
 import { DiscoverFilterType } from 'features/discover/types'
 import React from 'react'
@@ -26,7 +26,7 @@ export function DiscoverFilter({
       )
     case DiscoverFilterType.MULTI:
       return (
-        <DiscoverMultiselect
+        <GenericMultiselect
           {...item}
           onChange={(value) => {
             onChange(filter, value)

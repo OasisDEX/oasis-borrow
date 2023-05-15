@@ -5,13 +5,13 @@ import { useMediaQuery } from 'usehooks-ts'
 
 interface AssetsFiltersContainerProps {
   gridTemplateColumns: string
-  isSticky: boolean
+  isSticky?: boolean
 }
 
 export function AssetsFiltersContainer({
   gridTemplateColumns,
   children,
-  isSticky,
+  isSticky = false,
 }: PropsWithChildren<AssetsFiltersContainerProps>) {
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
