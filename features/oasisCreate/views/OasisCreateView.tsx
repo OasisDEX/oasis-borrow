@@ -9,13 +9,11 @@ import { GenericMultiselect } from 'components/GenericMultiselect'
 import { AppLink } from 'components/Links'
 import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
-import {
-  ALL_ASSETS,
-  NaturalLanguageSelectorController,
-} from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
+import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
 import { oasisCreateData } from 'features/oasisCreate/data'
 import { filterRows } from 'features/oasisCreate/helpers/filterRows'
 import { parseRows } from 'features/oasisCreate/helpers/parseRows'
+import { ALL_ASSETS, oasisCreateLinksMap } from 'features/oasisCreate/meta'
 import { OasisCreateFilters, ProductType } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { BaseNetworkNames } from 'helpers/networkNames'
@@ -30,12 +28,6 @@ import { useMediaQuery } from 'usehooks-ts'
 
 interface OasisCreateViewProps {
   product: ProductType
-}
-
-const LINKS_MAP = {
-  borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
-  multiply: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
-  earn: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
 }
 
 export function OasisCreateView({ product }: OasisCreateViewProps) {
@@ -137,7 +129,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           }}
         >
           {t(`oasis-create.intro.${selectedProduct}`)}{' '}
-          <AppLink href={LINKS_MAP[selectedProduct]}>
+          <AppLink href={oasisCreateLinksMap[selectedProduct]}>
             <WithArrow
               variant="paragraph2"
               sx={{

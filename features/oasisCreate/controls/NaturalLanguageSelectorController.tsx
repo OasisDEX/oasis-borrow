@@ -1,45 +1,10 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
+import { oasisCreateOptionsMap } from 'features/oasisCreate/meta'
 import { ProductType } from 'features/oasisCreate/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
-
-export const ALL_ASSETS = 'all assets'
-
-// TODO: remove when connected to real data
-const tokenOptions: { [key: string]: HeaderSelectorOption } = {
-  all: {
-    title: 'All assets',
-    value: ALL_ASSETS,
-    icon: ['allAssets', 'allAssetsActive'],
-  },
-  ETH: {
-    title: 'Ether',
-    description: 'ETH',
-    value: 'ETH',
-    icon: getToken('ETH').iconCircle,
-  },
-  WBTC: {
-    title: 'Wrapped BTC',
-    description: 'WBTC',
-    value: 'WBTC',
-    icon: getToken('WBTC').iconCircle,
-  },
-  USDC: {
-    title: 'USDCoin',
-    description: 'USDC',
-    value: 'USDC',
-    icon: getToken('USDC').iconCircle,
-  },
-  DAI: {
-    title: 'DAI stablecoin',
-    description: 'DAI',
-    value: 'DAI',
-    icon: getToken('DAI').iconCircle,
-  },
-}
 
 interface NaturalLanguageSelectorControllerProps {
   product: ProductType
@@ -54,49 +19,13 @@ export function NaturalLanguageSelectorController({
 }: NaturalLanguageSelectorControllerProps) {
   const { t } = useTranslation()
 
-  // TODO: replace with actual data taken from **somewhere**
-  const options: { product: HeaderSelectorOption; tokens: HeaderSelectorOption[] }[] = [
-    {
-      product: {
-        title: t('nav.borrow'),
-        description: t('oasis-create.select.borrow'),
-        value: 'borrow',
-        icon: ['selectBorrow', 'selectBorrowActive'],
-      },
-      tokens: [tokenOptions.all, tokenOptions.ETH, tokenOptions.WBTC, tokenOptions.USDC],
-    },
-    {
-      product: {
-        title: t('nav.multiply'),
-        description: t('oasis-create.select.multiply'),
-        value: 'multiply',
-        icon: ['selectMultiply', 'selectMultiplyActive'],
-      },
-      tokens: [tokenOptions.all, tokenOptions.ETH, tokenOptions.WBTC, tokenOptions.USDC],
-    },
-    {
-      product: {
-        title: t('nav.earn'),
-        description: t('oasis-create.select.earn'),
-        value: 'earn',
-        icon: ['selectEarn', 'selectEarnActive'],
-      },
-      tokens: [
-        tokenOptions.all,
-        tokenOptions.ETH,
-        tokenOptions.WBTC,
-        tokenOptions.DAI,
-        tokenOptions.USDC,
-      ],
-    },
-  ]
-
-  const defaultProductOption = options.filter((option) => option.product.value === product)[0]
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(
-    defaultProductOption.product.value as ProductType,
+    oasisCreateOptionsMap[product].product.value as ProductType,
   )
-  const [selectedToken, setSelectedToken] = useState<string>(defaultProductOption.tokens[0].value)
+  const [selectedToken, setSelectedToken] = useState<string>(
+    oasisCreateOptionsMap[product].tokens[0].value,
+  )
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
 
@@ -109,18 +38,20 @@ export function NaturalLanguageSelectorController({
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
         {t('oasis-create.header.i-want-to')}
         <HeaderSelector
-          defaultOption={defaultProductOption.product}
+          defaultOption={oasisCreateOptionsMap[product].product}
           gradient={['#2a30ee', '#a4a6ff']}
-          options={options.map((option) => option.product)}
+          options={Object.values(oasisCreateOptionsMap).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
-            setSelectedProduct(selected.value as ProductType)
+            const typedValue = selected.value as ProductType
+
+            setSelectedProduct(typedValue)
             setOverwriteOption(
-              !options
-                .filter((option) => option.product.value === selected.value)[0]
-                .tokens.some((option) => option.value === selectedToken)
-                ? options.filter((option) => option.product.value === selected.value)[0].tokens[0]
+              !oasisCreateOptionsMap[typedValue].tokens.some(
+                (option) => option.value === selectedToken,
+              )
+                ? oasisCreateOptionsMap[typedValue].tokens[0]
                 : undefined,
             )
             if (url) void push(`${url}${selected.value}`)
@@ -129,7 +60,7 @@ export function NaturalLanguageSelectorController({
         {t('oasis-create.header.with')}
         <HeaderSelector
           gradient={['#2a30ee', '#a4a6ff']}
-          options={options.filter((option) => option.product.value === selectedProduct)[0].tokens}
+          options={oasisCreateOptionsMap[selectedProduct].tokens}
           overwriteOption={overwriteOption}
           parentRef={ref}
           valueAsLabel={true}
