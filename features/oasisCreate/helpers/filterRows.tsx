@@ -14,6 +14,12 @@ export function filterRows(
   console.log(filters)
   return rows
     .filter((item) => item.product === product || item.product.includes(product))
+    .map((item) =>
+      Array.isArray(item.network)
+        ? item.network.map((network) => ({ ...item, network } as OasisCreateItem))
+        : item,
+    )
+    .flat()
     .filter((item) =>
       Object.keys(filters).every((filter) => {
         const value = item[filter as keyof OasisCreateItemBasics]
@@ -22,10 +28,4 @@ export function filterRows(
         return selectedFilter === value || selectedFilter?.includes(value as string)
       }),
     )
-    .map((item) =>
-      Array.isArray(item.network)
-        ? item.network.map((network) => ({ ...item, network } as OasisCreateItem))
-        : item,
-    )
-    .flat()
 }

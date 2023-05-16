@@ -15,12 +15,13 @@ export interface GenericMultiselectOption {
 }
 
 export interface GenericMultiselectProps {
+  icon?: string
   label: string
   options: GenericMultiselectOption[]
   onChange: (value: string[]) => void
 }
 
-export function GenericMultiselect({ label, options, onChange }: GenericMultiselectProps) {
+export function GenericMultiselect({ icon, label, options, onChange }: GenericMultiselectProps) {
   const { t } = useTranslation()
 
   const didMountRef = useRef(false)
@@ -37,7 +38,12 @@ export function GenericMultiselect({ label, options, onChange }: GenericMultisel
   function getSelectLabel(): ReactNode {
     switch (values.length) {
       case 0:
-        return `${t('all')} ${label.toLowerCase()}`
+        return (
+          <>
+            {icon && <Icon name={icon} size={32} sx={{ flexShrink: 0, mr: '12px' }} />}
+            {t('all')} {label.toLowerCase()}
+          </>
+        )
       case 1:
         const selected = options.filter((item) => item.value === values[0])[0]
         return (

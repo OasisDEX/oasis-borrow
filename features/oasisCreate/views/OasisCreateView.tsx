@@ -87,18 +87,22 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
     {
       label: lendingProtocolsByName[LendingProtocol.Maker].label,
       value: lendingProtocolsByName[LendingProtocol.Maker].name,
+      image: lendingProtocolsByName[LendingProtocol.Maker].icon,
     },
     {
       label: lendingProtocolsByName[LendingProtocol.AaveV2].label,
       value: lendingProtocolsByName[LendingProtocol.AaveV2].name,
+      image: lendingProtocolsByName[LendingProtocol.AaveV2].icon,
     },
     {
       label: lendingProtocolsByName[LendingProtocol.AaveV3].label,
       value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
+      image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
     },
     {
       label: lendingProtocolsByName[LendingProtocol.Ajna].label,
       value: lendingProtocolsByName[LendingProtocol.Ajna].name,
+      image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
     },
   ]
 
@@ -171,16 +175,20 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           key={`${selectedProduct}-${selectedToken}`}
           gridTemplateColumns="205px auto 205px 205px"
         >
-          <GenericMultiselect
-            label={t('oasis-create.filters.debt-tokens')}
-            options={debtTokens}
-            onChange={(value) => {
-              setSelectedFilters({
-                ...selectedFilters,
-                secondaryToken: value,
-              })
-            }}
-          />
+          {selectedProduct !== ProductType.Earn ? (
+            <GenericMultiselect
+              label={t('oasis-create.filters.debt-tokens')}
+              options={debtTokens}
+              onChange={(value) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  secondaryToken: value,
+                })
+              }}
+            />
+          ) : (
+            <Box />
+          )}
           <Box />
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}

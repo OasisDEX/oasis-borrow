@@ -2589,14 +2589,14 @@ const oasisCreateIcons = {
   allAssets: {
     path: (
       <>
-        <circle cx="13" cy="13" r="13" fill="#EDEDFF" />
-        <circle cx="7" cy="10" r="1" fill="#575CFE" />
-        <circle cx="7" cy="16" r="1" fill="#575CFE" />
-        <rect x="11" y="9" width="8" height="2" rx="1" fill="#878BFC" />
-        <rect x="11" y="15" width="8" height="2" rx="1" fill="#878BFC" />
+        <circle cx="16" cy="16" r="13" fill="#EDEDFF" />
+        <circle cx="10" cy="13" r="1" fill="#575CFE" />
+        <circle cx="10" cy="19" r="1" fill="#575CFE" />
+        <rect x="14" y="12" width="8" height="2" rx="1" fill="#878BFC" />
+        <rect x="14" y="18" width="8" height="2" rx="1" fill="#878BFC" />
       </>
     ),
-    viewBox: '0 0 26 26',
+    viewBox: '0 0 32 32',
   },
   allNetworks: {
     path: (
