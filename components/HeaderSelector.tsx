@@ -144,6 +144,7 @@ export function HeaderSelector({
             letterSpacing: 0,
             textAlign: 'left',
             pointerEvents: isOpen ? 'auto' : 'none',
+            zIndex: 2,
           }}
         >
           {options.map((option, i) => (

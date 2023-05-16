@@ -24,7 +24,9 @@ import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
+import { theme } from 'theme'
 import { Box, Grid, Text } from 'theme-ui'
+import { useMediaQuery } from 'usehooks-ts'
 
 interface OasisCreateViewProps {
   product: ProductType
@@ -38,6 +40,8 @@ const LINKS_MAP = {
 
 export function OasisCreateView({ product }: OasisCreateViewProps) {
   const { t } = useTranslation()
+  const isMobileScreen = useMediaQuery(`(max-width: ${theme.breakpoints[1]})`)
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
@@ -173,7 +177,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
       <AssetsTableContainer>
         <AssetsFiltersContainer
           key={`${selectedProduct}-${selectedToken}`}
-          gridTemplateColumns="280px auto 280px 280px"
+          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '280px auto 280px 280px']}
         >
           {selectedProduct !== ProductType.Earn ? (
             <GenericMultiselect
@@ -188,9 +192,9 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
               }}
             />
           ) : (
-            <Box />
+            <>{!isMobileScreen && <Box />}</>
           )}
-          <Box />
+          {!isSmallerScreen && <Box />}
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}
             icon="allNetworks"

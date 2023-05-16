@@ -62,7 +62,15 @@ export function PromoCard({
     >
       <Icon name={icon} size={50} sx={{ display: 'block', mx: 'auto', mb: '12px' }} />
       {protocol && (
-        <Box sx={{ position: 'absolute', top: '12px', right: '12px' }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            outline: '4px solid white',
+            borderRadius: 'large',
+          }}
+        >
           <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
         </Box>
       )}
@@ -80,7 +88,8 @@ export function PromoCard({
           sx={{
             listStyle: 'none',
             justifyContent: 'center',
-            columnGap: 2,
+            gap: 2,
+            flexWrap: 'wrap',
             mx: 0,
             mt: '12px',
             p: 0,

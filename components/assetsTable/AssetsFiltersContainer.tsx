@@ -4,7 +4,7 @@ import { Box,  Grid } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface AssetsFiltersContainerProps {
-  gridTemplateColumns: string
+  gridTemplateColumns: string | (string | null)[]
   isSticky?: boolean
 }
 
