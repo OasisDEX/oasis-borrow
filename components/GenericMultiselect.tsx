@@ -240,7 +240,7 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
           p: 2,
           border: '1px solid',
           borderColor: 'secondary100',
-          borderRadius: 'large',
+          borderRadius: 'medium',
           backgroundColor: 'neutral10',
           boxShadow: 'buttonMenu',
           opacity: isOpen ? 1 : 0,
@@ -255,7 +255,7 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
           sx={{
             flexDirection: 'column',
             rowGap: 2,
-            maxHeight: '340px',
+            maxHeight: '342px',
             pl: 0,
             pr:
               scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight

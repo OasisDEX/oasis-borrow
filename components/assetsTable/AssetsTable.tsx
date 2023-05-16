@@ -178,11 +178,11 @@ export function AssetsTableHeaderCell({
           },
           '&::before': {
             top: '-28px',
-            backgroundColor: 'neutral10',
+            backgroundColor: isSticky ? 'neutral10' : 'transparent',
           },
           '&::after': {
             height: '1px',
-            backgroundColor: isSticky ? 'neutral20' : 'neutral10',
+            backgroundColor: isSticky ? 'neutral20' : 'transparent',
           },
         }}
       />
