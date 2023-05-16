@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { Banner } from 'components/Banner'
 import { HomePageBanner } from 'components/HomePageBanner'
 import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { InfoCard } from 'components/InfoCard'
@@ -245,6 +246,11 @@ export function HomepageView() {
     }
   }, [isMobileView])
 
+  const [stethAnnouncementVisible, setStethAnnouncementVisible] = useLocalStorage(
+    'steth-announcement',
+    true,
+  )
+
   return (
     <Box
       sx={{
@@ -255,6 +261,26 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
+      {stethAnnouncementVisible && (
+        <Banner
+          title="stETH yield - UI bug"
+          description="We are aware and investigating an issue with the negative APY rates being shown for stETH Earn. This UI error is currently being worked on and stETH yield multiple continues to be positive."
+          button={{
+            text: 'Close',
+            action: () => {
+              setStethAnnouncementVisible(false)
+            },
+          }}
+          sx={{
+            position: 'fixed',
+            bottom: 5,
+            zIndex: 5,
+            m: 0,
+            ml: [-3, 0],
+            maxWidth: ['100%', '1200px'],
+          }}
+        />
+      )}
       {aaveV3EarnWSTETHEnabled && (
         <Flex
           sx={{
