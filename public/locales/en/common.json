@@ -2631,7 +2631,9 @@
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
-      "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount."
+      "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
+      "is-during-grace-time": "Your position has been moved to liquidation. 90 days of interest have been added as penalty. You still have some time to <1>Deposit Collateral</1> or <1>Repay your Debt</1> to save it from Liquidation. <2>Read more about <1>Ajna Liquidations →</1></2>",
+      "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>"
     },
     "rewards": {
       "title": "Your Ajna token rewards",

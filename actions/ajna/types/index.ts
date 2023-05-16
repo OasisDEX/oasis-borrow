@@ -6,7 +6,7 @@ export interface AjnaTxData {
   value: string
 }
 
-export interface AjnaValidationItem {
+export interface AjnaSimulationValidationItem {
   name: string
   data?: { [key: string]: string }
 }
