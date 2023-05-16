@@ -1,5 +1,5 @@
 import { AjnaEarnPosition } from '@oasisdex/dma-library'
-import { AjnaValidationItem } from 'actions/ajna/types'
+import { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import {
@@ -7,7 +7,7 @@ import {
   AjnaGenericPosition,
   AjnaProduct,
   AjnaSidebarStep,
-  AjnaValidationItems,
+  AjnaValidationItem,
 } from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import {
@@ -22,7 +22,29 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
-import React from 'react'
+import React, { FC } from 'react'
+
+interface AjnaValidationWithLinkProps {
+  translationKey: string
+  values?: { [key: string]: string }
+}
+
+const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ translationKey, values }) => (
+  <Trans
+    i18nKey={translationKey}
+    values={values}
+    components={{
+      1: <strong />,
+      2: (
+        <AppLink
+          sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
+          // TODO update link to ajna liquidations once available
+          href={EXTERNAL_LINKS.KB.HELP}
+        />
+      ),
+    }}
+  />
+)
 
 interface GetAjnaBorrowValidationsParams {
   collateralBalance: BigNumber
@@ -34,15 +56,15 @@ interface GetAjnaBorrowValidationsParams {
   gasEstimationUsd?: BigNumber
   product: AjnaProduct
   quoteBalance: BigNumber
-  simulationErrors?: AjnaValidationItem[]
-  simulationWarnings?: AjnaValidationItem[]
+  simulationErrors?: AjnaSimulationValidationItem[]
+  simulationWarnings?: AjnaSimulationValidationItem[]
   state: AjnaFormState
   position: AjnaGenericPosition
   positionAuction: AjnaPositionAuction
   txError?: TxError
 }
 
-const mapSimulationValidation = (items: AjnaValidationItem[]): AjnaValidationItems =>
+const mapSimulationValidation = (items: AjnaSimulationValidationItem[]): AjnaValidationItem[] =>
   items.map((item) => ({ message: { translationKey: item.name, params: item.data } }))
 
 function isFormValid({
@@ -160,11 +182,11 @@ export function getAjnaValidation({
 }: GetAjnaBorrowValidationsParams): {
   isFormValid: boolean
   hasErrors: boolean
-  errors: AjnaValidationItems
-  warnings: AjnaValidationItems
+  errors: AjnaValidationItem[]
+  warnings: AjnaValidationItem[]
 } {
-  const localErrors: AjnaValidationItems = []
-  const localWarnings: AjnaValidationItems = []
+  const localErrors: AjnaValidationItem[] = []
+  const localWarnings: AjnaValidationItem[] = []
   const isEarnProduct = product === 'earn'
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
 
@@ -207,19 +229,7 @@ export function getAjnaValidation({
       localWarnings.push({
         message: {
           component: (
-            <Trans
-              i18nKey="ajna.validations.is-during-grace-time"
-              components={{
-                1: <strong />,
-                2: (
-                  <AppLink
-                    sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
-                    // TODO update link to ajna liquidations once available
-                    href={EXTERNAL_LINKS.KB.HELP}
-                  />
-                ),
-              }}
-            />
+            <AjnaValidationWithLink translationKey="ajna.validations.is-during-grace-time" />
           ),
         },
       })
@@ -229,19 +239,7 @@ export function getAjnaValidation({
       localWarnings.push({
         message: {
           component: (
-            <Trans
-              i18nKey="ajna.validations.is-being-liquidated"
-              components={{
-                1: <strong />,
-                2: (
-                  <AppLink
-                    sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
-                    // TODO update link to ajna liquidations once available
-                    href={EXTERNAL_LINKS.KB.HELP}
-                  />
-                ),
-              }}
-            />
+            <AjnaValidationWithLink translationKey="ajna.validations.is-being-liquidated" />
           ),
         },
       })

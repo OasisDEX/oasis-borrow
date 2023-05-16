@@ -90,6 +90,6 @@ export type AjnaProductCardsData = {
   multiplyCards: unknown[]
 }
 
-export type AjnaValidationItems = {
+export type AjnaValidationItem = {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
-}[]
+}
