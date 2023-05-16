@@ -1,8 +1,9 @@
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
-import { ProductPagesLayout } from 'components/Layouts'
+import { AppLayout } from 'components/Layouts'
 import { ProductType } from 'features/oasisCreate/types'
 import { OasisCreateView } from 'features/oasisCreate/views/OasisCreateView'
+import { WithChildren } from 'helpers/types'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -17,7 +18,9 @@ function OasisCreatePage({ product }: { product: ProductType }) {
   )
 }
 
-OasisCreatePage.layout = ProductPagesLayout
+OasisCreatePage.layout = ({ children }: WithChildren) => (
+  <AppLayout shortBackground={true}>{children}</AppLayout>
+)
 
 export default OasisCreatePage
 

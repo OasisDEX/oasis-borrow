@@ -21,6 +21,121 @@ export interface GenericMultiselectProps {
   onChange: (value: string[]) => void
 }
 
+function GenericMultiselectIcon({
+  icon,
+  image,
+  label,
+}: {
+  icon?: string
+  image?: string
+  label: string
+}) {
+  return (
+    <>
+      <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}>
+        {icon && <Icon size={32} name={icon} sx={{ verticalAlign: 'bottom' }} />}
+        {image && (
+          <Image
+            src={image}
+            alt={label}
+            sx={{ width: '26px', height: '26px', verticalAlign: 'bottom' }}
+          />
+        )}
+      </Box>
+    </>
+  )
+}
+
+function GenericMultiselectItem({
+  hasCheckbox = true,
+  icon,
+  image,
+  isClearing = false,
+  isDisabled = false,
+  isSelected = false,
+  label,
+  onClick,
+  value,
+}: {
+  hasCheckbox?: boolean
+  isClearing?: boolean
+  isDisabled?: boolean
+  isSelected?: boolean
+  onClick: (value: string) => void
+} & GenericMultiselectOption) {
+  return (
+    <Box
+      as="li"
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        py: isClearing ? '18px' : '12px',
+        pr: 2,
+        pl: hasCheckbox ? '44px' : 2,
+        fontSize: 3,
+        fontWeight: 'regular',
+        color: isDisabled ? 'neutral80' : 'primary100',
+        borderRadius: 'medium',
+        transition: 'color 200ms, background-color 200ms',
+        cursor: isDisabled ? 'default' : 'pointer',
+        whiteSpace: 'nowrap',
+        borderBottom: isClearing ? '1px solid' : 'none',
+        borderColor: 'neutral30',
+        '&:hover': {
+          backgroundColor: isDisabled || isClearing ? 'transparent' : 'neutral30',
+          fontWeight: !isDisabled && isClearing ? 'semiBold' : 'regular',
+        },
+      }}
+      onClick={() => {
+        if (!isDisabled) onClick(value)
+      }}
+    >
+      {hasCheckbox && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '12px',
+            left: 2,
+            width: '24px',
+            height: '24px',
+            backgroundColor: isSelected ? 'success10' : 'neutral10',
+            border: '1px solid',
+            borderColor: isSelected ? 'success100' : 'neutral60',
+            borderRadius: 'small',
+            transition: 'background-color 100ms, border-color 100ms',
+          }}
+        >
+          <Icon
+            size={12}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              margin: 'auto',
+              opacity: isSelected ? 1 : 0,
+              transition: 'opacity 100ms',
+            }}
+            name="checkmark"
+            color="success100"
+          />
+        </Box>
+      )}
+      {isClearing && (
+        <Icon
+          size={24}
+          name="clear_selection"
+          sx={{ mr: 3, opacity: isDisabled ? 0.5 : 1, transition: '200ms opacity' }}
+        />
+      )}
+      {(icon || image) && <GenericMultiselectIcon label={label} icon={icon} image={image} />}
+      {label}
+    </Box>
+  )
+}
+
 export function GenericMultiselect({ icon, label, options, onChange }: GenericMultiselectProps) {
   const { t } = useTranslation()
 
@@ -48,14 +163,23 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
         const selected = options.filter((item) => item.value === values[0])[0]
         return (
           <>
-            {selected.icon && (
-              <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={selected.icon} />
+            {(selected.icon || selected.image) && (
+              <GenericMultiselectIcon
+                label={selected.label}
+                icon={selected.icon}
+                image={selected.image}
+              />
             )}
             {selected.label}
           </>
         )
       default:
-        return `${t('selected')} ${label.toLowerCase()}: ${values.length}`
+        return (
+          <>
+            {icon && <Icon name={icon} size={32} sx={{ flexShrink: 0, mr: '12px' }} />}
+            {t('selected')} {label.toLowerCase()}: {values.length}
+          </>
+        )
     }
   }
 
@@ -65,7 +189,7 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
         sx={{
           position: 'relative',
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'stretch',
           height: '56px',
           pr: '42px',
           pl: 3,
@@ -82,7 +206,6 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
         onClick={toggleIsOpen}
       >
         <Text
-          as="span"
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -114,7 +237,7 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
           left: 0,
           minWidth: '100%',
           mt: 1,
-          p: '12px',
+          p: 2,
           border: '1px solid',
           borderColor: 'secondary100',
           borderRadius: 'large',
@@ -136,7 +259,7 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
             pl: 0,
             pr:
               scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
-                ? '12px'
+                ? 2
                 : 0,
             overflowY: 'auto',
             zIndex: 1,
@@ -159,6 +282,7 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
         >
           <GenericMultiselectItem
             hasCheckbox={false}
+            isClearing={true}
             isDisabled={values.length === 0}
             label={t('clear-selection')}
             onClick={() => {
@@ -177,94 +301,6 @@ export function GenericMultiselect({ icon, label, options, onChange }: GenericMu
           ))}
         </Flex>
       </Box>
-    </Box>
-  )
-}
-
-export function GenericMultiselectItem({
-  hasCheckbox = true,
-  icon,
-  image,
-  isDisabled = false,
-  isSelected = false,
-  label,
-  onClick,
-  value,
-}: {
-  hasCheckbox?: boolean
-  isDisabled?: boolean
-  isSelected?: boolean
-  onClick: (value: string) => void
-} & GenericMultiselectOption) {
-  return (
-    <Box
-      as="li"
-      sx={{
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        py: '12px',
-        pr: 3,
-        pl: hasCheckbox ? '48px' : '16px',
-        fontSize: 3,
-        color: isDisabled ? 'neutral80' : 'primary100',
-        borderRadius: 'medium',
-        transition: 'color 200ms, background-color 200ms',
-        cursor: isDisabled ? 'default' : 'pointer',
-        whiteSpace: 'nowrap',
-        '&:hover': {
-          backgroundColor: isDisabled ? 'transparent' : 'neutral30',
-        },
-      }}
-      onClick={() => {
-        if (!isDisabled) onClick(value)
-      }}
-    >
-      {hasCheckbox && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '14px',
-            left: '16px',
-            width: '20px',
-            height: '20px',
-            backgroundColor: isSelected ? 'success10' : 'neutral10',
-            border: '1px solid',
-            borderColor: isSelected ? 'success100' : 'neutral60',
-            borderRadius: 'small',
-            transition: 'background-color 100ms, border-color 100ms',
-          }}
-        >
-          <Icon
-            size={10}
-            sx={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              margin: 'auto',
-              opacity: isSelected ? 1 : 0,
-              transition: 'opacity 100ms',
-            }}
-            name="checkmark"
-            color="success100"
-          />
-        </Box>
-      )}
-      {(icon || image) && (
-        <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}>
-          {icon && <Icon size={32} name={icon} sx={{ verticalAlign: 'bottom' }} />}
-          {image && (
-            <Image
-              src={image}
-              alt={label}
-              sx={{ width: '26px', height: '26px', verticalAlign: 'bottom' }}
-            />
-          )}
-        </Box>
-      )}
-      {label}
     </Box>
   )
 }

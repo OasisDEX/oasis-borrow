@@ -39,7 +39,7 @@ const LINKS_MAP = {
 export function OasisCreateView({ product }: OasisCreateViewProps) {
   const { t } = useTranslation()
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
-  const [selectedToken, setSelectedToken] = useState<string>()
+  const [selectedToken, setSelectedToken] = useState<string>(ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
 
   const rowsFilteredByToken = useMemo(
@@ -50,8 +50,8 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
     [selectedProduct, selectedToken],
   )
   const rowsFilteredByAll = useMemo(
-    () => filterRows(oasisCreateData, selectedProduct, selectedFilters),
-    [selectedProduct, selectedFilters],
+    () => filterRows(rowsFilteredByToken, selectedProduct, selectedFilters),
+    [rowsFilteredByToken, selectedProduct, selectedFilters],
   )
   const parsedRows = useMemo(
     () => parseRows(rowsFilteredByAll, selectedProduct),
@@ -173,11 +173,12 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
       <AssetsTableContainer>
         <AssetsFiltersContainer
           key={`${selectedProduct}-${selectedToken}`}
-          gridTemplateColumns="205px auto 205px 205px"
+          gridTemplateColumns="280px auto 280px 280px"
         >
           {selectedProduct !== ProductType.Earn ? (
             <GenericMultiselect
               label={t('oasis-create.filters.debt-tokens')}
+              icon="allAssets"
               options={debtTokens}
               onChange={(value) => {
                 setSelectedFilters({
@@ -192,6 +193,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           <Box />
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}
+            icon="allNetworks"
             options={networks}
             onChange={(value) => {
               setSelectedFilters({
@@ -202,6 +204,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           />
           <GenericMultiselect
             label={t('oasis-create.filters.protocols')}
+            icon="allProtocols"
             options={protocols}
             onChange={(value) => {
               setSelectedFilters({

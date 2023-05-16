@@ -2666,6 +2666,10 @@
     }
   },
   "oasis-create": {
+    "header": {
+      "i-want-to": "I want to",
+      "with": "with"
+    },
     "select": {
       "borrow": "Borrow against your favorite crypto assets",
       "multiply": "Increase your exposure to any crypto asset",

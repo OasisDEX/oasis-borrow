@@ -26,7 +26,7 @@ export function TokensGroup({ sx, tokens }: TokensGroupProps) {
             <Icon
               size={tokens.length > 1 ? 30 : 44}
               name={getToken(token).iconCircle}
-              sx={{ verticalAlign: 'bottom' }}
+              sx={{ verticalAlign: 'bottom', my: tokens.length === 1 ? '-4px' : 0 }}
             />
           </Box>
         ))}

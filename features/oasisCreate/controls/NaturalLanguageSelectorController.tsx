@@ -9,10 +9,11 @@ import { Box, Heading } from 'theme-ui'
 export const ALL_ASSETS = 'all assets'
 
 // TODO: remove when connected to real data
-const tokenOptions = {
+const tokenOptions: { [key: string]: HeaderSelectorOption } = {
   all: {
     title: 'All assets',
     value: ALL_ASSETS,
+    icon: ['allAssets', 'allAssetsActive'],
   },
   ETH: {
     title: 'Ether',
@@ -106,7 +107,7 @@ export function NaturalLanguageSelectorController({
   return (
     <Box ref={ref}>
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
-        I want to
+        {t('oasis-create.header.i-want-to')}
         <HeaderSelector
           defaultOption={defaultProductOption.product}
           gradient={['#2a30ee', '#a4a6ff']}
@@ -125,7 +126,7 @@ export function NaturalLanguageSelectorController({
             if (url) void push(`${url}${selected.value}`)
           }}
         />
-        with
+        {t('oasis-create.header.with')}
         <HeaderSelector
           gradient={['#2a30ee', '#a4a6ff']}
           options={options.filter((option) => option.product.value === selectedProduct)[0].tokens}

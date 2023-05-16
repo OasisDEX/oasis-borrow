@@ -772,6 +772,22 @@ const customIcons = {
     ),
     viewBox: '0 0 12 12',
   },
+  clear_selection: {
+    path: (
+      <>
+        <circle cx="13" cy="13" r="13" fill="#EDEDFF" />
+        <path
+          d="M8.05071 17.9497C7.66018 17.5592 7.66018 16.926 8.05071 16.5355L16.536 8.05022C16.9265 7.65969 17.5597 7.65969 17.9502 8.05022C18.3407 8.44074 18.3407 9.07391 17.9502 9.46443L9.46492 17.9497C9.0744 18.3402 8.44123 18.3402 8.05071 17.9497Z"
+          fill="#575CFE"
+        />
+        <path
+          d="M17.9502 17.9497C17.5597 18.3402 16.9265 18.3402 16.536 17.9497L8.05071 9.46443C7.66018 9.07391 7.66018 8.44074 8.05071 8.05022C8.44123 7.65969 9.0744 7.65969 9.46492 8.05022L17.9502 16.5355C18.3407 16.926 18.3407 17.5592 17.9502 17.9497Z"
+          fill="#575CFE"
+        />
+      </>
+    ),
+    viewBox: '0 0 26 26',
+  },
 }
 
 const customLandingIcons = {
@@ -2598,36 +2614,50 @@ const oasisCreateIcons = {
     ),
     viewBox: '0 0 32 32',
   },
+  allAssetsActive: {
+    path: (
+      <>
+        <circle cx="16" cy="16" r="13" fill="#878BFC" />
+        <circle cx="10" cy="13" r="1" fill="white" />
+        <circle cx="10" cy="19" r="1" fill="white" />
+        <rect x="14" y="12" width="8" height="2" rx="1" opacity="0.5" fill="white" />
+        <rect x="14" y="18" width="8" height="2" rx="1" opacity="0.5" fill="white" />
+      </>
+    ),
+    viewBox: '0 0 32 32',
+  },
   allNetworks: {
     path: (
       <>
-        <circle cx="13" cy="13" r="13" fill="#EDEDFF" />
-        <circle cx="9" cy="9" r="2" fill="#878BFC" />
-        <circle cx="9" cy="17" r="2" fill="#575CFE" />
-        <circle cx="17" cy="9" r="2" fill="#575CFE" />
-        <circle cx="17" cy="17" r="2" fill="#878BFC" />
+        <circle cx="16" cy="16" r="13" fill="#EDEDFF" />
+        <circle cx="12" cy="12" r="2" fill="#878BFC" />
+        <circle cx="12" cy="20" r="2" fill="#575CFE" />
+        <circle cx="20" cy="12" r="2" fill="#575CFE" />
+        <circle cx="20" cy="20" r="2" fill="#878BFC" />
       </>
     ),
-    viewBox: '0 0 26 26',
+    viewBox: '0 0 32 32',
   },
   allProtocols: {
     path: (
       <>
-        <circle cx="13" cy="13" r="13" fill="#EDEDFF" />
+        <circle cx="16" cy="16" r="13" fill="#EDEDFF" />
         <path
           fillRule="evenodd"
           clipRule="evenodd"
-          d="M9 19C9 19.5523 9.44772 20 10 20H16C17.6569 20 19 18.6569 19 17V10C19 9.25972 18.5978 8.61337 18 8.26756V16C18 17.6569 16.6569 19 15 19H9ZM9 18H15C16.1046 18 17 17.1046 17 16V8H11C9.89543 8 9 8.89543 9 10V18Z"
+          d="M12 22C12 22.5523 12.4477 23 13 23H19C20.6569 23 22 21.6569 22 20V13C22 12.2597 21.5978 11.6134 21 11.2676V19C21 20.6569 19.6569 22 18 22H12ZM12 21H18C19.1046 21 20 20.1046 20 19V11H14C12.8954 11 12 11.8954 12 13V21Z"
           fill="#575CFE"
         />
         <path
-          d="M7 8C7 6.89543 7.89543 6 9 6H15C16.1046 6 17 6.89543 17 8V16C17 17.1046 16.1046 18 15 18H9C7.89543 18 7 17.1046 7 16V8Z"
+          d="M10 11C10 9.89543 10.8954 9 12 9H18C19.1046 9 20 9.89543 20 11V19C20 20.1046 19.1046 21 18 21H12C10.8954 21 10 20.1046 10 19V11Z"
           fill="#878BFC"
         />
-        <rect x="9" y="10" width="6" height="1" rx="0.5" fill="#EDEDFF" />
+        <rect x="12" y="13" width="6" height="1" rx="0.5" fill="#EDEDFF" />
+        <rect x="12" y="15" width="6" height="1" rx="0.5" fill="#EDEDFF" />
+        <rect x="12" y="17" width="4" height="1" rx="0.5" fill="#EDEDFF" />
       </>
     ),
-    viewBox: '0 0 26 26',
+    viewBox: '0 0 32 32',
   },
 }
 
