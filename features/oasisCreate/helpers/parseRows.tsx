@@ -7,6 +7,7 @@ import { OasisCreateItem, ProductType } from 'features/oasisCreate/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
+import React from 'react'
 import { Trans } from 'react-i18next'
 
 function parseProduct(
