@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
 import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
 import { ethers } from 'ethers'
+import { getRpcProvider } from 'helpers/get-rpc-provider'
 
 export type Factory<T> = {
   connect: (address: string, rpcProvider: ethers.providers.Provider) => T
@@ -38,8 +38,7 @@ export function getNetworkMapping<Contract>(
   contractKey: ContractKey,
 ): ContractForNetwork<Contract> {
   const { address, genesisBlock } = getNetworkContracts(networkId)[contractKey]
-  const rpcProvider =
-    networksById[networkId]?.readProvider ?? networksById[NetworkIds.MAINNET].readProvider
+  const rpcProvider = getRpcProvider(networkId)
   const tokenMappings = getNetworkContracts(networkId).tokens
   const contract = factory.connect(address, rpcProvider)
 

@@ -20,11 +20,6 @@ const networkMappings = {
     NetworkIds.MAINNET,
     'aaveV3Oracle',
   ),
-  [NetworkIds.HARDHAT]: getNetworkMapping(
-    AaveV3Oracle__factory,
-    NetworkIds.HARDHAT,
-    'aaveV3Oracle',
-  ),
 }
 
 export function getAaveV3AssetsPrices({

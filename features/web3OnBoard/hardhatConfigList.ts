@@ -1,5 +1,6 @@
 import { NetworkIds } from 'blockchain/networkIds'
 import { NetworkConfigHexId, networksById, networksByName } from 'blockchain/networksConfig'
+import { ethers } from 'ethers'
 import {
   CustomHardhatParameterType,
   CustomHardhatStorageKey,
@@ -27,18 +28,17 @@ export const hardhatNetworkConfigs = Object.entries(hardhatSettings).map(
   ([networkName, hardhatConfig]) => {
     const originalNetworkConfig = networksByName[networkName]
     return {
+      ...originalNetworkConfig,
       id: hardhatConfig.id as unknown as NetworkIds,
+      originalId: originalNetworkConfig.id,
       hexId: `0x${Number(hardhatConfig.id).toString(16)}` as NetworkConfigHexId,
       label: `${originalNetworkConfig.label} Hardhat`,
       rpcUrl: hardhatConfig.url,
+      readProvider: new ethers.providers.StaticJsonRpcProvider(hardhatConfig.url),
       name: `${originalNetworkConfig.name}-hardhat`,
-      token: originalNetworkConfig.token,
-      color: originalNetworkConfig.color,
-      icon: originalNetworkConfig.icon,
-      testnetHexId: originalNetworkConfig.testnetHexId,
-      mainnetHexId: originalNetworkConfig.mainnetHexId,
     }
   },
 )
 
 export const hardhatNetworksById = { ...networksById, ...keyBy(hardhatNetworkConfigs, 'id') }
+export const hardhatNetworksByOriginalId = keyBy(hardhatNetworkConfigs, 'originalId')

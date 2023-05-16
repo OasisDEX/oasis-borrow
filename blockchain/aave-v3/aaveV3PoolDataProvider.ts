@@ -58,11 +58,6 @@ const networkMappings = {
     NetworkIds.MAINNET,
     'aaveV3PoolDataProvider',
   ),
-  [NetworkIds.HARDHAT]: getNetworkMapping(
-    AaveV3PoolDataProvider__factory,
-    NetworkIds.HARDHAT,
-    'aaveV3PoolDataProvider',
-  ),
 }
 
 export function getAaveV3UserReserveData({
