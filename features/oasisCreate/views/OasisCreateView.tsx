@@ -28,14 +28,15 @@ import { useMediaQuery } from 'usehooks-ts'
 
 interface OasisCreateViewProps {
   product: ProductType
+  token?: string
 }
 
-export function OasisCreateView({ product }: OasisCreateViewProps) {
+export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const { t } = useTranslation()
   const isMobileScreen = useMediaQuery(`(max-width: ${theme.breakpoints[1]})`)
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
-  const [selectedToken, setSelectedToken] = useState<string>(ALL_ASSETS)
+  const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
 
   const rowsFilteredByToken = useMemo(
@@ -112,6 +113,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
       >
         <NaturalLanguageSelectorController
           product={product}
+          token={token}
           url="/oasis-create/"
           onChange={(_selectedProduct, _selectedToken) => {
             setSelectedProduct(_selectedProduct)

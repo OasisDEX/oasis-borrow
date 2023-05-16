@@ -1,5 +1,5 @@
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
-import { oasisCreateOptionsMap } from 'features/oasisCreate/meta'
+import { ALL_ASSETS, oasisCreateOptionsMap } from 'features/oasisCreate/meta'
 import { ProductType } from 'features/oasisCreate/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -8,12 +8,14 @@ import { Box, Heading } from 'theme-ui'
 
 interface NaturalLanguageSelectorControllerProps {
   product: ProductType
+  token?: string
   url?: string
   onChange?: (product: ProductType, token: string) => void
 }
 
 export function NaturalLanguageSelectorController({
   product,
+  token,
   url,
   onChange,
 }: NaturalLanguageSelectorControllerProps) {
@@ -24,7 +26,10 @@ export function NaturalLanguageSelectorController({
     oasisCreateOptionsMap[product].product.value as ProductType,
   )
   const [selectedToken, setSelectedToken] = useState<string>(
-    oasisCreateOptionsMap[product].tokens[0].value,
+    (token
+      ? oasisCreateOptionsMap[product].tokens[token]
+      : oasisCreateOptionsMap[product].tokens.all
+    ).value,
   )
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
@@ -45,27 +50,40 @@ export function NaturalLanguageSelectorController({
           withHeaders={true}
           onChange={(selected) => {
             const typedValue = selected.value as ProductType
+            const tokenInUrl = selectedToken !== ALL_ASSETS ? selectedToken : undefined
+            const isSwitchingToAllAssets = !Object.values(
+              oasisCreateOptionsMap[typedValue].tokens,
+            ).some((option) => option.value === selectedToken)
 
             setSelectedProduct(typedValue)
             setOverwriteOption(
-              !oasisCreateOptionsMap[typedValue].tokens.some(
-                (option) => option.value === selectedToken,
-              )
-                ? oasisCreateOptionsMap[typedValue].tokens[0]
-                : undefined,
+              isSwitchingToAllAssets ? oasisCreateOptionsMap[typedValue].tokens.all : undefined,
             )
-            if (url) void push(`${url}${selected.value}`)
+            if (url)
+              void push(
+                `${url}${selected.value}${
+                  tokenInUrl && !isSwitchingToAllAssets ? `/${selectedToken}` : ''
+                }`,
+              )
           }}
         />
         {t('oasis-create.header.with')}
         <HeaderSelector
+          defaultOption={
+            token
+              ? oasisCreateOptionsMap[product].tokens[token]
+              : oasisCreateOptionsMap[product].tokens.all
+          }
           gradient={['#2a30ee', '#a4a6ff']}
-          options={oasisCreateOptionsMap[selectedProduct].tokens}
+          options={Object.values(oasisCreateOptionsMap[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
           valueAsLabel={true}
           onChange={(selected) => {
+            const tokenInUrl = selected.value !== ALL_ASSETS ? selected.value : undefined
+
             setSelectedToken(selected.value)
+            if (url) void push(`${url}${selectedProduct}${tokenInUrl ? `/${selected.value}` : ''}`)
           }}
         />
       </Heading>

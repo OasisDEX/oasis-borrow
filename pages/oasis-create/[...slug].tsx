@@ -1,6 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AppLayout } from 'components/Layouts'
+import { ALL_ASSETS, oasisCreateOptionsMap } from 'features/oasisCreate/meta'
 import { ProductType } from 'features/oasisCreate/types'
 import { OasisCreateView } from 'features/oasisCreate/views/OasisCreateView'
 import { WithChildren } from 'helpers/types'
@@ -8,11 +9,11 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-function OasisCreatePage({ product }: { product: ProductType }) {
+function OasisCreatePage({ product, token }: { product: ProductType; token?: string }) {
   return (
     <WithConnection>
       <WithFeatureToggleRedirect feature="OasisCreate">
-        <OasisCreateView product={product} />
+        <OasisCreateView product={product} token={token} />
       </WithFeatureToggleRedirect>
     </WithConnection>
   )
@@ -28,7 +29,15 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   const paths =
     locales
       ?.map((locale) =>
-        Object.values(ProductType).map((product) => ({ params: { product }, locale })),
+        Object.values(ProductType)
+          .map((product) =>
+            Object.values(oasisCreateOptionsMap[product].tokens).map((token) => [
+              product,
+              ...(token.value !== ALL_ASSETS ? [token.value] : []),
+            ]),
+          )
+          .flat()
+          .map((slug) => ({ params: { slug }, locale })),
       )
       .flat() || []
 
@@ -39,13 +48,14 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const isOasisCreateProduct = Object.values(ProductType).includes(params?.product as ProductType)
+  const product = params?.slug[0] as ProductType
+  const token = params?.slug[1]
 
   return {
-    ...(!isOasisCreateProduct && { notFound: true }),
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
-      ...(isOasisCreateProduct && { product: params?.product }),
+      ...(product && { product }),
+      ...(token && { token }),
     },
   }
 }

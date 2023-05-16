@@ -66,34 +66,37 @@ export const oasisCreateTokenOptions: { [key: string]: HeaderSelectorOption } = 
 }
 
 export const oasisCreateOptionsMap: {
-  [key in ProductType]: { product: HeaderSelectorOption; tokens: HeaderSelectorOption[] }
+  [key in ProductType]: {
+    product: HeaderSelectorOption
+    tokens: { [key: string]: HeaderSelectorOption }
+  }
 } = {
   borrow: {
     product: oasisCreateProductOptions.borrow,
-    tokens: [
-      oasisCreateTokenOptions.all,
-      oasisCreateTokenOptions.ETH,
-      oasisCreateTokenOptions.WBTC,
-      oasisCreateTokenOptions.USDC,
-    ],
+    tokens: {
+      all: oasisCreateTokenOptions.all,
+      ETH: oasisCreateTokenOptions.ETH,
+      WBTC: oasisCreateTokenOptions.WBTC,
+      USDC: oasisCreateTokenOptions.USDC,
+    },
   },
   multiply: {
     product: oasisCreateProductOptions.multiply,
-    tokens: [
-      oasisCreateTokenOptions.all,
-      oasisCreateTokenOptions.ETH,
-      oasisCreateTokenOptions.WBTC,
-      oasisCreateTokenOptions.USDC,
-    ],
+    tokens: {
+      all: oasisCreateTokenOptions.all,
+      ETH: oasisCreateTokenOptions.ETH,
+      WBTC: oasisCreateTokenOptions.WBTC,
+      USDC: oasisCreateTokenOptions.USDC,
+    },
   },
   earn: {
     product: oasisCreateProductOptions.earn,
-    tokens: [
-      oasisCreateTokenOptions.all,
-      oasisCreateTokenOptions.ETH,
-      oasisCreateTokenOptions.WBTC,
-      oasisCreateTokenOptions.DAI,
-      oasisCreateTokenOptions.USDC,
-    ],
+    tokens: {
+      all: oasisCreateTokenOptions.all,
+      ETH: oasisCreateTokenOptions.ETH,
+      WBTC: oasisCreateTokenOptions.WBTC,
+      DAI: oasisCreateTokenOptions.DAI,
+      USDC: oasisCreateTokenOptions.USDC,
+    },
   },
 }

@@ -10,8 +10,6 @@ export function filterRows(
   product: ProductType,
   filters: OasisCreateFilters = {},
 ): OasisCreateItem[] {
-  console.log(rows)
-  console.log(filters)
   return rows
     .filter((item) => item.product === product || item.product.includes(product))
     .map((item) =>
