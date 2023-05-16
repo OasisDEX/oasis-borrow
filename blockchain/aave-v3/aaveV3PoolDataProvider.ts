@@ -53,8 +53,16 @@ export interface AaveV3ReserveConfigurationData {
 }
 
 const networkMappings = {
-  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3PoolDataProvider__factory, NetworkIds.MAINNET),
-  [NetworkIds.HARDHAT]: getNetworkMapping(AaveV3PoolDataProvider__factory, NetworkIds.HARDHAT),
+  [NetworkIds.MAINNET]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.MAINNET,
+    'aaveV3PoolDataProvider',
+  ),
+  [NetworkIds.HARDHAT]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.HARDHAT,
+    'aaveV3PoolDataProvider',
+  ),
 }
 
 export function getAaveV3UserReserveData({

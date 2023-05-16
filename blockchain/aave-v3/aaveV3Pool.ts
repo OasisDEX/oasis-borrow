@@ -33,8 +33,8 @@ export interface AaveV3UserConfigurationsParameters extends BaseParameters {
 export type AaveV3ConfigurationData = string[]
 
 const networkMappings = {
-  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET),
-  [NetworkIds.HARDHAT]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.HARDHAT),
+  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET, 'aaveV3Pool'),
+  [NetworkIds.HARDHAT]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.HARDHAT, 'aaveV3Pool'),
 }
 
 export function getAaveV3UserAccountData({
@@ -83,7 +83,7 @@ export function getEModeCategoryData({
   categoryId,
 }: GetEModeCategoryDataParameters): Promise<GetEModeCategoryDataResult> {
   const { contract } = networkMappings[networkId]
-  return contract.getEModeCategoryData(categoryId.toString()).then((result) => {
+  return contract.getEModeCategoryData(categoryId.toString(16)).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000),
       liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000),
