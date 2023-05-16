@@ -269,17 +269,17 @@ import {
 } from 'features/stateMachines/dpmAccount'
 import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
 import { transactionContextService } from 'features/stateMachines/transaction'
-import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
-import {
-  checkAcceptanceFromApi$,
-  saveAcceptanceFromApi$,
-} from 'features/termsOfService/termsAcceptanceApi'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   swapWidgetChangeReducer,
   SwapWidgetState,
-} from 'features/uniswapWidget/SwapWidgetChange'
+} from 'features/swapWidget/SwapWidgetChange'
+import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
+import {
+  checkAcceptanceFromApi$,
+  saveAcceptanceFromApi$,
+} from 'features/termsOfService/termsAcceptanceApi'
 import { createUserSettings$ } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,

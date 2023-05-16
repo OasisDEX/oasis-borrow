@@ -177,6 +177,13 @@ export const oasisBaseTheme = {
       fontSize: '12px',
       color: 'primary100',
     },
+    swapHeader: {
+      fontFamily: 'body',
+      fontWeight: 'bold',
+      lineHeight: '29px',
+      fontSize: '24px',
+      color: 'primary100',
+    },
   },
   borders: {
     light: '1px solid #787a9b40',
