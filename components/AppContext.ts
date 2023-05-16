@@ -1389,7 +1389,13 @@ export function setupAppContext() {
 
   const protocols: ProtocolsServices = {
     [LendingProtocol.AaveV2]: aaveV2,
-    [LendingProtocol.AaveV3]: aaveV3,
+    [LendingProtocol.AaveV3]: {
+      [NetworkIds.MAINNET]: aaveV3,
+      [NetworkIds.HARDHAT]: getAaveV3Services({
+        refresh$: onEveryBlock$,
+        networkId: NetworkIds.HARDHAT,
+      }),
+    },
   }
 
   const contextForAddress$ = connectedContext$.pipe(
@@ -1539,8 +1545,11 @@ function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: s
 }
 
 export type ProtocolsServices = {
-  [LendingProtocol.AaveV2]: ReturnType<typeof getAaveV2Services> & AaveServices
-  [LendingProtocol.AaveV3]: ReturnType<typeof getAaveV3Services> & AaveServices
+  [LendingProtocol.AaveV2]: AaveServices
+  [LendingProtocol.AaveV3]: {
+    [NetworkIds.MAINNET]: AaveServices
+    [NetworkIds.HARDHAT]: AaveServices
+  }
 }
 
 export type DepreciatedServices = {

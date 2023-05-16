@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { AaveV2GetAssetPriceParameters, AaveV2ReserveDataReply } from 'blockchain/aave'
 import { AaveV2ReserveDataParameters } from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import { combineLatest, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { zero } from 'helpers/zero'
+import { combineLatest, Observable, of } from 'rxjs'
+import { catchError, map } from 'rxjs/operators'
 
 export function aaveAvailableLiquidityInUSDC$(
   getReserveData$: (args: AaveV2ReserveDataParameters) => Observable<AaveV2ReserveDataReply>,
@@ -19,6 +20,10 @@ export function aaveAvailableLiquidityInUSDC$(
       const liquidityInEthPrice = reserveData.availableLiquidity.times(tokenPrice)
       const ETH_USDC_price = new BigNumber(1).div(usdcPrice) // price of one ETH in USDC
       return liquidityInEthPrice.times(ETH_USDC_price)
+    }),
+    catchError((error) => {
+      console.log(`Can't get Aave V2 available liquidity for ${reserveDataToken}`, error)
+      return of(zero)
     }),
   )
 }

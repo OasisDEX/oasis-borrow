@@ -1,5 +1,5 @@
 import * as blockchainCalls from 'blockchain/aave-v3'
-import { NetworkIds } from 'blockchain/networkIds'
+import { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { UserAccountData, UserAccountDataArgs } from 'lendingProtocols/aaveCommon'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
@@ -19,7 +19,7 @@ import {
 
 interface AaveV3ServicesDependencies {
   refresh$: Observable<unknown>
-  networkId: NetworkIds.MAINNET
+  networkId: AaveV3SupportedNetwork
 }
 
 export function getAaveV3Services({

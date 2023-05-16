@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
@@ -9,7 +10,7 @@ export type Factory<T> = {
 }
 
 export type BaseParameters = {
-  readonly networkId: NetworkIds.MAINNET
+  readonly networkId: AaveV3SupportedNetwork
 }
 
 export type ContractForNetwork<Contract> = {
@@ -23,14 +24,16 @@ export type ContractForNetwork<Contract> = {
 
 const baseCurrencyUnits = {
   [NetworkIds.MAINNET]: new BigNumber(100000000),
+  [NetworkIds.HARDHAT]: new BigNumber(100000000),
 }
 
 export function getNetworkMapping<Contract>(
   factory: Factory<Contract>,
-  networkId: NetworkIds.MAINNET,
+  networkId: AaveV3SupportedNetwork,
 ): ContractForNetwork<Contract> {
   const { address, genesisBlock } = getNetworkContracts(networkId).aaveV3PoolDataProvider
-  const rpcProvider = networksById[networkId].readProvider
+  const rpcProvider =
+    networksById[networkId]?.readProvider ?? networksById[NetworkIds.MAINNET].readProvider
   const tokenMappings = getNetworkContracts(networkId).tokens
   const contract = factory.connect(address, rpcProvider)
 

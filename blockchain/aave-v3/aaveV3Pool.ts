@@ -34,6 +34,7 @@ export type AaveV3ConfigurationData = string[]
 
 const networkMappings = {
   [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET),
+  [NetworkIds.HARDHAT]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.HARDHAT),
 }
 
 export function getAaveV3UserAccountData({

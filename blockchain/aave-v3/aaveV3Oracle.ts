@@ -16,6 +16,7 @@ export interface AaveV3OracleAssetPriceDataParameters extends BaseParameters {
 
 const networkMappings = {
   [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Oracle__factory, NetworkIds.MAINNET),
+  [NetworkIds.HARDHAT]: getNetworkMapping(AaveV3Oracle__factory, NetworkIds.HARDHAT),
 }
 
 export function getAaveV3AssetsPrices({

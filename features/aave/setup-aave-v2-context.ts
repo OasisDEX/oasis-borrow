@@ -1,5 +1,3 @@
-import { getAaveV2AssetsPrices } from 'blockchain/aave'
-import { observe } from 'blockchain/calls/observe'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
@@ -69,6 +67,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
     aaveProtocolData$,
     aaveReserveConfigurationData$,
     aaveOracleAssetPriceData$,
+    getAaveAssetsPrices$,
     getAaveReserveData$,
   } = protocols[LendingProtocol.AaveV2]
 
@@ -165,10 +164,6 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
     depositBorrowAaveMachine,
   )
 
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV2AssetsPrices, (args) =>
-    args.tokens.join(''),
-  )
-
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'STETH' }),
     getAaveReserveData$({ token: 'ETH' }),
@@ -178,7 +173,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
   return {
-    ...protocols[LendingProtocol.AaveV3],
+    ...protocols[LendingProtocol.AaveV2],
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,
