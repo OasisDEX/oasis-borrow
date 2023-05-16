@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { MainnetContracts } from 'blockchain/contracts/mainnet'
+import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
 import { ethers } from 'ethers'
@@ -29,7 +28,7 @@ const baseCurrencyUnits = {
 }
 
 type ContractKey = keyof Pick<
-  MainnetContracts,
+  AllNetworksContractsType[AaveV3SupportedNetwork],
   'aaveV3PoolDataProvider' | 'aaveV3Pool' | 'aaveV3Oracle'
 >
 
