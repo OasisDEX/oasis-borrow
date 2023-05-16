@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AllNetworksContractsType } from 'blockchain/contracts'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'

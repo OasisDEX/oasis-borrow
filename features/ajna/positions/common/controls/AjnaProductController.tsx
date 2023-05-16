@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
@@ -11,6 +11,11 @@ import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/a
 import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
+import {
+  AjnaBorrowishPositionAuction,
+  AjnaEarnPositionAuction,
+  getAjnaPositionAuction$,
+} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
@@ -116,6 +121,16 @@ export function AjnaProductController({
     ),
   )
 
+  const [ajnaPositionAuctionData, ajnaPositionAuctionError] = useObservable(
+    useMemo(
+      () =>
+        dpmPositionData && ajnaPositionData
+          ? getAjnaPositionAuction$({ dpmPositionData, ajnaPositionData })
+          : EMPTY,
+      [dpmPositionData, ajnaPositionData],
+    ),
+  )
+
   if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
 
   return (
@@ -130,6 +145,7 @@ export function AjnaProductController({
                 dpmPositionError,
                 tokenPriceUSDError,
                 gasPriceError,
+                ajnaPositionAuctionError,
               ]}
             >
               <WithLoadingIndicator
@@ -139,6 +155,7 @@ export function AjnaProductController({
                   dpmPositionData,
                   tokenPriceUSDData,
                   gasPriceData,
+                  ajnaPositionAuctionData,
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -158,6 +175,7 @@ export function AjnaProductController({
                   dpmPosition,
                   tokenPriceUSD,
                   gasPrice,
+                  ajnaPositionAuction,
                 ]) =>
                   ajnaPosition ? (
                     <>
@@ -199,6 +217,7 @@ export function AjnaProductController({
                             formReducto={useAjnaBorrowFormReducto}
                             position={ajnaPosition as AjnaPosition}
                             product={dpmPosition.product}
+                            positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
                           >
                             <AjnaBorrowPositionController />
                           </AjnaProductContextProvider>
@@ -217,6 +236,7 @@ export function AjnaProductController({
                             formReducto={useAjnaEarnFormReducto}
                             position={ajnaPosition as AjnaEarnPosition}
                             product={dpmPosition.product}
+                            positionAuction={ajnaPositionAuction as AjnaEarnPositionAuction}
                           >
                             <AjnaEarnPositionController />
                           </AjnaProductContextProvider>
@@ -231,6 +251,7 @@ export function AjnaProductController({
                             formReducto={useAjnaMultiplyFormReducto}
                             position={ajnaPosition as AjnaMultiplyPosition}
                             product={dpmPosition.product}
+                            positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
                           >
                             <AjnaMultiplyPositionController />
                           </AjnaProductContextProvider>
