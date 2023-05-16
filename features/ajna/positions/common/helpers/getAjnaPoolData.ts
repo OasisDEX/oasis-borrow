@@ -1,9 +1,7 @@
+import { Bucket, GetPoolData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-
-import { Bucket } from '@oasisdex/oasis-actions-poc/src/types/ajna/AjnaPool'
-import { GetPoolData } from '@oasisdex/oasis-actions-poc/src/views/ajna'
 
 export interface AjnaPoolDataResponse {
   address: string

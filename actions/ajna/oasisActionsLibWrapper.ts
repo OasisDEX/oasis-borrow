@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition, strategies } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition, strategies, Strategy } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
@@ -10,8 +10,6 @@ import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaP
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
-
-import { Strategy } from '@oasisdex/oasis-actions-poc/src/types/common'
 
 interface AjnaTxHandlerInput {
   collateralPrice: BigNumber
@@ -125,7 +123,7 @@ export async function getAjnaParameters({
     case 'withdraw-borrow': {
       const { paybackAmount, withdrawAmount } = state
 
-      return strategies.ajna.paybackWithdraw(
+      return strategies.ajna.borrow.paybackWithdraw(
         {
           ...commonPayload,
           collateralAmount: withdrawAmount!,
@@ -143,6 +141,7 @@ export async function getAjnaParameters({
           ...commonPayload,
           price: price!,
           quoteAmount: depositAmount!,
+          collateralAmount: zero,
           isStakingNft: true,
           collateralPrice,
           quotePrice,

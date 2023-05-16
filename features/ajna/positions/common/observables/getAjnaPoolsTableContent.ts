@@ -1,4 +1,4 @@
-import { calculateAjnaApyPerDays } from '@oasisdex/oasis-actions-poc'
+import { calculateAjnaApyPerDays } from '@oasisdex/dma-library'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'

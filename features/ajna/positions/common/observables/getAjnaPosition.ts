@@ -1,4 +1,4 @@
-import { views } from '@oasisdex/oasis-actions-poc'
+import { views } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
