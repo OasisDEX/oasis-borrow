@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
-import { observe } from 'blockchain/calls/observe'
+import {
+  ChainlinkSupportedNetworks,
+  getChainlinkOraclePrice,
+} from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
@@ -8,6 +10,7 @@ import { AppContext } from 'components/AppContext'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'
+import { makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
@@ -18,21 +21,24 @@ import { getOperationExecutorTransactionMachine } from './common/services/getTra
 import { getProxiesRelatedWithPosition$ } from './helpers'
 import { PositionId } from './types'
 
-export function getCommonPartsFromAppContext({
-  onEveryBlock$,
-  connectedContext$,
-  context$,
-  gasEstimation$,
-  proxyAddress$,
-  userDpmProxy$,
-  allowance$,
-  txHelpers$,
-  proxyConsumed$,
-  userDpmProxies$,
-  commonTransactionServices,
-  dpmAccountStateMachine,
-  contextForAddress$,
-}: AppContext) {
+export function getCommonPartsFromAppContext(
+  {
+    connectedContext$,
+    context$,
+    gasEstimation$,
+    proxyAddress$,
+    userDpmProxy$,
+    allowance$,
+    txHelpers$,
+    proxyConsumed$,
+    userDpmProxies$,
+    commonTransactionServices,
+    dpmAccountStateMachine,
+    contextForAddress$,
+  }: AppContext,
+  refresh$: Observable<unknown>,
+  networkId: ChainlinkSupportedNetworks,
+) {
   const disconnectedGraphQLClient$ = context$.pipe(
     distinctUntilKeyChanged('chainId'),
     map(
@@ -81,13 +87,14 @@ export function getCommonPartsFromAppContext({
     switchMap(({ account }) => getAvailableDPMProxy(account)),
   )
 
-  const chainlinkUSDCUSDOraclePrice$ = memoize(
-    observe(onEveryBlock$, context$, getChainlinkOraclePrice('USDCUSD'), () => 'true'),
+  const chainlinkUsdcUsdOraclePrice = getChainlinkOraclePrice('USDCUSD', networkId)
+  const chainlinkUSDCUSDOraclePrice$ = makeOneObservable(
+    refresh$,
+    () => chainlinkUsdcUsdOraclePrice,
   )
 
-  const chainLinkETHUSDOraclePrice$ = memoize(
-    observe(onEveryBlock$, context$, getChainlinkOraclePrice('ETHUSD'), () => 'true'),
-  )
+  const chainlinkEthUsdOraclePrice = getChainlinkOraclePrice('ETHUSD', networkId)
+  const chainLinkETHUSDOraclePrice$ = makeOneObservable(refresh$, () => chainlinkEthUsdOraclePrice)
 
   return {
     allowanceForAccount$,

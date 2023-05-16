@@ -125,7 +125,7 @@ export const mainnetContracts = {
   ),
   aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.PriceOracle),
   chainlinkPriceOracle: {
-    USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
+    USDCUSD: contractDesc(chainLinkPriceOracle, '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6'), // TODO: We have a wrong value in the library
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
   },
   aaveV2LendingPool: contractDesc(

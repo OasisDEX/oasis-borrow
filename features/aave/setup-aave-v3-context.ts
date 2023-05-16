@@ -67,7 +67,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(appContext)
+  } = getCommonPartsFromAppContext(appContext, onEveryBlock$, networkId)
 
   const {
     aaveUserAccountData$,
@@ -91,7 +91,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     curry(getAaveSupportedTokenBalances$)(
       balance$,
       aaveOracleAssetPriceData$,
-      () => of(one), // aave v3 base is already in USD
+      of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3, NetworkNames.ethereumMainnet),
     ),
   )

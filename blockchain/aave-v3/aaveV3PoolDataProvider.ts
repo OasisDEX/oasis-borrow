@@ -103,8 +103,12 @@ export function getAaveV3ReserveData({
   const tokenAddress = tokenMappings[token].address
   return contract.getReserveData(tokenAddress).then((result) => {
     return {
-      availableLiquidity: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
-      unbacked: amountFromWei(new BigNumber(result.unbacked.toString()), token),
+      availableLiquidity: new BigNumber(result.totalAToken.toString()).minus(
+        new BigNumber(result.totalStableDebt.toString()).plus(
+          new BigNumber(result.totalVariableDebt.toString()),
+        ),
+      ),
+      unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
       totalAToken: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
       totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),

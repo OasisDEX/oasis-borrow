@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networkIds'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
@@ -60,7 +61,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(appContext)
+  } = getCommonPartsFromAppContext(appContext, onEveryBlock$, NetworkIds.MAINNET)
 
   const {
     aaveUserAccountData$,
