@@ -32,8 +32,11 @@ export const every10Seconds$ = interval(10000).pipe(startWith(0))
 
 interface WithContractMethod {
   contract: <T>(desc: ContractDesc) => T
-  contractV2: <T>(desc: ContractDesc) => T
-  rpcProvider: ethers.providers.Provider
+
+  /**
+   * @deprecated user `networkById[networkId].readProvider` instead. This is set only for mainnet
+   */
+  rpcProvider: ethers.providers.StaticJsonRpcProvider
 }
 
 interface WithWeb3ProviderGetPastLogs {
@@ -62,20 +65,11 @@ export function createContext$(
         getNetworkRpcEndpoint(NetworkIds.MAINNET, web3Context.chainId),
       )
 
-      const provider = new ethers.providers.JsonRpcProvider(
-        getNetworkRpcEndpoint(NetworkIds.MAINNET, web3Context.chainId),
-        web3Context.chainId,
-      )
-
       return {
         ...networkData,
         ...web3Context,
-        rpcProvider: provider,
-        contractV2: <T>(c: ContractDesc) => {
-          const contract = new ethers.Contract(c.address, c.abi, provider)
-          return contract as any as T
-        },
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,
+        rpcProvider: networksById[NetworkIds.MAINNET].readProvider,
         web3ProviderGetPastLogs,
       } as Context
     }),

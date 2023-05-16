@@ -1,21 +1,14 @@
-import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
-import { ethers } from 'ethers'
-import { ContractDesc } from 'features/web3Context'
-import { Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
-import { AaveV3Pool__factory } from 'types/ethers-contracts'
+import { AaveV3Pool, AaveV3Pool__factory } from 'types/ethers-contracts'
 import { LiquidationCallEvent } from 'types/ethers-contracts/AaveV3Pool'
 
+import { BaseParameters, ContractForNetwork, getNetworkMapping } from './utils'
+
 async function getLastLiquidationEvent(
-  aaveV3Pool: ContractDesc & { genesisBlock: number },
-  rpcProvider: ethers.providers.Provider,
+  { contractGenesis, contract }: ContractForNetwork<AaveV3Pool>,
   proxyAddress: string,
 ): Promise<LiquidationCallEvent[]> {
-  const pool = AaveV3Pool__factory.connect(aaveV3Pool.address, rpcProvider)
-
-  const liquidationCallFilter = pool.filters.LiquidationCall(
+  const liquidationCallFilter = contract.filters.LiquidationCall(
     null,
     null,
     proxyAddress,
@@ -24,11 +17,11 @@ async function getLastLiquidationEvent(
     null,
     null,
   )
-  const depositFilter = pool.filters.Supply(null, null, proxyAddress, null, null)
+  const depositFilter = contract.filters.Supply(null, null, proxyAddress, null, null)
 
   const [liquidationEvents, depositEvents] = await Promise.all([
-    pool.queryFilter(liquidationCallFilter, aaveV3Pool.genesisBlock, 'latest'),
-    pool.queryFilter(depositFilter, aaveV3Pool.genesisBlock, 'latest'),
+    contract.queryFilter(liquidationCallFilter, contractGenesis, 'latest'),
+    contract.queryFilter(depositFilter, contractGenesis, 'latest'),
   ])
 
   if (!liquidationEvents.length || !depositEvents.length) {
@@ -45,20 +38,23 @@ async function getLastLiquidationEvent(
   return [mostRecentLiquidationEvent]
 }
 
-export function getAaveV3PositionLiquidation$(
-  context$: Observable<Context>,
-  proxyAddress: string | undefined,
-): Observable<LiquidationCallEvent[]> {
+export interface GetAaveV3PositionLiquidationParameters extends BaseParameters {
+  proxyAddress: string | undefined
+}
+
+const networkMappings = {
+  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET, 'aaveV3Pool'),
+}
+
+export async function getAaveV3PositionLiquidation({
+  proxyAddress,
+  networkId,
+}: GetAaveV3PositionLiquidationParameters): Promise<LiquidationCallEvent[]> {
   if (!proxyAddress) {
-    return of([])
+    return []
   }
-  return context$.pipe(
-    switchMap(async ({ chainId, rpcProvider }) => {
-      return await getLastLiquidationEvent(
-        getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV3Pool,
-        rpcProvider,
-        proxyAddress,
-      )
-    }),
-  )
+
+  const result = networkMappings[networkId]
+
+  return await getLastLiquidationEvent(result, proxyAddress)
 }

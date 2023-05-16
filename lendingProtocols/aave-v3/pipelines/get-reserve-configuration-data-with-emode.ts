@@ -13,9 +13,9 @@ export function getReserveConfigurationDataWithEMode$(
     token: string
   }) => Observable<ReserveConfigurationData>,
   getAaveV3EModeCategoryForAsset: ({ token }: { token: string }) => Observable<BigNumber>,
-  getEModeCategoryData: ({
-    categoryId,
-  }: GetEModeCategoryDataParameters) => Observable<GetEModeCategoryDataResult>,
+  getEModeCategoryData: (
+    params: Omit<GetEModeCategoryDataParameters, 'networkId'>,
+  ) => Observable<GetEModeCategoryDataResult>,
   parameters: GetReserveConfigurationDataWithEModeParameters,
 ): Observable<ReserveConfigurationData> {
   return combineLatest(

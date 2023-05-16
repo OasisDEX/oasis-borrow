@@ -1,13 +1,12 @@
 import { AAVEStrategyAddresses, AAVEV3StrategyAddresses } from '@oasisdex/oasis-actions'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
 import { ethNullAddress } from 'blockchain/networksConfig'
 
 export function getTokenAddresses(
-  context: Context,
+  networkId: NetworkIds.MAINNET,
 ): AAVEStrategyAddresses & AAVEV3StrategyAddresses {
-  const contracts = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+  const contracts = getNetworkContracts(networkId)
   return {
     DAI: contracts.tokens['DAI'].address,
     ETH: ethNullAddress,

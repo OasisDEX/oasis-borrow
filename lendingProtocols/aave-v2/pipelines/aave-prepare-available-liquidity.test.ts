@@ -6,19 +6,19 @@ import {
 import { zero } from 'helpers/zero'
 import { of, throwError } from 'rxjs'
 
-import { prepareAaveAvailableLiquidityInUSDC$ } from './aavePrepareAvailableLiquidity'
+import { aaveAvailableLiquidityInUSDC$ } from './aave-available-liquidity-in-usdc'
 
 describe('prepareAaveAvailableLiquidityInUSDC$', () => {
-  const getAaveReserveData$ = () =>
-    of({
-      availableLiquidity: new BigNumber(10),
-    } as AaveV2ReserveDataReply)
-  const getTokenPrice$ = () => of(new BigNumber(2))
-  const usdcEthPrice$ = of(new BigNumber(1))
-  const reserveDataToken = { token: 'TEST' } as AaveV2ReserveDataParameters
-
   it('should return the correct value', (done) => {
-    prepareAaveAvailableLiquidityInUSDC$(
+    const getAaveReserveData$ = () =>
+      of({
+        availableLiquidity: new BigNumber(10),
+      } as AaveV2ReserveDataReply)
+    const getTokenPrice$ = () => of(new BigNumber(2))
+    const usdcEthPrice$ = of(new BigNumber(1))
+    const reserveDataToken = { token: 'TEST' } as AaveV2ReserveDataParameters
+
+    aaveAvailableLiquidityInUSDC$(
       getAaveReserveData$,
       getTokenPrice$,
       usdcEthPrice$,
@@ -32,7 +32,11 @@ describe('prepareAaveAvailableLiquidityInUSDC$', () => {
   it('should return zero on error', (done) => {
     const getAaveReserveData$ = () => throwError(new Error('Test error'))
 
-    prepareAaveAvailableLiquidityInUSDC$(
+    const getTokenPrice$ = () => of(new BigNumber(2))
+    const usdcEthPrice$ = of(new BigNumber(1))
+    const reserveDataToken = { token: 'TEST' } as AaveV2ReserveDataParameters
+
+    aaveAvailableLiquidityInUSDC$(
       getAaveReserveData$,
       getTokenPrice$,
       usdcEthPrice$,

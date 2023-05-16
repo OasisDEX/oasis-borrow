@@ -1,16 +1,11 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import {
-  AaveV2ConfigurationData,
-  AaveV2UserAccountData,
-  AaveV2UserAccountDataParameters,
-} from 'blockchain/aave/aaveV2LendingPool'
-import {
-  AaveV2ReserveConfigurationData,
-  AaveV2UserReserveData,
-  AaveV2UserReserveDataParameters,
-} from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
+  AaveV3ConfigurationData,
+  AaveV3UserReserveData,
+  AaveV3UserReserveDataParameters,
+} from 'blockchain/aave-v3'
+import { ProtocolData, UserAccountData, UserAccountDataArgs } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
@@ -21,29 +16,21 @@ export type AaveUserConfigurationType = ({
   address,
 }: {
   address: string
-}) => Observable<AaveV2ConfigurationData>
-
-export type AaveReserveConfigurationDataType = ({
-  token,
-}: {
-  token: string
-}) => Observable<AaveV2ReserveConfigurationData>
+}) => Observable<AaveV3ConfigurationData>
 
 export function getAaveProtocolData$(
   aaveUserReserveData$: (
-    args: AaveV2UserReserveDataParameters,
-  ) => Observable<AaveV2UserReserveData>,
-  aaveUserAccountData$: (
-    args: AaveV2UserAccountDataParameters,
-  ) => Observable<AaveV2UserAccountData>,
+    args: Omit<AaveV3UserReserveDataParameters, 'networkId'>,
+  ) => Observable<AaveV3UserReserveData>,
+  aaveUserAccountData$: (args: UserAccountDataArgs) => Observable<UserAccountData>,
   aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
   aaveUserConfiguration$: AaveUserConfigurationType,
-  aaveReservesList$: Observable<AaveV2ConfigurationData>,
-  aaveOnChainPosition$: (
-    collateralToken: string,
-    debtToken: string,
-    address: string,
-  ) => Observable<IPosition>,
+  aaveReservesList$: Observable<AaveV3ConfigurationData>,
+  aaveOnChainPosition$: (params: {
+    collateralToken: string
+    debtToken: string
+    proxyAddress: string
+  }) => Observable<IPosition>,
   collateralToken: string,
   debtToken: string,
   proxyAddress: string,
@@ -54,7 +41,7 @@ export function getAaveProtocolData$(
     aaveOracleAssetPriceData$({ token: collateralToken }),
     aaveUserConfiguration$({ address: proxyAddress }),
     aaveReservesList$,
-    aaveOnChainPosition$(collateralToken, debtToken, proxyAddress),
+    aaveOnChainPosition$({ collateralToken, debtToken, proxyAddress }),
   ).pipe(
     map(
       ([
@@ -67,7 +54,7 @@ export function getAaveProtocolData$(
       ]) => {
         return {
           positionData: reserveData,
-          accountData: accountData,
+          accountData,
           oraclePrice: oraclePrice,
           position: onChainPosition,
           userConfiguration: aaveUserConfiguration,

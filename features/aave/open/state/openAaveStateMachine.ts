@@ -637,6 +637,8 @@ export function createOpenAaveStateMachine(
               proxyType: context.strategyConfig.proxyType,
               positionType: context.strategyConfig.type,
               protocol: context.strategyConfig.protocol,
+              userAddress: context.web3Context?.account ?? ethNullAddress,
+              networkId: context.strategyConfig.networkId,
             }
             if (context.strategyConfig.type === 'Borrow') {
               return {

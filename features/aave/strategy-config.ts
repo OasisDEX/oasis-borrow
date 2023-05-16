@@ -1,5 +1,6 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networkIds'
 import { AaveBorrowManageComponent } from 'features/borrow/aave/AaveBorrowManageComponent'
 import { AaveEarnFaqV2, AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
@@ -50,6 +51,7 @@ const supportedAaveBorrowCollateralTokens = ['ETH', 'WBTC']
 const optimismStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.optimismMainnet,
+    networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-ethusdc',
     urlSlug: 'optimism-ethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -78,6 +80,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
   },
   {
     network: NetworkNames.optimismMainnet,
+    networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wstethusdc',
     urlSlug: 'optimism-wstethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -106,6 +109,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
   },
   {
     network: NetworkNames.optimismMainnet,
+    networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wbtcusdc',
     urlSlug: 'optimism-wbtcusdc',
     proxyType: ProxyType.DpmProxy,
@@ -137,6 +141,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
 const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
     urlSlug: 'wstETHeth',
     name: 'wstETHeth',
     proxyType: ProxyType.DpmProxy,
@@ -166,6 +171,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   },
   {
     network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
     urlSlug: 'stETHeth',
     name: 'stETHeth',
     proxyType: ProxyType.DpmProxy,
@@ -193,6 +199,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   },
   {
     network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
     name: 'ethusdc',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -220,6 +227,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   },
   {
     network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
     proxyType: ProxyType.DpmProxy,
@@ -247,6 +255,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   },
   {
     network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
     name: 'wBTCusdc',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,
@@ -276,6 +285,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
     return {
       network: NetworkNames.ethereumMainnet,
+      networkId: NetworkIds.MAINNET,
       name: `borrow-against-${collateral}`,
       urlSlug: collateral,
       proxyType: ProxyType.DpmProxy,

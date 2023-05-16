@@ -5,7 +5,6 @@ import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
-import { ProtocolsServices } from 'components/AppContext'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
@@ -103,8 +102,8 @@ type ProxyAddressesProvider = {
 }
 
 type BuildPositionArgs = {
-  aaveV2: ProtocolsServices[LendingProtocol.AaveV2]
-  aaveV3: ProtocolsServices[LendingProtocol.AaveV3]
+  aaveV2: AaveServices
+  aaveV3: AaveServices
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
@@ -266,8 +265,8 @@ const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
   environment: CreatePositionEnvironmentPropsType,
-  aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
-  aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
+  aaveV2: AaveServices,
+  aaveV3: AaveServices,
   walletAddress: string,
 ): Observable<AavePosition[]> {
   const { context$, tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } =

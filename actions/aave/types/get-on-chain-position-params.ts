@@ -1,8 +1,8 @@
-import { Context } from 'blockchain/network'
 import { LendingProtocol } from 'lendingProtocols'
+import { NetworkIds } from '../../../blockchain/networkIds'
 
 export interface GetOnChainPositionParams {
-  context: Context
+  networkId: NetworkIds,
   collateralToken: string
   debtToken: string
   proxyAddress: string

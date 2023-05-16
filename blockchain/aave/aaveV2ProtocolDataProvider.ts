@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
-import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
+import { networksById } from 'blockchain/networksConfig'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
-import { AaveV2ProtocolDataProvider } from 'types/web3-v1-contracts'
+import { AaveV2ProtocolDataProvider__factory } from 'types/ethers-contracts'
 
 export interface AaveV2UserReserveDataParameters {
   token: string
@@ -38,58 +38,64 @@ export type AaveV2ReserveDataReply = {
   lastUpdateTimestamp: BigNumber
 }
 
-export const getAaveV2UserReserveData: CallDef<
-  AaveV2UserReserveDataParameters,
-  AaveV2UserReserveData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV2ProtocolDataProvider>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2ProtocolDataProvider,
-    ).methods.getUserReserveData
-  },
-  prepareArgs: ({ token, address }, { chainId }) => {
-    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address, address]
-  },
-  postprocess: (result, args) => {
+export type AaveV2ReserveConfigurationData = {
+  ltv: BigNumber
+  liquidationThreshold: BigNumber
+  liquidationBonus: BigNumber
+  // .... could add more things here.  see https://etherscan.io/address/0x057835ad21a177dbdd3090bb1cae03eacf78fc6d#readContract
+}
+
+const factory = AaveV2ProtocolDataProvider__factory
+const rpcProvider = networksById[NetworkIds.MAINNET].readProvider
+const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2ProtocolDataProvider.address
+const tokenMappings = getNetworkContracts(NetworkIds.MAINNET).tokens
+const contract = factory.connect(address, rpcProvider)
+
+export function getAaveV2UserReserveData({
+  token,
+  address,
+}: AaveV2UserReserveDataParameters): Promise<AaveV2UserReserveData> {
+  return contract.getUserReserveData(tokenMappings[token].address, address).then((result) => {
     return {
       currentATokenBalance: amountFromWei(
         new BigNumber(result.currentATokenBalance.toString()),
-        args.token,
+        token,
       ),
-      currentStableDebt: amountFromWei(
-        new BigNumber(result.currentStableDebt.toString()),
-        args.token,
-      ),
+      currentStableDebt: amountFromWei(new BigNumber(result.currentStableDebt.toString()), token),
       currentVariableDebt: amountFromWei(
         new BigNumber(result.currentVariableDebt.toString()),
-        args.token,
+        token,
       ),
       principalStableDebt: amountFromWei(
         new BigNumber(result.principalStableDebt.toString()),
-        args.token,
+        token,
       ),
-      scaledVariableDebt: amountFromWei(
-        new BigNumber(result.scaledVariableDebt.toString()),
-        args.token,
-      ),
-      stableBorrowRate: new BigNumber(result.stableBorrowRate.toString()),
-      liquidityRate: new BigNumber(result.liquidityRate.toString()),
+      scaledVariableDebt: amountFromWei(new BigNumber(result.scaledVariableDebt.toString()), token),
+      stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
+      liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
       usageAsCollateralEnabled: result.usageAsCollateralEnabled,
     }
-  },
+  })
 }
 
-export const getAaveV2ReserveData: CallDef<AaveV2ReserveDataParameters, AaveV2ReserveDataReply> = {
-  call: (_, { contract, chainId }) =>
-    contract<AaveV2ProtocolDataProvider>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2ProtocolDataProvider,
-    ).methods.getReserveData,
-  prepareArgs: ({ token }, { chainId }) => [
-    getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address,
-  ],
-  postprocess: (result, { token }) => {
+export function getAaveV2ReserveConfigurationData({
+  token,
+}: AaveV2ReserveDataParameters): Promise<AaveV2ReserveConfigurationData> {
+  return contract.getReserveConfigurationData(tokenMappings[token].address).then((result) => {
     return {
-      availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity), token),
+      ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
+      liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000), // 8100 -> 0.81
+      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
+    }
+  })
+}
+
+export function getAaveV2ReserveData({
+  token,
+}: AaveV2ReserveDataParameters): Promise<AaveV2ReserveDataReply> {
+  return contract.getReserveData(tokenMappings[token].address).then((result) => {
+    return {
+      availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity.toString()), token),
       totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
       totalVariableDebt: amountFromWei(new BigNumber(result.totalVariableDebt.toString()), token),
       liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
@@ -102,33 +108,5 @@ export const getAaveV2ReserveData: CallDef<AaveV2ReserveDataParameters, AaveV2Re
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
     }
-  },
-}
-
-export type AaveV2ReserveConfigurationData = {
-  ltv: BigNumber
-  liquidationThreshold: BigNumber
-  liquidationBonus: BigNumber
-  // .... could add more things here.  see https://etherscan.io/address/0x057835ad21a177dbdd3090bb1cae03eacf78fc6d#readContract
-}
-
-export const getAaveV2ReserveConfigurationData: CallDef<
-  { token: string },
-  AaveV2ReserveConfigurationData
-> = {
-  call: (args, { contract, chainId }) => {
-    return contract<AaveV2ProtocolDataProvider>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2ProtocolDataProvider,
-    ).methods.getReserveConfigurationData
-  },
-  prepareArgs: ({ token }, { chainId }) => {
-    return [getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token].address]
-  },
-  postprocess: (result) => {
-    return {
-      ltv: new BigNumber(result.ltv).div(10000), // 6900 -> 0.69
-      liquidationThreshold: new BigNumber(result.liquidationThreshold).div(10000), // 8100 -> 0.81
-      liquidationBonus: new BigNumber(result.liquidationBonus).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
-    }
-  },
+  })
 }

@@ -30,8 +30,8 @@ export type AaveContext = AaveServices & {
   ) => Promise<AaveYieldsResponse>
   strategyConfig$: (positionId: PositionId) => Observable<IStrategyConfig>
   proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>
-  chainlinkUSDCUSDOraclePrice$: () => Observable<BigNumber>
-  chainLinkETHUSDOraclePrice$: () => Observable<BigNumber>
+  chainlinkUSDCUSDOraclePrice$: Observable<BigNumber>
+  chainLinkETHUSDOraclePrice$: Observable<BigNumber>
   earnCollateralsReserveData: Record<string, Observable<ReserveConfigurationData>>
   dpmAccountStateMachine: DPMAccountStateMachine
   aaveHistory$: (proxyAddress: string) => Observable<VaultHistoryEvent[]>

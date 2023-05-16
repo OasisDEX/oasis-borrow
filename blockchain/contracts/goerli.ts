@@ -71,12 +71,10 @@ export const goerliContracts: MainnetContracts = {
       goerli.maker.joins,
       supportedIlks.filter(
         // these are not supported on goerli
-        (ilk) => !['CRVV1ETHSTETH-A', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(ilk),
+        (ilk) =>
+          !['CRVV1ETHSTETH-A', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A', 'GNO-A'].includes(ilk),
       ),
     ),
-    // Todo: move to goerli network config when available at changelog.makerdao.com
-    'INST-ETH-A': '0x99507A436aC9E8eB5A89001a2dFc80E343D82122',
-    'INST-WBTC-A': '0xbd5978308C9BbF6d8d1D26cD1df9AA3EA83F782a',
   },
   getCdps: contractDesc(getCdps, goerli.maker.common.GetCdps),
   mcdOsms: getOsms(goerli.maker.pips, supportedIlks),

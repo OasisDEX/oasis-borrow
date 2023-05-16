@@ -26,7 +26,9 @@ export type AaveUserConfigurationResults = AaveUserConfigurationResult[] & {
 }
 
 export function getAaveProxyConfiguration$(
-  userConfiguration: (args: AaveV3UserConfigurationsParameters) => Observable<string[]>,
+  userConfiguration: (
+    args: Omit<AaveV3UserConfigurationsParameters, 'networkId'>,
+  ) => Observable<string[]>,
   reserveList: Observable<string[]>,
   proxyAddress: string,
 ): Observable<AaveUserConfigurationResults> {

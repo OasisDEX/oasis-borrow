@@ -12,20 +12,16 @@ import {
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress, networksById } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
-import { providers } from 'ethers'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { getNetworkRpcEndpoint } from 'helpers/networkHelpers'
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
-import { checkContext } from './checkContext'
 import { getTokenAddresses } from './getTokenAddresses'
 import {
   AdjustAaveParameters,
@@ -50,6 +46,12 @@ export function getFee(swap: Swap2): BigNumber {
   return swap.tokenFee.div(new BigNumber(10).pow(swap[swap.collectFeeFrom].precision))
 }
 
+function assertNetwork(networkId: NetworkIds): asserts networkId is NetworkIds.MAINNET {
+  if (networkId !== NetworkIds.MAINNET) {
+    throw new Error('Only mainnet is supported')
+  }
+}
+
 async function openAave(
   slippage: BigNumber,
   riskRatio: IRiskRatio,
@@ -63,11 +65,14 @@ async function openAave(
     debtToken?: { amountInBaseUnit: BigNumber }
   },
   positionType: 'Multiply' | 'Earn' | 'Borrow',
-  context: Context,
+  networkId: NetworkIds,
   proxyAddress: string,
+  userAddress: string,
   proxyType: ProxyType,
   protocol: AaveLendingProtocol,
 ) {
+  assertNetwork(networkId)
+
   const args: Parameters<typeof strategies.aave.v2.open>[0] &
     Parameters<typeof strategies.aave.v3.open>[0] = {
     slippage,
@@ -80,13 +85,11 @@ async function openAave(
 
   const dependencies: Parameters<typeof strategies.aave.v2.open>[1] &
     Parameters<typeof strategies.aave.v3.open>[1] = {
-    addresses: getTokenAddresses(context),
-    provider: context.rpcProvider,
-    getSwapData: getOneInchCall(
-      getNetworkContracts(NetworkIds.MAINNET, context.chainId).swapAddress,
-    ),
+    addresses: getTokenAddresses(networkId),
+    provider: networksById[networkId].readProvider,
+    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
-    user: proxyAddress !== ethNullAddress ? context.account! : ethNullAddress, // mocking the address before wallet connection
+    user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress, // mocking the address before wallet connection
     isDPMProxy: proxyType === ProxyType.DpmProxy,
   }
 
@@ -101,7 +104,6 @@ async function openAave(
 }
 
 export async function getOpenTransaction({
-  context,
   amount,
   collateralToken,
   debtToken,
@@ -109,9 +111,11 @@ export async function getOpenTransaction({
   riskRatio,
   slippage,
   proxyAddress,
+  userAddress,
   proxyType,
   positionType,
   protocol,
+  networkId,
 }: OpenMultiplyAaveParameters): Promise<IPositionTransition> {
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
@@ -152,24 +156,24 @@ export async function getOpenTransaction({
     _collateralToken,
     depositedByUser,
     positionType,
-    context,
+    networkId,
     proxyAddress,
+    userAddress,
     proxyType,
     protocol,
   )
 }
 
 export async function getOnChainPosition({
-  context,
+  networkId,
   proxyAddress,
   collateralToken,
   debtToken,
   protocol,
 }: GetOnChainPositionParams): Promise<IPosition> {
-  const provider = new providers.JsonRpcProvider(
-    getNetworkRpcEndpoint(NetworkIds.MAINNET, context.chainId),
-    context.chainId,
-  )
+  assertNetwork(networkId)
+
+  const provider = networksById[networkId].readProvider
 
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
@@ -188,7 +192,7 @@ export async function getOnChainPosition({
         collateralToken: _collateralToken,
         debtToken: _debtToken,
       },
-      { addresses: getTokenAddresses(context), provider },
+      { addresses: getTokenAddresses(networkId), provider },
     )
   }
 
@@ -199,7 +203,7 @@ export async function getOnChainPosition({
         collateralToken: _collateralToken,
         debtToken: _debtToken,
       },
-      { addresses: getTokenAddresses(context), provider },
+      { addresses: getTokenAddresses(networkId), provider },
     )
   }
 
@@ -207,7 +211,7 @@ export async function getOnChainPosition({
 }
 
 export async function getAdjustAaveParameters({
-  context,
+  userAddress,
   proxyAddress,
   slippage,
   riskRatio,
@@ -215,11 +219,12 @@ export async function getAdjustAaveParameters({
   proxyType,
   positionType,
   protocol,
+  networkId,
 }: AdjustAaveParameters): Promise<IPositionTransition> {
   try {
-    checkContext(context, 'adjust position')
+    assertNetwork(networkId)
 
-    const provider = context.rpcProvider
+    const provider = networksById[networkId].readProvider
 
     const collateralToken = {
       symbol: currentPosition.collateral.symbol as AAVETokens,
@@ -245,14 +250,12 @@ export async function getAdjustAaveParameters({
     }
 
     const stratDeps: strategyDependencies = {
-      addresses: getTokenAddresses(context),
+      addresses: getTokenAddresses(networkId),
       currentPosition,
       provider: provider,
-      getSwapData: getOneInchCall(
-        getNetworkContracts(NetworkIds.MAINNET, context.chainId).swapAddress,
-      ),
+      getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
       proxy: proxyAddress,
-      user: context.account,
+      user: userAddress,
       isDPMProxy: proxyType === ProxyType.DpmProxy,
     }
 
@@ -298,15 +301,21 @@ export async function getManageAaveParameters(
   parameters: ManageAaveParameters,
 ): Promise<IPositionTransition> {
   try {
-    const { context, proxyAddress, slippage, currentPosition, manageTokenInput, proxyType } =
-      parameters
+    const {
+      proxyAddress,
+      userAddress,
+      networkId,
+      slippage,
+      currentPosition,
+      manageTokenInput,
+      proxyType,
+    } = parameters
 
-    checkContext(context, 'deposit/borrow position')
-    const provider = new providers.JsonRpcProvider(
-      getNetworkRpcEndpoint(NetworkIds.MAINNET, context.chainId),
-      context.chainId,
-    )
-    const addresses = getTokenAddresses(context)
+    assertNetwork(networkId)
+
+    const provider = networksById[networkId].readProvider
+
+    const addresses = getTokenAddresses(networkId)
 
     const [collateral, debt] = getTokensInBaseUnit(parameters)
 
@@ -333,11 +342,9 @@ export async function getManageAaveParameters(
           addresses: addresses as AAVEStrategyAddresses,
           currentPosition,
           provider: provider,
-          getSwapData: getOneInchCall(
-            getNetworkContracts(NetworkIds.MAINNET, context.chainId).swapAddress,
-          ),
+          getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
           proxy: proxyAddress,
-          user: context.account,
+          user: userAddress,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
 
@@ -366,11 +373,9 @@ export async function getManageAaveParameters(
           addresses: addresses as AAVEStrategyAddresses,
           currentPosition,
           provider: provider,
-          getSwapData: getOneInchCall(
-            getNetworkContracts(NetworkIds.MAINNET, context.chainId).swapAddress,
-          ),
+          getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
           proxy: proxyAddress,
-          user: context.account,
+          user: userAddress,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
         return await strategies.aave.v2.depositBorrow(
@@ -387,15 +392,16 @@ export async function getManageAaveParameters(
 }
 
 export async function getCloseAaveParameters({
-  context,
   proxyAddress,
+  userAddress,
   slippage,
   currentPosition,
   proxyType,
   shouldCloseToCollateral,
   protocol,
+  networkId,
 }: CloseAaveParameters): Promise<IPositionTransition> {
-  checkContext(context, 'adjust position')
+  assertNetwork(networkId)
 
   const collateralToken = {
     symbol: currentPosition.collateral.symbol as AAVETokens,
@@ -419,14 +425,12 @@ export async function getCloseAaveParameters({
   }
 
   const stratDeps: closeParameters[1] = {
-    addresses: getTokenAddresses(context) as AAVEStrategyAddresses,
+    addresses: getTokenAddresses(networkId) as AAVEStrategyAddresses,
     currentPosition,
-    provider: context.rpcProvider,
-    getSwapData: getOneInchCall(
-      getNetworkContracts(NetworkIds.MAINNET, context.chainId).swapAddress,
-    ),
+    provider: networksById[networkId].readProvider,
+    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
-    user: context.account,
+    user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
   }
 
@@ -442,16 +446,18 @@ export async function getOpenDepositBorrowParameters(
   args: OpenAaveDepositBorrowParameters,
 ): Promise<ISimplePositionTransition> {
   const {
-    context,
     collateralToken,
     debtToken,
     slippage,
     collateralAmount,
     borrowAmount,
     proxyAddress,
+    userAddress,
     proxyType,
+    networkId,
   } = args
-  checkContext(context, 'getOpenDepositBorrowParameters')
+
+  assertNetwork(networkId)
 
   const libArgs = {
     slippage,
@@ -469,13 +475,11 @@ export async function getOpenDepositBorrowParameters(
   }
 
   const deps = {
-    addresses: getTokenAddresses(context),
-    provider: context.rpcProvider,
-    getSwapData: getOneInchCall(
-      getNetworkContracts(NetworkIds.MAINNET, context.chainId).swapAddress,
-    ),
+    addresses: getTokenAddresses(networkId),
+    provider: networksById[networkId].readProvider,
+    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
-    user: context.account,
+    user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
     proxyAddress,
   }
