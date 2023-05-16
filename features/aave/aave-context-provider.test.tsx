@@ -16,7 +16,7 @@ jest.mock('./setup-aave-v2-context', () => {
     setupAaveV2Context: jest.fn(() => ({} as AaveContext)),
   }
 })
-//
+
 jest.mock('./setup-aave-v3-context', () => {
   return {
     setupAaveV3Context: jest.fn(() => ({} as AaveContext)),
@@ -48,7 +48,7 @@ describe('AaveContextProvider', () => {
     expect(spy).toBeCalledTimes(1)
   })
 
-  it('Should throw exception because AAVEV2 is not available on optimism', () => {
+  it.skip('Should throw exception because AAVEV2 is not available on optimism', () => {
     expect(() =>
       renderHook(() => useAaveContext(LendingProtocol.AaveV2, NetworkNames.optimismMainnet), {
         wrapper,

@@ -105,5 +105,16 @@ export const subgraphMethodsRecord: {
       }
     }
   `,
+  getPositionAuction: gql`
+    query getPositionAuction($dpmProxyAddress: ID!) {
+      auctions(where: { account_: { id: $dpmProxyAddress } }) {
+        inLiquidation
+        alreadyTaken
+        endOfGracePeriod
+        debtToCover
+        collateral
+      }
+    }
+  `,
   tempMethod: '',
 }

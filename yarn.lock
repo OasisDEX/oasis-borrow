@@ -3820,6 +3820,14 @@
   dependencies:
     ethers "^5.6.2"
 
+"@oasisdex/dma-library@0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.4.tgz#0eccccbef3b31b193d4ba51f7b2b4473a1bdde09"
+  integrity sha512-To5joLvHqQ5pUrxsGCq54iVqSM4ayMS9/ZunfOsBZmW3OGjy9nm2zUwBZsxuWjj6CNqiXXyrGCY4Jd/easSpJA==
+  dependencies:
+    bignumber.js "9.0.1"
+    ethers "5.6.2"
+
 "@oasisdex/multiply@^0.2.11":
   version "0.2.11"
   resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.11.tgz#62a3d46e983648f37407f830225c23c3d5876ea1"
@@ -3828,17 +3836,6 @@
     "@types/chai" "^4.2.21"
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
-
-"@oasisdex/oasis-actions-poc@npm:@oasisdex/oasis-actions@0.2.16-ajna-earn-37":
-  version "0.2.16-ajna-earn-37"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.16-ajna-earn-37.tgz#b54c089d6018715ac6e727a5121adb27c17f6fb9"
-  integrity sha512-oRryV6W9manQ5oZBs7DDbaWVy/QF2ft0lPreOjk+uPTj9PtwHs/LKHyXWUfRjH+dVyJYwVmSTwVJ4gw8wk5kFA==
-  dependencies:
-    bignumber.js "^9.0.1"
-    ethers "^5.6.2"
-    lodash "^4.17.21"
-    ramda "^0.28.0"
-    utility-types "^3.10.0"
 
 "@oasisdex/oasis-actions@0.2.16":
   version "0.2.16"

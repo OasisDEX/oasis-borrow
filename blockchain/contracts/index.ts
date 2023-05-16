@@ -22,9 +22,11 @@ export type AllNetworksContractsType = typeof allNetworksContracts
 
 export function getNetworkContracts<NetworkId extends NetworkIds>(
   contractChainId: NetworkId,
-  walletChainId: NetworkIds,
+  walletChainId?: NetworkIds,
 ) {
-  const correctNetworkId = getContractNetworkByWalletNetwork(contractChainId, walletChainId)
+  const correctNetworkId = walletChainId
+    ? getContractNetworkByWalletNetwork(contractChainId, walletChainId)
+    : contractChainId
   if (!allNetworksContracts[correctNetworkId]) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }

@@ -1,4 +1,4 @@
-import { AjnaEarnPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { ValidationMessagesInput } from 'components/ValidationMessages'

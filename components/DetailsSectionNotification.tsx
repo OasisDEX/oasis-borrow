@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
 type DetailsSectionNotificationType = 'error' | 'warning' | 'notice'
@@ -23,7 +23,8 @@ export interface DetailsSectionNotificationItem {
     translationKey: string
   }
   message?: {
-    translationKey: string
+    translationKey?: string
+    component?: ReactNode
     params?: { [key: string]: string }
   }
   title: {
@@ -111,7 +112,8 @@ export function DetailsSectionNotification({
                 </Text>
                 {message && (
                   <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
-                    {t(message.translationKey, message.params || {})}
+                    {message.component}
+                    {message.translationKey && t(message.translationKey, message.params || {})}
                   </Text>
                 )}
               </Box>
@@ -129,7 +131,7 @@ export function DetailsSectionNotification({
                     <>
                       {link.url && (
                         <AppLink href={link.url} sx={{ color: 'neutral10' }}>
-                          {link.translationKey}
+                          {t(link.translationKey)}
                         </AppLink>
                       )}
                       {link.action && (

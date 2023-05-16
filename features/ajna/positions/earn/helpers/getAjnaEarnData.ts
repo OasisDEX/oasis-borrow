@@ -1,8 +1,7 @@
+import { GetEarnData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
-
-import { GetEarnData } from '@oasisdex/oasis-actions-poc/src/views/ajna'
 
 export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
   const { response } = await loadSubgraph('Ajna', 'getEarnData', {

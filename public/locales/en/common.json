@@ -2489,21 +2489,22 @@
         },
         "notifications": {
           "time-to-liquidation": {
-            "title": "{{time}} remaining to save position from liquidation",
+            "title": "Your position will be moved to liquidation {{time}}",
             "message": "Your position is at risk of liquidation, adjust it now to save it"
           },
           "being-liquidated": {
             "title": "This position is currently being liquidated",
-            "message": "You can’t change your position right now, check back on your position later to see the status"
+            "message": "A penalty of 7% has been applied increasing to the total debt. Liquidators can bid on your collateral to payback the debt. You can still adjust your position, by paying back debt or adding more collateral to remove it from the liquidation auction. <0>Read more about Ajna Liquidations →</0>"
           },
           "got-liquidated": {
             "title": "This position got liquidated. You have collateral to withdraw",
-            "message": "You have collateral you can withdraw"
+            "message": "The liquidation process is over you can now reclaim any collateral left. <0>Read more about Ajna Liquidations →</0>"
           },
           "got-partially-liquidated": {
             "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
-            "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation"
-          }
+            "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation. <0>Read more about Ajna Liquidations →</0>"
+          },
+          "read-more": "Read more about Ajna Liquidations"
         }
       },
       "borrow": {
@@ -2589,11 +2590,11 @@
             },
             "lending-price-frozen": {
               "title": "This lending price is currently frozen and borrowers are being liquidated",
-              "message": "This process can take at least 6 hours. Check Position later for updates"
+              "message": "Users who borrowed tokens at this price are being liquidated to recover {{quoteToken}}. This process will take at least 6 hours. Check back on your position later to remove your {{quoteToken}} or see if you have collateral tokens to withdraw. <0>Read more about Ajna Liquidations →</0>"
             },
-            "bucket-liquidated": {
-              "title": "This bucket got liqudited. You have collateral to withdraw",
-              "message": "This process can take at least 6 hours. Check Position later for updates"
+            "collateral-to-withdraw": {
+              "title": "This position has some collateral tokens to withdraw",
+              "message": "This position deposit was traded for collateral tokens due to market changes. You won't be earning any yield for collateral tokens. <0>Read more about Ajna Lending →</0>"
             }
           }
         }

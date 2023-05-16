@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { networksById } from 'blockchain/networksConfig'
 import { Provider as Web3Provider } from 'ethereum-types'
+import { ethers } from 'ethers'
 import { BridgeConnector } from 'features/web3OnBoard'
 import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { isEqual } from 'lodash'
@@ -137,7 +138,7 @@ export function createWeb3Context$(chainIdToRpcUrl: {
         return
       }
 
-      if (connectionKind) {
+      if (connectionKind && connector instanceof BridgeConnector) {
         push({
           status: 'connected',
           connectionKind,
@@ -146,8 +147,11 @@ export function createWeb3Context$(chainIdToRpcUrl: {
           account,
           deactivate,
           magicLinkEmail: undefined,
-          connectionMethod: connector instanceof BridgeConnector ? 'web3-onboard' : 'legacy',
-          walletLabel: connector instanceof BridgeConnector ? connector.wallet.label : undefined,
+          connectionMethod: 'web3-onboard',
+          walletLabel: connector.wallet.label,
+          transactionProvider: new ethers.providers.Web3Provider(
+            connector.basicInfo.provider,
+          ).getSigner(),
         })
       }
     }, [

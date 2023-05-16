@@ -1,10 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
+import { networksByName } from 'blockchain/networksConfig'
+import { ProtocolsServices } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
 import {
@@ -16,12 +20,14 @@ import { useObservable } from 'helpers/observableHook'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { useTheme } from 'theme/useThemeUI'
+import { StateFrom } from 'xstate'
 
 import { VaultNoticesState } from './vaultsNotices'
 
@@ -515,12 +521,26 @@ function AavePositionAboveMaxLtvNotice({
   )
 }
 
+function getProtocolServices(
+  { context: { strategyConfig } }: StateFrom<ManageAaveStateMachine>,
+  protocols: ProtocolsServices,
+) {
+  if (strategyConfig.protocol === LendingProtocol.AaveV2) {
+    return protocols[strategyConfig.protocol]
+  }
+  const networkId = networksByName[strategyConfig.network].id
+  ensureIsSupportedAaveV3NetworkId(networkId)
+  return protocols[strategyConfig.protocol][networkId]
+}
+
 export function AavePositionNoticesView() {
   const { protocols } = useAppContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const { aaveLiquidations$ } = protocols[state.context.strategyConfig.protocol]
-  const preparedAaveLiquidations$ = aaveLiquidations$(state.context.proxyAddress || '')
+  const { aaveLiquidations$ } = getProtocolServices(state, protocols)
+  const preparedAaveLiquidations$ = aaveLiquidations$({
+    proxyAddress: state.context.proxyAddress || '',
+  })
   const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
 
   if (!state.context.protocolData || !state.context.proxyAddress || !state.context.ownerAddress) {

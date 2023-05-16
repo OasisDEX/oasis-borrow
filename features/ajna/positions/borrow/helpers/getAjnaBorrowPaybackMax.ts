@@ -1,4 +1,4 @@
-import { AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 
 interface AjnaBorrowPaybackMaxParams {

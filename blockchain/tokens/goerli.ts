@@ -4,7 +4,6 @@ import * as guniToken from 'blockchain/abi/guni-token.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import { contractDesc } from 'blockchain/networksConfig'
 import { ContractDesc } from 'features/web3Context'
-import { Dictionary } from 'ts-essentials'
 
 import { supportedIlks } from './mainnet'
 
@@ -29,4 +28,4 @@ export const tokensGoerli = {
   USDC: contractDesc(erc20, goerli.common.USDC),
   WBTC: contractDesc(erc20, goerli.common.WBTC),
   RENBTC: contractDesc(erc20, goerli.common.RENBTC),
-} as Dictionary<ContractDesc>
+} as Record<string, ContractDesc>
