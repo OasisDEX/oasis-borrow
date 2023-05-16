@@ -89,3 +89,7 @@ export type AjnaProductCardsData = {
   earnCards: AjnaProductCardsEarn[]
   multiplyCards: unknown[]
 }
+
+export type AjnaValidationItems = {
+  message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
+}[]

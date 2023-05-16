@@ -3,8 +3,7 @@ import { AjnaSimulationData } from 'actions/ajna'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
-import { ValidationMessagesInput } from 'components/ValidationMessages'
-import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import { AjnaGenericPosition, AjnaProduct, AjnaValidationItems } from 'features/ajna/common/types'
 import {
   AjnaBorrowFormState,
   useAjnaBorrowFormReducto,
@@ -83,10 +82,10 @@ interface AjnaProductContext<P, F, A> {
   form: F
   position: AjnaProductContextPosition<P, A>
   validation: {
-    errors: ValidationMessagesInput
+    errors: AjnaValidationItems
     hasErrors: boolean
     isFormValid: boolean
-    warnings: ValidationMessagesInput
+    warnings: AjnaValidationItems
   }
   notifications: DetailsSectionNotificationItem[]
 }
@@ -191,6 +190,7 @@ export function AjnaProductContextProvider({
         simulationWarnings: simulation?.warnings,
         state,
         position,
+        positionAuction,
         txError: txDetails?.txError,
       }),
     [

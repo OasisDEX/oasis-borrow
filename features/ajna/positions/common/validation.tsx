@@ -1,20 +1,28 @@
 import { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
-import { ValidationMessagesInput } from 'components/ValidationMessages'
+import { AppLink } from 'components/Links'
 import {
   AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
   AjnaSidebarStep,
+  AjnaValidationItems,
 } from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import {
+  AjnaBorrowishPositionAuction,
+  AjnaPositionAuction,
+} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { Trans } from 'next-i18next'
+import React from 'react'
 
 interface GetAjnaBorrowValidationsParams {
   collateralBalance: BigNumber
@@ -30,41 +38,12 @@ interface GetAjnaBorrowValidationsParams {
   simulationWarnings?: AjnaValidationItem[]
   state: AjnaFormState
   position: AjnaGenericPosition
+  positionAuction: AjnaPositionAuction
   txError?: TxError
 }
 
-export const defaultErrors: ValidationMessagesInput = {
-  messages: [],
-  type: 'error',
-  additionalData: {},
-}
-
-export const defaultWarnings: ValidationMessagesInput = {
-  messages: [],
-  type: 'warning',
-  additionalData: {},
-}
-
-function mapLocalValidation(item: { [key: string]: boolean }): AjnaValidationItem[] {
-  return Object.entries(item)
-    .filter(([_, value]) => value)
-    .map(([key]) => ({ name: key }))
-}
-
-function reduceValidations(
-  acc: ValidationMessagesInput,
-  curr: AjnaValidationItem,
-  type: 'error' | 'warning',
-) {
-  return {
-    messages: [...acc.messages, curr.name],
-    type,
-    additionalData: {
-      ...acc.additionalData,
-      ...curr.data,
-    },
-  }
-}
+const mapSimulationValidation = (items: AjnaValidationItem[]): AjnaValidationItems =>
+  items.map((item) => ({ message: { translationKey: item.name, params: item.data } }))
 
 function isFormValid({
   currentStep,
@@ -177,48 +156,104 @@ export function getAjnaValidation({
   state,
   txError,
   position,
+  positionAuction,
 }: GetAjnaBorrowValidationsParams): {
   isFormValid: boolean
   hasErrors: boolean
-  errors: ValidationMessagesInput
-  warnings: ValidationMessagesInput
+  errors: AjnaValidationItems
+  warnings: AjnaValidationItems
 } {
-  const localErrors: { [key: string]: boolean } = {
-    hasInsufficientEthFundsForTx: ethFundsForTxValidator({ txError }),
-  }
+  const localErrors: AjnaValidationItems = []
+  const localWarnings: AjnaValidationItems = []
   const isEarnProduct = product === 'earn'
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
 
-  if ('depositAmount' in state)
-    localErrors.depositAmountExceedsCollateralBalance = !!state.depositAmount?.gt(depositBalance)
-  if ('paybackAmount' in state)
-    localErrors.paybackAmountExceedsDebtTokenBalance = !!state.paybackAmount?.gt(quoteBalance)
-
-  const localWarnings = {
-    hasPotentialInsufficientEthFundsForTx: notEnoughETHtoPayForTx({
-      token: isEarnProduct ? quoteToken : collateralToken,
-      ethBalance,
-      ethPrice,
-      depositAmount:
-        'paybackAmount' in state && state.paybackAmount?.gt(zero) && quoteToken === 'ETH'
-          ? state.paybackAmount
-          : state.depositAmount,
-      gasEstimationUsd,
-    }),
+  if (ethFundsForTxValidator({ txError })) {
+    localErrors.push({
+      message: {
+        translationKey: 'has-insufficient-eth-funds-for-tx',
+      },
+    })
   }
 
-  const errors = [...mapLocalValidation(localErrors), ...simulationErrors].reduce(
-    (acc, curr) => reduceValidations(acc, curr, 'error'),
-    defaultErrors,
-  )
-  const warnings = [...mapLocalValidation(localWarnings), ...simulationWarnings].reduce(
-    (acc, curr) => reduceValidations(acc, curr, 'warning'),
-    defaultWarnings,
-  )
+  if ('depositAmount' in state && state.depositAmount?.gt(depositBalance)) {
+    localErrors.push({ message: { translationKey: 'deposit-amount-exceeds-collateral-balance' } })
+  }
+  if ('paybackAmount' in state && state.paybackAmount?.gt(quoteBalance)) {
+    localErrors.push({ message: { translationKey: 'payback-amount-exceeds-debt-token-balance' } })
+  }
+
+  const hasPotentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token: isEarnProduct ? quoteToken : collateralToken,
+    ethBalance,
+    ethPrice,
+    depositAmount:
+      'paybackAmount' in state && state.paybackAmount?.gt(zero) && quoteToken === 'ETH'
+        ? state.paybackAmount
+        : state.depositAmount,
+    gasEstimationUsd,
+  })
+
+  if (hasPotentialInsufficientEthFundsForTx) {
+    localWarnings.push({
+      message: { translationKey: 'has-potential-insufficient-eth-funds-for-tx' },
+    })
+  }
+
+  if (['borrow', 'multiply'].includes(product)) {
+    const borrowishAuction = positionAuction as AjnaBorrowishPositionAuction
+
+    if (borrowishAuction.isDuringGraceTime) {
+      localWarnings.push({
+        message: {
+          component: (
+            <Trans
+              i18nKey="ajna.validations.is-during-grace-time"
+              components={{
+                1: <strong />,
+                2: (
+                  <AppLink
+                    sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
+                    // TODO update link to ajna liquidations once available
+                    href={EXTERNAL_LINKS.KB.HELP}
+                  />
+                ),
+              }}
+            />
+          ),
+        },
+      })
+    }
+
+    if (borrowishAuction.isBeingLiquidated) {
+      localWarnings.push({
+        message: {
+          component: (
+            <Trans
+              i18nKey="ajna.validations.is-being-liquidated"
+              components={{
+                1: <strong />,
+                2: (
+                  <AppLink
+                    sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
+                    // TODO update link to ajna liquidations once available
+                    href={EXTERNAL_LINKS.KB.HELP}
+                  />
+                ),
+              }}
+            />
+          ),
+        },
+      })
+    }
+  }
+
+  const errors = [...localErrors, ...mapSimulationValidation(simulationErrors)]
+  const warnings = [...localWarnings, ...mapSimulationValidation(simulationWarnings)]
 
   return {
     isFormValid: isFormValid({ currentStep, product, state, position }),
-    hasErrors: errors.messages.length > 0,
+    hasErrors: errors.length > 0,
     errors,
     warnings,
   }

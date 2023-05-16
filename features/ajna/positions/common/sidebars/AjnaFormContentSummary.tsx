@@ -16,8 +16,8 @@ export function AjnaFormContentSummary({ children }: PropsWithChildren<{}>) {
   return (
     <>
       <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-      <AjnaValidationMessages {...errors} />
-      <AjnaValidationMessages {...warnings} />
+      <AjnaValidationMessages validations={errors} type="error" />
+      <AjnaValidationMessages validations={warnings} type="warning" />
       {children}
     </>
   )
