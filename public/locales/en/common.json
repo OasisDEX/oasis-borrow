@@ -1692,7 +1692,19 @@
         "title": "AAVE ETH",
         "description": "A position to borrow against your ETH in AAVE"
       },
-      "tokens-for-borrowing": "Tokens for Borrowing"
+      "tokens-for-borrowing": "Tokens for Borrowing",
+      "optimism-ethusdc": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC. Now on Optimism."
+      },
+      "optimism-wstethusdc": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards. Now on Optimism."
+      },
+      "optimism-wbtcusdc": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC. Now on Optimism."
+      }
     },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",

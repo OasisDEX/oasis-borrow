@@ -4,6 +4,7 @@ import { MainnetContracts, mainnetContracts } from 'blockchain/contracts/mainnet
 import { NetworkIds } from 'blockchain/networkIds'
 import { amountFromWei } from 'blockchain/utils'
 import { getRpcProvider } from 'helpers/get-rpc-provider'
+import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { ChainlinkPriceOracle__factory } from 'types/ethers-contracts'
 
 const USD_CHAINLINK_PRECISION = 8
@@ -21,6 +22,7 @@ export function getChainlinkOraclePrice(
   }
 
   const address = getNetworkContracts(networkId).chainlinkPriceOracle[contractName].address
+  warnIfAddressIsZero(address, networkId, 'chainlinkPriceOracle', contractName)
   const contract = factory.connect(address, getRpcProvider(networkId))
 
   return contract.latestAnswer().then((result) => {

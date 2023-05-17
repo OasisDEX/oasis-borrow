@@ -58,6 +58,11 @@ const networkMappings = {
     NetworkIds.MAINNET,
     'aaveV3PoolDataProvider',
   ),
+  [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.OPTIMISMMAINNET,
+    'aaveV3PoolDataProvider',
+  ),
 }
 
 export function getAaveV3UserReserveData({

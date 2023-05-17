@@ -14,7 +14,6 @@ import {
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
 } from 'helpers/productCards'
-import { LendingProtocol } from 'lendingProtocols'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
@@ -136,11 +135,10 @@ export function ProductCardsFilter({
             {([_productCardsData]) => (
               <ProductCardsWrapper>
                 {aaveStrategyConfigPlusTokenMeta
-                  .filter(({ protocol, name }) => {
+                  .filter(({ name }) => {
                     return (
-                      protocol === LendingProtocol.AaveV2 &&
-                      (name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()) ||
-                        currentFilter.toLocaleUpperCase() === 'FEATURED')
+                      name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()) ||
+                      currentFilter.toLocaleUpperCase() === 'FEATURED'
                     )
                   })
                   .map((cardData) => {
