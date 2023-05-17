@@ -30,6 +30,7 @@ export type Feature =
   | 'FollowAAVEVaults'
   | 'Sillyness'
   | 'UseNetworkSwitcher'
+  | 'UseTenderly'
   | 'UseNetworkRowProductCard'
   | 'OptimismAaveV3'
   | 'OasisCreate'

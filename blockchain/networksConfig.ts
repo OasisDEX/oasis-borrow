@@ -3,6 +3,7 @@ import {
   arbitrumMainnetRpc,
   goerliRpc,
   mainnetRpc,
+  mainnetTenderlyRpc,
   optimismGoerliRpc,
   optimismMainnetRpc,
   polygonMainnetRpc,
@@ -23,6 +24,7 @@ import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_m
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
 import { NetworkIds } from './networkIds'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export type NetworkConfigHexId = `0x${number | string}`
 
@@ -51,6 +53,23 @@ export function contractDesc(
   genesisBlock = 0,
 ): ContractDesc & { genesisBlock: number } {
   return { abi, address, genesisBlock }
+}
+
+const tenderlyConfig: NetworkConfig = {
+  id: NetworkIds.MAINNET,
+  hexId: '0x1',
+  testnetHexId: '0x5',
+  testnetId: NetworkIds.GOERLI,
+  token: 'ETH',
+  name: NetworkNames.ethereumTenderly,
+  label: 'Ethereum',
+  color: '#728aee',
+  icon: ethereumMainnetIcon as string,
+  badge: ethereumMainnetBadge as string,
+  testnet: false,
+  enabled: true,
+  rpcUrl: mainnetTenderlyRpc,
+  readProvider: new ethers.providers.StaticJsonRpcProvider(mainnetTenderlyRpc),
 }
 
 const mainnetConfig: NetworkConfig = {
@@ -205,7 +224,9 @@ export const emptyNetworkConfig: NetworkConfig = {
   readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
 }
 
-export const mainnetNetworks = [mainnetConfig, goerliConfig]
+const useTenderly = useFeatureToggle('UseTenderly')
+
+export const mainnetNetworks = [ useTenderly? tenderlyConfig : mainnetConfig, goerliConfig]
 
 export const L2Networks = [
   arbitrumMainnetConfig,

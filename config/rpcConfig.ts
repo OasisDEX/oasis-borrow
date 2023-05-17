@@ -3,7 +3,10 @@ import { NetworkNames } from 'helpers/networkNames'
 
 import { infuraProjectId } from './runtimeConfig'
 
-function getRpc(network: NetworkNames): string {
+function getRpc(network: NetworkNames, isTesting : boolean = false): string {
+  if(isTesting && network === NetworkNames.ethereumMainnet) {
+    network = NetworkNames.ethereumTenderly;
+  }
   if (process.env.APP_FULL_DOMAIN) {
     return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}&clientId=${clientId}`
   }
@@ -15,6 +18,7 @@ function getRpc(network: NetworkNames): string {
 }
 
 export const mainnetRpc = getRpc(NetworkNames.ethereumMainnet)
+export const mainnetTenderlyRpc = getRpc(NetworkNames.ethereumTenderly)
 export const goerliRpc = getRpc(NetworkNames.ethereumGoerli)
 export const arbitrumMainnetRpc = getRpc(NetworkNames.arbitrumMainnet)
 export const arbitrumGoerliRpc = getRpc(NetworkNames.arbitrumGoerli)
