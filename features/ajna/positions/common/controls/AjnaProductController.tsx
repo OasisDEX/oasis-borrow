@@ -18,6 +18,7 @@ import {
 } from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
+import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyPositionController'
@@ -33,7 +34,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -227,13 +227,9 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                              uiDropdown: (
-                                ajnaPosition as AjnaEarnPosition
-                              ).collateralTokenAmount.gt(zero)
-                                ? 'claim-collateral'
-                                : (ajnaPosition as AjnaEarnPosition).quoteTokenAmount.isZero()
-                                ? 'liquidity'
-                                : 'adjust',
+                              uiDropdown: getAjnaEarnDefaultUiDropdown(
+                                ajnaPosition as AjnaEarnPosition,
+                              ),
                               price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
                             }}
                             formReducto={useAjnaEarnFormReducto}
