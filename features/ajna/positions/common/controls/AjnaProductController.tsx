@@ -33,6 +33,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -228,7 +229,9 @@ export function AjnaProductController({
                               action: flow === 'open' ? 'open-earn' : 'deposit-earn',
                               uiDropdown: (
                                 ajnaPosition as AjnaEarnPosition
-                              ).quoteTokenAmount.isZero()
+                              ).collateralTokenAmount.gt(zero)
+                                ? 'claim-collateral'
+                                : (ajnaPosition as AjnaEarnPosition).quoteTokenAmount.isZero()
                                 ? 'liquidity'
                                 : 'adjust',
                               price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),

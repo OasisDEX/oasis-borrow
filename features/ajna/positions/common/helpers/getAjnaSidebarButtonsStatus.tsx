@@ -4,6 +4,7 @@ export function getAjnaSidebarButtonsStatus({
   currentStep,
   editingStep,
   hasErrors,
+  isFormDisabled,
   isAllowanceLoading,
   isFormValid,
   isOwner,
@@ -19,6 +20,7 @@ export function getAjnaSidebarButtonsStatus({
   currentStep: AjnaSidebarStep
   editingStep: AjnaSidebarEditingStep
   hasErrors: boolean
+  isFormDisabled: boolean
   isAllowanceLoading: boolean
   isFormValid: boolean
   isOwner: boolean
@@ -35,6 +37,7 @@ export function getAjnaSidebarButtonsStatus({
     !!walletAddress &&
     (!isFormValid ||
       hasErrors ||
+      isFormDisabled ||
       isAllowanceLoading ||
       isSimulationLoading ||
       isTxInProgress ||

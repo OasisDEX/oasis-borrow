@@ -10,9 +10,78 @@ import {
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { FC } from 'react'
 
-export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
+export interface AjnaEarnFormOrderProps {
+  cached?: boolean
+}
+
+const AjnaClaimCollateralFormOrderInformation: FC<AjnaEarnFormOrderProps> = ({
+  cached = false,
+}) => {
+  const { t } = useTranslation()
+  const {
+    environment: { quoteToken, collateralToken, collateralPrice, quotePrice },
+    tx: { txDetails, isTxSuccess },
+  } = useAjnaGeneralContext()
+  const {
+    position: { currentPosition, cachedPosition, isSimulationLoading },
+  } = useAjnaProductContext('earn')
+
+  const marketPrice = collateralPrice.div(quotePrice)
+  const { positionData, simulationData } = resolveIfCachedPosition({
+    cached,
+    cachedPosition,
+    currentPosition,
+  })
+
+  const isLoading = !cached && isSimulationLoading
+  const formatted = {
+    totalDeposited: `${formatCryptoBalance(
+      positionData.collateralTokenAmount.times(marketPrice),
+    )} ${quoteToken}`,
+    availableToWithdraw: `${formatCryptoBalance(
+      positionData.collateralTokenAmount,
+    )} ${collateralToken}`,
+    afterAvailableToWithdraw:
+      simulationData &&
+      `${formatCryptoBalance(simulationData.collateralTokenAmount)} ${collateralToken}`,
+    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
+  }
+
+  return (
+    <InfoSection
+      title={t('vault-changes.order-information')}
+      items={[
+        {
+          label: t('ajna.position-page.earn.common.form.total-deposited-into-position'),
+          value: formatted.totalDeposited,
+        },
+        {
+          label: t('ajna.position-page.earn.common.form.collateral-available-to-withdraw'),
+          value: formatted.availableToWithdraw,
+        },
+        ...(isTxSuccess && cached
+          ? [
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]
+          : [
+              {
+                label: t('system.max-transaction-cost'),
+                value: <GasEstimation />,
+                isLoading,
+              },
+            ]),
+      ]}
+    />
+  )
+}
+
+const AjnaEarnFormOrderInformation: FC<AjnaEarnFormOrderProps> = ({ cached = false }) => {
   const { t } = useTranslation()
 
   const {
@@ -118,5 +187,21 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
           : []),
       ]}
     />
+  )
+}
+
+export const AjnaEarnFormOrder: FC<AjnaEarnFormOrderProps> = ({ cached = false }) => {
+  const {
+    position: {
+      currentPosition: {
+        position: { collateralTokenAmount },
+      },
+    },
+  } = useAjnaProductContext('earn')
+
+  return collateralTokenAmount.isZero() ? (
+    <AjnaEarnFormOrderInformation cached={cached} />
+  ) : (
+    <AjnaClaimCollateralFormOrderInformation cached={cached} />
   )
 }

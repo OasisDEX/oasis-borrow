@@ -7,6 +7,7 @@ import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionH
 import { ethers } from 'ethers'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
 import { getAjnaSidebarButtonsStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarButtonsStatus'
 import { getAjnaSidebarPrimaryButtonActions } from 'features/ajna/positions/common/helpers/getAjnaSidebarPrimaryButtonActions'
 import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
@@ -19,7 +20,6 @@ import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
-import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren, useEffect } from 'react'
 import { Grid } from 'theme-ui'
@@ -62,8 +62,12 @@ export function AjnaFormView({
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
-    position: { isSimulationLoading, resolvedId },
-    validation: { isFormValid, hasErrors },
+    position: {
+      isSimulationLoading,
+      resolvedId,
+      currentPosition: { position },
+    },
+    validation: { isFormValid, hasErrors, isFormDisabled },
   } = useAjnaProductContext(product)
   const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
 
@@ -97,6 +101,7 @@ export function AjnaFormView({
     currentStep,
     editingStep,
     hasErrors,
+    isFormDisabled,
     isAllowanceLoading: flowState.isLoading,
     isFormValid,
     isOwner,
@@ -161,10 +166,10 @@ export function AjnaFormView({
     txDetails,
   })
 
+  const title = getAjnaSidebarTitle({ currentStep, isFormDisabled, product, position })
+
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(`ajna.position-page.common.form.title.${currentStep}`, {
-      product: upperFirst(product),
-    }),
+    title,
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {

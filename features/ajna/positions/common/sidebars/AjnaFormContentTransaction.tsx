@@ -1,13 +1,14 @@
 import { MessageCard } from 'components/MessageCard'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { AjnaEarnFormOrderProps } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormOrder'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { ReactElement } from 'react'
+import React, { FC } from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
 interface AjnaFormContentTransactionProps {
-  orderInformation: ({ cached }: { cached?: boolean }) => ReactElement
+  orderInformation: FC<AjnaEarnFormOrderProps>
 }
 
 export function AjnaFormContentTransaction({
