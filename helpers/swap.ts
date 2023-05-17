@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networkIds'
 import { defaultExchangeProtocols } from 'features/exchange/exchange'
 
 import { one } from './zero'
@@ -9,6 +10,7 @@ async function swapOneInchTokens(
   amount: string,
   recipient: string,
   slippage: string,
+  chainId: number,
   protocols: string[] = [],
 ): Promise<any> {
   const url = formatOneInchSwapUrl(
@@ -17,6 +19,7 @@ async function swapOneInchTokens(
     amount,
     slippage,
     recipient,
+    chainId,
     protocols,
   )
 
@@ -29,10 +32,11 @@ function formatOneInchSwapUrl(
   amount: string,
   slippage: string,
   recepient: string,
+  chainId: number,
   protocols: string[] = [],
 ) {
   const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
-  return `https://oasis.api.enterprise.1inch.exchange/v4.0/1/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
+  return `https://oasis.api.enterprise.1inch.exchange/v4.0/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
 }
 
 async function exchangeTokens(url: string): Promise<any> {
@@ -66,7 +70,11 @@ export async function oneInchCallMock(
 }
 
 // TODO: export from oasis-earn-sc into @oasisdex/oasis-actions lib and import from there
-export function getOneInchCall(swapAddress: string, debug?: true) {
+export function getOneInchCall(
+  swapAddress: string,
+  networkId: NetworkIds = NetworkIds.MAINNET,
+  debug?: true,
+) {
   return async (
     from: string,
     to: string,
@@ -80,6 +88,7 @@ export function getOneInchCall(swapAddress: string, debug?: true) {
       amount.toString(),
       swapAddress,
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
+      networkId,
       protocols,
     )
 

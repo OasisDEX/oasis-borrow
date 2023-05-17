@@ -44,6 +44,11 @@ export interface GetAaveV3PositionLiquidationParameters extends BaseParameters {
 
 const networkMappings = {
   [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET, 'aaveV3Pool'),
+  [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
+    AaveV3Pool__factory,
+    NetworkIds.OPTIMISMMAINNET,
+    'aaveV3Pool',
+  ),
 }
 
 export async function getAaveV3PositionLiquidation({

@@ -8,8 +8,10 @@ import {
   polygonMainnetRpc,
   polygonMumbaiRpc,
 } from 'config/rpcConfig'
+import { mainnetCacheUrl } from 'config/runtimeConfig'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
+import { GraphQLClient } from 'graphql-request'
 import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
@@ -43,6 +45,7 @@ export type NetworkConfig = {
   token: string
   rpcUrl: string
   readProvider: ethers.providers.Provider
+  cacheApi?: GraphQLClient
 }
 
 export function contractDesc(
@@ -67,7 +70,11 @@ const mainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   rpcUrl: mainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(mainnetRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(mainnetRpc, {
+    chainId: NetworkIds.MAINNET,
+    name: NetworkNames.ethereumMainnet,
+  }),
+  cacheApi: new GraphQLClient(mainnetCacheUrl),
 }
 
 const goerliConfig: NetworkConfig = {
@@ -84,7 +91,11 @@ const goerliConfig: NetworkConfig = {
   testnet: true,
   enabled: true,
   rpcUrl: goerliRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(goerliRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(goerliRpc, {
+    chainId: NetworkIds.GOERLI,
+    name: NetworkNames.ethereumGoerli,
+  }),
+  cacheApi: new GraphQLClient('https://oazo-bcache-goerli-staging.new.oasis.app/api/v1'),
 }
 
 const arbitrumMainnetConfig: NetworkConfig = {
@@ -101,7 +112,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumMainnetRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
 }
 
 const arbitrumGoerliConfig: NetworkConfig = {
@@ -118,7 +129,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumGoerliRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
 }
 
 const polygonMainnetConfig: NetworkConfig = {
@@ -135,7 +146,7 @@ const polygonMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMainnetRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
 }
 
 const polygonMumbaiConfig: NetworkConfig = {
@@ -152,7 +163,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMumbaiRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
 }
 
 const optimismMainnetConfig: NetworkConfig = {
@@ -169,7 +180,10 @@ const optimismMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(optimismMainnetRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(optimismMainnetRpc, {
+    chainId: NetworkIds.OPTIMISMMAINNET,
+    name: NetworkNames.optimismMainnet,
+  }),
 }
 
 const optimismGoerliConfig: NetworkConfig = {
@@ -186,7 +200,7 @@ const optimismGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(optimismGoerliRpc),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -231,7 +245,7 @@ export const defaultHardhatConfig: NetworkConfig = {
   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
 }
 
-export const networks = [...mainnetNetworks, ...L2Networks]
+export const networks = [...mainnetNetworks, optimismMainnetConfig]
 
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')

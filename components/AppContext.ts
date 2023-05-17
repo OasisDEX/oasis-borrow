@@ -1391,6 +1391,10 @@ export function setupAppContext() {
     [LendingProtocol.AaveV2]: aaveV2,
     [LendingProtocol.AaveV3]: {
       [NetworkIds.MAINNET]: aaveV3,
+      [NetworkIds.OPTIMISMMAINNET]: getAaveV3Services({
+        refresh$: onEveryBlock$,
+        networkId: NetworkIds.OPTIMISMMAINNET,
+      }),
     },
   }
 
@@ -1544,6 +1548,7 @@ export type ProtocolsServices = {
   [LendingProtocol.AaveV2]: AaveServices
   [LendingProtocol.AaveV3]: {
     [NetworkIds.MAINNET]: AaveServices
+    [NetworkIds.OPTIMISMMAINNET]: AaveServices
   }
 }
 

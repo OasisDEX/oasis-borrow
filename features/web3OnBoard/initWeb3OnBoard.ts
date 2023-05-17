@@ -30,7 +30,6 @@ const trezor = trezorModule(trezorOptions)
 const mapNetwork = (network: NetworkConfig) => ({
   id: network.hexId,
   label: network.label,
-  rpcUrl: network.rpcUrl,
   token: network.token,
   color: network.color,
 })

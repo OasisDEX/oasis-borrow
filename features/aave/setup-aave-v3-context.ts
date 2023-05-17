@@ -92,7 +92,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
       balance$,
       aaveOracleAssetPriceData$,
       of(one), // aave v3 base is already in USD
-      getSupportedTokens(LendingProtocol.AaveV3, NetworkNames.ethereumMainnet),
+      getSupportedTokens(LendingProtocol.AaveV3, network),
     ),
   )
 

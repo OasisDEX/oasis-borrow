@@ -100,6 +100,9 @@ function getMulticall(network: NetworkNames) {
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case NetworkNames.ethereumGoerli:
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
+    case NetworkNames.optimismMainnet:
+    case NetworkNames.optimismGoerli:
+      return '0xcA11bde05977b3631167028862bE2a173976CA11' //https://github.com/mds1/multicall
     default:
       throw new Error('unsupported network')
   }

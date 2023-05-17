@@ -47,9 +47,9 @@ export function AaveContextProvider({ children }: WithChildren) {
           [LendingProtocol.AaveV2]: setupAaveV2Context(appContext),
           [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.ethereumMainnet),
         },
-        // [NetworkNames.optimismMainnet]: {
-        //   [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.optimismMainnet),
-        // },
+        [NetworkNames.optimismMainnet]: {
+          [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.optimismMainnet),
+        },
       })
     }
   }, [appContext])

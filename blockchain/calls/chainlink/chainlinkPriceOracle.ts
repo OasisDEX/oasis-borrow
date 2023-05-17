@@ -8,7 +8,7 @@ import { ChainlinkPriceOracle__factory } from 'types/ethers-contracts'
 
 const USD_CHAINLINK_PRECISION = 8
 
-export type ChainlinkSupportedNetworks = NetworkIds.MAINNET | NetworkIds.HARDHAT
+export type ChainlinkSupportedNetworks = NetworkIds.MAINNET | NetworkIds.OPTIMISMMAINNET
 
 const factory = ChainlinkPriceOracle__factory
 

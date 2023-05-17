@@ -3,19 +3,32 @@ import { getContractNetworkByWalletNetwork } from 'helpers/networkHelpers'
 
 import { goerliContracts } from './goerli'
 import { mainnetContracts } from './mainnet'
+import { optimismContracts } from './optimism'
 
 export const allNetworksContracts = {
   [NetworkIds.MAINNET]: mainnetContracts,
   [NetworkIds.HARDHAT]: mainnetContracts,
   [NetworkIds.GOERLI]: goerliContracts,
   // empty contracts config - to be filled
-  [NetworkIds.ARBITRUMMAINNET]: {},
-  [NetworkIds.ARBITRUMGOERLI]: {},
-  [NetworkIds.POLYGONMAINNET]: {},
-  [NetworkIds.POLYGONMUMBAI]: {},
-  [NetworkIds.OPTIMISMMAINNET]: {},
-  [NetworkIds.OPTIMISMGOERLI]: {},
-  [NetworkIds.EMPTYNET]: {},
+  [NetworkIds.ARBITRUMMAINNET]: {
+    cacheApi: '',
+  },
+  [NetworkIds.ARBITRUMGOERLI]: {
+    cacheApi: '',
+  },
+  [NetworkIds.POLYGONMAINNET]: {
+    cacheApi: '',
+  },
+  [NetworkIds.POLYGONMUMBAI]: {
+    cacheApi: '',
+  },
+  [NetworkIds.OPTIMISMMAINNET]: optimismContracts,
+  [NetworkIds.OPTIMISMGOERLI]: {
+    cacheApi: '',
+  },
+  [NetworkIds.EMPTYNET]: {
+    cacheApi: '',
+  },
 }
 
 export type AllNetworksContractsType = typeof allNetworksContracts
