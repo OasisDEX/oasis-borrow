@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
+import { networksById } from 'blockchain/networksConfig'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
@@ -49,7 +50,7 @@ export function getAjnaPosition$(
       const commonDependency = {
         poolInfoAddress: ajnaPoolInfo.address,
         rewardsManagerAddress: ajnaRewardsManager.address,
-        provider: context.rpcProvider,
+        provider: networksById[context.chainId].readProvider,
         getPoolData: getAjnaPoolData,
       }
 
