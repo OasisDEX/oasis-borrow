@@ -30,7 +30,7 @@ export type Feature =
   | 'FollowAAVEVaults'
   | 'Sillyness'
   | 'UseNetworkSwitcher'
-  | 'UseTenderly'
+  | 'UseTenderlyRPC'
   | 'UseNetworkRowProductCard'
   | 'OptimismAaveV3'
   | 'OasisCreate'
@@ -68,7 +68,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   OptimismAaveV3: false,
   OasisCreate: false,
   SwapWidget: false,
-  UseTenderly: false,
+  UseTenderlyRPC: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
 }
 

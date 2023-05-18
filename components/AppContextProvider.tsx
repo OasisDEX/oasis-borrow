@@ -27,7 +27,7 @@ export function useAppContext(): AppContext {
 
 export function AppContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
-  const isTenderly = useFeatureToggle('UseTenderly');
+  const isTenderly = useFeatureToggle('UseTenderlyRPC');
 
   useEffect(() => {
     setContext(setupAppContext(isTenderly))

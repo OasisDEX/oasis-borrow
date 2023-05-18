@@ -8,10 +8,10 @@ function getRpc(network: NetworkNames, isTesting : boolean = false): string {
     network = NetworkNames.ethereumTenderly;
   }
   if (process.env.APP_FULL_DOMAIN) {
-    return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}&clientId=${clientId}`
+    return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}&clientId=${clientId}&isTesting=${isTesting}`
   }
   try {
-    return `${window?.location.origin}/api/rpc?network=${network}&clientId=${clientId}`
+    return `${window?.location.origin}/api/rpc?network=${network}&clientId=${clientId}&isTesting=${isTesting}`
   } catch {
     return `https://${network}.infura.io/v3/${infuraProjectId}`
   }

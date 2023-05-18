@@ -61,7 +61,11 @@ const blockRecheckDelay = 3000
 
 const cache: { [key: string]: Cache } = {}
 
-function getRpcNode(network: NetworkNames) {
+function getRpcNode(network: NetworkNames, isTesting : boolean) {
+  //TODO: take Fork_ID from database and refresh it every 5 minutes
+  if(isTesting) {
+    return `https://rpc.tenderly.co/fork/${process.env.TENDERLY_FORK_ID}`;
+  }
   switch (network) {
     // case 'hardhat': // hardhat does not request this one
     case NetworkNames.ethereumMainnet:
@@ -156,7 +160,7 @@ const abi = [
   },
 ]
 
-async function makeCall(network: NetworkNames, calls: any[]) {
+async function makeCall(network: NetworkNames, calls: any[], isTesting: boolean = false) {
   const callsLength = JSON.stringify(calls).length
   let config = {
     headers: {
@@ -177,7 +181,7 @@ async function makeCall(network: NetworkNames, calls: any[]) {
         'Content-Length': JSON.stringify(calls[0]).length.toString(),
       },
     }
-    const response = await axios.post(getRpcNode(network), JSON.stringify(calls[0]), config)
+    const response = await axios.post(getRpcNode(network, isTesting), JSON.stringify(calls[0]), config)
     return [response.data]
   } else {
     config = {
@@ -186,7 +190,7 @@ async function makeCall(network: NetworkNames, calls: any[]) {
         'Content-Length': callsLength.toString(),
       },
     }
-    const response = await axios.post(getRpcNode(network), calls, config)
+    const response = await axios.post(getRpcNode(network, isTesting), calls, config)
     return response.data
   }
 }
@@ -210,6 +214,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const networkQuery = req.query.network!
   const clientIdQuery = req.query.clientId!
+  const isTesting = (req.query.isTesting! === 'true')
   const network = networkQuery.toString() as NetworkNames
   const clientId = clientIdQuery.toString()
   //withCache = req.query.withCache.toString() === "true"
@@ -304,7 +309,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       counters.totalPayloadSize += JSON.stringify(callBody).length
 
       counters.dedupedTotalPayloadSize += JSON.stringify(callBody).length
-      const multicallResponse = await makeCall(network, [callBody])
+      const multicallResponse = await makeCall(network, [callBody], isTesting)
 
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       if (multicallResponse[0].error) {
