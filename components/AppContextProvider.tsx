@@ -1,5 +1,5 @@
 import { WithChildren } from 'helpers/types'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useLocalSetting } from 'helpers/useFeatureToggle'
 import React, { useContext, useEffect, useState } from 'react'
 
 import { AppContext, setupAppContext } from './AppContext'
@@ -27,11 +27,11 @@ export function useAppContext(): AppContext {
 
 export function AppContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
-  const isTenderly = useFeatureToggle('UseTenderlyRPC');
+  const tenderlySecret = useLocalSetting('tenderlySecret');
 
   useEffect(() => {
-    setContext(setupAppContext(isTenderly))
-  }, [isTenderly])
+    setContext(setupAppContext(tenderlySecret))
+  }, [tenderlySecret])
 
   return <appContext.Provider value={context}>{children}</appContext.Provider>
 }

@@ -3,7 +3,6 @@ import {
   arbitrumMainnetRpc,
   goerliRpc,
   mainnetRpc,
-  mainnetTenderlyRpc,
   optimismGoerliRpc,
   optimismMainnetRpc,
   polygonMainnetRpc,
@@ -51,23 +50,6 @@ export function contractDesc(
   genesisBlock = 0,
 ): ContractDesc & { genesisBlock: number } {
   return { abi, address, genesisBlock }
-}
-
-export const tenderlyConfig: NetworkConfig = {
-  id: NetworkIds.MAINNET,
-  hexId: '0x1',
-  testnetHexId: '0x5',
-  testnetId: NetworkIds.GOERLI,
-  token: 'ETH',
-  name: NetworkNames.ethereumTenderly,
-  label: 'Ethereum',
-  color: '#728aee',
-  icon: ethereumMainnetIcon as string,
-  badge: ethereumMainnetBadge as string,
-  testnet: false,
-  enabled: true,
-  rpcUrl: mainnetTenderlyRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(mainnetTenderlyRpc),
 }
 
 const mainnetConfig: NetworkConfig = {

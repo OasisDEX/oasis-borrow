@@ -98,7 +98,7 @@ import {
   every10Seconds$,
 } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
-import { networksById, tenderlyConfig } from 'blockchain/networksConfig'
+import { networksById } from 'blockchain/networksConfig'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -127,6 +127,9 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import {
+  getTenderlyRpcUrl,
+} from 'config/rpcConfig'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
@@ -541,11 +544,11 @@ function initializeUIChanges() {
   return uiChangesSubject
 }
 
-export function setupAppContext(useTenderly : boolean) {
+export function setupAppContext(tenderlySecret : string) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
-  if(useTenderly){
-    chainIdToRpcUrl[tenderlyConfig.id] = tenderlyConfig.rpcUrl;
+  if(tenderlySecret){
+    chainIdToRpcUrl[NetworkIds.MAINNET] = getTenderlyRpcUrl(tenderlySecret);
   }
   const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl);
 
