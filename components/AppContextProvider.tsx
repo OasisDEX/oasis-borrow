@@ -1,8 +1,8 @@
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useContext, useEffect, useState } from 'react'
 
 import { AppContext, setupAppContext } from './AppContext'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export const appContext = React.createContext<AppContext | undefined>(undefined)
 

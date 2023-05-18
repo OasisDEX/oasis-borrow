@@ -334,7 +334,6 @@ import {
 } from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export type TxData =
   | OpenData
