@@ -1,13 +1,14 @@
 import { MessageCard } from 'components/MessageCard'
+import { AjnaIsCachedPosition } from 'features/ajna/common/types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { ReactElement } from 'react'
+import React, { FC } from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
 interface AjnaFormContentTransactionProps {
-  orderInformation: ({ cached }: { cached?: boolean }) => ReactElement
+  orderInformation: FC<AjnaIsCachedPosition>
 }
 
 export function AjnaFormContentTransaction({

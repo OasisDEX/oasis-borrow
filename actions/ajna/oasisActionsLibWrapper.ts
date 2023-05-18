@@ -187,6 +187,22 @@ export async function getAjnaParameters({
         { ...dependencies },
       )
     }
+    case 'claim-earn': {
+      const { price } = state as AjnaEarnFormState
+
+      return strategies.ajna.earn.claimCollateral(
+        {
+          ...commonPayload,
+          price: price!,
+          collateralAmount: zero,
+          quoteAmount: zero,
+          position: position as AjnaEarnPosition,
+          collateralPrice,
+          quotePrice,
+        },
+        { ...dependencies },
+      )
+    }
     default:
       return defaultPromise
   }

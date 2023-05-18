@@ -12,6 +12,7 @@ import {
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import {
   AjnaBorrowishPositionAuction,
+  AjnaEarnPositionAuction,
   AjnaPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
@@ -107,10 +108,8 @@ function isFormValid({
     }
     case 'earn': {
       const { action, depositAmount, withdrawAmount, price } = state as AjnaEarnFormState
-
-      const isEmptyPosition =
-        (position as AjnaEarnPosition).quoteTokenAmount.isZero() &&
-        (position as AjnaEarnPosition).price.isZero()
+      const earnPosition = position as AjnaEarnPosition
+      const isEmptyPosition = earnPosition.quoteTokenAmount.isZero() && earnPosition.price.isZero()
 
       switch (currentStep) {
         case 'setup':
@@ -123,19 +122,16 @@ function isFormValid({
                 return !!depositAmount?.gt(0)
               }
 
-              return (
-                !!depositAmount?.gt(0) ||
-                !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
-              )
+              return !!depositAmount?.gt(0) || !areEarnPricesEqual(earnPosition.price, price)
             case 'withdraw-earn':
               if (isEmptyPosition) {
                 return !!withdrawAmount?.gt(0)
               }
 
-              return (
-                !!withdrawAmount?.gt(0) ||
-                !areEarnPricesEqual((position as AjnaEarnPosition).price, price)
-              )
+              return !!withdrawAmount?.gt(0) || !areEarnPricesEqual(earnPosition.price, price)
+            case 'claim-earn': {
+              return true
+            }
             default:
               return false
           }
@@ -181,6 +177,7 @@ export function getAjnaValidation({
   positionAuction,
 }: GetAjnaBorrowValidationsParams): {
   isFormValid: boolean
+  isFormFrozen: boolean
   hasErrors: boolean
   errors: AjnaValidationItem[]
   warnings: AjnaValidationItem[]
@@ -249,9 +246,13 @@ export function getAjnaValidation({
   const errors = [...localErrors, ...mapSimulationValidation(simulationErrors)]
   const warnings = [...localWarnings, ...mapSimulationValidation(simulationWarnings)]
 
+  const isFormFrozen =
+    product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
+
   return {
     isFormValid: isFormValid({ currentStep, product, state, position }),
     hasErrors: errors.length > 0,
+    isFormFrozen,
     errors,
     warnings,
   }
