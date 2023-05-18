@@ -67,7 +67,7 @@ export function AjnaFormView({
       resolvedId,
       currentPosition: { position },
     },
-    validation: { isFormValid, hasErrors, isFormDisabled },
+    validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
   const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
 
@@ -101,7 +101,7 @@ export function AjnaFormView({
     currentStep,
     editingStep,
     hasErrors,
-    isFormDisabled,
+    isFormFrozen,
     isAllowanceLoading: flowState.isLoading,
     isFormValid,
     isOwner,
@@ -166,7 +166,7 @@ export function AjnaFormView({
     txDetails,
   })
 
-  const title = getAjnaSidebarTitle({ currentStep, isFormDisabled, product, position })
+  const title = getAjnaSidebarTitle({ currentStep, isFormFrozen, product, position })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title,

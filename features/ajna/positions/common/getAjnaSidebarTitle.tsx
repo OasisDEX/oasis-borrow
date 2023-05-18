@@ -8,12 +8,12 @@ import { useTranslation } from 'next-i18next'
 export const getAjnaSidebarTitle = ({
   currentStep,
   product,
-  isFormDisabled,
+  isFormFrozen,
   position,
 }: {
   currentStep: AjnaSidebarStep
   product: AjnaProduct
-  isFormDisabled: boolean
+  isFormFrozen: boolean
   position: AjnaPosition | AjnaMultiplyPosition | AjnaEarnPosition
 }) => {
   const { t } = useTranslation()
@@ -29,7 +29,7 @@ export const getAjnaSidebarTitle = ({
     case 'earn': {
       const earnPosition = position as AjnaEarnPosition
 
-      if (isFormDisabled) {
+      if (isFormFrozen) {
         return t('ajna.position-page.common.form.title.position-frozen')
       }
 

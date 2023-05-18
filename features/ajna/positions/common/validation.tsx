@@ -177,7 +177,7 @@ export function getAjnaValidation({
   positionAuction,
 }: GetAjnaBorrowValidationsParams): {
   isFormValid: boolean
-  isFormDisabled: boolean
+  isFormFrozen: boolean
   hasErrors: boolean
   errors: AjnaValidationItem[]
   warnings: AjnaValidationItem[]
@@ -246,13 +246,13 @@ export function getAjnaValidation({
   const errors = [...localErrors, ...mapSimulationValidation(simulationErrors)]
   const warnings = [...localWarnings, ...mapSimulationValidation(simulationWarnings)]
 
-  const isFormDisabled =
+  const isFormFrozen =
     product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
 
   return {
     isFormValid: isFormValid({ currentStep, product, state, position }),
     hasErrors: errors.length > 0,
-    isFormDisabled,
+    isFormFrozen,
     errors,
     warnings,
   }

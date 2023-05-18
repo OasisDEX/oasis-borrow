@@ -84,7 +84,7 @@ interface AjnaProductContext<P, F, A> {
   validation: {
     errors: AjnaValidationItem[]
     hasErrors: boolean
-    isFormDisabled: boolean
+    isFormFrozen: boolean
     isFormValid: boolean
     warnings: AjnaValidationItem[]
   }
