@@ -89,6 +89,7 @@ export function AjnaEarnFormController() {
         if (quoteTokenAmount.isZero() || simulation?.quoteTokenAmount.isZero()) {
           updateState('uiPill', 'deposit-earn')
           updateState('action', 'deposit-earn')
+          updateState('uiDropdown', 'adjust')
         }
       }}
     >

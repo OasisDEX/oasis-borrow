@@ -13,14 +13,13 @@ export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> =
 }) => {
   const { t } = useTranslation()
   const {
-    environment: { quoteToken, collateralToken, collateralPrice, quotePrice },
+    environment: { quoteToken, collateralToken },
     tx: { txDetails, isTxSuccess },
   } = useAjnaGeneralContext()
   const {
     position: { currentPosition, cachedPosition, isSimulationLoading },
   } = useAjnaProductContext('earn')
 
-  const marketPrice = collateralPrice.div(quotePrice)
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,
     cachedPosition,
@@ -30,7 +29,7 @@ export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> =
   const isLoading = !cached && isSimulationLoading
   const formatted = {
     totalDeposited: `${formatCryptoBalance(
-      positionData.collateralTokenAmount.times(marketPrice),
+      positionData.collateralTokenAmount.times(positionData.price),
     )} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralTokenAmount,

@@ -52,7 +52,7 @@ type DepositIsNotWithdrawableParams = {
 }
 
 type EarningNoApyParams = {
-  action: () => void
+  action?: () => void
 }
 
 type EmptyPositionParams = {
@@ -67,10 +67,7 @@ type LendingPriceFrozenParams = {
   quoteToken: string
 }
 
-type NotificationCallbackWithParams<P> = (
-  params: P,
-  action?: () => void,
-) => DetailsSectionNotificationItem
+type NotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
 
 const ajnaNotifications: {
   depositIsNotWithdrawable: NotificationCallbackWithParams<DepositIsNotWithdrawableParams>
@@ -287,7 +284,11 @@ export function getAjnaNotifications({
         )
       }
       if (earningNoApy) {
-        notifications.push(ajnaNotifications.earningNoApy({ action: moveToAdjust }))
+        notifications.push(
+          ajnaNotifications.earningNoApy({
+            action: !quoteTokenAmount.isZero() ? moveToAdjust : undefined,
+          }),
+        )
       }
 
       if (emptyPosition) {
