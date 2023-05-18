@@ -27,7 +27,7 @@ export function useAppContext(): AppContext {
 
 export function AppContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
-  const tenderlySecret = useLocalSetting('tenderlySecret');
+  const tenderlySecret = useLocalSetting('tenderlySecret')
 
   useEffect(() => {
     setContext(setupAppContext(tenderlySecret))

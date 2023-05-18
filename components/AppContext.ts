@@ -127,9 +127,7 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
-import {
-  getTenderlyRpcUrl,
-} from 'config/rpcConfig'
+import { getTenderlyRpcUrl } from 'config/rpcConfig'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
@@ -544,13 +542,13 @@ function initializeUIChanges() {
   return uiChangesSubject
 }
 
-export function setupAppContext(tenderlySecret : string) {
+export function setupAppContext(tenderlySecret: string) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
-  if(tenderlySecret){
-    chainIdToRpcUrl[NetworkIds.MAINNET] = getTenderlyRpcUrl(tenderlySecret);
+  if (tenderlySecret) {
+    chainIdToRpcUrl[NetworkIds.MAINNET] = getTenderlyRpcUrl(tenderlySecret)
   }
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl);
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)

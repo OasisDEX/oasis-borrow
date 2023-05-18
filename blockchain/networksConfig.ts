@@ -204,7 +204,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
 }
 
-export const mainnetNetworks = [ mainnetConfig, goerliConfig]
+export const mainnetNetworks = [mainnetConfig, goerliConfig]
 
 export const L2Networks = [
   arbitrumMainnetConfig,

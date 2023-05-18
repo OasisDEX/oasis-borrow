@@ -61,10 +61,10 @@ const blockRecheckDelay = 3000
 
 const cache: { [key: string]: Cache } = {}
 
-function getRpcNode(network: NetworkNames, tenderlySecret : string) {
+function getRpcNode(network: NetworkNames, tenderlySecret: string) {
   //TODO: take Fork_ID from database and refresh it every 5 minutes
-  if(tenderlySecret === process.env.TENDERLY_SECRET) {
-    return `https://rpc.tenderly.co/fork/${process.env.TENDERLY_FORK_ID}`;
+  if (tenderlySecret === process.env.TENDERLY_SECRET) {
+    return `https://rpc.tenderly.co/fork/${process.env.TENDERLY_FORK_ID}`
   }
   switch (network) {
     // case 'hardhat': // hardhat does not request this one
@@ -181,7 +181,11 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
         'Content-Length': JSON.stringify(calls[0]).length.toString(),
       },
     }
-    const response = await axios.post(getRpcNode(network, tenderlySecret), JSON.stringify(calls[0]), config)
+    const response = await axios.post(
+      getRpcNode(network, tenderlySecret),
+      JSON.stringify(calls[0]),
+      config,
+    )
     return [response.data]
   } else {
     config = {
@@ -214,7 +218,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const networkQuery = req.query.network!
   const clientIdQuery = req.query.clientId!
-  const tenderlySecret = req.query.tenderlySecret! as string;
+  const tenderlySecret = req.query.tenderlySecret! as string
   const network = networkQuery.toString() as NetworkNames
   const clientId = clientIdQuery.toString()
   //withCache = req.query.withCache.toString() === "true"
@@ -345,7 +349,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               ],
             }
           }),
-          tenderlySecret
+          tenderlySecret,
         )
         let z = 0
         data = dataFromMulticall.map((x: [boolean, string]) => {

@@ -3,7 +3,7 @@ export const FT_LOCAL_STORAGE_KEY = 'features'
 
 type ConfiguredFeatures = Record<Feature, boolean>
 
-export type Setting = 'tenderlySecret';
+export type Setting = 'tenderlySecret'
 
 export type Feature =
   | 'TestFeature'
@@ -125,10 +125,10 @@ export function getFeatureToggle(feature: Feature): boolean {
   return false
 }
 
-export function useLocalSetting(setting : Setting): string{
+export function useLocalSetting(setting: Setting): string {
   if (typeof localStorage !== 'undefined' && localStorage.getItem(setting.toString())) {
-    const value = localStorage.getItem(setting.toString());
-    return value? value! : '';
+    const value = localStorage.getItem(setting.toString())
+    return value ? value! : ''
   }
   return ''
 }
