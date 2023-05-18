@@ -18,6 +18,7 @@ import {
 } from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
+import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
 import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
@@ -226,7 +227,10 @@ export function AjnaProductController({
                         {dpmPosition.product === 'earn' && (
                           <AjnaProductContextProvider
                             formDefaults={{
-                              action: flow === 'open' ? 'open-earn' : 'deposit-earn',
+                              action: getAjnaEarnDefaultAction(
+                                flow,
+                                ajnaPosition as AjnaEarnPosition,
+                              ),
                               uiDropdown: getAjnaEarnDefaultUiDropdown(
                                 ajnaPosition as AjnaEarnPosition,
                               ),
