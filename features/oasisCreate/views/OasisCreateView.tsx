@@ -1,4 +1,3 @@
-
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'

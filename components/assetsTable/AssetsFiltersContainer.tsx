@@ -1,5 +1,4 @@
-import { PropsWithChildren } from 'react'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { theme } from 'theme'
 import { Box, Grid } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'

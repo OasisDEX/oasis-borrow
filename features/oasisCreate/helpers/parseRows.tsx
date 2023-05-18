@@ -76,7 +76,9 @@ function parseProduct(
         longShort: investmentType ? (
           <Trans
             i18nKey={`oasis-create.table.${
-              Array.isArray(investmentType) ? investmentType.sort().join('-') : investmentType
+              Array.isArray(investmentType)
+                ? investmentType.sort((a, b) => (a > b ? -1 : 1)).join('-')
+                : investmentType
             }`}
           />
         ) : (
