@@ -2477,11 +2477,23 @@
             "claim-collateral": "Claim collateral"
           },
           "risk": {
-            "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
-            "bullet-points": [
-              "Its a new DeFi protocol.",
-              "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
-            ]
+            "intro": "Anja is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
+            "bullet-points": {
+              "borrow": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "There is an origination fee when borrowing to avoid rapid changes in rates.",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ],
+              "multiply": [
+                "Lorem ipsum dolor sit amet"
+              ],
+              "earn": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "Your position will lend only against one asset.",
+                "Failure to monitor and adjust your position may result in holding the collateral asset",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ]
+            }
           },
           "transaction": {
             "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position.",
