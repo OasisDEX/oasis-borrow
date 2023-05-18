@@ -98,7 +98,7 @@ import {
   every10Seconds$,
 } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
+import { networksById, tenderlyConfig } from 'blockchain/networksConfig'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -334,6 +334,7 @@ import {
 } from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export type TxData =
   | OpenData
@@ -541,10 +542,13 @@ function initializeUIChanges() {
   return uiChangesSubject
 }
 
-export function setupAppContext() {
+export function setupAppContext(useTenderly : boolean) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
+  if(useTenderly){
+    chainIdToRpcUrl[tenderlyConfig.id] = tenderlyConfig.rpcUrl;
+  }
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl);
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)

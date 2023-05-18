@@ -68,6 +68,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   OptimismAaveV3: false,
   OasisCreate: false,
   SwapWidget: false,
+  UseTenderly: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
 }
 

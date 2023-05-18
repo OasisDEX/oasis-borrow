@@ -24,8 +24,6 @@ import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_m
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
 import { NetworkIds } from './networkIds'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-
 export type NetworkConfigHexId = `0x${number | string}`
 
 export type NetworkConfig = {
@@ -55,7 +53,7 @@ export function contractDesc(
   return { abi, address, genesisBlock }
 }
 
-const tenderlyConfig: NetworkConfig = {
+export const tenderlyConfig: NetworkConfig = {
   id: NetworkIds.MAINNET,
   hexId: '0x1',
   testnetHexId: '0x5',
@@ -224,9 +222,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
 }
 
-const useTenderly = useFeatureToggle('UseTenderly')
-
-export const mainnetNetworks = [ useTenderly? tenderlyConfig : mainnetConfig, goerliConfig]
+export const mainnetNetworks = [ mainnetConfig, goerliConfig]
 
 export const L2Networks = [
   arbitrumMainnetConfig,

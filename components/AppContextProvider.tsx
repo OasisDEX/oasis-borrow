@@ -2,6 +2,7 @@ import { WithChildren } from 'helpers/types'
 import React, { useContext, useEffect, useState } from 'react'
 
 import { AppContext, setupAppContext } from './AppContext'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export const appContext = React.createContext<AppContext | undefined>(undefined)
 
@@ -26,10 +27,11 @@ export function useAppContext(): AppContext {
 
 export function AppContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
+  const isTenderly = useFeatureToggle('UseTenderly');
 
   useEffect(() => {
-    setContext(setupAppContext())
-  }, [])
+    setContext(setupAppContext(isTenderly))
+  }, [isTenderly])
 
   return <appContext.Provider value={context}>{children}</appContext.Provider>
 }
