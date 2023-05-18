@@ -93,3 +93,7 @@ export type AjnaProductCardsData = {
 export type AjnaValidationItem = {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
 }
+
+export interface AjnaIsCachedPosition {
+  cached?: boolean
+}
