@@ -78,6 +78,7 @@ export function ProductCardsFilter({
     (strategy, index) => ({
       ...aaveStrategyTokens[index],
       ...strategy,
+      name: aaveStrategyTokens[index].name,
     }),
   )
 
