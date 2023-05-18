@@ -127,6 +127,7 @@ export function HeaderSelector({
           sx={{
             rowGap: 2,
             flexDirection: 'column',
+            width: '100%',
             maxWidth: '360px',
             mt: '12px',
             p: 3,

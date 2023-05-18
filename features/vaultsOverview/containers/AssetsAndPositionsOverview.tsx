@@ -293,9 +293,9 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
       <Box
         sx={{
           p: 4,
-          borderTop: '1px solid',
-          borderBottom: '1px solid',
+          border: '1px solid',
           borderColor: 'neutral20',
+          borderRadius: 'large',
           bg: 'neutral10',
         }}
       >

@@ -23,9 +23,9 @@ export function AssetsTableContainer({
     >
       {title && (
         <Heading
-          as="h3"
-          variant="boldParagraph2"
-          sx={{ mb: 3, pt: 4, px: ['24px', null, null, 4] }}
+          as="h2"
+          variant="boldParagraph1"
+          sx={{ mb: 4, pt: 4, px: ['24px', null, null, 4] }}
         >
           {title}
         </Heading>

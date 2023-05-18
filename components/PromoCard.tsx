@@ -58,6 +58,10 @@ export function PromoCard({
         borderColor: 'neutral20',
         borderRadius: 'large',
         bg: 'neutral10',
+        transition: 'border-color 200ms',
+        '&:hover': {
+          borderColor: 'primary100',
+        },
       }}
     >
       <Icon name={icon} size={50} sx={{ display: 'block', mx: 'auto', mb: '12px' }} />

@@ -1,4 +1,4 @@
-import { networksByName } from 'blockchain/networksConfig'
+
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
@@ -13,12 +13,16 @@ import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls
 import { oasisCreateData } from 'features/oasisCreate/data'
 import { filterRows } from 'features/oasisCreate/helpers/filterRows'
 import { parseRows } from 'features/oasisCreate/helpers/parseRows'
-import { ALL_ASSETS, oasisCreateLinksMap } from 'features/oasisCreate/meta'
+import {
+  ALL_ASSETS,
+  oasisCreateLinksMap,
+  oasisCreateNetworkFilter,
+  oasisCreateProtocolFilter,
+} from 'features/oasisCreate/meta'
 import { OasisCreateFilters, ProductType } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
-import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
@@ -63,48 +67,9 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
       })),
     [rowsFilteredByToken],
   )
-  const networks = [
-    {
-      label: networksByName[BaseNetworkNames.Ethereum].label,
-      value: networksByName[BaseNetworkNames.Ethereum].name,
-      image: networksByName[BaseNetworkNames.Ethereum].icon,
-    },
-    {
-      label: networksByName[BaseNetworkNames.Arbitrum].label,
-      value: networksByName[BaseNetworkNames.Arbitrum].name,
-      image: networksByName[BaseNetworkNames.Arbitrum].icon,
-    },
-    {
-      label: networksByName[BaseNetworkNames.Optimism].label,
-      value: networksByName[BaseNetworkNames.Optimism].name,
-      image: networksByName[BaseNetworkNames.Optimism].icon,
-    },
-  ]
-  const protocols = [
-    {
-      label: lendingProtocolsByName[LendingProtocol.Maker].label,
-      value: lendingProtocolsByName[LendingProtocol.Maker].name,
-      image: lendingProtocolsByName[LendingProtocol.Maker].icon,
-    },
-    {
-      label: lendingProtocolsByName[LendingProtocol.AaveV2].label,
-      value: lendingProtocolsByName[LendingProtocol.AaveV2].name,
-      image: lendingProtocolsByName[LendingProtocol.AaveV2].icon,
-    },
-    {
-      label: lendingProtocolsByName[LendingProtocol.AaveV3].label,
-      value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
-      image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
-    },
-    {
-      label: lendingProtocolsByName[LendingProtocol.Ajna].label,
-      value: lendingProtocolsByName[LendingProtocol.Ajna].name,
-      image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    },
-  ]
 
   return (
-    <AnimatedWrapper>
+    <AnimatedWrapper sx={{ mb: 5 }}>
       <Box
         sx={{
           my: [3, null, '48px'],
@@ -127,7 +92,6 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           sx={{
             mx: 'auto',
             mt: '24px',
-            color: 'neutral80',
           }}
         >
           {t(`oasis-create.intro.${selectedProduct}`)}{' '}
@@ -192,7 +156,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}
             icon="allNetworks"
-            options={networks}
+            options={oasisCreateNetworkFilter}
             onChange={(value) => {
               setSelectedFilters({
                 ...selectedFilters,
@@ -203,7 +167,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           <GenericMultiselect
             label={t('oasis-create.filters.protocols')}
             icon="allProtocols"
-            options={protocols}
+            options={oasisCreateProtocolFilter}
             onChange={(value) => {
               setSelectedFilters({
                 ...selectedFilters,

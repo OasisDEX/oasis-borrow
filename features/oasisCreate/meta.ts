@@ -1,7 +1,11 @@
+import { networksByName } from 'blockchain/networksConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductType } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { BaseNetworkNames } from 'helpers/networkNames'
+import { LendingProtocol } from 'lendingProtocols'
+import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
 export const ALL_ASSETS = 'all assets'
 
@@ -100,3 +104,44 @@ export const oasisCreateOptionsMap: {
     },
   },
 }
+
+export const oasisCreateNetworkFilter = [
+  {
+    label: networksByName[BaseNetworkNames.Ethereum].label,
+    value: networksByName[BaseNetworkNames.Ethereum].name,
+    image: networksByName[BaseNetworkNames.Ethereum].icon,
+  },
+  {
+    label: networksByName[BaseNetworkNames.Arbitrum].label,
+    value: networksByName[BaseNetworkNames.Arbitrum].name,
+    image: networksByName[BaseNetworkNames.Arbitrum].icon,
+  },
+  {
+    label: networksByName[BaseNetworkNames.Optimism].label,
+    value: networksByName[BaseNetworkNames.Optimism].name,
+    image: networksByName[BaseNetworkNames.Optimism].icon,
+  },
+]
+
+export const oasisCreateProtocolFilter = [
+  {
+    label: lendingProtocolsByName[LendingProtocol.Maker].label,
+    value: lendingProtocolsByName[LendingProtocol.Maker].name,
+    image: lendingProtocolsByName[LendingProtocol.Maker].icon,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.AaveV2].label,
+    value: lendingProtocolsByName[LendingProtocol.AaveV2].name,
+    image: lendingProtocolsByName[LendingProtocol.AaveV2].icon,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.AaveV3].label,
+    value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
+    image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.Ajna].label,
+    value: lendingProtocolsByName[LendingProtocol.Ajna].name,
+    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+  },
+]
