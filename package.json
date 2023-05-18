@@ -52,7 +52,7 @@
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
     "@prisma/client": "^3.14.0",
-    "@sentry/nextjs": "^6.17.7",
+    "@sentry/nextjs": "^7.52.1",
     "@theme-ui/style-guide": "^0.3.5",
     "@typeform/embed-react": "^1.13.0",
     "@web3-onboard/coinbase": "^2.2.2",
