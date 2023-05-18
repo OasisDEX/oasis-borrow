@@ -12,7 +12,7 @@ export function getStorageValue<V>(
     if (isValid) {
       return isValid(parsed) ? parsed : (defaultValue as V)
     } else {
-      return defaultValue as V
+      return parsed ?? (defaultValue as V)
     }
   }
   return defaultValue as V
