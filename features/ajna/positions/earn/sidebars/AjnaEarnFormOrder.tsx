@@ -6,16 +6,14 @@ import React, { FC } from 'react'
 
 export const AjnaEarnFormOrder: FC<AjnaIsCachedPosition> = ({ cached = false }) => {
   const {
-    position: {
-      currentPosition: {
-        position: { collateralTokenAmount },
-      },
+    form: {
+      state: { action },
     },
   } = useAjnaProductContext('earn')
 
-  return collateralTokenAmount.isZero() ? (
-    <AjnaEarnFormOrderInformation cached={cached} />
-  ) : (
+  return action === 'claim-earn' ? (
     <AjnaClaimCollateralFormOrderInformation cached={cached} />
+  ) : (
+    <AjnaEarnFormOrderInformation cached={cached} />
   )
 }
