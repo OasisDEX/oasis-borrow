@@ -168,7 +168,6 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           maxBoundry={maxRisk}
           lastValue={sliderValue || zero}
           disabled={viewLocked || !maxRisk}
-          disabledVisually={viewLocked || !maxRisk}
           step={0.001}
           sliderPercentageFill={
             maxRisk && sliderValue

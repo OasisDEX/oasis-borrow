@@ -2581,12 +2581,12 @@
           },
           "notifications": {
             "deposit-is-not-withdrawable": {
-              "title": "Warning your selected price is too close to market price",
+              "title": "Your selected price is too close to market price",
               "message": "In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}",
               "label": "Adjust lending price"
             },
             "earning-no-apy": {
-              "title": "Warning your position is not earning any yield",
+              "title": "Your position is not earning any yield",
               "message": "Your lending position is below the minimum yield bearing price",
               "label": "Adjust lending price"
             },
@@ -2630,7 +2630,7 @@
       "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "price-below-htp": "You will be lending without earning any yield.",
-      "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
+      "price-above-momp": "Your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
       "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",

@@ -3820,10 +3820,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.6.tgz#868114f17035083e5628f80c279ca4a53eca7285"
-  integrity sha512-IUEdsyhKoedgvRwdH4/36qj1a9tO7HvF9SW2buqMSxXaBy4RUDTrebiEYuh8tnTvGN/cFyAbNbqNa5S24SsJcA==
+"@oasisdex/dma-library@0.3.9":
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.9.tgz#25d787c65730b0f625f6ddab1293fc9e97f9d2aa"
+  integrity sha512-2SLrm6yHRf03Vl+GFMrCs++zHAibQO8G82uvv0PoHTYJcG+6qdpAjLJP69ZUe0Tqq4kTQeUkzUIu1umyM13lrA==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"

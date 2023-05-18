@@ -11,7 +11,10 @@ export function AjnaEarnFormContentOpen() {
     environment: { quotePrice, quoteToken },
   } = useAjnaGeneralContext()
   const {
-    form: { dispatch },
+    form: {
+      dispatch,
+      state: { depositAmount },
+    },
     validation: { isFormValid },
   } = useAjnaProductContext('earn')
 
@@ -23,7 +26,7 @@ export function AjnaEarnFormContentOpen() {
         tokenPrice={quotePrice}
         resetOnClear
       />
-      <AjnaEarnSlider />
+      <AjnaEarnSlider isDisabled={!depositAmount || depositAmount?.lte(0)} />
       {isFormValid && (
         <AjnaFormContentSummary>
           <AjnaEarnFormOrder />
