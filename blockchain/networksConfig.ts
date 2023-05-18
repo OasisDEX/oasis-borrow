@@ -21,7 +21,6 @@ import optimismMainnetBadge from 'public/static/img/network_icons/optimism_badge
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
 import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
-
 import { NetworkIds } from './networkIds'
 export type NetworkConfigHexId = `0x${number | string}`
 
