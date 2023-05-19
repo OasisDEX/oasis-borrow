@@ -184,6 +184,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           />
         ) : (
           <AssetsTableNoResults
+            // TODO replace with translations when copy is available
             header="There are no items matching your filters"
             content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean iaculis lorem in feugiat mattis."
           />

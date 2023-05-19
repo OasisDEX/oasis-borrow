@@ -27,19 +27,16 @@ export default OasisCreatePage
 
 export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   const paths =
-    locales
-      ?.map((locale) =>
-        Object.values(ProductType)
-          .map((product) =>
-            Object.values(oasisCreateOptionsMap[product].tokens).map((token) => [
-              product,
-              ...(token.value !== ALL_ASSETS ? [token.value] : []),
-            ]),
-          )
-          .flat()
-          .map((slug) => ({ params: { slug }, locale })),
-      )
-      .flat() || []
+    locales?.flatMap((locale) =>
+      Object.values(ProductType)
+        .flatMap((product) =>
+          Object.values(oasisCreateOptionsMap[product].tokens).map((token) => [
+            product,
+            ...(token.value !== ALL_ASSETS ? [token.value] : []),
+          ]),
+        )
+        .map((slug) => ({ params: { slug }, locale })),
+    ) || []
 
   return {
     paths,

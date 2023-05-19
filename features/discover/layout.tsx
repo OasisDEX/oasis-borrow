@@ -4,7 +4,7 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 
-export const discoverPageLayout = ({ children }: WithChildren) => (
+export const DiscoverPageLayout = ({ children }: WithChildren) => (
   <AppLayout shortBackground={true}>{children}</AppLayout>
 )
 export const discoverPageLayoutProps = {
