@@ -20,6 +20,16 @@ const networkMappings = {
     NetworkIds.MAINNET,
     'aaveV3Oracle',
   ),
+  [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
+    AaveV3Oracle__factory,
+    NetworkIds.OPTIMISMMAINNET,
+    'aaveV3Oracle',
+  ),
+  [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
+    AaveV3Oracle__factory,
+    NetworkIds.ARBITRUMMAINNET,
+    'aaveV3Oracle',
+  ),
 }
 
 export function getAaveV3AssetsPrices({
