@@ -36,6 +36,7 @@ export function getFlowStateConfig({
         token: quoteToken,
       }
     case 'withdraw-earn':
+    case 'claim-earn':
       return {
         amount: zero,
         token: 'ETH',

@@ -73,6 +73,7 @@ export const EXTERNAL_LINKS = {
       CRVV1ETHSTETH:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
     },
+    AJNA: 'https://kb.oasis.app/help/ajna',
   },
   BLOG: {
     MAIN: 'https://blog.oasis.app',

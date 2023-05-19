@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Grid, SxStyleProp, Text } from 'theme-ui'
 
 interface IListWithIconProps {
@@ -12,6 +12,7 @@ interface IListWithIconProps {
   listStyle?: SxStyleProp
   itemStyle?: SxStyleProp
   iconStyle?: SxStyleProp
+  components?: { [key: number]: ReactNode }
 }
 
 export function ListWithIcon({
@@ -23,6 +24,7 @@ export function ListWithIcon({
   listStyle,
   itemStyle,
   iconStyle,
+  components = {},
 }: IListWithIconProps) {
   return (
     <Box>
@@ -49,6 +51,7 @@ export function ListWithIcon({
               defaults={item}
               components={{
                 1: <Text as="strong" sx={{ color: 'primary100' }} />,
+                ...components,
               }}
             />
           </Text>

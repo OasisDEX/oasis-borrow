@@ -14,7 +14,7 @@ import React from 'react'
 export function AjnaEarnFormController() {
   const { t } = useTranslation()
   const {
-    environment: { flow, quoteToken },
+    environment: { flow, quoteToken, collateralToken },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -25,7 +25,7 @@ export function AjnaEarnFormController() {
     },
     position: {
       currentPosition: {
-        position: { quoteTokenAmount },
+        position: { quoteTokenAmount, collateralTokenAmount },
         simulation,
       },
     },
@@ -66,6 +66,22 @@ export function AjnaEarnFormController() {
                   updateState('action', 'deposit-earn')
                 },
               },
+              ...(!collateralTokenAmount.isZero()
+                ? [
+                    {
+                      label: t('system.claim-collateral'),
+                      panel: 'claim-collateral',
+                      shortLabel: collateralToken,
+                      icon: getToken(collateralToken).iconCircle,
+                      iconShrink: 2,
+                      action: () => {
+                        dispatch({ type: 'reset' })
+                        updateState('uiDropdown', 'claim-collateral')
+                        updateState('action', 'claim-earn')
+                      },
+                    },
+                  ]
+                : []),
             ],
           },
         })}
@@ -73,6 +89,7 @@ export function AjnaEarnFormController() {
         if (quoteTokenAmount.isZero() || simulation?.quoteTokenAmount.isZero()) {
           updateState('uiPill', 'deposit-earn')
           updateState('action', 'deposit-earn')
+          updateState('uiDropdown', 'adjust')
         }
       }}
     >

@@ -34,6 +34,7 @@
   "cancelling-auto-sell": "Cancelling Auto-Sell",
   "adjust-your-position": "Adjust your position",
   "adjust": "Adjust",
+  "claim": "Claim",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
   "after-closing": "{{token}} after closing",
@@ -456,7 +457,7 @@
       },
       "ajna": {
         "headline": "Borrow and lend your crypto on Ajna",
-        "subheader": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
+        "subheader": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
       }
     },
     "stats": {
@@ -971,11 +972,11 @@
     },
     "ajna": {
       "title": "Oasis.app × Ajna",
-      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "ajnaProductPage": {
       "title": "{{product}} - Oasis.app × Ajna",
-      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "multiply": {
       "title": "Multiply - Oasis.app",
@@ -1033,6 +1034,7 @@
   "start-saving": "Start Saving",
   "system": {
     "adjust-position": "Adjust position",
+    "claim-collateral": "Claim collateral",
     "asset": "Asset",
     "vault": "Vault",
     "available-to-withdraw": "Available to Withdraw",
@@ -2494,14 +2496,28 @@
             "setup": "Configure your Ajna {{product}} Position",
             "manage": "Manage your Ajna {{product}} Position",
             "transaction": "Confirm your Ajna {{product}} Position",
-            "transition": "Switch your Ajna {{product}} Position"
+            "transition": "Switch your Ajna {{product}} Position",
+            "position-frozen": "Position Frozen",
+            "claim-collateral": "Claim collateral"
           },
           "risk": {
-            "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
-            "bullet-points": [
-              "Its a new DeFi protocol.",
-              "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
-            ]
+            "intro": "Anja is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
+            "bullet-points": {
+              "borrow": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "There is an origination fee when borrowing to avoid rapid changes in rates.",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ],
+              "multiply": [
+                "Lorem ipsum dolor sit amet"
+              ],
+              "earn": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "Your position will lend only against one asset.",
+                "Failure to monitor and adjust your position may result in holding the collateral asset",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ]
+            }
           },
           "transaction": {
             "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position.",
@@ -2563,7 +2579,9 @@
             "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
             "adjust-lending-price-bucket": "Adjust lending price bucket",
             "ajna-fee": "Ajna fee",
-            "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit"
+            "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit",
+            "total-deposited-into-position": "Total deposited into Position",
+            "collateral-available-to-withdraw": "Collateral available to withdraw"
           }
         },
         "open": {
@@ -2599,12 +2617,12 @@
           },
           "notifications": {
             "deposit-is-not-withdrawable": {
-              "title": "Warning your selected price is too close to market price",
+              "title": "Your selected price is too close to market price",
               "message": "In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}",
               "label": "Adjust lending price"
             },
             "earning-no-apy": {
-              "title": "Warning your position is not earning any yield",
+              "title": "Your position is not earning any yield",
               "message": "Your lending position is below the minimum yield bearing price",
               "label": "Adjust lending price"
             },
@@ -2648,7 +2666,7 @@
       "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "price-below-htp": "You will be lending without earning any yield.",
-      "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
+      "price-above-momp": "Your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
       "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
@@ -2657,7 +2675,8 @@
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "is-during-grace-time": "Your position has been moved to liquidation. 90 days of interest have been added as penalty. You still have some time to <1>Deposit Collateral</1> or <1>Repay your Debt</1> to save it from Liquidation. <2>Read more about <1>Ajna Liquidations →</1></2>",
-      "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>"
+      "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>",
+      "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>"
     },
     "rewards": {
       "title": "Your Ajna token rewards",

@@ -8,7 +8,7 @@ import { Box, Button, Flex, Text } from 'theme-ui'
 type DetailsSectionNotificationType = 'error' | 'warning' | 'notice'
 
 interface DetailsSectionNotificationWithAction {
-  action: () => void
+  action?: () => void
   url?: never
 }
 interface DetailsSectionNotificationWithUrl {
