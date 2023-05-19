@@ -7,6 +7,7 @@ import {
   callOperationExecutorWithDsProxy,
   OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
+import { ethNullAddress } from 'blockchain/networksConfig'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import {
   BaseAaveContext,
@@ -568,7 +569,6 @@ export function createManageAaveStateMachine(
                 context.strategyConfig.riskRatios.minimum,
               proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
-              context: context.web3Context!,
               slippage: getSlippage(context),
               currentPosition: context.currentPosition!,
               manageTokenInput: context.manageTokenInput,
@@ -577,6 +577,8 @@ export function createManageAaveStateMachine(
               shouldCloseToCollateral:
                 context.manageTokenInput?.closingToken === context.tokens.collateral,
               positionType: context.strategyConfig.type,
+              userAddress: context.web3Context?.account ?? ethNullAddress,
+              networkId: context.strategyConfig.networkId,
             },
           }),
           { to: (context) => context.refParametersMachine! },
@@ -590,7 +592,6 @@ export function createManageAaveStateMachine(
               type: 'VARIABLES_RECEIVED',
               parameters: {
                 proxyAddress: context.proxyAddress!,
-                context: context.web3Context!,
                 slippage: getSlippage(context),
                 currentPosition: context.currentPosition!,
                 manageTokenInput: context.manageTokenInput,
@@ -600,6 +601,8 @@ export function createManageAaveStateMachine(
                 protocol: context.strategyConfig.protocol,
                 shouldCloseToCollateral:
                   context.manageTokenInput?.closingToken === context.tokens.collateral,
+                userAddress: context.web3Context?.account ?? ethNullAddress,
+                networkId: context.strategyConfig.networkId,
               },
             }
           },

@@ -1,13 +1,12 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
+import { networksById } from 'blockchain/networksConfig'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
-import { Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
 import { AaveV2LendingPool__factory } from 'types/ethers-contracts'
 import { LiquidationCallEvent } from 'types/ethers-contracts/AaveV2LendingPool'
 
+// TODO: Move to subgraph.
 async function getLastLiquidationEvent(
   aaveV2LendingPool: ContractDesc & { genesisBlock: number },
   rpcProvider: ethers.providers.Provider,
@@ -58,22 +57,20 @@ async function getLastLiquidationEvent(
   return [mostRecentLiquidationEvent]
 }
 
-export function getAaveV2PositionLiquidation$(
-  context$: Observable<Context>,
-  proxyAddress: string,
-): Observable<LiquidationCallEvent[]> {
+export type GetAaveV2PositionLiquidationParameters = {
+  proxyAddress: string | undefined
+}
+
+export async function getAaveV2PositionLiquidation({
+  proxyAddress,
+}: GetAaveV2PositionLiquidationParameters): Promise<LiquidationCallEvent[]> {
   if (!proxyAddress) {
-    return of([])
+    return []
   }
 
-  return context$.pipe(
-    switchMap(
-      async ({ chainId, rpcProvider }) =>
-        await getLastLiquidationEvent(
-          getNetworkContracts(NetworkIds.MAINNET, chainId).aaveV2LendingPool,
-          rpcProvider,
-          proxyAddress,
-        ),
-    ),
+  return await getLastLiquidationEvent(
+    getNetworkContracts(NetworkIds.MAINNET).aaveV2LendingPool,
+    networksById[NetworkIds.MAINNET].readProvider,
+    proxyAddress,
   )
 }

@@ -34,13 +34,12 @@ function AaveHeader({
     }),
   )
   const [chainlinkUSDCUSDPrice, chainlinkUSDCUSDPriceError] = useObservable(
-    chainlinkUSDCUSDOraclePrice$(),
+    chainlinkUSDCUSDOraclePrice$,
   )
 
   const detailsList: HeadlineDetailsProp[] = []
   if (positionTokenPrices && chainlinkUSDCUSDPrice) {
     const [debtTokenPrice, collateralTokenPrice] = positionTokenPrices
-
     detailsList.push(
       {
         label: t('system.current-token-price', { token: strategyConfig.tokens.collateral }),

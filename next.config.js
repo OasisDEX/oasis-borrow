@@ -181,6 +181,7 @@ const baseConfig = {
       },
     ]
   },
+  transpilePackages: ['@lifi/widget', '@lifi/wallet-management'],
 }
 
 module.exports = withSentryConfig(withBundleAnalyzer(withMDX(baseConfig)), {

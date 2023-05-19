@@ -1,5 +1,5 @@
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
-import { UniswapWidgetNoSsr } from 'components/uniswapWidget/UniswapWidgetNoSsr'
+import { SwapWidgetNoSsr } from 'components/swapWidget/SwapWidgetNoSsr'
 import { useOnboarding } from 'helpers/useOnboarding'
 import React from 'react'
 
@@ -13,7 +13,7 @@ export function SwapOrb() {
       width={360}
       {...(!exchangeOnboarded && { beacon: true })}
     >
-      {() => <UniswapWidgetNoSsr />}
+      {() => <SwapWidgetNoSsr />}
     </NavigationOrb>
   )
 }

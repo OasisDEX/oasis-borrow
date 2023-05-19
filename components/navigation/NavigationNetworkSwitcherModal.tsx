@@ -71,7 +71,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                   type="text"
                   placeholder={`http://localhost:854${5 + networkIndex}`}
                   onChange={handleHardhatUpdate('url')(network.name)}
-                  value={(hardhatSettings[network.name] && hardhatSettings[network.name].url) || ''}
+                  value={hardhatSettings[network.name]?.url || ''}
                   sx={{
                     height: '50px',
                     fontSize: 3,
@@ -91,7 +91,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                   type="text"
                   placeholder={`${2137 + networkIndex}`}
                   onChange={handleHardhatUpdate('id')(network.name)}
-                  value={(hardhatSettings[network.name] && hardhatSettings[network.name].id) || ''}
+                  value={hardhatSettings[network.name]?.id || ''}
                   sx={{
                     height: '50px',
                     fontSize: 3,

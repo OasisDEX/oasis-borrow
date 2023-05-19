@@ -39,10 +39,10 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       simulationData?.riskRatio && formatDecimalAsPercent(simulationData.riskRatio.loanToValue),
     liquidationPrice: `${formatCryptoBalance(
       positionData.liquidationPrice,
-    )} ${quoteToken}/${collateralToken}`,
+    )} ${collateralToken}/${quoteToken}`,
     afterLiquidationPrice:
       simulationData?.liquidationPrice &&
-      `${formatCryptoBalance(simulationData.liquidationPrice)} ${quoteToken}/${collateralToken}`,
+      `${formatCryptoBalance(simulationData.liquidationPrice)} ${collateralToken}/${quoteToken}`,
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&

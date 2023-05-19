@@ -5,10 +5,28 @@ import { isSupportedNetwork, NetworkNames } from './networkNames'
 import { useLocalStorage } from './useLocalStorage'
 
 export type CustomHardhatParameterFieldsType = 'url' | 'id'
-export type CustomHardhatParameterType = Record<
-  NetworkNames,
-  Record<CustomHardhatParameterFieldsType, string>
+export type CustomHardhatParameterType = Partial<
+  Record<NetworkNames, Record<CustomHardhatParameterFieldsType, string>>
 >
+
+export const defaultCustomHardhatParameter: CustomHardhatParameterType = {
+  [NetworkNames.ethereumMainnet]: {
+    url: 'http://localhost:8545',
+    id: '2137',
+  },
+  [NetworkNames.arbitrumMainnet]: {
+    url: 'http://localhost:8546',
+    id: '2138',
+  },
+  [NetworkNames.polygonMainnet]: {
+    url: 'http://localhost:8547',
+    id: '2139',
+  },
+  [NetworkNames.optimismMainnet]: {
+    url: 'http://localhost:8548',
+    id: '2140',
+  },
+}
 
 export function getCustomNetworkParameter() {
   const customNetwork = new URLSearchParams(window.location.search).get('network')

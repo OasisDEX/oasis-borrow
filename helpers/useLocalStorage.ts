@@ -1,10 +1,19 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useEventCallback, useEventListener } from 'usehooks-ts'
 
-export function getStorageValue<V>(key: string, defaultValue: unknown) {
+export function getStorageValue<V>(
+  key: string,
+  defaultValue: unknown,
+  isValid?: isValidFunction<V>,
+) {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem(key)
-    return saved !== null ? (JSON.parse(saved) as V) : (defaultValue as V)
+    const parsed = parseJSON<V>(saved)
+    if (isValid) {
+      return isValid(parsed) ? parsed : (defaultValue as V)
+    } else {
+      return parsed ?? (defaultValue as V)
+    }
   }
   return defaultValue as V
 }
@@ -25,11 +34,11 @@ export function useLocalStorage<T>(
 
     try {
       const item = window.localStorage.getItem(key)
-      const parsedItem = parseJSON<T>(item)
+      const parsedItem = item ? parseJSON<T>(item) : initialValue
       if (isValid) {
         return isValid(parsedItem) ? parsedItem : initialValue
       } else {
-        return initialValue
+        return parsedItem ?? initialValue
       }
     } catch (error) {
       console.warn(`Error reading localStorage key “${key}”:`, error)

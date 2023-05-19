@@ -1,4 +1,4 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AllNetworksContractsType } from 'blockchain/contracts'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
@@ -21,8 +21,8 @@ export type AjnaBorrowAction =
   | 'switch-borrow'
 export type AjnaBorrowPanel = 'collateral' | 'quote' | 'switch'
 
-export type AjnaEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn'
-export type AjnaEarnPanel = 'adjust' | 'liquidity'
+export type AjnaEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn' | 'claim-earn'
+export type AjnaEarnPanel = 'adjust' | 'liquidity' | 'claim-collateral'
 
 export type AjnaMultiplyAction =
   | 'open-multiply'
@@ -88,4 +88,12 @@ export type AjnaProductCardsData = {
   borrowCards: AjnaProductCardsBorrow[]
   earnCards: AjnaProductCardsEarn[]
   multiplyCards: unknown[]
+}
+
+export type AjnaValidationItem = {
+  message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
+}
+
+export interface AjnaIsCachedPosition {
+  cached?: boolean
 }

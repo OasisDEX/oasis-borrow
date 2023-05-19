@@ -1,3 +1,5 @@
+import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
+import { networksByName } from 'blockchain/networksConfig'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
@@ -33,8 +35,10 @@ import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } fr
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { getSupportedTokens } from './strategy-config'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function setupAaveV3Context(appContext: AppContext, network: NetworkNames): AaveContext {
+  const networkId = networksByName[network].id
+  ensureIsSupportedAaveV3NetworkId(networkId)
+
   const {
     userSettings$,
     txHelpers$,
@@ -63,7 +67,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(appContext)
+  } = getCommonPartsFromAppContext(appContext, onEveryBlock$, networkId)
 
   const {
     aaveUserAccountData$,
@@ -72,7 +76,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     aaveOracleAssetPriceData$,
     getAaveReserveData$,
     getAaveAssetsPrices$,
-  } = protocols[LendingProtocol.AaveV3]
+  } = protocols[LendingProtocol.AaveV3][networkId]
 
   const aaveEarnYieldsQuery = memoize(
     curry(getAaveWstEthYield)(disconnectedGraphQLClient$, moment()),
@@ -87,7 +91,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     curry(getAaveSupportedTokenBalances$)(
       balance$,
       aaveOracleAssetPriceData$,
-      () => of(one), // aave v3 base is already in USD
+      of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3, NetworkNames.ethereumMainnet),
     ),
   )
@@ -175,7 +179,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
   return {
-    ...protocols[LendingProtocol.AaveV3],
+    ...protocols[LendingProtocol.AaveV3][networkId],
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,

@@ -11,7 +11,7 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   SwapWidgetState,
-} from 'features/uniswapWidget/SwapWidgetChange'
+} from 'features/swapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { ConnectButton } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -33,7 +33,7 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 import { useAppContext } from './AppContextProvider'
 import { NavigationNetworkSwitcher } from './navigation/NavigationNetworkSwitcher'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
-import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidgetShowHide'
+import { SwapWidgetShowHide } from './swapWidget/SwapWidgetShowHide'
 
 function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -232,10 +232,11 @@ function UserDesktopMenu() {
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
   const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
+  const swapWidgetFeatureToggle = useFeatureToggle('SwapWidget')
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
-  const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
+  const showNewSwapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
   const contextAccountDetails: ContextAccountDetails = { context, accountData }
 
@@ -267,47 +268,49 @@ function UserDesktopMenu() {
           {t('my-positions')} {!!amountOfPositions && `(${amountOfPositions})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
-        <Box>
-          <Button
-            variant="menuButtonRound"
-            onClick={() => {
-              setExchangeOpened(true)
-              uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
-                type: 'open',
-              })
-            }}
-            sx={{
-              mr: 2,
-              position: 'relative',
-              '&, :focus': {
-                outline: widgetOpen ? '1px solid' : null,
-                outlineColor: 'primary100',
-              },
-              color: 'neutral80',
-              ':hover': { color: 'primary100' },
-            }}
-          >
-            {showNewUniswapWidgetBeacon && (
+        {swapWidgetFeatureToggle && (
+          <Box>
+            <Button
+              variant="menuButtonRound"
+              onClick={() => {
+                setExchangeOpened(true)
+                uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+                  type: 'open',
+                })
+              }}
+              sx={{
+                mr: 2,
+                position: 'relative',
+                '&, :focus': {
+                  outline: widgetOpen ? '1px solid' : null,
+                  outlineColor: 'primary100',
+                },
+                color: 'neutral80',
+                ':hover': { color: 'primary100' },
+              }}
+            >
+              {showNewSwapWidgetBeacon && (
+                <Icon
+                  name="new_beacon"
+                  sx={{
+                    position: 'absolute',
+                    top: '-3px',
+                    right: '-3px',
+                  }}
+                  size="auto"
+                  width={22}
+                />
+              )}
               <Icon
-                name="new_beacon"
-                sx={{
-                  position: 'absolute',
-                  top: '-3px',
-                  right: '-3px',
-                }}
+                name="exchange"
                 size="auto"
-                width={22}
+                width="20"
+                color={widgetOpen ? 'primary100' : 'inherit'}
               />
-            )}
-            <Icon
-              name="exchange"
-              size="auto"
-              width="20"
-              color={widgetOpen ? 'primary100' : 'inherit'}
-            />
-          </Button>
-          <UniswapWidgetShowHide />
-        </Box>
+            </Button>
+            <SwapWidgetShowHide />
+          </Box>
+        )}
         {useNetworkSwitcher ? (
           <Box sx={{ mr: 2 }}>
             <NavigationNetworkSwitcher />
@@ -404,16 +407,7 @@ function ConnectedHeader() {
                   color={widgetOpen ? 'primary100' : 'inherit'}
                 />
               </Button>
-              <UniswapWidgetShowHide
-                sxWrapper={{
-                  position: 'fixed',
-                  top: '50%',
-                  left: '50%',
-                  right: 'unset',
-                  bottom: 'unset',
-                  transform: 'translateX(-50%) translateY(-50%)',
-                }}
-              />
+              <SwapWidgetShowHide />
               <MobileMenu />
             </Flex>
             <WalletPanelMobile />

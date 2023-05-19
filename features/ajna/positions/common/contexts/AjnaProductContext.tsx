@@ -1,16 +1,19 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/oasis-actions-poc'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
-import { ValidationMessagesInput } from 'components/ValidationMessages'
-import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
 import {
   AjnaBorrowFormState,
   useAjnaBorrowFormReducto,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
+import {
+  AjnaBorrowishPositionAuction,
+  AjnaEarnPositionAuction,
+} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
 import {
   AjnaEarnFormState,
@@ -38,18 +41,21 @@ interface AjnaProductContextProviderPropsWithBorrow {
   formDefaults: Partial<AjnaBorrowFormState>
   position: AjnaPosition
   product: 'borrow'
+  positionAuction: AjnaBorrowishPositionAuction
 }
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
   formDefaults: Partial<AjnaEarnFormState>
   position: AjnaEarnPosition
   product: 'earn'
+  positionAuction: AjnaEarnPositionAuction
 }
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
   formDefaults: Partial<AjnaMultiplyFormState>
   position: AjnaMultiplyPosition
   product: 'multiply'
+  positionAuction: AjnaBorrowishPositionAuction
 }
 type AjnaProductDetailsContextProviderProps =
   | AjnaProductContextProviderPropsWithBorrow
@@ -61,7 +67,7 @@ interface AjnaPositionSet<P> {
   simulation?: P
 }
 
-interface AjnaProductContextPosition<P> {
+interface AjnaProductContextPosition<P, A> {
   cachedPosition?: AjnaPositionSet<P>
   currentPosition: AjnaPositionSet<P>
   isSimulationLoading?: boolean
@@ -69,31 +75,36 @@ interface AjnaProductContextPosition<P> {
   setCachedPosition: (positionSet: AjnaPositionSet<AjnaGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
+  positionAuction: A
 }
 
-interface AjnaProductContext<P, F> {
+interface AjnaProductContext<P, F, A> {
   form: F
-  position: AjnaProductContextPosition<P>
+  position: AjnaProductContextPosition<P, A>
   validation: {
-    errors: ValidationMessagesInput
+    errors: AjnaValidationItem[]
     hasErrors: boolean
+    isFormFrozen: boolean
     isFormValid: boolean
-    warnings: ValidationMessagesInput
+    warnings: AjnaValidationItem[]
   }
   notifications: DetailsSectionNotificationItem[]
 }
 
 type AjnaProductContextWithBorrow = AjnaProductContext<
   AjnaPosition,
-  ReturnType<typeof useAjnaBorrowFormReducto>
+  ReturnType<typeof useAjnaBorrowFormReducto>,
+  AjnaBorrowishPositionAuction
 >
 type AjnaProductContextWithEarn = AjnaProductContext<
   AjnaEarnPosition,
-  ReturnType<typeof useAjnaEarnFormReducto>
+  ReturnType<typeof useAjnaEarnFormReducto>,
+  AjnaEarnPositionAuction
 >
 type AjnaProductContextWithMultiply = AjnaProductContext<
   AjnaMultiplyPosition,
-  ReturnType<typeof useAjnaMultiplyFormReducto>
+  ReturnType<typeof useAjnaMultiplyFormReducto>,
+  AjnaBorrowishPositionAuction
 >
 
 const ajnaBorrowContext = React.createContext<AjnaProductContextWithBorrow | undefined>(undefined)
@@ -133,6 +144,7 @@ export function AjnaProductContextProvider({
   formReducto,
   product,
   position,
+  positionAuction,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
@@ -179,6 +191,7 @@ export function AjnaProductContextProvider({
         simulationWarnings: simulation?.warnings,
         state,
         position,
+        positionAuction,
         txError: txDetails?.txError,
       }),
     [
@@ -200,6 +213,7 @@ export function AjnaProductContextProvider({
     () =>
       getAjnaNotifications({
         position,
+        positionAuction,
         product,
         quoteToken,
         collateralToken,
@@ -209,10 +223,13 @@ export function AjnaProductContextProvider({
     [quoteToken, collateralToken, position],
   )
 
-  const [context, setContext] = useState<AjnaProductContext<typeof position, typeof form>>({
+  const [context, setContext] = useState<
+    AjnaProductContext<typeof position, typeof form, typeof positionAuction>
+  >({
     form,
     position: {
       cachedPosition,
+      positionAuction,
       currentPosition: { position },
       isSimulationLoading,
       resolvedId: positionIdFromDpmProxyData,
@@ -237,6 +254,7 @@ export function AjnaProductContextProvider({
         },
         isSimulationLoading,
         resolvedId: positionIdFromDpmProxyData,
+        positionAuction,
       },
       validation,
       notifications,

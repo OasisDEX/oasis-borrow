@@ -1,74 +1,42 @@
-import { getOnChainPosition } from 'actions/aave/oasisActionsLibWrapper'
 import BigNumber from 'bignumber.js'
-import {
-  createAaveV2OracleAssetPriceData$,
-  createConvertToAaveV2OracleAssetPrice$,
-  getAaveV2AssetsPrices,
-  getAaveV2PositionLiquidation$,
-  getAaveV2ReserveConfigurationData,
-  getAaveV2ReserveData,
-  getAaveV2ReservesList,
-  getAaveV2UserAccountData,
-  getAaveV2UserConfiguration,
-  getAaveV2UserReserveData,
-} from 'blockchain/aave'
-import { observe } from 'blockchain/calls/observe'
-import { Context } from 'blockchain/network'
+import * as blockchainCalls from 'blockchain/aave'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
-import { isEqual, memoize } from 'lodash'
-import { from, Observable } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { makeObservable, makeOneObservable } from 'lendingProtocols/pipelines'
+import { memoize } from 'lodash'
+import { Observable } from 'rxjs'
 
-import {
-  getAaveProtocolData$,
-  getAaveProxyConfiguration$,
-  mapAaveUserAccountData$,
-  prepareAaveAvailableLiquidityInUSDC$,
-} from './pipelines'
+import * as pipelines from './pipelines'
 import curry from 'ramda/src/curry'
 
 interface AaveV2ServicesDependencies {
-  context$: Observable<Context>
   refresh$: Observable<unknown>
-  once$: Observable<unknown>
 }
-export function getAaveV2Services({
-  context$,
-  refresh$,
-  once$,
-}: AaveV2ServicesDependencies): AaveServices {
-  const aaveLiquidations$ = memoize(
-    curry(getAaveV2PositionLiquidation$)(context$),
-    (proxyAddress) => proxyAddress,
-  )
 
-  const aaveV2UserAccountData$ = observe(
+export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): AaveServices {
+  const aaveLiquidations$ = makeObservable(refresh$, blockchainCalls.getAaveV2PositionLiquidation)
+  const aaveUserAccountData$ = makeObservable(refresh$, pipelines.mapAaveUserAccountData)
+  const getAaveReserveData$ = makeObservable(refresh$, blockchainCalls.getAaveV2ReserveData)
+  const tokenPrices = makeObservable(refresh$, blockchainCalls.getAaveV2AssetsPrices)
+  const tokenPriceInEth$ = makeObservable(refresh$, blockchainCalls.getAaveV2OracleAssetPrice)
+  const usdcPriceInEth$ = tokenPriceInEth$({ token: 'USDC' })
+  const aaveUserReserveData$ = makeObservable(refresh$, blockchainCalls.getAaveV2UserReserveData)
+  const aaveReserveConfigurationData$ = makeObservable(
     refresh$,
-    context$,
-    getAaveV2UserAccountData,
-    (args) => args.address,
+    blockchainCalls.getAaveV2ReserveConfigurationData,
   )
-
-  const aaveUserAccountData$ = memoize(
-    curry(mapAaveUserAccountData$)(aaveV2UserAccountData$),
-    (args) => JSON.stringify(args),
+  const aaveUserConfiguration$ = makeObservable(
+    refresh$,
+    blockchainCalls.getAaveV2UserConfiguration,
   )
+  const aaveReservesList$ = makeOneObservable(refresh$, blockchainCalls.getAaveV2ReservesList)
 
-  const getAaveReserveData$ = observe(once$, context$, getAaveV2ReserveData)
-  const getAaveAssetsPrices$ = observe(once$, context$, getAaveV2AssetsPrices)
+  const getAaveOnChainPosition$ = makeObservable(refresh$, pipelines.aaveV2OnChainPosition)
 
-  const tokenPriceInEth$ = memoize((token: string) => {
-    return getAaveAssetsPrices$({ tokens: [token] }).pipe(
-      map(([tokenPriceInEth]) => tokenPriceInEth),
-      distinctUntilChanged((a, b) => isEqual(a, b)),
-    )
-  })
-
-  const usdcPriceInEth$ = tokenPriceInEth$('USDC')
-
-  const aaveAvailableLiquidityInUSDC$ = memoize(
-    curry(prepareAaveAvailableLiquidityInUSDC$)(
+  const aaveAvailableLiquidityInUSDC$: (
+    args: blockchainCalls.AaveV2ReserveDataParameters,
+  ) => Observable<BigNumber> = memoize(
+    curry(pipelines.aaveAvailableLiquidityInUSDC$)(
       getAaveReserveData$,
       tokenPriceInEth$,
       usdcPriceInEth$,
@@ -76,38 +44,11 @@ export function getAaveV2Services({
     ({ token }) => token,
   )
 
-  const aaveUserReserveData$ = observe(refresh$, context$, getAaveV2UserReserveData)
-  const aaveUserConfiguration$ = observe(refresh$, context$, getAaveV2UserConfiguration)
-  const aaveReservesList$ = observe(refresh$, context$, getAaveV2ReservesList)()
-  const aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber> =
-    memoize(curry(createAaveV2OracleAssetPriceData$)(refresh$, context$), ({ token }) => token)
-
-  const getAaveOnChainPosition$ = memoize(
-    (collateralToken: string, debtToken: string, proxyAddress: string) => {
-      return context$.pipe(
-        switchMap((context) => {
-          return from(
-            getOnChainPosition({
-              context,
-              proxyAddress,
-              collateralToken,
-              debtToken,
-              protocol: LendingProtocol.AaveV2,
-            }),
-          )
-        }),
-        shareReplay(1),
-      )
-    },
-    (collateralToken: string, debtToken: string, proxyAddress: string) =>
-      collateralToken + debtToken + proxyAddress,
-  )
-
   const aaveProtocolData$ = memoize(
-    curry(getAaveProtocolData$)(
+    curry(pipelines.getAaveProtocolData$)(
       aaveUserReserveData$,
       aaveUserAccountData$,
-      aaveOracleAssetPriceData$,
+      tokenPriceInEth$,
       aaveUserConfiguration$,
       aaveReservesList$,
       getAaveOnChainPosition$,
@@ -116,32 +57,19 @@ export function getAaveV2Services({
   )
 
   const aaveProxyConfiguration$ = memoize(
-    curry(getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
-  )
-
-  const aaveReserveConfigurationData$ = observe(
-    refresh$,
-    context$,
-    getAaveV2ReserveConfigurationData,
-    ({ token }) => token,
-  )
-
-  const convertToAaveOracleAssetPrice$ = memoize(
-    curry(createConvertToAaveV2OracleAssetPrice$)(aaveOracleAssetPriceData$),
-    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
+    curry(pipelines.getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
   )
 
   return {
     protocol: LendingProtocol.AaveV2,
+    aaveReserveConfigurationData$,
+    getAaveReserveData$,
+    aaveAvailableLiquidityInUSDC$,
     aaveLiquidations$,
     aaveUserAccountData$,
-    aaveAvailableLiquidityInUSDC$,
-    aaveProtocolData$,
     aaveProxyConfiguration$,
-    getAaveAssetsPrices$,
-    aaveReserveConfigurationData$,
-    convertToAaveOracleAssetPrice$,
-    aaveOracleAssetPriceData$,
-    getAaveReserveData$,
+    aaveProtocolData$,
+    aaveOracleAssetPriceData$: tokenPriceInEth$,
+    getAaveAssetsPrices$: tokenPrices,
   }
 }

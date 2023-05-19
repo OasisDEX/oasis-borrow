@@ -87,6 +87,7 @@ import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
+  compareBigNumber,
   ContextConnected,
   createAccount$,
   createContext$,
@@ -96,7 +97,6 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { compareBigNumber } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
 import {
@@ -269,17 +269,17 @@ import {
 } from 'features/stateMachines/dpmAccount'
 import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
 import { transactionContextService } from 'features/stateMachines/transaction'
-import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
-import {
-  checkAcceptanceFromApi$,
-  saveAcceptanceFromApi$,
-} from 'features/termsOfService/termsAcceptanceApi'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   swapWidgetChangeReducer,
   SwapWidgetState,
-} from 'features/uniswapWidget/SwapWidgetChange'
+} from 'features/swapWidget/SwapWidgetChange'
+import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
+import {
+  checkAcceptanceFromApi$,
+  saveAcceptanceFromApi$,
+} from 'features/termsOfService/termsAcceptanceApi'
 import { createUserSettings$ } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
@@ -623,12 +623,10 @@ export function setupAppContext() {
 
   // protocols
   const aaveV2 = getAaveV2Services({
-    context$,
     refresh$: onEveryBlock$,
-    once$,
   })
 
-  const aaveV3 = getAaveV3Services({ context$, refresh$: onEveryBlock$, once$ })
+  const aaveV3 = getAaveV3Services({ refresh$: onEveryBlock$, networkId: NetworkIds.MAINNET })
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
@@ -1391,7 +1389,9 @@ export function setupAppContext() {
 
   const protocols: ProtocolsServices = {
     [LendingProtocol.AaveV2]: aaveV2,
-    [LendingProtocol.AaveV3]: aaveV3,
+    [LendingProtocol.AaveV3]: {
+      [NetworkIds.MAINNET]: aaveV3,
+    },
   }
 
   const contextForAddress$ = connectedContext$.pipe(
@@ -1541,8 +1541,10 @@ function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: s
 }
 
 export type ProtocolsServices = {
-  [LendingProtocol.AaveV2]: ReturnType<typeof getAaveV2Services> & AaveServices
-  [LendingProtocol.AaveV3]: ReturnType<typeof getAaveV3Services> & AaveServices
+  [LendingProtocol.AaveV2]: AaveServices
+  [LendingProtocol.AaveV3]: {
+    [NetworkIds.MAINNET]: AaveServices
+  }
 }
 
 export type DepreciatedServices = {

@@ -5,6 +5,7 @@ import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-con
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
 import { NetworkIds } from './networkIds'
+import { networksById } from './networksConfig'
 
 export interface UserDpmAccount {
   proxy: string
@@ -21,13 +22,16 @@ export function getUserDpmProxies$(
   }
 
   return context$.pipe(
-    switchMap(async ({ chainId, rpcProvider }) => {
+    switchMap(async ({ chainId }) => {
       const { accountFactory, accountGuard } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
-        rpcProvider,
+        networksById[chainId].readProvider,
       )
-      const accountGuardContract = AccountGuard__factory.connect(accountGuard.address, rpcProvider)
+      const accountGuardContract = AccountGuard__factory.connect(
+        accountGuard.address,
+        networksById[chainId].readProvider,
+      )
       const accountCreatedFilter = accountFactoryContract.filters.AccountCreated(
         null,
         walletAddress,
@@ -102,13 +106,16 @@ export function getUserDpmProxy$(
   vaultId: number,
 ): Observable<UserDpmAccount | undefined> {
   return context$.pipe(
-    switchMap(async ({ chainId, rpcProvider }) => {
+    switchMap(async ({ chainId }) => {
       const { accountFactory, accountGuard } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
-        rpcProvider,
+        networksById[chainId].readProvider,
       )
-      const accountGuardContract = AccountGuard__factory.connect(accountGuard.address, rpcProvider)
+      const accountGuardContract = AccountGuard__factory.connect(
+        accountGuard.address,
+        networksById[chainId].readProvider,
+      )
 
       const accountCreatedFilter = accountFactoryContract.filters.AccountCreated(
         null,
@@ -160,11 +167,11 @@ export function getPositionIdFromDpmProxy$(
   dpmProxy: string,
 ): Observable<string | undefined> {
   return context$.pipe(
-    switchMap(async ({ chainId, rpcProvider }) => {
+    switchMap(async ({ chainId }) => {
       const { accountFactory } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
-        rpcProvider,
+        networksById[chainId].readProvider,
       )
 
       const filter = accountFactoryContract.filters.AccountCreated(dpmProxy, null, null)

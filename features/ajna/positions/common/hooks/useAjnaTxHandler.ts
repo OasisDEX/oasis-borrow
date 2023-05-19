@@ -1,7 +1,9 @@
+import { Strategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
 import { AjnaTxData, getAjnaParameters } from 'actions/ajna'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { networksById } from 'blockchain/networksConfig'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -14,8 +16,6 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
-
-import { Strategy } from '@oasisdex/oasis-actions-poc/src/types/common'
 
 export interface OasisActionCallData extends AjnaTxData {
   kind: TxMetaKind.libraryCall
@@ -56,7 +56,7 @@ export function useAjnaTxHandler(): () => void {
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [context?.rpcProvider, dpmAddress, state])
+  }, [context?.chainId, dpmAddress, state])
 
   useDebouncedEffect(
     () => {
@@ -69,7 +69,7 @@ export function useAjnaTxHandler(): () => void {
             position,
             quotePrice,
             quoteToken,
-            rpcProvider: context.rpcProvider,
+            rpcProvider: networksById[context.chainId].readProvider,
             state,
             isFormValid,
           }),
@@ -99,7 +99,7 @@ export function useAjnaTxHandler(): () => void {
           })
       }
     },
-    [context?.rpcProvider, dpmAddress, state, isExternalStep],
+    [context?.chainId, dpmAddress, state, isExternalStep],
     250,
   )
 
