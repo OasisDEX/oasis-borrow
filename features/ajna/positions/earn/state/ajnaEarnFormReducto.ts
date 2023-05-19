@@ -18,7 +18,7 @@ export interface AjnaEarnFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   uiDropdown: AjnaEarnPanel
-  uiPill: Exclude<AjnaEarnAction, 'open-earn'>
+  uiPill: Exclude<AjnaEarnAction, 'open-earn' | 'claim-earn'>
 }
 
 export type AjnaEarnFormAction = ReductoActions<

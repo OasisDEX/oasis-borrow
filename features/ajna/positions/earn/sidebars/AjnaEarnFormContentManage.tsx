@@ -1,6 +1,7 @@
 import { ActionPills } from 'components/ActionPills'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaEarnFormContentAdjust } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentAdjust'
+import { AjnaEarnFormContentClaimCollateral } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentClaimCollateral'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentDeposit'
 import { AjnaEarnFormContentWithdraw } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentWithdraw'
 import { useTranslation } from 'next-i18next'
@@ -56,6 +57,7 @@ export function AjnaEarnFormContentManage() {
           }
         </>
       )}
+      {uiDropdown === 'claim-collateral' && <AjnaEarnFormContentClaimCollateral />}
     </>
   )
 }
