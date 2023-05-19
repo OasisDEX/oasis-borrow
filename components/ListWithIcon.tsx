@@ -12,7 +12,7 @@ interface IListWithIconProps {
   listStyle?: SxStyleProp
   itemStyle?: SxStyleProp
   iconStyle?: SxStyleProp
-  components?: { [key: string]: ReactNode }
+  components?: { [key: number]: ReactNode }
 }
 
 export function ListWithIcon({
