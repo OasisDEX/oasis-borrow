@@ -15,7 +15,6 @@ export interface SliderValuePickerProps {
   maxBoundry: BigNumber
   lastValue: BigNumber
   disabled: boolean
-  disabledVisually?: boolean
   leftBoundryStyling?: SxStyleProp
   rightBoundryStyling?: SxStyleProp
   step: number
@@ -44,7 +43,8 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
     <Grid
       gap={2}
       sx={{
-        opacity: props.disabledVisually && props.disabled ? 0.6 : 1,
+        opacity: props.disabled ? 0.5 : 1,
+        transition: '200ms opacity',
       }}
     >
       <Flex
@@ -74,6 +74,9 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           sx={{
             background: props.colorfulRanges || background,
             direction: props.direction || 'ltr',
+            '&:disabled': {
+              opacity: 1,
+            },
           }}
           disabled={props.disabled}
           step={props.step}
