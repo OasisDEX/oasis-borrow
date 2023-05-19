@@ -9,7 +9,7 @@ import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import {  Card, Heading, Text } from 'theme-ui'
+import { Card, Heading, Text } from 'theme-ui'
 
 interface ContentCardPositionLendingPriceModalProps {
   positionLendingPrice: string
