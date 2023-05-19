@@ -1704,6 +1704,18 @@
       "optimism-wbtcusdc": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC. Now on Optimism."
+      },
+      "arbitrum-ethusdc": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC. Now on Arbitrum."
+      },
+      "arbitrum-wstethusdc": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards. Now on Arbitrum."
+      },
+      "arbitrum-wbtcusdc": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC. Now on Arbitrum."
       }
     },
     "tags": {

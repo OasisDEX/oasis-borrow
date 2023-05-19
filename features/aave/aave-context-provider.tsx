@@ -50,6 +50,9 @@ export function AaveContextProvider({ children }: WithChildren) {
         [NetworkNames.optimismMainnet]: {
           [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.optimismMainnet),
         },
+        [NetworkNames.arbitrumMainnet]: {
+          [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.arbitrumMainnet),
+        },
       })
     }
   }, [appContext])

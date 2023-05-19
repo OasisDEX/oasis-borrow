@@ -631,6 +631,10 @@ export function setupAppContext() {
     refresh$: onEveryBlock$,
     networkId: NetworkIds.OPTIMISMMAINNET,
   })
+  const aaveV3Arbitrum = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+  })
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
@@ -1396,6 +1400,7 @@ export function setupAppContext() {
     [LendingProtocol.AaveV3]: {
       [NetworkIds.MAINNET]: aaveV3,
       [NetworkIds.OPTIMISMMAINNET]: aaveV3Optimism,
+      [NetworkIds.ARBITRUMMAINNET]: aaveV3Arbitrum,
     },
   }
 
@@ -1550,6 +1555,7 @@ export type ProtocolsServices = {
   [LendingProtocol.AaveV3]: {
     [NetworkIds.MAINNET]: AaveServices
     [NetworkIds.OPTIMISMMAINNET]: AaveServices
+    [NetworkIds.ARBITRUMMAINNET]: AaveServices
   }
 }
 

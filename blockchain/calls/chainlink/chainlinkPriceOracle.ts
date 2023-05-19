@@ -13,6 +13,7 @@ export type ChainlinkSupportedNetworks =
   | NetworkIds.MAINNET
   | NetworkIds.HARDHAT
   | NetworkIds.OPTIMISMMAINNET
+  | NetworkIds.ARBITRUMMAINNET
 
 const factory = ChainlinkPriceOracle__factory
 
@@ -20,7 +21,11 @@ export function getChainlinkOraclePrice(
   contractName: keyof MainnetContracts['chainlinkPriceOracle'],
   networkId: ChainlinkSupportedNetworks,
 ): Promise<BigNumber> {
-  if (!contractName || !mainnetContracts['chainlinkPriceOracle'][contractName]) {
+  if (
+    !contractName ||
+    !mainnetContracts['chainlinkPriceOracle'][contractName] ||
+    !getNetworkContracts(networkId)?.chainlinkPriceOracle[contractName]
+  ) {
     throw new Error(`ChainlinkPriceOracle ${contractName} not found`)
   }
 

@@ -63,6 +63,11 @@ const networkMappings = {
     NetworkIds.OPTIMISMMAINNET,
     'aaveV3PoolDataProvider',
   ),
+  [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.ARBITRUMMAINNET,
+    'aaveV3PoolDataProvider',
+  ),
 }
 
 export function getAaveV3UserReserveData({
@@ -71,6 +76,9 @@ export function getAaveV3UserReserveData({
   networkId,
 }: AaveV3UserReserveDataParameters): Promise<AaveV3UserReserveData> {
   const { contract, tokenMappings } = networkMappings[networkId]
+  if (!networkMappings[networkId]) {
+    console.warn('No getAaveV3UserReserveData network mapping for', networkId)
+  }
   const tokenAddress = tokenMappings[token].address
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
@@ -109,7 +117,7 @@ export function getAaveV3ReserveData({
       token,
     )
     return {
-      availableLiquidity: totalAToken.minus(totalStableDebt).plus(totalVariableDebt),
+      availableLiquidity: totalAToken.minus(totalStableDebt).minus(totalVariableDebt),
       unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
       liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),

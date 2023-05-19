@@ -25,6 +25,7 @@ export type ContractForNetwork<Contract> = {
 const baseCurrencyUnits = {
   [NetworkIds.MAINNET]: new BigNumber(100000000),
   [NetworkIds.OPTIMISMMAINNET]: new BigNumber(100000000),
+  [NetworkIds.ARBITRUMMAINNET]: new BigNumber(100000000),
   [NetworkIds.HARDHAT]: new BigNumber(100000000),
 }
 
