@@ -4,36 +4,10 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid, Heading, Text } from 'theme-ui'
-
-interface ContentCardTokensDepositedModalProps {
-  tokensDeposited: string
-  quoteToken: string
-}
-
-function ContentCardTokensDepositedModal({
-  tokensDeposited,
-  quoteToken,
-}: ContentCardTokensDepositedModalProps) {
-  const { t } = useTranslation()
-
-  return (
-    <Grid gap={2}>
-      <Heading variant="header3">
-        {t('ajna.position-page.earn.manage.overview.tokens-deposited')}
-      </Heading>
-      <Text variant="paragraph2" as="p" sx={{ pb: 2 }}>
-        {t('ajna.position-page.earn.manage.overview.tokens-deposited-modal-desc')}
-      </Text>
-      <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
-        {tokensDeposited} {quoteToken}
-      </Card>
-    </Grid>
-  )
-}
 
 interface ContentCardCurrentEarningsProps {
   isLoading?: boolean
@@ -74,9 +48,10 @@ export function ContentCardTokensDeposited({
       variant: changeVariant,
     },
     modal: (
-      <ContentCardTokensDepositedModal
-        tokensDeposited={formatted.tokensDeposited}
-        quoteToken={quoteToken}
+      <AjnaDetailsSectionContentSimpleModal
+        title={t('ajna.position-page.earn.manage.overview.tokens-deposited')}
+        description={t('ajna.position-page.earn.manage.overview.tokens-deposited-modal-desc')}
+        value={`${formatted.tokensDeposited} ${quoteToken}`}
       />
     ),
   }
