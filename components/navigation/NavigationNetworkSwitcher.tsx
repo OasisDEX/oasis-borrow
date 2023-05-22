@@ -3,9 +3,9 @@ import { ConnectedChain } from '@web3-onboard/core'
 import { useSetChain } from '@web3-onboard/react'
 import {
   CustomNetworkStorageKey,
-  forkNetworks,
   mainnetNetworkParameter,
   networksListWithForksByHexId,
+  networksSet,
   useCustomNetworkParameter,
 } from 'blockchain/networks'
 import {
@@ -16,12 +16,7 @@ import {
   isTestnetEnabled,
   isTestnetNetworkHexId,
 } from 'blockchain/networks'
-import {
-  defaultForkSettings,
-  NetworkConfig,
-  NetworkConfigHexId,
-  networks,
-} from 'blockchain/networks'
+import { NetworkConfig, NetworkConfigHexId } from 'blockchain/networks'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useModal } from 'helpers/modalHook'
@@ -42,13 +37,39 @@ export function NavigationNetworkSwitcher() {
   const [, setCustomNetwork] = useCustomNetworkParameter()
   const [web3Context] = useObservable(web3Context$)
   const openModal = useModal()
+  // @ts-ignore
   const changeChain = useCallback(
     (networkHexId: NetworkConfigHexId) => () => {
       const network = networksListWithForksByHexId[networkHexId]
 
+      const chainToSet = network.isCustomFork
+        ? { chainId: network.hexId, rpcUrl: network.rpcUrl, label: network.label }
+        : { chainId: network.hexId }
+
+      console.log(`Chain to set: ${JSON.stringify(chainToSet)}`)
+      if (network.isCustomFork) {
+        // @ts-ignore
+        window.ethereum
+          ?.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: network.hexId,
+                rpcUrls: [network.rpcUrl],
+                chainName: network.label,
+                nativeCurrency: {
+                  name: 'ETH',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+              },
+            ],
+          })
+          .catch(console.error)
+      }
       if (connectedChain) {
         // wallet is connected, change it there so it updates everywhere
-        setChain({ chainId: network.hexId! })
+        setChain(chainToSet)
           .then((setChainSuccess) => {
             setChainSuccess &&
               setCustomNetwork({
@@ -79,7 +100,7 @@ export function NavigationNetworkSwitcher() {
   const { hexId: customNetworkHexId } = (customNetworkData ||
     mainnetNetworkParameter) as typeof mainnetNetworkParameter
 
-  const handleNetworkButton = (isFork?: boolean) => (network: NetworkConfig) => {
+  const handleNetworkButton = (network: NetworkConfig) => {
     const isCurrentNetwork = network.name === currentNetworkName
     return (
       <Button
@@ -90,14 +111,14 @@ export function NavigationNetworkSwitcher() {
           color: isCurrentNetwork ? 'primary100' : 'neutral80',
           ':hover': {
             color: 'primary100',
-            ...(isFork && {
+            ...(network.isCustomFork && {
               '::before': {
                 top: '-5px',
                 left: '-5px',
               },
             }),
           },
-          ...(isFork && {
+          ...(network.isCustomFork && {
             '::before': {
               content: '"👷‍♂️"',
               position: 'absolute',
@@ -164,16 +185,13 @@ export function NavigationNetworkSwitcher() {
               overflow: 'hidden',
             }}
           >
-            {networks
+            {networksSet
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
                   : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
               )
-              .map(handleNetworkButton(false))}
-            {forkNetworks.map((config) =>
-              handleNetworkButton(true)({ ...defaultForkSettings, ...config } as NetworkConfig),
-            )}
+              .map(handleNetworkButton)}
             {(connectedChain || isTestnetEnabled()) && (
               <>
                 <Button
