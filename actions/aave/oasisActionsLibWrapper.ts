@@ -5,7 +5,6 @@ import {
   IPositionTransition,
   IRiskRatio,
   ISimplePositionTransition,
-  ISimulatedTransition,
   Position,
   strategies,
   ZERO,
@@ -505,21 +504,6 @@ export function getEmptyPosition(collateral: string, debt: string) {
       liquidationThreshold: zero,
       dustLimit: zero,
     },
-  )
-}
-
-export function transitionHasSwap(
-  transition?: ISimplePositionTransition,
-): transition is IPositionTransition {
-  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
-}
-
-export function transitionHasMinConfigurableRiskRatio(
-  transition?: ISimplePositionTransition,
-): transition is IPositionTransition {
-  return (
-    !!transition &&
-    (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
   )
 }
 

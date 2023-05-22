@@ -77,7 +77,7 @@ function getRpcNode(network: NetworkNames) {
     case NetworkNames.polygonMumbai:
       return `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.optimismMainnet:
-      return `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+      return `https://opt-mainnet.g.alchemy.com/v2/gVzkhGf1b1ShbPZEQYakEBrNkZggDorx`
     case NetworkNames.optimismGoerli:
       return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:

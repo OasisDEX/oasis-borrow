@@ -198,13 +198,14 @@ function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useChangeChainButton({
   strategy,
 }: {
   strategy: IStrategyConfig
 }): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const [custromNetwork, setCustomNetwork] = useCustomNetworkParameter()
+  const [, setCustomNetwork] = useCustomNetworkParameter()
 
   return useMemo(
     () => ({

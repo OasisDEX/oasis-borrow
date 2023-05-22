@@ -188,55 +188,44 @@ export async function getAdjustAaveParameters({
   currentPosition,
   proxyType,
   positionType,
-  protocol,
   networkId,
 }: AdjustAaveParameters): Promise<PositionTransition> {
-  try {
-    assertNetwork(networkId)
+  assertNetwork(networkId)
 
-    const provider = networksById[networkId].readProvider
+  const provider = networksById[networkId].readProvider
 
-    const collateralToken = {
-      symbol: currentPosition.collateral.symbol as AAVETokens,
-      precision: currentPosition.collateral.precision,
-    }
-
-    const debtToken = {
-      symbol: currentPosition.debt.symbol as AAVETokens,
-      precision: currentPosition.debt.precision,
-    }
-
-    type strategyArguments = Parameters<typeof strategies.aave.v3.adjust>[0]
-    type strategyDependencies = Parameters<typeof strategies.aave.v3.adjust>[1]
-
-    const args: strategyArguments = {
-      slippage,
-      multiple: riskRatio,
-      debtToken: debtToken,
-      collateralToken: collateralToken,
-      positionType,
-    }
-
-    const stratDeps: strategyDependencies = {
-      addresses: getTokenAddresses(networkId),
-      currentPosition,
-      provider: provider,
-      getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
-      proxy: proxyAddress,
-      user: userAddress,
-      isDPMProxy: proxyType === ProxyType.DpmProxy,
-    }
-
-    switch (protocol) {
-      case LendingProtocol.AaveV3:
-        return await strategies.aave.v3.adjust(args, stratDeps)
-      default:
-        throw new Error('Protocol not supported')
-    }
-  } catch (e) {
-    console.error(e)
-    throw e
+  const collateralToken = {
+    symbol: currentPosition.collateral.symbol as AAVETokens,
+    precision: currentPosition.collateral.precision,
   }
+
+  const debtToken = {
+    symbol: currentPosition.debt.symbol as AAVETokens,
+    precision: currentPosition.debt.precision,
+  }
+
+  type strategyArguments = Parameters<typeof strategies.aave.v3.adjust>[0]
+  type strategyDependencies = Parameters<typeof strategies.aave.v3.adjust>[1]
+
+  const args: strategyArguments = {
+    slippage,
+    multiple: riskRatio,
+    debtToken: debtToken,
+    collateralToken: collateralToken,
+    positionType,
+  }
+
+  const stratDeps: strategyDependencies = {
+    addresses: getTokenAddresses(networkId),
+    currentPosition,
+    provider: provider,
+    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
+    proxy: proxyAddress,
+    user: userAddress,
+    isDPMProxy: proxyType === ProxyType.DpmProxy,
+  }
+
+  return await strategies.aave.v3.adjust(args, stratDeps)
 }
 
 export async function getManageAaveParameters(

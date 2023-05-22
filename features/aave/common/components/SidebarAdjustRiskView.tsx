@@ -1,5 +1,11 @@
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
-import { transitionHasMinConfigurableRiskRatio } from 'actions/aave/oasisActionsLibWrapper'
+import { PositionTransition } from '@oasisdex/dma-library'
+import {
+  IPositionTransition,
+  IRiskRatio,
+  ISimplePositionTransition,
+  ISimulatedTransition,
+  RiskRatio,
+} from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
@@ -53,6 +59,15 @@ export type AdjustRiskViewConfig = {
     minimum: IRiskRatio
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
+}
+
+function transitionHasMinConfigurableRiskRatio(
+  transition?: ISimplePositionTransition | PositionTransition,
+): transition is IPositionTransition {
+  return (
+    !!transition &&
+    (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
+  )
 }
 
 export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
