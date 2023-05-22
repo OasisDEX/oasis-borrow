@@ -69,7 +69,7 @@ function getRpcNode(network: NetworkNames) {
     case NetworkNames.ethereumGoerli:
       return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.arbitrumMainnet:
-      return `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+      return `${process.env.ARBITRUM_MAINNET_RPC_URL}`
     case NetworkNames.arbitrumGoerli:
       return `https://arbitrum-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.polygonMainnet:
@@ -77,7 +77,7 @@ function getRpcNode(network: NetworkNames) {
     case NetworkNames.polygonMumbai:
       return `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.optimismMainnet:
-      return `https://opt-mainnet.g.alchemy.com/v2/gVzkhGf1b1ShbPZEQYakEBrNkZggDorx`
+      return `${process.env.OPTIMISM_MAINNET_RPC_URL}`
     case NetworkNames.optimismGoerli:
       return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
@@ -100,6 +100,8 @@ function getMulticall(network: NetworkNames) {
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case NetworkNames.ethereumGoerli:
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
+    case NetworkNames.arbitrumGoerli:
+    case NetworkNames.arbitrumMainnet:
     case NetworkNames.optimismMainnet:
     case NetworkNames.optimismGoerli:
       return '0xcA11bde05977b3631167028862bE2a173976CA11' //https://github.com/mds1/multicall

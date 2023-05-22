@@ -11,7 +11,6 @@ const USD_CHAINLINK_PRECISION = 8
 
 export type ChainlinkSupportedNetworks =
   | NetworkIds.MAINNET
-  | NetworkIds.HARDHAT
   | NetworkIds.OPTIMISMMAINNET
   | NetworkIds.ARBITRUMMAINNET
 

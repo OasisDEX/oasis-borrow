@@ -18,6 +18,7 @@ import {
 } from 'blockchain/networks'
 import { NetworkConfig, NetworkConfigHexId } from 'blockchain/networks'
 import { useAppContext } from 'components/AppContextProvider'
+import { addCustomForkToTheWallet } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -39,48 +40,33 @@ export function NavigationNetworkSwitcher() {
   const openModal = useModal()
   // @ts-ignore
   const changeChain = useCallback(
-    (networkHexId: NetworkConfigHexId) => () => {
+    async (networkHexId: NetworkConfigHexId) => {
       const network = networksListWithForksByHexId[networkHexId]
 
       const chainToSet = network.isCustomFork
-        ? { chainId: network.hexId, rpcUrl: network.rpcUrl, label: network.label }
+        ? {
+            chainId: network.hexId,
+            rpcUrl: network.rpcUrl,
+            label: network.label,
+          }
         : { chainId: network.hexId }
 
-      console.log(`Chain to set: ${JSON.stringify(chainToSet)}`)
-      if (network.isCustomFork) {
-        // @ts-ignore
-        window.ethereum
-          ?.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainId: network.hexId,
-                rpcUrls: [network.rpcUrl],
-                chainName: network.label,
-                nativeCurrency: {
-                  name: 'ETH',
-                  symbol: 'ETH',
-                  decimals: 18,
-                },
-              },
-            ],
-          })
-          .catch(console.error)
-      }
       if (connectedChain) {
-        // wallet is connected, change it there so it updates everywhere
-        setChain(chainToSet)
-          .then((setChainSuccess) => {
-            setChainSuccess &&
-              setCustomNetwork({
-                network: network.name!,
-                id: network.id!,
-                hexId: network.hexId!,
-              })
-            window && window.location.reload() // duh
+        if (network.isCustomFork) {
+          await addCustomForkToTheWallet(network)
+        }
+
+        const chainSet = await setChain(chainToSet)
+
+        if (chainSet) {
+          setCustomNetwork({
+            network: network.name!,
+            id: network.id!,
+            hexId: network.hexId!,
           })
-          .catch(console.error)
-        return
+        }
+
+        window && window.location.reload() // duh
       }
       if (web3Context?.status === 'connectedReadonly') {
         setCustomNetwork({
@@ -133,7 +119,7 @@ export function NavigationNetworkSwitcher() {
             },
           }),
         }}
-        onClick={changeChain(network.hexId)}
+        onClick={() => changeChain(network.hexId)}
         disabled={settingChain}
         key={network.hexId}
       >
@@ -197,12 +183,14 @@ export function NavigationNetworkSwitcher() {
                 <Button
                   variant="bean"
                   sx={{ fontSize: 2 }}
-                  onClick={toggleChains(
-                    connectedChain || {
-                      id: customNetworkHexId as ConnectedChain['id'],
-                      namespace: 'evm',
-                    },
-                  )}
+                  onClick={() =>
+                    toggleChains(
+                      connectedChain || {
+                        id: customNetworkHexId as ConnectedChain['id'],
+                        namespace: 'evm',
+                      },
+                    )
+                  }
                 >
                   <Box sx={{ width: '100%' }}>
                     {(() => {
