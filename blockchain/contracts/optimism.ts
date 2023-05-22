@@ -19,8 +19,8 @@ export const optimismContracts = {
   tokens: tokensOptimism,
   tokensOptimism,
   chainlinkPriceOracle: {
-    USDCUSD: contractDesc(chainLinkPriceOracle, '0x16a9fa2fda030272ce99b29cf780dfa30361e0f3'),
-    ETHUSD: contractDesc(chainLinkPriceOracle, '0x13e3Ee699D1909E989722E753853AE30b17e08c5'),
+    USDCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_USDCUSD),
+    ETHUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_ETHUSD),
   },
   operationExecutor: contractDesc(operationExecutor, optimism.mpa.core.OperationExecutor),
   swapAddress: optimism.mpa.core.Swap,
