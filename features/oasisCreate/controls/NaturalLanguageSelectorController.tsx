@@ -67,7 +67,7 @@ export function NaturalLanguageSelectorController({
               )
           }}
         />
-        {t('oasis-create.header.with')}
+        {t(`oasis-create.header.conjunction.${selectedProduct}`)}
         <HeaderSelector
           defaultOption={
             token

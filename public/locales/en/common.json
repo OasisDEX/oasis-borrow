@@ -2691,7 +2691,11 @@
   "oasis-create": {
     "header": {
       "i-want-to": "I want to",
-      "with": "with"
+      "conjunction": {
+        "borrow": "against",
+        "multiply": "exposure to",
+        "earn": "with "
+      }
     },
     "select": {
       "borrow": "Borrow against your favorite crypto assets",

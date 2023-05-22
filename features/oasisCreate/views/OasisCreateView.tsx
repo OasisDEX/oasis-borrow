@@ -134,12 +134,11 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
       <AssetsTableContainer>
         <AssetsFiltersContainer
           key={`${selectedProduct}-${selectedToken}`}
-          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '280px auto 280px 280px']}
+          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '250px auto 250px 250px']}
         >
           {selectedProduct !== ProductType.Earn ? (
             <GenericMultiselect
               label={t('oasis-create.filters.debt-tokens')}
-              icon="allAssets"
               options={debtTokens}
               onChange={(value) => {
                 setSelectedFilters({
@@ -154,7 +153,6 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           {!isSmallerScreen && <Box />}
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}
-            icon="allNetworks"
             options={oasisCreateNetworkFilter}
             onChange={(value) => {
               setSelectedFilters({
@@ -165,7 +163,6 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           />
           <GenericMultiselect
             label={t('oasis-create.filters.protocols')}
-            icon="allProtocols"
             options={oasisCreateProtocolFilter}
             onChange={(value) => {
               setSelectedFilters({

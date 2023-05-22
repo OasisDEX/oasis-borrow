@@ -41,11 +41,10 @@ export const oasisCreateTokenOptions: { [key: string]: HeaderSelectorOption } = 
   all: {
     title: 'All assets',
     value: ALL_ASSETS,
-    icon: ['allAssets', 'allAssetsActive'],
   },
   ETH: {
     title: 'Ether',
-    description: 'ETH',
+    description: 'ETH/stETH/rETH',
     value: 'ETH',
     icon: getToken('ETH').iconCircle,
   },
