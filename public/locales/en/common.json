@@ -2467,9 +2467,11 @@
         },
         "banners": {
           "tokens": {
-            "title": "This positions earns AJNA tokens",
-            "description": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards.",
-            "button": "Claim your AJNA tokens"
+            "title": "This position earns AJNA tokens",
+            "description-open": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.",
+            "description-manage": "This Ajna position on Oasis.app makes you eligible for AJNA token rewards. You are earning automatically and you can claim weekly after first month.",
+            "button-open": "Read more about AJNA rewards",
+            "button-manage": "Claim your AJNA tokens"
           }
         },
         "form": {
@@ -2571,7 +2573,7 @@
         "open": {
           "simulation": {
             "duration": "Duration",
-            "earnings-after-fees": "Earnings after fees",
+            "estimated-earnings": "Estimated earnings",
             "net-value": "Net value",
             "earnings-per-day": "Projected earnings per day",
             "earnings-per-30d": "Projected earnings per 30d",
@@ -2593,7 +2595,7 @@
             "max-lending-ltv-modal-desc": "The max lending LTV represents the % of {{quoteToken}} you are willing to lend for each unit of {{collateralToken}}. This value moves as the price of {{collateralToken}}/{{quoteToken}} changes. You should adjust your position as the price changes to earn yield in a safe way:",
             "net-pnl": "Net PnL: {{netPnL}}",
             "position-lending-price": "Position lending price",
-            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in quote token.",
+            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
             "minimum-yield-price-modal": "Minimum Yield Price",
             "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
             "tokens-deposited": "Tokens deposited",
@@ -2667,23 +2669,26 @@
       "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens in 2 different ways. Read below to find out more.",
       "cards": {
         "mining": {
-          "title": "AJNA Liquidity Mining Rewards",
+          "title": "AJNA Protocol Rewards",
           "list-1": "Rewards Earn Positions only",
-          "list-2": "Earn a Proportional % of pool interest generated",
+          "list-2": "Fortnightly Claim period",
+          "list-3": "Earn proportionally to % of pool interest generated",
+          "list-4": "You need to opt-in to stake your positions",
           "link": "Learn more about Ajna Liquidity Mining Rewards",
           "banner": {
             "title": "AJNA Liquidity Mining Rewards "
-          },
-          "floatingLabel": "Exclusive to Oasis.app"
+          }
         },
         "token": {
-          "title": "AJNA Token Rewards",
-          "list-1": "Rewards exclusive to Oasis.app users only!",
+          "title": "Oasis.app x Ajna Token Rewards",
+          "list-1": "Rewards exclusive to Oasis.app users!",
           "list-2": "Rewards for Borrowing, Lending and Multiplying",
+          "list-3": "Tokens claimable weekly after first month",
           "link": "Learn more about Ajna Token Rewards",
           "banner": {
-            "title": "Your AJNA token rewards on 4 positions"
-          }
+            "title": "AJNA Token Rewards"
+          },
+          "floatingLabel": "Exclusive to Oasis.app"
         },
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
         "button": "Claim AJNA tokens"

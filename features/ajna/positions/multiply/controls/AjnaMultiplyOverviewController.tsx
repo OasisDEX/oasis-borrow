@@ -102,7 +102,7 @@ export function AjnaMultiplyOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      <AjnaTokensBannerController />
+      <AjnaTokensBannerController flow={flow} />
     </Grid>
   )
 }
