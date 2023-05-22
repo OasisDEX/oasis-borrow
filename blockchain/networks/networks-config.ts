@@ -123,7 +123,10 @@ const arbitrumMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumMainnetRpc, {
+    chainId: NetworkIds.ARBITRUMMAINNET,
+    name: NetworkNames.arbitrumMainnet,
+  }),
   isCustomFork: false,
 }
 
@@ -141,7 +144,10 @@ const arbitrumGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumGoerliRpc, {
+    chainId: NetworkIds.ARBITRUMGOERLI,
+    name: NetworkNames.arbitrumGoerli,
+  }),
   isCustomFork: false,
 }
 
@@ -242,8 +248,8 @@ export const mainnetNetworks = [mainnetConfig, goerliConfig]
 export const L2Networks = [
   arbitrumMainnetConfig,
   arbitrumGoerliConfig,
-  polygonMainnetConfig,
-  polygonMumbaiConfig,
+  // polygonMainnetConfig,
+  // polygonMumbaiConfig,
   optimismMainnetConfig,
   optimismGoerliConfig,
 ]
@@ -264,7 +270,7 @@ export const defaultForkSettings: NetworkConfig = {
   isCustomFork: true,
 }
 
-export const networks = [...mainnetNetworks, optimismMainnetConfig]
+export const networks = [...mainnetNetworks, ...L2Networks]
 
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')
