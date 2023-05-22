@@ -2484,9 +2484,7 @@
                 "There is an origination fee when borrowing to avoid rapid changes in rates.",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
               ],
-              "multiply": [
-                "Lorem ipsum dolor sit amet"
-              ],
+              "multiply": ["Lorem ipsum dolor sit amet"],
               "earn": [
                 "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
                 "Your position will lend only against one asset.",
@@ -2527,11 +2525,15 @@
         "common": {
           "overview": {
             "liquidation-price": "Liquidation Price",
+            "liquidation-price-modal-desc": "The liquidation prices represents the price at which it is expected that liquidatiors sucesfully action your collateral to repay your debt. Monitor this value compared to market price.",
             "below-current-price": "{{belowCurrentPrice}} below current price",
             "loan-to-value": "Loan to value",
+            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
             "liquidation-threshold": "Liquidation Threshold: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
-            "position-debt": "Position debt"
+            "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
+            "position-debt": "Position debt",
+            "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
           "form": {
             "origination-fee": "{{quoteToken}} Origination Fee"

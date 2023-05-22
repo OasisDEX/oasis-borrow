@@ -4,6 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -44,6 +45,13 @@ export function ContentCardPositionDebt({
         afterPositionDebt && `${formatted.afterPositionDebt} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
+    modal: (
+      <AjnaDetailsSectionContentSimpleModal
+        title={t('ajna.position-page.borrow.common.overview.position-debt')}
+        description={t('ajna.position-page.borrow.common.overview.position-debt-modal-desc')}
+        value={`${formatted.positionDebt} ${quoteToken}`}
+      />
+    ),
   }
 
   if (!positionDebt.isZero()) {
