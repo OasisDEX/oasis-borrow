@@ -45,8 +45,8 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const product = params?.slug[0] as ProductType
-  const token = params?.slug[1]
+  const product = params?.slug![0] as ProductType
+  const token = params?.slug![1]
 
   return {
     props: {

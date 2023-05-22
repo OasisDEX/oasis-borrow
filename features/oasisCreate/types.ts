@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { BaseNetworkNames } from 'helpers/networkNames'
+import { BaseNetworkNames } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 
 export enum ProductType {

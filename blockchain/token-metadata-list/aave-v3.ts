@@ -1,5 +1,5 @@
+import { MainNetworkNames } from 'blockchain/networks'
 import { TokenConfig } from 'blockchain/tokensMetadata'
-import { MainNetworkNames } from 'helpers/networkNames'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { LendingProtocol } from 'lendingProtocols'
 

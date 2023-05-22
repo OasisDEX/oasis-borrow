@@ -1,8 +1,8 @@
 //TODO: to be replaced with data from API
 
 import BigNumber from 'bignumber.js'
+import { BaseNetworkNames } from 'blockchain/networks'
 import { OasisCreateItem, ProductType } from 'features/oasisCreate/types'
-import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const oasisCreateData: OasisCreateItem[] = [
