@@ -226,6 +226,7 @@
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
         "debt": "Debt",
+        "deposit-token": "Deposit token",
         "earnings-to-date": "Earnings to date",
         "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
