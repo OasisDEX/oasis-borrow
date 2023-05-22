@@ -5,7 +5,7 @@ import { Skeleton } from 'components/Skeleton'
 import { WithArrow } from 'components/WithArrow'
 import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
 import { failedStatuses, progressStatuses } from 'features/automation/common/consts'
-import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
@@ -174,9 +174,10 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
             AJNA
           </Text>
         </Text>
-        <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
-          ${formatFiatBalance(rewards.usd)}
-        </Text>
+        {/* TODO uncomment once ajna token usdc price will be available*/}
+        {/*<Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>*/}
+        {/*  ${(rewards.usd)}*/}
+        {/*</Text>*/}
         {rewards.tokens.gt(zero) && (
           <Button
             sx={{ mb: [0, banner.footer ? 3 : 0], mt: [4, 4], fontSize: 1, p: 0 }}
