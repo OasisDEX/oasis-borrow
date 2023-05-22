@@ -218,8 +218,10 @@
         "annual-fee": "Annual fee",
         "asset": "Vault",
         "automation": "Automation",
+        "borrow-rate": "Borrow rate",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
+        "collateral-debt": "Collateral/Debt",
         "collateral-locked": "Collateral locked",
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
@@ -229,6 +231,8 @@
         "liquidation-price": "Liquidation price",
         "liquidity-avaliable": "Liquidity avaliable",
         "liquidity": "Liquidity",
+        "long-short": "Long/Short",
+        "management": "Management",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
         "max-multiple": "Max multiple",
@@ -240,10 +244,12 @@
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
         "protection": "Protection",
+        "protocol-network": "Protocol/Network",
         "protocol": "Protocol",
         "risk-ratio": "Risk ratio",
         "status": "Status",
         "tvl": "TVL",
+        "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
         "vault-debt": "Vault debt",
         "with-50-tokens": "With 50.00 {{token}}"
@@ -2508,9 +2514,7 @@
                 "There is an origination fee when borrowing to avoid rapid changes in rates.",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
               ],
-              "multiply": [
-                "Lorem ipsum dolor sit amet"
-              ],
+              "multiply": ["Lorem ipsum dolor sit amet"],
               "earn": [
                 "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
                 "Your position will lend only against one asset.",
@@ -2551,11 +2555,15 @@
         "common": {
           "overview": {
             "liquidation-price": "Liquidation Price",
+            "liquidation-price-modal-desc": "The liquidation prices represents the price at which it is expected that liquidatiors sucesfully action your collateral to repay your debt. Monitor this value compared to market price.",
             "below-current-price": "{{belowCurrentPrice}} below current price",
             "loan-to-value": "Loan to value",
+            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
             "liquidation-threshold": "Liquidation Threshold: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
-            "position-debt": "Position debt"
+            "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
+            "position-debt": "Position debt",
+            "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
           "form": {
             "origination-fee": "{{quoteToken}} Origination Fee"
@@ -2707,6 +2715,14 @@
     }
   },
   "oasis-create": {
+    "header": {
+      "i-want-to": "I want to",
+      "conjunction": {
+        "borrow": "against",
+        "multiply": "exposure to",
+        "earn": "with "
+      }
+    },
     "select": {
       "borrow": "Borrow against your favorite crypto assets",
       "multiply": "Increase your exposure to any crypto asset",
@@ -2716,6 +2732,18 @@
       "borrow": "Easily borrow stablecoins or other crypto-assets against your collateral. Read more about",
       "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset. Read more about",
       "earn": "Earn long term yields to compound your crypto capital. Read more about"
+    },
+    "table": {
+      "active": "Active",
+      "long-short": "Long or short",
+      "long": "Long only",
+      "passive": "Passive",
+      "short": "Short only"
+    },
+    "filters": {
+      "debt-tokens": "Debt Tokens",
+      "networks": "Networks",
+      "protocols": "Protocols"
     }
   }
 }

@@ -1,35 +1,74 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
+import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
+import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
+import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
+import { GenericMultiselect } from 'components/GenericMultiselect'
 import { AppLink } from 'components/Links'
 import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
 import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
+import { oasisCreateData } from 'features/oasisCreate/data'
+import { filterRows } from 'features/oasisCreate/helpers/filterRows'
+import { parseRows } from 'features/oasisCreate/helpers/parseRows'
+import {
+  ALL_ASSETS,
+  oasisCreateLinksMap,
+  oasisCreateNetworkFilter,
+  oasisCreateProtocolFilter,
+} from 'features/oasisCreate/meta'
+import { OasisCreateFilters, ProductType } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
+import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { OasisCreateProduct } from 'pages/oasis-create/[product]'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { theme } from 'theme'
 import { Box, Grid, Text } from 'theme-ui'
+import { useMediaQuery } from 'usehooks-ts'
 
 interface OasisCreateViewProps {
-  product: OasisCreateProduct
+  product: ProductType
+  token?: string
 }
 
-const LINKS_MAP = {
-  borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
-  multiply: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
-  earn: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
-}
-
-export function OasisCreateView({ product }: OasisCreateViewProps) {
+export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const { t } = useTranslation()
-  const [selectedProduct, setSelectedProduct] = useState<string>()
-  const [selectedToken, setSelectedToken] = useState<string>()
+  const isMobileScreen = useMediaQuery(`(max-width: ${theme.breakpoints[1]})`)
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
+  const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
+  const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
+  const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
+
+  const rowsFilteredByToken = useMemo(
+    () =>
+      filterRows(oasisCreateData, selectedProduct, {
+        ...(selectedToken !== ALL_ASSETS && { groupToken: selectedToken }),
+      }),
+    [selectedProduct, selectedToken],
+  )
+  const rowsFilteredByAll = useMemo(
+    () => filterRows(rowsFilteredByToken, selectedProduct, selectedFilters),
+    [rowsFilteredByToken, selectedProduct, selectedFilters],
+  )
+  const parsedRows = useMemo(
+    () => parseRows(rowsFilteredByAll, selectedProduct),
+    [rowsFilteredByAll, selectedProduct],
+  )
+  const debtTokens = useMemo(
+    () =>
+      uniq(rowsFilteredByToken.map((item) => item.secondaryToken)).map((item) => ({
+        label: item,
+        value: item,
+        icon: getToken(item).iconCircle,
+      })),
+    [rowsFilteredByToken],
+  )
 
   return (
-    <AnimatedWrapper>
+    <AnimatedWrapper sx={{ mb: 5 }}>
       <Box
         sx={{
           my: [3, null, '48px'],
@@ -38,10 +77,12 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
       >
         <NaturalLanguageSelectorController
           product={product}
+          token={token}
           url="/oasis-create/"
-          onChange={(product, token) => {
-            setSelectedProduct(product)
-            setSelectedToken(token)
+          onChange={(_selectedProduct, _selectedToken) => {
+            setSelectedProduct(_selectedProduct)
+            setSelectedToken(_selectedToken)
+            setSelectedFilters({})
           }}
         />
         <Text
@@ -50,11 +91,10 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           sx={{
             mx: 'auto',
             mt: '24px',
-            color: 'neutral80',
           }}
         >
-          {t(`oasis-create.intro.${product}`)}{' '}
-          <AppLink href={LINKS_MAP[product]}>
+          {t(`oasis-create.intro.${selectedProduct}`)}{' '}
+          <AppLink href={oasisCreateLinksMap[selectedProduct]}>
             <WithArrow
               variant="paragraph2"
               sx={{
@@ -64,7 +104,7 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
                 fontWeight: 'regular',
               }}
             >
-              Oasis.app {t(`nav.${product}`)}
+              Oasis.app {t(`nav.${selectedProduct}`)}
             </WithArrow>
           </AppLink>
         </Text>
@@ -91,9 +131,61 @@ export function OasisCreateView({ product }: OasisCreateViewProps) {
           link={{ href: EXTERNAL_LINKS.KB.HELP, label: t('learn-more') }}
         />
       </Grid>
-      <AssetsTableContainer padded>
-        There should be Oasis Create table in there displaying all{' '}
-        <strong>{selectedProduct}</strong> products filtered by <strong>{selectedToken}</strong>.
+      <AssetsTableContainer>
+        <AssetsFiltersContainer
+          key={`${selectedProduct}-${selectedToken}`}
+          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '250px auto 250px 250px']}
+        >
+          {selectedProduct !== ProductType.Earn ? (
+            <GenericMultiselect
+              label={t('oasis-create.filters.debt-tokens')}
+              options={debtTokens}
+              onChange={(value) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  secondaryToken: value,
+                })
+              }}
+            />
+          ) : (
+            <>{!isMobileScreen && <Box />}</>
+          )}
+          {!isSmallerScreen && <Box />}
+          <GenericMultiselect
+            label={t('oasis-create.filters.networks')}
+            options={oasisCreateNetworkFilter}
+            onChange={(value) => {
+              setSelectedFilters({
+                ...selectedFilters,
+                network: value,
+              })
+            }}
+          />
+          <GenericMultiselect
+            label={t('oasis-create.filters.protocols')}
+            options={oasisCreateProtocolFilter}
+            onChange={(value) => {
+              setSelectedFilters({
+                ...selectedFilters,
+                protocol: value,
+              })
+            }}
+          />
+        </AssetsFiltersContainer>
+        {parsedRows.length > 0 ? (
+          <AssetsResponsiveTable
+            rows={parsedRows}
+            headerTranslationProps={{
+              ...(selectedToken && { token: selectedToken === ALL_ASSETS ? 'ETH' : selectedToken }),
+            }}
+          />
+        ) : (
+          <AssetsTableNoResults
+            // TODO replace with translations when copy is available
+            header="There are no items matching your filters"
+            content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean iaculis lorem in feugiat mattis."
+          />
+        )}
       </AssetsTableContainer>
     </AnimatedWrapper>
   )

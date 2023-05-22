@@ -24,7 +24,7 @@ export function AjnaLayout({ children }: PropsWithChildren<{}>) {
         header={<AjnaNavigationController />}
         footer={<AnjaFooter />}
         sx={{ position: 'relative' }}
-        bg={<Background isAjnaPage />}
+        bg={<Background short />}
       >
         {children}
       </BasicLayout>

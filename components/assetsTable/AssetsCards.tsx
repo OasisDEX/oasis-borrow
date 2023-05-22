@@ -1,28 +1,38 @@
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
-import { AssetsTableProps, AssetsTableRowData } from 'components/assetsTable/types'
+import {
+  AssetsTableHeaderTranslationProps,
+  AssetsTableProps,
+  AssetsTableRowData,
+  AssetsTableSortableCell,
+} from 'components/assetsTable/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
-const fullWidthColumns = ['asset', 'cdpId']
+const fullWidthColumns = ['asset', 'action', 'cdpId', 'collateralDebt']
 
 type AssetsCardsProps = Omit<AssetsTableProps, 'isSticky' | 'tooltips'>
 
 interface AssetCardProps {
+  headerTranslationProps?: AssetsTableHeaderTranslationProps
   row: AssetsTableRowData
 }
 
-export function AssetsCards({ banner, isLoading = false, rows = [] }: AssetsCardsProps) {
+export function AssetsCards({
+  banner,
+  headerTranslationProps,
+  isLoading = false,
+  rows = [],
+}: AssetsCardsProps) {
   const bannerRows = Math.min(rows.length - 1, 9)
 
   return (
     <Box
       sx={{
-        px: ['24px', null, null, 4],
         pt: 4,
-        pb: '24px',
+        pb: 3,
       }}
     >
       <Flex
@@ -30,7 +40,7 @@ export function AssetsCards({ banner, isLoading = false, rows = [] }: AssetsCard
         sx={{
           listStyle: 'none',
           flexDirection: 'column',
-          gap: 4,
+          gap: '24px',
           p: 0,
           opacity: isLoading ? 0.5 : 1,
           pointerEvents: isLoading ? 'none' : 'auto',
@@ -39,7 +49,7 @@ export function AssetsCards({ banner, isLoading = false, rows = [] }: AssetsCard
       >
         {rows.map((row, i) => (
           <Fragment key={getRowKey(i, row)}>
-            <AssetCard row={row} />
+            <AssetCard headerTranslationProps={headerTranslationProps} row={row} />
             {banner && i === Math.floor(bannerRows / 2) && (
               <Box as="li">
                 <AssetsTableBanner {...banner} />
@@ -52,15 +62,31 @@ export function AssetsCards({ banner, isLoading = false, rows = [] }: AssetsCard
   )
 }
 
-export function AssetCard({ row }: AssetCardProps) {
+export function AssetCard({ headerTranslationProps, row }: AssetCardProps) {
   const { t } = useTranslation()
   const rowKeys = Object.keys(row)
 
   return (
-    <Box as="li">
+    <Box
+      as="li"
+      sx={{
+        pb: '24px',
+        borderBottom: '1px solid',
+        borderColor: 'neutral20',
+        '&:last-of-type': {
+          pb: 4,
+          borderBottom: 'none',
+        },
+      }}
+    >
       <Grid
         as="ul"
-        sx={{ gridTemplateColumns: ['100%', 'repeat(2, 1fr)'], gap: 4, p: 0, listStyle: 'none' }}
+        sx={{
+          gridTemplateColumns: ['100%', 'repeat(2, 1fr)'],
+          gap: 4,
+          px: 3,
+          listStyle: 'none',
+        }}
       >
         {rowKeys.map((label, i) => (
           <Box
@@ -82,10 +108,10 @@ export function AssetCard({ row }: AssetCardProps) {
                   color: 'neutral80',
                 }}
               >
-                {t(`discover.table.header.${kebabCase(label)}`)}
+                {t(`discover.table.header.${kebabCase(label)}`, headerTranslationProps)}
               </Box>
             )}
-            {row[label]}
+            {(row[label] as AssetsTableSortableCell).value || row[label]}
           </Box>
         ))}
       </Grid>

@@ -376,6 +376,7 @@ export const oasisBaseTheme = {
       width: ['250px', '352px'],
     },
     vaultDetailsCardModal: {
+      variant: 'text.header5',
       p: 3,
       bg: 'neutral30',
       borderRadius: 'large',
