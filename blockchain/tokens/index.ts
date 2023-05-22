@@ -1,3 +1,4 @@
-export * from './goerli'
-export * from './mainnet'
-export * from './optimism'
+export { tokensArbitrum } from './arbitrum'
+export { tokensMainnet } from './mainnet'
+export { tokensOptimism } from './optimism'
+export { tokensGoerli } from './goerli'

@@ -14,6 +14,7 @@ import { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
+import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
 import arbitrumMainnetIcon from 'public/static/img/network_icons/arbitrum_mainnet.svg'
 import ethereumMainnetBadge from 'public/static/img/network_icons/ethereum_badge_mainnet.svg'
@@ -55,6 +56,13 @@ export function contractDesc(
   genesisBlock = 0,
 ): ContractDesc & { genesisBlock: number } {
   return { abi, address, genesisBlock }
+}
+
+export function emptyContractDesc(constractName: string): ContractDesc & { genesisBlock: number } {
+  // not every contract is available on every network
+  // hence this function is used to return an empty contract
+  env.NODE_ENV === 'development' && console.warn('Contract not set:', constractName)
+  return { abi: {}, address: '', genesisBlock: 0 }
 }
 
 const mainnetConfig: NetworkConfig = {

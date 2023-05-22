@@ -49,6 +49,11 @@ const networkMappings = {
     NetworkIds.OPTIMISMMAINNET,
     'aaveV3Pool',
   ),
+  [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
+    AaveV3Pool__factory,
+    NetworkIds.ARBITRUMMAINNET,
+    'aaveV3Pool',
+  ),
 }
 
 export async function getAaveV3PositionLiquidation({

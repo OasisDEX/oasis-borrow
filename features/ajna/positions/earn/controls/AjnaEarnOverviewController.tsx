@@ -14,7 +14,7 @@ export function AjnaEarnOverviewController() {
     <Grid gap={2}>
       {flow === 'open' && <AjnaEarnOverviewOpenController />}
       {flow === 'manage' && <AjnaEarnOverviewManageController />}
-      <AjnaTokensBannerController />
+      <AjnaTokensBannerController flow={flow} />
     </Grid>
   )
 }

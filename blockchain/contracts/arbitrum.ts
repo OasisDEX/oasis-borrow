@@ -46,24 +46,24 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc, emptyContractDesc } from 'blockchain/networks'
+import { contractDesc, emptyContractDesc } from 'blockchain/networksConfig'
+import { tokensArbitrum } from 'blockchain/tokens/'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/optimism'
-import { tokensOptimism } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
 
-const { optimism } = ADDRESSES
+const { arbitrum } = ADDRESSES
 
-export const optimismContracts: MainnetContracts = {
-  otc: contractDesc(otc, optimism.common.Otc),
-  collaterals: getCollaterals(optimism.common, supportedIlks),
-  tokens: tokensOptimism,
+export const arbitrumContracts: MainnetContracts = {
+  otc: contractDesc(otc, arbitrum.common.Otc),
+  collaterals: getCollaterals(arbitrum.common, supportedIlks),
+  tokens: tokensArbitrum,
   tokensMainnet: mainnetContracts.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(
-      optimism.maker.joins,
+      arbitrum.maker.joins,
       supportedIlks.filter(
         // these are not supported on goerli
         (ilk) =>
@@ -71,90 +71,90 @@ export const optimismContracts: MainnetContracts = {
       ),
     ),
   },
-  getCdps: contractDesc(getCdps, optimism.maker.common.GetCdps),
-  mcdOsms: getOsms(optimism.maker.pips, supportedIlks),
-  mcdJug: contractDesc(mcdJug, optimism.maker.common.Jug),
-  mcdPot: contractDesc(mcdPot, optimism.maker.common.Pot),
-  mcdEnd: contractDesc(mcdEnd, optimism.maker.common.End),
-  mcdSpot: contractDesc(mcdSpot, optimism.maker.common.Spot),
-  mcdDog: contractDesc(mcdDog, optimism.maker.common.Dog),
-  mcdJoinDai: contractDesc(mcdJoinDai, optimism.maker.joins.MCD_JOIN_DAI),
+  getCdps: contractDesc(getCdps, arbitrum.maker.common.GetCdps),
+  mcdOsms: getOsms(arbitrum.maker.pips, supportedIlks),
+  mcdJug: contractDesc(mcdJug, arbitrum.maker.common.Jug),
+  mcdPot: contractDesc(mcdPot, arbitrum.maker.common.Pot),
+  mcdEnd: contractDesc(mcdEnd, arbitrum.maker.common.End),
+  mcdSpot: contractDesc(mcdSpot, arbitrum.maker.common.Spot),
+  mcdDog: contractDesc(mcdDog, arbitrum.maker.common.Dog),
+  mcdJoinDai: contractDesc(mcdJoinDai, arbitrum.maker.joins.MCD_JOIN_DAI),
 
-  merkleRedeemer: contractDesc(merkleRedeemer, optimism.common.MerkleRedeemer),
-  dssCharter: contractDesc(dssCharter, optimism.common.DssCharter),
-  dssCdpManager: contractDesc(dssCdpManager, optimism.maker.common.CdpManager),
-  otcSupportMethods: contractDesc(otcSupport, optimism.common.OtcSupportMethods),
-  vat: contractDesc(vat, optimism.maker.common.Vat),
-  dsProxyRegistry: contractDesc(dsProxyRegistry, optimism.mpa.core.DSProxyRegistry),
-  dsProxyFactory: contractDesc(dsProxyFactory, optimism.mpa.core.DSProxyFactory),
-  dssProxyActions: contractDesc(dssProxyActions, optimism.common.DssProxyActions),
+  merkleRedeemer: contractDesc(merkleRedeemer, arbitrum.common.MerkleRedeemer),
+  dssCharter: contractDesc(dssCharter, arbitrum.common.DssCharter),
+  dssCdpManager: contractDesc(dssCdpManager, arbitrum.maker.common.CdpManager),
+  otcSupportMethods: contractDesc(otcSupport, arbitrum.common.OtcSupportMethods),
+  vat: contractDesc(vat, arbitrum.maker.common.Vat),
+  dsProxyRegistry: contractDesc(dsProxyRegistry, arbitrum.mpa.core.DSProxyRegistry),
+  dsProxyFactory: contractDesc(dsProxyFactory, arbitrum.mpa.core.DSProxyFactory),
+  dssProxyActions: contractDesc(dssProxyActions, arbitrum.common.DssProxyActions),
   dssProxyActionsCharter: contractDesc(
     dssProxyActionsCharter,
-    optimism.common.DssProxyActionsCharter,
+    arbitrum.common.DssProxyActionsCharter,
   ),
-  cdpRegistry: contractDesc(cdpRegistry, optimism.common.CdpRegistry),
+  cdpRegistry: contractDesc(cdpRegistry, arbitrum.common.CdpRegistry),
   dssProxyActionsCropjoin: contractDesc(
     dssProxyActionsCropjoin,
-    optimism.common.DssProxyActionsCropjoin,
+    arbitrum.common.DssProxyActionsCropjoin,
   ),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    optimism.common.DssMultiplyProxyActions,
+    arbitrum.common.DssMultiplyProxyActions,
   ),
-  guniProxyActions: contractDesc(guniProxyActions, optimism.common.GuniProxyActions), // TODO: add address
-  dssCropper: contractDesc(dssCropper, optimism.common.DssCropper),
-  guniResolver: optimism.common.GuniResolver,
-  guniRouter: optimism.common.GuniRouter,
+  guniProxyActions: contractDesc(guniProxyActions, arbitrum.common.GuniProxyActions), // TODO: add address
+  dssCropper: contractDesc(dssCropper, arbitrum.common.DssCropper),
+  guniResolver: arbitrum.common.GuniResolver,
+  guniRouter: arbitrum.common.GuniRouter,
 
-  automationBot: contractDesc(automationBot, optimism.automation.AutomationBot),
-  automationBotV2: contractDesc(automationBotV2, optimism.automation.AutomationBotV2),
+  automationBot: contractDesc(automationBot, arbitrum.automation.AutomationBot),
+  automationBotV2: contractDesc(automationBotV2, arbitrum.automation.AutomationBotV2),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
-    optimism.automation.AutomationBotAggregator,
+    arbitrum.automation.AutomationBotAggregator,
   ),
 
-  serviceRegistry: optimism.common.ServiceRegistry,
-  defaultExchange: contractDesc(exchange, optimism.common.DefaultExchange),
-  noFeesExchange: contractDesc(exchange, optimism.common.NoFeesExchange),
-  lowerFeesExchange: contractDesc(exchange, optimism.common.LowerFeesExchange),
+  serviceRegistry: arbitrum.common.ServiceRegistry,
+  defaultExchange: contractDesc(exchange, arbitrum.common.DefaultExchange),
+  noFeesExchange: contractDesc(exchange, arbitrum.common.NoFeesExchange),
+  lowerFeesExchange: contractDesc(exchange, arbitrum.common.LowerFeesExchange),
   // Currently this is not supported on Goerli - no deployed contract
-  fmm: optimism.maker.common.FlashMintModule,
-  dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, optimism.common.DssProxyActionsDsr),
+  fmm: arbitrum.maker.common.FlashMintModule,
+  dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, arbitrum.common.DssProxyActionsDsr),
   lidoCrvLiquidityFarmingReward: contractDesc(
     lidoCrvLiquidityFarmingReward,
-    optimism.common.LidoCrvLiquidityFarmingReward,
+    arbitrum.common.LidoCrvLiquidityFarmingReward,
   ),
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    optimism.aave.v2.ProtocolDataProvider,
+    arbitrum.aave.v2.ProtocolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, optimism.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, arbitrum.aave.v2.PriceOracle),
   chainlinkPriceOracle: {
-    USDCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_USDCUSD),
-    ETHUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_ETHUSD),
+    USDCUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_USDCUSD),
+    ETHUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_ETHUSD),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
 
-  operationExecutor: contractDesc(operationExecutor, optimism.mpa.core.OperationExecutor),
-  swapAddress: optimism.mpa.core.Swap,
-  accountFactory: contractDesc(accountFactory, optimism.mpa.core.AccountFactory),
-  accountGuard: contractDesc(accountGuard, optimism.mpa.core.AccountGuard),
-  aaveV3Pool: contractDesc(aaveV3Pool, optimism.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.AaveOracle),
+  operationExecutor: contractDesc(operationExecutor, arbitrum.mpa.core.OperationExecutor),
+  swapAddress: arbitrum.mpa.core.Swap,
+  accountFactory: contractDesc(accountFactory, arbitrum.mpa.core.AccountFactory),
+  accountGuard: contractDesc(accountGuard, arbitrum.mpa.core.AccountGuard),
+  aaveV3Pool: contractDesc(aaveV3Pool, arbitrum.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, arbitrum.aave.v3.AaveOracle),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
-    optimism.aave.v3.AavePoolDataProvider,
+    arbitrum.aave.v3.AavePoolDataProvider,
   ),
-  ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
-  ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
-    'ETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHUSDC),
-    'WBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCUSDC),
+    'ETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHUSDC),
+    'WBTC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WBTCUSDC),
   },
-  ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
+  ajnaRewardsManager: contractDesc(ajnaRewardsManager, arbitrum.ajna.AjnaRewardsManager),
   // TODO update address
-  ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, optimism.ajna.AjnaRewardsClaimer),
+  ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, arbitrum.ajna.AjnaRewardsClaimer),
   // NOT contracts
   cacheApi: 'not-implemented',
   safeConfirmations: 6,

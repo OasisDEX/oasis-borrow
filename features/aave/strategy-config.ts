@@ -138,6 +138,96 @@ const optimismStrategies: Array<IStrategyConfig> = [
   },
 ]
 
+const arbitrumStrategies: Array<IStrategyConfig> = [
+  {
+    network: NetworkNames.arbitrumMainnet,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+    name: 'arbitrum-ethusdc',
+    urlSlug: 'arbitrum-ethusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'ETH',
+      debt: 'USDC',
+      deposit: 'ETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    availableActions: ['close'],
+    featureToggle: 'ArbitrumAaveV3',
+  },
+  {
+    network: NetworkNames.arbitrumMainnet,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+    name: 'arbitrum-wstethusdc',
+    urlSlug: 'arbitrum-wstethusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WSTETH',
+      debt: 'USDC',
+      deposit: 'WSTETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    availableActions: ['close'],
+    featureToggle: 'ArbitrumAaveV3',
+  },
+  {
+    network: NetworkNames.arbitrumMainnet,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+    name: 'arbitrum-wbtcusdc',
+    urlSlug: 'arbitrum-wbtcusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WBTC',
+      debt: 'USDC',
+      deposit: 'WBTC',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    availableActions: ['close'],
+    featureToggle: 'ArbitrumAaveV3',
+  },
+]
+
 const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
@@ -315,7 +405,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   }),
 ]
 
-export const strategies = [...optimismStrategies, ...ethereumStrategies]
+export const strategies = [...optimismStrategies, ...arbitrumStrategies, ...ethereumStrategies]
 
 export function aaveStrategiesList(
   filterProduct?: IStrategyConfig['type'],
