@@ -58,6 +58,16 @@ const networkMappings = {
     NetworkIds.MAINNET,
     'aaveV3PoolDataProvider',
   ),
+  [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.OPTIMISMMAINNET,
+    'aaveV3PoolDataProvider',
+  ),
+  [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.ARBITRUMMAINNET,
+    'aaveV3PoolDataProvider',
+  ),
 }
 
 export function getAaveV3UserReserveData({
@@ -66,6 +76,9 @@ export function getAaveV3UserReserveData({
   networkId,
 }: AaveV3UserReserveDataParameters): Promise<AaveV3UserReserveData> {
   const { contract, tokenMappings } = networkMappings[networkId]
+  if (!networkMappings[networkId]) {
+    console.warn('No getAaveV3UserReserveData network mapping for', networkId)
+  }
   const tokenAddress = tokenMappings[token].address
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
@@ -97,17 +110,16 @@ export function getAaveV3ReserveData({
   const { contract, tokenMappings } = networkMappings[networkId]
   const tokenAddress = tokenMappings[token].address
   return contract.getReserveData(tokenAddress).then((result) => {
+    const totalAToken = amountFromWei(new BigNumber(result.totalAToken.toString()), token)
+    const totalStableDebt = amountFromWei(new BigNumber(result.totalStableDebt.toString()), token)
+    const totalVariableDebt = amountFromWei(
+      new BigNumber(result.totalVariableDebt.toString()),
+      token,
+    )
     return {
-      availableLiquidity: new BigNumber(result.totalAToken.toString()).minus(
-        new BigNumber(result.totalStableDebt.toString()).plus(
-          new BigNumber(result.totalVariableDebt.toString()),
-        ),
-      ),
+      availableLiquidity: totalAToken.minus(totalStableDebt).minus(totalVariableDebt),
       unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
-      totalAToken: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
-      totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
-      totalVariableDebt: amountFromWei(new BigNumber(result.totalVariableDebt.toString()), token),
       liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
       variableBorrowRate: amountFromRay(new BigNumber(result.variableBorrowRate.toString())),
       stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
@@ -117,6 +129,9 @@ export function getAaveV3ReserveData({
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
+      totalAToken,
+      totalStableDebt,
+      totalVariableDebt,
     }
   })
 }
