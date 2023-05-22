@@ -9,7 +9,7 @@ export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider
   if (forkProvider) {
     return forkProvider
   }
-  const mainProvider = networksById[networkId].readProvider
+  const mainProvider = networksById[networkId]?.readProvider
   if (mainProvider) {
     return mainProvider
   }
