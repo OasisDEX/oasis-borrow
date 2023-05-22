@@ -5,8 +5,6 @@ import {
   mainnetRpc,
   optimismGoerliRpc,
   optimismMainnetRpc,
-  polygonMainnetRpc,
-  polygonMumbaiRpc,
 } from 'config/rpcConfig'
 import { mainnetCacheUrl } from 'config/runtimeConfig'
 import { ethers } from 'ethers'
@@ -21,8 +19,6 @@ import ethereumMainnetBadge from 'public/static/img/network_icons/ethereum_badge
 import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainnet.svg'
 import optimismMainnetBadge from 'public/static/img/network_icons/optimism_badge_mainnet.svg'
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
-import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_mainnet.svg'
-import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
 import { NetworkIds } from './network-ids'
 import { NetworkLabelType, NetworkNames } from './network-names'
@@ -151,41 +147,41 @@ const arbitrumGoerliConfig: NetworkConfig = {
   isCustomFork: false,
 }
 
-const polygonMainnetConfig: NetworkConfig = {
-  id: NetworkIds.POLYGONMAINNET,
-  hexId: '0x89',
-  testnetHexId: '0x13881',
-  testnetId: NetworkIds.POLYGONMUMBAI,
-  name: NetworkNames.polygonMainnet,
-  label: 'Polygon',
-  color: '#9866ed',
-  icon: polygonMainnetIcon as string,
-  badge: polygonMainnetBadge as string,
-  testnet: false,
-  enabled: true,
-  token: 'ETH',
-  rpcUrl: polygonMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
-  isCustomFork: false,
-}
-
-const polygonMumbaiConfig: NetworkConfig = {
-  id: NetworkIds.POLYGONMUMBAI,
-  hexId: '0x13881',
-  mainnetHexId: '0x89',
-  mainnetId: NetworkIds.POLYGONMAINNET,
-  name: NetworkNames.polygonMumbai,
-  label: 'Polygon Mumbai',
-  color: '#9866ed',
-  icon: polygonMainnetIcon as string,
-  badge: polygonMainnetBadge as string,
-  testnet: true,
-  enabled: true,
-  token: 'ETH',
-  rpcUrl: polygonMumbaiRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
-  isCustomFork: false,
-}
+// const polygonMainnetConfig: NetworkConfig = {
+//   id: NetworkIds.POLYGONMAINNET,
+//   hexId: '0x89',
+//   testnetHexId: '0x13881',
+//   testnetId: NetworkIds.POLYGONMUMBAI,
+//   name: NetworkNames.polygonMainnet,
+//   label: 'Polygon',
+//   color: '#9866ed',
+//   icon: polygonMainnetIcon as string,
+//   badge: polygonMainnetBadge as string,
+//   testnet: false,
+//   enabled: true,
+//   token: 'ETH',
+//   rpcUrl: polygonMainnetRpc,
+//   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+//   isCustomFork: false,
+// }
+//
+// const polygonMumbaiConfig: NetworkConfig = {
+//   id: NetworkIds.POLYGONMUMBAI,
+//   hexId: '0x13881',
+//   mainnetHexId: '0x89',
+//   mainnetId: NetworkIds.POLYGONMAINNET,
+//   name: NetworkNames.polygonMumbai,
+//   label: 'Polygon Mumbai',
+//   color: '#9866ed',
+//   icon: polygonMainnetIcon as string,
+//   badge: polygonMainnetBadge as string,
+//   testnet: true,
+//   enabled: true,
+//   token: 'ETH',
+//   rpcUrl: polygonMumbaiRpc,
+//   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+//   isCustomFork: false,
+// }
 
 const optimismMainnetConfig: NetworkConfig = {
   id: NetworkIds.OPTIMISMMAINNET,
