@@ -15,7 +15,7 @@ function parseProduct(
     '7DayNetApy': weeklyNetApy,
     '90DayNetApy': quarterlyNetApy,
     fee,
-    investmentType,
+    strategy,
     liquidity,
     managementType,
     maxLtv,
@@ -73,12 +73,12 @@ function parseProduct(
       }
     case ProductType.Multiply:
       return {
-        longShort: investmentType ? (
+        longShort: strategy ? (
           <Trans
             i18nKey={`oasis-create.table.${
-              Array.isArray(investmentType)
-                ? investmentType.sort((a, b) => (a > b ? -1 : 1)).join('-')
-                : investmentType
+              Array.isArray(strategy)
+                ? strategy.sort((a, b) => (a > b ? -1 : 1)).join('-')
+                : strategy
             }`}
           />
         ) : (

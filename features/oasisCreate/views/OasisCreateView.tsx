@@ -10,7 +10,8 @@ import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
 import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
 import { oasisCreateData } from 'features/oasisCreate/data'
-import { filterRows } from 'features/oasisCreate/helpers/filterRows'
+import { matchRowsByFilters } from 'features/oasisCreate/helpers/matchRowsByFilters'
+import { matchRowsByNL } from 'features/oasisCreate/helpers/matchRowsByNL'
 import { parseRows } from 'features/oasisCreate/helpers/parseRows'
 import {
   ALL_ASSETS,
@@ -42,29 +43,26 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
 
-  const rowsFilteredByToken = useMemo(
-    () =>
-      filterRows(oasisCreateData, selectedProduct, {
-        ...(selectedToken !== ALL_ASSETS && { groupToken: selectedToken }),
-      }),
+  const rowsMatchedByNL = useMemo(
+    () => matchRowsByNL(oasisCreateData, selectedProduct, selectedToken),
     [selectedProduct, selectedToken],
   )
-  const rowsFilteredByAll = useMemo(
-    () => filterRows(rowsFilteredByToken, selectedProduct, selectedFilters),
-    [rowsFilteredByToken, selectedProduct, selectedFilters],
+  const rowsMatchedByFilters = useMemo(
+    () => matchRowsByFilters(rowsMatchedByNL, selectedFilters),
+    [rowsMatchedByNL, selectedFilters],
   )
   const parsedRows = useMemo(
-    () => parseRows(rowsFilteredByAll, selectedProduct),
-    [rowsFilteredByAll, selectedProduct],
+    () => parseRows(rowsMatchedByFilters, selectedProduct),
+    [rowsMatchedByFilters, selectedProduct],
   )
   const debtTokens = useMemo(
     () =>
-      uniq(rowsFilteredByToken.map((item) => item.secondaryToken)).map((item) => ({
+      uniq(rowsMatchedByNL.map((item) => item.secondaryToken)).map((item) => ({
         label: item,
         value: item,
         icon: getToken(item).iconCircle,
       })),
-    [rowsFilteredByToken],
+    [rowsMatchedByNL],
   )
 
   return (
@@ -134,9 +132,9 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
       <AssetsTableContainer>
         <AssetsFiltersContainer
           key={`${selectedProduct}-${selectedToken}`}
-          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '250px auto 250px 250px']}
+          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '250px auto 250px 250px 250px']}
         >
-          {selectedProduct !== ProductType.Earn ? (
+          {selectedProduct === ProductType.Borrow && (
             <GenericMultiselect
               label={t('oasis-create.filters.debt-tokens')}
               options={debtTokens}
@@ -147,9 +145,14 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
                 })
               }}
             />
-          ) : (
+          )}
+          {selectedProduct === ProductType.Multiply && (
+            <>Multiply filter</>
+          )}
+          {selectedProduct === ProductType.Earn && (
             <>{!isMobileScreen && <Box />}</>
           )}
+          {!isSmallerScreen && <Box />}
           {!isSmallerScreen && <Box />}
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}
@@ -157,7 +160,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             onChange={(value) => {
               setSelectedFilters({
                 ...selectedFilters,
-                network: value,
+                network: value as BaseNetworkNames[],
               })
             }}
           />
@@ -167,7 +170,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             onChange={(value) => {
               setSelectedFilters({
                 ...selectedFilters,
-                protocol: value,
+                protocol: value as LendingProtocol[],
               })
             }}
           />

@@ -9,32 +9,34 @@ export enum ProductType {
 }
 
 export interface OasisCreateItemBasics {
-  groupToken: string
   label: string
-  network: BaseNetworkNames | BaseNetworkNames[]
+  network: BaseNetworkNames
   primaryToken: string
+  primaryTokenGroup?: string
   product: ProductType | ProductType[]
   protocol: LendingProtocol
   secondaryToken: string
-  url: string
+  secondaryTokenGroup?: string
 }
 
 export interface OasisCreateItemDetails {
   '7DayNetApy'?: BigNumber
   '90DayNetApy'?: BigNumber
   fee?: BigNumber
-  investmentType?: ('long' | 'short') | ('long' | 'short')[]
   liquidity?: BigNumber
   managementType?: 'active' | 'passive'
   maxLtv?: BigNumber
   maxMultiply?: BigNumber
+  strategy?: 'long' | 'short'
+  strategyLabel?: string
 }
 
 export type OasisCreateItem = OasisCreateItemBasics & OasisCreateItemDetails
 
 export interface OasisCreateFilters {
-  groupToken?: string
-  secondaryToken?: string[]
-  network?: string[]
-  protocol?: string[]
+  network?: OasisCreateItem['network'][]
+  primaryToken?: OasisCreateItem['primaryToken'][]
+  protocol?: OasisCreateItem['protocol'][]
+  secondaryToken?: OasisCreateItem['secondaryToken'][]
+  strategy?: OasisCreateItem['strategy'][]
 }
