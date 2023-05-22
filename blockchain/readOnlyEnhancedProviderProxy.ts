@@ -19,15 +19,10 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
     return async function (chainIdPromise: Promise<number | string>) {
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
-        if (jsonRpcBatchProvider === undefined) {
-          jsonRpcBatchProvider = new JsonRpcBatchProvider(
-            getNetworkRpcEndpoint(NetworkIds.MAINNET, chainId),
-            chainId,
-          )
-          provider = jsonRpcBatchProvider
-        } else {
-          provider = jsonRpcBatchProvider
-        }
+        jsonRpcBatchProvider =
+          jsonRpcBatchProvider ??
+          new JsonRpcBatchProvider(getNetworkRpcEndpoint(NetworkIds.MAINNET, chainId), chainId)
+        provider = jsonRpcBatchProvider
       }
       return provider
     }
@@ -47,7 +42,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
     }
   })()
 
-  const handler = {
+  return {
     get: (target: any, name: string) => {
       if (name === 'sendAsync') {
         return async (
@@ -91,7 +86,6 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
       }
     },
   }
-  return handler
 }
 
 export function readOnlyEnhanceProvider(provider: any, chainIdPromise: Promise<number | string>) {
