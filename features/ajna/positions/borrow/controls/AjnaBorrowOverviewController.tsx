@@ -18,7 +18,7 @@ import { Grid } from 'theme-ui'
 export function AjnaBorrowOverviewController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
+    environment: { collateralPrice, collateralToken, quotePrice, quoteToken, flow },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -93,7 +93,7 @@ export function AjnaBorrowOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      <AjnaTokensBannerController />
+      <AjnaTokensBannerController flow={flow} />
     </Grid>
   )
 }
