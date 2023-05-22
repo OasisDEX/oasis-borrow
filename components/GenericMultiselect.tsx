@@ -31,18 +31,16 @@ function GenericMultiselectIcon({
   label: string
 }) {
   return (
-    <>
-      <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}>
-        {icon && <Icon size={32} name={icon} sx={{ verticalAlign: 'bottom' }} />}
-        {image && (
-          <Image
-            src={image}
-            alt={label}
-            sx={{ width: '26px', height: '26px', verticalAlign: 'bottom' }}
-          />
-        )}
-      </Box>
-    </>
+    <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}>
+      {icon && <Icon size={32} name={icon} sx={{ verticalAlign: 'bottom' }} />}
+      {image && (
+        <Image
+          src={image}
+          alt={label}
+          sx={{ width: '26px', height: '26px', verticalAlign: 'bottom' }}
+        />
+      )}
+    </Box>
   )
 }
 
