@@ -5,7 +5,6 @@ import { SimulateTitle } from 'components/SimulateTitle'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnOpen'
-import { averageGasWhenOpeningAjnaEarnPosition } from 'features/ajna/positions/earn/consts'
 import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/getAjnaSimulationRows'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -13,7 +12,7 @@ import React from 'react'
 export function AjnaEarnOverviewOpenController() {
   const { t } = useTranslation()
   const {
-    environment: { quoteToken, quotePrice, gasPrice, ethPrice },
+    environment: { quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -23,13 +22,6 @@ export function AjnaEarnOverviewOpenController() {
       currentPosition: { simulation, position },
     },
   } = useAjnaProductContext('earn')
-
-  // TODO currently its based on open nft in future we may need
-  // different value when position is being opened without nft
-  const openPositionGasFee = averageGasWhenOpeningAjnaEarnPosition
-    .times(gasPrice.maxFeePerGas.plus(gasPrice.maxPriorityFeePerGas).shiftedBy(-9))
-    .times(ethPrice)
-    .shiftedBy(-9)
 
   const rowsInput = [
     {
@@ -45,8 +37,6 @@ export function AjnaEarnOverviewOpenController() {
       translation: t('ajna.position-page.earn.open.simulation.earnings-per-1y'),
     },
   ]
-
-  const breakEvenInDays = simulation?.getBreakEven(openPositionGasFee)
 
   return (
     <DetailsSection
@@ -67,11 +57,6 @@ export function AjnaEarnOverviewOpenController() {
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnOpen
-            estimatedBreakEven={
-              breakEvenInDays
-                ? new Date(new Date().getTime() + breakEvenInDays * 24 * 60 * 60 * 1000)
-                : undefined
-            }
             totalValueLocked={position.pool.depositSize.times(quotePrice)}
             apy={simulation?.apy.per30d}
             days={30}
