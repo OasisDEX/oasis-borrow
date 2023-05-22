@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import { networksById } from 'blockchain/networksConfig'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -6,7 +7,7 @@ import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
-import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { hasUserInteracted } from 'features/aave/helpers'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
@@ -17,6 +18,7 @@ import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
 import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTomfoolery } from 'helpers/useTomfoolery'
@@ -193,6 +195,32 @@ function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
       disabled: connecting,
     }),
     [t, connected, connecting, executeConnection],
+  )
+}
+
+function useChangeChainButton({
+  strategy,
+}: {
+  strategy: IStrategyConfig
+}): SidebarSectionFooterButtonSettings {
+  const { t } = useTranslation()
+  const [custromNetwork, setCustomNetwork] = useCustomNetworkParameter()
+
+  return useMemo(
+    () => ({
+      label: t('change-chain'),
+      action: () => {
+        setCustomNetwork({
+          id: strategy.networkId,
+          hexId: networksById[strategy.networkId].hexId,
+          network: strategy.network,
+        })
+      },
+      steps: undefined,
+      isLoading: false,
+      disabled: false,
+    }),
+    [t, strategy, setCustomNetwork],
   )
 }
 

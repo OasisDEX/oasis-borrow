@@ -23,9 +23,9 @@ import {
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
   getOpenDepositBorrowAaveMachine,
-  getOpenMultiplyAaveParametersMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
+import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
@@ -107,7 +107,10 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
-  const openAaveParameters = getOpenMultiplyAaveParametersMachine(txHelpers$, gasEstimation$)
+  const openAaveParameters = getOpenMultiplyAaveParametersMachine(txHelpers$, gasEstimation$, {
+    lendingProtocol: LendingProtocol.AaveV3,
+    networkId,
+  })
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)

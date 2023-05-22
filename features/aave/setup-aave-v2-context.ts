@@ -20,9 +20,9 @@ import {
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
   getOpenDepositBorrowAaveMachine,
-  getOpenMultiplyAaveParametersMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
+import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
@@ -104,6 +104,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const openMultiplyAaveParameters = getOpenMultiplyAaveParametersMachine(
     txHelpers$,
     gasEstimation$,
+    { networkId: NetworkIds.MAINNET, lendingProtocol: LendingProtocol.AaveV2 },
   )
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
