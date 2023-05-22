@@ -15,6 +15,7 @@ import { matchRowsByNL } from 'features/oasisCreate/helpers/matchRowsByNL'
 import { parseRows } from 'features/oasisCreate/helpers/parseRows'
 import {
   ALL_ASSETS,
+  EMPTY_FILTERS,
   oasisCreateFiltersCount,
   oasisCreateGridTemplateColumns,
   oasisCreateLinksMap,
@@ -47,7 +48,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
-  const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
+  const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>(EMPTY_FILTERS)
 
   const rowsMatchedByNL = useMemo(
     () => matchRowsByNL(oasisCreateData, selectedProduct, selectedToken),
@@ -70,6 +71,26 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
       })),
     [rowsMatchedByNL],
   )
+  const secondaryTokens = useMemo(
+    () =>
+      uniq(
+        rowsMatchedByNL.flatMap((item) => {
+          return [
+            ...([item.primaryToken, item.primaryTokenGroup].includes(selectedToken)
+              ? [item.secondaryToken]
+              : []),
+            ...([item.secondaryToken, item.secondaryTokenGroup].includes(selectedToken)
+              ? [item.primaryToken]
+              : []),
+          ]
+        }),
+      ).map((item) => ({
+        label: item,
+        value: item,
+        icon: getToken(item).iconCircle,
+      })),
+    [rowsMatchedByNL, selectedToken],
+  )
 
   return (
     <AnimatedWrapper sx={{ mb: 5 }}>
@@ -86,7 +107,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           onChange={(_selectedProduct, _selectedToken) => {
             setSelectedProduct(_selectedProduct)
             setSelectedToken(_selectedToken)
-            setSelectedFilters({})
+            setSelectedFilters(EMPTY_FILTERS)
           }}
         />
         <Text
@@ -151,13 +172,29 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
               options={debtTokens}
               onChange={(value) => {
                 setSelectedFilters({
-                  ...selectedFilters,
-                  secondaryToken: value,
+                  or: selectedFilters.or,
+                  and: { ...selectedFilters.and, secondaryToken: value },
                 })
               }}
             />
           )}
-          {selectedProduct === ProductType.Multiply && <Box>Multiply filter</Box>}
+          {selectedProduct === ProductType.Multiply && (
+            <GenericMultiselect
+              label={t('oasis-create.filters.secondary-tokens')}
+              options={secondaryTokens}
+              onChange={(value) => {
+                setSelectedFilters({
+                  or: [
+                    { primaryTokenGroup: [selectedToken], secondaryToken: value },
+                    { primaryToken: [selectedToken], secondaryToken: value },
+                    { primaryToken: value, secondaryToken: [selectedToken] },
+                    { primaryToken: value, secondaryTokenGroup: [selectedToken] },
+                  ],
+                  and: selectedFilters.and,
+                })
+              }}
+            />
+          )}
           {!isSmallerScreen && <Box />}
           {selectedProduct === ProductType.Multiply && (
             <GenericMultiselect
@@ -165,8 +202,8 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
               options={oasisCreateStrategyFilter}
               onChange={(value) => {
                 setSelectedFilters({
-                  ...selectedFilters,
-                  strategy: value as OasisCreateProductStrategy[],
+                  or: selectedFilters.or,
+                  and: { ...selectedFilters.and, strategy: value as OasisCreateProductStrategy[] },
                 })
               }}
             />
@@ -176,8 +213,8 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             options={oasisCreateNetworkFilter}
             onChange={(value) => {
               setSelectedFilters({
-                ...selectedFilters,
-                network: value as BaseNetworkNames[],
+                or: selectedFilters.or,
+                and: { ...selectedFilters.and, network: value as BaseNetworkNames[] },
               })
             }}
           />
@@ -186,8 +223,8 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             options={oasisCreateProtocolFilter}
             onChange={(value) => {
               setSelectedFilters({
-                ...selectedFilters,
-                protocol: value as LendingProtocol[],
+                or: selectedFilters.or,
+                and: { ...selectedFilters.and, protocol: value as LendingProtocol[] },
               })
             }}
           />

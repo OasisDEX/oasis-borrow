@@ -35,10 +35,17 @@ export interface OasisCreateItemDetails {
 
 export type OasisCreateItem = OasisCreateItemBasics & OasisCreateItemDetails
 
-export interface OasisCreateFilters {
+export interface OasisCreateFiltersCriteria {
   network?: OasisCreateItem['network'][]
   primaryToken?: OasisCreateItem['primaryToken'][]
+  primaryTokenGroup?: OasisCreateItem['primaryTokenGroup'][]
   protocol?: OasisCreateItem['protocol'][]
   secondaryToken?: OasisCreateItem['secondaryToken'][]
+  secondaryTokenGroup?: OasisCreateItem['secondaryTokenGroup'][]
   strategy?: OasisCreateItem['strategy'][]
+}
+
+export interface OasisCreateFilters {
+  or: OasisCreateFiltersCriteria[]
+  and: OasisCreateFiltersCriteria
 }

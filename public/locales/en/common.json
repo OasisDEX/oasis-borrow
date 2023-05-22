@@ -2719,6 +2719,7 @@
     },
     "filters": {
       "debt-tokens": "Debt Tokens",
+      "secondary-tokens": "Secondary Tokens",
       "strategies": "Strategies",
       "networks": "Networks",
       "protocols": "Protocols"
