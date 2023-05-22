@@ -1,7 +1,6 @@
 import { WithChildren } from 'helpers/types'
 import { LinkProps } from 'next/dist/client/link'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import React from 'react'
 import { Link as ThemeLink, SxStyleProp } from 'theme-ui'
 
@@ -60,20 +59,12 @@ function InternalLink({
   hash,
   ...rest
 }: AppLinkProps) {
-  const network = useRouter()?.query.network
   const readOnlyHref = href
   const readOnlyAs = as
 
-  const actualHref = network
-    ? {
-        pathname: readOnlyHref as string,
-        query: { network },
-        hash,
-      }
-    : { pathname: readOnlyHref as string, hash }
+  const actualHref = { pathname: readOnlyHref as string, hash }
 
-  const actualAs =
-    readOnlyAs && network ? { pathname: readOnlyAs as string, query: { network } } : readOnlyAs
+  const actualAs = readOnlyAs ? { pathname: readOnlyAs as string } : readOnlyAs
 
   return (
     <Link href={actualHref} as={actualAs} passHref {...rest} legacyBehavior>
