@@ -2,6 +2,8 @@ import BigNumber from 'bignumber.js'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 
+export type OasisCreateProductStrategy = 'long' | 'short'
+
 export enum ProductType {
   Borrow = 'borrow',
   Multiply = 'multiply',
@@ -27,7 +29,7 @@ export interface OasisCreateItemDetails {
   managementType?: 'active' | 'passive'
   maxLtv?: BigNumber
   maxMultiply?: BigNumber
-  strategy?: 'long' | 'short'
+  strategy?: OasisCreateProductStrategy
   strategyLabel?: string
 }
 

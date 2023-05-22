@@ -248,6 +248,7 @@
         "protocol": "Protocol",
         "risk-ratio": "Risk ratio",
         "status": "Status",
+        "strategy": "Strategy",
         "tvl": "TVL",
         "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
@@ -2718,6 +2719,7 @@
     },
     "filters": {
       "debt-tokens": "Debt Tokens",
+      "strategies": "Strategies",
       "networks": "Networks",
       "protocols": "Protocols"
     }

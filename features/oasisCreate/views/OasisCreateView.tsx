@@ -15,11 +15,18 @@ import { matchRowsByNL } from 'features/oasisCreate/helpers/matchRowsByNL'
 import { parseRows } from 'features/oasisCreate/helpers/parseRows'
 import {
   ALL_ASSETS,
+  oasisCreateFiltersCount,
+  oasisCreateGridTemplateColumns,
   oasisCreateLinksMap,
   oasisCreateNetworkFilter,
   oasisCreateProtocolFilter,
+  oasisCreateStrategyFilter,
 } from 'features/oasisCreate/meta'
-import { OasisCreateFilters, ProductType } from 'features/oasisCreate/types'
+import {
+  OasisCreateFilters,
+  OasisCreateProductStrategy,
+  ProductType,
+} from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
@@ -37,7 +44,6 @@ interface OasisCreateViewProps {
 
 export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const { t } = useTranslation()
-  const isMobileScreen = useMediaQuery(`(max-width: ${theme.breakpoints[1]})`)
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
@@ -132,7 +138,12 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
       <AssetsTableContainer>
         <AssetsFiltersContainer
           key={`${selectedProduct}-${selectedToken}`}
-          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '250px auto 250px 250px 250px']}
+          gridTemplateColumns={[
+            '100%',
+            null,
+            `repeat(${oasisCreateFiltersCount[selectedProduct]}, 1fr)`,
+            oasisCreateGridTemplateColumns[selectedProduct],
+          ]}
         >
           {selectedProduct === ProductType.Borrow && (
             <GenericMultiselect
@@ -146,14 +157,20 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
               }}
             />
           )}
+          {selectedProduct === ProductType.Multiply && <Box>Multiply filter</Box>}
+          {!isSmallerScreen && <Box />}
           {selectedProduct === ProductType.Multiply && (
-            <>Multiply filter</>
+            <GenericMultiselect
+              label={t('oasis-create.filters.strategies')}
+              options={oasisCreateStrategyFilter}
+              onChange={(value) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  strategy: value as OasisCreateProductStrategy[],
+                })
+              }}
+            />
           )}
-          {selectedProduct === ProductType.Earn && (
-            <>{!isMobileScreen && <Box />}</>
-          )}
-          {!isSmallerScreen && <Box />}
-          {!isSmallerScreen && <Box />}
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}
             options={oasisCreateNetworkFilter}
