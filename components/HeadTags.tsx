@@ -1,7 +1,7 @@
+import { useCustomNetworkParameter } from 'blockchain/networks'
+import { networkTabTitleIconMap } from 'blockchain/networks'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { getRandomString } from 'helpers/getRandomString'
-import { networkTabTitleIconMap } from 'helpers/networkIconMap'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -71,15 +71,15 @@ export function PageSEOTags({
   }
   const properNetworkIconMap = useNetworkSwitcher
     ? networkTabTitleIconMap
-    : { hardhat: '👷 ', goerli: '🌲 ' }
+    : { fork: '👷 ', goerli: '🌲 ' }
   const networkParameter = useNetworkSwitcher
     ? web3OnboardNetworkParameter?.network
     : (query.network as string)
   const tabTitle = `${
     networkParameter
       ? properNetworkIconMap[
-          networkParameter.includes('hardhat')
-            ? 'hardhat'
+          networkParameter.includes('fork')
+            ? 'fork'
             : (networkParameter as keyof typeof properNetworkIconMap)
         ]
       : ''

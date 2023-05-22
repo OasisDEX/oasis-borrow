@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { defaultExchangeProtocols } from 'features/exchange/exchange'
 
 import { one } from './zero'

@@ -2,21 +2,12 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ConnectedChain } from '@web3-onboard/core'
 import { useSetChain } from '@web3-onboard/react'
 import {
-  defaultHardhatConfig,
-  NetworkConfig,
-  NetworkConfigHexId,
-  networks,
-  networksByHexId,
-} from 'blockchain/networksConfig'
-import { useAppContext } from 'components/AppContextProvider'
-import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
-import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import {
   CustomNetworkStorageKey,
+  forkNetworks,
   mainnetNetworkParameter,
+  networksListWithForksByHexId,
   useCustomNetworkParameter,
-} from 'helpers/getCustomNetworkParameter'
-import { useModal } from 'helpers/modalHook'
+} from 'blockchain/networks'
 import {
   filterNetworksAccordingToSavedNetwork,
   filterNetworksAccordingToWalletNetwork,
@@ -24,7 +15,16 @@ import {
   isTestnet,
   isTestnetEnabled,
   isTestnetNetworkHexId,
-} from 'helpers/networkHelpers'
+} from 'blockchain/networks'
+import {
+  defaultForkSettings,
+  NetworkConfig,
+  NetworkConfigHexId,
+  networks,
+} from 'blockchain/networks'
+import { useAppContext } from 'components/AppContextProvider'
+import { AppSpinnerWholePage } from 'helpers/AppSpinner'
+import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { getStorageValue } from 'helpers/useLocalStorage'
 import { useNetworkName } from 'helpers/useNetworkName'
@@ -44,13 +44,8 @@ export function NavigationNetworkSwitcher() {
   const openModal = useModal()
   const changeChain = useCallback(
     (networkHexId: NetworkConfigHexId) => () => {
-      let network = networksByHexId[networkHexId]
-      if (!network) {
-        // this means that is hardhat
-        network = hardhatNetworkConfigs.find(
-          (config) => config.hexId === networkHexId,
-        )! as NetworkConfig
-      }
+      const network = networksListWithForksByHexId[networkHexId]
+
       if (connectedChain) {
         // wallet is connected, change it there so it updates everywhere
         setChain({ chainId: network.hexId! })
@@ -84,7 +79,7 @@ export function NavigationNetworkSwitcher() {
   const { hexId: customNetworkHexId } = (customNetworkData ||
     mainnetNetworkParameter) as typeof mainnetNetworkParameter
 
-  const handleNetworkButton = (isHardhat?: boolean) => (network: NetworkConfig) => {
+  const handleNetworkButton = (isFork?: boolean) => (network: NetworkConfig) => {
     const isCurrentNetwork = network.name === currentNetworkName
     return (
       <Button
@@ -95,14 +90,14 @@ export function NavigationNetworkSwitcher() {
           color: isCurrentNetwork ? 'primary100' : 'neutral80',
           ':hover': {
             color: 'primary100',
-            ...(isHardhat && {
+            ...(isFork && {
               '::before': {
                 top: '-5px',
                 left: '-5px',
               },
             }),
           },
-          ...(isHardhat && {
+          ...(isFork && {
             '::before': {
               content: '"👷‍♂️"',
               position: 'absolute',
@@ -176,8 +171,8 @@ export function NavigationNetworkSwitcher() {
                   : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
               )
               .map(handleNetworkButton(false))}
-            {hardhatNetworkConfigs.map((config) =>
-              handleNetworkButton(true)({ ...defaultHardhatConfig, ...config } as NetworkConfig),
+            {forkNetworks.map((config) =>
+              handleNetworkButton(true)({ ...defaultForkSettings, ...config } as NetworkConfig),
             )}
             {(connectedChain || isTestnetEnabled()) && (
               <>
@@ -211,7 +206,7 @@ export function NavigationNetworkSwitcher() {
                   sx={{ fontSize: 2 }}
                   onClick={() => openModal(NavigationNetworkSwitcherModal, {})}
                 >
-                  <Box sx={{ width: '100%' }}>Hardhat settings 👷‍♂️</Box>
+                  <Box sx={{ width: '100%' }}>Fork settings 👷‍♂️</Box>
                 </Button>
               </>
             )}

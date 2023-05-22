@@ -1,5 +1,5 @@
+import { NetworkNames } from 'blockchain/networks'
 import { useAppContext } from 'components/AppContextProvider'
-import { NetworkNames } from 'helpers/networkNames'
 import { WithChildren } from 'helpers/types'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import React, { useContext, useEffect, useState } from 'react'

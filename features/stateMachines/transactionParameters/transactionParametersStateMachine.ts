@@ -3,7 +3,7 @@ import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-
 import BigNumber from 'bignumber.js'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { isEqual } from 'lodash'

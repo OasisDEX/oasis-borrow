@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { ethers } from 'ethers'
 
 export type SupportedNetworks = NetworkIds.MAINNET | NetworkIds.OPTIMISMMAINNET | NetworkIds.GOERLI

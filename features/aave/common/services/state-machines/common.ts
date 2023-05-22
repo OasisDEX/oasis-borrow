@@ -1,7 +1,7 @@
 import * as oldWrapper from 'actions/aave'
 import * as newWrapper from 'actions/better-aave'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 
 type AaveV2NetworksProtocolParameters = {

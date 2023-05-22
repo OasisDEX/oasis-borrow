@@ -4,8 +4,7 @@ import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-con
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
-import { NetworkIds } from './networkIds'
-import { networksById } from './networksConfig'
+import { NetworkIds, networksById } from './networks'
 
 export interface UserDpmAccount {
   proxy: string

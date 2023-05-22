@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
+import { NetworkIds } from 'blockchain/networks'
+import { networksById } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV2ProtocolDataProvider__factory } from 'types/ethers-contracts'
 

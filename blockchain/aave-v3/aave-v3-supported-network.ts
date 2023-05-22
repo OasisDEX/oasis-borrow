@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 
 export type AaveV3SupportedNetwork = NetworkIds.MAINNET | NetworkIds.OPTIMISMMAINNET
 

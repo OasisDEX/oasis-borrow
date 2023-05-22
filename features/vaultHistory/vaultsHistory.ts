@@ -2,7 +2,7 @@ import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import {
   AutoBSTriggerData,

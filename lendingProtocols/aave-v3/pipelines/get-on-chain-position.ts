@@ -7,7 +7,7 @@ import {
   GetOnChainPositionParams as OptimismParams,
 } from 'actions/better-aave'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 
 export type GetAaveV3OnChainPosition = Pick<

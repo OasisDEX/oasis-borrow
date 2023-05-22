@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
 import { AjnaPositionAuctionResponse } from 'features/ajna/rewards/helpers/getAjnaPositionAuction'

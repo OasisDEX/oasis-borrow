@@ -1,5 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
-import { getContractNetworkByWalletNetwork } from 'helpers/networkHelpers'
+import { getContractNetworkByWalletNetwork, NetworkIds } from 'blockchain/networks'
 
 import { goerliContracts } from './goerli'
 import { mainnetContracts } from './mainnet'

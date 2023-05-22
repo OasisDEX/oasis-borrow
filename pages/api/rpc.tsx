@@ -1,7 +1,7 @@
 import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
+import { NetworkNames } from 'blockchain/networks'
 import * as ethers from 'ethers'
-import { NetworkNames } from 'helpers/networkNames'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const threadId = Math.floor(Math.random() * 1000000)

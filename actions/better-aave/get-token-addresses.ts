@@ -1,7 +1,7 @@
 import { AAVEV3StrategyAddresses } from '@oasisdex/dma-library'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { NetworkIds } from 'blockchain/networks'
+import { ethNullAddress } from 'blockchain/networks'
 
 export function getTokenAddresses(networkId: NetworkIds.MAINNET): AAVEV3StrategyAddresses {
   const contracts = getNetworkContracts(networkId)

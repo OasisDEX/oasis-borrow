@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
 import { getNetworkId } from 'features/web3Context'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
@@ -9,12 +8,12 @@ import { ajax } from 'rxjs/ajax'
 import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
+import { NetworkIds } from './networks'
 import { getToken } from './tokensMetadata'
 
 export interface Tickers {
   [label: string]: BigNumber
 }
-
 export type GasPriceParams = {
   maxFeePerGas: BigNumber
   maxPriorityFeePerGas: BigNumber

@@ -1,5 +1,5 @@
 import { WidgetConfig } from '@lifi/widget'
-import { networks } from 'blockchain/networksConfig'
+import { networks } from 'blockchain/networks'
 import { theme } from 'theme'
 
 const { colors, radii } = theme

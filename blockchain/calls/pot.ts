@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay } from 'blockchain/utils'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { Observable } from 'rxjs'

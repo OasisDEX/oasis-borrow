@@ -1,5 +1,5 @@
 import { useConnectWallet } from '@web3-onboard/react'
-import { networksByName } from 'blockchain/networksConfig'
+import { networksByName } from 'blockchain/networks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { useNetworkName } from 'helpers/useNetworkName'
 import React from 'react'

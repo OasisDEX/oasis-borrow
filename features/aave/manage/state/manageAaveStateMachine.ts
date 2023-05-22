@@ -7,7 +7,7 @@ import {
   callOperationExecutorWithDsProxy,
   OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress } from 'blockchain/networks'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import {
   BaseAaveContext,

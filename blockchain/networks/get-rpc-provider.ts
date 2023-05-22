@@ -1,12 +1,13 @@
-import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
 import { ethers } from 'ethers'
-import { hardhatNetworksByOriginalId } from 'features/web3OnBoard/hardhatConfigList'
+
+import { forkNetworksByOriginalId } from './forks-config'
+import { NetworkIds } from './network-ids'
+import { networksById } from './networks-config'
 
 export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider {
-  const hardhatProvider = hardhatNetworksByOriginalId[networkId]?.readProvider
-  if (hardhatProvider) {
-    return hardhatProvider
+  const forkProvider = forkNetworksByOriginalId[networkId]?.readProvider
+  if (forkProvider) {
+    return forkProvider
   }
   const mainProvider = networksById[networkId].readProvider
   if (mainProvider) {

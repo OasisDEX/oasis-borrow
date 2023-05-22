@@ -12,7 +12,6 @@ import { mainnetCacheUrl } from 'config/runtimeConfig'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
-import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
@@ -24,7 +23,8 @@ import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainne
 import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
-import { NetworkIds } from './networkIds'
+import { NetworkIds } from './network-ids'
+import { NetworkLabelType, NetworkNames } from './network-names'
 
 export type NetworkConfigHexId = `0x${number | string}`
 
@@ -230,7 +230,7 @@ export const L2Networks = [
   optimismGoerliConfig,
 ]
 
-export const defaultHardhatConfig: NetworkConfig = {
+export const defaultForkSettings: NetworkConfig = {
   id: NetworkIds.HARDHAT,
   hexId: '0x859',
   name: NetworkNames.ethereumMainnet, // these are being overridden

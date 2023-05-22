@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { getRpcProvider } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
-import { getRpcProvider } from 'helpers/get-rpc-provider'
 import { Erc20__factory } from 'types/ethers-contracts'
 
 import { BaseParameters } from './utils'

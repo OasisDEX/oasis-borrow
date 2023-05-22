@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { one } from 'helpers/zero'
 import { AaveV3Oracle__factory } from 'types/ethers-contracts/'
 

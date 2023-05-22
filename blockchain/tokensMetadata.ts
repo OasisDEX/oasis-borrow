@@ -1,4 +1,3 @@
-import { MainNetworkNames } from 'helpers/networkNames'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { LendingProtocol } from 'lendingProtocols'
 import { findKey, keyBy } from 'lodash'
@@ -6,7 +5,7 @@ import type { ElementOf } from 'ts-essentials'
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
-import { NetworkIds } from './networkIds'
+import { MainNetworkNames, NetworkIds } from './networks'
 
 export interface TokenConfig {
   symbol: string

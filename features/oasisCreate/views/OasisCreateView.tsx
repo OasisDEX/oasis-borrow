@@ -1,3 +1,4 @@
+import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
@@ -20,7 +21,6 @@ import {
 } from 'features/oasisCreate/meta'
 import { OasisCreateFilters, ProductType } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'

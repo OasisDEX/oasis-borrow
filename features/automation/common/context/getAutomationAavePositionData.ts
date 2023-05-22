@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
 import { AaveManageVaultState } from 'features/automation/contexts/AaveAutomationContext'
 import { VaultType } from 'features/generalManageVault/vaultType'

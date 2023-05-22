@@ -1,10 +1,11 @@
 import { useSetChain } from '@web3-onboard/react'
-import { networksByHexId } from 'blockchain/networksConfig'
-import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
-import { keyBy } from 'lodash'
-
-import { mainnetNetworkParameter, useCustomNetworkParameter } from './getCustomNetworkParameter'
-import { isSupportedNetwork } from './networkNames'
+import {
+  isSupportedNetwork,
+  mainnetNetworkParameter,
+  networksListWithForksByHexId,
+  useCustomNetworkParameter,
+} from 'blockchain/networks'
+import {} from 'blockchain/networks'
 
 export function useNetworkName() {
   const [{ chains, connectedChain }] = useSetChain()
@@ -26,5 +27,5 @@ export function useNetworkName() {
     )
     return mainnetNetworkParameter.network
   }
-  return { ...networksByHexId, ...keyBy(hardhatNetworkConfigs, 'hexId') }[filteredChain[0].id].name
+  return networksListWithForksByHexId[filteredChain[0].id].name
 }

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'

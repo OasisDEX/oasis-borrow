@@ -1,6 +1,6 @@
 import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { GetCdps } from 'types/web3-v1-contracts'
 
 export interface GetCdpsArgs {

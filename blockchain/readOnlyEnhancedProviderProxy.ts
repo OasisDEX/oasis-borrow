@@ -2,13 +2,13 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-types'
 import { providers } from 'ethers'
 import { skipCache } from 'helpers/api/skipCache'
-import { getNetworkRpcEndpoint } from 'helpers/networkHelpers'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
 import { JsonRpcCachedProvider } from './jsonRpcCachedProvider'
-import { NetworkIds } from './networkIds'
+import { getNetworkRpcEndpoint } from './networks'
+import { NetworkIds } from './networks'
 
 function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers

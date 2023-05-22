@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { AaveV3Pool__factory } from 'types/ethers-contracts'
 
 import { BaseParameters, getNetworkMapping } from './utils'

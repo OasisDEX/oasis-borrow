@@ -97,8 +97,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
+import { NetworkIds, networksById } from 'blockchain/networks'
 import {
   createGasPrice$,
   createOraclePriceData$,

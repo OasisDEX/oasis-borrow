@@ -6,7 +6,7 @@ import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
-import { contractDesc } from 'blockchain/networksConfig'
+import { contractDesc } from 'blockchain/networks'
 import {
   AAVE_V3_POOL_GENESIS_MAINNET,
   ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
