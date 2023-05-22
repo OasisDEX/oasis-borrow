@@ -247,14 +247,7 @@ function Menu(props: {
 function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
   const { t } = useTranslation()
   return (
-    <Box
-      sx={{
-        mr: [0, '48px'],
-        pr: [0, '48px'],
-        borderRight: ['none', 'solid 1px'],
-        borderRightColor: ['transparent', 'neutral20'],
-      }}
-    >
+    <Box sx={{ mr: [0, '96px'] }}>
       <Text
         variant="paragraph2"
         sx={{
@@ -297,7 +290,15 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
   return (
     <>
       {breakpointIndex === 0 && <TotalAssetsContent totalValueUsd={props.totalValueUsd} />}
-      <Card variant="positionsPage">
+      <Box
+        sx={{
+          p: 4,
+          border: '1px solid',
+          borderColor: 'neutral20',
+          borderRadius: 'large',
+          bg: 'neutral10',
+        }}
+      >
         <Grid gap={0} sx={{ gridTemplateColumns: ['100%', '40% 60%'] }}>
           {breakpointIndex !== 0 && <TotalAssetsContent totalValueUsd={props.totalValueUsd} />}
           <Box sx={{ flexGrow: 1 }}>
@@ -340,7 +341,7 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
             )}
           </Box>
         </Grid>
-      </Card>
+      </Box>
     </>
   )
 }

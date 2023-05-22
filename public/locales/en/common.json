@@ -218,8 +218,10 @@
         "annual-fee": "Annual fee",
         "asset": "Vault",
         "automation": "Automation",
+        "borrow-rate": "Borrow rate",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
+        "collateral-debt": "Collateral/Debt",
         "collateral-locked": "Collateral locked",
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
@@ -229,6 +231,8 @@
         "liquidation-price": "Liquidation price",
         "liquidity-avaliable": "Liquidity avaliable",
         "liquidity": "Liquidity",
+        "long-short": "Long/Short",
+        "management": "Management",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
         "max-multiple": "Max multiple",
@@ -240,10 +244,12 @@
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
         "protection": "Protection",
+        "protocol-network": "Protocol/Network",
         "protocol": "Protocol",
         "risk-ratio": "Risk ratio",
         "status": "Status",
         "tvl": "TVL",
+        "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
         "vault-debt": "Vault debt",
         "with-50-tokens": "With 50.00 {{token}}"
@@ -2685,6 +2691,14 @@
     }
   },
   "oasis-create": {
+    "header": {
+      "i-want-to": "I want to",
+      "conjunction": {
+        "borrow": "against",
+        "multiply": "exposure to",
+        "earn": "with "
+      }
+    },
     "select": {
       "borrow": "Borrow against your favorite crypto assets",
       "multiply": "Increase your exposure to any crypto asset",
@@ -2694,6 +2708,18 @@
       "borrow": "Easily borrow stablecoins or other crypto-assets against your collateral. Read more about",
       "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset. Read more about",
       "earn": "Earn long term yields to compound your crypto capital. Read more about"
+    },
+    "table": {
+      "active": "Active",
+      "long-short": "Long or short",
+      "long": "Long only",
+      "passive": "Passive",
+      "short": "Short only"
+    },
+    "filters": {
+      "debt-tokens": "Debt Tokens",
+      "networks": "Networks",
+      "protocols": "Protocols"
     }
   }
 }

@@ -1057,6 +1057,7 @@ export const tokenIcons = {
   cbeth_circle_color: {
     path: (
       <>
+        <circle cx="16" cy="16" r="13" fill="#FFFFFF" />
         <path
           fillRule="evenodd"
           clipRule="evenodd"

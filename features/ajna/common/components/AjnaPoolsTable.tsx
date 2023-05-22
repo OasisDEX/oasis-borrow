@@ -108,7 +108,7 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
   )
 
   return (
-    <AssetsTableContainer tableOnly>
+    <AssetsTableContainer>
       <AssetsResponsiveTable headerTranslationProps={{ token: selectedValue }} rows={rows} />
     </AssetsTableContainer>
   )
