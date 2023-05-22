@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networkIds'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
+import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'
 
 import { BaseParameters, getNetworkMapping } from './utils'
@@ -109,6 +110,7 @@ export function getAaveV3ReserveData({
 }: AaveV3ReserveDataParameters): Promise<AaveV3ReserveDataReply> {
   const { contract, tokenMappings } = networkMappings[networkId]
   const tokenAddress = tokenMappings[token].address
+  warnIfAddressIsZero(tokenAddress, networkId, 'aaveV3PoolDataProvider', 'getReserveData')
   return contract.getReserveData(tokenAddress).then((result) => {
     const totalAToken = amountFromWei(new BigNumber(result.totalAToken.toString()), token)
     const totalStableDebt = amountFromWei(new BigNumber(result.totalStableDebt.toString()), token)
@@ -141,6 +143,12 @@ export function getAaveV3ReserveConfigurationData({
   token,
 }: AaveV3ReserveConfigurationParameters): Promise<AaveV3ReserveConfigurationData> {
   const { contract, tokenMappings } = networkMappings[networkId]
+  warnIfAddressIsZero(
+    tokenMappings[token].address,
+    networkId,
+    'aaveV3PoolDataProvider',
+    'getAaveV3ReserveConfigurationData',
+  )
   const tokenAddress = tokenMappings[token].address
   return contract.getReserveConfigurationData(tokenAddress).then((result) => {
     return {
@@ -161,6 +169,17 @@ export function getAaveV3EModeCategoryForAsset({
 }: AaveV3EModeForAssetParameters): Promise<BigNumber> {
   const { contract, tokenMappings } = networkMappings[networkId]
   const address = tokenMappings[token].address
+  console.log({
+    address,
+    token,
+    tokenMappings,
+  })
+  warnIfAddressIsZero(
+    address,
+    networkId,
+    'aaveV3PoolDataProvider',
+    'getAaveV3EModeCategoryForAsset',
+  )
   return contract.getReserveEModeCategory(address).then((result) => {
     return new BigNumber(result.toString())
   })

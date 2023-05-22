@@ -32,9 +32,14 @@ export function ProductCardMultiplyAave({ cardData, strategy }: ProductCardMulti
     strategy.network,
   )
   const [debtReserveData] = useObservable(getAaveReserveData$({ token: strategy.tokens.debt }))
-  const [collateralReserveConfigurationData] = useObservable(
-    aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
-  )
+  const [collateralReserveConfigurationData, collateralReserveConfigurationDataError] =
+    useObservable(aaveReserveConfigurationData$({ token: strategy.tokens.collateral }))
+  collateralReserveConfigurationDataError &&
+    console.log(
+      'collateralReserveConfigurationDataError',
+      collateralReserveConfigurationDataError,
+      strategy.tokens.collateral,
+    )
 
   const protocolVersion = strategy.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
 
