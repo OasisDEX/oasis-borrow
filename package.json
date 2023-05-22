@@ -3,7 +3,7 @@
   "version": "7.9.1",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=14.x <=18.x"
+    "node": ">=16.18 <=18.x"
   },
   "scripts": {
     "start": "next dev",

@@ -45,17 +45,18 @@ export interface ForkNetworkConfig {
 }
 
 export const forkNetworks: ForkNetworkConfig[] = Object.entries(forkSettings).map(
-  ([networkName, hardhatConfig]) => {
+  ([networkName, forkNetwork]) => {
     const originalNetworkConfig = networksByName[networkName]
     return {
       ...originalNetworkConfig,
-      id: hardhatConfig.id as unknown as NetworkIds,
+      id: forkNetwork.id as unknown as NetworkIds,
       originalId: originalNetworkConfig.id,
-      hexId: `0x${Number(hardhatConfig.id).toString(16)}` as NetworkConfigHexId,
+      hexId: `0x${Number(forkNetwork.id).toString(16)}` as NetworkConfigHexId,
       label: `${originalNetworkConfig.label} Test`,
-      rpcUrl: hardhatConfig.url,
-      readProvider: new ethers.providers.StaticJsonRpcProvider(hardhatConfig.url),
+      rpcUrl: forkNetwork.url,
+      readProvider: new ethers.providers.StaticJsonRpcProvider(forkNetwork.url),
       name: `${originalNetworkConfig.name}-test`,
+      isCustomFork: true,
     }
   },
 )

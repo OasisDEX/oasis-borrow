@@ -46,6 +46,7 @@ export type NetworkConfig = {
   rpcUrl: string
   readProvider: ethers.providers.Provider
   cacheApi?: GraphQLClient
+  isCustomFork?: boolean
 }
 
 export function contractDesc(
@@ -75,6 +76,7 @@ const mainnetConfig: NetworkConfig = {
     name: NetworkNames.ethereumMainnet,
   }),
   cacheApi: new GraphQLClient(mainnetCacheUrl),
+  isCustomFork: false,
 }
 
 const goerliConfig: NetworkConfig = {
@@ -96,6 +98,7 @@ const goerliConfig: NetworkConfig = {
     name: NetworkNames.ethereumGoerli,
   }),
   cacheApi: new GraphQLClient('https://oazo-bcache-goerli-staging.new.oasis.app/api/v1'),
+  isCustomFork: false,
 }
 
 const arbitrumMainnetConfig: NetworkConfig = {
@@ -113,6 +116,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  isCustomFork: false,
 }
 
 const arbitrumGoerliConfig: NetworkConfig = {
@@ -130,6 +134,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  isCustomFork: false,
 }
 
 const polygonMainnetConfig: NetworkConfig = {
@@ -147,6 +152,7 @@ const polygonMainnetConfig: NetworkConfig = {
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  isCustomFork: false,
 }
 
 const polygonMumbaiConfig: NetworkConfig = {
@@ -164,6 +170,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  isCustomFork: false,
 }
 
 const optimismMainnetConfig: NetworkConfig = {
@@ -184,6 +191,7 @@ const optimismMainnetConfig: NetworkConfig = {
     chainId: NetworkIds.OPTIMISMMAINNET,
     name: NetworkNames.optimismMainnet,
   }),
+  isCustomFork: false,
 }
 
 const optimismGoerliConfig: NetworkConfig = {
@@ -201,6 +209,7 @@ const optimismGoerliConfig: NetworkConfig = {
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  isCustomFork: false,
 }
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -217,6 +226,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   token: 'ETH',
   rpcUrl: 'empty',
   readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
+  isCustomFork: false,
 }
 
 export const mainnetNetworks = [mainnetConfig, goerliConfig]
@@ -243,6 +253,7 @@ export const defaultForkSettings: NetworkConfig = {
   token: 'ETH',
   rpcUrl: '',
   readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  isCustomFork: true,
 }
 
 export const networks = [...mainnetNetworks, optimismMainnetConfig]
