@@ -39,4 +39,7 @@ export const swapWidgetConfig: WidgetConfig = {
   chains: {
     allow: networks.filter(({ enabled }) => enabled).map((network) => network.id),
   },
+  bridges: {
+    deny: ['polygon', 'omni', 'gnosis', 'hyphen'],
+  },
 }
