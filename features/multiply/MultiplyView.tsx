@@ -16,9 +16,6 @@ export function MultiplyView() {
   const aaveMultiplyStrategiesV2 = aaveStrategiesList('Multiply', LendingProtocol.AaveV2)
   const aaveMultiplyStrategiesV3 = aaveStrategiesList('Multiply', LendingProtocol.AaveV3)
 
-  console.log('aaveMultiplyStrategiesV2', aaveMultiplyStrategiesV2)
-  console.log('aaveMultiplyStrategiesV3', aaveMultiplyStrategiesV3)
-
   return (
     <Grid
       sx={{
