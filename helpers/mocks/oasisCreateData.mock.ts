@@ -1,11 +1,284 @@
 //TODO: to be replaced with data from API
 
 import BigNumber from 'bignumber.js'
-import { OasisCreateItem, ProductType } from 'features/oasisCreate/types'
+import { getToken } from 'blockchain/tokensMetadata'
+import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
+import {
+  OasisCreateData,
+  OasisCreateItem,
+  OasisCreatePromoCards,
+  ProductType,
+} from 'features/oasisCreate/types'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const oasisCreateData: OasisCreateItem[] = [
+const protocol = {
+  aavev2: { network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.AaveV2 },
+  aavev3: { network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.AaveV3 },
+  aavev3Arbitrum: { network: BaseNetworkNames.Arbitrum, protocol: LendingProtocol.AaveV3 },
+  aavev3Optimism: { network: BaseNetworkNames.Optimism, protocol: LendingProtocol.AaveV3 },
+  ajna: { network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.Ajna },
+  maker: { network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.Maker },
+}
+const pill = {
+  negative: { label: 'Negative label', variant: 'negative' as PromoCardVariant },
+  neutral: { label: 'Neutral label' },
+  positive: { label: 'Positive label', variant: 'positive' as PromoCardVariant },
+}
+const data = {
+  negative: (v: string) => ({
+    label: 'Negative value',
+    value: v,
+    variant: 'negative' as PromoCardVariant,
+  }),
+  neutral: (v: string) => ({ label: 'Neutral value', value: v }),
+  positive: (v: string) => ({
+    label: 'Positive value',
+    value: v,
+    variant: 'positive' as PromoCardVariant,
+  }),
+}
+
+const oasisCreatePromoCardBorrowEth: PromoCardProps = {
+  icon: getToken('ETH').iconCircle,
+  title: 'Main borrow ETH promo card',
+  protocol: protocol.maker,
+  pills: [pill.neutral, pill.positive],
+  data: [data.positive('11.9%')],
+}
+const oasisCreatePromoCardBorrowWbtc: PromoCardProps = {
+  icon: getToken('WBTC').iconCircle,
+  title: 'Main borrow WBTC promo card',
+  protocol: protocol.maker,
+  pills: [pill.neutral, pill.negative],
+  data: [data.negative('-0.40%')],
+}
+const oasisCreatePromoCardBorrowUsdc: PromoCardProps = {
+  icon: getToken('USDC').iconCircle,
+  title: 'Main borrow USDC promo card',
+  protocol: protocol.ajna,
+  pills: [pill.neutral, pill.positive],
+  data: [data.positive('6.13%')],
+}
+const oasisCreatePromoCardMultiplyEth: PromoCardProps = {
+  icon: getToken('ETH').iconCircle,
+  title: 'Main multiply ETH promo card',
+  protocol: protocol.maker,
+  pills: [pill.neutral, pill.negative],
+  data: [data.negative('-2.71%')],
+}
+const oasisCreatePromoCardMultiplyWbtc: PromoCardProps = {
+  icon: getToken('WBTC').iconCircle,
+  title: 'Main multiply WBTC promo card',
+  protocol: protocol.aavev2,
+  pills: [pill.neutral, pill.positive],
+  data: [data.positive('1.46%')],
+}
+const oasisCreatePromoCardMultiplyUsdc: PromoCardProps = {
+  icon: getToken('USDC').iconCircle,
+  title: 'Main multiply USDC promo card',
+  protocol: protocol.aavev3Optimism,
+  pills: [pill.neutral, pill.positive],
+  data: [data.positive('48.62%')],
+}
+const oasisCreatePromoCardEarnDai: PromoCardProps = {
+  icon: getToken('DAI').iconCircle,
+  title: 'Earn DAI promo card',
+  protocol: protocol.maker,
+  pills: [pill.neutral, pill.positive],
+  description: 'Lorem ipsum dolor sit amet.',
+}
+const oasisCreatePromoCardEarnWsteth: PromoCardProps = {
+  icon: getToken('WSTETH').iconCircle,
+  title: 'Main earn wstETH promo card',
+  protocol: protocol.ajna,
+  pills: [pill.neutral, pill.positive],
+  data: [data.positive('$1,235.56')],
+}
+const oasisCreatePromoCardGeneric: PromoCardProps = {
+  icon: 'selectEarn',
+  title: 'Generic promo card',
+  description: 'Lorem ipsum dolor sit amet, consectetur.',
+  link: { href: '/', label: 'Learn more' },
+}
+
+const oasisCreatePromoCards: OasisCreatePromoCards = {
+  [ProductType.Borrow]: {
+    default: [
+      oasisCreatePromoCardBorrowEth,
+      oasisCreatePromoCardBorrowWbtc,
+      oasisCreatePromoCardBorrowUsdc,
+    ],
+    tokens: {
+      ETH: [
+        oasisCreatePromoCardBorrowEth,
+        {
+          icon: getToken('WSTETH').iconCircle,
+          title: 'Secondary borrow wstETH promo card',
+          protocol: protocol.maker,
+          pills: [pill.neutral, pill.neutral],
+          data: [data.neutral('10.03%')],
+        },
+        {
+          icon: getToken('RETH').iconCircle,
+          title: 'Secondary borrow rETH promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.positive],
+          data: [data.positive('$724.12')],
+        },
+      ],
+      WBTC: [
+        oasisCreatePromoCardBorrowWbtc,
+        {
+          icon: getToken('WBTC').iconCircle,
+          title: 'Secondary borrow WBTC promo card',
+          protocol: protocol.maker,
+          pills: [pill.neutral, pill.neutral],
+          data: [data.neutral('$2.55M')],
+        },
+        {
+          icon: getToken('WBTC').iconCircle,
+          title: 'Secondary borrow WBTC promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.positive],
+          data: [data.positive('13.52%')],
+        },
+      ],
+      USDC: [
+        oasisCreatePromoCardBorrowUsdc,
+        {
+          icon: getToken('USDC').iconCircle,
+          title: 'Secondary borrow USDC promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.negative],
+          data: [data.negative('-2.65%')],
+        },
+        oasisCreatePromoCardGeneric,
+      ],
+    },
+  },
+  [ProductType.Multiply]: {
+    default: [
+      oasisCreatePromoCardMultiplyEth,
+      oasisCreatePromoCardMultiplyWbtc,
+      oasisCreatePromoCardMultiplyUsdc,
+    ],
+    tokens: {
+      ETH: [
+        oasisCreatePromoCardMultiplyEth,
+        {
+          icon: getToken('RETH').iconCircle,
+          title: 'Secondary multiply rETH promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.neutral],
+          data: [data.neutral('2.27% - 8.81%')],
+        },
+        {
+          icon: getToken('CBETH').iconCircle,
+          title: 'Secondary multiply cbETH promo card',
+          protocol: protocol.aavev2,
+          pills: [pill.neutral, pill.negative],
+          data: [data.neutral('$3.01')],
+        },
+      ],
+      WBTC: [
+        oasisCreatePromoCardMultiplyWbtc,
+        {
+          icon: getToken('WBTC').iconCircle,
+          title: 'Secondary multiply WBTC promo card',
+          protocol: protocol.aavev3Optimism,
+          pills: [pill.neutral, pill.neutral],
+          data: [data.neutral('4.33x')],
+        },
+        oasisCreatePromoCardGeneric,
+      ],
+      USDC: [
+        oasisCreatePromoCardMultiplyUsdc,
+        {
+          icon: getToken('USDC').iconCircle,
+          title: 'Secondary multiply USDC promo card',
+          protocol: protocol.aavev3Arbitrum,
+          pills: [pill.neutral, pill.positive],
+          data: [data.positive('101.96%')],
+        },
+        {
+          icon: getToken('USDC').iconCircle,
+          title: 'Secondary multiply USDC promo card',
+          protocol: protocol.aavev3,
+          pills: [pill.neutral, pill.positive],
+          data: [data.positive('12.68%')],
+        },
+      ],
+    },
+  },
+  [ProductType.Earn]: {
+    default: [
+      oasisCreatePromoCardEarnDai,
+      oasisCreatePromoCardEarnWsteth,
+      oasisCreatePromoCardGeneric,
+    ],
+    tokens: {
+      ETH: [
+        oasisCreatePromoCardEarnWsteth,
+        {
+          icon: getToken('CBETH').iconCircle,
+          title: 'Secondary earn cbETH promo card',
+          protocol: protocol.aavev2,
+          pills: [pill.neutral, pill.negative],
+          data: [data.negative('$133.78')],
+        },
+        {
+          icon: getToken('RETH').iconCircle,
+          title: 'Secondary earn rETH promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.neutral],
+          data: [data.neutral('n/a')],
+        },
+      ],
+      WBTC: [
+        {
+          icon: getToken('WBTC').iconCircle,
+          title: 'Secondary earn WBTC promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.positive],
+          data: [data.positive('5.33%')],
+        },
+        oasisCreatePromoCardGeneric,
+        oasisCreatePromoCardGeneric,
+      ],
+      DAI: [
+        oasisCreatePromoCardEarnDai,
+        oasisCreatePromoCardGeneric,
+        oasisCreatePromoCardGeneric
+      ],
+      USDC: [
+        {
+          icon: getToken('USDC').iconCircle,
+          title: 'Secondary earn USDC promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.neutral],
+          data: [data.neutral('0.00% - 0.21%')],
+        },
+        {
+          icon: getToken('USDC').iconCircle,
+          title: 'Secondary earn USDC promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.negative],
+          data: [data.negative('-14.54')],
+        },
+        {
+          icon: getToken('USDC').iconCircle,
+          title: 'Secondary earn USDC promo card',
+          protocol: protocol.ajna,
+          pills: [pill.neutral, pill.negative],
+          data: [data.negative('$0.98')],
+        },
+      ]
+    },
+  },
+}
+
+const oasisCreateTable: OasisCreateItem[] = [
   {
     product: [ProductType.Borrow, ProductType.Multiply],
     primaryToken: 'ETH',
@@ -459,3 +732,8 @@ export const oasisCreateData: OasisCreateItem[] = [
     managementType: 'active',
   },
 ]
+
+export const oasisCreateData: OasisCreateData = {
+  promoCards: oasisCreatePromoCards,
+  table: oasisCreateTable,
+}
