@@ -246,11 +246,7 @@ const oasisCreatePromoCards: OasisCreatePromoCards = {
         oasisCreatePromoCardGeneric,
         oasisCreatePromoCardGeneric,
       ],
-      DAI: [
-        oasisCreatePromoCardEarnDai,
-        oasisCreatePromoCardGeneric,
-        oasisCreatePromoCardGeneric
-      ],
+      DAI: [oasisCreatePromoCardEarnDai, oasisCreatePromoCardGeneric, oasisCreatePromoCardGeneric],
       USDC: [
         {
           icon: getToken('USDC').iconCircle,
@@ -273,7 +269,7 @@ const oasisCreatePromoCards: OasisCreatePromoCards = {
           pills: [pill.neutral, pill.negative],
           data: [data.negative('$0.98')],
         },
-      ]
+      ],
     },
   },
 }
