@@ -83,7 +83,6 @@ export function ProductCardsFilter({
       protocol: aaveStrategyTokens[index].protocol as AaveLendingProtocol,
     }),
   )
-  console.log('aaveStrategyConfigPlusTokenMeta', aaveStrategyConfigPlusTokenMeta)
 
   return (
     <>
