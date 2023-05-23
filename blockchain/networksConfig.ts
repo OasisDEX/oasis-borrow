@@ -140,7 +140,7 @@ const polygonMainnetConfig: NetworkConfig = {
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
   testnet: false,
-  enabled: true,
+  enabled: false,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMainnetRpc),
@@ -157,7 +157,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
   testnet: true,
-  enabled: true,
+  enabled: false,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMumbaiRpc),
@@ -210,7 +210,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
   rpcUrl: 'empty',
-  readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
+  readProvider: mainnetConfig.readProvider,
 }
 
 export const mainnetNetworks = [mainnetConfig, goerliConfig]

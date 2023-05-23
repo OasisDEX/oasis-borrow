@@ -154,6 +154,7 @@ export function HeaderSelector({
               as="li"
               sx={{
                 position: 'relative',
+                minHeight: '52px',
                 px: '12px',
                 py: 2,
                 borderRadius: 'medium',

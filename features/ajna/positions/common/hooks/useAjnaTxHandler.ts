@@ -3,7 +3,6 @@ import { TxStatus } from '@oasisdex/transactions'
 import { AjnaTxData, getAjnaParameters } from 'actions/ajna'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { networksById } from 'blockchain/networksConfig'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -11,6 +10,7 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { isFormEmpty } from 'features/ajna/positions/common/helpers/isFormEmpty'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { getRpcProvider } from 'helpers/get-rpc-provider'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
@@ -69,7 +69,7 @@ export function useAjnaTxHandler(): () => void {
             position,
             quotePrice,
             quoteToken,
-            rpcProvider: networksById[context.chainId].readProvider,
+            rpcProvider: getRpcProvider(context.chainId),
             state,
             isFormValid,
           }),

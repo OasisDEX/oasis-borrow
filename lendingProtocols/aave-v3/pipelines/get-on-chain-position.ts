@@ -1,5 +1,5 @@
 import { getOnChainPosition, GetOnChainPositionParams } from 'actions/aave'
-import { NetworkIds } from 'blockchain/networkIds'
+import { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 
 export type GetAaveV3OnChainPosition = Pick<
@@ -8,9 +8,9 @@ export type GetAaveV3OnChainPosition = Pick<
 >
 
 export const aaveV3OnChainPosition = (
-  params: GetAaveV3OnChainPosition & { networkId: NetworkIds.MAINNET },
+  params: GetAaveV3OnChainPosition & { networkId: AaveV3SupportedNetwork },
 ) =>
   getOnChainPosition({
     ...params,
-    protocol: LendingProtocol.AaveV2,
+    protocol: LendingProtocol.AaveV3,
   })

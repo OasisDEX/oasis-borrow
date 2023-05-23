@@ -1,7 +1,7 @@
 import { NetworkIds } from 'blockchain/networkIds'
 import { isEqual, memoize } from 'lodash'
-import { Observable } from 'rxjs'
-import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
+import { EMPTY, Observable } from 'rxjs'
+import { catchError, distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 export function defaultResolver<Args>(args: Args): string {
   return JSON.stringify(args)
@@ -29,6 +29,7 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
   refreshTrigger$: Observable<unknown>,
   valueGetter: (args: Args) => Result | Promise<Result>,
   networkId: NetworkIds = NetworkIds.MAINNET,
+  pipeName: string = '',
   resolver: (args: Args) => string = defaultResolver,
 ): (a: Omit<Args, 'networkId'>) => Observable<Result> {
   return memoize((args) => {
@@ -43,6 +44,13 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
       switchMap(async () => await valueGetter(actualArgs)),
       distinctUntilChanged((a, b) => isEqual(a, b)),
       shareReplay(1),
+      catchError((error) => {
+        console.error(
+          `Error getting value for Args ${JSON.stringify(actualArgs)}. For pipe: ${pipeName}`,
+          error,
+        )
+        return EMPTY
+      }),
     )
   }, resolver)
 }
