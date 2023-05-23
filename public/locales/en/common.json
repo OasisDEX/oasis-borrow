@@ -34,6 +34,7 @@
   "cancelling-auto-sell": "Cancelling Auto-Sell",
   "adjust-your-position": "Adjust your position",
   "adjust": "Adjust",
+  "claim": "Claim",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
   "after-closing": "{{token}} after closing",
@@ -1033,6 +1034,7 @@
   "start-saving": "Start Saving",
   "system": {
     "adjust-position": "Adjust position",
+    "claim-collateral": "Claim collateral",
     "asset": "Asset",
     "vault": "Vault",
     "available-to-withdraw": "Available to Withdraw",
@@ -2470,7 +2472,9 @@
             "setup": "Configure your Ajna {{product}} Position",
             "manage": "Manage your Ajna {{product}} Position",
             "transaction": "Confirm your Ajna {{product}} Position",
-            "transition": "Switch your Ajna {{product}} Position"
+            "transition": "Switch your Ajna {{product}} Position",
+            "position-frozen": "Position Frozen",
+            "claim-collateral": "Claim collateral"
           },
           "risk": {
             "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
@@ -2539,7 +2543,9 @@
             "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
             "adjust-lending-price-bucket": "Adjust lending price bucket",
             "ajna-fee": "Ajna fee",
-            "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit"
+            "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit",
+            "total-deposited-into-position": "Total deposited into Position",
+            "collateral-available-to-withdraw": "Collateral available to withdraw"
           }
         },
         "open": {
@@ -2633,7 +2639,8 @@
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "is-during-grace-time": "Your position has been moved to liquidation. 90 days of interest have been added as penalty. You still have some time to <1>Deposit Collateral</1> or <1>Repay your Debt</1> to save it from Liquidation. <2>Read more about <1>Ajna Liquidations →</1></2>",
-      "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>"
+      "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>",
+      "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>"
     },
     "rewards": {
       "title": "Your Ajna token rewards",

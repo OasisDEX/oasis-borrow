@@ -51,6 +51,7 @@ export function AjnaFormFieldDeposit({
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
+    validation: { isFormFrozen },
   } = useAjnaProductContext(product)
 
   return 'depositAmount' in state && 'depositAmountUSD' in state ? (
@@ -62,7 +63,7 @@ export function AjnaFormFieldDeposit({
       auxiliaryAmount={state.depositAmountUSD}
       hasAuxiliary={true}
       hasError={false}
-      disabled={isDisabled}
+      disabled={isDisabled || isFormFrozen}
       showMax={true}
       maxAmount={maxAmount}
       maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
@@ -111,6 +112,7 @@ export function AjnaFormFieldGenerate({
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
+    validation: { isFormFrozen },
   } = useAjnaProductContext(product)
 
   return 'generateAmount' in state && 'generateAmountUSD' in state ? (
@@ -122,7 +124,7 @@ export function AjnaFormFieldGenerate({
       auxiliaryAmount={state.generateAmountUSD}
       hasAuxiliary={true}
       hasError={false}
-      disabled={isDisabled}
+      disabled={isDisabled || isFormFrozen}
       showMin={minAmount?.gt(zero)}
       minAmount={minAmount}
       minAmountLabel={t(minAmountLabel)}
@@ -178,6 +180,7 @@ export function AjnaFormFieldPayback({
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
+    validation: { isFormFrozen },
   } = useAjnaProductContext(product)
 
   return 'paybackAmount' in state && 'paybackAmountUSD' in state ? (
@@ -189,7 +192,7 @@ export function AjnaFormFieldPayback({
       auxiliaryAmount={state.paybackAmountUSD}
       hasAuxiliary={true}
       hasError={false}
-      disabled={isDisabled}
+      disabled={isDisabled || isFormFrozen}
       showMax={true}
       // TODO: should be quoteBalance or total debt, whatever is lower, but debt is not yet available
       maxAmount={maxAmount}
@@ -240,6 +243,7 @@ export function AjnaFormFieldWithdraw({
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
+    validation: { isFormFrozen },
   } = useAjnaProductContext(product)
 
   return 'withdrawAmount' in state && 'withdrawAmountUSD' in state ? (
@@ -251,7 +255,7 @@ export function AjnaFormFieldWithdraw({
       auxiliaryAmount={state.withdrawAmountUSD}
       hasAuxiliary={true}
       hasError={false}
-      disabled={isDisabled}
+      disabled={isDisabled || isFormFrozen}
       showMax={maxAmount?.gt(zero)}
       maxAmount={maxAmount}
       maxAmountLabel={t(maxAmountLabel)}
