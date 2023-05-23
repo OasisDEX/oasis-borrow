@@ -38,7 +38,7 @@ const mapNetwork = (network: NetworkConfig) => ({
 export const initWeb3OnBoard = init({
   wallets: [injected, walletConnect, walletLink, gnosis, ledger, trezor],
   chains: [
-    ...networks.map(mapNetwork),
+    ...networks.filter(({ enabled }) => enabled).map(mapNetwork),
     ...(hardhatNetworkConfigs as NetworkConfig[]).map(mapNetwork),
   ],
   appMetadata: {

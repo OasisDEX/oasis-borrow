@@ -170,6 +170,7 @@ export function NavigationNetworkSwitcher() {
             }}
           >
             {networks
+              .filter(({ enabled }) => enabled)
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)

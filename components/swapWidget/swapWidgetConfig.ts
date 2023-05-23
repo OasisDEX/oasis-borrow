@@ -37,6 +37,6 @@ export const swapWidgetConfig: WidgetConfig = {
   },
   hiddenUI: ['walletMenu', 'appearance', 'poweredBy', 'toAddress'],
   chains: {
-    allow: networks.map((network) => network.id),
+    allow: networks.filter(({ enabled }) => enabled).map((network) => network.id),
   },
 }
