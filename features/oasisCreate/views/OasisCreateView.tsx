@@ -28,7 +28,7 @@ import {
   ProductType,
 } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { oasisCreateData } from 'helpers/mocks/oasisCreateData'
+import { oasisCreateData } from 'helpers/mocks/oasisCreateData.mock'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
