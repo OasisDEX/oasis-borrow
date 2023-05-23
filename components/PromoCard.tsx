@@ -5,9 +5,9 @@ import { WithArrow } from 'components/WithArrow'
 import React from 'react'
 import { Box, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
 
-type PromoCardVariant = 'neutral' | 'positive' | 'negative'
+export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
 
-interface PromoCardProps {
+export interface PromoCardProps {
   icon: string
   title: string
   protocol?: ProtocolLabelProps
