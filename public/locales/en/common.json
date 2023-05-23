@@ -1697,6 +1697,10 @@
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
       },
+      "cbETHusdc": {
+        "title": "High cbETH multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      },
       "borrow-against-ETH": {
         "title": "AAVE ETH",
         "description": "A position to borrow against your ETH in AAVE"

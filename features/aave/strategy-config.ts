@@ -75,8 +75,8 @@ const optimismStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
-    featureToggle: 'OptimismAaveV3',
   },
   {
     network: NetworkNames.optimismMainnet,
@@ -104,8 +104,8 @@ const optimismStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
-    featureToggle: 'OptimismAaveV3',
   },
   {
     network: NetworkNames.optimismMainnet,
@@ -133,8 +133,8 @@ const optimismStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
-    featureToggle: 'OptimismAaveV3',
   },
 ]
 
@@ -165,8 +165,8 @@ const arbitrumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
-    featureToggle: 'ArbitrumAaveV3',
   },
   {
     network: NetworkNames.arbitrumMainnet,
@@ -194,8 +194,8 @@ const arbitrumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
-    featureToggle: 'ArbitrumAaveV3',
   },
   {
     network: NetworkNames.arbitrumMainnet,
@@ -223,8 +223,8 @@ const arbitrumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
-    featureToggle: 'ArbitrumAaveV3',
   },
 ]
 
@@ -255,7 +255,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.wstethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
-    featureToggle: 'AaveV3EarnWSTETH' as const,
+    featureToggle: 'AaveV3EarnWSTETH',
     availableActions: ['adjust', 'close'],
     defaultSlippage: new BigNumber(0.001),
   },
@@ -401,6 +401,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplyETHusdc',
     availableActions: allActionsAvailable,
   },
   {
@@ -429,6 +430,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplycbETHusdc',
     availableActions: allActionsAvailable,
   },
   {
@@ -457,6 +459,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplywBTCusdc',
     availableActions: allActionsAvailable,
   },
   {
@@ -485,6 +488,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.wstethEth.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplywstETHeth',
     availableActions: allActionsAvailable,
   },
 
@@ -514,9 +518,8 @@ const ethereumStrategies: Array<IStrategyConfig> = [
       },
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
       featureToggle: 'AaveBorrow' as const,
-      type: 'Borrow' as const,
+      type: 'Borrow' as ProductType,
       protocol: LendingProtocol.AaveV2 as AaveLendingProtocol,
-      featureToggle: 'AaveV2ProductCard',
       availableActions: allActionsAvailable,
     }
   }),

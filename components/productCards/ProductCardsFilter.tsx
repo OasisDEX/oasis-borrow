@@ -14,6 +14,7 @@ import {
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
 } from 'helpers/productCards'
+import { AaveLendingProtocol } from 'lendingProtocols'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
@@ -79,8 +80,10 @@ export function ProductCardsFilter({
       ...aaveStrategyTokens[index],
       ...strategy,
       name: aaveStrategyTokens[index].name,
+      protocol: aaveStrategyTokens[index].protocol as AaveLendingProtocol,
     }),
   )
+  console.log('aaveStrategyConfigPlusTokenMeta', aaveStrategyConfigPlusTokenMeta)
 
   return (
     <>
