@@ -28,4 +28,5 @@ export const tokensGoerli = {
   USDC: contractDesc(erc20, goerli.common.USDC),
   WBTC: contractDesc(erc20, goerli.common.WBTC),
   RENBTC: contractDesc(erc20, goerli.common.RENBTC),
+  CBETH: contractDesc(erc20, goerli.common.CBETH),
 } as Record<string, ContractDesc>

@@ -26,4 +26,5 @@ export const tokensArbitrum = {
   USDC: contractDesc(erc20, arbitrum.common.USDC),
   WBTC: contractDesc(erc20, arbitrum.common.WBTC),
   RENBTC: contractDesc(erc20, arbitrum.common.RENBTC),
+  CBETH: contractDesc(erc20, arbitrum.common.CBETH),
 } as Record<string, ContractDesc>

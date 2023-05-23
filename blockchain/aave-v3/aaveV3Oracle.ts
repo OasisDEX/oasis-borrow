@@ -3,7 +3,7 @@ import { NetworkIds } from 'blockchain/networkIds'
 import { one } from 'helpers/zero'
 import { AaveV3Oracle__factory } from 'types/ethers-contracts/'
 
-import { BaseParameters, getNetworkMapping } from './utils'
+import { BaseParameters, getNetworkMapping, wethInsteadOfEth } from './utils'
 
 export interface AaveV3AssetsPricesParameters extends BaseParameters {
   tokens: string[]
@@ -37,7 +37,7 @@ export function getAaveV3AssetsPrices({
   networkId,
 }: AaveV3AssetsPricesParameters): Promise<BigNumber[]> {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]
-  const tokenAddresses = tokens.map((token) => tokenMappings[token].address)
+  const tokenAddresses = tokens.map((token) => wethInsteadOfEth(tokenMappings, token))
   return contract.getAssetsPrices(tokenAddresses).then((result) => {
     return result.map((tokenPriceInBaseCurrency) =>
       new BigNumber(tokenPriceInBaseCurrency.toString()).div(baseCurrencyUnit),
@@ -51,7 +51,7 @@ export function getAaveV3OracleAssetPrice({
   networkId,
 }: AaveV3OracleAssetPriceDataParameters) {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]
-  const tokenAddress = tokenMappings[token].address
+  const tokenAddress = wethInsteadOfEth(tokenMappings, token)
   return contract.getAssetPrice(tokenAddress).then((result) => {
     return new BigNumber(result.toString()).times(amount).div(baseCurrencyUnit)
   })

@@ -17,10 +17,10 @@ const aaveAssets = {
   // not putting this to ASSETS_PAGES cause we need feature toggles
   eth: {
     multiply: getAaveEnabledStrategies([
-      { strategy: 'optimism-ethusdc', featureToggle: 'OptimismAaveV3' },
-      { strategy: 'optimism-wstethusdc', featureToggle: 'OptimismAaveV3' },
-      { strategy: 'arbitrum-ethusdc', featureToggle: 'ArbitrumAaveV3' },
-      { strategy: 'arbitrum-wstethusdc', featureToggle: 'ArbitrumAaveV3' },
+      { strategy: 'optimism-ethusdc', featureToggle: 'AaveV3Optimism' },
+      { strategy: 'optimism-wstethusdc', featureToggle: 'AaveV3Optimism' },
+      { strategy: 'arbitrum-ethusdc', featureToggle: 'AaveV3Arbitrum' },
+      { strategy: 'arbitrum-wstethusdc', featureToggle: 'AaveV3Arbitrum' },
       { strategy: 'ethusdc' },
       { strategy: 'stETHusdc' },
     ]),
@@ -29,8 +29,8 @@ const aaveAssets = {
   btc: {
     multiply: getAaveEnabledStrategies([
       { strategy: 'wBTCusdc' },
-      { strategy: 'optimism-wbtcusdc', featureToggle: 'OptimismAaveV3' },
-      { strategy: 'arbitrum-wbtcusdc', featureToggle: 'ArbitrumAaveV3' },
+      { strategy: 'optimism-wbtcusdc', featureToggle: 'AaveV3Optimism' },
+      { strategy: 'arbitrum-wbtcusdc', featureToggle: 'AaveV3Arbitrum' },
     ]),
     earn: [],
   },
