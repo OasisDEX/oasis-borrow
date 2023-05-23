@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { PromoCardProps } from 'components/PromoCard'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -34,6 +35,20 @@ export interface OasisCreateItemDetails {
 }
 
 export type OasisCreateItem = OasisCreateItemBasics & OasisCreateItemDetails
+
+export type OasisCreatePromoCards = {
+  [key in ProductType]: {
+    default: PromoCardProps[]
+    tokens: {
+      [key: string]: PromoCardProps[]
+    }
+  }
+}
+
+export interface OasisCreateData {
+  promoCards: OasisCreatePromoCards
+  table: OasisCreateItem[]
+}
 
 export interface OasisCreateFiltersCriteria {
   network?: OasisCreateItem['network'][]
