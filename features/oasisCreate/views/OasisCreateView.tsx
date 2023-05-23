@@ -9,17 +9,26 @@ import { AppLink } from 'components/Links'
 import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
 import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
-import { oasisCreateData } from 'features/oasisCreate/data'
-import { filterRows } from 'features/oasisCreate/helpers/filterRows'
+import { matchRowsByFilters } from 'features/oasisCreate/helpers/matchRowsByFilters'
+import { matchRowsByNL } from 'features/oasisCreate/helpers/matchRowsByNL'
 import { parseRows } from 'features/oasisCreate/helpers/parseRows'
 import {
   ALL_ASSETS,
+  EMPTY_FILTERS,
+  oasisCreateFiltersCount,
+  oasisCreateGridTemplateColumns,
   oasisCreateLinksMap,
   oasisCreateNetworkFilter,
   oasisCreateProtocolFilter,
+  oasisCreateStrategyFilter,
 } from 'features/oasisCreate/meta'
-import { OasisCreateFilters, ProductType } from 'features/oasisCreate/types'
+import {
+  OasisCreateFilters,
+  OasisCreateProductStrategy,
+  ProductType,
+} from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { oasisCreateData } from 'helpers/mocks/oasisCreateData.mock'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -36,35 +45,49 @@ interface OasisCreateViewProps {
 
 export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const { t } = useTranslation()
-  const isMobileScreen = useMediaQuery(`(max-width: ${theme.breakpoints[1]})`)
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
-  const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>({})
+  const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>(EMPTY_FILTERS)
 
-  const rowsFilteredByToken = useMemo(
-    () =>
-      filterRows(oasisCreateData, selectedProduct, {
-        ...(selectedToken !== ALL_ASSETS && { groupToken: selectedToken }),
-      }),
+  const rowsMatchedByNL = useMemo(
+    () => matchRowsByNL(oasisCreateData, selectedProduct, selectedToken),
     [selectedProduct, selectedToken],
   )
-  const rowsFilteredByAll = useMemo(
-    () => filterRows(rowsFilteredByToken, selectedProduct, selectedFilters),
-    [rowsFilteredByToken, selectedProduct, selectedFilters],
+  const rowsMatchedByFilters = useMemo(
+    () => matchRowsByFilters(rowsMatchedByNL, selectedFilters),
+    [rowsMatchedByNL, selectedFilters],
   )
   const parsedRows = useMemo(
-    () => parseRows(rowsFilteredByAll, selectedProduct),
-    [rowsFilteredByAll, selectedProduct],
+    () => parseRows(rowsMatchedByFilters, selectedProduct),
+    [rowsMatchedByFilters, selectedProduct],
   )
   const debtTokens = useMemo(
     () =>
-      uniq(rowsFilteredByToken.map((item) => item.secondaryToken)).map((item) => ({
+      uniq(rowsMatchedByNL.map((item) => item.secondaryToken)).map((item) => ({
         label: item,
         value: item,
         icon: getToken(item).iconCircle,
       })),
-    [rowsFilteredByToken],
+    [rowsMatchedByNL],
+  )
+  const secondaryTokens = useMemo(
+    () =>
+      uniq(
+        rowsMatchedByNL.flatMap((item) => [
+          ...([ALL_ASSETS, item.primaryToken, item.primaryTokenGroup].includes(selectedToken)
+            ? [item.secondaryToken]
+            : []),
+          ...([ALL_ASSETS, item.secondaryToken, item.secondaryTokenGroup].includes(selectedToken)
+            ? [item.primaryToken]
+            : []),
+        ]),
+      ).map((item) => ({
+        label: item,
+        value: item,
+        icon: getToken(item).iconCircle,
+      })),
+    [rowsMatchedByNL, selectedToken],
   )
 
   return (
@@ -82,7 +105,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           onChange={(_selectedProduct, _selectedToken) => {
             setSelectedProduct(_selectedProduct)
             setSelectedToken(_selectedToken)
-            setSelectedFilters({})
+            setSelectedFilters(EMPTY_FILTERS)
           }}
         />
         <Text
@@ -134,30 +157,65 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
       <AssetsTableContainer>
         <AssetsFiltersContainer
           key={`${selectedProduct}-${selectedToken}`}
-          gridTemplateColumns={['100%', null, '1fr 1fr 1fr', '250px auto 250px 250px']}
+          gridTemplateColumns={[
+            '100%',
+            null,
+            `repeat(${oasisCreateFiltersCount[selectedProduct]}, 1fr)`,
+            oasisCreateGridTemplateColumns[selectedProduct],
+          ]}
         >
-          {selectedProduct !== ProductType.Earn ? (
+          {selectedProduct === ProductType.Borrow && (
             <GenericMultiselect
               label={t('oasis-create.filters.debt-tokens')}
               options={debtTokens}
               onChange={(value) => {
                 setSelectedFilters({
-                  ...selectedFilters,
-                  secondaryToken: value,
+                  or: selectedFilters.or,
+                  and: { ...selectedFilters.and, secondaryToken: value },
                 })
               }}
             />
-          ) : (
-            <>{!isMobileScreen && <Box />}</>
+          )}
+          {selectedProduct === ProductType.Multiply && (
+            <GenericMultiselect
+              label={t('oasis-create.filters.secondary-tokens')}
+              options={secondaryTokens}
+              onChange={(value) => {
+                setSelectedFilters({
+                  or:
+                    selectedToken === ALL_ASSETS
+                      ? [{ primaryToken: value }, { secondaryToken: value }]
+                      : [
+                          { primaryTokenGroup: [selectedToken], secondaryToken: value },
+                          { primaryToken: [selectedToken], secondaryToken: value },
+                          { primaryToken: value, secondaryToken: [selectedToken] },
+                          { primaryToken: value, secondaryTokenGroup: [selectedToken] },
+                        ],
+                  and: selectedFilters.and,
+                })
+              }}
+            />
           )}
           {!isSmallerScreen && <Box />}
+          {selectedProduct === ProductType.Multiply && (
+            <GenericMultiselect
+              label={t('oasis-create.filters.strategies')}
+              options={oasisCreateStrategyFilter}
+              onChange={(value) => {
+                setSelectedFilters({
+                  or: selectedFilters.or,
+                  and: { ...selectedFilters.and, strategy: value as OasisCreateProductStrategy[] },
+                })
+              }}
+            />
+          )}
           <GenericMultiselect
             label={t('oasis-create.filters.networks')}
             options={oasisCreateNetworkFilter}
             onChange={(value) => {
               setSelectedFilters({
-                ...selectedFilters,
-                network: value,
+                or: selectedFilters.or,
+                and: { ...selectedFilters.and, network: value as unknown as BaseNetworkNames[] },
               })
             }}
           />
@@ -166,8 +224,8 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             options={oasisCreateProtocolFilter}
             onChange={(value) => {
               setSelectedFilters({
-                ...selectedFilters,
-                protocol: value,
+                or: selectedFilters.or,
+                and: { ...selectedFilters.and, protocol: value as LendingProtocol[] },
               })
             }}
           />
