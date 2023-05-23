@@ -94,6 +94,8 @@ function AavePositionHeader({
     })
   }
 
+  console.log('aaveTVL?.totalValueLocked', aaveTVL?.totalValueLocked)
+
   aaveTVL?.totalValueLocked &&
     headlineDetails.push({
       label: t('open-earn.aave.product-header.total-value-locked'),
