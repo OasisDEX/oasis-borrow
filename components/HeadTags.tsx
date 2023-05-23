@@ -75,14 +75,13 @@ export function PageSEOTags({
   const networkParameter = useNetworkSwitcher
     ? web3OnboardNetworkParameter?.network
     : (query.network as string)
+  const hardhatCheck =
+    networkParameter && networkParameter.includes('hardhat')
+      ? 'hardhat'
+      : (networkParameter as keyof typeof properNetworkIconMap)
+
   const tabTitle = `${
-    networkParameter
-      ? properNetworkIconMap[
-          networkParameter.includes('hardhat')
-            ? 'hardhat'
-            : (networkParameter as keyof typeof properNetworkIconMap)
-        ]
-      : ''
+    networkParameter && properNetworkIconMap[hardhatCheck] ? properNetworkIconMap[hardhatCheck] : ''
   }${titleParams ? t(title, titleParams) : t(title)}`
 
   return (
