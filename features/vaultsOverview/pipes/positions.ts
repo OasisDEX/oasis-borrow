@@ -334,6 +334,7 @@ export function createAavePosition$(
                 )
               },
             ),
+            map((positions) => positions.filter((position) => position !== undefined)),
             startWith([]),
           )
         : of([] as AavePosition[])
