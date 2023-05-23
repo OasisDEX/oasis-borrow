@@ -44,7 +44,6 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
   const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
     getNetworkContracts(NetworkIds.MAINNET, context.chainId)
   const { contract } = context
-
   const exchangeData = {
     fromTokenAddress: tokens['DAI'].address,
     toTokenAddress: tokens[data.token].address,
