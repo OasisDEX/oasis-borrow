@@ -182,12 +182,15 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
               options={secondaryTokens}
               onChange={(value) => {
                 setSelectedFilters({
-                  or: [
-                    { primaryTokenGroup: [selectedToken], secondaryToken: value },
-                    { primaryToken: [selectedToken], secondaryToken: value },
-                    { primaryToken: value, secondaryToken: [selectedToken] },
-                    { primaryToken: value, secondaryTokenGroup: [selectedToken] },
-                  ],
+                  or:
+                    selectedToken === ALL_ASSETS
+                      ? [{ primaryToken: value }, { secondaryToken: value }]
+                      : [
+                          { primaryTokenGroup: [selectedToken], secondaryToken: value },
+                          { primaryToken: [selectedToken], secondaryToken: value },
+                          { primaryToken: value, secondaryToken: [selectedToken] },
+                          { primaryToken: value, secondaryTokenGroup: [selectedToken] },
+                        ],
                   and: selectedFilters.and,
                 })
               }}
