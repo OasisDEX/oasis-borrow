@@ -1,4 +1,3 @@
-import { EMPTY_FILTERS } from 'features/oasisCreate/meta'
 import {
   OasisCreateFilters,
   OasisCreateFiltersCriteria,
@@ -6,27 +5,19 @@ import {
   OasisCreateItemBasics,
 } from 'features/oasisCreate/types'
 
+function filterByCriteria(criteria: OasisCreateFiltersCriteria, item: OasisCreateItem) {
+  return Object.keys(criteria).every((filter) =>
+    criteria[filter as keyof OasisCreateFiltersCriteria]?.includes(
+      item[filter as keyof OasisCreateItemBasics] as never,
+    ),
+  )
+}
+
 export function matchRowsByFilters(
   rows: OasisCreateItem[],
-  filters: OasisCreateFilters = EMPTY_FILTERS,
+  { or, and }: OasisCreateFilters,
 ): OasisCreateItem[] {
   return rows
-    .filter((item) => {
-      return filters.or.length
-        ? filters.or.some((or) => {
-            return Object.keys(or).every((filter) =>
-              or[filter as keyof OasisCreateFiltersCriteria]?.includes(
-                item[filter as keyof OasisCreateItemBasics] as never,
-              ),
-            )
-          })
-        : true
-    })
-    .filter((item) =>
-      Object.keys(filters.and).every((filter) =>
-        filters.and[filter as keyof OasisCreateFiltersCriteria]?.includes(
-          item[filter as keyof OasisCreateItemBasics] as never,
-        ),
-      ),
-    )
+    .filter((item) => (or.length ? or.some((criteria) => filterByCriteria(criteria, item)) : true))
+    .filter((item) => filterByCriteria(and, item))
 }

@@ -74,16 +74,14 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const secondaryTokens = useMemo(
     () =>
       uniq(
-        rowsMatchedByNL.flatMap((item) => {
-          return [
-            ...([item.primaryToken, item.primaryTokenGroup].includes(selectedToken)
-              ? [item.secondaryToken]
-              : []),
-            ...([item.secondaryToken, item.secondaryTokenGroup].includes(selectedToken)
-              ? [item.primaryToken]
-              : []),
-          ]
-        }),
+        rowsMatchedByNL.flatMap((item) => [
+          ...([ALL_ASSETS, item.primaryToken, item.primaryTokenGroup].includes(selectedToken)
+            ? [item.secondaryToken]
+            : []),
+          ...([ALL_ASSETS, item.secondaryToken, item.secondaryTokenGroup].includes(selectedToken)
+            ? [item.primaryToken]
+            : []),
+        ]),
       ).map((item) => ({
         label: item,
         value: item,
