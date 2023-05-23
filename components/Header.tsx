@@ -220,7 +220,7 @@ function UserDesktopMenu() {
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const { amountOfPositions } = useAccount()
-  const [exchangeOnboarded] = useOnboarding('Exchange')
+  const [exchangeOnboarded] = useOnboarding('SwapWidget')
   const [exchangeOpened, setExchangeOpened] = useState(false)
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),

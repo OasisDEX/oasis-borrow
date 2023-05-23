@@ -14,7 +14,7 @@ import { SwapWidgetSkeleton } from './SwapWidgetSkeleton'
 export function SwapWidget() {
   const { web3ContextConnected$ } = useAppContext()
   const [web3Context] = useObservable(web3ContextConnected$)
-  const [isOnboarded] = useOnboarding('Exchange')
+  const [isOnboarded] = useOnboarding('SwapWidget')
   const activeOnboardWallets = useWallets()
   const liFiWalletManagement = useMemo(() => new LiFiWalletManagement(), [])
 
