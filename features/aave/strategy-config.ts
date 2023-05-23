@@ -285,6 +285,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.stethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
   },
   {
@@ -313,6 +314,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
   },
   {
@@ -341,6 +343,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
   },
   {
@@ -369,6 +372,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
   },
   {
@@ -512,6 +516,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
       featureToggle: 'AaveBorrow' as const,
       type: 'Borrow' as const,
       protocol: LendingProtocol.AaveV2 as AaveLendingProtocol,
+      featureToggle: 'AaveV2ProductCard',
       availableActions: allActionsAvailable,
     }
   }),
