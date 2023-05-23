@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds, getRpcProvider, networksById } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { LendingProtocol } from 'lendingProtocols'

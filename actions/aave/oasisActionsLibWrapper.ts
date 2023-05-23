@@ -11,7 +11,7 @@ import {
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ethNullAddress, NetworkIds, networksById, getRpcProvider } from 'blockchain/networks'
+import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'

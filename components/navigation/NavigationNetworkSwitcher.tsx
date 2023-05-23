@@ -3,9 +3,9 @@ import { ConnectedChain } from '@web3-onboard/core'
 import { useSetChain } from '@web3-onboard/react'
 import {
   CustomNetworkStorageKey,
+  enableNetworksSet,
   mainnetNetworkParameter,
   networksListWithForksByHexId,
-  networksSet,
   useCustomNetworkParameter,
 } from 'blockchain/networks'
 import {
@@ -170,8 +170,7 @@ export function NavigationNetworkSwitcher() {
               overflow: 'hidden',
             }}
           >
-            {networksSet
-              .filter(isEnabled)
+            {enableNetworksSet
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)

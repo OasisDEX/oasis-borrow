@@ -55,8 +55,10 @@ export const networksSet = networksWithForksAtTheBeginning.reduce((acc, network)
   }
   return [...acc, network]
 }, [] as NetworkConfig[])
-export const networksListWithForksByHexId = keyBy(networksSet, 'hexId')
-export const networksListWithForksById = keyBy(networksSet, 'id')
+
+export const enableNetworksSet = networksSet.filter((network) => network.enabled)
+export const networksListWithForksByHexId = keyBy(enableNetworksSet, 'hexId')
+export const networksListWithForksById = keyBy(enableNetworksSet, 'id')
 
 export const getOppositeNetworkHexIdByHexId = (
   currentConnectedChainHexId: ConnectedChain['id'],

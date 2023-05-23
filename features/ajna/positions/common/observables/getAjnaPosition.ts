@@ -2,7 +2,7 @@ import { views } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds, getRpcProvider } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
@@ -49,7 +49,7 @@ export function getAjnaPosition$(
       const commonDependency = {
         poolInfoAddress: ajnaPoolInfo.address,
         rewardsManagerAddress: ajnaRewardsManager.address,
-        provider: networksById[context.chainId].readProvider,
+        provider: getRpcProvider(context.chainId),
         getPoolData: getAjnaPoolData,
       }
 

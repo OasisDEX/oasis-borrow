@@ -6,7 +6,7 @@ import ledgerModule from '@web3-onboard/ledger'
 import { init } from '@web3-onboard/react'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnectModule from '@web3-onboard/walletconnect'
-import { networksSet } from 'blockchain/networks'
+import { enableNetworksSet } from 'blockchain/networks'
 
 const injected = injectedModule({
   custom: [],
@@ -39,15 +39,12 @@ const mapNetwork = (network: {
 })
 
 const getChains = () => {
-  return networksSet.map(mapNetwork)
+  return enableNetworksSet.map(mapNetwork)
 }
 
 export const initWeb3OnBoard = init({
   wallets: [injected, walletConnect, walletLink, gnosis, ledger, trezor],
-  chains: [
-    ...networks.filter(isEnabled).map(mapNetwork),
-    ...(hardhatNetworkConfigs as NetworkConfig[]).map(mapNetwork),
-  ],
+  chains: getChains(),
   appMetadata: {
     name: 'Oasis.app',
     icon:
