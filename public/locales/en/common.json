@@ -226,6 +226,7 @@
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
         "debt": "Debt",
+        "deposit-token": "Deposit token",
         "earnings-to-date": "Earnings to date",
         "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
@@ -248,6 +249,7 @@
         "protocol": "Protocol",
         "risk-ratio": "Risk ratio",
         "status": "Status",
+        "strategy": "Strategy",
         "tvl": "TVL",
         "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
@@ -331,7 +333,6 @@
       "title": "Oasis Swap & Bridge",
       "subtitle": "Say Hello to Oasis Swap & Bridge",
       "body": "Quickly and securely swap and bridge tokens directly on Oasis with our partner LiFi. Visit <0>Oasis Swap FAQ's to read more →</0>",
-      "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
       "button": "Got it"
     }
   },
@@ -2747,6 +2748,8 @@
     },
     "filters": {
       "debt-tokens": "Debt Tokens",
+      "secondary-tokens": "Secondary Tokens",
+      "strategies": "Strategies",
       "networks": "Networks",
       "protocols": "Protocols"
     }

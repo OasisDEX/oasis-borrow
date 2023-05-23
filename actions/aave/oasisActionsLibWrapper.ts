@@ -11,7 +11,7 @@ import {
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ethNullAddress, NetworkIds, networksById } from 'blockchain/networks'
+import { ethNullAddress, NetworkIds, networksById, getRpcProvider } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
@@ -84,7 +84,7 @@ async function openAave(
   const dependencies: Parameters<typeof strategies.aave.v2.open>[1] &
     Parameters<typeof strategies.aave.v3.open>[1] = {
     addresses: getTokenAddresses(networkId),
-    provider: networksById[networkId].readProvider,
+    provider: getRpcProvider(networkId),
     getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
     user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress, // mocking the address before wallet connection
@@ -171,7 +171,7 @@ export async function getOnChainPosition({
 }: GetOnChainPositionParams): Promise<IPosition> {
   assertNetwork(networkId)
 
-  const provider = networksById[networkId].readProvider
+  const provider = getRpcProvider(networkId)
 
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
@@ -222,7 +222,7 @@ export async function getAdjustAaveParameters({
   try {
     assertNetwork(networkId)
 
-    const provider = networksById[networkId].readProvider
+    const provider = getRpcProvider(networkId)
 
     const collateralToken = {
       symbol: currentPosition.collateral.symbol as AAVETokens,
@@ -311,7 +311,7 @@ export async function getManageAaveParameters(
 
     assertNetwork(networkId)
 
-    const provider = networksById[networkId].readProvider
+    const provider = getRpcProvider(networkId)
 
     const addresses = getTokenAddresses(networkId)
 
@@ -425,7 +425,7 @@ export async function getCloseAaveParameters({
   const stratDeps: closeParameters[1] = {
     addresses: getTokenAddresses(networkId) as AAVEStrategyAddresses,
     currentPosition,
-    provider: networksById[networkId].readProvider,
+    provider: getRpcProvider(networkId),
     getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
     user: userAddress,
@@ -474,7 +474,7 @@ export async function getOpenDepositBorrowParameters(
 
   const deps = {
     addresses: getTokenAddresses(networkId),
-    provider: networksById[networkId].readProvider,
+    provider: getRpcProvider(networkId),
     getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
     user: userAddress,

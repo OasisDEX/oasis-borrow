@@ -1,7 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networks'
-import { networksById } from 'blockchain/networks'
+import { NetworkIds, getRpcProvider, networksById } from 'blockchain/networks'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { LendingProtocol } from 'lendingProtocols'
@@ -24,7 +23,7 @@ function getPositionCreatedEventForProxyAddress(
 ): Promise<CreatePositionEvent[]> {
   const dpmWithPositionCreatedEvent = PositionCreated__factory.connect(
     proxyAddress,
-    networksById[context.chainId].readProvider,
+    getRpcProvider(context.chainId),
   )
 
   const filter = dpmWithPositionCreatedEvent.filters.CreatePosition(

@@ -30,29 +30,34 @@ export function getAaveV3Services({
     refresh$,
     blockchainCalls.getAaveV3AssetsPrices,
     networkId,
+    'assetsPrices$',
   )
   const assetPrice$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3OracleAssetPrice,
     networkId,
+    'assetPrice$',
   )
 
   const aaveReserveConfigurationData$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3ReserveConfigurationData,
     networkId,
+    'aaveReserveConfigurationData$',
   )
 
   const getAaveV3EModeCategoryForAsset$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3EModeCategoryForAsset,
     networkId,
+    'getAaveV3EModeCategoryForAsset$',
   )
 
   const aaveLiquidations$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3PositionLiquidation,
     networkId,
+    'aaveLiquidations$',
   )
 
   const aaveUserAccountData$: (args: UserAccountDataArgs) => Observable<UserAccountData> =
@@ -60,18 +65,21 @@ export function getAaveV3Services({
       refresh$,
       curry(mapAaveUserAccountData$)(blockchainCalls.getAaveV3UserAccountData),
       networkId,
+      'aaveUserAccountData$',
     )
 
   const getAaveReserveData$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3ReserveData,
     networkId,
+    'getAaveReserveData$',
   )
 
   const getEModeCategoryData$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getEModeCategoryData,
     networkId,
+    'getEModeCategoryData$',
   )
 
   const aaveAvailableLiquidityInUSDC$ = memoize(
@@ -86,19 +94,27 @@ export function getAaveV3Services({
     refresh$,
     blockchainCalls.getAaveV3UserReserveData,
     networkId,
+    'aaveUserReserveData$',
   )
   const aaveUserConfiguration$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3UserConfigurations,
     networkId,
+    'aaveUserConfiguration$',
   )
   const aaveReservesList$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3ReservesList,
     networkId,
+    'aaveReservesList$',
   )({})
 
-  const onChainPosition$ = makeObservableForNetworkId(refresh$, aaveV3OnChainPosition, networkId)
+  const onChainPosition$ = makeObservableForNetworkId(
+    refresh$,
+    aaveV3OnChainPosition,
+    networkId,
+    'onChainPosition$',
+  )
 
   const aaveProtocolData$ = memoize(
     curry(getAaveProtocolData$)(

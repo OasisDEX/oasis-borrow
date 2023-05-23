@@ -44,7 +44,10 @@ const getChains = () => {
 
 export const initWeb3OnBoard = init({
   wallets: [injected, walletConnect, walletLink, gnosis, ledger, trezor],
-  chains: getChains(),
+  chains: [
+    ...networks.filter(isEnabled).map(mapNetwork),
+    ...(hardhatNetworkConfigs as NetworkConfig[]).map(mapNetwork),
+  ],
   appMetadata: {
     name: 'Oasis.app',
     icon:

@@ -5,6 +5,8 @@ import {
   mainnetRpc,
   optimismGoerliRpc,
   optimismMainnetRpc,
+  polygonMainnetRpc,
+  polygonMumbaiRpc,
 } from 'config/rpcConfig'
 import { mainnetCacheUrl } from 'config/runtimeConfig'
 import { ethers } from 'ethers'
@@ -54,7 +56,7 @@ export function contractDesc(
   return { abi, address, genesisBlock }
 }
 
-export function emptyContractDesc(contractName: string): ContractDesc & { genesisBlock: number } {
+export function emptyContractDesc(constractName: string): ContractDesc & { genesisBlock: number } {
   // not every contract is available on every network
   // hence this function is used to return an empty contract
   env.NODE_ENV === 'development' && console.warn('Contract not set:', contractName)

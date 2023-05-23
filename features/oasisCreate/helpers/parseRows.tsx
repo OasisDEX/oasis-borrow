@@ -15,11 +15,11 @@ function parseProduct(
     '7DayNetApy': weeklyNetApy,
     '90DayNetApy': quarterlyNetApy,
     fee,
-    investmentType,
     liquidity,
     managementType,
     maxLtv,
     maxMultiply,
+    strategyLabel,
   }: OasisCreateItem,
   product: ProductType,
 ): AssetsTableRowData {
@@ -39,6 +39,22 @@ function parseProduct(
           value: liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />,
         },
         borrowRate: {
+          sortable: fee ? fee.toNumber() : 0,
+          value: fee ? formatDecimalAsPercent(fee) : <AssetsTableDataCellInactive />,
+        },
+      }
+    case ProductType.Multiply:
+      return {
+        strategy: strategyLabel || <AssetsTableDataCellInactive />,
+        maxMultiple: {
+          sortable: maxMultiply ? maxMultiply.toNumber() : 0,
+          value: maxMultiply ? `${maxMultiply}x` : <AssetsTableDataCellInactive />,
+        },
+        liquidityAvaliable: {
+          sortable: liquidity ? liquidity.toNumber() : 0,
+          value: liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />,
+        },
+        variableFeeYr: {
           sortable: fee ? fee.toNumber() : 0,
           value: fee ? formatDecimalAsPercent(fee) : <AssetsTableDataCellInactive />,
         },
@@ -71,44 +87,20 @@ function parseProduct(
           value: liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />,
         },
       }
-    case ProductType.Multiply:
-      return {
-        longShort: investmentType ? (
-          <Trans
-            i18nKey={`oasis-create.table.${
-              Array.isArray(investmentType)
-                ? investmentType.sort((a, b) => (a > b ? -1 : 1)).join('-')
-                : investmentType
-            }`}
-          />
-        ) : (
-          <AssetsTableDataCellInactive />
-        ),
-        maxMultiple: {
-          sortable: maxMultiply ? maxMultiply.toNumber() : 0,
-          value: maxMultiply ? `${maxMultiply}x` : <AssetsTableDataCellInactive />,
-        },
-        liquidityAvaliable: {
-          sortable: liquidity ? liquidity.toNumber() : 0,
-          value: liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />,
-        },
-        variableFeeYr: {
-          sortable: fee ? fee.toNumber() : 0,
-          value: fee ? formatDecimalAsPercent(fee) : <AssetsTableDataCellInactive />,
-        },
-      }
   }
 }
 
 export function parseRows(rows: OasisCreateItem[], product: ProductType): AssetsTableRowData[] {
   return rows.map((row) => {
-    const { label, network, primaryToken, protocol, secondaryToken, url } = row
+    const { label, network, primaryToken, protocol, secondaryToken } = row
     const assets = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
 
-    if (product === 'earn' && protocol === LendingProtocol.Ajna) assets.reverse()
+    if (product === ProductType.Earn && protocol === LendingProtocol.Ajna) assets.reverse()
 
     return {
-      collateralDebt: <AssetsTableDataCellAsset asset={label} icons={assets} />,
+      [product === ProductType.Earn ? 'depositToken' : 'collateralDebt']: (
+        <AssetsTableDataCellAsset asset={label} icons={assets} />
+      ),
       ...parseProduct(row, product),
       protocolNetwork: (
         <ProtocolLabel
@@ -116,7 +108,7 @@ export function parseRows(rows: OasisCreateItem[], product: ProductType): Assets
           protocol={protocol}
         />
       ),
-      action: <AssetsTableDataCellAction cta={upperFirst(product)} link={url} />,
+      action: <AssetsTableDataCellAction cta={upperFirst(product)} link="/" />,
     }
   })
 }

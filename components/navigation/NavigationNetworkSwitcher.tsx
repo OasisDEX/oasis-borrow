@@ -38,7 +38,6 @@ export function NavigationNetworkSwitcher() {
   const [, setCustomNetwork] = useCustomNetworkParameter()
   const [web3Context] = useObservable(web3Context$)
   const openModal = useModal()
-  // @ts-ignore
   const changeChain = useCallback(
     async (networkHexId: NetworkConfigHexId) => {
       const network = networksListWithForksByHexId[networkHexId]
@@ -172,6 +171,7 @@ export function NavigationNetworkSwitcher() {
             }}
           >
             {networksSet
+              .filter(isEnabled)
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)

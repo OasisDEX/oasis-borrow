@@ -74,6 +74,7 @@ export const EXTERNAL_LINKS = {
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
     },
     AJNA: 'https://kb.oasis.app/help/ajna',
+    SWAP_FAQ: 'https://kb.oasis.app/help/how-to-swap-and-bridge-using-the-lifi-widget',
   },
   BLOG: {
     MAIN: 'https://blog.oasis.app',

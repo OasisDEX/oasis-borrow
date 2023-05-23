@@ -7,11 +7,23 @@ import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
 export const ALL_ASSETS = 'all assets'
+export const EMPTY_FILTERS = { or: [], and: {} }
 
 export const oasisCreateLinksMap: { [key in ProductType]: string } = {
   borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
   multiply: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
   earn: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
+}
+
+export const oasisCreateFiltersCount: { [key in ProductType]: number } = {
+  [ProductType.Borrow]: 3,
+  [ProductType.Multiply]: 4,
+  [ProductType.Earn]: 2,
+}
+export const oasisCreateGridTemplateColumns: { [key in ProductType]: string } = {
+  [ProductType.Borrow]: '270px auto 220px 220px',
+  [ProductType.Multiply]: '270px auto 220px 220px 220px',
+  [ProductType.Earn]: 'auto 220px 220px',
 }
 
 // TODO: find a way how to put translations into metadata
@@ -102,6 +114,17 @@ export const oasisCreateOptionsMap: {
     },
   },
 }
+
+export const oasisCreateStrategyFilter = [
+  {
+    label: 'Long',
+    value: 'long',
+  },
+  {
+    label: 'Short',
+    value: 'short',
+  },
+]
 
 export const oasisCreateNetworkFilter = [
   {
