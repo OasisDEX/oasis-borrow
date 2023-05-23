@@ -1,5 +1,6 @@
 import { WidgetConfig } from '@lifi/widget'
 import { networks } from 'blockchain/networksConfig'
+import { isEnabled } from 'helpers/isEnabled'
 import { theme } from 'theme'
 
 const { colors, radii } = theme
@@ -37,7 +38,7 @@ export const swapWidgetConfig: WidgetConfig = {
   },
   hiddenUI: ['walletMenu', 'appearance', 'poweredBy', 'toAddress'],
   chains: {
-    allow: networks.filter(({ enabled }) => enabled).map((network) => network.id),
+    allow: networks.filter(isEnabled).map((network) => network.id),
   },
   bridges: {
     deny: ['polygon', 'omni', 'gnosis', 'hyphen'],

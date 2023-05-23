@@ -16,6 +16,7 @@ import {
   mainnetNetworkParameter,
   useCustomNetworkParameter,
 } from 'helpers/getCustomNetworkParameter'
+import { isEnabled } from 'helpers/isEnabled'
 import { useModal } from 'helpers/modalHook'
 import {
   filterNetworksAccordingToSavedNetwork,
@@ -170,7 +171,7 @@ export function NavigationNetworkSwitcher() {
             }}
           >
             {networks
-              .filter(({ enabled }) => enabled)
+              .filter(isEnabled)
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)

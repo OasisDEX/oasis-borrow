@@ -6,6 +6,7 @@ import { init } from '@web3-onboard/react'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import { NetworkConfig, networks } from 'blockchain/networksConfig'
+import { isEnabled } from 'helpers/isEnabled'
 
 import { hardhatNetworkConfigs } from './hardhatConfigList'
 
@@ -38,7 +39,7 @@ const mapNetwork = (network: NetworkConfig) => ({
 export const initWeb3OnBoard = init({
   wallets: [injected, walletConnect, walletLink, gnosis, ledger, trezor],
   chains: [
-    ...networks.filter(({ enabled }) => enabled).map(mapNetwork),
+    ...networks.filter(isEnabled).map(mapNetwork),
     ...(hardhatNetworkConfigs as NetworkConfig[]).map(mapNetwork),
   ],
   appMetadata: {
