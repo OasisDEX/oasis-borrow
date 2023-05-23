@@ -210,7 +210,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
   rpcUrl: 'empty',
-  readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
+  readProvider: mainnetConfig.readProvider,
 }
 
 export const mainnetNetworks = [mainnetConfig, goerliConfig]
