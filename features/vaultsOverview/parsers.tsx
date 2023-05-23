@@ -85,7 +85,7 @@ export function parseMakerBorrowPositionRows(
         isAtRiskWarning: atRiskLevelWarning,
         type: 'Coll. Ratio',
       },
-      url: `/${id}`,
+      url: `/ethereum/maker/${id}`,
       variable: stabilityFee.times(100),
     }),
   )
@@ -103,7 +103,7 @@ export function parseMakerMultiplyPositionRows(
       multiple: calculateMultiply({ debt, lockedCollateralUSD }),
       netValue: value,
       protocol: 'Maker',
-      url: `/${id}`,
+      url: `/ethereum/maker/${id}`,
     }),
   )
 }
@@ -120,7 +120,7 @@ export function parseMakerEarnPositionRows(
       netValue: value,
       pnl: calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100),
       protocol: 'Maker',
-      url: `/${id}`,
+      url: `/ethereum/maker/${id}`,
     }),
   )
 }

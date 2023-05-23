@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
@@ -12,6 +11,7 @@ import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
+import { getRpcProvider } from 'helpers/get-rpc-provider'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
@@ -50,7 +50,7 @@ export function getAjnaPosition$(
       const commonDependency = {
         poolInfoAddress: ajnaPoolInfo.address,
         rewardsManagerAddress: ajnaRewardsManager.address,
-        provider: networksById[context.chainId].readProvider,
+        provider: getRpcProvider(context.chainId),
         getPoolData: getAjnaPoolData,
       }
 
