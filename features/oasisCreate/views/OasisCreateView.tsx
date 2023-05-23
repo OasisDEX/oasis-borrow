@@ -9,7 +9,6 @@ import { AppLink } from 'components/Links'
 import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
 import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
-import { oasisCreateData } from 'features/oasisCreate/data'
 import { matchRowsByFilters } from 'features/oasisCreate/helpers/matchRowsByFilters'
 import { matchRowsByNL } from 'features/oasisCreate/helpers/matchRowsByNL'
 import { parseRows } from 'features/oasisCreate/helpers/parseRows'
@@ -29,6 +28,7 @@ import {
   ProductType,
 } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { oasisCreateData } from 'helpers/mocks/oasisCreateData'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -215,7 +215,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             onChange={(value) => {
               setSelectedFilters({
                 or: selectedFilters.or,
-                and: { ...selectedFilters.and, network: value as BaseNetworkNames[] },
+                and: { ...selectedFilters.and, network: value as unknown as BaseNetworkNames[] },
               })
             }}
           />
