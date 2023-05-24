@@ -34,8 +34,6 @@ export function AjnaMultiplyOverviewController() {
   const netValue = new BigNumber(15282.124)
   const afterNetValue = new BigNumber(17204.0356)
   const pnl = new BigNumber(-110.26)
-  const buyingPower = new BigNumber(1255.12)
-  const afterBuyingPower = new BigNumber(1911.37)
 
   return (
     <Grid gap={2}>
@@ -86,8 +84,8 @@ export function AjnaMultiplyOverviewController() {
               afterPositionDebt={simulation?.debtAmount}
               multiple={position.riskRatio.multiple}
               afterMultiple={simulation?.riskRatio.multiple}
-              buyingPower={buyingPower}
-              afterBuyingPower={afterBuyingPower}
+              buyingPower={position.buyingPower}
+              afterBuyingPower={simulation && simulation.buyingPower}
               changeVariant={changeVariant}
             />
           </DetailsSectionFooterItemWrapper>

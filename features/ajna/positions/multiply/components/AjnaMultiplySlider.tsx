@@ -37,7 +37,8 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     BigNumber.ROUND_DOWN,
   )
 
-  const resolvedValue = loanToValue || simulation?.riskRatio.loanToValue || min
+  const resolvedValue =
+    loanToValue || simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue || min
 
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
