@@ -407,7 +407,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'cbETHusdc',
+    name: 'cbETHusdcV3',
     urlSlug: 'cbETHusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {

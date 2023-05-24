@@ -1717,7 +1717,11 @@
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
       },
-      "cbETHusdc": {
+      "cbETHusdcV2": {
+        "title": "High cbETH multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      },
+      "cbETHusdcV3": {
         "title": "High cbETH multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to cbETH"
       },

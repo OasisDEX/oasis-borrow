@@ -22,7 +22,7 @@ export const aaveV3TokensMetadata: TokenConfig[] = [
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
-    symbol: 'cbETHusdc',
+    symbol: 'cbETHusdcV3',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
