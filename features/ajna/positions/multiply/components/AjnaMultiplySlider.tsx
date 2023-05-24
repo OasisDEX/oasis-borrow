@@ -5,7 +5,6 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
@@ -38,10 +37,9 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     BigNumber.ROUND_DOWN,
   )
 
-  const resolvedValue =
-    loanToValue || simulation?.riskRatio.loanToValue || (min.isZero() ? zero : min)
+  const resolvedValue = loanToValue || simulation?.riskRatio.loanToValue || min
 
-  const percentage = min && max ? resolvedValue.minus(min).div(max.minus(min)).times(100) : zero
+  const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
   const liquidationPrice = simulation?.liquidationPrice || position.liquidationPrice
 
