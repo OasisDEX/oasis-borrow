@@ -67,9 +67,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
           )}
         </Flex>
       )}
-      onChange={(value) => {
-        updateState('loanToValue', value)
-      }}
+      onChange={(value) => updateState('loanToValue', value)}
       minBoundry={min}
       maxBoundry={max}
       lastValue={resolvedValue}
