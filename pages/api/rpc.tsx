@@ -62,7 +62,7 @@ const blockRecheckDelay = 3000
 
 const cache: { [key: string]: Cache } = {}
 
-function getRpcNode(network: NetworkNames, tenderlySecret: string, forkId : string) {
+function getRpcNode(network: NetworkNames, tenderlySecret: string, forkId: string) {
   if (tenderlySecret === process.env.TENDERLY_SECRET) {
     return `https://rpc.tenderly.co/fork/${forkId}`
   }
@@ -174,8 +174,8 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
   counters.totalCalls += calls.length
   counters.requests += 1
 
-  const forkConfig : TenderlyConfig = await getConfig();
-  const fork = await refreshFork(forkConfig);
+  const forkConfig: TenderlyConfig = getConfig()
+  const fork = await refreshFork(forkConfig)
 
   if (calls.length === 1) {
     config = {
