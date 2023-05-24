@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps } from 'components/PromoCard'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 
-export type OasisCreateProductStrategy = 'long' | 'short'
+export type OasisCreateMultiplyStrategyType = 'long' | 'short'
+export type OasisCreateManagementType = 'active' | 'active-with-liq-risk' | 'passive'
 
 export enum ProductType {
   Borrow = 'borrow',
@@ -24,17 +26,31 @@ export interface OasisCreateItemBasics {
 
 export interface OasisCreateItemDetails {
   '7DayNetApy'?: BigNumber
-  '90DayNetApy'?: BigNumber
+  depositToken?: string
+  earnStrategy?: string
   fee?: BigNumber
   liquidity?: BigNumber
-  managementType?: 'active' | 'passive'
+  managementType?: OasisCreateManagementType
   maxLtv?: BigNumber
   maxMultiply?: BigNumber
-  strategy?: OasisCreateProductStrategy
-  strategyLabel?: string
+  multiplyStrategy?: string
+  multiplyStrategyType?: OasisCreateMultiplyStrategyType
+  reverseTokens?: boolean
+  with50Tokens?: string
 }
 
-export type OasisCreateItem = OasisCreateItemBasics & OasisCreateItemDetails
+export interface OasisCreateItemTooltips {
+  tooltips?: {
+    [key in keyof Omit<
+      OasisCreateItemDetails,
+      'depositToken' | 'multiplyStrategyType'
+    >]?: AssetsTableTooltipProps
+  }
+}
+
+export type OasisCreateItem = OasisCreateItemBasics &
+  OasisCreateItemDetails &
+  OasisCreateItemTooltips
 
 export type OasisCreatePromoCards = {
   [key in ProductType]: {
@@ -57,7 +73,7 @@ export interface OasisCreateFiltersCriteria {
   protocol?: OasisCreateItem['protocol'][]
   secondaryToken?: OasisCreateItem['secondaryToken'][]
   secondaryTokenGroup?: OasisCreateItem['secondaryTokenGroup'][]
-  strategy?: OasisCreateItem['strategy'][]
+  multiplyStrategyType?: OasisCreateItem['multiplyStrategyType'][]
 }
 
 export interface OasisCreateFilters {

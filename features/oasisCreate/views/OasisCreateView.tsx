@@ -24,7 +24,7 @@ import {
 } from 'features/oasisCreate/meta'
 import {
   OasisCreateFilters,
-  OasisCreateProductStrategy,
+  OasisCreateMultiplyStrategyType,
   ProductType,
 } from 'features/oasisCreate/types'
 import { oasisCreateData } from 'helpers/mocks/oasisCreateData.mock'
@@ -195,7 +195,10 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
               onChange={(value) => {
                 setSelectedFilters({
                   or: selectedFilters.or,
-                  and: { ...selectedFilters.and, strategy: value as OasisCreateProductStrategy[] },
+                  and: {
+                    ...selectedFilters.and,
+                    multiplyStrategyType: value as OasisCreateMultiplyStrategyType[],
+                  },
                 })
               }}
             />
