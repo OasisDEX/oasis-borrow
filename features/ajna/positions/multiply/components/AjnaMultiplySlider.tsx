@@ -1,10 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
@@ -16,7 +19,7 @@ interface AjnaMultiplySliderProps {
 export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralToken, quoteToken, collateralPrice },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -32,10 +35,18 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     2,
     BigNumber.ROUND_UP,
   )
-  const max = (simulation?.maxRiskRatio || position.maxRiskRatio).loanToValue.decimalPlaces(
-    2,
-    BigNumber.ROUND_DOWN,
-  )
+
+  const debtMax = getAjnaBorrowDebtMax({
+    precision: getToken(quoteToken).precision,
+    position,
+    simulation,
+  })
+
+  const max = !debtMax.isZero()
+    ? debtMax
+        .div((simulation || position).collateralAmount.times(collateralPrice))
+        .decimalPlaces(2, BigNumber.ROUND_DOWN)
+    : zero
 
   const resolvedValue =
     loanToValue || simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue || min
