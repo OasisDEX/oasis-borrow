@@ -11,6 +11,7 @@ import {
 } from 'features/oasisCreate/types'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
+import { Text } from 'theme-ui'
 
 const protocol = {
   aavev2: { network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.AaveV2 },
@@ -274,6 +275,16 @@ const oasisCreatePromoCards: OasisCreatePromoCards = {
   },
 }
 
+const oasisCreateAjnaYieldTokenTooltip = (
+  <>
+    <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
+      This position earns AJNA tokens
+    </Text>
+    Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn
+    automatically with weekly claim periods.
+  </>
+)
+
 const oasisCreateTable: OasisCreateItem[] = [
   {
     product: [ProductType.Borrow, ProductType.Multiply],
@@ -361,6 +372,19 @@ const oasisCreateTable: OasisCreateItem[] = [
     maxLtv: new BigNumber(0.5882),
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long RETH',
+    tooltips: {
+      fee: {
+        content: (
+          <>
+            <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
+              I am a random tooltip
+            </Text>
+            I can be assigned to any content row with any icon or value. Neat, isn't it?
+          </>
+        ),
+        icon: 'arrow_decrease',
+      },
+    },
   },
   {
     product: [ProductType.Borrow, ProductType.Multiply],
@@ -406,6 +430,14 @@ const oasisCreateTable: OasisCreateItem[] = [
     multiplyStrategy: 'Long WSTETH',
     earnStrategy: 'WSTETH/ETH Yield',
     managementType: 'active-with-liq-risk',
+    '7DayNetApy': new BigNumber(0.0145),
+    liquidity: new BigNumber(4134874),
+    tooltips: {
+      '7DayNetApy': {
+        content: oasisCreateAjnaYieldTokenTooltip,
+        icon: 'sparks',
+      },
+    },
   },
   {
     product: [ProductType.Borrow, ProductType.Multiply, ProductType.Earn],
@@ -419,6 +451,14 @@ const oasisCreateTable: OasisCreateItem[] = [
     multiplyStrategy: 'Long RETH',
     earnStrategy: 'RETH/ETH Yield',
     managementType: 'active-with-liq-risk',
+    '7DayNetApy': new BigNumber(0.0209),
+    liquidity: new BigNumber(3852147),
+    tooltips: {
+      '7DayNetApy': {
+        content: oasisCreateAjnaYieldTokenTooltip,
+        icon: 'sparks',
+      },
+    },
   },
   {
     product: [ProductType.Borrow, ProductType.Multiply, ProductType.Earn],
@@ -432,6 +472,14 @@ const oasisCreateTable: OasisCreateItem[] = [
     multiplyStrategy: 'Long CBETH',
     earnStrategy: 'CBETH/ETH Yield',
     managementType: 'active-with-liq-risk',
+    '7DayNetApy': new BigNumber(0.0083),
+    liquidity: new BigNumber(943284),
+    tooltips: {
+      '7DayNetApy': {
+        content: oasisCreateAjnaYieldTokenTooltip,
+        icon: 'sparks',
+      },
+    },
   },
   {
     product: ProductType.Multiply,
