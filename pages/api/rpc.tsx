@@ -1,6 +1,7 @@
 import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 import * as ethers from 'ethers'
+import { getConfig, refreshFork, TenderlyConfig } from 'helpers/api/tenderly/tenderlyOperations'
 import { NetworkNames } from 'helpers/networkNames'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -61,10 +62,9 @@ const blockRecheckDelay = 3000
 
 const cache: { [key: string]: Cache } = {}
 
-function getRpcNode(network: NetworkNames, tenderlySecret: string) {
-  //TODO: take Fork_ID from database and refresh it every 5 minutes
+function getRpcNode(network: NetworkNames, tenderlySecret: string, forkId : string) {
   if (tenderlySecret === process.env.TENDERLY_SECRET) {
-    return `https://rpc.tenderly.co/fork/${process.env.TENDERLY_FORK_ID}`
+    return `https://rpc.tenderly.co/fork/${forkId}`
   }
   switch (network) {
     // case 'hardhat': // hardhat does not request this one
@@ -174,6 +174,9 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
   counters.totalCalls += calls.length
   counters.requests += 1
 
+  const forkConfig : TenderlyConfig = await getConfig();
+  const fork = await refreshFork(forkConfig);
+
   if (calls.length === 1) {
     config = {
       headers: {
@@ -182,7 +185,7 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
       },
     }
     const response = await axios.post(
-      getRpcNode(network, tenderlySecret),
+      getRpcNode(network, tenderlySecret, fork.uuid),
       JSON.stringify(calls[0]),
       config,
     )
@@ -194,7 +197,7 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
         'Content-Length': callsLength.toString(),
       },
     }
-    const response = await axios.post(getRpcNode(network, tenderlySecret), calls, config)
+    const response = await axios.post(getRpcNode(network, tenderlySecret, fork.uuid), calls, config)
     return response.data
   }
 }
