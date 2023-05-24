@@ -195,7 +195,10 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
               onChange={(value) => {
                 setSelectedFilters({
                   or: selectedFilters.or,
-                  and: { ...selectedFilters.and, multiplyStrategyType: value as OasisCreateMultiplyStrategyType[] },
+                  and: {
+                    ...selectedFilters.and,
+                    multiplyStrategyType: value as OasisCreateMultiplyStrategyType[],
+                  },
                 })
               }}
             />

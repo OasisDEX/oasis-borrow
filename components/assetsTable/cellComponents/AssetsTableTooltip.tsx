@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
 import React, { ReactChild } from 'react'
 
-interface AssetsTableTooltipProps {
+export interface AssetsTableTooltipProps {
   content: ReactChild
   icon: string
 }

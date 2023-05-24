@@ -11,6 +11,7 @@ import {
 } from 'features/oasisCreate/types'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 const protocol = {

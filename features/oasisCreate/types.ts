@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps } from 'components/PromoCard'
 import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
-import { ReactChild } from 'react'
 
 export type OasisCreateMultiplyStrategyType = 'long' | 'short'
 export type OasisCreateManagementType = 'active' | 'active-with-liq-risk' | 'passive'
@@ -41,10 +41,10 @@ export interface OasisCreateItemDetails {
 
 export interface OasisCreateItemTooltips {
   tooltips?: {
-    [key in keyof Omit<OasisCreateItemDetails, 'depositToken' | 'multiplyStrategyType'>]?: {
-      icon: string
-      content: ReactChild
-    }
+    [key in keyof Omit<
+      OasisCreateItemDetails,
+      'depositToken' | 'multiplyStrategyType'
+    >]?: AssetsTableTooltipProps
   }
 }
 
