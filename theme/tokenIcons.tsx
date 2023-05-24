@@ -1263,71 +1263,11 @@ export const tokenIcons = {
     path: (
       <>
         <path
-          d="M28.8337 16C28.8337 23.0876 23.088 28.8333 16.0003 28.8333C8.91267 28.8333 3.16699 23.0876 3.16699 16C3.16699 8.91231 8.91267 3.16663 16.0003 3.16663C23.088 3.16663 28.8337 8.91231 28.8337 16Z"
-          stroke="#E5E4E6"
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M29.3334 16.0003C29.3334 23.3641 23.3639 29.3337 16.0001 29.3337C8.63628 29.3337 2.66675 23.3641 2.66675 16.0003C2.66675 8.63653 8.63628 2.66699 16.0001 2.66699C23.3639 2.66699 29.3334 8.63653 29.3334 16.0003ZM10.6668 16.1487L16 19.0512L21.3333 16.1487L16 8.00033L10.6668 16.1487ZM10.6667 17.0803L16 19.9814L21.3334 17.0803L16 24.0002L10.6667 17.0803Z"
+          fill="url(#eth_circle_color_1)"
         />
-        <path
-          d="M16.0003 8V19.0509L10.6671 16.1484L16.0003 8Z"
-          fill="url(#paint0_linear_12874_88426)"
-        />
-        <path
-          d="M16.0003 8L21.3335 16.1484L16.0003 19.0509V8Z"
-          fill="url(#paint1_linear_12874_88426)"
-        />
-        <path
-          d="M16.0002 19.9811V23.9999L10.667 17.08L16.0002 19.9811Z"
-          fill="url(#paint2_linear_12874_88426)"
-        />
-        <path
-          d="M16.0002 23.9999V19.9811L21.3337 17.08L16.0002 23.9999Z"
-          fill="url(#paint3_linear_12874_88426)"
-        />
-        <defs>
-          <linearGradient
-            id="paint0_linear_12874_88426"
-            x1="14.8025"
-            y1="8.20002"
-            x2="23.395"
-            y2="21.1511"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#222121" />
-            <stop offset="1" stopColor="#8E8E8E" />
-          </linearGradient>
-          <linearGradient
-            id="paint1_linear_12874_88426"
-            x1="14.8025"
-            y1="8.20002"
-            x2="23.395"
-            y2="21.1511"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#222121" />
-            <stop offset="1" stopColor="#8E8E8E" />
-          </linearGradient>
-          <linearGradient
-            id="paint2_linear_12874_88426"
-            x1="14.8025"
-            y1="8.20002"
-            x2="23.395"
-            y2="21.1511"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#222121" />
-            <stop offset="1" stopColor="#8E8E8E" />
-          </linearGradient>
-          <linearGradient
-            id="paint3_linear_12874_88426"
-            x1="14.8025"
-            y1="8.20002"
-            x2="23.395"
-            y2="21.1511"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#222121" />
-            <stop offset="1" stopColor="#8E8E8E" />
-          </linearGradient>
-        </defs>
       </>
     ),
     viewBox: '0 0 32 32',

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { wethToEthAddress } from 'blockchain/aave-v3/utils'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
@@ -55,45 +56,52 @@ export function getAaveV2UserReserveData({
   token,
   address,
 }: AaveV2UserReserveDataParameters): Promise<AaveV2UserReserveData> {
-  return contract.getUserReserveData(tokenMappings[token].address, address).then((result) => {
-    return {
-      currentATokenBalance: amountFromWei(
-        new BigNumber(result.currentATokenBalance.toString()),
-        token,
-      ),
-      currentStableDebt: amountFromWei(new BigNumber(result.currentStableDebt.toString()), token),
-      currentVariableDebt: amountFromWei(
-        new BigNumber(result.currentVariableDebt.toString()),
-        token,
-      ),
-      principalStableDebt: amountFromWei(
-        new BigNumber(result.principalStableDebt.toString()),
-        token,
-      ),
-      scaledVariableDebt: amountFromWei(new BigNumber(result.scaledVariableDebt.toString()), token),
-      stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
-      liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
-      usageAsCollateralEnabled: result.usageAsCollateralEnabled,
-    }
-  })
+  return contract
+    .getUserReserveData(wethToEthAddress(tokenMappings, token), address)
+    .then((result) => {
+      return {
+        currentATokenBalance: amountFromWei(
+          new BigNumber(result.currentATokenBalance.toString()),
+          token,
+        ),
+        currentStableDebt: amountFromWei(new BigNumber(result.currentStableDebt.toString()), token),
+        currentVariableDebt: amountFromWei(
+          new BigNumber(result.currentVariableDebt.toString()),
+          token,
+        ),
+        principalStableDebt: amountFromWei(
+          new BigNumber(result.principalStableDebt.toString()),
+          token,
+        ),
+        scaledVariableDebt: amountFromWei(
+          new BigNumber(result.scaledVariableDebt.toString()),
+          token,
+        ),
+        stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
+        liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
+        usageAsCollateralEnabled: result.usageAsCollateralEnabled,
+      }
+    })
 }
 
 export function getAaveV2ReserveConfigurationData({
   token,
 }: AaveV2ReserveDataParameters): Promise<AaveV2ReserveConfigurationData> {
-  return contract.getReserveConfigurationData(tokenMappings[token].address).then((result) => {
-    return {
-      ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
-      liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000), // 8100 -> 0.81
-      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
-    }
-  })
+  return contract
+    .getReserveConfigurationData(wethToEthAddress(tokenMappings, token))
+    .then((result) => {
+      return {
+        ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
+        liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000), // 8100 -> 0.81
+        liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
+      }
+    })
 }
 
 export function getAaveV2ReserveData({
   token,
 }: AaveV2ReserveDataParameters): Promise<AaveV2ReserveDataReply> {
-  return contract.getReserveData(tokenMappings[token].address).then((result) => {
+  return contract.getReserveData(wethToEthAddress(tokenMappings, token)).then((result) => {
     return {
       availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity.toString()), token),
       totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
