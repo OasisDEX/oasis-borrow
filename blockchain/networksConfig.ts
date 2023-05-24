@@ -13,6 +13,7 @@ import { ContractDesc } from 'features/web3Context'
 import { NetworkLabelType, NetworkNames } from 'helpers/networkNames'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
+import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
 import arbitrumMainnetIcon from 'public/static/img/network_icons/arbitrum_mainnet.svg'
 import ethereumMainnetBadge from 'public/static/img/network_icons/ethereum_badge_mainnet.svg'
@@ -51,6 +52,13 @@ export function contractDesc(
   genesisBlock = 0,
 ): ContractDesc & { genesisBlock: number } {
   return { abi, address, genesisBlock }
+}
+
+export function emptyContractDesc(constractName: string): ContractDesc & { genesisBlock: number } {
+  // not every contract is available on every network
+  // hence this function is used to return an empty contract
+  env.NODE_ENV === 'development' && console.warn('Contract not set:', constractName)
+  return { abi: {}, address: '', genesisBlock: 0 }
 }
 
 const mainnetConfig: NetworkConfig = {
@@ -132,7 +140,7 @@ const polygonMainnetConfig: NetworkConfig = {
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
   testnet: false,
-  enabled: true,
+  enabled: false,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMainnetRpc),
@@ -149,7 +157,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
   testnet: true,
-  enabled: true,
+  enabled: false,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
   readProvider: new ethers.providers.StaticJsonRpcProvider(polygonMumbaiRpc),
@@ -202,7 +210,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
   rpcUrl: 'empty',
-  readProvider: new ethers.providers.StaticJsonRpcProvider('empty'),
+  readProvider: mainnetConfig.readProvider,
 }
 
 export const mainnetNetworks = [mainnetConfig, goerliConfig]

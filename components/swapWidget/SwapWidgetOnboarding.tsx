@@ -1,4 +1,5 @@
 import { AppLink } from 'components/Links'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
 import React from 'react'
@@ -6,7 +7,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
 export const SwapWidgetOnboarding = () => {
-  const [, setAsOnboarded] = useOnboarding('Exchange')
+  const [, setAsOnboarded] = useOnboarding('SwapWidget')
   const { t } = useTranslation()
   return (
     <Flex
@@ -42,7 +43,7 @@ export const SwapWidgetOnboarding = () => {
         <Text variant="paragraph3" sx={{ px: 3, textAlign: 'center', color: 'neutral80', mb: 3 }}>
           <Trans
             i18nKey="exchange.onboarding.body"
-            components={[<AppLink href={t('exchange.onboarding.faq-url')} />]}
+            components={[<AppLink href={EXTERNAL_LINKS.KB.SWAP_FAQ} />]}
           />
         </Text>
       </Box>

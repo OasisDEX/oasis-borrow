@@ -1,6 +1,6 @@
 import { useLocalStorage } from './useLocalStorage'
 
-type Onboardable = 'Exchange' // add more onboardable features here...
+type Onboardable = 'SwapWidget' // add more onboardable features here...
 
 export function useOnboarding(feature: Onboardable): [boolean, Function] {
   const [allOnboarded, setAllOnboarded] = useLocalStorage(

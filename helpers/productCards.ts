@@ -292,9 +292,12 @@ export const productCardsConfig: {
         { strategy: 'borrow-against-ETH', featureToggle: 'AaveBorrow' },
       ]),
       multiply: getAaveEnabledStrategies([
-        { strategy: 'ethusdc' },
-        { strategy: 'stETHusdc' },
-        { strategy: 'wBTCusdc' },
+        { strategy: 'optimism-ethusdc', featureToggle: 'AaveV3Optimism' },
+        { strategy: 'optimism-wstethusdc', featureToggle: 'AaveV3Optimism' },
+        { strategy: 'optimism-wbtcusdc', featureToggle: 'AaveV3Optimism' },
+        { strategy: 'arbitrum-ethusdc', featureToggle: 'AaveV3Arbitrum' },
+        { strategy: 'arbitrum-wstethusdc', featureToggle: 'AaveV3Arbitrum' },
+        { strategy: 'arbitrum-wbtcusdc', featureToggle: 'AaveV3Arbitrum' },
       ]),
       earn: getAaveEnabledStrategies([
         { strategy: 'wstETHeth', featureToggle: 'AaveV3EarnWSTETH' },

@@ -70,7 +70,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
         if (!isSuccessStage) progress!()
         progressTrackingEvent({ props, firstCDP })
       },
-      url: isSuccessStage ? `/${id}` : undefined,
+      url: isSuccessStage ? `/ethereum/maker/${id}` : undefined,
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),

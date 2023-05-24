@@ -31,7 +31,13 @@ export type Feature =
   | 'Sillyness'
   | 'UseNetworkSwitcher'
   | 'UseNetworkRowProductCard'
-  | 'OptimismAaveV3'
+  | 'AaveV3Optimism'
+  | 'AaveV3Arbitrum'
+  | 'AaveV3MultiplycbETHusdc'
+  | 'AaveV3MultiplywBTCusdc'
+  | 'AaveV3MultiplywstETHeth'
+  | 'AaveV3MultiplyETHusdc'
+  | 'AaveV2ProductCard'
   | 'OasisCreate'
   | 'SwapWidget'
   | '🌞'
@@ -64,7 +70,13 @@ const configuredFeatures: Record<Feature, boolean> = {
   Sillyness: false,
   UseNetworkSwitcher: false,
   UseNetworkRowProductCard: false,
-  OptimismAaveV3: false,
+  AaveV3Optimism: false,
+  AaveV3Arbitrum: false,
+  AaveV2ProductCard: false,
+  AaveV3MultiplycbETHusdc: false,
+  AaveV3MultiplywBTCusdc: false,
+  AaveV3MultiplywstETHeth: false,
+  AaveV3MultiplyETHusdc: false,
   OasisCreate: false,
   SwapWidget: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.

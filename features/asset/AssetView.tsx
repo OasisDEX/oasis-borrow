@@ -16,11 +16,22 @@ import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 const aaveAssets = {
   // not putting this to ASSETS_PAGES cause we need feature toggles
   eth: {
-    multiply: getAaveEnabledStrategies([{ strategy: 'ethusdc' }, { strategy: 'stETHusdc' }]),
+    multiply: getAaveEnabledStrategies([
+      { strategy: 'optimism-ethusdc', featureToggle: 'AaveV3Optimism' },
+      { strategy: 'optimism-wstethusdc', featureToggle: 'AaveV3Optimism' },
+      { strategy: 'arbitrum-ethusdc', featureToggle: 'AaveV3Arbitrum' },
+      { strategy: 'arbitrum-wstethusdc', featureToggle: 'AaveV3Arbitrum' },
+      { strategy: 'ethusdc' },
+      { strategy: 'stETHusdc' },
+    ]),
     earn: getAaveEnabledStrategies([{ strategy: 'stETHeth' }]),
   },
   btc: {
-    multiply: getAaveEnabledStrategies([{ strategy: 'wBTCusdc' }]),
+    multiply: getAaveEnabledStrategies([
+      { strategy: 'wBTCusdc' },
+      { strategy: 'optimism-wbtcusdc', featureToggle: 'AaveV3Optimism' },
+      { strategy: 'arbitrum-wbtcusdc', featureToggle: 'AaveV3Arbitrum' },
+    ]),
     earn: [],
   },
 }

@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3ReserveDataReply } from 'blockchain/aave-v3'
-import { amountFromWei } from 'blockchain/utils'
 import { ReserveData } from 'lendingProtocols/aaveCommon'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -22,20 +21,9 @@ export function prepareAaveTotalValueLocked$(
     getAaveAssetsPrices$,
   ).pipe(
     map(([WSTETH_reserveData, ETH_reserveData, [ethPrice, wstEthPrice]]: PrepareAaveTVLProps) => {
-      const wstEthAvailableLiquidity = amountFromWei(
-        new BigNumber(WSTETH_reserveData.availableLiquidity),
-        'ETH',
-      )
-
-      const WETH_totalStableDebt = amountFromWei(
-        new BigNumber(ETH_reserveData.totalStableDebt),
-        'ETH',
-      )
-
-      const WETH_totalVariableDebt = amountFromWei(
-        new BigNumber(ETH_reserveData.totalVariableDebt),
-        'ETH',
-      )
+      const wstEthAvailableLiquidity = new BigNumber(WSTETH_reserveData.availableLiquidity)
+      const WETH_totalStableDebt = new BigNumber(ETH_reserveData.totalStableDebt)
+      const WETH_totalVariableDebt = new BigNumber(ETH_reserveData.totalVariableDebt)
 
       const availableLiquidityInUsdc = wstEthAvailableLiquidity.times(wstEthPrice)
       const wethTotalDebt = WETH_totalStableDebt.plus(WETH_totalVariableDebt).times(ethPrice) // total debt in WETH in USDC
