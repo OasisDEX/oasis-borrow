@@ -87,19 +87,21 @@ export function getAaveV2UserReserveData({
 export function getAaveV2ReserveConfigurationData({
   token,
 }: AaveV2ReserveDataParameters): Promise<AaveV2ReserveConfigurationData> {
-  return contract.getReserveConfigurationData(tokenMappings[token].address).then((result) => {
-    return {
-      ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
-      liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000), // 8100 -> 0.81
-      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
-    }
-  })
+  return contract
+    .getReserveConfigurationData(wethInsteadOfEth(tokenMappings, token))
+    .then((result) => {
+      return {
+        ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
+        liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000), // 8100 -> 0.81
+        liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
+      }
+    })
 }
 
 export function getAaveV2ReserveData({
   token,
 }: AaveV2ReserveDataParameters): Promise<AaveV2ReserveDataReply> {
-  return contract.getReserveData(tokenMappings[token].address).then((result) => {
+  return contract.getReserveData(wethInsteadOfEth(tokenMappings, token)).then((result) => {
     return {
       availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity.toString()), token),
       totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
