@@ -5,7 +5,6 @@ import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { OasisCreateItem, ProductType } from 'features/oasisCreate/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
-import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { Trans } from 'react-i18next'
@@ -13,13 +12,13 @@ import { Trans } from 'react-i18next'
 function parseProduct(
   {
     '7DayNetApy': weeklyNetApy,
-    '90DayNetApy': quarterlyNetApy,
     fee,
     liquidity,
     managementType,
     maxLtv,
     maxMultiply,
-    strategyLabel,
+    multiplyStrategy,
+    earnStrategy,
   }: OasisCreateItem,
   product: ProductType,
 ): AssetsTableRowData {
@@ -45,7 +44,7 @@ function parseProduct(
       }
     case ProductType.Multiply:
       return {
-        strategy: strategyLabel || <AssetsTableDataCellInactive />,
+        strategy: multiplyStrategy || <AssetsTableDataCellInactive />,
         maxMultiple: {
           sortable: maxMultiply ? maxMultiply.toNumber() : 0,
           value: maxMultiply ? `${maxMultiply}x` : <AssetsTableDataCellInactive />,
@@ -61,19 +60,12 @@ function parseProduct(
       }
     case ProductType.Earn:
       return {
+        strategy: earnStrategy || <AssetsTableDataCellInactive />,
         management: managementType ? (
           <Trans i18nKey={`oasis-create.table.${managementType}`} />
         ) : (
           <AssetsTableDataCellInactive />
         ),
-        '90DayNetApy': {
-          sortable: quarterlyNetApy ? quarterlyNetApy.toNumber() : 0,
-          value: quarterlyNetApy ? (
-            formatDecimalAsPercent(quarterlyNetApy)
-          ) : (
-            <AssetsTableDataCellInactive />
-          ),
-        },
         '7DayNetApy': {
           sortable: weeklyNetApy ? weeklyNetApy.toNumber() : 0,
           value: weeklyNetApy ? (
@@ -92,14 +84,16 @@ function parseProduct(
 
 export function parseRows(rows: OasisCreateItem[], product: ProductType): AssetsTableRowData[] {
   return rows.map((row) => {
-    const { label, network, primaryToken, protocol, secondaryToken } = row
-    const assets = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
+    const { depositToken, label, network, primaryToken, protocol, reverseTokens, secondaryToken } =
+      row
+    const icons = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
+    const asset = product === ProductType.Earn ? depositToken || primaryToken : label
 
-    if (product === ProductType.Earn && protocol === LendingProtocol.Ajna) assets.reverse()
+    if (reverseTokens) icons.reverse()
 
     return {
       [product === ProductType.Earn ? 'depositToken' : 'collateralDebt']: (
-        <AssetsTableDataCellAsset asset={label} icons={assets} />
+        <AssetsTableDataCellAsset asset={asset} icons={icons} />
       ),
       ...parseProduct(row, product),
       protocolNetwork: (

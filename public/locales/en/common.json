@@ -2745,6 +2745,7 @@
     },
     "table": {
       "active": "Active",
+      "active-with-liq-risk": "Active (liq. risk)",
       "long-short": "Long or short",
       "long": "Long only",
       "passive": "Passive",
