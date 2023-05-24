@@ -218,7 +218,7 @@ export async function getAjnaParameters({
           collateralAmount: depositAmount!,
           collateralPrice,
           quotePrice,
-          multiple: new RiskRatio(loanToValue || zero, RiskRatio.TYPE.LTV),
+          riskRatio: new RiskRatio(loanToValue || zero, RiskRatio.TYPE.LTV),
         },
         dependencies,
       )
