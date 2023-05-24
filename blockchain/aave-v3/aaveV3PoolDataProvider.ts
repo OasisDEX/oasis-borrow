@@ -4,7 +4,7 @@ import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'
 
-import { BaseParameters, getNetworkMapping, wethInsteadOfEth } from './utils'
+import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface AaveV3UserReserveDataParameters extends BaseParameters {
   token: string
@@ -80,7 +80,7 @@ export function getAaveV3UserReserveData({
   if (!networkMappings[networkId]) {
     console.warn('No getAaveV3UserReserveData network mapping for', networkId)
   }
-  const tokenAddress = wethInsteadOfEth(tokenMappings, token)
+  const tokenAddress = wethToEthAddress(tokenMappings, token)
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
       currentATokenBalance: amountFromWei(
@@ -109,7 +109,7 @@ export function getAaveV3ReserveData({
   networkId,
 }: AaveV3ReserveDataParameters): Promise<AaveV3ReserveDataReply> {
   const { contract, tokenMappings } = networkMappings[networkId]
-  const tokenAddress = wethInsteadOfEth(tokenMappings, token)
+  const tokenAddress = wethToEthAddress(tokenMappings, token)
   warnIfAddressIsZero(tokenAddress, networkId, 'aaveV3PoolDataProvider', 'getReserveData')
   return contract.getReserveData(tokenAddress).then((result) => {
     const totalAToken = amountFromWei(new BigNumber(result.totalAToken.toString()), token)
@@ -149,7 +149,7 @@ export function getAaveV3ReserveConfigurationData({
     'aaveV3PoolDataProvider',
     'getAaveV3ReserveConfigurationData',
   )
-  const tokenAddress = wethInsteadOfEth(tokenMappings, token)
+  const tokenAddress = wethToEthAddress(tokenMappings, token)
   return contract.getReserveConfigurationData(tokenAddress).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
@@ -168,7 +168,7 @@ export function getAaveV3EModeCategoryForAsset({
   networkId,
 }: AaveV3EModeForAssetParameters): Promise<BigNumber> {
   const { contract, tokenMappings } = networkMappings[networkId]
-  const address = wethInsteadOfEth(tokenMappings, token)
+  const address = wethToEthAddress(tokenMappings, token)
   warnIfAddressIsZero(
     address,
     networkId,

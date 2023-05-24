@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { wethInsteadOfEth } from 'blockchain/aave-v3/utils'
+import { wethToEthAddress } from 'blockchain/aave-v3/utils'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
@@ -57,7 +57,7 @@ export function getAaveV2UserReserveData({
   address,
 }: AaveV2UserReserveDataParameters): Promise<AaveV2UserReserveData> {
   return contract
-    .getUserReserveData(wethInsteadOfEth(tokenMappings, token), address)
+    .getUserReserveData(wethToEthAddress(tokenMappings, token), address)
     .then((result) => {
       return {
         currentATokenBalance: amountFromWei(
@@ -88,7 +88,7 @@ export function getAaveV2ReserveConfigurationData({
   token,
 }: AaveV2ReserveDataParameters): Promise<AaveV2ReserveConfigurationData> {
   return contract
-    .getReserveConfigurationData(wethInsteadOfEth(tokenMappings, token))
+    .getReserveConfigurationData(wethToEthAddress(tokenMappings, token))
     .then((result) => {
       return {
         ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
@@ -101,7 +101,7 @@ export function getAaveV2ReserveConfigurationData({
 export function getAaveV2ReserveData({
   token,
 }: AaveV2ReserveDataParameters): Promise<AaveV2ReserveDataReply> {
-  return contract.getReserveData(wethInsteadOfEth(tokenMappings, token)).then((result) => {
+  return contract.getReserveData(wethToEthAddress(tokenMappings, token)).then((result) => {
     return {
       availableLiquidity: amountFromWei(new BigNumber(result.availableLiquidity.toString()), token),
       totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),

@@ -58,7 +58,7 @@ export function getNetworkMapping<Contract>(
 /**
  *  Aave expects WETH instead of ETH address, this handles it
  */
-export function wethInsteadOfEth<T>(
+export function wethToEthAddress<T>(
   tokenMappings: ContractForNetwork<T>['tokenMappings'],
   token: AaveV3ReserveDataParameters['token'],
 ): string {
