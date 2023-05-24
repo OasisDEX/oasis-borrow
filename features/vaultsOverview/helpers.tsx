@@ -178,10 +178,15 @@ export function getMakerBorrowPositions({
         <AssetsTableDataCellProtection
           isOwner={isOwner}
           level={getProtection({ stopLossData, autoSellData })}
-          link={`/${id.toString()}`}
+          link={`/ethereum/maker/${id.toString()}`}
         />
       ),
-      action: <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />,
+      action: (
+        <AssetsTableDataCellAction
+          link={`/ethereum/maker/${id.toString()}`}
+          shareButton={shareButton}
+        />
+      ),
     }),
   )
 }
@@ -221,10 +226,15 @@ export function getMakerMultiplyPositions({
         <AssetsTableDataCellProtection
           isOwner={isOwner}
           level={getProtection({ stopLossData, autoSellData })}
-          link={`/${id.toString()}`}
+          link={`/ethereum/maker/${id.toString()}`}
         />
       ),
-      action: <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />,
+      action: (
+        <AssetsTableDataCellAction
+          link={`/ethereum/maker/${id.toString()}`}
+          shareButton={shareButton}
+        />
+      ),
     }),
   )
 }
@@ -251,7 +261,12 @@ export function getMakerEarnPositions({
         })}`,
         liquidity: `${formatCryptoBalance(ilkDebtAvailable)} DAI`,
         protection: <AssetsTableDataCellInactive />,
-        action: <AssetsTableDataCellAction link={`/${id.toString()}`} shareButton={shareButton} />,
+        action: (
+          <AssetsTableDataCellAction
+            link={`/ethereum/maker/${id.toString()}`}
+            shareButton={shareButton}
+          />
+        ),
       }
     },
   )
