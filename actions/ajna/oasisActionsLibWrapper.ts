@@ -1,4 +1,10 @@
-import { AjnaEarnPosition, AjnaPosition, strategies, Strategy } from '@oasisdex/dma-library'
+import {
+  AjnaEarnPosition,
+  AjnaPosition,
+  RiskRatio,
+  strategies,
+  Strategy,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
@@ -201,6 +207,20 @@ export async function getAjnaParameters({
           quotePrice,
         },
         { ...dependencies },
+      )
+    }
+    case 'open-multiply': {
+      const { depositAmount, loanToValue } = state
+
+      return strategies.ajna.multiply.open(
+        {
+          ...commonPayload,
+          collateralAmount: depositAmount!,
+          collateralPrice,
+          quotePrice,
+          multiple: new RiskRatio(loanToValue || zero, RiskRatio.TYPE.LTV),
+        },
+        dependencies,
       )
     }
     default:
