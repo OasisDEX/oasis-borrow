@@ -5,7 +5,7 @@ import { LendingProtocol } from 'lendingProtocols'
 
 export const aaveV2TokensMetadata: TokenConfig[] = [
   {
-    symbol: 'stETHeth',
+    symbol: 'stETHethV2',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -22,7 +22,7 @@ export const aaveV2TokensMetadata: TokenConfig[] = [
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
-    symbol: 'stETHusdc',
+    symbol: 'stETHusdcV2',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -39,7 +39,7 @@ export const aaveV2TokensMetadata: TokenConfig[] = [
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
-    symbol: 'ethusdc',
+    symbol: 'ethusdcV2',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -56,7 +56,7 @@ export const aaveV2TokensMetadata: TokenConfig[] = [
     chain: MainNetworkNames.ethereumMainnet,
   },
   {
-    symbol: 'wBTCusdc',
+    symbol: 'wBTCusdcV2',
     precision: 18,
     digits: 5,
     digitsInstant: 2,

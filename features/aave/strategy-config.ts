@@ -232,8 +232,8 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    name: 'wstETHethV3',
     urlSlug: 'wstETHeth',
-    name: 'wstETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
@@ -262,8 +262,8 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    name: 'stETHethV2',
     urlSlug: 'stETHeth',
-    name: 'stETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(adjustRiskSliders.stethEth.riskRatios.minimum),
@@ -291,7 +291,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'ethusdc',
+    name: 'ethusdcV2',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -320,7 +320,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'stETHusdc',
+    name: 'stETHusdcV2',
     urlSlug: 'stETHusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -349,7 +349,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'wBTCusdc',
+    name: 'wBTCusdcV2',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -378,7 +378,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'ethusdc',
+    name: 'ethusdcV3',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -436,7 +436,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'wBTCusdc',
+    name: 'wBTCusdcV2',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -465,8 +465,8 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    name: 'wstETHethV3',
     urlSlug: 'wstETHeth',
-    name: 'wstETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,

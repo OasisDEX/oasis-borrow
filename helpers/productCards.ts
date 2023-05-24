@@ -292,6 +292,9 @@ export const productCardsConfig: {
         { strategy: 'borrow-against-ETH', featureToggle: 'AaveBorrow' },
       ]),
       multiply: getAaveEnabledStrategies([
+        { strategy: 'stETHusdcV2', featureToggle: 'AaveV2ProductCard' },
+        { strategy: 'ethusdcV2', featureToggle: 'AaveV2ProductCard' },
+        { strategy: 'wBTCusdcV2', featureToggle: 'AaveV2ProductCard' },
         { strategy: 'optimism-ethusdc', featureToggle: 'AaveV3Optimism' },
         { strategy: 'optimism-wstethusdc', featureToggle: 'AaveV3Optimism' },
         { strategy: 'optimism-wbtcusdc', featureToggle: 'AaveV3Optimism' },
@@ -300,8 +303,8 @@ export const productCardsConfig: {
         { strategy: 'arbitrum-wbtcusdc', featureToggle: 'AaveV3Arbitrum' },
       ]),
       earn: getAaveEnabledStrategies([
-        { strategy: 'wstETHeth', featureToggle: 'AaveV3EarnWSTETH' },
-        { strategy: 'stETHeth' },
+        { strategy: 'wstETHethV3', featureToggle: 'AaveV3EarnWSTETH' },
+        { strategy: 'stETHethV2', featureToggle: 'AaveV2ProductCard' },
       ]),
     },
   },
@@ -392,16 +395,19 @@ export const productCardsConfig: {
     'CRVV1ETHSTETH-A': {
       link: EXTERNAL_LINKS.KB.TOKENS.CRVV1ETHSTETH,
     },
-    stETHeth: {
+    stETHethV2: {
       link: EXTERNAL_LINKS.KB.WHAT_YOU_SHOULD_KNOW_ABOUT_STETH,
     },
-    stETHusdc: {
+    stETHusdcV2: {
       link: EXTERNAL_LINKS.KB.WHAT_YOU_SHOULD_KNOW_ABOUT_STETH,
     },
     'RETH-A': {
       link: EXTERNAL_LINKS.KB.TOKENS.ETH,
     },
-    wstETHeth: {
+    wstETHethV2: {
+      link: EXTERNAL_LINKS.KB.STETH_AAVE_V3_EMODE,
+    },
+    wstETHethV3: {
       link: EXTERNAL_LINKS.KB.STETH_AAVE_V3_EMODE,
     },
   },
