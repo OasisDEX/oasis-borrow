@@ -562,11 +562,18 @@ export function loadStrategyFromTokens(
   collateralToken: string,
   debtToken: string,
 ): IStrategyConfig {
+  // Aave uses WETH gateway for ETH (we have ETH strategy specified)
+  // so we have to convert that on the fly just to find the strategy
+  // this is then converted back to WETH using wethInsteadOfEth
+  const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
+  const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
   const strategy = strategies.find(
-    (s) => s.tokens.collateral === collateralToken && s.tokens.debt === debtToken,
+    (s) => s.tokens.collateral === actualCollateralToken && s.tokens.debt === actualDebtToken,
   )
   if (!strategy) {
-    throw new Error(`Strategy not found for ${collateralToken}/${debtToken}`)
+    throw new Error(
+      `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken})`,
+    )
   }
   return strategy
 }

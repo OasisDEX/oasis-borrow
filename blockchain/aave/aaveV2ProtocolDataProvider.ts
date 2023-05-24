@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { wethInsteadOfEth } from 'blockchain/aave-v3/utils'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networkIds'
 import { networksById } from 'blockchain/networksConfig'
@@ -55,27 +56,32 @@ export function getAaveV2UserReserveData({
   token,
   address,
 }: AaveV2UserReserveDataParameters): Promise<AaveV2UserReserveData> {
-  return contract.getUserReserveData(tokenMappings[token].address, address).then((result) => {
-    return {
-      currentATokenBalance: amountFromWei(
-        new BigNumber(result.currentATokenBalance.toString()),
-        token,
-      ),
-      currentStableDebt: amountFromWei(new BigNumber(result.currentStableDebt.toString()), token),
-      currentVariableDebt: amountFromWei(
-        new BigNumber(result.currentVariableDebt.toString()),
-        token,
-      ),
-      principalStableDebt: amountFromWei(
-        new BigNumber(result.principalStableDebt.toString()),
-        token,
-      ),
-      scaledVariableDebt: amountFromWei(new BigNumber(result.scaledVariableDebt.toString()), token),
-      stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
-      liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
-      usageAsCollateralEnabled: result.usageAsCollateralEnabled,
-    }
-  })
+  return contract
+    .getUserReserveData(wethInsteadOfEth(tokenMappings, token), address)
+    .then((result) => {
+      return {
+        currentATokenBalance: amountFromWei(
+          new BigNumber(result.currentATokenBalance.toString()),
+          token,
+        ),
+        currentStableDebt: amountFromWei(new BigNumber(result.currentStableDebt.toString()), token),
+        currentVariableDebt: amountFromWei(
+          new BigNumber(result.currentVariableDebt.toString()),
+          token,
+        ),
+        principalStableDebt: amountFromWei(
+          new BigNumber(result.principalStableDebt.toString()),
+          token,
+        ),
+        scaledVariableDebt: amountFromWei(
+          new BigNumber(result.scaledVariableDebt.toString()),
+          token,
+        ),
+        stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
+        liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
+        usageAsCollateralEnabled: result.usageAsCollateralEnabled,
+      }
+    })
 }
 
 export function getAaveV2ReserveConfigurationData({
