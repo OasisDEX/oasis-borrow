@@ -24,10 +24,6 @@ import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEar
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyPositionController'
 import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
-import {
-  AjnaMultiplyPosition,
-  ajnaMultiplySliderDefaults,
-} from 'features/ajna/positions/multiply/temp'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -248,11 +244,9 @@ export function AjnaProductController({
                           <AjnaProductContextProvider
                             formDefaults={{
                               action: flow === 'open' ? 'open-multiply' : 'adjust',
-                              // TODO: get default price from library?
-                              targetLiquidationPrice: ajnaMultiplySliderDefaults.initial,
                             }}
                             formReducto={useAjnaMultiplyFormReducto}
-                            position={ajnaPosition as AjnaMultiplyPosition}
+                            position={ajnaPosition as AjnaPosition}
                             product={dpmPosition.product}
                             positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
                           >

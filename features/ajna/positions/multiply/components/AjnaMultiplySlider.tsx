@@ -1,13 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { ajnaMultiplySliderDefaults } from 'features/ajna/positions/multiply/temp'
+import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text } from 'theme-ui'
+import { Flex, Text } from 'theme-ui'
 
 interface AjnaMultiplySliderProps {
   disabled?: boolean
@@ -20,46 +20,59 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
   } = useAjnaGeneralContext()
   const {
     form: {
-      state: { targetLiquidationPrice },
+      state: { loanToValue },
       updateState,
+    },
+    position: {
+      currentPosition: { position, simulation },
     },
   } = useAjnaProductContext('multiply')
 
-  const resolvedValue = targetLiquidationPrice || ajnaMultiplySliderDefaults.initial
-  const min = ajnaMultiplySliderDefaults.min
-  const max = ajnaMultiplySliderDefaults.max
+  const min = (simulation?.minRiskRatio || position.minRiskRatio).loanToValue.decimalPlaces(
+    2,
+    BigNumber.ROUND_UP,
+  )
+  const max = (simulation?.maxRiskRatio || position.maxRiskRatio).loanToValue.decimalPlaces(
+    2,
+    BigNumber.ROUND_DOWN,
+  )
+
+  const resolvedValue = loanToValue || simulation?.riskRatio.loanToValue || min
+
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
-  const ltv = new BigNumber(0.6265)
-  const afterLtv = new BigNumber(0.7141)
-  const variant = 'positive'
+  const ltv = position.riskRatio.loanToValue
+  const liquidationPrice = simulation?.liquidationPrice || position.liquidationPrice
+
+  const changeVariant = getBorrowishChangeVariant(simulation)
 
   return (
     <SliderValuePicker
       sliderPercentageFill={percentage}
-      leftBoundry={resolvedValue}
+      leftBoundry={liquidationPrice}
       leftBoundryFormatter={(val) => `${formatCryptoBalance(val)} ${collateralToken}/${quoteToken}`}
-      rightBoundry={afterLtv}
+      rightBoundry={resolvedValue}
       rightBoundryFormatter={(val) => (
-        <>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
           {formatDecimalAsPercent(ltv)}
-          {afterLtv && !ltv.eq(afterLtv) && (
+          {!ltv.eq(resolvedValue) && (
             <>
               <Icon name="arrow_right" size={14} sx={{ mx: 2 }} />
-              <Text as="span" sx={{ color: variant === 'positive' ? 'success100' : 'critical100' }}>
+              <Text
+                as="span"
+                sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
+              >
                 {formatDecimalAsPercent(val)}
               </Text>
             </>
           )}
-        </>
+        </Flex>
       )}
-      onChange={(targetLiquidationPrice) => {
-        updateState('targetLiquidationPrice', targetLiquidationPrice)
-      }}
+      onChange={(value) => updateState('loanToValue', value)}
       minBoundry={min}
       maxBoundry={max}
       lastValue={resolvedValue}
       disabled={disabled}
-      step={1}
+      step={0.01}
       leftBottomLabel={t('slider.adjust-multiply.left-footer')}
       leftLabel={t('slider.adjust-multiply.left-label')}
       rightBottomLabel={t('slider.adjust-multiply.right-footer')}

@@ -45,6 +45,13 @@ export function isFormEmpty({ product, state, position, currentStep }: IsFormEmp
       }
     }
     case 'multiply':
-      return true
+      const { depositAmount } = state as AjnaBorrowFormState
+
+      switch (currentStep) {
+        case 'setup':
+          return !depositAmount
+        default:
+          return true
+      }
   }
 }

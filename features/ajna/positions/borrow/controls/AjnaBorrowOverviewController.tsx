@@ -1,7 +1,6 @@
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { LTVWarningThreshold } from 'features/ajna/common/consts'
 import { ContentFooterItemsBorrow } from 'features/ajna/positions/borrow/components/ContentFooterItemsBorrow'
 import { ContentCardCollateralLocked } from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
 import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
@@ -10,6 +9,7 @@ import { ContentCardPositionDebt } from 'features/ajna/positions/common/componen
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
+import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -28,13 +28,7 @@ export function AjnaBorrowOverviewController() {
     notifications,
   } = useAjnaProductContext('borrow')
 
-  const changeVariant = simulation
-    ? simulation.maxRiskRatio.loanToValue
-        .minus(simulation.riskRatio.loanToValue)
-        .gt(LTVWarningThreshold)
-      ? 'positive'
-      : 'negative'
-    : 'positive'
+  const changeVariant = getBorrowishChangeVariant(simulation)
 
   return (
     <Grid gap={2}>

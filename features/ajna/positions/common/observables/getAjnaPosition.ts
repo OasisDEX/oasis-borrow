@@ -5,7 +5,6 @@ import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networkIds'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { ethers } from 'ethers'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
@@ -56,23 +55,13 @@ export function getAjnaPosition$(
 
       switch (product as AjnaProduct) {
         case 'borrow':
+        case 'multiply':
           return await views.ajna.getPosition(commonPayload, commonDependency)
         case 'earn':
           return await views.ajna.getEarnPosition(commonPayload, {
             ...commonDependency,
             getEarnData: getAjnaEarnData,
           })
-        case 'multiply':
-          // TODO: replace with getting multiply position from lib
-          const fakeMultiplyPosition = await views.ajna.getPosition(
-            { ...commonPayload, proxyAddress: ethers.constants.AddressZero },
-            commonDependency,
-          )
-
-          return {
-            ...fakeMultiplyPosition,
-            multiply: new BigNumber(1.5),
-          }
       }
     }),
     distinctUntilChanged(isEqual),
