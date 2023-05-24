@@ -56,7 +56,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
       rightBoundryFormatter={(val) => (
         <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
           {formatDecimalAsPercent(ltv)}
-          {resolvedValue && !ltv.eq(resolvedValue) && (
+          {!ltv.eq(resolvedValue) && (
             <>
               <Icon name="arrow_right" size={14} sx={{ mx: 2 }} />
               <Text
