@@ -72,7 +72,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkRowProductCard: false,
   AaveV3Optimism: false,
   AaveV3Arbitrum: false,
-  AaveV2ProductCard: false,
+  AaveV2ProductCard: true,
   AaveV3MultiplycbETHusdc: false,
   AaveV3MultiplywBTCusdc: false,
   AaveV3MultiplywstETHeth: false,

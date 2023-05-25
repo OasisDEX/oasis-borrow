@@ -21,14 +21,16 @@ const aaveAssets = {
       { strategy: 'optimism-wstethusdc', featureToggle: 'AaveV3Optimism' },
       { strategy: 'arbitrum-ethusdc', featureToggle: 'AaveV3Arbitrum' },
       { strategy: 'arbitrum-wstethusdc', featureToggle: 'AaveV3Arbitrum' },
-      { strategy: 'ethusdc' },
-      { strategy: 'stETHusdc' },
+      { strategy: 'ethusdcV2', featureToggle: 'AaveV2ProductCard' },
+      { strategy: 'stETHusdcV2', featureToggle: 'AaveV2ProductCard' },
     ]),
-    earn: getAaveEnabledStrategies([{ strategy: 'stETHeth' }]),
+    earn: getAaveEnabledStrategies([
+      { strategy: 'stETHethV2', featureToggle: 'AaveV2ProductCard' },
+    ]),
   },
   btc: {
     multiply: getAaveEnabledStrategies([
-      { strategy: 'wBTCusdc' },
+      { strategy: 'wBTCusdcV2', featureToggle: 'AaveV2ProductCard' },
       { strategy: 'optimism-wbtcusdc', featureToggle: 'AaveV3Optimism' },
       { strategy: 'arbitrum-wbtcusdc', featureToggle: 'AaveV3Arbitrum' },
     ]),

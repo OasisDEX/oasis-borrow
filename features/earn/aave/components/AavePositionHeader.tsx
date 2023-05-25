@@ -17,11 +17,19 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 const tokenPairList = {
-  stETHeth: {
+  stETHethV2: {
     translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
     tokenList: ['AAVE', 'STETH', 'ETH'],
   },
-  wstETHeth: {
+  stETHethV3: {
+    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
+    tokenList: ['AAVE', 'STETH', 'ETH'],
+  },
+  wstETHethV2: {
+    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
+    tokenList: ['AAVE', 'WSTETH', 'ETH'],
+  },
+  wstETHethV3: {
     translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
     tokenList: ['AAVE', 'WSTETH', 'ETH'],
   },
