@@ -78,7 +78,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3MultiplywstETHeth: false,
   AaveV3MultiplyETHusdc: false,
   OasisCreate: false,
-  SwapWidget: false,
+  SwapWidget: true,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
 }
 
