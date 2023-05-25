@@ -1,6 +1,7 @@
 //TODO: to be replaced with data from API
 
 import BigNumber from 'bignumber.js'
+import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import {
@@ -9,7 +10,6 @@ import {
   OasisCreatePromoCards,
   ProductType,
 } from 'features/oasisCreate/types'
-import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 import { Text } from 'theme-ui'

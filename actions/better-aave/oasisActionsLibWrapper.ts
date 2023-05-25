@@ -262,7 +262,9 @@ export async function getCloseAaveParameters({
     slippage,
     debtToken,
     collateralToken,
-    collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount.minus(1),
+    collateral: {
+      amount: currentPosition.collateral.amount,
+    },
     shouldCloseToCollateral,
     positionType: positionType,
   }
