@@ -74,6 +74,7 @@ export const tokensMainnet = {
   WBTC: contractDesc(erc20, mainnet.common.WBTC),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
   CBETH: contractDesc(erc20, mainnet.common.CBETH),
+  ETH: contractDesc(erc20, mainnet.common.WETH),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = [
