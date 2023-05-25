@@ -18,7 +18,6 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const network = ctx.query.network as string
   const [product, strategy] = ctx.query.strategy as string[]
-  console.log('product', product)
   const version = ctx.query.version as string
   const protocol = `Aave${version.toUpperCase()}`
 
