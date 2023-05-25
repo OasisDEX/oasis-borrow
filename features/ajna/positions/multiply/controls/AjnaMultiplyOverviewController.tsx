@@ -7,6 +7,7 @@ import { ContentCardLoanToValue } from 'features/ajna/positions/common/component
 import { ContentCardNetBorrowCost } from 'features/ajna/positions/common/components/contentCards/ContentCardNetBorrowCost'
 import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
 import { one } from 'helpers/zero'
@@ -20,29 +21,19 @@ export function AjnaMultiplyOverviewController() {
     environment: { collateralToken, quoteToken, flow },
   } = useAjnaGeneralContext()
 
+  const {
+    position: {
+      isSimulationLoading,
+      currentPosition: { position, simulation },
+    },
+  } = useAjnaProductContext('multiply')
+
   const changeVariant = 'positive'
 
   // TODO: replace with data from simulation
-  const isSimulationLoading = false
-  const liquidationPrice = new BigNumber(0.7201)
-  const afterLiquidationPrice = new BigNumber(0.9417)
-  const liquidationToMarketPrice = new BigNumber(0.4153)
-  const loanToValue = new BigNumber(0.6265)
-  const afterLoanToValue = new BigNumber(0.7141)
-  const liquidationThreshold = new BigNumber(0.8758)
-  const netBorrowCost = new BigNumber(0.0183)
-  const afterNetBorrowCost = new BigNumber(0.0271)
   const netValue = new BigNumber(15282.124)
   const afterNetValue = new BigNumber(17204.0356)
   const pnl = new BigNumber(-110.26)
-  const totalExposure = new BigNumber(22461.32)
-  const afterTotalExposure = new BigNumber(28436.37)
-  const positionDebt = new BigNumber(5)
-  const afterPositionDebt = new BigNumber(124.13)
-  const multiple = new BigNumber(1.5)
-  const afterMultiple = new BigNumber(1.67)
-  const buyingPower = new BigNumber(1255.12)
-  const afterBuyingPower = new BigNumber(1911.37)
 
   return (
     <Grid gap={2}>
@@ -54,22 +45,20 @@ export function AjnaMultiplyOverviewController() {
               isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              liquidationPrice={liquidationPrice}
-              afterLiquidationPrice={afterLiquidationPrice}
-              belowCurrentPrice={one.minus(liquidationToMarketPrice)}
+              liquidationPrice={position.liquidationPrice}
+              afterLiquidationPrice={simulation?.liquidationPrice}
+              belowCurrentPrice={one.minus(position.liquidationToMarketPrice)}
               changeVariant={changeVariant}
             />
             <ContentCardLoanToValue
               isLoading={isSimulationLoading}
-              loanToValue={loanToValue}
-              afterLoanToValue={afterLoanToValue}
-              liquidationThreshold={liquidationThreshold}
+              loanToValue={position.riskRatio.loanToValue}
+              afterLoanToValue={simulation?.riskRatio.loanToValue}
+              liquidationThreshold={position.maxRiskRatio.loanToValue}
               changeVariant={changeVariant}
             />
             <ContentCardNetBorrowCost
-              isLoading={isSimulationLoading}
-              netBorrowCost={netBorrowCost}
-              afterNetBorrowCost={afterNetBorrowCost}
+              netBorrowCost={position.pool.interestRate}
               changeVariant={changeVariant}
             />
             <ContentCardNetValue
@@ -89,14 +78,14 @@ export function AjnaMultiplyOverviewController() {
               isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              totalExposure={totalExposure}
-              afterTotalExposure={afterTotalExposure}
-              positionDebt={positionDebt}
-              afterPositionDebt={afterPositionDebt}
-              multiple={multiple}
-              afterMultiple={afterMultiple}
-              buyingPower={buyingPower}
-              afterBuyingPower={afterBuyingPower}
+              totalExposure={position.collateralAmount}
+              afterTotalExposure={simulation?.collateralAmount}
+              positionDebt={position.debtAmount}
+              afterPositionDebt={simulation?.debtAmount}
+              multiple={position.riskRatio.multiple}
+              afterMultiple={simulation?.riskRatio.multiple}
+              buyingPower={position.buyingPower}
+              afterBuyingPower={simulation && simulation.buyingPower}
               changeVariant={changeVariant}
             />
           </DetailsSectionFooterItemWrapper>

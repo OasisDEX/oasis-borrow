@@ -109,8 +109,8 @@ export const oasisCreateOptionsMap: {
       all: oasisCreateTokenOptions.all,
       ETH: oasisCreateTokenOptions.ETH,
       WBTC: oasisCreateTokenOptions.WBTC,
-      DAI: oasisCreateTokenOptions.DAI,
       USDC: oasisCreateTokenOptions.USDC,
+      DAI: oasisCreateTokenOptions.DAI,
     },
   },
 }

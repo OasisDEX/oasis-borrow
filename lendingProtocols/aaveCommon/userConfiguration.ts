@@ -11,7 +11,7 @@ export type UserConfigurationResult = {
 
 export type UserConfigurationResults = UserConfigurationResult[] & {
   hasAssets: (
-    collateralToken: UserConfigurationResult['assetName'],
-    debtToken: UserConfigurationResult['assetName'],
+    collateralToken: UserConfigurationResult['assetName'][],
+    debtToken: UserConfigurationResult['assetName'][],
   ) => boolean
 }

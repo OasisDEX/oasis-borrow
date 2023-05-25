@@ -1,5 +1,4 @@
-import { useCustomNetworkParameter } from 'blockchain/networks'
-import { networkTabTitleIconMap } from 'blockchain/networks'
+import { networkTabTitleIconMap, useCustomNetworkParameter } from 'blockchain/networks'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getRandomString } from 'helpers/getRandomString'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -75,14 +74,13 @@ export function PageSEOTags({
   const networkParameter = useNetworkSwitcher
     ? web3OnboardNetworkParameter?.network
     : (query.network as string)
+  const forkCheck =
+    networkParameter && networkParameter.includes('test')
+      ? 'fork'
+      : (networkParameter as keyof typeof properNetworkIconMap)
+
   const tabTitle = `${
-    networkParameter
-      ? properNetworkIconMap[
-          networkParameter.includes('fork')
-            ? 'fork'
-            : (networkParameter as keyof typeof properNetworkIconMap)
-        ]
-      : ''
+    networkParameter && properNetworkIconMap[forkCheck] ? properNetworkIconMap[forkCheck] : ''
   }${titleParams ? t(title, titleParams) : t(title)}`
 
   return (

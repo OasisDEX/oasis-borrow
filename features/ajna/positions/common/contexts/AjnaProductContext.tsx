@@ -23,7 +23,6 @@ import {
   AjnaMultiplyFormState,
   useAjnaMultiplyFormReducto,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
-import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React, {
@@ -53,7 +52,7 @@ interface AjnaProductContextProviderPropsWithEarn {
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
   formDefaults: Partial<AjnaMultiplyFormState>
-  position: AjnaMultiplyPosition
+  position: AjnaPosition
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
 }
@@ -102,7 +101,7 @@ type AjnaProductContextWithEarn = AjnaProductContext<
   AjnaEarnPositionAuction
 >
 type AjnaProductContextWithMultiply = AjnaProductContext<
-  AjnaMultiplyPosition,
+  AjnaPosition,
   ReturnType<typeof useAjnaMultiplyFormReducto>,
   AjnaBorrowishPositionAuction
 >

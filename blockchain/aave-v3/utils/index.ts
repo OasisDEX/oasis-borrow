@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
+import { AaveV3ReserveDataParameters } from 'blockchain/aave-v3/aaveV3PoolDataProvider'
 import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getRpcProvider } from 'blockchain/networks'
@@ -52,4 +53,16 @@ export function getNetworkMapping<Contract>(
     tokenMappings,
     baseCurrencyUnit: baseCurrencyUnits[networkId],
   }
+}
+
+/**
+ *  Aave expects WETH instead of ETH address, this handles it
+ */
+export function wethToEthAddress<T>(
+  tokenMappings: ContractForNetwork<T>['tokenMappings'],
+  token: AaveV3ReserveDataParameters['token'],
+): string {
+  return tokenMappings[token].address === tokenMappings['ETH'].address
+    ? tokenMappings['WETH'].address
+    : tokenMappings[token].address
 }

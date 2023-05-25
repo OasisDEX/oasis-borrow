@@ -25,10 +25,9 @@ import {
 } from 'features/oasisCreate/meta'
 import {
   OasisCreateFilters,
-  OasisCreateProductStrategy,
+  OasisCreateMultiplyStrategyType,
   ProductType,
 } from 'features/oasisCreate/types'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { oasisCreateData } from 'helpers/mocks/oasisCreateData.mock'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -50,8 +49,15 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>(EMPTY_FILTERS)
 
+  const promoCards = useMemo(
+    () =>
+      Object.keys(oasisCreateData.promoCards[selectedProduct].tokens).includes(selectedToken)
+        ? oasisCreateData.promoCards[selectedProduct].tokens[selectedToken]
+        : oasisCreateData.promoCards[selectedProduct].default,
+    [selectedProduct, selectedToken],
+  )
   const rowsMatchedByNL = useMemo(
-    () => matchRowsByNL(oasisCreateData, selectedProduct, selectedToken),
+    () => matchRowsByNL(oasisCreateData.table, selectedProduct, selectedToken),
     [selectedProduct, selectedToken],
   )
   const rowsMatchedByFilters = useMemo(
@@ -94,8 +100,10 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
     <AnimatedWrapper sx={{ mb: 5 }}>
       <Box
         sx={{
+          position: 'relative',
           my: [3, null, '48px'],
           textAlign: 'center',
+          zIndex: 3,
         }}
       >
         <NaturalLanguageSelectorController
@@ -133,26 +141,9 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
         </Text>
       </Box>
       <Grid columns={[1, null, 2, 3]} gap={3} sx={{ mb: 4 }}>
-        <PromoCard
-          icon={getToken('ETH').iconCircle}
-          title="Borrow cheap USDC with ETH"
-          protocol={{ network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.Maker }}
-          pills={[{ label: 'Constant Multiple' }, { label: 'Stop-Loss Enabled' }]}
-          data={[{ label: 'Net Annual Borrow Cost', value: '11.9%', variant: 'negative' }]}
-        />
-        <PromoCard
-          icon={getToken('USDC').iconCircle}
-          title="2.5x ETH/USDC Multiple"
-          protocol={{ network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.Ajna }}
-          pills={[{ label: 'Up to 9.99x' }, { label: 'Liquidation risk', variant: 'negative' }]}
-          data={[{ label: '90 Day Net APY', value: '12.43%' }]}
-        />
-        <PromoCard
-          icon={getToken('USDC').iconCircle}
-          title="2.5x ETH/USDC Multiple"
-          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel neque quis nisl."
-          link={{ href: EXTERNAL_LINKS.KB.HELP, label: t('learn-more') }}
-        />
+        {promoCards.map((promoCard, i) => (
+          <PromoCard key={`${selectedProduct}-${i}`} {...promoCard} />
+        ))}
       </Grid>
       <AssetsTableContainer>
         <AssetsFiltersContainer
@@ -204,7 +195,10 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
               onChange={(value) => {
                 setSelectedFilters({
                   or: selectedFilters.or,
-                  and: { ...selectedFilters.and, strategy: value as OasisCreateProductStrategy[] },
+                  and: {
+                    ...selectedFilters.and,
+                    multiplyStrategyType: value as OasisCreateMultiplyStrategyType[],
+                  },
                 })
               }}
             />

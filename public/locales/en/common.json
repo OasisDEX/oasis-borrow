@@ -1677,25 +1677,53 @@
       "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
     },
     "aave": {
-      "stETHeth": {
+      "stETHethV2": {
         "title": "stETH/ETH Aave",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
       },
-      "wstETHeth": {
+      "stETHethV3": {
+        "title": "stETH/ETH Aave",
+        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
+      },
+      "wstETHethV2": {
         "title": "wstETH/ETH Aave",
         "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
       },
-      "stETHusdc": {
+      "wstETHethV3": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
+      },
+      "stETHusdcV2": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
       },
-      "ethusdc": {
+      "stETHusdcV3": {
+        "title": "Highest stETH multiple option",
+        "description": "Maximise your stETH exposure with Aave and USDC."
+      },
+      "ethusdcV2": {
         "title": "Highest ETH multiple option",
         "description": "Maximise your ETH exposure with Aave and USDC."
       },
-      "wBTCusdc": {
+      "ethusdcV3": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC."
+      },
+      "wBTCusdcV2": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      },
+      "wBTCusdcV3": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      },
+      "cbETHusdcV2": {
+        "title": "High cbETH multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      },
+      "cbETHusdcV3": {
+        "title": "High cbETH multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
       },
       "borrow-against-ETH": {
         "title": "AAVE ETH",
@@ -1746,8 +1774,10 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH",
+      "stETHethV2": "Get up to {{value}} ETH exposure to stETH",
+      "stETHethV3": "Get up to {{value}} ETH exposure to stETH",
+      "wstETHethV2": "Get up to {{value}} ETH exposure to wstETH",
+      "wstETHethV3": "Get up to {{value}} ETH exposure to wstETH",
       "borrow-against-ETH": "Borrow up to ${{value}}"
     }
   },
@@ -2741,6 +2771,7 @@
     },
     "table": {
       "active": "Active",
+      "active-with-liq-risk": "Active (liq. risk)",
       "long-short": "Long or short",
       "long": "Long only",
       "passive": "Passive",

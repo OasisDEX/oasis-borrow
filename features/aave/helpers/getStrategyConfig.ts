@@ -35,13 +35,13 @@ export function getStrategyConfig$(
       }
 
       switch (true) {
-        case aaveUserConfigurations.hasAssets('STETH', 'ETH'):
+        case aaveUserConfigurations.hasAssets(['STETH'], ['ETH', 'WETH']):
           return loadStrategyFromTokens('STETH', 'ETH')
-        case aaveUserConfigurations.hasAssets('ETH', 'USDC'):
+        case aaveUserConfigurations.hasAssets(['ETH', 'WETH'], ['USDC']):
           return loadStrategyFromTokens('ETH', 'USDC')
-        case aaveUserConfigurations.hasAssets('WBTC', 'USDC'):
+        case aaveUserConfigurations.hasAssets(['WBTC'], ['USDC']):
           return loadStrategyFromTokens('WBTC', 'USDC')
-        case aaveUserConfigurations.hasAssets('STETH', 'USDC'):
+        case aaveUserConfigurations.hasAssets(['STETH'], ['USDC']):
           return loadStrategyFromTokens('STETH', 'USDC')
         default:
           if (lastCreatedPosition !== undefined) {
