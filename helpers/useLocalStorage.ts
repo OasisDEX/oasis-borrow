@@ -87,9 +87,9 @@ export function useLocalStorage<T>(
 
 function parseJSON<T>(value: string | null, key: string): T | undefined {
   try {
-    return value === 'undefined' ? undefined : JSON.parse(value ?? '')
-  } catch {
-    console.log('parsing error on', { value, key })
+    return typeof value === 'undefined' || value === null ? undefined : JSON.parse(value ?? '')
+  } catch (error) {
+    console.log('parsing error on', { value, key, error })
     return undefined
   }
 }
