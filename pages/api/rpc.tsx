@@ -63,7 +63,7 @@ const cache: { [key: string]: Cache } = {}
 
 function getRpcNode(network: NetworkNames, tenderlySecret: string) {
   //TODO: take Fork_ID from database and refresh it every 5 minutes
-  if (tenderlySecret === process.env.TENDERLY_SECRET && network === NetworkNames.ethereumTenderly) {
+  if (tenderlySecret === process.env.RPC_FORK_SECRET && network === NetworkNames.ethereumFork) {
     return `https://rpc.tenderly.co/fork/${process.env.TENDERLY_FORK_ID}`
   }
   switch (network) {

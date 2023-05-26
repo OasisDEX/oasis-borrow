@@ -123,14 +123,6 @@ export function getFeatureToggle(feature: Feature): boolean {
   return false
 }
 
-export function useLocalSetting(setting: Setting): string {
-  if (typeof localStorage !== 'undefined' && localStorage.getItem(setting.toString())) {
-    const value = localStorage.getItem(setting.toString())
-    return value ? value! : ''
-  }
-  return ''
-}
-
 export function useFeatureToggle(feature: Feature): boolean {
   return getFeatureToggle(feature)
 }

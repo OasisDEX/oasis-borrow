@@ -1,5 +1,4 @@
 import { WithChildren } from 'helpers/types'
-import { useLocalSetting } from 'helpers/useFeatureToggle'
 import React, { useContext, useEffect, useState } from 'react'
 
 import { AppContext, setupAppContext } from './AppContext'
@@ -27,11 +26,10 @@ export function useAppContext(): AppContext {
 
 export function AppContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
-  const tenderlySecret = useLocalSetting('tenderlySecret')
 
   useEffect(() => {
-    setContext(setupAppContext(tenderlySecret))
-  }, [tenderlySecret])
+    setContext(setupAppContext())
+  }, [])
 
   return <appContext.Provider value={context}>{children}</appContext.Provider>
 }

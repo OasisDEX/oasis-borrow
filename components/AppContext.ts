@@ -127,7 +127,7 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
-import { getTenderlyRpcUrl } from 'config/rpcConfig'
+import { getCustomForkRpcUrl } from 'config/rpcConfig'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
@@ -315,6 +315,7 @@ import {
   supportedEarnIlks,
   supportedMultiplyIlks,
 } from 'helpers/productCards'
+import { getStorageValue } from 'helpers/useLocalStorage'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
@@ -542,11 +543,12 @@ function initializeUIChanges() {
   return uiChangesSubject
 }
 
-export function setupAppContext(tenderlySecret: string) {
+export function setupAppContext() {
+  const tenderlySecret = getStorageValue<string>('tenderlySecret', '')
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
   if (tenderlySecret) {
-    chainIdToRpcUrl[NetworkIds.MAINNET] = getTenderlyRpcUrl(tenderlySecret)
+    chainIdToRpcUrl[NetworkIds.MAINNET] = getCustomForkRpcUrl(tenderlySecret)
   }
   const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
 
