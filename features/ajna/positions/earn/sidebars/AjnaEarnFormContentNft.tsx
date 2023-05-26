@@ -43,7 +43,7 @@ const RewardsHeader: FC<RewardsHeaderProps> = ({ image, background, heading }) =
   </Flex>
 )
 
-export function AjnaEarnFormContentNft() {
+export const AjnaEarnFormContentNft = () => {
   const { t } = useTranslation()
   const {
     form: {
