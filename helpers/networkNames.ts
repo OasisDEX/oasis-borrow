@@ -1,6 +1,6 @@
 // all the network names we use in the app
 export enum NetworkNames {
-  ethereumTenderly = 'ethereum-tenderly',
+  ethereumFork = 'ethereum-fork',
   ethereumMainnet = 'ethereum',
   ethereumGoerli = 'ethereum-goerli',
 

@@ -5,7 +5,7 @@ import { infuraProjectId } from './runtimeConfig'
 
 function getRpc(network: NetworkNames, tenderlySecret: string = ''): string {
   if (tenderlySecret !== '' && network === NetworkNames.ethereumMainnet) {
-    network = NetworkNames.ethereumTenderly
+    network = NetworkNames.ethereumFork
   }
   if (process.env.APP_FULL_DOMAIN) {
     return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}&clientId=${clientId}&tenderlySecret=${tenderlySecret}`
@@ -17,8 +17,8 @@ function getRpc(network: NetworkNames, tenderlySecret: string = ''): string {
   }
 }
 
-export const getTenderlyRpcUrl = (secret: string) => {
-  return getRpc(NetworkNames.ethereumTenderly, secret)
+export const getCustomForkRpcUrl = (secret: string) => {
+  return getRpc(NetworkNames.ethereumFork, secret)
 }
 export const mainnetRpc = getRpc(NetworkNames.ethereumMainnet)
 export const goerliRpc = getRpc(NetworkNames.ethereumGoerli)

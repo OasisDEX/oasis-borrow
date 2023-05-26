@@ -63,7 +63,7 @@ const blockRecheckDelay = 3000
 const cache: { [key: string]: Cache } = {}
 
 function getRpcNode(network: NetworkNames, tenderlySecret: string, forkId: string) {
-  if (tenderlySecret === process.env.TENDERLY_SECRET) {
+  if (tenderlySecret === process.env.RPC_FORK_SECRET && network === NetworkNames.ethereumFork) {
     return `https://rpc.tenderly.co/fork/${forkId}`
   }
   switch (network) {
