@@ -140,7 +140,7 @@ export async function getAjnaParameters({
       )
     }
     case 'open-earn': {
-      const { price, depositAmount, nftOpt } = state as AjnaEarnFormState
+      const { price, depositAmount, isStakingNft } = state as AjnaEarnFormState
 
       return strategies.ajna.earn.open(
         {
@@ -148,7 +148,7 @@ export async function getAjnaParameters({
           price: price!,
           quoteAmount: depositAmount!,
           collateralAmount: zero,
-          isStakingNft: !!nftOpt,
+          isStakingNft: !!isStakingNft,
           collateralPrice,
           quotePrice,
         },

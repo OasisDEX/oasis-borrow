@@ -60,7 +60,7 @@ export const AjnaEarnFormContentNft = () => {
   const {
     form: {
       updateState,
-      state: { nftOpt },
+      state: { isStakingNft },
     },
   } = useAjnaProductContext('earn')
 
@@ -93,8 +93,8 @@ export const AjnaEarnFormContentNft = () => {
       <Card sx={{ padding: '12px' }}>
         <Flex sx={{ gap: 3 }}>
           <Toggle
-            isChecked={!!nftOpt}
-            onChange={() => updateState('nftOpt', !nftOpt)}
+            isChecked={!!isStakingNft}
+            onChange={() => updateState('isStakingNft', !isStakingNft)}
             withLoading={false}
             sx={{ mt: 1 }}
           />
