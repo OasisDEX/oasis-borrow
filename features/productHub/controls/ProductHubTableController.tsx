@@ -1,10 +1,7 @@
-
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
 import { AssetsTableRowData } from 'components/assetsTable/types'
-import {
-  ALL_ASSETS,
-} from 'features/productHub/meta'
+import { ALL_ASSETS } from 'features/productHub/meta'
 import React, { FC } from 'react'
 
 interface ProductHubTableControllerProps {
