@@ -69,7 +69,9 @@ function getRpcNode(network: NetworkNames) {
     case NetworkNames.ethereumGoerli:
       return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.arbitrumMainnet:
-      return `${process.env.ARBITRUM_MAINNET_RPC_URL}`
+      return process.env.ARBITRUM_MAINNET_RPC_URL !== undefined
+        ? `${process.env.ARBITRUM_MAINNET_RPC_URL}`
+        : `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.arbitrumGoerli:
       return `https://arbitrum-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.polygonMainnet:
@@ -77,7 +79,9 @@ function getRpcNode(network: NetworkNames) {
     case NetworkNames.polygonMumbai:
       return `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.optimismMainnet:
-      return `${process.env.OPTIMISM_MAINNET_RPC_URL}`
+      return process.env.OPTIMISM_MAINNET_RPC_URL !== undefined
+        ? `${process.env.OPTIMISM_MAINNET_RPC_URL}`
+        : `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.optimismGoerli:
       return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
