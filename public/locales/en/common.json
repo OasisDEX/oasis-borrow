@@ -1075,6 +1075,7 @@
     "liquidation-fee": "Liquidation Fee",
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
+    "liquidation-threshold": "Liquidation Threshold",
     "buying-power": "Buying Power",
     "net-value": "Net Value",
     "net-value-pnl": "Net Value & P&L",
@@ -2537,7 +2538,8 @@
             "transaction": "Confirm your Ajna {{product}} Position",
             "transition": "Switch your Ajna {{product}} Position",
             "position-frozen": "Position Frozen",
-            "claim-collateral": "Claim collateral"
+            "claim-collateral": "Claim collateral",
+            "nft": "This Position is eligible for Ajna token rewards"
           },
           "risk": {
             "intro": "Anja is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
@@ -2553,6 +2555,26 @@
                 "Your position will lend only against one asset.",
                 "Failure to monitor and adjust your position may result in holding the collateral asset",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ]
+            }
+          },
+          "nft": {
+            "intro": "The Ajna rewards this position is eligible for",
+            "token-rewards": "Oasis.app x AJNA Token Rewards",
+            "protocol-rewards": "AJNA Protocol Rewards",
+            "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
+            "bullet-points": {
+              "token-rewards": [
+                "Rewards exclusive to Oasis.app users only!",
+                "Auto-Earned for lending within the active liquidity range",
+                "Claimable weekly",
+                "Read more about <2><3>Ajna Token Rewards</2></3>"
+              ],
+              "protocol-rewards": [
+                "Optional rewards for Ajna Earn users",
+                "Earned proportional to interest earned in the pool",
+                "Expect an increase in gas fees to manage your position",
+                "Read more about <2><3>Ajna Protocol Rewards</2></3>"
               ]
             }
           },

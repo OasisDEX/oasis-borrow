@@ -6,6 +6,7 @@ import { Box, Grid, SxStyleProp, Text } from 'theme-ui'
 interface IListWithIconProps {
   items: string[]
   icon?: string
+  withIcon?: boolean
   iconSize?: number | string | number[]
   textVariant?: string
   iconColor?: string
@@ -18,6 +19,7 @@ interface IListWithIconProps {
 export function ListWithIcon({
   items,
   icon = 'checkbox',
+  withIcon = true,
   iconSize = '20px',
   textVariant = 'paragraph3',
   iconColor,
@@ -41,12 +43,14 @@ export function ListWithIcon({
               ...itemStyle,
             }}
           >
-            <Icon
-              name={icon}
-              size={iconSize}
-              color={iconColor}
-              sx={{ position: 'absolute', top: '3px', left: 0, ...iconStyle }}
-            />
+            {withIcon && (
+              <Icon
+                name={icon}
+                size={iconSize}
+                color={iconColor}
+                sx={{ position: 'absolute', top: '3px', left: 0, ...iconStyle }}
+              />
+            )}
             <Trans
               defaults={item}
               components={{
