@@ -1,20 +1,12 @@
 import { ConnectedChain } from '@web3-onboard/core'
-import { NetworkIds } from 'blockchain/networkIds'
-import {
-  NetworkConfig,
-  NetworkConfigHexId,
-  networks,
-  networksByHexId,
-  networksById,
-} from 'blockchain/networksConfig'
-import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
-import { hardhatSettings } from 'features/web3OnBoard/hardhatConfigList'
+import { getStorageValue } from 'helpers/useLocalStorage'
 import { keyBy } from 'lodash'
 import { env } from 'process'
 
-import { mainnetNetworkParameter } from './getCustomNetworkParameter'
-import { CustomNetworkStorageKey } from './getCustomNetworkParameter'
-import { getStorageValue } from './useLocalStorage'
+import { forkNetworks, forkSettings } from './forks-config'
+import { NetworkIds } from './network-ids'
+import { NetworkConfig, NetworkConfigHexId, networks, networksById } from './networks-config'
+import { CustomNetworkStorageKey, mainnetNetworkParameter } from './use-custom-network-parameter'
 
 export const isTestnetEnabled = () => {
   const isDev = env.NODE_ENV !== 'production'
@@ -47,16 +39,31 @@ export const isTestnetNetworkHexId = (networkHexId: NetworkConfigHexId) => {
     .includes(networkHexId)
 }
 
-export const isHardhatSetForNetworkId = (networkId: NetworkIds) => {
+export const isForkSetForNetworkId = (networkId: NetworkIds) => {
   const networkName = networksById[networkId]?.name
-  return !!hardhatSettings[networkName]
+  return forkSettings[networkName] !== undefined
 }
+
+const networksWithForksAtTheBeginning: NetworkConfig[] = [
+  ...(forkNetworks as NetworkConfig[]),
+  ...networks,
+]
+export const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
+  if (acc.some((n) => n.hexId === network.hexId)) {
+    console.log('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
+    return acc
+  }
+  return [...acc, network]
+}, [] as NetworkConfig[])
+
+export const enableNetworksSet = networksSet.filter((network) => network.enabled)
+export const networksListWithForksByHexId = keyBy(enableNetworksSet, 'hexId')
+export const networksListWithForksById = keyBy(enableNetworksSet, 'id')
 
 export const getOppositeNetworkHexIdByHexId = (
   currentConnectedChainHexId: ConnectedChain['id'],
 ) => {
-  const networksListByHexId = { ...networksByHexId, ...keyBy(hardhatNetworkConfigs, 'hexId') }
-  const networkConfig = networksListByHexId[currentConnectedChainHexId]
+  const networkConfig = networksListWithForksByHexId[currentConnectedChainHexId]
   if (!networkConfig)
     console.log('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
   return (
@@ -78,9 +85,9 @@ export const getContractNetworkByWalletNetwork = (
   if (walletChainId === contractChainId) return contractChainId
   // then if its network overriden by hardhat, we pass the hardhat network
   // doesnt matter if we're even connected
-  if (!isTestnetNetworkId(walletChainId) && isHardhatSetForNetworkId(contractChainId)) {
+  if (!isTestnetNetworkId(walletChainId) && isForkSetForNetworkId(contractChainId)) {
     const networkName = networksById[contractChainId].name
-    return Number(hardhatSettings[networkName]!.id) as NetworkIds
+    return Number(forkSettings[networkName]!.id) as NetworkIds
   }
 
   // finally, if youre on testnet, and the contract is on mainnet, it passes the testnet network
@@ -107,13 +114,13 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
   const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
   const { id } = (customNetworkData || mainnetNetworkParameter) as typeof mainnetNetworkParameter
   const isTestnet = isTestnetNetworkId(connectedChainId || id)
-  const isHardhatSet = isHardhatSetForNetworkId(networkId)
+  const isForkSet = isForkSetForNetworkId(networkId)
   if (!networksById[networkId]) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
-  if (isHardhatSet) {
+  if (isForkSet) {
     const networkName = networksById[networkId].name
-    return hardhatSettings[networkName]!.url
+    return forkSettings[networkName]!.url
   }
   return isTestnet
     ? networksById[networksById[networkId].testnetId!].rpcUrl

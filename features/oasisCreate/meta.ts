@@ -1,9 +1,8 @@
-import { networksByName } from 'blockchain/networksConfig'
+import { BaseNetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductType } from 'features/oasisCreate/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 

@@ -13,7 +13,7 @@ import {
 } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress } from 'blockchain/networks'
 import { AutomationTxData } from 'components/AppContext'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
 import {

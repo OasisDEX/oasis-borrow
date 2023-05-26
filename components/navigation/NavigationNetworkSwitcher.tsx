@@ -2,22 +2,12 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ConnectedChain } from '@web3-onboard/core'
 import { useSetChain } from '@web3-onboard/react'
 import {
-  defaultHardhatConfig,
-  NetworkConfig,
-  NetworkConfigHexId,
-  networks,
-  networksByHexId,
-} from 'blockchain/networksConfig'
-import { useAppContext } from 'components/AppContextProvider'
-import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
-import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import {
   CustomNetworkStorageKey,
+  enableNetworksSet,
   mainnetNetworkParameter,
+  networksListWithForksByHexId,
   useCustomNetworkParameter,
-} from 'helpers/getCustomNetworkParameter'
-import { isEnabled } from 'helpers/isEnabled'
-import { useModal } from 'helpers/modalHook'
+} from 'blockchain/networks'
 import {
   filterNetworksAccordingToSavedNetwork,
   filterNetworksAccordingToWalletNetwork,
@@ -25,7 +15,12 @@ import {
   isTestnet,
   isTestnetEnabled,
   isTestnetNetworkHexId,
-} from 'helpers/networkHelpers'
+} from 'blockchain/networks'
+import { NetworkConfig, NetworkConfigHexId } from 'blockchain/networks'
+import { useAppContext } from 'components/AppContextProvider'
+import { addCustomForkToTheWallet } from 'features/web3OnBoard'
+import { AppSpinnerWholePage } from 'helpers/AppSpinner'
+import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { getStorageValue } from 'helpers/useLocalStorage'
 import { useNetworkName } from 'helpers/useNetworkName'
@@ -44,28 +39,33 @@ export function NavigationNetworkSwitcher() {
   const [web3Context] = useObservable(web3Context$)
   const openModal = useModal()
   const changeChain = useCallback(
-    (networkHexId: NetworkConfigHexId) => () => {
-      let network = networksByHexId[networkHexId]
-      if (!network) {
-        // this means that is hardhat
-        network = hardhatNetworkConfigs.find(
-          (config) => config.hexId === networkHexId,
-        )! as NetworkConfig
-      }
+    async (networkHexId: NetworkConfigHexId) => {
+      const network = networksListWithForksByHexId[networkHexId]
+
+      const chainToSet = network.isCustomFork
+        ? {
+            chainId: network.hexId,
+            rpcUrl: network.rpcUrl,
+            label: network.label,
+          }
+        : { chainId: network.hexId }
+
       if (connectedChain) {
-        // wallet is connected, change it there so it updates everywhere
-        setChain({ chainId: network.hexId! })
-          .then((setChainSuccess) => {
-            setChainSuccess &&
-              setCustomNetwork({
-                network: network.name!,
-                id: network.id!,
-                hexId: network.hexId!,
-              })
-            window && window.location.reload() // duh
+        if (network.isCustomFork) {
+          await addCustomForkToTheWallet(network)
+        }
+
+        const chainSet = await setChain(chainToSet)
+
+        if (chainSet) {
+          setCustomNetwork({
+            network: network.name!,
+            id: network.id!,
+            hexId: network.hexId!,
           })
-          .catch(console.error)
-        return
+        }
+
+        window && window.location.reload() // duh
       }
       if (web3Context?.status === 'connectedReadonly') {
         setCustomNetwork({
@@ -85,7 +85,7 @@ export function NavigationNetworkSwitcher() {
   const { hexId: customNetworkHexId } = (customNetworkData ||
     mainnetNetworkParameter) as typeof mainnetNetworkParameter
 
-  const handleNetworkButton = (isHardhat?: boolean) => (network: NetworkConfig) => {
+  const handleNetworkButton = (network: NetworkConfig) => {
     const isCurrentNetwork = network.name === currentNetworkName
     return (
       <Button
@@ -96,14 +96,14 @@ export function NavigationNetworkSwitcher() {
           color: isCurrentNetwork ? 'primary100' : 'neutral80',
           ':hover': {
             color: 'primary100',
-            ...(isHardhat && {
+            ...(network.isCustomFork && {
               '::before': {
                 top: '-5px',
                 left: '-5px',
               },
             }),
           },
-          ...(isHardhat && {
+          ...(network.isCustomFork && {
             '::before': {
               content: '"👷‍♂️"',
               position: 'absolute',
@@ -118,7 +118,7 @@ export function NavigationNetworkSwitcher() {
             },
           }),
         }}
-        onClick={changeChain(network.hexId)}
+        onClick={() => changeChain(network.hexId)}
         disabled={settingChain}
         key={network.hexId}
       >
@@ -170,28 +170,26 @@ export function NavigationNetworkSwitcher() {
               overflow: 'hidden',
             }}
           >
-            {networks
-              .filter(isEnabled)
+            {enableNetworksSet
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
                   : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
               )
-              .map(handleNetworkButton(false))}
-            {hardhatNetworkConfigs.map((config) =>
-              handleNetworkButton(true)({ ...defaultHardhatConfig, ...config } as NetworkConfig),
-            )}
+              .map(handleNetworkButton)}
             {(connectedChain || isTestnetEnabled()) && (
               <>
                 <Button
                   variant="bean"
                   sx={{ fontSize: 2 }}
-                  onClick={toggleChains(
-                    connectedChain || {
-                      id: customNetworkHexId as ConnectedChain['id'],
-                      namespace: 'evm',
-                    },
-                  )}
+                  onClick={() =>
+                    toggleChains(
+                      connectedChain || {
+                        id: customNetworkHexId as ConnectedChain['id'],
+                        namespace: 'evm',
+                      },
+                    )
+                  }
                 >
                   <Box sx={{ width: '100%' }}>
                     {(() => {
@@ -213,7 +211,7 @@ export function NavigationNetworkSwitcher() {
                   sx={{ fontSize: 2 }}
                   onClick={() => openModal(NavigationNetworkSwitcherModal, {})}
                 >
-                  <Box sx={{ width: '100%' }}>Hardhat settings 👷‍♂️</Box>
+                  <Box sx={{ width: '100%' }}>Fork settings 👷‍♂️</Box>
                 </Button>
               </>
             )}

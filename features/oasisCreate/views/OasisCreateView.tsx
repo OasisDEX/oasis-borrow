@@ -1,3 +1,4 @@
+import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
@@ -28,7 +29,6 @@ import {
   ProductType,
 } from 'features/oasisCreate/types'
 import { oasisCreateData } from 'helpers/mocks/oasisCreateData.mock'
-import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'

@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { MainnetContracts, mainnetContracts } from 'blockchain/contracts/mainnet'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
+import { getRpcProvider } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
-import { getRpcProvider } from 'helpers/get-rpc-provider'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { ChainlinkPriceOracle__factory } from 'types/ethers-contracts'
 
@@ -11,7 +11,6 @@ const USD_CHAINLINK_PRECISION = 8
 
 export type ChainlinkSupportedNetworks =
   | NetworkIds.MAINNET
-  | NetworkIds.HARDHAT
   | NetworkIds.OPTIMISMMAINNET
   | NetworkIds.ARBITRUMMAINNET
 

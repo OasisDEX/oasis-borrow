@@ -1,36 +1,36 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { networks, networksByName } from 'blockchain/networksConfig'
-import { Modal } from 'components/Modal'
 import {
-  CustomHardhatParameterFieldsType,
-  CustomHardhatParameterType,
+  CustomForkParameterFieldsType,
+  CustomForkParameterType,
   mainnetNetworkParameter,
-  useCustomHardhatParameter,
+  useCustomForkParameter,
   useCustomNetworkParameter,
-} from 'helpers/getCustomNetworkParameter'
+} from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
+import { networks, networksByName } from 'blockchain/networks'
+import { Modal } from 'components/Modal'
 import { ModalProps } from 'helpers/modalHook'
-import { NetworkNames } from 'helpers/networkNames'
 import React from 'react'
 import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
 
 export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>) {
   const [, setCustomNetwork] = useCustomNetworkParameter()
-  const [hardhatSettings, setHardhatSettings] = useCustomHardhatParameter()
-  const handleHardhatUpdate =
-    (field: CustomHardhatParameterFieldsType) =>
+  const [forkSettings, setForkSettings] = useCustomForkParameter()
+  const handleForkUpdate =
+    (field: CustomForkParameterFieldsType) =>
     (networkName: NetworkNames) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setHardhatSettings({
-        ...hardhatSettings,
+      setForkSettings({
+        ...forkSettings,
         [networkName]: {
-          ...hardhatSettings[networkName],
+          ...forkSettings[networkName],
           [field]: event.target.value,
         },
       })
     }
-  const removeHardhatNetwork = (networkName: NetworkNames) => () => {
-    const { [networkName]: _, ...rest } = hardhatSettings
-    setHardhatSettings(rest as CustomHardhatParameterType)
+  const removeForkNetwork = (networkName: NetworkNames) => () => {
+    const { [networkName]: _, ...rest } = forkSettings
+    setForkSettings(rest as CustomForkParameterType)
   }
   const saveAndReset = () => {
     setCustomNetwork(mainnetNetworkParameter)
@@ -42,7 +42,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
   return (
     <Modal close={closeProxy} sx={{ maxWidth: '570px', margin: '0 auto' }}>
       <Box sx={{ p: 3 }}>
-        <Text as="h2">👷‍♂️ Hardhat settings</Text>
+        <Text as="h2">👷‍♂️ Fork network settings</Text>
       </Box>
       <Box sx={{ px: 3 }}>
         {networks
@@ -70,8 +70,8 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                 <Input
                   type="text"
                   placeholder={`http://localhost:854${5 + networkIndex}`}
-                  onChange={handleHardhatUpdate('url')(network.name)}
-                  value={hardhatSettings[network.name]?.url || ''}
+                  onChange={handleForkUpdate('url')(network.name)}
+                  value={forkSettings[network.name]?.url || ''}
                   sx={{
                     height: '50px',
                     fontSize: 3,
@@ -90,8 +90,8 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                 <Input
                   type="text"
                   placeholder={`${2137 + networkIndex}`}
-                  onChange={handleHardhatUpdate('id')(network.name)}
-                  value={hardhatSettings[network.name]?.id || ''}
+                  onChange={handleForkUpdate('id')(network.name)}
+                  value={forkSettings[network.name]?.id || ''}
                   sx={{
                     height: '50px',
                     fontSize: 3,
@@ -106,7 +106,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                   }}
                 />
                 <IconButton
-                  onClick={removeHardhatNetwork(network.name)}
+                  onClick={removeForkNetwork(network.name)}
                   sx={{
                     cursor: 'pointer',
                     color: 'neutral60',
@@ -124,8 +124,8 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
         <Flex sx={{ my: 3, mb: 4 }}>
           <Text variant="paragraph3">
             Saving or closing this window will reset your current network parameter to Ethereum to
-            avoid the situation where you have a custom network parameter (hardhat) which is no
-            longer in the config. This is for your own good.
+            avoid the situation where you have a custom network parameter (fork) which is no longer
+            in the config. This is for your own good.
           </Text>
         </Flex>
         <Flex sx={{ my: 3 }}>
@@ -133,7 +133,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
             variant="secondary"
             sx={{ width: '100%', mr: 2 }}
             onClick={() => {
-              setHardhatSettings({} as CustomHardhatParameterType)
+              setForkSettings({} as CustomForkParameterType)
               saveAndReset()
             }}
           >

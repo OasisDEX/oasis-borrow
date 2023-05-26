@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { McdEnd } from 'types/web3-v1-contracts'
 
 import { CallDef } from './callsHelpers'

@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 
 const accountGuardGenesisBlockGoerli = 8048103
 const accountGuardGenesisBlockMainnet = 16047224

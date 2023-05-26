@@ -3,7 +3,7 @@
   "version": "7.11.3",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=14.x <=18.x"
+    "node": ">=16.18 <=18.x"
   },
   "scripts": {
     "start": "next dev",
@@ -142,7 +142,7 @@
     "@types/jsonwebtoken": "^9.0.0",
     "@types/lodash": "^4.14.109",
     "@types/mixpanel-browser": "^2.23.1",
-    "@types/node": "^12.12",
+    "@types/node": "16.18.32",
     "@types/pg": "^7.14.3",
     "@types/ramda": "^0.27.34",
     "@types/react": "^17.0.1",

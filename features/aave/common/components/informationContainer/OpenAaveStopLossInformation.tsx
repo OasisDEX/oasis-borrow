@@ -1,3 +1,4 @@
+import { PositionTransition } from '@oasisdex/dma-library'
 import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
@@ -11,7 +12,7 @@ import React from 'react'
 
 interface OpenAaveStopLossInformationProps {
   stopLossLevel: BigNumber
-  transition?: IPositionTransition | ISimplePositionTransition
+  transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
   collateralActive: boolean
 }
 

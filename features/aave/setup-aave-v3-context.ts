@@ -1,10 +1,10 @@
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
-import { networksByName } from 'blockchain/networksConfig'
+import { NetworkNames } from 'blockchain/networks'
+import { networksByName } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
-import { NetworkNames } from 'helpers/networkNames'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
@@ -23,9 +23,9 @@ import {
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
   getOpenDepositBorrowAaveMachine,
-  getOpenMultiplyAaveParametersMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
+import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
@@ -92,7 +92,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
       balance$,
       aaveOracleAssetPriceData$,
       of(one), // aave v3 base is already in USD
-      getSupportedTokens(LendingProtocol.AaveV3, NetworkNames.ethereumMainnet),
+      getSupportedTokens(LendingProtocol.AaveV3, network),
     ),
   )
 
@@ -107,7 +107,10 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
-  const openAaveParameters = getOpenMultiplyAaveParametersMachine(txHelpers$, gasEstimation$)
+  const openAaveParameters = getOpenMultiplyAaveParametersMachine(txHelpers$, gasEstimation$, {
+    lendingProtocol: LendingProtocol.AaveV3,
+    networkId,
+  })
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)

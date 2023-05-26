@@ -46,7 +46,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc, emptyContractDesc } from 'blockchain/networksConfig'
+import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/optimism'
 import { tokensOptimism } from 'blockchain/tokens/optimism'

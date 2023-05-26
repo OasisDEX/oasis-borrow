@@ -1,5 +1,5 @@
 import { useConnectWallet } from '@web3-onboard/react'
-import { networksByName } from 'blockchain/networksConfig'
+import { networksByName } from 'blockchain/networks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { useNetworkName } from 'helpers/useNetworkName'
 import React from 'react'
@@ -12,7 +12,7 @@ export function NavigationNetworkSwitcherIcon(_isOpen: boolean) {
     <AppSpinner />
   ) : (
     <Image
-      src={networksByName[currentNetworkName.replace('-hardhat', '')].icon}
+      src={networksByName[currentNetworkName.replace('-test', '')].icon}
       sx={{ width: '42px', height: '42px' }}
     />
   )

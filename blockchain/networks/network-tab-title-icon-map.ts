@@ -1,7 +1,7 @@
-import { NetworkNames } from './networkNames'
+import { NetworkNames } from './network-names'
 
 // these are used for the tab title
-export const networkTabTitleIconMap: Record<NetworkNames | 'hardhat', string> = {
+export const networkTabTitleIconMap: Record<NetworkNames | 'fork', string> = {
   [NetworkNames.ethereumMainnet]: '',
   [NetworkNames.ethereumGoerli]: '🌲 ',
   [NetworkNames.arbitrumMainnet]: '',
@@ -10,5 +10,5 @@ export const networkTabTitleIconMap: Record<NetworkNames | 'hardhat', string> = 
   [NetworkNames.optimismGoerli]: '🌲',
   [NetworkNames.polygonMainnet]: '',
   [NetworkNames.polygonMumbai]: '🌲',
-  hardhat: '👷‍♂️ ',
+  fork: '👷‍♂️ ',
 }

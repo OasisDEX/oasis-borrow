@@ -1,8 +1,9 @@
+import { PositionTransition } from '@oasisdex/dma-library'
 import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { isEqual } from 'lodash'
@@ -22,7 +23,7 @@ export interface BaseTransactionParameters {
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: IPositionTransition | ISimplePositionTransition
+  strategy?: IPositionTransition | ISimplePositionTransition | PositionTransition
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
@@ -30,7 +31,10 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; transition?: IPositionTransition | ISimplePositionTransition }
+  | {
+      type: 'STRATEGY_RECEIVED'
+      transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
+    }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -45,7 +49,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'GAS_ESTIMATION_CHANGED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = IPositionTransition | ISimplePositionTransition
+export type LibraryCallReturn = IPositionTransition | ISimplePositionTransition | PositionTransition
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(

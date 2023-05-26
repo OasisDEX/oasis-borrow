@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { BaseNetworkNames } from 'blockchain/networks'
 import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps } from 'components/PromoCard'
-import { BaseNetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 
 export type OasisCreateMultiplyStrategyType = 'long' | 'short'

@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
+import { NetworkIds } from 'blockchain/networks'
+import { networksById } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { AaveV2LendingPool__factory } from 'types/ethers-contracts'

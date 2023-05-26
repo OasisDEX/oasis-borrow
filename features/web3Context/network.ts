@@ -1,7 +1,10 @@
-import { networksByName } from 'blockchain/networksConfig'
-import { hardhatNetworkConfigs } from 'features/web3OnBoard/hardhatConfigList'
-import { CustomNetworkStorageKey, mainnetNetworkParameter } from 'helpers/getCustomNetworkParameter'
-import { NetworkNames } from 'helpers/networkNames'
+import {
+  CustomNetworkStorageKey,
+  forkNetworks,
+  mainnetNetworkParameter,
+  NetworkNames,
+  networksByName,
+} from 'blockchain/networks'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { getStorageValue } from 'helpers/useLocalStorage'
 import { isNull, isUndefined, keyBy, memoize } from 'lodash'
@@ -50,5 +53,5 @@ export function getNetworkName(): string {
 
 export function getNetworkId(): number {
   const networkName = getNetworkName()
-  return Number({ ...networksByName, ...keyBy(hardhatNetworkConfigs, 'name') }[networkName].id)
+  return Number({ ...networksByName, ...keyBy(forkNetworks, 'name') }[networkName].id)
 }

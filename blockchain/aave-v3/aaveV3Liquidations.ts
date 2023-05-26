@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { AaveV3Pool, AaveV3Pool__factory } from 'types/ethers-contracts'
 import { LiquidationCallEvent } from 'types/ethers-contracts/AaveV3Pool'
 

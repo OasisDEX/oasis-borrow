@@ -1,5 +1,5 @@
 import { getOnChainPosition, GetOnChainPositionParams } from 'actions/aave'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 
 export type GetAaveV2OnChainPosition = Pick<

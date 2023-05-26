@@ -1,10 +1,9 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { networksById } from 'blockchain/networksConfig'
+import { networksListWithForksById } from 'blockchain/networks'
 import { AccountDetails } from 'features/account/AccountData'
 import { formatOazoFee } from 'features/multiply/manage/utils'
-import { hardhatNetworksById } from 'features/web3OnBoard/hardhatConfigList'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
@@ -154,9 +153,7 @@ export function createOpenMultiplyVaultAnalytics$(
               )
               break
             case 'openMultiplyVaultConfirmTransaction':
-              const network = networksById[context.chainId]
-                ? networksById[context.chainId].name
-                : hardhatNetworksById[context.chainId].name
+              const network = networksListWithForksById[context.chainId].name
               const walletType = context.connectionKind
 
               tracker.multiply.confirmOpenMultiplyConfirmTransaction(

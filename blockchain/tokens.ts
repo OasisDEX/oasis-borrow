@@ -7,7 +7,7 @@ import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
-import { NetworkIds } from './networkIds'
+import { NetworkIds } from './networks'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export function createBalance$(

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'

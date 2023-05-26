@@ -1,11 +1,10 @@
-import { getRpcProvider } from 'helpers/get-rpc-provider'
 import { Observable, of } from 'rxjs'
 import { first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-contracts'
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
-import { NetworkIds } from './networkIds'
+import { getRpcProvider, NetworkIds } from './networks'
 
 export interface UserDpmAccount {
   proxy: string

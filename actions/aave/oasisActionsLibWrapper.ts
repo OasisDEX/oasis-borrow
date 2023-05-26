@@ -5,20 +5,17 @@ import {
   IPositionTransition,
   IRiskRatio,
   ISimplePositionTransition,
-  ISimulatedTransition,
   Position,
   strategies,
   ZERO,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { getRpcProvider } from 'helpers/get-rpc-provider'
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
@@ -506,21 +503,6 @@ export function getEmptyPosition(collateral: string, debt: string) {
       liquidationThreshold: zero,
       dustLimit: zero,
     },
-  )
-}
-
-export function transitionHasSwap(
-  transition?: ISimplePositionTransition,
-): transition is IPositionTransition {
-  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
-}
-
-export function transitionHasMinConfigurableRiskRatio(
-  transition?: ISimplePositionTransition,
-): transition is IPositionTransition {
-  return (
-    !!transition &&
-    (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
   )
 }
 

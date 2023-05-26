@@ -2,7 +2,7 @@ import { TxMeta } from '@oasisdex/transactions'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { contractDesc } from 'blockchain/networksConfig'
+import { contractDesc } from 'blockchain/networks'
 import { AccountImplementation } from 'types/web3-v1-contracts'
 
 export interface OasisActionsTxData extends TxMeta {

@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { isEqual, memoize } from 'lodash'
 import { EMPTY, Observable } from 'rxjs'
 import { catchError, distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'

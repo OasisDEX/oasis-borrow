@@ -1,5 +1,4 @@
-import { MainNetworkNames } from 'helpers/networkNames'
-
+import { MainNetworkNames } from './networks'
 import { getToken, getTokens, getTokensWithChain, tokens } from './tokensMetadata'
 
 const tokenKeys = [

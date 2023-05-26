@@ -1,6 +1,6 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { NetworkNames } from 'blockchain/networks'
 import { useAaveContext } from 'features/aave'
-import { NetworkNames } from 'helpers/networkNames'
 import { AaveLendingProtocol } from 'lendingProtocols'
 import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
 import { useEffect, useState } from 'react'

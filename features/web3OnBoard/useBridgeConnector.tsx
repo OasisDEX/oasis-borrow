@@ -1,6 +1,6 @@
 import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { useCustomNetworkParameter } from 'blockchain/networks'
 import { useCallback, useMemo } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
