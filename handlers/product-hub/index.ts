@@ -1,4 +1,4 @@
-import { oasisCreateData as data } from 'helpers/mocks/oasisCreateData.mock'
+import { productHubData as data } from 'helpers/mocks/productHubData.mock'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export async function handleProductHubData(req: NextApiRequest, res: NextApiResponse) {
