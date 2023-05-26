@@ -11,12 +11,6 @@ import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 import { Card, Flex, Heading, Image, Text } from 'theme-ui'
 
-const listProps = {
-  withIcon: false,
-  listStyle: { gap: 1, listStyle: 'outside' },
-  itemStyle: { pl: 0, ml: '24px' },
-}
-
 interface RewardsHeaderProps {
   image: string
   background: string
@@ -43,6 +37,24 @@ const RewardsHeader: FC<RewardsHeaderProps> = ({ image, background, heading }) =
   </Flex>
 )
 
+interface RewardsListProps {
+  items: string[]
+  link: string
+}
+
+const RewardsList: FC<RewardsListProps> = ({ items, link }) => (
+  <ListWithIcon
+    items={items}
+    components={{
+      2: <AppLink href={link} sx={{ display: 'inline-block' }} />,
+      3: <WithArrow sx={{ fontWeight: 'regular', color: 'interactive100' }} />,
+    }}
+    withIcon={false}
+    listStyle={{ gap: 1, listStyle: 'outside' }}
+    itemStyle={{ pl: 0, ml: '24px' }}
+  />
+)
+
 export const AjnaEarnFormContentNft = () => {
   const { t } = useTranslation()
   const {
@@ -59,30 +71,24 @@ export const AjnaEarnFormContentNft = () => {
         image="/static/img/ajna-eye-orange.svg"
         background="linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)"
       />
-      <ListWithIcon
+      <RewardsList
         items={t(`ajna.position-page.common.form.nft.bullet-points.token-rewards`, {
           returnObjects: true,
         })}
-        components={{
-          2: <AppLink href={EXTERNAL_LINKS.KB.AJNA} sx={{ display: 'inline-block' }} />,
-          3: <WithArrow sx={{ fontWeight: 'regular', color: 'interactive100' }} />,
-        }}
-        {...listProps}
+        // TODO update one article will be available
+        link={EXTERNAL_LINKS.KB.AJNA}
       />
       <RewardsHeader
         heading={t('ajna.position-page.common.form.nft.protocol-rewards')}
         image="/static/img/ajna-eye-purple.svg"
         background="linear-gradient(90deg, #FFEFFD 0%, #F5EDFF 100%), #FFFFFF"
       />
-      <ListWithIcon
+      <RewardsList
         items={t(`ajna.position-page.common.form.nft.bullet-points.protocol-rewards`, {
           returnObjects: true,
         })}
-        components={{
-          2: <AppLink href={EXTERNAL_LINKS.KB.AJNA} sx={{ display: 'inline-block' }} />,
-          3: <WithArrow sx={{ fontWeight: 'regular', color: 'interactive100' }} />,
-        }}
-        {...listProps}
+        // TODO update one article will be available
+        link={EXTERNAL_LINKS.KB.AJNA}
       />
       <Card sx={{ padding: '12px' }}>
         <Flex sx={{ gap: 3 }}>
