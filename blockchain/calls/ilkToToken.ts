@@ -34,6 +34,12 @@ export function createIlkToToken$(context$: Observable<Context>, ilk: string): O
             throw new Error(`Token ${tokenAddress} not found`)
           }
 
+          if (tokenDescription[0] === 'WETH') {
+            // Maker returns WETH address for ETH ilks. We need to return ETH instead.
+            // We previously had misleading information in our addresses. We treated WETH address as if it was ETH address.
+            return 'ETH'
+          }
+
           return tokenDescription[0]
         }),
       ),

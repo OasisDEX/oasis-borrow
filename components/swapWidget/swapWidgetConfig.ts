@@ -40,6 +40,6 @@ export const swapWidgetConfig: WidgetConfig = {
     allow: enableNetworksSet.map((network) => network.id),
   },
   bridges: {
-    deny: ['polygon', 'omni', 'gnosis', 'hyphen'],
+    deny: ['polygon', 'omni', 'gnosis', 'hyphen', 'multichain'],
   },
 }
