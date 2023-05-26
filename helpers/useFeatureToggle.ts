@@ -3,8 +3,6 @@ export const FT_LOCAL_STORAGE_KEY = 'features'
 
 type ConfiguredFeatures = Record<Feature, boolean>
 
-export type Setting = 'tenderlySecret'
-
 export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
