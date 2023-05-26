@@ -35,8 +35,15 @@ export type AjnaMultiplyAction =
   | 'close-multiply'
 export type AjnaMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
 
-export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
-export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
+export type AjnaSidebarStep =
+  | 'risk'
+  | 'setup'
+  | 'manage'
+  | 'dpm'
+  | 'transaction'
+  | 'transition'
+  | 'nft'
+export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage' | 'nft'>
 
 export type AjnaCloseTo = 'collateral' | 'quote'
 

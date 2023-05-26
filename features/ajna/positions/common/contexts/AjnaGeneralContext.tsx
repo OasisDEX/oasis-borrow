@@ -9,6 +9,7 @@ import {
   AjnaSidebarStep,
 } from 'features/ajna/common/types'
 import {
+  getAjnaEditingStep,
   isExternalStep,
   isStepWithTransaction,
 } from 'features/ajna/positions/common/contexts/ajnaStepManager'
@@ -92,7 +93,7 @@ export function AjnaGeneralContextProvider({
 }: PropsWithChildren<AjnaGeneralContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const { flow, collateralBalance, quoteBalance, owner } = props
+  const { flow, collateralBalance, quoteBalance, owner, product } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
@@ -109,7 +110,7 @@ export function AjnaGeneralContextProvider({
     return {
       currentStep,
       steps,
-      editingStep: flow === 'open' ? 'setup' : 'manage',
+      editingStep: getAjnaEditingStep({ currentStep, product, flow }),
       isExternalStep: isExternalStep({ currentStep }),
       isFlowStateReady,
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
