@@ -9,9 +9,11 @@ import {
   ProductHubTableController,
 } from 'features/productHub/controls'
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
+import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
 import { ProductHubFilters, ProductType } from 'features/productHub/types'
 import { productHubData } from 'helpers/mocks/productHubData.mock'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useMemo, useState } from 'react'
 import { Box, Text } from 'theme-ui'
@@ -23,6 +25,7 @@ interface ProductHubViewProps {
 
 export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const { t } = useTranslation()
+  const { isLoading } = useProductHubData({ protocol: LendingProtocol.Ajna })
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
@@ -50,6 +53,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
           zIndex: 3,
         }}
       >
+        {}
         <ProductHubNaturalLanguageSelectorController
           product={product}
           token={token}
