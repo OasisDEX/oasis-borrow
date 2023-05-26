@@ -10,5 +10,6 @@ export const networkTabTitleIconMap: Record<NetworkNames | 'hardhat', string> = 
   [NetworkNames.optimismGoerli]: '🌲',
   [NetworkNames.polygonMainnet]: '',
   [NetworkNames.polygonMumbai]: '🌲',
+  [NetworkNames.ethereumFork]: '👷‍♂️ ',
   hardhat: '👷‍♂️ ',
 }
