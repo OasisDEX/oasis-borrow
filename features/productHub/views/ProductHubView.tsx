@@ -9,26 +9,26 @@ import { GenericMultiselect } from 'components/GenericMultiselect'
 import { AppLink } from 'components/Links'
 import { PromoCard } from 'components/PromoCard'
 import { WithArrow } from 'components/WithArrow'
-import { NaturalLanguageSelectorController } from 'features/oasisCreate/controls/NaturalLanguageSelectorController'
-import { matchRowsByFilters } from 'features/oasisCreate/helpers/matchRowsByFilters'
-import { matchRowsByNL } from 'features/oasisCreate/helpers/matchRowsByNL'
-import { parseRows } from 'features/oasisCreate/helpers/parseRows'
+import { NaturalLanguageSelectorController } from 'features/productHub/controls/NaturalLanguageSelectorController'
+import { matchRowsByFilters } from 'features/productHub/helpers/matchRowsByFilters'
+import { matchRowsByNL } from 'features/productHub/helpers/matchRowsByNL'
+import { parseRows } from 'features/productHub/helpers/parseRows'
 import {
   ALL_ASSETS,
   EMPTY_FILTERS,
-  oasisCreateFiltersCount,
-  oasisCreateGridTemplateColumns,
-  oasisCreateLinksMap,
-  oasisCreateNetworkFilter,
-  oasisCreateProtocolFilter,
-  oasisCreateStrategyFilter,
-} from 'features/oasisCreate/meta'
+  productHubFiltersCount,
+  productHubGridTemplateColumns,
+  productHubLinksMap,
+  productHubNetworkFilter,
+  productHubProtocolFilter,
+  productHubStrategyFilter,
+} from 'features/productHub/meta'
 import {
-  OasisCreateFilters,
-  OasisCreateMultiplyStrategyType,
+  ProductHubFilters,
+  ProductHubMultiplyStrategyType,
   ProductType,
-} from 'features/oasisCreate/types'
-import { oasisCreateData } from 'helpers/mocks/oasisCreateData.mock'
+} from 'features/productHub/types'
+import { productHubData } from 'helpers/mocks/productHubData.mock'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -37,27 +37,27 @@ import { theme } from 'theme'
 import { Box, Grid, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
-interface OasisCreateViewProps {
+interface ProductHubViewProps {
   product: ProductType
   token?: string
 }
 
-export function OasisCreateView({ product, token }: OasisCreateViewProps) {
+export function ProductHubView({ product, token }: ProductHubViewProps) {
   const { t } = useTranslation()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
-  const [selectedFilters, setSelectedFilters] = useState<OasisCreateFilters>(EMPTY_FILTERS)
+  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
 
   const promoCards = useMemo(
     () =>
-      Object.keys(oasisCreateData.promoCards[selectedProduct].tokens).includes(selectedToken)
-        ? oasisCreateData.promoCards[selectedProduct].tokens[selectedToken]
-        : oasisCreateData.promoCards[selectedProduct].default,
+      Object.keys(productHubData.promoCards[selectedProduct].tokens).includes(selectedToken)
+        ? productHubData.promoCards[selectedProduct].tokens[selectedToken]
+        : productHubData.promoCards[selectedProduct].default,
     [selectedProduct, selectedToken],
   )
   const rowsMatchedByNL = useMemo(
-    () => matchRowsByNL(oasisCreateData.table, selectedProduct, selectedToken),
+    () => matchRowsByNL(productHubData.table, selectedProduct, selectedToken),
     [selectedProduct, selectedToken],
   )
   const rowsMatchedByFilters = useMemo(
@@ -124,8 +124,8 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             mt: '24px',
           }}
         >
-          {t(`oasis-create.intro.${selectedProduct}`)}{' '}
-          <AppLink href={oasisCreateLinksMap[selectedProduct]}>
+          {t(`product-hub.intro.${selectedProduct}`)}{' '}
+          <AppLink href={productHubLinksMap[selectedProduct]}>
             <WithArrow
               variant="paragraph2"
               sx={{
@@ -151,13 +151,13 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           gridTemplateColumns={[
             '100%',
             null,
-            `repeat(${oasisCreateFiltersCount[selectedProduct]}, 1fr)`,
-            oasisCreateGridTemplateColumns[selectedProduct],
+            `repeat(${productHubFiltersCount[selectedProduct]}, 1fr)`,
+            productHubGridTemplateColumns[selectedProduct],
           ]}
         >
           {selectedProduct === ProductType.Borrow && (
             <GenericMultiselect
-              label={t('oasis-create.filters.debt-tokens')}
+              label={t('product-hub.filters.debt-tokens')}
               options={debtTokens}
               onChange={(value) => {
                 setSelectedFilters({
@@ -169,7 +169,7 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           )}
           {selectedProduct === ProductType.Multiply && (
             <GenericMultiselect
-              label={t('oasis-create.filters.secondary-tokens')}
+              label={t('product-hub.filters.secondary-tokens')}
               options={secondaryTokens}
               onChange={(value) => {
                 setSelectedFilters({
@@ -190,22 +190,22 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
           {!isSmallerScreen && <Box />}
           {selectedProduct === ProductType.Multiply && (
             <GenericMultiselect
-              label={t('oasis-create.filters.strategies')}
-              options={oasisCreateStrategyFilter}
+              label={t('product-hub.filters.strategies')}
+              options={productHubStrategyFilter}
               onChange={(value) => {
                 setSelectedFilters({
                   or: selectedFilters.or,
                   and: {
                     ...selectedFilters.and,
-                    multiplyStrategyType: value as OasisCreateMultiplyStrategyType[],
+                    multiplyStrategyType: value as ProductHubMultiplyStrategyType[],
                   },
                 })
               }}
             />
           )}
           <GenericMultiselect
-            label={t('oasis-create.filters.networks')}
-            options={oasisCreateNetworkFilter}
+            label={t('product-hub.filters.networks')}
+            options={productHubNetworkFilter}
             onChange={(value) => {
               setSelectedFilters({
                 or: selectedFilters.or,
@@ -214,8 +214,8 @@ export function OasisCreateView({ product, token }: OasisCreateViewProps) {
             }}
           />
           <GenericMultiselect
-            label={t('oasis-create.filters.protocols')}
-            options={oasisCreateProtocolFilter}
+            label={t('product-hub.filters.protocols')}
+            options={productHubProtocolFilter}
             onChange={(value) => {
               setSelectedFilters({
                 or: selectedFilters.or,
