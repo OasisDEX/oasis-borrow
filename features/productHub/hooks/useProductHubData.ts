@@ -29,8 +29,8 @@ export const useProductHubData = ({ protocol }: ProductHubDataParams): ProductHu
 
     axios
       .request<ProductHubData>({
-        method: 'get',
-        url: 'https://jsonplaceholder.typicode.com/posts',
+        method: 'post',
+        url: '/api/product-hub',
         responseType: 'json',
         headers: {
           Accept: 'application/json',

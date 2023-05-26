@@ -1,23 +1,19 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
-import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { ProductHubLoadingState } from 'features/productHub/components'
 import {
-  ProductHubFiltersController,
   ProductHubNaturalLanguageSelectorController,
   ProductHubPromoCardsController,
-  ProductHubTableController,
 } from 'features/productHub/controls'
-import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
+import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
 import { ProductHubFilters, ProductType } from 'features/productHub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { productHubData } from 'helpers/mocks/productHubData.mock'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useMemo, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { Box, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
@@ -31,19 +27,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
-
-  const dataMatchedByNL = useMemo(
-    () => matchRowsByNL(productHubData.table, selectedProduct, selectedToken),
-    [selectedProduct, selectedToken],
-  )
-  const dataMatchedByFilters = useMemo(
-    () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
-    [dataMatchedByNL, selectedFilters],
-  )
-  const parsedRows = useMemo(
-    () => parseRows(dataMatchedByFilters, selectedProduct),
-    [dataMatchedByFilters, selectedProduct],
-  )
 
   return (
     <AnimatedWrapper sx={{ mb: 5 }}>
@@ -91,23 +74,20 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
         </Text>
       </Box>
       <WithLoadingIndicator value={[data]} customLoader={<ProductHubLoadingState />}>
-        {() => (
+        {([_data]) => (
           <>
             <ProductHubPromoCardsController
-              promoCardsData={productHubData.promoCards}
+              promoCardsData={_data.promoCards}
               selectedProduct={selectedProduct}
               selectedToken={selectedToken}
             />
-            <AssetsTableContainer>
-              <ProductHubFiltersController
-                data={dataMatchedByNL}
-                selectedFilters={selectedFilters}
-                selectedProduct={selectedProduct}
-                selectedToken={selectedToken}
-                onChange={setSelectedFilters}
-              />
-              <ProductHubTableController rows={parsedRows} selectedToken={selectedToken} />
-            </AssetsTableContainer>
+            <ProductHubContentController
+              selectedFilters={selectedFilters}
+              selectedProduct={selectedProduct}
+              selectedToken={selectedToken}
+              tableData={_data.table}
+              onChange={setSelectedFilters}
+            />
           </>
         )}
       </WithLoadingIndicator>

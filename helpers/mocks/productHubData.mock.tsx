@@ -3,7 +3,7 @@
 import BigNumber from 'bignumber.js'
 import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { PromoCardPropsWithContent, PromoCardVariant } from 'components/PromoCard'
+import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import {
   ProductHubData,
   ProductHubItem,
@@ -41,63 +41,63 @@ const data = {
   }),
 }
 
-const oasisCreatePromoCardBorrowEth: PromoCardPropsWithContent = {
+const oasisCreatePromoCardBorrowEth: PromoCardProps = {
   icon: getToken('ETH').iconCircle,
   title: 'Main borrow ETH promo card',
   protocol: protocol.maker,
   pills: [pill.neutral, pill.positive],
   data: [data.positive('11.9%')],
 }
-const oasisCreatePromoCardBorrowWbtc: PromoCardPropsWithContent = {
+const oasisCreatePromoCardBorrowWbtc: PromoCardProps = {
   icon: getToken('WBTC').iconCircle,
   title: 'Main borrow WBTC promo card',
   protocol: protocol.maker,
   pills: [pill.neutral, pill.negative],
   data: [data.negative('-0.40%')],
 }
-const oasisCreatePromoCardBorrowUsdc: PromoCardPropsWithContent = {
+const oasisCreatePromoCardBorrowUsdc: PromoCardProps = {
   icon: getToken('USDC').iconCircle,
   title: 'Main borrow USDC promo card',
   protocol: protocol.ajna,
   pills: [pill.neutral, pill.positive],
   data: [data.positive('6.13%')],
 }
-const oasisCreatePromoCardMultiplyEth: PromoCardPropsWithContent = {
+const oasisCreatePromoCardMultiplyEth: PromoCardProps = {
   icon: getToken('ETH').iconCircle,
   title: 'Main multiply ETH promo card',
   protocol: protocol.maker,
   pills: [pill.neutral, pill.negative],
   data: [data.negative('-2.71%')],
 }
-const oasisCreatePromoCardMultiplyWbtc: PromoCardPropsWithContent = {
+const oasisCreatePromoCardMultiplyWbtc: PromoCardProps = {
   icon: getToken('WBTC').iconCircle,
   title: 'Main multiply WBTC promo card',
   protocol: protocol.aavev2,
   pills: [pill.neutral, pill.positive],
   data: [data.positive('1.46%')],
 }
-const oasisCreatePromoCardMultiplyUsdc: PromoCardPropsWithContent = {
+const oasisCreatePromoCardMultiplyUsdc: PromoCardProps = {
   icon: getToken('USDC').iconCircle,
   title: 'Main multiply USDC promo card',
   protocol: protocol.aavev3Optimism,
   pills: [pill.neutral, pill.positive],
   data: [data.positive('48.62%')],
 }
-const oasisCreatePromoCardEarnDai: PromoCardPropsWithContent = {
+const oasisCreatePromoCardEarnDai: PromoCardProps = {
   icon: getToken('DAI').iconCircle,
   title: 'Earn DAI promo card',
   protocol: protocol.maker,
   pills: [pill.neutral, pill.positive],
   description: 'Lorem ipsum dolor sit amet.',
 }
-const oasisCreatePromoCardEarnWsteth: PromoCardPropsWithContent = {
+const oasisCreatePromoCardEarnWsteth: PromoCardProps = {
   icon: getToken('WSTETH').iconCircle,
   title: 'Main earn wstETH promo card',
   protocol: protocol.ajna,
   pills: [pill.neutral, pill.positive],
   data: [data.positive('$1,235.56')],
 }
-const oasisCreatePromoCardGeneric: PromoCardPropsWithContent = {
+const oasisCreatePromoCardGeneric: PromoCardProps = {
   icon: 'selectEarn',
   title: 'Generic promo card',
   description: 'Lorem ipsum dolor sit amet, consectetur.',
