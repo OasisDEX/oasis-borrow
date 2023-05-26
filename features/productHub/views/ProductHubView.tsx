@@ -2,13 +2,13 @@ import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
-import { ProductHubNaturalLanguageSelectorController } from 'features/productHub/controls/ProductHubNaturalLanguageSelectorController'
-import { ProductHubPromoCardsController } from 'features/productHub/controls/ProductHubPromoCardsController'
-import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
-import { matchRowsByFilters } from 'features/productHub/helpers/matchRowsByFilters'
-import { matchRowsByNL } from 'features/productHub/helpers/matchRowsByNL'
-import { parseRows } from 'features/productHub/helpers/parseRows'
+import {
+  ProductHubFiltersController,
+  ProductHubNaturalLanguageSelectorController,
+  ProductHubPromoCardsController,
+  ProductHubTableController,
+} from 'features/productHub/controls'
+import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
 import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
 import { ProductHubFilters, ProductType } from 'features/productHub/types'
 import { productHubData } from 'helpers/mocks/productHubData.mock'
