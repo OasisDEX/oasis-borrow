@@ -1,9 +1,9 @@
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AppLayout } from 'components/Layouts'
-import { ALL_ASSETS, oasisCreateOptionsMap } from 'features/oasisCreate/meta'
-import { ProductType } from 'features/oasisCreate/types'
-import { OasisCreateView } from 'features/oasisCreate/views/OasisCreateView'
+import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
+import { ProductType } from 'features/productHub/types'
+import { ProductHubView } from 'features/productHub/views'
 import { WithChildren } from 'helpers/types'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -13,7 +13,7 @@ function OasisCreatePage({ product, token }: { product: ProductType; token?: str
   return (
     <WithConnection>
       <WithFeatureToggleRedirect feature="OasisCreate">
-        <OasisCreateView product={product} token={token} />
+        <ProductHubView product={product} token={token} />
       </WithFeatureToggleRedirect>
     </WithConnection>
   )
@@ -30,7 +30,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     locales?.flatMap((locale) =>
       Object.values(ProductType)
         .flatMap((product) =>
-          Object.values(oasisCreateOptionsMap[product].tokens).map((token) => [
+          Object.values(productHubOptionsMap[product].tokens).map((token) => [
             product,
             ...(token.value !== ALL_ASSETS ? [token.value] : []),
           ]),

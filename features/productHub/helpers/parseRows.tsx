@@ -4,7 +4,7 @@ import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponen
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { OasisCreateItem, ProductType } from 'features/oasisCreate/types'
+import { ProductHubItem, ProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import { upperFirst } from 'lodash'
 import React from 'react'
@@ -22,7 +22,7 @@ function parseProduct(
     multiplyStrategy,
     tooltips,
     with50Tokens,
-  }: OasisCreateItem,
+  }: ProductHubItem,
   product: ProductType,
 ): AssetsTableRowData {
   switch (product) {
@@ -87,7 +87,7 @@ function parseProduct(
           sortable: maxMultiply ? maxMultiply.toNumber() : 0,
           value: maxMultiply ? (
             <>
-              {maxMultiply}x
+              {maxMultiply.toFixed(2)}x
               {tooltips?.maxMultiply && <AssetsTableTooltip {...tooltips.maxMultiply} />}
             </>
           ) : (
@@ -129,7 +129,7 @@ function parseProduct(
         ),
         management: managementType ? (
           <>
-            <Trans i18nKey={`oasis-create.table.${managementType}`} />
+            <Trans i18nKey={`product-hub.table.${managementType}`} />
             {tooltips?.managementType && <AssetsTableTooltip {...tooltips.managementType} />}
           </>
         ) : (
@@ -161,7 +161,7 @@ function parseProduct(
   }
 }
 
-export function parseRows(rows: OasisCreateItem[], product: ProductType): AssetsTableRowData[] {
+export function parseRows(rows: ProductHubItem[], product: ProductType): AssetsTableRowData[] {
   return rows.map((row) => {
     const { depositToken, label, network, primaryToken, protocol, reverseTokens, secondaryToken } =
       row

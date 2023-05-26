@@ -5,11 +5,11 @@ import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import {
-  OasisCreateData,
-  OasisCreateItem,
-  OasisCreatePromoCards,
+  ProductHubData,
+  ProductHubItem,
+  ProductHubPromoCards,
   ProductType,
-} from 'features/oasisCreate/types'
+} from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 import { Text } from 'theme-ui'
@@ -104,7 +104,7 @@ const oasisCreatePromoCardGeneric: PromoCardProps = {
   link: { href: '/', label: 'Learn more' },
 }
 
-const oasisCreatePromoCards: OasisCreatePromoCards = {
+const oasisCreatePromoCards: ProductHubPromoCards = {
   [ProductType.Borrow]: {
     default: [
       oasisCreatePromoCardBorrowEth,
@@ -286,7 +286,7 @@ const oasisCreateAjnaYieldTokenTooltip = (
   </>
 )
 
-const oasisCreateTable: OasisCreateItem[] = [
+const oasisCreateTable: ProductHubItem[] = [
   {
     product: [ProductType.Borrow, ProductType.Multiply],
     primaryToken: 'ETH',
@@ -824,7 +824,7 @@ const oasisCreateTable: OasisCreateItem[] = [
   },
 ]
 
-export const oasisCreateData: OasisCreateData = {
+export const productHubData: ProductHubData = {
   promoCards: oasisCreatePromoCards,
   table: oasisCreateTable,
 }

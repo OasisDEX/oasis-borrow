@@ -2454,7 +2454,7 @@ const userWalletIcons = {
   },
 }
 
-const oasisCreateIcons = {
+const productHubIcons = {
   selectBorrow: {
     path: (
       <g fill="none">
@@ -2683,5 +2683,5 @@ export const icons = {
   ...customLandingIcons,
   ...tokenIcons,
   ...userWalletIcons,
-  ...oasisCreateIcons,
+  ...productHubIcons,
 }
