@@ -87,7 +87,7 @@ function parseProduct(
           sortable: maxMultiply ? maxMultiply.toNumber() : 0,
           value: maxMultiply ? (
             <>
-              {maxMultiply}x
+              {maxMultiply.toFixed(2)}x
               {tooltips?.maxMultiply && <AssetsTableTooltip {...tooltips.maxMultiply} />}
             </>
           ) : (

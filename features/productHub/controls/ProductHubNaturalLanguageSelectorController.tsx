@@ -3,22 +3,19 @@ import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductType } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
-interface NaturalLanguageSelectorControllerProps {
+interface ProductHubNaturalLanguageSelectorControllerProps {
   product: ProductType
   token?: string
   url?: string
   onChange?: (product: ProductType, token: string) => void
 }
 
-export function NaturalLanguageSelectorController({
-  product,
-  token,
-  url,
-  onChange,
-}: NaturalLanguageSelectorControllerProps) {
+export const ProductHubNaturalLanguageSelectorController: FC<
+  ProductHubNaturalLanguageSelectorControllerProps
+> = ({ product, token, url, onChange }) => {
   const { t } = useTranslation()
 
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
@@ -26,10 +23,8 @@ export function NaturalLanguageSelectorController({
     productHubOptionsMap[product].product.value as ProductType,
   )
   const [selectedToken, setSelectedToken] = useState<string>(
-    (token
-      ? productHubOptionsMap[product].tokens[token]
-      : productHubOptionsMap[product].tokens.all
-    ).value,
+    (token ? productHubOptionsMap[product].tokens[token] : productHubOptionsMap[product].tokens.all)
+      .value,
   )
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()

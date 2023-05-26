@@ -48,9 +48,7 @@ export interface ProductHubItemTooltips {
   }
 }
 
-export type ProductHubItem = ProductHubItemBasics &
-  ProductHubItemDetails &
-  ProductHubItemTooltips
+export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
 
 export type ProductHubPromoCards = {
   [key in ProductType]: {
