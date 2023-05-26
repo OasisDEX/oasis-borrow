@@ -1,11 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
+import { Skeleton } from 'components/Skeleton'
 import { WithArrow } from 'components/WithArrow'
-import React from 'react'
+import React, { FC } from 'react'
 import { Box, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
 
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
+
+export interface PromoCardWrapperProps {
+  withHover?: boolean
+}
 
 export interface PromoCardProps {
   icon: string
@@ -39,15 +44,7 @@ export const dataColors: { [key in PromoCardVariant]: SxStyleProp } = {
   neutral: { color: 'primary100' },
 }
 
-export function PromoCard({
-  data,
-  description,
-  icon,
-  link,
-  pills,
-  protocol,
-  title,
-}: PromoCardProps) {
+export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, withHover = true }) => {
   return (
     <Box
       sx={{
@@ -59,11 +56,42 @@ export function PromoCard({
         borderRadius: 'large',
         bg: 'neutral10',
         transition: 'border-color 200ms',
-        '&:hover': {
-          borderColor: 'primary100',
-        },
+        ...(withHover && {
+          '&:hover': {
+            borderColor: 'primary100',
+          },
+        }),
       }}
     >
+      {children}
+    </Box>
+  )
+}
+
+export const PromoCardLoadingState: FC = () => {
+  return (
+    <PromoCardWrapper withHover={false}>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Skeleton circle width="42px" height="42px" sx={{ mt: 1 }} />
+        <Skeleton width="200px" sx={{ mt: '20px' }} />
+        <Skeleton width="200px" height="30px" sx={{ mt: 3 }} />
+        <Skeleton sx={{ mt: '22px' }} />
+      </Flex>
+    </PromoCardWrapper>
+  )
+}
+
+export const PromoCard: FC<PromoCardProps> = ({
+  data,
+  description,
+  icon,
+  link,
+  pills,
+  protocol,
+  title,
+}) => {
+  return (
+    <PromoCardWrapper>
       <Icon name={icon} size={50} sx={{ display: 'block', mx: 'auto', mb: '12px' }} />
       {protocol && (
         <Box
@@ -142,6 +170,6 @@ export function PromoCard({
           </WithArrow>
         </AppLink>
       )}
-    </Box>
+    </PromoCardWrapper>
   )
 }

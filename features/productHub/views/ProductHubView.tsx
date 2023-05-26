@@ -2,6 +2,7 @@ import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import { ProductHubLoadingState } from 'features/productHub/components'
 import {
   ProductHubFiltersController,
   ProductHubNaturalLanguageSelectorController,
@@ -12,6 +13,7 @@ import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHu
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
 import { ProductHubFilters, ProductType } from 'features/productHub/types'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { productHubData } from 'helpers/mocks/productHubData.mock'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -25,7 +27,7 @@ interface ProductHubViewProps {
 
 export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const { t } = useTranslation()
-  const { isLoading } = useProductHubData({ protocol: LendingProtocol.Ajna })
+  const { data } = useProductHubData({ protocol: LendingProtocol.Ajna })
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
@@ -88,21 +90,27 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
           </AppLink>
         </Text>
       </Box>
-      <ProductHubPromoCardsController
-        promoCardsData={productHubData.promoCards}
-        selectedProduct={selectedProduct}
-        selectedToken={selectedToken}
-      />
-      <AssetsTableContainer>
-        <ProductHubFiltersController
-          data={dataMatchedByNL}
-          selectedFilters={selectedFilters}
-          selectedProduct={selectedProduct}
-          selectedToken={selectedToken}
-          onChange={setSelectedFilters}
-        />
-        <ProductHubTableController rows={parsedRows} selectedToken={selectedToken} />
-      </AssetsTableContainer>
+      <WithLoadingIndicator value={[data]} customLoader={<ProductHubLoadingState />}>
+        {() => (
+          <>
+            <ProductHubPromoCardsController
+              promoCardsData={productHubData.promoCards}
+              selectedProduct={selectedProduct}
+              selectedToken={selectedToken}
+            />
+            <AssetsTableContainer>
+              <ProductHubFiltersController
+                data={dataMatchedByNL}
+                selectedFilters={selectedFilters}
+                selectedProduct={selectedProduct}
+                selectedToken={selectedToken}
+                onChange={setSelectedFilters}
+              />
+              <ProductHubTableController rows={parsedRows} selectedToken={selectedToken} />
+            </AssetsTableContainer>
+          </>
+        )}
+      </WithLoadingIndicator>
     </AnimatedWrapper>
   )
 }
