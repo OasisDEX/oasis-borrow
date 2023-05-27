@@ -1,3 +1,4 @@
+import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import { ethers } from 'ethers'
 import { GraphQLClient } from 'graphql-request'
 import { getStorageValue } from 'helpers/useLocalStorage'
@@ -54,7 +55,7 @@ export const forkNetworks: ForkNetworkConfig[] = Object.entries(forkSettings).ma
       hexId: `0x${Number(forkNetwork.id).toString(16)}` as NetworkConfigHexId,
       label: `${originalNetworkConfig.label} Test`,
       rpcUrl: forkNetwork.url,
-      readProvider: new ethers.providers.StaticJsonRpcProvider(forkNetwork.url),
+      readProvider: new JsonRpcBatchProvider(forkNetwork.url),
       name: `${originalNetworkConfig.name}-test`,
       isCustomFork: true,
     }
