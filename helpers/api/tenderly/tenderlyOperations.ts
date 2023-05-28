@@ -3,7 +3,7 @@ let latestFork: Fork | undefined = undefined
 
 export type Fork = {
   blockNumber: number
-  timestamp: number
+  lastModified: Date
   uuid: string
 }
 

@@ -1,7 +1,7 @@
 CREATE TABLE rpc_forks
 (
-  uuid CHARACTER VARYING(46) NOT NULL,
-  last_check TIMESTAMP NOT NULL,
+  uuid CHARACTER VARYING(50) NOT NULL,
+  last_modified TIMESTAMP NOT NULL,
   blockNumber INTEGER NOT NULL
 );
 
