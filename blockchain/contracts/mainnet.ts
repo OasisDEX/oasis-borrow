@@ -47,7 +47,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc } from 'blockchain/networksConfig'
+import { contractDesc } from 'blockchain/networks'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   AAVE_V3_POOL_GENESIS_MAINNET,

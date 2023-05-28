@@ -4,7 +4,7 @@ import { map, switchMap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
 import { ContextConnected } from './network'
-import { NetworkIds } from './networkIds'
+import { NetworkIds } from './networks/'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export interface CollateralLocked {

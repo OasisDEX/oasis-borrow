@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { gql, GraphQLClient } from 'graphql-request'
 import moment from 'moment'
 import { Observable } from 'rxjs'

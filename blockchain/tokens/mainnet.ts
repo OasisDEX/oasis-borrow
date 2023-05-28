@@ -2,7 +2,7 @@ import { ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
-import { contractDesc } from 'blockchain/networksConfig'
+import { contractDesc } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
 
 const { mainnet } = ADDRESSES
@@ -73,6 +73,8 @@ export const tokensMainnet = {
   USDC: contractDesc(erc20, mainnet.common.USDC),
   WBTC: contractDesc(erc20, mainnet.common.WBTC),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
+  CBETH: contractDesc(erc20, mainnet.common.CBETH),
+  ETH: contractDesc(erc20, mainnet.common.WETH),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = [

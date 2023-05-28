@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { BytesLike } from 'ethers'
 import { MerkleRedeemer } from 'types/web3-v1-contracts'
 

@@ -1,5 +1,5 @@
 import { PrismaClient, Protocol, UsersWhoFollowVaults } from '@prisma/client'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { NextApiRequest, NextApiResponse } from 'next'

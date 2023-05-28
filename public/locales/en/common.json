@@ -218,17 +218,22 @@
         "annual-fee": "Annual fee",
         "asset": "Vault",
         "automation": "Automation",
+        "borrow-rate": "Borrow rate",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
+        "collateral-debt": "Collateral/Debt",
         "collateral-locked": "Collateral locked",
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
         "debt": "Debt",
+        "deposit-token": "Deposit token",
         "earnings-to-date": "Earnings to date",
         "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
         "liquidity-avaliable": "Liquidity avaliable",
         "liquidity": "Liquidity",
+        "long-short": "Long/Short",
+        "management": "Management",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
         "max-multiple": "Max multiple",
@@ -240,10 +245,13 @@
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
         "protection": "Protection",
+        "protocol-network": "Protocol/Network",
         "protocol": "Protocol",
         "risk-ratio": "Risk ratio",
         "status": "Status",
+        "strategy": "Strategy",
         "tvl": "TVL",
+        "variable-fee-yr": "Variable Fee/Yr",
         "variable": "Variable %",
         "vault-debt": "Vault debt",
         "with-50-tokens": "With 50.00 {{token}}"
@@ -325,7 +333,6 @@
       "title": "Oasis Swap & Bridge",
       "subtitle": "Say Hello to Oasis Swap & Bridge",
       "body": "Quickly and securely swap and bridge tokens directly on Oasis with our partner LiFi. Visit <0>Oasis Swap FAQ's to read more →</0>",
-      "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
       "button": "Got it"
     }
   },
@@ -457,7 +464,7 @@
       },
       "ajna": {
         "headline": "Borrow and lend your crypto on Ajna",
-        "subheader": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
+        "subheader": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
       }
     },
     "stats": {
@@ -972,11 +979,11 @@
     },
     "ajna": {
       "title": "Oasis.app × Ajna",
-      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "ajnaProductPage": {
       "title": "{{product}} - Oasis.app × Ajna",
-      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
+      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "multiply": {
       "title": "Multiply - Oasis.app",
@@ -1068,6 +1075,7 @@
     "liquidation-fee": "Liquidation Fee",
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
+    "liquidation-threshold": "Liquidation Threshold",
     "buying-power": "Buying Power",
     "net-value": "Net Value",
     "net-value-pnl": "Net Value & P&L",
@@ -1670,31 +1678,83 @@
       "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
     },
     "aave": {
-      "stETHeth": {
+      "stETHethV2": {
         "title": "stETH/ETH Aave",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
       },
-      "wstETHeth": {
+      "stETHethV3": {
+        "title": "stETH/ETH Aave",
+        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
+      },
+      "wstETHethV2": {
         "title": "wstETH/ETH Aave",
         "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
       },
-      "stETHusdc": {
+      "wstETHethV3": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
+      },
+      "stETHusdcV2": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
       },
-      "ethusdc": {
+      "stETHusdcV3": {
+        "title": "Highest stETH multiple option",
+        "description": "Maximise your stETH exposure with Aave and USDC."
+      },
+      "ethusdcV2": {
         "title": "Highest ETH multiple option",
         "description": "Maximise your ETH exposure with Aave and USDC."
       },
-      "wBTCusdc": {
+      "ethusdcV3": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC."
+      },
+      "wBTCusdcV2": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      },
+      "wBTCusdcV3": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      },
+      "cbETHusdcV2": {
+        "title": "High cbETH multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      },
+      "cbETHusdcV3": {
+        "title": "High cbETH multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
       },
       "borrow-against-ETH": {
         "title": "AAVE ETH",
         "description": "A position to borrow against your ETH in AAVE"
       },
-      "tokens-for-borrowing": "Tokens for Borrowing"
+      "tokens-for-borrowing": "Tokens for Borrowing",
+      "optimism-ethusdc": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC. Now on Optimism."
+      },
+      "optimism-wstethusdc": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards. Now on Optimism."
+      },
+      "optimism-wbtcusdc": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC. Now on Optimism."
+      },
+      "arbitrum-ethusdc": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC. Now on Arbitrum."
+      },
+      "arbitrum-wstethusdc": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards. Now on Arbitrum."
+      },
+      "arbitrum-wbtcusdc": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC. Now on Arbitrum."
+      }
     },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
@@ -1715,8 +1775,10 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH",
+      "stETHethV2": "Get up to {{value}} ETH exposure to stETH",
+      "stETHethV3": "Get up to {{value}} ETH exposure to stETH",
+      "wstETHethV2": "Get up to {{value}} ETH exposure to wstETH",
+      "wstETHethV3": "Get up to {{value}} ETH exposure to wstETH",
       "borrow-against-ETH": "Borrow up to ${{value}}"
     }
   },
@@ -2461,9 +2523,11 @@
         },
         "banners": {
           "tokens": {
-            "title": "This positions earns AJNA tokens",
-            "description": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards.",
-            "button": "Claim your AJNA tokens"
+            "title": "This position earns AJNA tokens",
+            "description-open": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.",
+            "description-manage": "This Ajna position on Oasis.app makes you eligible for AJNA token rewards. You are earning automatically and you can claim weekly after first month.",
+            "button-open": "Read more about AJNA rewards",
+            "button-manage": "Claim your AJNA tokens"
           }
         },
         "form": {
@@ -2474,14 +2538,45 @@
             "transaction": "Confirm your Ajna {{product}} Position",
             "transition": "Switch your Ajna {{product}} Position",
             "position-frozen": "Position Frozen",
-            "claim-collateral": "Claim collateral"
+            "claim-collateral": "Claim collateral",
+            "nft": "This Position is eligible for Ajna token rewards"
           },
           "risk": {
-            "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
-            "bullet-points": [
-              "Its a new DeFi protocol.",
-              "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
-            ]
+            "intro": "Anja is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
+            "bullet-points": {
+              "borrow": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "There is an origination fee when borrowing to avoid rapid changes in rates.",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ],
+              "multiply": ["Lorem ipsum dolor sit amet"],
+              "earn": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "Your position will lend only against one asset.",
+                "Failure to monitor and adjust your position may result in holding the collateral asset",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ]
+            }
+          },
+          "nft": {
+            "intro": "The Ajna rewards this position is eligible for",
+            "token-rewards": "Oasis.app x AJNA Token Rewards",
+            "protocol-rewards": "AJNA Protocol Rewards",
+            "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
+            "bullet-points": {
+              "token-rewards": [
+                "Rewards exclusive to Oasis.app users only!",
+                "Auto-Earned for lending within the active liquidity range",
+                "Claimable weekly",
+                "Read more about <2><3>Ajna Token Rewards</2></3>"
+              ],
+              "protocol-rewards": [
+                "Optional rewards for Ajna Earn users",
+                "Earned proportional to interest earned in the pool",
+                "Expect an increase in gas fees to manage your position",
+                "Read more about <2><3>Ajna Protocol Rewards</2></3>"
+              ]
+            }
           },
           "transaction": {
             "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position.",
@@ -2515,11 +2610,15 @@
         "common": {
           "overview": {
             "liquidation-price": "Liquidation Price",
+            "liquidation-price-modal-desc": "The liquidation prices represents the price at which it is expected that liquidatiors sucesfully action your collateral to repay your debt. Monitor this value compared to market price.",
             "below-current-price": "{{belowCurrentPrice}} below current price",
             "loan-to-value": "Loan to value",
+            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
             "liquidation-threshold": "Liquidation Threshold: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
-            "position-debt": "Position debt"
+            "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
+            "position-debt": "Position debt",
+            "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
           "form": {
             "origination-fee": "{{quoteToken}} Origination Fee"
@@ -2551,7 +2650,7 @@
         "open": {
           "simulation": {
             "duration": "Duration",
-            "earnings-after-fees": "Earnings after fees",
+            "estimated-earnings": "Estimated earnings",
             "net-value": "Net value",
             "earnings-per-day": "Projected earnings per day",
             "earnings-per-30d": "Projected earnings per 30d",
@@ -2573,7 +2672,7 @@
             "max-lending-ltv-modal-desc": "The max lending LTV represents the % of {{quoteToken}} you are willing to lend for each unit of {{collateralToken}}. This value moves as the price of {{collateralToken}}/{{quoteToken}} changes. You should adjust your position as the price changes to earn yield in a safe way:",
             "net-pnl": "Net PnL: {{netPnL}}",
             "position-lending-price": "Position lending price",
-            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in quote token.",
+            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
             "minimum-yield-price-modal": "Minimum Yield Price",
             "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
             "tokens-deposited": "Tokens deposited",
@@ -2581,12 +2680,12 @@
           },
           "notifications": {
             "deposit-is-not-withdrawable": {
-              "title": "Warning your selected price is too close to market price",
+              "title": "Your selected price is too close to market price",
               "message": "In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}",
               "label": "Adjust lending price"
             },
             "earning-no-apy": {
-              "title": "Warning your position is not earning any yield",
+              "title": "Your position is not earning any yield",
               "message": "Your lending position is below the minimum yield bearing price",
               "label": "Adjust lending price"
             },
@@ -2630,7 +2729,7 @@
       "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "price-below-htp": "You will be lending without earning any yield.",
-      "price-above-momp": "Warning your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
+      "price-above-momp": "Your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
       "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
@@ -2647,30 +2746,41 @@
       "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens in 2 different ways. Read below to find out more.",
       "cards": {
         "mining": {
-          "title": "AJNA Liquidity Mining Rewards",
+          "title": "AJNA Protocol Rewards",
           "list-1": "Rewards Earn Positions only",
-          "list-2": "Earn a Proportional % of pool interest generated",
+          "list-2": "Fortnightly Claim period",
+          "list-3": "Earn proportionally to % of pool interest generated",
+          "list-4": "You need to opt-in to stake your positions",
           "link": "Learn more about Ajna Liquidity Mining Rewards",
           "banner": {
             "title": "AJNA Liquidity Mining Rewards "
-          },
-          "floatingLabel": "Exclusive to Oasis.app"
+          }
         },
         "token": {
-          "title": "AJNA Token Rewards",
-          "list-1": "Rewards exclusive to Oasis.app users only!",
+          "title": "Oasis.app x Ajna Token Rewards",
+          "list-1": "Rewards exclusive to Oasis.app users!",
           "list-2": "Rewards for Borrowing, Lending and Multiplying",
+          "list-3": "Tokens claimable weekly after first month",
           "link": "Learn more about Ajna Token Rewards",
           "banner": {
-            "title": "Your AJNA token rewards on 4 positions"
-          }
+            "title": "AJNA Token Rewards"
+          },
+          "floatingLabel": "Exclusive to Oasis.app"
         },
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
         "button": "Claim AJNA tokens"
       }
     }
   },
-  "oasis-create": {
+  "product-hub": {
+    "header": {
+      "i-want-to": "I want to",
+      "conjunction": {
+        "borrow": "against",
+        "multiply": "exposure to",
+        "earn": "with "
+      }
+    },
     "select": {
       "borrow": "Borrow against your favorite crypto assets",
       "multiply": "Increase your exposure to any crypto asset",
@@ -2680,6 +2790,21 @@
       "borrow": "Easily borrow stablecoins or other crypto-assets against your collateral. Read more about",
       "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset. Read more about",
       "earn": "Earn long term yields to compound your crypto capital. Read more about"
+    },
+    "table": {
+      "active": "Active",
+      "active-with-liq-risk": "Active (liq. risk)",
+      "long-short": "Long or short",
+      "long": "Long only",
+      "passive": "Passive",
+      "short": "Short only"
+    },
+    "filters": {
+      "debt-tokens": "Debt Tokens",
+      "secondary-tokens": "Secondary Tokens",
+      "strategies": "Strategies",
+      "networks": "Networks",
+      "protocols": "Protocols"
     }
   }
 }

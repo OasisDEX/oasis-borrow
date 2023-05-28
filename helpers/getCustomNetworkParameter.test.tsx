@@ -1,12 +1,11 @@
 import { renderHook } from '@testing-library/react'
-import { NetworkIds } from 'blockchain/networkIds'
-
 import {
   CustomNetworkStorageKey,
   mainnetNetworkParameter,
+  NetworkIds,
+  NetworkNames,
   useCustomNetworkParameter,
-} from './getCustomNetworkParameter'
-import { NetworkNames } from './networkNames'
+} from 'blockchain/networks'
 
 describe('getCustomNetworkParameter', () => {
   it('Should return mainnet as default network', () => {

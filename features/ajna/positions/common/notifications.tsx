@@ -46,7 +46,7 @@ const AjnaLiquidationNotificationWithLink: FC<AjnaLiquidationNotificationWithLin
   />
 )
 
-type DepositIsNotWithdrawableParams = {
+type PriceAboveMompParams = {
   message: { collateralToken: string; quoteToken: string }
   action: () => void
 }
@@ -70,7 +70,7 @@ type LendingPriceFrozenParams = {
 type NotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
 
 const ajnaNotifications: {
-  depositIsNotWithdrawable: NotificationCallbackWithParams<DepositIsNotWithdrawableParams>
+  priceAboveMomp: NotificationCallbackWithParams<PriceAboveMompParams>
   earningNoApy: NotificationCallbackWithParams<EarningNoApyParams>
   emptyPosition: NotificationCallbackWithParams<EmptyPositionParams>
   timeToLiquidation: NotificationCallbackWithParams<TimeToLiquidationParams>
@@ -80,7 +80,7 @@ const ajnaNotifications: {
   lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
   collateralToWithdraw: NotificationCallbackWithParams<null>
 } = {
-  depositIsNotWithdrawable: ({ action, message }) => ({
+  priceAboveMomp: ({ action, message }) => ({
     title: {
       translationKey:
         'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.title',
@@ -265,7 +265,7 @@ export function getAjnaNotifications({
         quoteTokenAmount,
       } = position as AjnaEarnPosition
       const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
-      const depositIsNotWithdrawable = price.gt(mostOptimisticMatchingPrice)
+      const priceAboveMomp = price.gt(mostOptimisticMatchingPrice)
       const emptyPosition = quoteTokenAmount.isZero()
       const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
 
@@ -275,9 +275,9 @@ export function getAjnaNotifications({
         updateState('uiPill', 'deposit-earn')
       }
 
-      if (depositIsNotWithdrawable) {
+      if (priceAboveMomp) {
         notifications.push(
-          ajnaNotifications.depositIsNotWithdrawable({
+          ajnaNotifications.priceAboveMomp({
             message: { collateralToken, quoteToken },
             action: moveToAdjust,
           }),

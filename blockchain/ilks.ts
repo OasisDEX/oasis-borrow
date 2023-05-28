@@ -11,7 +11,7 @@ import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
-import { NetworkIds } from './networkIds'
+import { NetworkIds } from './networks'
 
 export function createIlksSupportedOnNetwork$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(

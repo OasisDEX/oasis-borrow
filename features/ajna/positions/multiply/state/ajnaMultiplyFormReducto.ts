@@ -22,7 +22,7 @@ export interface AjnaMultiplyFormState {
   paybackAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  targetLiquidationPrice?: BigNumber
+  loanToValue?: BigNumber
   closeTo: AjnaCloseTo
   uiDropdown: AjnaMultiplyPanel
   uiPill: Exclude<
@@ -76,6 +76,7 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
             ...state,
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
+            loanToValue: undefined,
           }
         case 'update-generate':
           return {
@@ -104,7 +105,7 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
           return {
             ...state,
             ...ajnaMultiplyReset,
-            targetLiquidationPrice: rest.targetLiquidationPrice,
+            loanToValue: rest.loanToValue,
           }
         default:
           return state

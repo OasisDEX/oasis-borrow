@@ -15,8 +15,10 @@ export function WithArrow({
 }>) {
   return (
     <Text
+      as="span"
       variant={variant}
       sx={{
+        display: 'block',
         fontWeight: 'semiBold',
         fontSize: [1, 2],
         position: 'relative',
@@ -31,8 +33,10 @@ export function WithArrow({
       }}
       {...(as && { as })}
     >
-      <Box sx={{ display: 'inline', mr: gap }}>{children}</Box>
-      <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>
+      <Box as="span" sx={{ mr: gap }}>
+        {children}
+      </Box>
+      <Box as="span" className="arrow" sx={{ position: 'absolute' }}>
         →
       </Box>
     </Text>

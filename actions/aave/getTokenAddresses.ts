@@ -1,7 +1,6 @@
 import { AAVEStrategyAddresses, AAVEV3StrategyAddresses } from '@oasisdex/oasis-actions'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress, NetworkIds } from 'blockchain/networks'
 
 export function getTokenAddresses(
   networkId: NetworkIds.MAINNET,

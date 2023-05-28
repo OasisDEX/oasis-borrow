@@ -13,7 +13,8 @@ import { Grid, Text } from 'theme-ui'
 export function MultiplyView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
-  const aaveMultiplyStrategies = aaveStrategiesList('Multiply', LendingProtocol.AaveV2)
+  const aaveMultiplyStrategiesV2 = aaveStrategiesList('Multiply', LendingProtocol.AaveV2)
+  const aaveMultiplyStrategiesV3 = aaveStrategiesList('Multiply', LendingProtocol.AaveV3)
 
   return (
     <Grid
@@ -55,7 +56,7 @@ export function MultiplyView() {
         selectedFilter={tab}
         makerProductCardComponent={ProductCardMultiplyMaker}
         filterCardsFunction={multiplyPageCardsData}
-        otherStrategies={aaveMultiplyStrategies}
+        otherStrategies={[...aaveMultiplyStrategiesV3, ...aaveMultiplyStrategiesV2]}
       />
     </Grid>
   )

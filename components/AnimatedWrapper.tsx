@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react'
-import { Box } from 'theme-ui'
+import { Box, SxStyleProp } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
-export function AnimatedWrapper({ children }: PropsWithChildren<{}>) {
+export function AnimatedWrapper({ children, sx }: PropsWithChildren<{ sx?: SxStyleProp }>) {
   return (
     <Box
       sx={{
@@ -10,6 +10,7 @@ export function AnimatedWrapper({ children }: PropsWithChildren<{}>) {
         ...slideInAnimation,
         position: 'relative',
         zIndex: 2,
+        ...sx,
       }}
     >
       {children}

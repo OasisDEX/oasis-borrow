@@ -1,7 +1,7 @@
 import { TxMeta } from '@oasisdex/transactions'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { AccountFactory } from 'types/web3-v1-contracts'
 
 import { TxMetaKind } from './txMeta'

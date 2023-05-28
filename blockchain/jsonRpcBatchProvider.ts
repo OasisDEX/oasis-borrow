@@ -10,7 +10,7 @@ type PendingBatch = Array<{
 }>
 
 export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
-  _pendingBatchAggregator: NodeJS.Timer | null = null
+  _pendingBatchAggregator: NodeJS.Timeout | null = null
   _pendingBatch: PendingBatch | null = null
   send(method: string, params: Array<any>): Promise<any> {
     const request = {

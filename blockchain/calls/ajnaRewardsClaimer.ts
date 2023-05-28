@@ -1,6 +1,6 @@
 import { TxMeta } from '@oasisdex/transactions'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { AjnaRewardsClaimer } from 'types/web3-v1-contracts'
 
 import { TransactionDef } from './callsHelpers'

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay } from 'blockchain/utils'
 import { McdSpot } from 'types/web3-v1-contracts'
 import Web3 from 'web3'

@@ -1,9 +1,9 @@
 {
   "name": "oasis-borrow",
-  "version": "7.9.1",
+  "version": "7.11.3",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=14.x <=18.x"
+    "node": ">=16.18 <=18.x"
   },
   "scripts": {
     "start": "next dev",
@@ -33,8 +33,8 @@
     "@babel/runtime": "^7.21.0",
     "@gnosis.pm/safe-apps-sdk": "^7.7.0",
     "@gnosis.pm/safe-apps-web3-react": "^1.3.0",
-    "@lifi/wallet-management": "^2.0.0-beta.6",
-    "@lifi/widget": "^2.0.0-beta.8",
+    "@lifi/wallet-management": "^2.0.0-beta.7",
+    "@lifi/widget": "^2.0.0-beta.11",
     "@makerdao/dai-ui-icons": "^0.0.59",
     "@makerdao/dai-ui-icons-branding": "^0.0.66",
     "@makerdao/dai-ui-theme-casual": "^0.0.60",
@@ -44,9 +44,9 @@
     "@metamask/eth-sig-util": "^5.0.2",
     "@next/font": "^13.1.6",
     "@next/mdx": "12.0.4",
-    "@oasisdex/addresses": "0.0.12",
+    "@oasisdex/addresses": "0.0.18",
     "@oasisdex/automation": "1.4.0",
-    "@oasisdex/dma-library": "0.3.7",
+    "@oasisdex/dma-library": "0.3.14",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/oasis-actions": "0.2.16",
     "@oasisdex/transactions": "0.1.4-alpha.0",
@@ -142,7 +142,7 @@
     "@types/jsonwebtoken": "^9.0.0",
     "@types/lodash": "^4.14.109",
     "@types/mixpanel-browser": "^2.23.1",
-    "@types/node": "^12.12",
+    "@types/node": "16.18.32",
     "@types/pg": "^7.14.3",
     "@types/ramda": "^0.27.34",
     "@types/react": "^17.0.1",

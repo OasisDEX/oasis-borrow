@@ -1,5 +1,5 @@
 import { AaveV3UserAccountData, AaveV3UserAccountDataParameters } from 'blockchain/aave-v3'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { UserAccountData, UserAccountDataArgs } from 'lendingProtocols/aaveCommon/userAccountData'
 
 export function mapAaveUserAccountData$(

@@ -1,7 +1,7 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ManageTokenInput, ProxyType } from 'features/aave/common'
-import { NetworkIds } from '../../../blockchain/networkIds'
+import { NetworkIds } from '../../../blockchain/networks'
 import { AaveLendingProtocol } from '../../../lendingProtocols'
 
 export interface ManageAaveParameters {

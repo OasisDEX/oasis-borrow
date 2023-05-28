@@ -4,6 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -42,6 +43,13 @@ export function ContentCardLoanToValue({
     footnote: t('ajna.position-page.borrow.common.overview.liquidation-threshold', {
       liquidationThreshold: formatted.liquidationThreshold,
     }),
+    modal: (
+      <AjnaDetailsSectionContentSimpleModal
+        title={t('ajna.position-page.borrow.common.overview.loan-to-value')}
+        description={t('ajna.position-page.borrow.common.overview.loan-to-value-modal-desc')}
+        value={formatted.loanToValue}
+      />
+    ),
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

@@ -1,8 +1,14 @@
-import { AjnaEarnPosition, AjnaPosition, strategies, Strategy } from '@oasisdex/dma-library'
+import {
+  AjnaEarnPosition,
+  AjnaPosition,
+  RiskRatio,
+  strategies,
+  Strategy,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaGenericPosition, AjnaPoolPairs } from 'features/ajna/common/types'
@@ -134,7 +140,7 @@ export async function getAjnaParameters({
       )
     }
     case 'open-earn': {
-      const { price, depositAmount } = state as AjnaEarnFormState
+      const { price, depositAmount, isStakingNft } = state as AjnaEarnFormState
 
       return strategies.ajna.earn.open(
         {
@@ -142,7 +148,7 @@ export async function getAjnaParameters({
           price: price!,
           quoteAmount: depositAmount!,
           collateralAmount: zero,
-          isStakingNft: true,
+          isStakingNft: !!isStakingNft,
           collateralPrice,
           quotePrice,
         },
@@ -201,6 +207,20 @@ export async function getAjnaParameters({
           quotePrice,
         },
         { ...dependencies },
+      )
+    }
+    case 'open-multiply': {
+      const { depositAmount, loanToValue } = state
+
+      return strategies.ajna.multiply.open(
+        {
+          ...commonPayload,
+          collateralAmount: depositAmount!,
+          collateralPrice,
+          quotePrice,
+          riskRatio: new RiskRatio(loanToValue || zero, RiskRatio.TYPE.LTV),
+        },
+        dependencies,
       )
     }
     default:

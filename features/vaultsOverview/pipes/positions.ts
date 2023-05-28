@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
@@ -334,6 +334,7 @@ export function createAavePosition$(
                 )
               },
             ),
+            map((positions) => positions.filter((position) => position !== undefined)),
             startWith([]),
           )
         : of([] as AavePosition[])

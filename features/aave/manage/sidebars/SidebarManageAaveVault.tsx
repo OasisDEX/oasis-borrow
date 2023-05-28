@@ -1,12 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { PositionTransition } from '@oasisdex/dma-library'
 import {
   IPosition,
   IPositionTransition,
   ISimplePositionTransition,
+  ISimulatedTransition,
   OPERATION_NAMES,
 } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
-import { transitionHasSwap } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
@@ -89,39 +90,14 @@ function textButtonReturningToAdjust({
   return {}
 }
 
-/*
-
-if closing to collateral, and there is debt on the position, then we are swapping from collateral to debt:
-
-1. take out collateral
-2. swap as much of it as we need to debt (fee)
-3. pay back the debt
-
-final position amount:
-    collateral in vault - collateral needed for swap from token
-
-if closing to collateral, no debt:
-- then there would be no swap, so no collateral needed for swap (zero)
-- formula the same
-
-if closing to debt, and there is debt on the position, then:
-
-1. withdraw all collateral
-2. swap it all to debt (fee)
-3. pay back debt
-
-final position amount:
-    amount from swap (- minus fee maybe) - debt in position
-
-if closing to debt, with no debt:
-- there will still be a swap
-- there is no debt in position
-- formula is the same
-
- */
+function transitionHasSwap(
+  transition?: ISimplePositionTransition | PositionTransition,
+): transition is IPositionTransition {
+  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+}
 
 function getAmountReceivedAfterClose(
-  strategy: IPositionTransition | ISimplePositionTransition | undefined,
+  strategy: IPositionTransition | ISimplePositionTransition | PositionTransition | undefined,
   currentPosition: IPosition | undefined,
   isCloseToCollateral: boolean,
 ) {

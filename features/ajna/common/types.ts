@@ -4,9 +4,8 @@ import { AllNetworksContractsType } from 'blockchain/contracts'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
-import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 
-export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition | AjnaMultiplyPosition
+export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
 export type AjnaFormState = AjnaBorrowFormState | AjnaEarnFormState | AjnaMultiplyFormState
@@ -36,8 +35,15 @@ export type AjnaMultiplyAction =
   | 'close-multiply'
 export type AjnaMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
 
-export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
-export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
+export type AjnaSidebarStep =
+  | 'risk'
+  | 'setup'
+  | 'manage'
+  | 'dpm'
+  | 'transaction'
+  | 'transition'
+  | 'nft'
+export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage' | 'nft'>
 
 export type AjnaCloseTo = 'collateral' | 'quote'
 

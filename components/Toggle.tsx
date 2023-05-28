@@ -7,10 +7,11 @@ interface ToggleProps {
   isChecked: boolean
   onChange: (checked: boolean) => void
   isLoading?: boolean
+  withLoading?: boolean
   sx?: SxStyleProp
 }
 
-export function Toggle({ isChecked, onChange, isLoading, sx }: ToggleProps) {
+export function Toggle({ isChecked, onChange, isLoading, withLoading, sx }: ToggleProps) {
   const [clicked, setClicked] = useState(false)
   const [toggle, setToggle] = useState(isChecked)
 
@@ -45,7 +46,7 @@ export function Toggle({ isChecked, onChange, isLoading, sx }: ToggleProps) {
       sx={{
         position: 'relative',
         display: 'inline-block',
-        width: '48px',
+        minWidth: '48px',
         height: '24px',
         backgroundColor: isChecked ? 'interactive10' : 'secondary60',
         borderRadius: 'round',
@@ -107,7 +108,7 @@ export function Toggle({ isChecked, onChange, isLoading, sx }: ToggleProps) {
           ml: 1,
         }}
       >
-        {isToggleLoading && <AppSpinner />}
+        {isToggleLoading && withLoading && <AppSpinner />}
       </Box>
     </Box>
   )

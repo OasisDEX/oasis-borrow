@@ -4,6 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -48,6 +49,13 @@ export function ContentCardLiquidationPrice({
         )}`,
       variant: changeVariant,
     },
+    modal: (
+      <AjnaDetailsSectionContentSimpleModal
+        title={t('ajna.position-page.borrow.common.overview.liquidation-price')}
+        description={t('ajna.position-page.borrow.common.overview.liquidation-price-modal-desc')}
+        value={`${formatted.liquidationPrice} ${collateralToken}/${quoteToken}`}
+      />
+    ),
   }
 
   if (!liquidationPrice.isZero()) {

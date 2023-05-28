@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -45,9 +45,8 @@ export function ContentFooterItemsMultiply({
       afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
     multiple: `${multiple.toFixed(2)}x`,
     afterMultiple: afterMultiple && `${afterMultiple.toFixed(2)}x`,
-    buyingPower: `${formatCryptoBalance(buyingPower)} ${collateralToken}`,
-    afterBuyingPower:
-      afterBuyingPower && `${formatCryptoBalance(afterBuyingPower)} ${collateralToken}`,
+    buyingPower: `${formatCryptoBalance(buyingPower)} USD`,
+    afterBuyingPower: afterBuyingPower && `${formatFiatBalance(afterBuyingPower)} USD`,
   }
 
   return (

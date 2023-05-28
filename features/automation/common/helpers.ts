@@ -8,7 +8,7 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { UIChanges } from 'components/AppContext'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {

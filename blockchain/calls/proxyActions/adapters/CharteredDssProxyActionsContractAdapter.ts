@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
 import { DssProxyActionsCharter } from 'types/web3-v1-contracts'
 import { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'

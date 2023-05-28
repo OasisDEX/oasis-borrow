@@ -1,9 +1,9 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
-import { NetworkNames } from 'helpers/networkNames'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
@@ -20,9 +20,9 @@ import {
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
   getOpenDepositBorrowAaveMachine,
-  getOpenMultiplyAaveParametersMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
+import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
@@ -104,6 +104,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const openMultiplyAaveParameters = getOpenMultiplyAaveParametersMachine(
     txHelpers$,
     gasEstimation$,
+    { networkId: NetworkIds.MAINNET, lendingProtocol: LendingProtocol.AaveV2 },
   )
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)

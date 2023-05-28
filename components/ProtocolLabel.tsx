@@ -1,5 +1,5 @@
-import { networksByName } from 'blockchain/networksConfig'
-import { BaseNetworkNames } from 'helpers/networkNames'
+import { BaseNetworkNames } from 'blockchain/networks'
+import { networksByName } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import React from 'react'
@@ -28,9 +28,9 @@ export function ProtocolLabel({ network, protocol }: ProtocolLabelProps) {
       }}
     >
       <Image
-        src={lendingProtocolsByName[protocol].icon}
+        src={lendingProtocolsByName[protocol].logo}
         alt={lendingProtocolsByName[protocol].label}
-        sx={{ height: `${10 * lendingProtocolsByName[protocol].scale}px` }}
+        sx={{ height: `${10 * lendingProtocolsByName[protocol].logoScale}px` }}
       />
       <Flex
         sx={{

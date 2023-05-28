@@ -121,7 +121,7 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
               },
             ]}
             button={{
-              link: `/${strategy.network}/aave/${protocolVersion}/earn/${cardData.symbol}`,
+              link: `/${strategy.network}/aave/${protocolVersion}/earn/${strategy.urlSlug}`,
               text: t('nav.earn'),
             }}
             background={cardData.background}

@@ -30,6 +30,8 @@ export function isFormEmpty({ product, state, position, currentStep }: IsFormEmp
       switch (currentStep) {
         case 'setup':
           return !depositAmount && !withdrawAmount
+        case 'nft':
+          return false
         case 'manage':
           if ((position as AjnaEarnPosition).quoteTokenAmount.isZero()) {
             return !depositAmount && !withdrawAmount
@@ -45,6 +47,13 @@ export function isFormEmpty({ product, state, position, currentStep }: IsFormEmp
       }
     }
     case 'multiply':
-      return true
+      const { depositAmount } = state as AjnaBorrowFormState
+
+      switch (currentStep) {
+        case 'setup':
+          return !depositAmount
+        default:
+          return true
+      }
   }
 }

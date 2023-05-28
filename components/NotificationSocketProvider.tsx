@@ -1,5 +1,5 @@
 import { NotificationsEventAdditionalParams } from 'analytics/analytics'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import {
   firstNotificationsRelevantDate,

@@ -4,8 +4,7 @@ import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-con
 
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
-import { NetworkIds } from './networkIds'
-import { networksById } from './networksConfig'
+import { getRpcProvider, NetworkIds } from './networks'
 
 export interface UserDpmAccount {
   proxy: string
@@ -26,11 +25,11 @@ export function getUserDpmProxies$(
       const { accountFactory, accountGuard } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
-        networksById[chainId].readProvider,
+        getRpcProvider(chainId),
       )
       const accountGuardContract = AccountGuard__factory.connect(
         accountGuard.address,
-        networksById[chainId].readProvider,
+        getRpcProvider(chainId),
       )
       const accountCreatedFilter = accountFactoryContract.filters.AccountCreated(
         null,
@@ -110,11 +109,11 @@ export function getUserDpmProxy$(
       const { accountFactory, accountGuard } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
-        networksById[chainId].readProvider,
+        getRpcProvider(chainId),
       )
       const accountGuardContract = AccountGuard__factory.connect(
         accountGuard.address,
-        networksById[chainId].readProvider,
+        getRpcProvider(chainId),
       )
 
       const accountCreatedFilter = accountFactoryContract.filters.AccountCreated(
@@ -171,7 +170,7 @@ export function getPositionIdFromDpmProxy$(
       const { accountFactory } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       const accountFactoryContract = AccountFactory__factory.connect(
         accountFactory.address,
-        networksById[chainId].readProvider,
+        getRpcProvider(chainId),
       )
 
       const filter = accountFactoryContract.filters.AccountCreated(dpmProxy, null, null)
