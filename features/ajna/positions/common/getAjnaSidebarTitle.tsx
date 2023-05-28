@@ -1,6 +1,5 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
-import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +13,7 @@ export const getAjnaSidebarTitle = ({
   currentStep: AjnaSidebarStep
   product: AjnaProduct
   isFormFrozen: boolean
-  position: AjnaPosition | AjnaMultiplyPosition | AjnaEarnPosition
+  position: AjnaPosition | AjnaEarnPosition
 }) => {
   const { t } = useTranslation()
 

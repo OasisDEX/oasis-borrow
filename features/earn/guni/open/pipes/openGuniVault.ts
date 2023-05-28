@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { compareBigNumber, ContextConnected } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import {

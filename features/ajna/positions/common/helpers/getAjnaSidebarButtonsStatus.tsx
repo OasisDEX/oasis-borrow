@@ -53,10 +53,11 @@ export function getAjnaSidebarButtonsStatus({
       isTransitionInProgress)
 
   const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
-  const isTextButtonHidden = !(
-    (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
-    (isTransitionWaitingForApproval && !isTransitionInProgress)
-  )
+  const isTextButtonHidden =
+    !(
+      (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
+      (isTransitionWaitingForApproval && !isTransitionInProgress)
+    ) && currentStep !== 'nft'
 
   return {
     isPrimaryButtonDisabled,

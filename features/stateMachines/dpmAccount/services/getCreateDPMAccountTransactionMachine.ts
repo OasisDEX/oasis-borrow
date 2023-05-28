@@ -3,7 +3,7 @@ import { createAccount, CreateDPMAccount } from 'blockchain/calls/accountFactory
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'

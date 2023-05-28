@@ -1,9 +1,12 @@
 import { PageSEOTags } from 'components/HeadTags'
-import { MarketingLayout } from 'components/Layouts'
+import { AppLayout } from 'components/Layouts'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { WithChildren } from 'helpers/types'
 import React from 'react'
 
-export const discoverPageLayout = MarketingLayout
+export const DiscoverPageLayout = ({ children }: WithChildren) => (
+  <AppLayout shortBackground={true}>{children}</AppLayout>
+)
 export const discoverPageLayoutProps = {
   topBackground: 'lighter',
 }

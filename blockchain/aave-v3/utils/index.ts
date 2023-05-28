@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
+import { AaveV3ReserveDataParameters } from 'blockchain/aave-v3/aaveV3PoolDataProvider'
 import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
+import { getRpcProvider } from 'blockchain/networks'
 import { ethers } from 'ethers'
-import { getRpcProvider } from 'helpers/get-rpc-provider'
 
 export type Factory<T> = {
   connect: (address: string, rpcProvider: ethers.providers.Provider) => T
@@ -24,6 +25,8 @@ export type ContractForNetwork<Contract> = {
 
 const baseCurrencyUnits = {
   [NetworkIds.MAINNET]: new BigNumber(100000000),
+  [NetworkIds.OPTIMISMMAINNET]: new BigNumber(100000000),
+  [NetworkIds.ARBITRUMMAINNET]: new BigNumber(100000000),
   [NetworkIds.HARDHAT]: new BigNumber(100000000),
 }
 
@@ -50,4 +53,16 @@ export function getNetworkMapping<Contract>(
     tokenMappings,
     baseCurrencyUnit: baseCurrencyUnits[networkId],
   }
+}
+
+/**
+ *  Aave expects WETH instead of ETH address, this handles it
+ */
+export function wethToEthAddress<T>(
+  tokenMappings: ContractForNetwork<T>['tokenMappings'],
+  token: AaveV3ReserveDataParameters['token'],
+): string {
+  return tokenMappings[token].address === tokenMappings['ETH'].address
+    ? tokenMappings['WETH'].address
+    : tokenMappings[token].address
 }

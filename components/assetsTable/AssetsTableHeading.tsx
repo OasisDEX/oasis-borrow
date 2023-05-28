@@ -9,7 +9,7 @@ export function AssetsTableHeading({ children }: PropsWithChildren<{}>) {
       sx={{
         position: 'relative',
         px: ['24px', null, null, 4],
-        mt: [3, null, null, 4],
+        mt: '24px',
         pb: 3,
         borderBottom: '1px solid',
         borderColor: 'neutral20',

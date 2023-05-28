@@ -1,49 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { Box, Divider, Flex, Text } from '@theme-ui/components'
-import { AppLink } from 'components/Links'
+import { Box, Flex, Text } from '@theme-ui/components'
 import { WithChildren } from 'helpers/types'
-import React, { ReactNode } from 'react'
-
-export function VaultFormVaultTypeSwitch({
-  href,
-  title,
-  visible,
-}: {
-  href: string
-  title: ReactNode
-  visible: boolean
-}) {
-  return visible ? (
-    <>
-      <Divider variant="styles.hrVaultFormBottom" />
-      <Box>
-        <AppLink
-          href={href}
-          sx={{
-            color: 'primary100',
-            fontWeight: 'semiBold',
-            fontSize: 3,
-            display: 'block',
-          }}
-        >
-          <Flex
-            sx={{
-              variant: 'links.nav',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 3,
-            }}
-          >
-            <Text mr={2}>{title}</Text>
-            <Icon sx={{ ml: 1 }} name="arrow_right" />
-          </Flex>
-        </AppLink>
-      </Box>
-    </>
-  ) : (
-    <></>
-  )
-}
+import React from 'react'
 
 export function WithVaultFormStepIndicator({
   currentStep,

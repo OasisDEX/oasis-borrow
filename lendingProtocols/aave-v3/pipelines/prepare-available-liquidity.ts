@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3ReserveDataParameters, AaveV3ReserveDataReply } from 'blockchain/aave-v3'
-import { amountFromWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
@@ -16,10 +15,7 @@ export function prepareaaveAvailableLiquidityInUSDC$(
   // Aave V3 Oracle prices are in USD
   return combineLatest(getAaveReserveData$(reserveDataToken), getWETHPrice$).pipe(
     map(([reserveData, USD_in_WETH_price]: PrepareAaveAvailableLiquidityProps) => {
-      const availableLiquidityInETH = amountFromWei(
-        new BigNumber(reserveData.availableLiquidity),
-        'ETH',
-      )
+      const availableLiquidityInETH = reserveData.availableLiquidity
       return availableLiquidityInETH.times(USD_in_WETH_price)
     }),
     catchError((error) => {

@@ -3,7 +3,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { ActivityItem } from 'components/Activity'
 import { TxData } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'

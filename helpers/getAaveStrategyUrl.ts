@@ -1,7 +1,6 @@
+import { NetworkNames } from 'blockchain/networks'
 import { ProductType } from 'features/aave/common'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
-
-import { NetworkNames } from './networkNames'
 
 type AaveVersionProps = {
   network: NetworkNames

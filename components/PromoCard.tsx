@@ -5,9 +5,9 @@ import { WithArrow } from 'components/WithArrow'
 import React from 'react'
 import { Box, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
 
-type PromoCardVariant = 'neutral' | 'positive' | 'negative'
+export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
 
-interface PromoCardProps {
+export interface PromoCardProps {
   icon: string
   title: string
   protocol?: ProtocolLabelProps
@@ -58,11 +58,23 @@ export function PromoCard({
         borderColor: 'neutral20',
         borderRadius: 'large',
         bg: 'neutral10',
+        transition: 'border-color 200ms',
+        '&:hover': {
+          borderColor: 'primary100',
+        },
       }}
     >
       <Icon name={icon} size={50} sx={{ display: 'block', mx: 'auto', mb: '12px' }} />
       {protocol && (
-        <Box sx={{ position: 'absolute', top: '12px', right: '12px' }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            outline: '4px solid white',
+            borderRadius: 'large',
+          }}
+        >
           <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
         </Box>
       )}
@@ -80,7 +92,8 @@ export function PromoCard({
           sx={{
             listStyle: 'none',
             justifyContent: 'center',
-            columnGap: 2,
+            gap: 2,
+            flexWrap: 'wrap',
             mx: 0,
             mt: '12px',
             p: 0,
@@ -88,6 +101,7 @@ export function PromoCard({
         >
           {pills.map(({ label, variant = 'neutral' }) => (
             <Flex
+              key={label}
               as="li"
               variant="text.paragraph4"
               sx={{
@@ -108,7 +122,7 @@ export function PromoCard({
       {data && (
         <Flex as="ul" sx={{ flexDirection: 'column', listStyle: 'none', mx: 0, mt: 3, p: 0 }}>
           {data.map(({ label, value, variant = 'neutral' }) => (
-            <Flex as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
+            <Flex key={label} as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text as="span" variant="paragraph3" sx={{ color: 'neutral80' }}>
                 {label}
               </Text>

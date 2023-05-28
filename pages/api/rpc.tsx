@@ -1,8 +1,8 @@
 import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
+import { NetworkNames } from 'blockchain/networks'
 import * as ethers from 'ethers'
 import { getConfig, refreshFork, TenderlyConfig } from 'helpers/api/tenderly/tenderlyOperations'
-import { NetworkNames } from 'helpers/networkNames'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const threadId = Math.floor(Math.random() * 1000000)
@@ -73,7 +73,9 @@ function getRpcNode(network: NetworkNames, tenderlySecret: string, forkId: strin
     case NetworkNames.ethereumGoerli:
       return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.arbitrumMainnet:
-      return `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+      return process.env.ARBITRUM_MAINNET_RPC_URL !== undefined
+        ? `${process.env.ARBITRUM_MAINNET_RPC_URL}`
+        : `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.arbitrumGoerli:
       return `https://arbitrum-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.polygonMainnet:
@@ -81,7 +83,9 @@ function getRpcNode(network: NetworkNames, tenderlySecret: string, forkId: strin
     case NetworkNames.polygonMumbai:
       return `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.optimismMainnet:
-      return `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+      return process.env.OPTIMISM_MAINNET_RPC_URL !== undefined
+        ? `${process.env.OPTIMISM_MAINNET_RPC_URL}`
+        : `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case NetworkNames.optimismGoerli:
       return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
@@ -104,6 +108,11 @@ function getMulticall(network: NetworkNames) {
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case NetworkNames.ethereumGoerli:
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
+    case NetworkNames.arbitrumGoerli:
+    case NetworkNames.arbitrumMainnet:
+    case NetworkNames.optimismMainnet:
+    case NetworkNames.optimismGoerli:
+      return '0xcA11bde05977b3631167028862bE2a173976CA11' //https://github.com/mds1/multicall
     default:
       throw new Error('unsupported network')
   }

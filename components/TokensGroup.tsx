@@ -11,33 +11,6 @@ interface TokensGroupProps {
 export function TokensGroup({ sx, tokens }: TokensGroupProps) {
   return (
     <Box sx={{ position: 'relative', zIndex: 0, ...sx }}>
-      {/* uncomment if background around tokens is needed */}
-      {/* <Flex as="ul" sx={{ position: 'absolute', top: 0, left: 0, m: 0, p: 0, listStyle: 'none' }}>
-        {tokens.map(() => (
-          <Box
-            as="li"
-            sx={{
-              position: 'relative',
-              width: '30px',
-              height: '30px',
-              mr: '-18px',
-              '&:last-child': { mr: 0 },
-            }}
-          >
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '1px',
-                right: '1px',
-                bottom: '1px',
-                left: '1px',
-                background: 'red',
-                borderRadius: 'ellipse',
-              }}
-            />
-          </Box>
-        ))}
-      </Flex> */}
       <Flex as="ul" sx={{ m: 0, p: 0, listStyle: 'none' }}>
         {tokens.map((token, i) => (
           <Box
@@ -53,7 +26,7 @@ export function TokensGroup({ sx, tokens }: TokensGroupProps) {
             <Icon
               size={tokens.length > 1 ? 30 : 44}
               name={getToken(token).iconCircle}
-              sx={{ verticalAlign: 'bottom' }}
+              sx={{ verticalAlign: 'bottom', my: tokens.length === 1 ? '-4px' : 0 }}
             />
           </Box>
         ))}

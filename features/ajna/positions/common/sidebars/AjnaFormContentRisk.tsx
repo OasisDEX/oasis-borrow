@@ -1,4 +1,8 @@
+import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
+import { WithArrow } from 'components/WithArrow'
+import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -6,6 +10,9 @@ import { Box, Image, Text } from 'theme-ui'
 
 export function AjnaFormContentRisk() {
   const { t } = useTranslation()
+  const {
+    environment: { product },
+  } = useAjnaGeneralContext()
 
   return (
     <>
@@ -16,10 +23,15 @@ export function AjnaFormContentRisk() {
         icon="checkmark"
         iconSize="14px"
         iconColor="primary100"
-        items={t('ajna.position-page.common.form.risk.bullet-points', {
+        items={t(`ajna.position-page.common.form.risk.bullet-points.${product}`, {
           returnObjects: true,
         })}
         listStyle={{ mt: 2 }}
+        components={{
+          2: <AppLink href={EXTERNAL_LINKS.KB.AJNA} sx={{ display: 'inline-block' }} />,
+          3: <AppLink href={EXTERNAL_LINKS.KB.AJNA} sx={{ display: 'inline-block' }} />,
+          4: <WithArrow sx={{ fontWeight: 'regular', color: 'interactive100' }} />,
+        }}
       />
       <Box sx={{ mt: 2, textAlign: 'center' }}>
         <Image src={staticFilesRuntimeUrl('/static/img/ajna-risk-warning.svg')} />

@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { subgraphMethodsRecord, subgraphsRecord } from 'features/subgraphLoader/consts'
 import request from 'graphql-request'
 import { NextApiHandler, NextApiRequest } from 'next'

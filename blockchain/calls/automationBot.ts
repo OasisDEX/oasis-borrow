@@ -5,8 +5,8 @@ import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
-import { contractDesc } from 'blockchain/networksConfig'
+import { NetworkIds } from 'blockchain/networks'
+import { contractDesc } from 'blockchain/networks'
 import {
   AccountImplementation,
   AutomationBot,

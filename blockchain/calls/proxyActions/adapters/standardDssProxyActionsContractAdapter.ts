@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
 import { DssProxyActions } from 'types/web3-v1-contracts'
 import {

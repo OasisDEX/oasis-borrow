@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'

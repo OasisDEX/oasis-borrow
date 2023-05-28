@@ -112,7 +112,9 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
         }
       },
       url:
-        (isSuccessStage && !openFlowWithStopLoss) || isStopLossSuccessStage ? `/${id}` : undefined,
+        (isSuccessStage && !openFlowWithStopLoss) || isStopLossSuccessStage
+          ? `/ethereum/maker/${id}`
+          : undefined,
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),

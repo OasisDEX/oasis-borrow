@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { useAppContext } from 'components/AppContextProvider'
 import { FlowSidebar } from 'components/FlowSidebar'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'

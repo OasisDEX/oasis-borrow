@@ -1,4 +1,6 @@
 import { useActor } from '@xstate/react'
+import { useCustomNetworkParameter } from 'blockchain/networks'
+import { networksById } from 'blockchain/networks'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -6,7 +8,7 @@ import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
-import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { hasUserInteracted } from 'features/aave/helpers'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
@@ -193,6 +195,33 @@ function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
       disabled: connecting,
     }),
     [t, connected, connecting, executeConnection],
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function useChangeChainButton({
+  strategy,
+}: {
+  strategy: IStrategyConfig
+}): SidebarSectionFooterButtonSettings {
+  const { t } = useTranslation()
+  const [, setCustomNetwork] = useCustomNetworkParameter()
+
+  return useMemo(
+    () => ({
+      label: t('change-chain'),
+      action: () => {
+        setCustomNetwork({
+          id: strategy.networkId,
+          hexId: networksById[strategy.networkId].hexId,
+          network: strategy.network,
+        })
+      },
+      steps: undefined,
+      isLoading: false,
+      disabled: false,
+    }),
+    [t, strategy, setCustomNetwork],
   )
 }
 

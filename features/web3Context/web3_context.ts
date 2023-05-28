@@ -1,11 +1,10 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
-import { networksById } from 'blockchain/networksConfig'
+import { networksListWithForksById, useCustomNetworkParameter } from 'blockchain/networks'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { ethers } from 'ethers'
 import { BridgeConnector } from 'features/web3OnBoard'
-import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { isEqual } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
@@ -123,7 +122,7 @@ export function createWeb3Context$(chainIdToRpcUrl: {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
           )
             .then(() => {
-              const network = networksById[networkIdParam]
+              const network = networksListWithForksById[networkIdParam]
               setCustomNetwork({
                 network: network.name!,
                 id: network.id!,

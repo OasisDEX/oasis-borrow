@@ -17,9 +17,10 @@ import React, { Fragment, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface AssetsTableHeaderCellProps {
-  isSortable: boolean
   first: boolean
   headerTranslationProps?: AssetsTableHeaderTranslationProps
+  isSortable: boolean
+  isSticky: boolean
   isWithFollow: boolean
   label: string
   last: boolean
@@ -69,15 +70,15 @@ export function AssetsTable({
       sx={{
         position: 'relative',
         px: ['24px', null, null, 4],
-        pb: 1,
-        mt: '-20px',
+        pb: '24px',
+        mt: '-8px',
       }}
     >
       <Box
         as="table"
         sx={{
           width: '100%',
-          borderSpacing: '0 20px',
+          borderSpacing: '0 8px',
         }}
       >
         <Box
@@ -86,7 +87,7 @@ export function AssetsTable({
             ...(isSticky && {
               position: 'sticky',
               zIndex: 1,
-              top: '120px',
+              top: '88px',
             }),
           }}
         >
@@ -94,9 +95,10 @@ export function AssetsTable({
             {rowKeys.map((label, i) => (
               <AssetsTableHeaderCell
                 key={getRowKey(i, rows[0])}
-                isSortable={(rows[0][label] as AssetsTableSortableCell).sortable !== undefined}
                 first={i === 0}
                 headerTranslationProps={headerTranslationProps}
+                isSortable={(rows[0][label] as AssetsTableSortableCell).sortable !== undefined}
+                isSticky={isSticky}
                 isWithFollow={isWithFollow}
                 label={label}
                 last={i + 1 === rowKeys.length}
@@ -134,9 +136,10 @@ export function AssetsTable({
 }
 
 export function AssetsTableHeaderCell({
-  isSortable,
   first,
   headerTranslationProps,
+  isSortable,
+  isSticky,
   isWithFollow,
   label,
   last,
@@ -153,7 +156,8 @@ export function AssetsTableHeaderCell({
       sx={{
         position: 'relative',
         px: '12px',
-        py: '20px',
+        pt: '28px',
+        pb: isSticky ? '48px' : '20px',
         ...(first && isWithFollow && { pl: '80px' }),
         fontSize: 1,
         fontWeight: 'semiBold',
@@ -170,15 +174,15 @@ export function AssetsTableHeaderCell({
             position: 'absolute',
             left: first ? -4 : 0,
             right: last ? -4 : 0,
-            bottom: 0,
+            bottom: '20px',
           },
           '&::before': {
-            top: '-20px',
-            backgroundColor: 'neutral10',
+            top: '-28px',
+            backgroundColor: isSticky ? 'neutral10' : 'transparent',
           },
           '&::after': {
             height: '1px',
-            backgroundColor: 'neutral20',
+            backgroundColor: isSticky ? 'neutral20' : 'transparent',
           },
         }}
       />
@@ -263,7 +267,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
     <Box
       as="td"
       sx={{
-        p: '8px 12px',
+        p: '14px 12px',
         textAlign: 'right',
         whiteSpace: 'nowrap',
         '&:first-child': {

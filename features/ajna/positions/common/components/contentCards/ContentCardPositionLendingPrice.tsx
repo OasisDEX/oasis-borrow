@@ -4,11 +4,12 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid, Heading, Text } from 'theme-ui'
+import { Card, Heading, Text } from 'theme-ui'
 
 interface ContentCardPositionLendingPriceModalProps {
   positionLendingPrice: string
@@ -26,11 +27,8 @@ function ContentCardPositionLendingPriceModal({
   const { t } = useTranslation()
 
   return (
-    <Grid gap={2}>
-      <Heading variant="header3">
-        {t('ajna.position-page.earn.manage.overview.position-lending-price')}
-      </Heading>
-      <Text variant="paragraph2" as="p" sx={{ pb: 2 }}>
+    <>
+      <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
         {t('ajna.position-page.earn.manage.overview.position-lending-price-modal-desc', {
           quoteToken,
         })}
@@ -38,18 +36,18 @@ function ContentCardPositionLendingPriceModal({
       <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
         {positionLendingPrice} {quoteToken}
       </Card>
-      <Heading variant="header3">
+      <Heading variant="header5" sx={{ fontWeight: 'bold' }}>
         {t('ajna.position-page.earn.manage.overview.minimum-yield-price-modal')}
       </Heading>
-      <Text variant="paragraph2" as="p" sx={{ pb: 2 }}>
+      <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
         {t('ajna.position-page.earn.manage.overview.minimum-yield-price-modal-desc', {
           quoteToken,
         })}
       </Text>
-      <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
+      <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
         {highestThresholdPrice} {collateralToken}/{quoteToken}
       </Card>
-    </Grid>
+    </>
   )
 }
 
@@ -102,12 +100,16 @@ export function ContentCardPositionLendingPrice({
     },
     footnote: formatted.relationToMarketPrice,
     modal: (
-      <ContentCardPositionLendingPriceModal
-        collateralToken={collateralToken}
-        quoteToken={quoteToken}
-        positionLendingPrice={formatted.positionLendingPrice}
-        highestThresholdPrice={formatted.highestThresholdPrice}
-      />
+      <AjnaDetailsSectionContentSimpleModal
+        title={t('ajna.position-page.earn.manage.overview.position-lending-price')}
+      >
+        <ContentCardPositionLendingPriceModal
+          positionLendingPrice={formatted.positionLendingPrice}
+          highestThresholdPrice={formatted.highestThresholdPrice}
+          collateralToken={collateralToken}
+          quoteToken={quoteToken}
+        />
+      </AjnaDetailsSectionContentSimpleModal>
     ),
   }
 

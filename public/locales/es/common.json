@@ -163,7 +163,6 @@
       "title": "Oasis Swap & Bridge",
       "subtitle": "Dígale Hola a Oasis Swap & Bridge",
       "body": "Intercambie sus tokens de forma rápida y segura en Oasis. Visite <0>las preguntas frecuentes de Oasis Swap para más información →</0>",
-      "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
       "button": "Entendido"
     }
   },
@@ -1166,19 +1165,35 @@
       "GUNIV3DAIUSDC1-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 5bps de UNI V3"
     },
     "aave": {
-      "stETHeth": {
+      "stETHethV2": {
         "title": "stETH/ETH AAVE",
         "description": "Gana con tu ETH con aumentando las recompenzas de staking. Pide prestado ETH en AAVE para obtener más exposición a stETH."
       },
-      "stETHusdc": {
+      "stETHethV3": {
+        "title": "stETH/ETH AAVE",
+        "description": "Gana con tu ETH con aumentando las recompenzas de staking. Pide prestado ETH en AAVE para obtener más exposición a stETH."
+      },
+      "stETHusdcV2": {
         "title": "Mayor multiple de stETH ",
         "description": "Maximiza tu exposición a stETH con AAVE y USDC."
       },
-      "ethusdc": {
+      "stETHusdcV3": {
+        "title": "Mayor multiple de stETH ",
+        "description": "Maximiza tu exposición a stETH con AAVE y USDC."
+      },
+      "ethusdcV2": {
         "title": "Mayor multiple de ETH ",
         "description": "Maximiza tu exposición a ETH con AAVE y USDC.."
       },
-      "wBTCusdc": {
+      "ethusdcV3": {
+        "title": "Mayor multiple de ETH ",
+        "description": "Maximiza tu exposición a ETH con AAVE y USDC.."
+      },
+      "wBTCusdcV2": {
+        "title": "Mayor multiple de WBTC",
+        "description": "Maximiza tu exposición a WBTC con AAVE y USDC."
+      },
+      "wBTCusdcV3": {
         "title": "Mayor multiple de WBTC",
         "description": "Maximiza tu exposición a WBTC con AAVE y USDC."
       }

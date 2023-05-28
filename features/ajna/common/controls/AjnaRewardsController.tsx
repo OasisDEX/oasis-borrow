@@ -16,7 +16,12 @@ import { Button, Flex } from 'theme-ui'
 const miningRewardsCard = {
   title: 'ajna.rewards.cards.mining.title',
   image: '/static/img/ajna-eye-purple.svg',
-  list: ['ajna.rewards.cards.mining.list-1', 'ajna.rewards.cards.mining.list-2'],
+  list: [
+    'ajna.rewards.cards.mining.list-1',
+    'ajna.rewards.cards.mining.list-2',
+    'ajna.rewards.cards.mining.list-3',
+    'ajna.rewards.cards.mining.list-4',
+  ],
   // TODO update link once available
   link: { title: 'ajna.rewards.cards.mining.link', href: '/' },
   banner: {
@@ -35,7 +40,11 @@ const miningRewardsCard = {
 const oasisRewardsCard = {
   title: 'ajna.rewards.cards.token.title',
   image: '/static/img/ajna-eye-orange.svg',
-  list: ['ajna.rewards.cards.token.list-1', 'ajna.rewards.cards.token.list-2'],
+  list: [
+    'ajna.rewards.cards.token.list-1',
+    'ajna.rewards.cards.token.list-2',
+    'ajna.rewards.cards.token.list-3',
+  ],
   // TODO update link once available
   link: { title: 'ajna.rewards.cards.token.link', href: '/' },
   banner: {
@@ -97,7 +106,7 @@ export function AjnaRewardsController() {
           rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
           floatingLabel={
             <FloatingLabel
-              text={t('ajna.rewards.cards.mining.floatingLabel')}
+              text={t('ajna.rewards.cards.token.floatingLabel')}
               flexSx={{
                 top: 4,
                 right: ['-17px', '-23px'],
