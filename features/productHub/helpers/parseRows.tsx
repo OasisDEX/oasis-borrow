@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
@@ -10,21 +11,32 @@ import { upperFirst } from 'lodash'
 import React from 'react'
 import { Trans } from 'react-i18next'
 
+function parseProductNumbers(stringNumbers: (string | undefined)[]): BigNumber[] {
+  return stringNumbers.map((number) => (number ? new BigNumber(number) : new BigNumber(0)))
+}
+
 function parseProduct(
   {
-    '7DayNetApy': weeklyNetApy,
+    '7DayNetApy': weeklyNetApyString,
     earnStrategy,
-    fee,
-    liquidity,
+    fee: feeString,
+    liquidity: liquidityString,
     managementType,
-    maxLtv,
-    maxMultiply,
+    maxLtv: maxLtvString,
+    maxMultiply: maxMultiplyString,
     multiplyStrategy,
     tooltips,
     with50Tokens,
   }: ProductHubItem,
   product: ProductType,
 ): AssetsTableRowData {
+  const [weeklyNetApy, fee, liquidity, maxLtv, maxMultiply] = parseProductNumbers([
+    weeklyNetApyString,
+    feeString,
+    liquidityString,
+    maxLtvString,
+    maxMultiplyString,
+  ])
   switch (product) {
     case ProductType.Borrow:
       return {

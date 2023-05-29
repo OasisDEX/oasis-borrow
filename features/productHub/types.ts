@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { BaseNetworkNames } from 'blockchain/networks'
 import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps } from 'components/PromoCard'
@@ -25,14 +24,14 @@ export interface ProductHubItemBasics {
 }
 
 export interface ProductHubItemDetails {
-  '7DayNetApy'?: BigNumber
+  '7DayNetApy'?: string
   depositToken?: string
   earnStrategy?: string
-  fee?: BigNumber
-  liquidity?: BigNumber
+  fee?: string
+  liquidity?: string
   managementType?: ProductHubManagementType
-  maxLtv?: BigNumber
-  maxMultiply?: BigNumber
+  maxLtv?: string
+  maxMultiply?: string
   multiplyStrategy?: string
   multiplyStrategyType?: ProductHubMultiplyStrategyType
   reverseTokens?: boolean
