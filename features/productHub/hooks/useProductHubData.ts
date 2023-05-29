@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { ProductHubData } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { useCallback, useEffect, useState } from 'react'
@@ -28,13 +28,12 @@ export const useProductHubData = ({ protocol }: ProductHubDataParams): ProductHu
     })
 
     axios
-      .request<ProductHubData>({
+      .request<ProductHubDataParams, AxiosResponse<ProductHubData>>({
         method: 'post',
         url: '/api/product-hub',
         responseType: 'json',
-        headers: {
-          Accept: 'application/json',
-        },
+        headers: { Accept: 'application/json' },
+        data: { protocol },
       })
       .then(({ data }) => {
         setState({

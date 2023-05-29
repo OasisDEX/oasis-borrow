@@ -3,6 +3,7 @@
 import BigNumber from 'bignumber.js'
 import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import {
   ProductHubData,
@@ -11,8 +12,6 @@ import {
   ProductType,
 } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
-import React from 'react'
-import { Text } from 'theme-ui'
 
 const protocol = {
   aavev2: { network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.AaveV2 },
@@ -276,15 +275,11 @@ const oasisCreatePromoCards: ProductHubPromoCards = {
   },
 }
 
-const oasisCreateAjnaYieldTokenTooltip = (
-  <>
-    <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
-      This position earns AJNA tokens
-    </Text>
-    Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn
-    automatically with weekly claim periods.
-  </>
-)
+const oasisCreateAjnaYieldTokenTooltip: AssetsTableTooltipProps['content'] = {
+  title: 'This position earns AJNA tokens',
+  description:
+    'Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
+}
 
 const oasisCreateTable: ProductHubItem[] = [
   {
@@ -375,14 +370,11 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long RETH',
     tooltips: {
       fee: {
-        content: (
-          <>
-            <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
-              I am a random tooltip
-            </Text>
-            I can be assigned to any content row with any icon or value. Neat, isn't it?
-          </>
-        ),
+        content: {
+          title: 'I am a random tooltip',
+          description:
+            "I can be assigned to any content row with any icon or value. Neat, isn't it?",
+        },
         icon: 'arrow_decrease',
       },
     },
