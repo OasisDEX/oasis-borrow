@@ -4,13 +4,12 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardNetValueProps {
   isLoading?: boolean
-  collateralToken: string
   netValue: BigNumber
   afterNetValue?: BigNumber
   pnl: BigNumber
@@ -20,7 +19,6 @@ interface ContentCardNetValueProps {
 
 export function ContentCardNetValue({
   isLoading,
-  collateralToken,
   netValue,
   afterNetValue,
   pnl,
@@ -30,15 +28,15 @@ export function ContentCardNetValue({
   const { t } = useTranslation()
 
   const formatted = {
-    netValue: formatCryptoBalance(netValue),
-    afterNetValue: afterNetValue && `${formatCryptoBalance(afterNetValue)} ${collateralToken}`,
-    pnl: `${t('ajna.position-page.multiply.common.overview.pnl')}: $${formatAmount(pnl, 'USD')}`,
+    netValue: formatFiatBalance(netValue),
+    afterNetValue: afterNetValue && `${formatFiatBalance(afterNetValue)} USD`,
+    pnl: `${t('ajna.position-page.multiply.common.overview.pnl')}: $${formatFiatBalance(pnl)}`,
   }
 
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.position-page.multiply.common.overview.net-value'),
     value: formatted.netValue,
-    unit: collateralToken,
+    unit: 'USD',
     change: {
       isLoading,
       value: afterNetValue && `${formatted.afterNetValue} ${t('system.cards.common.after')}`,

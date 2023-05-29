@@ -223,6 +223,23 @@ export async function getAjnaParameters({
         dependencies,
       )
     }
+    case 'adjust': {
+      const { loanToValue } = state
+
+      return strategies.ajna.multiply.adjust(
+        {
+          ...commonPayload,
+          collateralPrice,
+          quotePrice,
+          riskRatio: new RiskRatio(
+            loanToValue || (position as AjnaPosition).riskRatio.loanToValue,
+            RiskRatio.TYPE.LTV,
+          ),
+          position: position as AjnaPosition,
+        },
+        dependencies,
+      )
+    }
     default:
       return defaultPromise
   }

@@ -18,7 +18,7 @@ import { Grid } from 'theme-ui'
 export function AjnaMultiplyOverviewController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, flow },
+    environment: { collateralToken, quoteToken, flow, collateralPrice, quotePrice },
   } = useAjnaGeneralContext()
 
   const {
@@ -31,8 +31,6 @@ export function AjnaMultiplyOverviewController() {
   const changeVariant = 'positive'
 
   // TODO: replace with data from simulation
-  const netValue = new BigNumber(15282.124)
-  const afterNetValue = new BigNumber(17204.0356)
   const pnl = new BigNumber(-110.26)
 
   return (
@@ -63,9 +61,12 @@ export function AjnaMultiplyOverviewController() {
             />
             <ContentCardNetValue
               isLoading={isSimulationLoading}
-              collateralToken={collateralToken}
-              netValue={netValue}
-              afterNetValue={afterNetValue}
+              netValue={position.collateralAmount
+                .times(collateralPrice)
+                .minus(position.debtAmount.times(quotePrice))}
+              afterNetValue={simulation?.collateralAmount
+                .times(collateralPrice)
+                .minus(simulation?.debtAmount.times(quotePrice))}
               pnl={pnl}
               showPnl={flow === 'manage'}
               changeVariant={changeVariant}
