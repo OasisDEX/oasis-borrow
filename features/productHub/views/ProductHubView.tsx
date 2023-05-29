@@ -23,7 +23,10 @@ interface ProductHubViewProps {
 
 export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const { t } = useTranslation()
-  const { data } = useProductHubData({ protocol: [LendingProtocol.Ajna] })
+  const { data } = useProductHubData({
+    protocol: [LendingProtocol.Ajna],
+    promoCardsCollection: 'Home',
+  })
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
