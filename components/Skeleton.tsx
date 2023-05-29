@@ -15,17 +15,19 @@ const skeletonColorTheme: SkeletonColorThemes = {
 }
 
 interface SkeletonProps {
+  circle?: boolean
+  color?: SkeletonColorTheme
   cols?: number
   count?: number
-  color?: SkeletonColorTheme
   doughnut?: string | number
   gap?: string | number
-  width?: string | number
   height?: string | number
   sx?: SxStyleProp
+  width?: string | number
 }
 
 function SkeletonLine({
+  circle = false,
   color = 'default',
   doughnut,
   width = '100%',
@@ -40,7 +42,7 @@ function SkeletonLine({
         position: 'relative',
         width,
         height,
-        borderRadius: doughnut ? 'ellipse' : 'medium',
+        borderRadius: circle || doughnut ? 'ellipse' : 'medium',
         backgroundColor: theme[0],
         overflow: 'hidden',
         ...sx,

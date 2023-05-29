@@ -2,6 +2,7 @@
 
 import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import {
   ProductHubData,
@@ -273,6 +274,12 @@ const oasisCreatePromoCards: ProductHubPromoCards = {
   },
 }
 
+const oasisCreateAjnaYieldTokenTooltip: AssetsTableTooltipProps['content'] = {
+  title: 'This position earns AJNA tokens',
+  description:
+    'Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
+}
+
 const oasisCreateTable: ProductHubItem[] = [
   {
     product: [ProductType.Borrow, ProductType.Multiply],
@@ -419,11 +426,7 @@ const oasisCreateTable: ProductHubItem[] = [
     liquidity: '4134874',
     tooltips: {
       '7DayNetApy': {
-        content: {
-          title: 'This position earns AJNA tokens',
-          description:
-            'Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
-        },
+        content: oasisCreateAjnaYieldTokenTooltip,
         icon: 'sparks',
       },
     },
@@ -444,11 +447,7 @@ const oasisCreateTable: ProductHubItem[] = [
     liquidity: '3852147',
     tooltips: {
       '7DayNetApy': {
-        content: {
-          title: 'This position earns AJNA tokens',
-          description:
-            'Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
-        },
+        content: oasisCreateAjnaYieldTokenTooltip,
         icon: 'sparks',
       },
     },
@@ -469,11 +468,7 @@ const oasisCreateTable: ProductHubItem[] = [
     liquidity: '943284',
     tooltips: {
       '7DayNetApy': {
-        content: {
-          title: 'This position earns AJNA tokens',
-          description:
-            'Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
-        },
+        content: oasisCreateAjnaYieldTokenTooltip,
         icon: 'sparks',
       },
     },

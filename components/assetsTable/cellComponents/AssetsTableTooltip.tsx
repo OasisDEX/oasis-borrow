@@ -5,21 +5,26 @@ import { Text } from 'theme-ui'
 
 export interface AssetsTableTooltipProps {
   content: {
-    title: string
+    title?: string
     description: string
   }
   icon: string
 }
 
-export function AssetsTableTooltip({ content, icon }: AssetsTableTooltipProps) {
+export function AssetsTableTooltip({
+  content: { title, description },
+  icon,
+}: AssetsTableTooltipProps) {
   return (
     <StatefulTooltip
       tooltip={
         <>
-          <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
-            {content.title}
-          </Text>
-          {content.description}
+          {title && (
+            <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
+              {title}
+            </Text>
+          )}
+          {description}
         </>
       }
       containerSx={{ position: 'relative', top: '2px', display: 'inline-flex', ml: 1 }}
