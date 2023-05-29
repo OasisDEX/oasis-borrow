@@ -240,6 +240,59 @@ export async function getAjnaParameters({
         dependencies,
       )
     }
+    case 'generate-multiply':
+    case 'deposit-collateral-multiply': {
+      const { depositAmount, loanToValue, generateAmount } = state
+
+      if (loanToValue) {
+        // TODO here handling for complex action once available
+        return defaultPromise
+      }
+
+      return strategies.ajna.borrow.depositBorrow(
+        {
+          ...commonPayload,
+          collateralAmount: depositAmount || zero,
+          position: position as AjnaPosition,
+          quoteAmount: generateAmount || zero,
+        },
+        dependencies,
+      )
+    }
+    case 'payback-multiply':
+    case 'withdraw-multiply': {
+      const { withdrawAmount, loanToValue, paybackAmount } = state
+
+      if (loanToValue) {
+        // TODO here handling for complex action once available
+        return defaultPromise
+      }
+
+      return strategies.ajna.borrow.paybackWithdraw(
+        {
+          ...commonPayload,
+          collateralAmount: withdrawAmount || zero,
+          position: position as AjnaPosition,
+          quoteAmount: paybackAmount || zero,
+        },
+        dependencies,
+      )
+    }
+    case 'deposit-quote-multiply': {
+      // TODO here handling for complex action once available
+      return defaultPromise
+    }
+    case 'close-multiply': {
+      return strategies.ajna.multiply.close(
+        {
+          ...commonPayload,
+          collateralPrice,
+          quotePrice,
+          position: position as AjnaPosition,
+        },
+        dependencies,
+      )
+    }
     default:
       return defaultPromise
   }
