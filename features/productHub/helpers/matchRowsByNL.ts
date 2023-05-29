@@ -1,11 +1,11 @@
-import { ALL_ASSETS } from 'features/oasisCreate/meta'
-import { OasisCreateItem, ProductType } from 'features/oasisCreate/types'
+import { ALL_ASSETS } from 'features/productHub/meta'
+import { ProductHubItem, ProductType } from 'features/productHub/types'
 
 export function matchRowsByNL(
-  rows: OasisCreateItem[],
+  rows: ProductHubItem[],
   product: ProductType,
   token: string,
-): OasisCreateItem[] {
+): ProductHubItem[] {
   return rows
     .filter((item) => item.product === product || item.product.includes(product))
     .filter((item) =>

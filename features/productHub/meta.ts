@@ -1,7 +1,7 @@
 import { BaseNetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
-import { ProductType } from 'features/oasisCreate/types'
+import { ProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
@@ -9,25 +9,25 @@ import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs
 export const ALL_ASSETS = 'all assets'
 export const EMPTY_FILTERS = { or: [], and: {} }
 
-export const oasisCreateLinksMap: { [key in ProductType]: string } = {
+export const productHubLinksMap: { [key in ProductType]: string } = {
   borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
   multiply: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
   earn: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
 }
 
-export const oasisCreateFiltersCount: { [key in ProductType]: number } = {
+export const productHubFiltersCount: { [key in ProductType]: number } = {
   [ProductType.Borrow]: 3,
   [ProductType.Multiply]: 4,
   [ProductType.Earn]: 2,
 }
-export const oasisCreateGridTemplateColumns: { [key in ProductType]: string } = {
+export const productHubGridTemplateColumns: { [key in ProductType]: string } = {
   [ProductType.Borrow]: '270px auto 220px 220px',
   [ProductType.Multiply]: '270px auto 220px 220px 220px',
   [ProductType.Earn]: 'auto 220px 220px',
 }
 
 // TODO: find a way how to put translations into metadata
-export const oasisCreateProductOptions: { [key in ProductType]: HeaderSelectorOption } = {
+export const productHubProductOptions: { [key in ProductType]: HeaderSelectorOption } = {
   borrow: {
     title: 'Borrow',
     description: 'Borrow against your favorite crypto assets',
@@ -48,7 +48,7 @@ export const oasisCreateProductOptions: { [key in ProductType]: HeaderSelectorOp
   },
 }
 
-export const oasisCreateTokenOptions: { [key: string]: HeaderSelectorOption } = {
+export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   all: {
     title: 'All assets',
     value: ALL_ASSETS,
@@ -79,43 +79,43 @@ export const oasisCreateTokenOptions: { [key: string]: HeaderSelectorOption } = 
   },
 }
 
-export const oasisCreateOptionsMap: {
+export const productHubOptionsMap: {
   [key in ProductType]: {
     product: HeaderSelectorOption
     tokens: { [key: string]: HeaderSelectorOption }
   }
 } = {
   borrow: {
-    product: oasisCreateProductOptions.borrow,
+    product: productHubProductOptions.borrow,
     tokens: {
-      all: oasisCreateTokenOptions.all,
-      ETH: oasisCreateTokenOptions.ETH,
-      WBTC: oasisCreateTokenOptions.WBTC,
-      USDC: oasisCreateTokenOptions.USDC,
+      all: productHubTokenOptions.all,
+      ETH: productHubTokenOptions.ETH,
+      WBTC: productHubTokenOptions.WBTC,
+      USDC: productHubTokenOptions.USDC,
     },
   },
   multiply: {
-    product: oasisCreateProductOptions.multiply,
+    product: productHubProductOptions.multiply,
     tokens: {
-      all: oasisCreateTokenOptions.all,
-      ETH: oasisCreateTokenOptions.ETH,
-      WBTC: oasisCreateTokenOptions.WBTC,
-      USDC: oasisCreateTokenOptions.USDC,
+      all: productHubTokenOptions.all,
+      ETH: productHubTokenOptions.ETH,
+      WBTC: productHubTokenOptions.WBTC,
+      USDC: productHubTokenOptions.USDC,
     },
   },
   earn: {
-    product: oasisCreateProductOptions.earn,
+    product: productHubProductOptions.earn,
     tokens: {
-      all: oasisCreateTokenOptions.all,
-      ETH: oasisCreateTokenOptions.ETH,
-      WBTC: oasisCreateTokenOptions.WBTC,
-      USDC: oasisCreateTokenOptions.USDC,
-      DAI: oasisCreateTokenOptions.DAI,
+      all: productHubTokenOptions.all,
+      ETH: productHubTokenOptions.ETH,
+      WBTC: productHubTokenOptions.WBTC,
+      USDC: productHubTokenOptions.USDC,
+      DAI: productHubTokenOptions.DAI,
     },
   },
 }
 
-export const oasisCreateStrategyFilter = [
+export const productHubStrategyFilter = [
   {
     label: 'Long',
     value: 'long',
@@ -126,7 +126,7 @@ export const oasisCreateStrategyFilter = [
   },
 ]
 
-export const oasisCreateNetworkFilter = [
+export const productHubNetworkFilter = [
   {
     label: networksByName[BaseNetworkNames.Ethereum].label,
     value: networksByName[BaseNetworkNames.Ethereum].name,
@@ -144,7 +144,7 @@ export const oasisCreateNetworkFilter = [
   },
 ]
 
-export const oasisCreateProtocolFilter = [
+export const productHubProtocolFilter = [
   {
     label: lendingProtocolsByName[LendingProtocol.Maker].label,
     value: lendingProtocolsByName[LendingProtocol.Maker].name,

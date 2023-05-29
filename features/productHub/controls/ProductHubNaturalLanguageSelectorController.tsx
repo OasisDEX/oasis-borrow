@@ -1,35 +1,30 @@
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
-import { ALL_ASSETS, oasisCreateOptionsMap } from 'features/oasisCreate/meta'
-import { ProductType } from 'features/oasisCreate/types'
+import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
+import { ProductType } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
-interface NaturalLanguageSelectorControllerProps {
+interface ProductHubNaturalLanguageSelectorControllerProps {
   product: ProductType
   token?: string
   url?: string
   onChange?: (product: ProductType, token: string) => void
 }
 
-export function NaturalLanguageSelectorController({
-  product,
-  token,
-  url,
-  onChange,
-}: NaturalLanguageSelectorControllerProps) {
+export const ProductHubNaturalLanguageSelectorController: FC<
+  ProductHubNaturalLanguageSelectorControllerProps
+> = ({ product, token, url, onChange }) => {
   const { t } = useTranslation()
 
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(
-    oasisCreateOptionsMap[product].product.value as ProductType,
+    productHubOptionsMap[product].product.value as ProductType,
   )
   const [selectedToken, setSelectedToken] = useState<string>(
-    (token
-      ? oasisCreateOptionsMap[product].tokens[token]
-      : oasisCreateOptionsMap[product].tokens.all
-    ).value,
+    (token ? productHubOptionsMap[product].tokens[token] : productHubOptionsMap[product].tokens.all)
+      .value,
   )
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
@@ -41,23 +36,23 @@ export function NaturalLanguageSelectorController({
   return (
     <Box ref={ref}>
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
-        {t('oasis-create.header.i-want-to')}
+        {t('product-hub.header.i-want-to')}
         <HeaderSelector
-          defaultOption={oasisCreateOptionsMap[product].product}
+          defaultOption={productHubOptionsMap[product].product}
           gradient={['#2a30ee', '#a4a6ff']}
-          options={Object.values(oasisCreateOptionsMap).map((option) => option.product)}
+          options={Object.values(productHubOptionsMap).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
             const typedValue = selected.value as ProductType
             const tokenInUrl = selectedToken !== ALL_ASSETS ? selectedToken : undefined
             const isSwitchingToAllAssets = !Object.values(
-              oasisCreateOptionsMap[typedValue].tokens,
+              productHubOptionsMap[typedValue].tokens,
             ).some((option) => option.value === selectedToken)
 
             setSelectedProduct(typedValue)
             setOverwriteOption(
-              isSwitchingToAllAssets ? oasisCreateOptionsMap[typedValue].tokens.all : undefined,
+              isSwitchingToAllAssets ? productHubOptionsMap[typedValue].tokens.all : undefined,
             )
             if (url)
               void push(
@@ -67,15 +62,15 @@ export function NaturalLanguageSelectorController({
               )
           }}
         />
-        {t(`oasis-create.header.conjunction.${selectedProduct}`)}
+        {t(`product-hub.header.conjunction.${selectedProduct}`)}
         <HeaderSelector
           defaultOption={
             token
-              ? oasisCreateOptionsMap[product].tokens[token]
-              : oasisCreateOptionsMap[product].tokens.all
+              ? productHubOptionsMap[product].tokens[token]
+              : productHubOptionsMap[product].tokens.all
           }
           gradient={['#2a30ee', '#a4a6ff']}
-          options={Object.values(oasisCreateOptionsMap[selectedProduct].tokens)}
+          options={Object.values(productHubOptionsMap[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
           valueAsLabel={true}

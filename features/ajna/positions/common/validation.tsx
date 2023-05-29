@@ -140,7 +140,7 @@ function isFormValid({
       }
     }
     case 'multiply':
-      const { action, depositAmount } = state as AjnaMultiplyFormState
+      const { action, depositAmount, loanToValue } = state as AjnaMultiplyFormState
 
       switch (currentStep) {
         case 'setup':
@@ -148,6 +148,8 @@ function isFormValid({
           switch (action) {
             case 'open-multiply':
               return !!depositAmount?.gt(0)
+            case 'adjust':
+              return !!loanToValue
             case 'switch-multiply':
               return true
             default:
