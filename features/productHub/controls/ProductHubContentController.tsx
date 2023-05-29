@@ -3,7 +3,6 @@ import { ProductHubFiltersController } from 'features/productHub/controls/Produc
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
 import { ProductHubFilters, ProductHubItem, ProductType } from 'features/productHub/types'
-import { productHubData } from 'helpers/mocks/productHubData.mock'
 import React, { FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
@@ -18,12 +17,12 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedFilters,
   selectedProduct,
   selectedToken,
-  // tableData,
+  tableData,
   onChange,
 }) => {
   const dataMatchedByNL = useMemo(
-    () => matchRowsByNL(productHubData.table, selectedProduct, selectedToken),
-    [selectedProduct, selectedToken],
+    () => matchRowsByNL(tableData, selectedProduct, selectedToken),
+    [selectedProduct, selectedToken, tableData],
   )
   const dataMatchedByFilters = useMemo(
     () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
