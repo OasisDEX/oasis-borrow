@@ -11,8 +11,8 @@ import { upperFirst } from 'lodash'
 import React from 'react'
 import { Trans } from 'react-i18next'
 
-function parseProductNumbers(stringNumbers: (string | undefined)[]): BigNumber[] {
-  return stringNumbers.map((number) => (number ? new BigNumber(number) : new BigNumber(0)))
+function parseProductNumbers(stringNumbers: (string | undefined)[]): (BigNumber | undefined)[] {
+  return stringNumbers.map((number) => (number ? new BigNumber(number) : undefined))
 }
 
 function parseProduct(
