@@ -4,7 +4,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { useCallback, useEffect, useState } from 'react'
 
 interface ProductHubDataParams {
-  protocol: LendingProtocol | LendingProtocol[]
+  protocol: LendingProtocol[]
 }
 
 export interface ProductHubDataState {
