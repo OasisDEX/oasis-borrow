@@ -58,6 +58,7 @@ export const forkNetworks: ForkNetworkConfig[] = Object.entries(forkSettings).ma
       readProvider: new JsonRpcBatchProvider(forkNetwork.url),
       name: `${originalNetworkConfig.name}-test`,
       isCustomFork: true,
+      parentNetwork: originalNetworkConfig,
     }
   },
 )

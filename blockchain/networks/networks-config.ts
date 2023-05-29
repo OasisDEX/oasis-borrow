@@ -46,6 +46,7 @@ export type NetworkConfig = {
   token: string
   rpcUrl: string
   readProvider: ethers.providers.Provider
+  parentNetwork?: NetworkConfig
   cacheApi?: GraphQLClient
   isCustomFork?: boolean
 }

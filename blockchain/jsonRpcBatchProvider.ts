@@ -1,6 +1,6 @@
 import { deepCopy } from '@ethersproject/properties'
 import { fetchJson } from '@ethersproject/web'
-import { providers } from 'ethers'
+import { ethers } from 'ethers'
 
 // Experimental
 type PendingBatch = Record<
@@ -12,11 +12,11 @@ type PendingBatch = Record<
   }>
 >
 
-export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
+export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
   _pendingBatchAggregator: NodeJS.Timeout | null = null
   _pendingBatch: PendingBatch | null = null
+
   send(method: string, params: Array<any>): Promise<any> {
-    console.log(`Request method: ${method}`)
     const request = {
       method: method,
       params: params,
@@ -110,7 +110,6 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
               },
             )
           })
-        // const request = batch.map((inflight) => inflight.request)
       }, 200)
     }
 

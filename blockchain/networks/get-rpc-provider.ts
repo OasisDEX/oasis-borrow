@@ -16,3 +16,15 @@ export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider
     name: 'EVM Network',
   })
 }
+
+export function getRpcProvidersForLogs(networkId: NetworkIds): {
+  mainProvider: ethers.providers.Provider
+  forkProvider?: ethers.providers.Provider
+} {
+  const network = networksListWithForksById[networkId]
+  if (network.parentNetwork) {
+    return { mainProvider: network.parentNetwork.readProvider, forkProvider: network.readProvider }
+  }
+
+  return { mainProvider: network.readProvider }
+}
