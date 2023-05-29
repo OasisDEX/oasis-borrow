@@ -51,7 +51,7 @@ export const useProductHubData = ({ protocol }: ProductHubDataParams): ProductHu
           isLoading: false,
         })
       })
-  }, [protocol])
+  }, [protocol.map((p) => p).join('-')])
 
   useEffect(() => void fetchData(), [fetchData])
 
