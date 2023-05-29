@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { ethers } from 'ethers'
+import { prisma } from 'server/prisma'
 let latestFork: Fork | undefined = undefined
 
 export type Fork = {
@@ -32,22 +34,60 @@ export async function refreshFork(config: TenderlyConfig = defaultConfig): Promi
       await deleteFork(existingFork.uuid)
     }
     const latestFork = await createForkInternal()
-    await updateLatestFork(latestFork)
+    await saveLatestFork(latestFork)
     return latestFork
   }
   return existingFork
 }
 
+export async function topupAddress(address: string, amount: number): Promise<void> {
+  const config = getConfig()
+  const fork = await refreshFork(config);
+  const rpcUrl = `https://rpc.tenderly.co/fork/${fork.uuid}`
+  const provider = new ethers.providers.JsonRpcProvider( rpcUrl );
+  await provider.send("tenderly_addBalance", [
+    [address],
+    //amount in wei will be added for all wallets
+    ethers.utils.hexValue(ethers.utils.parseUnits(amount.toString(), "ether").toHexString()),
+  ])
+};
+
 async function deleteFork(uuid: string, config: TenderlyConfig = defaultConfig): Promise<void> {
   if (latestFork) await deleteForkInternal(uuid, config)
-  latestFork = undefined
+  await prisma.rpcForks.delete({
+    where: {
+      uuid: uuid,
+    },
+  });
 }
 
 async function getLatestFork(): Promise<Fork | undefined> {
-  return latestFork
+  if(latestFork) return latestFork;
+
+  const forks = (await prisma.rpcForks.findMany({
+    orderBy: {
+      last_modified : 'desc',
+    },
+    take: 1
+  })).map((fork) => ({
+    blockNumber: fork.blocknumber,
+    lastModified: fork.last_modified,
+    uuid: fork.uuid,
+  }));
+
+  latestFork = forks[0];
+
+  return forks[0];
 }
 
-async function updateLatestFork(fork: Fork): Promise<void> {
+async function saveLatestFork(fork: Fork): Promise<void> {
+  await prisma.rpcForks.create({
+    data: {
+      uuid: fork.uuid,
+      blocknumber: fork.blockNumber,
+      last_modified: fork.lastModified,
+    }
+  });
   latestFork = fork
 }
 
@@ -84,13 +124,13 @@ async function createForkInternal(config: TenderlyConfig = defaultConfig): Promi
   return {
     uuid: (response.data as any).simulation_fork.id,
     blockNumber: (response.data as any).simulation_fork.block_number,
-    timestamp: new Date().getTime(),
+    lastModified: new Date(),
   }
 }
 
 function isOverdue(existingFork: Fork, config: TenderlyConfig): boolean {
   const currentTime = new Date().getTime()
-  if (currentTime - existingFork?.timestamp > config.maxAgeInSeconds) {
+  if (currentTime - existingFork?.lastModified.getTime() > config.maxAgeInSeconds) {
     return true
   }
   return false
