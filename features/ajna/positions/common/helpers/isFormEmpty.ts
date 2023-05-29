@@ -48,13 +48,16 @@ export function isFormEmpty({ product, state, position, currentStep }: IsFormEmp
       }
     }
     case 'multiply':
-      const { depositAmount, loanToValue, withdrawAmount, generateAmount, paybackAmount } =
+      const { depositAmount, loanToValue, withdrawAmount, generateAmount, paybackAmount, action } =
         state as AjnaMultiplyFormState
 
       switch (currentStep) {
         case 'setup':
           return !depositAmount
         case 'manage':
+          if (action === 'close-multiply') {
+            return false
+          }
           return (
             !loanToValue && !withdrawAmount && !depositAmount && !generateAmount && !paybackAmount
           )
