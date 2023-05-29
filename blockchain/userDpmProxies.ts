@@ -1,13 +1,10 @@
-import { BaseContract, ethers } from 'ethers'
-import { ContractDesc } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { catchError, first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-contracts'
-import { TypedEvent, TypedEventFilter } from 'types/ethers-contracts/common'
 
-import { getNetworkContracts } from './contracts'
+import { ensureContractsExist, extendContract, getNetworkContracts } from './contracts'
 import { Context } from './network'
-import { getRpcProvidersForLogs, NetworkIds } from './networks'
+import { getRpcProvidersForLogs } from './networks'
 
 export interface UserDpmAccount {
   proxy: string
@@ -15,60 +12,6 @@ export interface UserDpmAccount {
   vaultId: string
 }
 
-function ensureAccountFactoryAndAccountGroundExist(
-  chainId: NetworkIds,
-  contracts: ReturnType<typeof getNetworkContracts>,
-): asserts contracts is {
-  accountFactory: ContractDesc & { genesisBlock: number }
-  accountGuard: ContractDesc & { genesisBlock: number }
-} {
-  if (!contracts.hasOwnProperty('accountFactory') || !contracts.hasOwnProperty('accountGuard')) {
-    throw new Error(`AccountFactory or AccountGuard not found on ${chainId}`)
-  }
-}
-
-type GetLogsDelegate = <TEvent extends TypedEvent<any, any>>(
-  topic: TypedEventFilter<TEvent>,
-) => Promise<TEvent[]>
-
-async function extendContract<TContract extends BaseContract>(
-  contractDesc: ContractDesc & { genesisBlock: number },
-  factory: {
-    connect: (address: string, provider: ethers.providers.Provider) => TContract
-  },
-  mainProvider: ethers.providers.Provider,
-  forkProvider?: ethers.providers.Provider,
-): Promise<TContract & { getLogs: GetLogsDelegate }> {
-  const contract = factory.connect(contractDesc.address, mainProvider)
-
-  if (!forkProvider) {
-    return {
-      ...contract,
-      getLogs: (topic) => contract.queryFilter(topic, contractDesc.genesisBlock, 'latest') as any,
-    }
-  }
-
-  const forkContract = AccountFactory__factory.connect(contractDesc.address, forkProvider)
-  const forkBlockNumber = await forkProvider.getBlockNumber()
-
-  const mainRpcBlocks = {
-    from: contractDesc.genesisBlock,
-    to: forkBlockNumber - 1000,
-  }
-  const forkRpcBlocks = {
-    from: forkBlockNumber - 1000 + 1,
-    to: forkBlockNumber,
-  }
-
-  return {
-    ...contract,
-    getLogs: (topic) =>
-      Promise.all([
-        contract.queryFilter(topic, mainRpcBlocks.from, mainRpcBlocks.to),
-        forkContract.queryFilter(topic, forkRpcBlocks.from, forkRpcBlocks.to),
-      ]).then(([mainLogs, forkLogs]) => [...mainLogs, ...forkLogs]) as any,
-  }
-}
 export function getUserDpmProxies$(
   context$: Observable<Context>,
   walletAddress: string,
@@ -80,7 +23,7 @@ export function getUserDpmProxies$(
   return context$.pipe(
     switchMap(async ({ chainId }) => {
       const contracts = getNetworkContracts(chainId)
-      ensureAccountFactoryAndAccountGroundExist(chainId, contracts)
+      ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
       const { accountFactory, accountGuard } = contracts
       const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
 
@@ -167,7 +110,7 @@ export function getUserDpmProxy$(
   return context$.pipe(
     switchMap(async ({ chainId }) => {
       const contracts = getNetworkContracts(chainId)
-      ensureAccountFactoryAndAccountGroundExist(chainId, contracts)
+      ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
       const { accountFactory, accountGuard } = contracts
 
       const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
@@ -231,7 +174,7 @@ export function getPositionIdFromDpmProxy$(
   return context$.pipe(
     switchMap(async ({ chainId }) => {
       const contracts = getNetworkContracts(chainId)
-      ensureAccountFactoryAndAccountGroundExist(chainId, contracts)
+      ensureContractsExist(chainId, contracts, ['accountFactory'])
       const { accountFactory } = contracts
       const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
       const accountFactoryContract = await extendContract(

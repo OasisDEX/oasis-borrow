@@ -138,8 +138,8 @@ export const optimismContracts: MainnetContracts = {
 
   operationExecutor: contractDesc(operationExecutor, optimism.mpa.core.OperationExecutor),
   swapAddress: optimism.mpa.core.Swap,
-  accountFactory: contractDesc(accountFactory, optimism.mpa.core.AccountFactory),
-  accountGuard: contractDesc(accountGuard, optimism.mpa.core.AccountGuard),
+  accountFactory: contractDesc(accountFactory, optimism.mpa.core.AccountFactory, 84955175),
+  accountGuard: contractDesc(accountGuard, optimism.mpa.core.AccountGuard, 84955123),
   aaveV3Pool: contractDesc(aaveV3Pool, optimism.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
   aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.AaveOracle),
   aaveV3PoolDataProvider: contractDesc(
