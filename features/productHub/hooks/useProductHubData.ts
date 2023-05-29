@@ -1,11 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import { ProductHubData } from 'features/productHub/types'
-import { LendingProtocol } from 'lendingProtocols'
+import { ProductHubDataParams } from 'handlers/product-hub'
 import { useCallback, useEffect, useState } from 'react'
-
-interface ProductHubDataParams {
-  protocol: LendingProtocol[]
-}
 
 export interface ProductHubDataState {
   data?: ProductHubData
@@ -14,7 +10,10 @@ export interface ProductHubDataState {
   refetch(): void
 }
 
-export const useProductHubData = ({ protocol }: ProductHubDataParams): ProductHubDataState => {
+export const useProductHubData = ({
+  protocol,
+  promoCardsCollection,
+}: ProductHubDataParams): ProductHubDataState => {
   const [state, setState] = useState<ProductHubDataState>({
     isError: false,
     isLoading: true,
@@ -33,7 +32,7 @@ export const useProductHubData = ({ protocol }: ProductHubDataParams): ProductHu
         url: '/api/product-hub',
         responseType: 'json',
         headers: { Accept: 'application/json' },
-        data: { protocol },
+        data: { protocol, promoCardsCollection },
       })
       .then(({ data }) => {
         setState({
@@ -51,7 +50,7 @@ export const useProductHubData = ({ protocol }: ProductHubDataParams): ProductHu
           isLoading: false,
         })
       })
-  }, [protocol.map((p) => p).join('-')])
+  }, [protocol.map((p) => p).join('-'), promoCardsCollection])
 
   useEffect(() => void fetchData(), [fetchData])
 
