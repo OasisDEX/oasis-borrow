@@ -74,7 +74,6 @@ export function DetailsSectionContentCardChangePill({
               }),
               borderRadius: 'mediumLarge',
               opacity: isLoading ? 0 : 1,
-              transition: '200ms opacity',
             }}
           >
             {value}
