@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 async function givethHandler(req: NextApiRequest, res: NextApiResponse) {
   const tenderlySecret = req.query.tenderlySecret! as string
   if (tenderlySecret !== process.env.RPC_FORK_SECRET) {
-    return res.status(401).end();
+    return res.status(401).end()
   }
   switch (req.method) {
     case 'GET':
@@ -18,4 +18,4 @@ async function givethHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default withSentry(givethHandler);
+export default withSentry(givethHandler)

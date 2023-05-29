@@ -42,15 +42,15 @@ export async function refreshFork(config: TenderlyConfig = defaultConfig): Promi
 
 export async function topupAddress(address: string, amount: number): Promise<void> {
   const config = getConfig()
-  const fork = await refreshFork(config);
+  const fork = await refreshFork(config)
   const rpcUrl = `https://rpc.tenderly.co/fork/${fork.uuid}`
-  const provider = new ethers.providers.JsonRpcProvider( rpcUrl );
-  await provider.send("tenderly_addBalance", [
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+  await provider.send('tenderly_addBalance', [
     [address],
     //amount in wei will be added for all wallets
-    ethers.utils.hexValue(ethers.utils.parseUnits(amount.toString(), "ether").toHexString()),
+    ethers.utils.hexValue(ethers.utils.parseUnits(amount.toString(), 'ether').toHexString()),
   ])
-};
+}
 
 async function deleteFork(uuid: string, config: TenderlyConfig = defaultConfig): Promise<void> {
   if (latestFork) await deleteForkInternal(uuid, config)
@@ -58,26 +58,28 @@ async function deleteFork(uuid: string, config: TenderlyConfig = defaultConfig):
     where: {
       uuid: uuid,
     },
-  });
+  })
 }
 
 async function getLatestFork(): Promise<Fork | undefined> {
-  if(latestFork) return latestFork;
+  if (latestFork) return latestFork
 
-  const forks = (await prisma.rpcForks.findMany({
-    orderBy: {
-      last_modified : 'desc',
-    },
-    take: 1
-  })).map((fork) => ({
+  const forks = (
+    await prisma.rpcForks.findMany({
+      orderBy: {
+        last_modified: 'desc',
+      },
+      take: 1,
+    })
+  ).map((fork) => ({
     blockNumber: fork.blocknumber,
     lastModified: fork.last_modified,
     uuid: fork.uuid,
-  }));
+  }))
 
-  latestFork = forks[0];
+  latestFork = forks[0]
 
-  return forks[0];
+  return forks[0]
 }
 
 async function saveLatestFork(fork: Fork): Promise<void> {
@@ -86,8 +88,8 @@ async function saveLatestFork(fork: Fork): Promise<void> {
       uuid: fork.uuid,
       blocknumber: fork.blockNumber,
       last_modified: fork.lastModified,
-    }
-  });
+    },
+  })
   latestFork = fork
 }
 
