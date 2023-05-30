@@ -23,6 +23,7 @@ export function getOpenMultiplyAaveParametersMachine(
         throw e
       }
     },
+    netwrokProtocolParameters.networkId,
     'open',
   )
 }
