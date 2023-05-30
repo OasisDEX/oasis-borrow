@@ -543,11 +543,11 @@ function initializeUIChanges() {
 }
 
 export function setupAppContext() {
-  const tenderlySecret = getStorageValue<string>('tenderlySecret', '')
+  const rpcForkSecret = getStorageValue<string>('rpcForkSecret', '')
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
-  if (tenderlySecret) {
-    chainIdToRpcUrl[NetworkIds.MAINNET] = getCustomForkRpcUrl(tenderlySecret)
+  if (rpcForkSecret) {
+    chainIdToRpcUrl[NetworkIds.MAINNET] = getCustomForkRpcUrl(rpcForkSecret)
   }
   const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
 

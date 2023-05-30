@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ethers } from 'ethers'
+import { throttle } from 'lodash'
 import { prisma } from 'server/prisma'
 let latestFork: Fork | undefined = undefined
 
@@ -28,6 +29,12 @@ export function getConfig(): TenderlyConfig {
 const defaultConfig: TenderlyConfig = getConfig()
 
 export async function refreshFork(config: TenderlyConfig = defaultConfig): Promise<Fork> {
+  console.log('refreshFork');
+  return await refreshForkThrottled(config);
+}
+
+const refreshForkInternal = async (config: TenderlyConfig = defaultConfig): Promise<Fork> => {
+  console.log('refreshForkInternal');
   const existingFork = await getLatestFork()
   if (!existingFork || isOverdue(existingFork, config)) {
     if (existingFork) {
@@ -39,6 +46,8 @@ export async function refreshFork(config: TenderlyConfig = defaultConfig): Promi
   }
   return existingFork
 }
+
+const refreshForkThrottled = throttle(refreshForkInternal, getConfig().maxAgeInSeconds / 2 * 1000);
 
 export async function topupAddress(address: string, amount: number): Promise<void> {
   const config = getConfig()
@@ -53,6 +62,7 @@ export async function topupAddress(address: string, amount: number): Promise<voi
 }
 
 async function deleteFork(uuid: string, config: TenderlyConfig = defaultConfig): Promise<void> {
+  console.log('deleting fork', uuid);
   if (latestFork) await deleteForkInternal(uuid, config)
   await prisma.rpcForks.delete({
     where: {
@@ -62,7 +72,10 @@ async function deleteFork(uuid: string, config: TenderlyConfig = defaultConfig):
 }
 
 async function getLatestFork(): Promise<Fork | undefined> {
-  if (latestFork) return latestFork
+  if (latestFork){
+    console.log('getLatestFork cached', latestFork);
+    return latestFork
+  }
 
   const forks = (
     await prisma.rpcForks.findMany({
@@ -77,12 +90,15 @@ async function getLatestFork(): Promise<Fork | undefined> {
     uuid: fork.uuid,
   }))
 
+  console.log('getLatestFork number', forks.length);
+
   latestFork = forks[0]
 
   return forks[0]
 }
 
 async function saveLatestFork(fork: Fork): Promise<void> {
+  console.log('saveLatestFork', fork);
   await prisma.rpcForks.create({
     data: {
       uuid: fork.uuid,
@@ -108,16 +124,20 @@ async function deleteForkInternal(
 }
 
 async function createForkInternal(config: TenderlyConfig = defaultConfig): Promise<Fork> {
+  const url = `https://api.tenderly.co/api/v1/account/${config.tenderlyUser}/project/${config.tenderlyProject}/fork`;
+  console.log('creating fork', url);
+  console.log('config', config);
   const response = await axios.post(
-    `https://api.tenderly.co/api/v1/account/${config.tenderlyUser}/project/${config.tenderlyProject}/fork`,
-    JSON.stringify({
+    url,
+    {
       network_id: '1',
       chain_config: {
         chain_id: 1,
       },
-    }),
+    },
     {
       headers: {
+        'Content-Type': 'application/json',
         'X-Access-Key': config.apiKey as string,
       },
     },
@@ -132,8 +152,12 @@ async function createForkInternal(config: TenderlyConfig = defaultConfig): Promi
 
 function isOverdue(existingFork: Fork, config: TenderlyConfig): boolean {
   const currentTime = new Date().getTime()
-  if (currentTime - existingFork?.lastModified.getTime() > config.maxAgeInSeconds) {
+  const lastModified = existingFork?.lastModified.getTime();
+  console.log('isOverdue', currentTime, lastModified, currentTime - lastModified, config.maxAgeInSeconds);
+  if (currentTime - lastModified > config.maxAgeInSeconds) {
+    console.log('fork is overdue');
     return true
   }
+  console.log('fork is not overdue');
   return false
 }

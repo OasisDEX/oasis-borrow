@@ -3,8 +3,8 @@ import { topupAddress } from 'helpers/api/tenderly/tenderlyOperations'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 async function givethHandler(req: NextApiRequest, res: NextApiResponse) {
-  const tenderlySecret = req.query.tenderlySecret! as string
-  if (tenderlySecret !== process.env.RPC_FORK_SECRET) {
+  const rpcForkSecret = req.query.rpcForkSecret! as string
+  if (rpcForkSecret !== process.env.RPC_FORK_SECRET) {
     return res.status(401).end()
   }
   switch (req.method) {

@@ -62,8 +62,9 @@ const blockRecheckDelay = 3000
 
 const cache: { [key: string]: Cache } = {}
 
-function getRpcNode(network: NetworkNames, tenderlySecret: string, forkId: string) {
-  if (tenderlySecret === process.env.RPC_FORK_SECRET && network === NetworkNames.ethereumFork) {
+function getRpcNode(network: NetworkNames, forkId: string) {
+  console.log('getRpcNode', network, forkId);
+  if (forkId) {
     return `https://rpc.tenderly.co/fork/${forkId}`
   }
   switch (network) {
@@ -169,7 +170,7 @@ const abi = [
   },
 ]
 
-async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: string) {
+async function makeCall(network: NetworkNames, calls: any[], rpcForkSecret: string) {
   const callsLength = JSON.stringify(calls).length
   let config = {
     headers: {
@@ -184,7 +185,9 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
   counters.requests += 1
 
   const forkConfig: TenderlyConfig = getConfig()
-  const fork = await refreshFork(forkConfig)
+  const isFork = !!rpcForkSecret && rpcForkSecret === process.env.TENDERLY_FORK_SECRET;
+  console.log('isFork', isFork)
+  const fork = isFork ? await refreshFork(forkConfig) : { uuid: '' }
 
   if (calls.length === 1) {
     config = {
@@ -194,7 +197,7 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
       },
     }
     const response = await axios.post(
-      getRpcNode(network, tenderlySecret, fork.uuid),
+      getRpcNode(network, fork.uuid),
       JSON.stringify(calls[0]),
       config,
     )
@@ -206,7 +209,7 @@ async function makeCall(network: NetworkNames, calls: any[], tenderlySecret: str
         'Content-Length': callsLength.toString(),
       },
     }
-    const response = await axios.post(getRpcNode(network, tenderlySecret, fork.uuid), calls, config)
+    const response = await axios.post(getRpcNode(network, fork.uuid), calls, config)
     return response.data
   }
 }
@@ -230,7 +233,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const networkQuery = req.query.network!
   const clientIdQuery = req.query.clientId!
-  const tenderlySecret = req.query.tenderlySecret! as string
+  const rpcForkSecret = req.query.rpcForkSecret! as string
+
+  console.log('networkQuery', networkQuery);
+  console.log('clientIdQuery', clientIdQuery);
+  console.log('rpcForkSecret', rpcForkSecret);
   const network = networkQuery.toString() as NetworkNames
   const clientId = clientIdQuery.toString()
   //withCache = req.query.withCache.toString() === "true"
@@ -325,7 +332,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       counters.totalPayloadSize += JSON.stringify(callBody).length
 
       counters.dedupedTotalPayloadSize += JSON.stringify(callBody).length
-      const multicallResponse = await makeCall(network, [callBody], tenderlySecret)
+      const multicallResponse = await makeCall(network, [callBody], rpcForkSecret)
 
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       if (multicallResponse[0].error) {
@@ -361,7 +368,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               ],
             }
           }),
-          tenderlySecret,
+          rpcForkSecret,
         )
         let z = 0
         data = dataFromMulticall.map((x: [boolean, string]) => {
@@ -418,7 +425,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       counters.bypassedPayloadSize += JSON.stringify(requestBody).length
       counters.bypassedCallsCount += requestBody.length
       console.log('RPC call failed, falling back to individual calls')
-      finalResponse = await makeCall(network, requestBody, tenderlySecret)
+      finalResponse = await makeCall(network, requestBody, rpcForkSecret)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       console.log('RPC call failed, fallback successful')
       console.log(JSON.stringify(counters))
@@ -427,7 +434,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     if (Array.isArray(requestBody)) {
       const callsCount = requestBody.filter((call) => call.method === 'eth_call').length
       const notCallsCount = requestBody.filter((call) => call.method !== 'eth_call').length
-      finalResponse = await makeCall(network, requestBody, tenderlySecret)
+      finalResponse = await makeCall(network, requestBody, rpcForkSecret)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       counters.initialTotalCalls += callsCount + notCallsCount
       if (debug) console.log('RPC no batching of Array, falling back to individual calls')
@@ -451,7 +458,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               )
             }
 
-            const result = await makeCall(network, [requestBody], tenderlySecret)
+            const result = await makeCall(network, [requestBody], rpcForkSecret)
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
             if (withCache) {
               cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
@@ -486,7 +493,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             if (debug) console.log('Contract code from cache', requestBody.params[0])
           } else {
             if (debug) console.log('Fetching contract code', requestBody.params[0])
-            result = await makeCall(network, [requestBody], tenderlySecret)
+            result = await makeCall(network, [requestBody], rpcForkSecret)
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
             if (withCache) cache[network].persistentCache[requestBody.params[0]] = result[0].result
           }
@@ -500,7 +507,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(requestBody).length
-          finalResponse = await makeCall(network, [requestBody], tenderlySecret)
+          finalResponse = await makeCall(network, [requestBody], rpcForkSecret)
           if (Array.isArray(finalResponse) && finalResponse.length === 1) {
             finalResponse = finalResponse[0]
           }
