@@ -65,8 +65,29 @@ interface GetAjnaBorrowValidationsParams {
   txError?: TxError
 }
 
-const mapSimulationValidation = (items: AjnaSimulationValidationItem[]): AjnaValidationItem[] =>
-  items.map((item) => ({ message: { translationKey: item.name, params: item.data } }))
+interface MapSimulationValidationParams {
+  items: AjnaSimulationValidationItem[]
+  collateralToken: string
+  quoteToken: string
+  token: string
+}
+
+const mapSimulationValidation = ({
+  items,
+  collateralToken,
+  quoteToken,
+  token,
+}: MapSimulationValidationParams): AjnaValidationItem[] =>
+  items.map((item) => ({
+    message: {
+      component: (
+        <AjnaValidationWithLink
+          translationKey={`ajna.validations.${item.name}`}
+          values={{ ...item.data, collateralToken, quoteToken, token }}
+        />
+      ),
+    },
+  }))
 
 function isFormValid({
   currentStep,
@@ -198,6 +219,7 @@ export function getAjnaValidation({
   const localWarnings: AjnaValidationItem[] = []
   const isEarnProduct = product === 'earn'
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
+  const token = product === 'earn' ? quoteToken : collateralToken
 
   if (ethFundsForTxValidator({ txError })) {
     localErrors.push({
@@ -255,8 +277,14 @@ export function getAjnaValidation({
     }
   }
 
-  const errors = [...localErrors, ...mapSimulationValidation(simulationErrors)]
-  const warnings = [...localWarnings, ...mapSimulationValidation(simulationWarnings)]
+  const errors = [
+    ...localErrors,
+    ...mapSimulationValidation({ items: simulationErrors, collateralToken, quoteToken, token }),
+  ]
+  const warnings = [
+    ...localWarnings,
+    ...mapSimulationValidation({ items: simulationWarnings, collateralToken, quoteToken, token }),
+  ]
 
   const isFormFrozen =
     product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
