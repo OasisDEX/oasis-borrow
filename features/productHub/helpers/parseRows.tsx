@@ -152,7 +152,7 @@ function parseProduct(
           value: weeklyNetApy ? (
             <>
               {formatDecimalAsPercent(weeklyNetApy)}
-              {tooltips?.['7DayNetApy'] && <AssetsTableTooltip {...tooltips['7DayNetApy']} />}
+              {tooltips?.weeklyNetApy && <AssetsTableTooltip {...tooltips.weeklyNetApy} />}
             </>
           ) : (
             <AssetsTableDataCellInactive />

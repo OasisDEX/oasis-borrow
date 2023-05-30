@@ -86,6 +86,7 @@ export async function mockProductHubData(req: NextApiRequest, res: NextApiRespon
   // and use postman to send a PUT request to the endpoint
   await prisma.productHubItems
     .createMany({
+      // @ts-ignore
       data: mockData.table.map(({ tooltips, ...item }) => ({
         ...item,
       })),
