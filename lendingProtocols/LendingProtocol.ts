@@ -1,8 +1,8 @@
 export enum LendingProtocol {
-  AaveV2 = 'AaveV2',
-  AaveV3 = 'AaveV3',
-  Ajna = 'Ajna',
-  Maker = 'Maker',
+  AaveV2 = 'aavev2',
+  AaveV3 = 'aavev3',
+  Ajna = 'ajna',
+  Maker = 'maker',
 }
 
 export enum LendingProtocolLabel {

@@ -421,11 +421,11 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WSTETH',
     earnStrategy: 'WSTETH/ETH Yield',
-    managementType: 'active-with-liq-risk',
-    '7DayNetApy': '0.0145',
+    managementType: 'active_with_liq_risk',
+    weeklyNetApy: '0.0145',
     liquidity: '4134874',
     tooltips: {
-      '7DayNetApy': {
+      weeklyNetApy: {
         content: oasisCreateAjnaYieldTokenTooltip,
         icon: 'sparks',
       },
@@ -442,11 +442,11 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long RETH',
     earnStrategy: 'RETH/ETH Yield',
-    managementType: 'active-with-liq-risk',
-    '7DayNetApy': '0.0209',
+    managementType: 'active_with_liq_risk',
+    weeklyNetApy: '0.0209',
     liquidity: '3852147',
     tooltips: {
-      '7DayNetApy': {
+      weeklyNetApy: {
         content: oasisCreateAjnaYieldTokenTooltip,
         icon: 'sparks',
       },
@@ -463,18 +463,18 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long CBETH',
     earnStrategy: 'CBETH/ETH Yield',
-    managementType: 'active-with-liq-risk',
-    '7DayNetApy': '0.0083',
+    managementType: 'active_with_liq_risk',
+    weeklyNetApy: '0.0083',
     liquidity: '943284',
     tooltips: {
-      '7DayNetApy': {
+      weeklyNetApy: {
         content: oasisCreateAjnaYieldTokenTooltip,
         icon: 'sparks',
       },
     },
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -488,7 +488,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -498,7 +498,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Arbitrum,
@@ -508,7 +508,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Optimism,
@@ -518,7 +518,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -529,7 +529,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -540,7 +540,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -551,7 +551,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -562,7 +562,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long CBETH',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -625,7 +625,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -635,7 +635,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -645,7 +645,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Arbitrum,
@@ -655,7 +655,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: ProductType.Multiply,
+    product: [ProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Optimism,
@@ -685,19 +685,19 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Short WBTC',
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'USDC',
     secondaryToken: 'ETH',
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Ajna,
     label: 'ETH/USDC',
-    '7DayNetApy': '0.0001',
+    weeklyNetApy: '0.0001',
     earnStrategy: 'ETH/USDC LP',
     managementType: 'active',
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'USDC',
     secondaryToken: 'WSTETH',
     secondaryTokenGroup: 'ETH',
@@ -709,19 +709,19 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'USDC',
     secondaryToken: 'WBTC',
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Ajna,
     label: 'WBTC/USDC',
-    '7DayNetApy': '0.0002',
+    weeklyNetApy: '0.0002',
     earnStrategy: 'WBTC/USDC LP',
     managementType: 'active',
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -732,7 +732,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -743,7 +743,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'WSTETH',
     secondaryTokenGroup: 'ETH',
@@ -755,7 +755,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'RETH',
     secondaryTokenGroup: 'ETH',
@@ -767,7 +767,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'CBETH',
     secondaryTokenGroup: 'ETH',
@@ -779,7 +779,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryTokenGroup: 'ETH',
     primaryToken: 'STETH',
     secondaryToken: 'ETH',
@@ -788,10 +788,10 @@ const oasisCreateTable: ProductHubItem[] = [
     protocol: LendingProtocol.AaveV2,
     label: 'STETH/ETH',
     earnStrategy: 'STETH/ETH Yield',
-    managementType: 'active-with-liq-risk',
+    managementType: 'active_with_liq_risk',
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryTokenGroup: 'ETH',
     primaryToken: 'WSTETH',
     secondaryToken: 'ETH',
@@ -800,10 +800,10 @@ const oasisCreateTable: ProductHubItem[] = [
     protocol: LendingProtocol.AaveV3,
     label: 'WSTETH/ETH',
     earnStrategy: 'WSTETH/ETH Yield',
-    managementType: 'active-with-liq-risk',
+    managementType: 'active_with_liq_risk',
   },
   {
-    product: ProductType.Earn,
+    product: [ProductType.Earn],
     primaryToken: 'DAI',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,
@@ -811,7 +811,7 @@ const oasisCreateTable: ProductHubItem[] = [
     label: 'DSR',
     managementType: 'passive',
     earnStrategy: 'DSR',
-    '7DayNetApy': '0.022',
+    weeklyNetApy: '0.022',
   },
 ]
 

@@ -24,7 +24,7 @@ interface ProductHubViewProps {
 export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const { t } = useTranslation()
   const { data } = useProductHubData({
-    protocol: [LendingProtocol.Ajna],
+    protocols: [LendingProtocol.Ajna],
     promoCardsCollection: 'Home',
   })
   const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)

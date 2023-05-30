@@ -4,7 +4,7 @@ import { PromoCardProps } from 'components/PromoCard'
 import { LendingProtocol } from 'lendingProtocols'
 
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
-export type ProductHubManagementType = 'active' | 'active-with-liq-risk' | 'passive'
+export type ProductHubManagementType = 'active' | 'active_with_liq_risk' | 'passive'
 
 export enum ProductType {
   Borrow = 'borrow',
@@ -17,14 +17,14 @@ export interface ProductHubItemBasics {
   network: BaseNetworkNames
   primaryToken: string
   primaryTokenGroup?: string
-  product: ProductType | ProductType[]
+  product: ProductType[]
   protocol: LendingProtocol
   secondaryToken: string
   secondaryTokenGroup?: string
 }
 
 export interface ProductHubItemDetails {
-  '7DayNetApy'?: string
+  weeklyNetApy?: string
   depositToken?: string
   earnStrategy?: string
   fee?: string

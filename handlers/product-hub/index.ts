@@ -1,26 +1,110 @@
-import { productHubData as data } from 'helpers/mocks/productHubData.mock'
-import { LendingProtocol } from 'lendingProtocols'
+import { Protocol } from '@prisma/client'
+import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { prisma } from 'server/prisma'
 
-export type PromoCardsCollection = 'Home' | 'AjnaLP'
+import { filterTableData } from './helpers'
+import { HandleGetProductHubDataProps, HandleUpdateProductHubDataProps } from './types'
+import { PRODUCT_HUB_HANDLERS } from './update-handlers'
 
-export type ProductHubDataParams = {
-  protocol: LendingProtocol[]
-  promoCardsCollection: PromoCardsCollection
+export async function handleGetProductHubData(
+  req: HandleGetProductHubDataProps,
+  res: NextApiResponse,
+) {
+  const { protocols, promoCardsCollection } = req.body
+  if (!protocols || !protocols.length || !promoCardsCollection) {
+    return res.status(400).json({
+      errorMessage:
+        'Missing required parameters (protocols, promoCardsCollection), check error object for more details',
+      error: {
+        protocols: JSON.stringify(protocols),
+        promoCardsCollection: JSON.stringify(promoCardsCollection),
+      },
+    })
+  }
+  await prisma.productHubItems
+    .findMany({
+      where: {
+        OR: protocols.map((protocol) => ({
+          protocol: {
+            equals: protocol as Protocol,
+          },
+        })),
+      },
+    })
+    .then((table) => {
+      return res.status(200).json({
+        promoCards: mockData.promoCards,
+        table: table.map(filterTableData),
+      })
+    })
+    .catch((error) => {
+      return res.status(500).json({
+        errorMessage: 'Error getting product hub data',
+        error: error.toString(),
+      })
+    })
 }
-export interface HandleProductHubDataProps extends NextApiRequest {
-  body: ProductHubDataParams
-}
 
-export async function handleProductHubData(req: HandleProductHubDataProps, res: NextApiResponse) {
-  const { protocol, promoCardsCollection } = req.body
-  console.log('handleProductHubData', {
-    protocol,
-    promoCardsCollection,
+export async function updateProductHubData(
+  req: HandleUpdateProductHubDataProps,
+  res: NextApiResponse,
+) {
+  const { protocols } = req.body
+  if (!protocols || !protocols.length) {
+    return res.status(400).json({
+      errorMessage: 'Missing required parameters (protocols), check error object for more details',
+      error: {
+        protocols: JSON.stringify(protocols),
+      },
+    })
+  }
+  const handlersList = protocols.map((protocol) => {
+    if (!PRODUCT_HUB_HANDLERS[protocol]) {
+      res.status(501).json({ errorMessage: `Handler for protocol ${protocol} not implemented` })
+    }
+    return {
+      name: protocol,
+      call: PRODUCT_HUB_HANDLERS[protocol],
+    }
   })
-  return res.status(200).json(data)
+  const data = handlersList.map(({ name, call }) => ({ name, data: call() }))
+  return res.status(200).json({ data })
 }
 
-export async function updateProductHubData(req: NextApiRequest, res: NextApiResponse) {
-  return res.status(200).json({})
+export async function mockProductHubData(req: NextApiRequest, res: NextApiResponse) {
+  // this mocks the data using a static file mock
+  // and creates necessary rows in the db (careful with this)
+  // add this to the handler
+  // case 'PUT':
+  //   return await mockProductHubData(req, res)
+  // and use postman to send a PUT request to the endpoint
+  await prisma.productHubItems
+    .createMany({
+      data: mockData.table.map(({ tooltips, ...item }) => ({
+        ...item,
+      })),
+      skipDuplicates: true,
+    })
+    .then((_data) => {
+      return res.status(200).json({
+        message: 'Mocked product hub data',
+      })
+    })
+    .catch((error) => {
+      return res.status(500).json({
+        errorMessage: 'Error mocking product hub data',
+        error: error.toString(),
+      })
+    })
+}
+
+export async function getProtocolProducts(protocol: Protocol) {
+  return await prisma.productHubItems.findMany({
+    where: {
+      protocol: {
+        equals: protocol,
+      },
+    },
+  })
 }

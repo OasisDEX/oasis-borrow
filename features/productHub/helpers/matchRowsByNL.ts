@@ -7,7 +7,7 @@ export function matchRowsByNL(
   token: string,
 ): ProductHubItem[] {
   return rows
-    .filter((item) => item.product === product || item.product.includes(product))
+    .filter((item) => item.product.includes(product))
     .filter((item) =>
       token === ALL_ASSETS
         ? true

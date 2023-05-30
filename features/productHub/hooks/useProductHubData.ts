@@ -11,7 +11,7 @@ export interface ProductHubDataState {
 }
 
 export const useProductHubData = ({
-  protocol,
+  protocols,
   promoCardsCollection,
 }: ProductHubDataParams): ProductHubDataState => {
   const [state, setState] = useState<ProductHubDataState>({
@@ -32,7 +32,7 @@ export const useProductHubData = ({
         url: '/api/product-hub',
         responseType: 'json',
         headers: { Accept: 'application/json' },
-        data: { protocol, promoCardsCollection },
+        data: { protocols, promoCardsCollection },
       })
       .then(({ data }) => {
         setState({
@@ -50,7 +50,7 @@ export const useProductHubData = ({
           isLoading: false,
         })
       })
-  }, [protocol.map((p) => p).join('-'), promoCardsCollection])
+  }, [protocols.map((p) => p).join('-'), promoCardsCollection])
 
   useEffect(() => void fetchData(), [fetchData])
 

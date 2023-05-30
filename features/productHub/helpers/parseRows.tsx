@@ -17,7 +17,7 @@ function parseProductNumbers(stringNumbers: (string | undefined)[]): (BigNumber 
 
 function parseProduct(
   {
-    '7DayNetApy': weeklyNetApyString,
+    weeklyNetApy: weeklyNetApyString,
     earnStrategy,
     fee: feeString,
     liquidity: liquidityString,
