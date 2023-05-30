@@ -6,6 +6,5 @@ import { LendingProtocol } from 'lendingProtocols'
 export const filterTableData = ({ id, ...table }: ProductHubItems) => table
 
 export const checkIfAllHandlersExist = (protocols: LendingProtocol[]) => {
-  const missingHandlers = protocols.filter((protocol) => !PRODUCT_HUB_HANDLERS[protocol])
-  return missingHandlers
+  return protocols.filter((protocol) => !PRODUCT_HUB_HANDLERS[protocol])
 }

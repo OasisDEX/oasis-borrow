@@ -105,8 +105,8 @@ export async function mockProductHubData(req: NextApiRequest, res: NextApiRespon
     })
 }
 
-export async function getProtocolProducts(protocol: Protocol) {
-  return await prisma.productHubItems.findMany({
+export function getProtocolProducts(protocol: Protocol) {
+  return prisma.productHubItems.findMany({
     where: {
       protocol: {
         equals: protocol,

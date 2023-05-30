@@ -6,17 +6,17 @@ import {
 import { NextApiHandler } from 'next'
 import { env } from 'process'
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextApiHandler = (req, res) => {
   switch (req.method) {
     case 'POST':
-      return await handleGetProductHubData(req, res)
+      return handleGetProductHubData(req, res)
     case 'PATCH':
-      return await updateProductHubData(req, res)
+      return updateProductHubData(req, res)
     case 'PUT':
       if (env.NODE_ENV !== 'development') {
         return res.status(405).end()
       }
-      return await mockProductHubData(req, res)
+      return mockProductHubData(req, res)
     default:
       return res.status(405).end()
   }
