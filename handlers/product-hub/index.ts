@@ -3,7 +3,7 @@ import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
-import { filterTableData } from './helpers'
+import { checkIfAllHandlersExist, filterTableData } from './helpers'
 import { HandleGetProductHubDataProps, HandleUpdateProductHubDataProps } from './types'
 import { PRODUCT_HUB_HANDLERS } from './update-handlers'
 
@@ -59,16 +59,21 @@ export async function updateProductHubData(
       },
     })
   }
+  const missingHandlers = checkIfAllHandlersExist(protocols)
+  if (missingHandlers.length > 0) {
+    return res.status(501).json({
+      errorMessage: `Handler for protocol "${missingHandlers.join('", "')}" not implemented`,
+    })
+  }
   const handlersList = protocols.map((protocol) => {
-    if (!PRODUCT_HUB_HANDLERS[protocol]) {
-      res.status(501).json({ errorMessage: `Handler for protocol ${protocol} not implemented` })
-    }
     return {
       name: protocol,
       call: PRODUCT_HUB_HANDLERS[protocol],
     }
   })
-  const data = handlersList.map(({ name, call }) => ({ name, data: call() }))
+  const data = handlersList.map(({ name, call }) => {
+    return { name, data: call() }
+  })
   return res.status(200).json({ data })
 }
 
