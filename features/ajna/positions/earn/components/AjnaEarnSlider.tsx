@@ -112,10 +112,6 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
 
   const resolvedValue = price || lowestUtilizedPrice
 
-  console.log(` htp: ${position.pool.highestThresholdPrice}`)
-  console.log(`lup: ${position.pool.lowestUtilizedPrice}`)
-  console.log(`momp: ${position.pool.mostOptimisticMatchingPrice}`)
-
   const maxLtv = position.getMaxLtv(price)
 
   const { min, max, range } = useMemo(
