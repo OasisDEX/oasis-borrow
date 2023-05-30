@@ -7,7 +7,9 @@ import { ContractDesc } from 'features/web3Context'
 
 import { supportedIlks } from './mainnet'
 
-export const AAVE_V3_POOL_GENESIS_GOERLI = 4365693
+export const AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET = 4365693
+export const ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET = 84955123
+export const ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET = 84955175
 
 const { optimism } = ADDRESSES
 
@@ -28,6 +30,3 @@ export const tokensOptimism = {
   RENBTC: contractDesc(erc20, optimism.common.RENBTC),
   CBETH: contractDesc(erc20, optimism.common.CBETH),
 } as Record<string, ContractDesc>
-
-export const ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET = 84955123
-export const ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET = 84955175
