@@ -48,7 +48,11 @@ import {
 } from 'blockchain/addresses/addressesUtils'
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
-import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/optimism'
+import {
+  AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
+  ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
+  ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET,
+} from 'blockchain/tokens/optimism'
 import { tokensOptimism } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
@@ -138,9 +142,21 @@ export const optimismContracts: MainnetContracts = {
 
   operationExecutor: contractDesc(operationExecutor, optimism.mpa.core.OperationExecutor),
   swapAddress: optimism.mpa.core.Swap,
-  accountFactory: contractDesc(accountFactory, optimism.mpa.core.AccountFactory),
-  accountGuard: contractDesc(accountGuard, optimism.mpa.core.AccountGuard),
-  aaveV3Pool: contractDesc(aaveV3Pool, optimism.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
+  accountFactory: contractDesc(
+    accountFactory,
+    optimism.mpa.core.AccountFactory,
+    ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
+  ),
+  accountGuard: contractDesc(
+    accountGuard,
+    optimism.mpa.core.AccountGuard,
+    ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET,
+  ),
+  aaveV3Pool: contractDesc(
+    aaveV3Pool,
+    optimism.aave.v3.Pool,
+    AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
+  ),
   aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.AaveOracle),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
