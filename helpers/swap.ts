@@ -97,7 +97,7 @@ export function getOneInchCall(
       protocols,
     )
 
-    if (true) {
+    if (debug) {
       console.log('1inch')
       console.log('fromTokenAmount', response.fromTokenAmount.toString())
       console.log('toTokenAmount', response.toTokenAmount.toString())

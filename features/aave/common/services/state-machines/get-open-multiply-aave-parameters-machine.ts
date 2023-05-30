@@ -1,6 +1,9 @@
 import { OpenMultiplyAaveParameters } from 'actions/aave'
 import { TxHelpers } from 'components/AppContext'
-import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import {
+  createTransactionParametersStateMachine,
+  TransactionParametersStateMachine,
+} from 'features/stateMachines/transactionParameters'
 import { HasGasEstimation } from 'helpers/form'
 import { Observable } from 'rxjs'
 
@@ -10,7 +13,7 @@ export function getOpenMultiplyAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
   netwrokProtocolParameters: AaveNetworkProtocolParameters,
-) {
+): TransactionParametersStateMachine<OpenMultiplyAaveParameters> {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
