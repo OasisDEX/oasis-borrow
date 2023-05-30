@@ -1,11 +1,12 @@
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ensureContractsExist, extendContract, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { getRpcProvidersForLogs } from 'blockchain/networks'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
-import { combineLatest, Observable } from 'rxjs'
-import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { combineLatest, EMPTY, Observable } from 'rxjs'
+import { catchError, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import { PositionCreated__factory } from 'types/ethers-contracts'
 import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
@@ -17,13 +18,27 @@ export type PositionCreated = {
   proxyAddress: string
 }
 
-function getPositionCreatedEventForProxyAddress(
+async function getPositionCreatedEventForProxyAddress(
   context: Context,
   proxyAddress: string,
 ): Promise<CreatePositionEvent[]> {
-  const dpmWithPositionCreatedEvent = PositionCreated__factory.connect(
-    proxyAddress,
-    getRpcProvider(context.chainId),
+  const { mainProvider, forkProvider } = getRpcProvidersForLogs(context.chainId)
+
+  const contracts = getNetworkContracts(context.chainId)
+  ensureContractsExist(context.chainId, contracts, ['accountGuard'])
+  const { accountGuard } = contracts
+
+  const contractDesc: ContractDesc & { genesisBlock: number } = {
+    abi: [],
+    address: proxyAddress,
+    genesisBlock: accountGuard.genesisBlock,
+  }
+
+  const dpmWithPositionCreatedEvent = await extendContract(
+    contractDesc,
+    PositionCreated__factory,
+    mainProvider,
+    forkProvider,
   )
 
   const filter = dpmWithPositionCreatedEvent.filters.CreatePosition(
@@ -34,11 +49,7 @@ function getPositionCreatedEventForProxyAddress(
     null,
   )
 
-  return dpmWithPositionCreatedEvent.queryFilter(
-    filter,
-    getNetworkContracts(NetworkIds.MAINNET, context.chainId).accountGuard.genesisBlock,
-    'latest',
-  )
+  return dpmWithPositionCreatedEvent.getLogs(filter)
 }
 
 function mapEvent(
@@ -99,6 +110,10 @@ export function getLastCreatedPositionForProxy$(
         protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
         proxyAddress: event!.args.proxyAddress,
       }
+    }),
+    catchError((error) => {
+      console.error(`Error while fetching last created position for proxy ${proxyAddress}`, error)
+      return EMPTY
     }),
   )
 }

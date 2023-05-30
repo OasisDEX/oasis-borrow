@@ -1,3 +1,4 @@
+import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import {
   arbitrumGoerliRpc,
   arbitrumMainnetRpc,
@@ -46,6 +47,7 @@ export type NetworkConfig = {
   token: string
   rpcUrl: string
   readProvider: ethers.providers.Provider
+  parentNetwork?: NetworkConfig
   cacheApi?: GraphQLClient
   isCustomFork?: boolean
 }
@@ -79,7 +81,7 @@ const mainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   rpcUrl: mainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(mainnetRpc, {
+  readProvider: new JsonRpcBatchProvider(mainnetRpc, {
     chainId: NetworkIds.MAINNET,
     name: NetworkNames.ethereumMainnet,
   }),
@@ -101,7 +103,7 @@ const goerliConfig: NetworkConfig = {
   testnet: true,
   enabled: true,
   rpcUrl: goerliRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(goerliRpc, {
+  readProvider: new JsonRpcBatchProvider(goerliRpc, {
     chainId: NetworkIds.GOERLI,
     name: NetworkNames.ethereumGoerli,
   }),
@@ -123,7 +125,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumMainnetRpc, {
+  readProvider: new JsonRpcBatchProvider(arbitrumMainnetRpc, {
     chainId: NetworkIds.ARBITRUMMAINNET,
     name: NetworkNames.arbitrumMainnet,
   }),
@@ -144,7 +146,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(arbitrumGoerliRpc, {
+  readProvider: new JsonRpcBatchProvider(arbitrumGoerliRpc, {
     chainId: NetworkIds.ARBITRUMGOERLI,
     name: NetworkNames.arbitrumGoerli,
   }),
@@ -165,7 +167,7 @@ const polygonMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  readProvider: new JsonRpcBatchProvider(''),
   isCustomFork: false,
 }
 
@@ -183,7 +185,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  readProvider: new JsonRpcBatchProvider(''),
   isCustomFork: false,
 }
 
@@ -201,7 +203,7 @@ const optimismMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(optimismMainnetRpc, {
+  readProvider: new JsonRpcBatchProvider(optimismMainnetRpc, {
     chainId: NetworkIds.OPTIMISMMAINNET,
     name: NetworkNames.optimismMainnet,
   }),
@@ -222,7 +224,7 @@ const optimismGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  readProvider: new JsonRpcBatchProvider(''),
   isCustomFork: false,
 }
 
@@ -266,7 +268,7 @@ export const defaultForkSettings: NetworkConfig = {
   enabled: false,
   token: 'ETH',
   rpcUrl: '',
-  readProvider: new ethers.providers.StaticJsonRpcProvider(''),
+  readProvider: new JsonRpcBatchProvider(''),
   isCustomFork: true,
 }
 

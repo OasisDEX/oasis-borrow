@@ -1,4 +1,5 @@
 import { getContractNetworkByWalletNetwork, NetworkIds } from 'blockchain/networks'
+import { ContractDesc } from 'features/web3Context'
 
 import { arbitrumContracts } from './arbitrum'
 import { goerliContracts } from './goerli'
@@ -36,3 +37,19 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
     NetworkId
   >[NetworkId]
 }
+
+export function ensureContractsExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+  properties: ReadonlyArray<string>,
+): asserts contracts is {
+  [K in (typeof properties)[number]]: ContractDesc & { genesisBlock: number }
+} {
+  if (properties.some((p) => !contracts.hasOwnProperty(p))) {
+    throw new Error(
+      `Can't find contracts definitions: ${JSON.stringify(properties)} on ${chainId} chain`,
+    )
+  }
+}
+
+export * from './extend-contract'
