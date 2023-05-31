@@ -63,7 +63,7 @@ const blockRecheckDelay = 3000
 const cache: { [key: string]: Cache } = {}
 
 function getRpcNode(network: NetworkNames, forkId: string) {
-  console.log('getRpcNode', network, forkId);
+  console.log('getRpcNode', network, forkId)
   if (forkId) {
     return `https://rpc.tenderly.co/fork/${forkId}`
   }
@@ -185,7 +185,7 @@ async function makeCall(network: NetworkNames, calls: any[], rpcForkSecret: stri
   counters.requests += 1
 
   const forkConfig: TenderlyConfig = getConfig()
-  const isFork = !!rpcForkSecret && rpcForkSecret === process.env.TENDERLY_FORK_SECRET;
+  const isFork = !!rpcForkSecret && rpcForkSecret === process.env.TENDERLY_FORK_SECRET
   console.log('isFork', isFork)
   const fork = isFork ? await refreshFork(forkConfig) : { uuid: '' }
 
@@ -235,9 +235,9 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   const clientIdQuery = req.query.clientId!
   const rpcForkSecret = req.query.rpcForkSecret! as string
 
-  console.log('networkQuery', networkQuery);
-  console.log('clientIdQuery', clientIdQuery);
-  console.log('rpcForkSecret', rpcForkSecret);
+  console.log('networkQuery', networkQuery)
+  console.log('clientIdQuery', clientIdQuery)
+  console.log('rpcForkSecret', rpcForkSecret)
   const network = networkQuery.toString() as NetworkNames
   const clientId = clientIdQuery.toString()
   //withCache = req.query.withCache.toString() === "true"
