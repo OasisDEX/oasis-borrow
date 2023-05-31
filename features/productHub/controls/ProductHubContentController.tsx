@@ -2,12 +2,12 @@ import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContaine
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
-import { ProductHubFilters, ProductHubItem, ProductType } from 'features/productHub/types'
+import { ProductHubFilters, ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import React, { FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductType
+  selectedProduct: ProductHubProductType
   selectedToken: string
   tableData: ProductHubItem[]
   onChange: (selectedFilters: ProductHubFilters) => void

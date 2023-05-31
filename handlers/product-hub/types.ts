@@ -1,5 +1,6 @@
-import { LendingProtocol } from "lendingProtocols"
-import { NextApiRequest } from "next"
+import { ProductHubData } from 'features/productHub/types'
+import { LendingProtocol } from 'lendingProtocols'
+import { NextApiRequest } from 'next'
 
 export type PromoCardsCollection = 'Home' | 'AjnaLP'
 
@@ -14,3 +15,5 @@ export interface HandleGetProductHubDataProps extends NextApiRequest {
 export interface HandleUpdateProductHubDataProps extends NextApiRequest {
   body: ProductHubDataParams
 }
+
+export type ProductHubHandlerResponse = Promise<ProductHubData['table']>

@@ -104,13 +104,3 @@ export async function mockProductHubData(req: NextApiRequest, res: NextApiRespon
       })
     })
 }
-
-export function getProtocolProducts(protocol: Protocol) {
-  return prisma.productHubItems.findMany({
-    where: {
-      protocol: {
-        equals: protocol,
-      },
-    },
-  })
-}

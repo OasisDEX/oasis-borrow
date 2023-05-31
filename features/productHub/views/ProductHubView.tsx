@@ -9,7 +9,7 @@ import {
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
-import { ProductHubFilters, ProductType } from 'features/productHub/types'
+import { ProductHubFilters, ProductHubProductType } from 'features/productHub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -17,17 +17,22 @@ import React, { FC, useState } from 'react'
 import { Box, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
-  product: ProductType
+  product: ProductHubProductType
   token?: string
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const { t } = useTranslation()
   const { data } = useProductHubData({
-    protocols: [LendingProtocol.Ajna],
+    protocols: [
+      LendingProtocol.Ajna,
+      LendingProtocol.AaveV2,
+      LendingProtocol.AaveV3,
+      LendingProtocol.Maker,
+    ],
     promoCardsCollection: 'Home',
   })
-  const [selectedProduct, setSelectedProduct] = useState<ProductType>(product)
+  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
 

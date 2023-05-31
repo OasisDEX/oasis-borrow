@@ -7,8 +7,8 @@ import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import {
   ProductHubData,
   ProductHubItem,
+  ProductHubProductType,
   ProductHubPromoCards,
-  ProductType,
 } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -103,7 +103,7 @@ const oasisCreatePromoCardGeneric: PromoCardProps = {
 }
 
 const oasisCreatePromoCards: ProductHubPromoCards = {
-  [ProductType.Borrow]: {
+  [ProductHubProductType.Borrow]: {
     default: [
       oasisCreatePromoCardBorrowEth,
       oasisCreatePromoCardBorrowWbtc,
@@ -157,7 +157,7 @@ const oasisCreatePromoCards: ProductHubPromoCards = {
       ],
     },
   },
-  [ProductType.Multiply]: {
+  [ProductHubProductType.Multiply]: {
     default: [
       oasisCreatePromoCardMultiplyEth,
       oasisCreatePromoCardMultiplyWbtc,
@@ -211,7 +211,7 @@ const oasisCreatePromoCards: ProductHubPromoCards = {
       ],
     },
   },
-  [ProductType.Earn]: {
+  [ProductHubProductType.Earn]: {
     default: [
       oasisCreatePromoCardEarnDai,
       oasisCreatePromoCardEarnWsteth,
@@ -282,7 +282,7 @@ const oasisCreateAjnaYieldTokenTooltip: AssetsTableTooltipProps['content'] = {
 
 const oasisCreateTable: ProductHubItem[] = [
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,
@@ -296,7 +296,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,
@@ -310,7 +310,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,
@@ -324,7 +324,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -339,7 +339,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -354,7 +354,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -379,7 +379,7 @@ const oasisCreateTable: ProductHubItem[] = [
     },
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -389,7 +389,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
@@ -400,7 +400,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -411,7 +411,11 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply, ProductType.Earn],
+    product: [
+      ProductHubProductType.Borrow,
+      ProductHubProductType.Multiply,
+      ProductHubProductType.Earn,
+    ],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -432,7 +436,11 @@ const oasisCreateTable: ProductHubItem[] = [
     },
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply, ProductType.Earn],
+    product: [
+      ProductHubProductType.Borrow,
+      ProductHubProductType.Multiply,
+      ProductHubProductType.Earn,
+    ],
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -453,7 +461,11 @@ const oasisCreateTable: ProductHubItem[] = [
     },
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply, ProductType.Earn],
+    product: [
+      ProductHubProductType.Borrow,
+      ProductHubProductType.Multiply,
+      ProductHubProductType.Earn,
+    ],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
@@ -474,7 +486,7 @@ const oasisCreateTable: ProductHubItem[] = [
     },
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -488,7 +500,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -498,7 +510,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Arbitrum,
@@ -508,7 +520,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Optimism,
@@ -518,7 +530,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long ETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -529,7 +541,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -540,7 +552,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -551,7 +563,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -562,7 +574,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long CBETH',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'CBETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
@@ -573,7 +585,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long CBETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,
@@ -587,7 +599,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,
@@ -601,7 +613,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,
@@ -615,7 +627,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -625,7 +637,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -635,7 +647,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -645,7 +657,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Arbitrum,
@@ -655,7 +667,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Multiply],
+    product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Optimism,
@@ -665,7 +677,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'USDC',
     secondaryToken: 'ETH',
     network: BaseNetworkNames.Ethereum,
@@ -675,7 +687,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Short ETH',
   },
   {
-    product: [ProductType.Borrow, ProductType.Multiply],
+    product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'USDC',
     secondaryToken: 'WBTC',
     network: BaseNetworkNames.Ethereum,
@@ -685,7 +697,7 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Short WBTC',
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'USDC',
     secondaryToken: 'ETH',
     network: BaseNetworkNames.Ethereum,
@@ -697,7 +709,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'USDC',
     secondaryToken: 'WSTETH',
     secondaryTokenGroup: 'ETH',
@@ -709,7 +721,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'USDC',
     secondaryToken: 'WBTC',
     network: BaseNetworkNames.Ethereum,
@@ -721,7 +733,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -732,7 +744,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
@@ -743,7 +755,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'WSTETH',
     secondaryTokenGroup: 'ETH',
@@ -755,7 +767,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'RETH',
     secondaryTokenGroup: 'ETH',
@@ -767,7 +779,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'ETH',
     secondaryToken: 'CBETH',
     secondaryTokenGroup: 'ETH',
@@ -779,7 +791,7 @@ const oasisCreateTable: ProductHubItem[] = [
     reverseTokens: true,
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryTokenGroup: 'ETH',
     primaryToken: 'STETH',
     secondaryToken: 'ETH',
@@ -791,7 +803,7 @@ const oasisCreateTable: ProductHubItem[] = [
     managementType: 'active_with_liq_risk',
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryTokenGroup: 'ETH',
     primaryToken: 'WSTETH',
     secondaryToken: 'ETH',
@@ -803,7 +815,7 @@ const oasisCreateTable: ProductHubItem[] = [
     managementType: 'active_with_liq_risk',
   },
   {
-    product: [ProductType.Earn],
+    product: [ProductHubProductType.Earn],
     primaryToken: 'DAI',
     secondaryToken: 'DAI',
     network: BaseNetworkNames.Ethereum,

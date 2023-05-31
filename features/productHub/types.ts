@@ -6,18 +6,23 @@ import { LendingProtocol } from 'lendingProtocols'
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
 export type ProductHubManagementType = 'active' | 'active_with_liq_risk' | 'passive'
 
-export enum ProductType {
+export enum ProductHubProductType {
   Borrow = 'borrow',
   Multiply = 'multiply',
   Earn = 'earn',
 }
 
+export type ProductHubSupportedNetworks =
+  | BaseNetworkNames.Ethereum
+  | BaseNetworkNames.Arbitrum
+  | BaseNetworkNames.Optimism
+
 export interface ProductHubItemBasics {
   label: string
-  network: BaseNetworkNames
+  network: ProductHubSupportedNetworks
   primaryToken: string
   primaryTokenGroup?: string
-  product: ProductType[]
+  product: ProductHubProductType[]
   protocol: LendingProtocol
   secondaryToken: string
   secondaryTokenGroup?: string
@@ -50,7 +55,7 @@ export interface ProductHubItemTooltips {
 export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
 
 export type ProductHubPromoCards = {
-  [key in ProductType]: {
+  [key in ProductHubProductType]: {
     default: PromoCardProps[]
     tokens: {
       [key: string]: PromoCardProps[]

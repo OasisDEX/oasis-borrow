@@ -1,9 +1,9 @@
 import { ALL_ASSETS } from 'features/productHub/meta'
-import { ProductHubItem, ProductType } from 'features/productHub/types'
+import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 
 export function matchRowsByNL(
   rows: ProductHubItem[],
-  product: ProductType,
+  product: ProductHubProductType,
   token: string,
 ): ProductHubItem[] {
   return rows
@@ -14,7 +14,7 @@ export function matchRowsByNL(
         : [
             item.primaryToken,
             item.primaryTokenGroup,
-            ...(product === ProductType.Multiply
+            ...(product === ProductHubProductType.Multiply
               ? [item.secondaryToken, item.secondaryTokenGroup]
               : []),
           ].some((value) => value === token),
