@@ -6,7 +6,7 @@ import React, { FC } from 'react'
 
 interface AjnaValidationMessagesProps {
   validations: AjnaValidationItem[]
-  type: 'warning' | 'error'
+  type: 'warning' | 'error' | 'notice' | 'success'
 }
 
 export const AjnaValidationMessages: FC<AjnaValidationMessagesProps> = ({ validations, type }) => {
@@ -35,7 +35,7 @@ export const AjnaValidationMessages: FC<AjnaValidationMessagesProps> = ({ valida
   return (
     <MessageCard
       messages={messagesWithTranslations}
-      type={type}
+      type={type === 'success' ? 'ok' : type}
       withBullet={validations.length > 1}
     />
   )
