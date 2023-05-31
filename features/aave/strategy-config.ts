@@ -53,7 +53,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-ethusdc',
-    urlSlug: 'optimism-ethusdc',
+    urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -82,7 +82,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wstethusdc',
-    urlSlug: 'optimism-wstethusdc',
+    urlSlug: 'wstethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -111,7 +111,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wbtcusdc',
-    urlSlug: 'optimism-wbtcusdc',
+    urlSlug: 'wbtcusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,

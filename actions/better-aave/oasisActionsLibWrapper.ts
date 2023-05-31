@@ -75,7 +75,7 @@ async function openAave(
   const dependencies: Parameters<typeof strategies.aave.v3.open>[1] = {
     addresses: getTokenAddresses(networkId),
     provider: networksById[networkId].readProvider,
-    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress, networkId),
+    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress, networkId, 'v5.0'),
     proxy: proxyAddress,
     user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress, // mocking the address before wallet connection
     isDPMProxy: proxyType === ProxyType.DpmProxy,
