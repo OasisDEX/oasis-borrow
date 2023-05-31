@@ -8,6 +8,7 @@ import {
   ManageAaveParameters,
   OpenAaveDepositBorrowParameters,
 } from 'actions/aave'
+import { NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import { HasGasEstimation } from 'helpers/form'
@@ -21,6 +22,7 @@ export function getCloseAaveParametersMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: CloseAaveParameters) => getCloseAaveParameters(parameters),
+    NetworkIds.MAINNET,
     'close',
   )
 }
@@ -33,6 +35,7 @@ export function getAdjustAaveParametersMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: AdjustAaveParameters) => getAdjustAaveParameters(parameters),
+    NetworkIds.MAINNET,
     'adjust',
   )
 }
@@ -45,6 +48,7 @@ export function getDepositBorrowAaveMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: ManageAaveParameters) => getManageAaveParameters(parameters),
+    NetworkIds.MAINNET,
     'depositBorrow',
   )
 }
@@ -57,6 +61,7 @@ export function getOpenDepositBorrowAaveMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: OpenAaveDepositBorrowParameters) => getOpenDepositBorrowParameters(parameters),
+    NetworkIds.MAINNET,
     'openDepositBorrow',
   )
 }

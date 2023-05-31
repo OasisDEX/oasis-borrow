@@ -11,6 +11,7 @@ async function swapOneInchTokens(
   recipient: string,
   slippage: string,
   chainId: number,
+  oneInchVersion: 'v4.0' | 'v5.0',
   protocols: string[] = [],
 ): Promise<any> {
   const url = formatOneInchSwapUrl(
@@ -20,6 +21,7 @@ async function swapOneInchTokens(
     slippage,
     recipient,
     chainId,
+    oneInchVersion,
     protocols,
   )
 
@@ -33,10 +35,11 @@ function formatOneInchSwapUrl(
   slippage: string,
   recepient: string,
   chainId: number,
+  oneInchVersion: 'v4.0' | 'v5.0',
   protocols: string[] = [],
 ) {
   const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
-  return `https://oasis.api.enterprise.1inch.exchange/v4.0/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
+  return `https://oasis.api.enterprise.1inch.exchange/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
 }
 
 async function exchangeTokens(url: string): Promise<any> {
@@ -73,6 +76,7 @@ export async function oneInchCallMock(
 export function getOneInchCall(
   swapAddress: string,
   networkId: NetworkIds = NetworkIds.MAINNET,
+  oneInchVersion: 'v4.0' | 'v5.0' = 'v4.0',
   debug?: true,
 ) {
   return async (
@@ -89,6 +93,7 @@ export function getOneInchCall(
       swapAddress,
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
       networkId,
+      oneInchVersion,
       protocols,
     )
 
@@ -97,6 +102,9 @@ export function getOneInchCall(
       console.log('fromTokenAmount', response.fromTokenAmount.toString())
       console.log('toTokenAmount', response.toTokenAmount.toString())
       console.log('slippage', slippage.times('100').toString())
+      console.log('minToTokenAmount', response.toTokenAmount.toString())
+      console.log('exchangeCalldata', response.tx.data)
+      console.log('protocols', protocols)
     }
 
     return {

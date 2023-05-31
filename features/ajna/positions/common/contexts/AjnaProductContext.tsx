@@ -85,6 +85,8 @@ interface AjnaProductContext<P, F, A> {
     hasErrors: boolean
     isFormFrozen: boolean
     isFormValid: boolean
+    notices: AjnaValidationItem[]
+    successes: AjnaValidationItem[]
     warnings: AjnaValidationItem[]
   }
   notifications: DetailsSectionNotificationItem[]
@@ -188,6 +190,8 @@ export function AjnaProductContextProvider({
         quoteBalance,
         simulationErrors: simulation?.errors,
         simulationWarnings: simulation?.warnings,
+        simulationNotices: simulation?.notices,
+        simulationSuccesses: simulation?.successes,
         state,
         position,
         positionAuction,

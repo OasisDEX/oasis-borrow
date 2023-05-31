@@ -2728,8 +2728,6 @@
       "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
       "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
-      "price-below-htp": "You will be lending without earning any yield.",
-      "price-above-momp": "Your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
       "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
@@ -2739,7 +2737,11 @@
       "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "is-during-grace-time": "Your position has been moved to liquidation. 90 days of interest have been added as penalty. You still have some time to <1>Deposit Collateral</1> or <1>Repay your Debt</1> to save it from Liquidation. <2>Read more about <1>Ajna Liquidations →</1></2>",
       "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>",
-      "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>"
+      "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>",
+      "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
+      "price-between-htp-and-lup": "Available Liquidity: Your deposit is earning yield but is not currently utilised by borrowers. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
+      "price-between-lup-and-momp": "Active liquidity: You are actively lending and will earn a yield whenever there are loans above {{lup}} {{collateralToken}}/{{quoteToken}}. <2><1>Help me pick correctly →</1></2>",
+      "price-above-momp": "Boundary Liquidity: Your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending. <2><1>Help me pick correctly →</1></2>"
     },
     "rewards": {
       "title": "Your Ajna token rewards",

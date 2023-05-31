@@ -17,7 +17,7 @@ export function AjnaFormContentSummary({
   } = useAjnaGeneralContext()
   const {
     form: { dispatch },
-    validation: { errors, warnings },
+    validation: { errors, notices, successes, warnings },
   } = useAjnaProductContext(product)
 
   return (
@@ -25,6 +25,8 @@ export function AjnaFormContentSummary({
       {showReset && <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />}
       <AjnaValidationMessages validations={errors} type="error" />
       <AjnaValidationMessages validations={warnings} type="warning" />
+      <AjnaValidationMessages validations={notices} type="notice" />
+      <AjnaValidationMessages validations={successes} type="success" />
       {children}
     </>
   )
