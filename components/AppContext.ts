@@ -97,7 +97,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { NetworkIds, networksById } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, networksById } from 'blockchain/networks'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -1042,7 +1042,8 @@ export function setupAppContext() {
       aaveV2.aaveProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
-    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+    (positionId: PositionId, networkName: NetworkNames) =>
+      `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
   )
 
   const automationTriggersData$ = memoize(

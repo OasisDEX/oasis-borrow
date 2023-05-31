@@ -59,14 +59,37 @@ interface GetAjnaBorrowValidationsParams {
   quoteBalance: BigNumber
   simulationErrors?: AjnaSimulationValidationItem[]
   simulationWarnings?: AjnaSimulationValidationItem[]
+  simulationNotices?: AjnaSimulationValidationItem[]
+  simulationSuccesses?: AjnaSimulationValidationItem[]
   state: AjnaFormState
   position: AjnaGenericPosition
   positionAuction: AjnaPositionAuction
   txError?: TxError
 }
 
-const mapSimulationValidation = (items: AjnaSimulationValidationItem[]): AjnaValidationItem[] =>
-  items.map((item) => ({ message: { translationKey: item.name, params: item.data } }))
+interface MapSimulationValidationParams {
+  items: AjnaSimulationValidationItem[]
+  collateralToken: string
+  quoteToken: string
+  token: string
+}
+
+const mapSimulationValidation = ({
+  items,
+  collateralToken,
+  quoteToken,
+  token,
+}: MapSimulationValidationParams): AjnaValidationItem[] =>
+  items.map((item) => ({
+    message: {
+      component: (
+        <AjnaValidationWithLink
+          translationKey={`ajna.validations.${item.name}`}
+          values={{ ...item.data, collateralToken, quoteToken, token }}
+        />
+      ),
+    },
+  }))
 
 function isFormValid({
   currentStep,
@@ -140,7 +163,8 @@ function isFormValid({
       }
     }
     case 'multiply':
-      const { action, depositAmount } = state as AjnaMultiplyFormState
+      const { action, depositAmount, withdrawAmount, loanToValue, paybackAmount, generateAmount } =
+        state as AjnaMultiplyFormState
 
       switch (currentStep) {
         case 'setup':
@@ -148,7 +172,18 @@ function isFormValid({
           switch (action) {
             case 'open-multiply':
               return !!depositAmount?.gt(0)
+            case 'adjust':
+              return !!loanToValue
+            case 'generate-multiply':
+            case 'deposit-collateral-multiply':
+              return !!depositAmount || !!generateAmount
+            case 'payback-multiply':
+            case 'withdraw-multiply':
+              return !!withdrawAmount || !!paybackAmount
+            case 'deposit-quote-multiply':
+              return !!loanToValue && !!depositAmount
             case 'switch-multiply':
+            case 'close-multiply':
               return true
             default:
               return false
@@ -171,6 +206,8 @@ export function getAjnaValidation({
   quoteBalance,
   simulationErrors = [],
   simulationWarnings = [],
+  simulationNotices = [],
+  simulationSuccesses = [],
   state,
   txError,
   position,
@@ -181,11 +218,16 @@ export function getAjnaValidation({
   hasErrors: boolean
   errors: AjnaValidationItem[]
   warnings: AjnaValidationItem[]
+  notices: AjnaValidationItem[]
+  successes: AjnaValidationItem[]
 } {
   const localErrors: AjnaValidationItem[] = []
   const localWarnings: AjnaValidationItem[] = []
+  const localNotices: AjnaValidationItem[] = []
+  const localSuccesses: AjnaValidationItem[] = []
   const isEarnProduct = product === 'earn'
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
+  const token = product === 'earn' ? quoteToken : collateralToken
 
   if (ethFundsForTxValidator({ txError })) {
     localErrors.push({
@@ -243,8 +285,22 @@ export function getAjnaValidation({
     }
   }
 
-  const errors = [...localErrors, ...mapSimulationValidation(simulationErrors)]
-  const warnings = [...localWarnings, ...mapSimulationValidation(simulationWarnings)]
+  const errors = [
+    ...localErrors,
+    ...mapSimulationValidation({ items: simulationErrors, collateralToken, quoteToken, token }),
+  ]
+  const warnings = [
+    ...localWarnings,
+    ...mapSimulationValidation({ items: simulationWarnings, collateralToken, quoteToken, token }),
+  ]
+  const notices = [
+    ...localNotices,
+    ...mapSimulationValidation({ items: simulationNotices, collateralToken, quoteToken, token }),
+  ]
+  const successes = [
+    ...localSuccesses,
+    ...mapSimulationValidation({ items: simulationSuccesses, collateralToken, quoteToken, token }),
+  ]
 
   const isFormFrozen =
     product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
@@ -255,5 +311,7 @@ export function getAjnaValidation({
     isFormFrozen,
     errors,
     warnings,
+    notices,
+    successes,
   }
 }

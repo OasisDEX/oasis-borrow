@@ -1,8 +1,8 @@
 //TODO: to be replaced with data from API
 
-import BigNumber from 'bignumber.js'
 import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import {
   ProductHubData,
@@ -11,8 +11,6 @@ import {
   ProductType,
 } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
-import React from 'react'
-import { Text } from 'theme-ui'
 
 const protocol = {
   aavev2: { network: BaseNetworkNames.Ethereum, protocol: LendingProtocol.AaveV2 },
@@ -276,15 +274,11 @@ const oasisCreatePromoCards: ProductHubPromoCards = {
   },
 }
 
-const oasisCreateAjnaYieldTokenTooltip = (
-  <>
-    <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
-      This position earns AJNA tokens
-    </Text>
-    Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn
-    automatically with weekly claim periods.
-  </>
-)
+const oasisCreateAjnaYieldTokenTooltip: AssetsTableTooltipProps['content'] = {
+  title: 'This position earns AJNA tokens',
+  description:
+    'Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
+}
 
 const oasisCreateTable: ProductHubItem[] = [
   {
@@ -294,10 +288,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'ETH-A/DAI',
-    fee: new BigNumber(0.015),
-    liquidity: new BigNumber(183129503),
-    maxMultiply: new BigNumber(3.22),
-    maxLtv: new BigNumber(0.7692),
+    fee: '0.015',
+    liquidity: '183129503',
+    maxMultiply: '3.22',
+    maxLtv: '0.7692',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long ETH',
   },
@@ -308,10 +302,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'ETH-B/DAI',
-    fee: new BigNumber(0.03),
-    liquidity: new BigNumber(21448395),
-    maxMultiply: new BigNumber(4.33),
-    maxLtv: new BigNumber(0.6896),
+    fee: '0.03',
+    liquidity: '21448395',
+    maxMultiply: '4.33',
+    maxLtv: '0.6896',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long ETH',
   },
@@ -322,10 +316,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'ETH-C/DAI',
-    fee: new BigNumber(0.0075),
-    liquidity: new BigNumber(101643927),
-    maxMultiply: new BigNumber(2.42),
-    maxLtv: new BigNumber(0.5882),
+    fee: '0.0075',
+    liquidity: '101643927',
+    maxMultiply: '2.42',
+    maxLtv: '0.5882',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long ETH',
   },
@@ -337,10 +331,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'WSTETH-A/DAI',
-    fee: new BigNumber(0.015),
-    liquidity: new BigNumber(14749572),
-    maxMultiply: new BigNumber(2.66),
-    maxLtv: new BigNumber(0.625),
+    fee: '0.015',
+    liquidity: '14749572',
+    maxMultiply: '2.66',
+    maxLtv: '0.625',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WSTETH',
   },
@@ -352,10 +346,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'WSTETH-B/DAI',
-    fee: new BigNumber(0.0075),
-    liquidity: new BigNumber(15195920),
-    maxMultiply: new BigNumber(2.17),
-    maxLtv: new BigNumber(0.5405),
+    fee: '0.0075',
+    liquidity: '15195920',
+    maxMultiply: '2.17',
+    maxLtv: '0.5405',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WSTETH',
   },
@@ -367,22 +361,19 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'RETH-A/DAI',
-    fee: new BigNumber(0.005),
-    liquidity: new BigNumber(3000000),
-    maxMultiply: new BigNumber(2.42),
-    maxLtv: new BigNumber(0.5882),
+    fee: '0.005',
+    liquidity: '3000000',
+    maxMultiply: '2.42',
+    maxLtv: '0.5882',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long RETH',
     tooltips: {
       fee: {
-        content: (
-          <>
-            <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
-              I am a random tooltip
-            </Text>
-            I can be assigned to any content row with any icon or value. Neat, isn't it?
-          </>
-        ),
+        content: {
+          title: 'I am a random tooltip',
+          description:
+            "I can be assigned to any content row with any icon or value. Neat, isn't it?",
+        },
         icon: 'arrow_decrease',
       },
     },
@@ -431,8 +422,8 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long WSTETH',
     earnStrategy: 'WSTETH/ETH Yield',
     managementType: 'active-with-liq-risk',
-    '7DayNetApy': new BigNumber(0.0145),
-    liquidity: new BigNumber(4134874),
+    '7DayNetApy': '0.0145',
+    liquidity: '4134874',
     tooltips: {
       '7DayNetApy': {
         content: oasisCreateAjnaYieldTokenTooltip,
@@ -452,8 +443,8 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long RETH',
     earnStrategy: 'RETH/ETH Yield',
     managementType: 'active-with-liq-risk',
-    '7DayNetApy': new BigNumber(0.0209),
-    liquidity: new BigNumber(3852147),
+    '7DayNetApy': '0.0209',
+    liquidity: '3852147',
     tooltips: {
       '7DayNetApy': {
         content: oasisCreateAjnaYieldTokenTooltip,
@@ -473,8 +464,8 @@ const oasisCreateTable: ProductHubItem[] = [
     multiplyStrategy: 'Long CBETH',
     earnStrategy: 'CBETH/ETH Yield',
     managementType: 'active-with-liq-risk',
-    '7DayNetApy': new BigNumber(0.0083),
-    liquidity: new BigNumber(943284),
+    '7DayNetApy': '0.0083',
+    liquidity: '943284',
     tooltips: {
       '7DayNetApy': {
         content: oasisCreateAjnaYieldTokenTooltip,
@@ -489,10 +480,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.AaveV2,
     label: 'ETH/USDC',
-    fee: new BigNumber(0.0371),
-    liquidity: new BigNumber(87146012),
-    maxMultiply: new BigNumber(5.71),
-    maxLtv: new BigNumber(0.825),
+    fee: '0.0371',
+    liquidity: '87146012',
+    maxMultiply: '5.71',
+    maxLtv: '0.825',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long ETH',
   },
@@ -588,10 +579,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'WBTC-A/DAI',
-    fee: new BigNumber(0.049),
-    liquidity: new BigNumber(20797593),
-    maxMultiply: new BigNumber(3.22),
-    maxLtv: new BigNumber(0.6896),
+    fee: '0.049',
+    liquidity: '20797593',
+    maxMultiply: '3.22',
+    maxLtv: '0.6896',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WBTC',
   },
@@ -602,10 +593,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'WBTC-B/DAI',
-    fee: new BigNumber(0.049),
-    liquidity: new BigNumber(10090826),
-    maxMultiply: new BigNumber(4.33),
-    maxLtv: new BigNumber(0.7692),
+    fee: '0.049',
+    liquidity: '10090826',
+    maxMultiply: '4.33',
+    maxLtv: '0.7692',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WBTC',
   },
@@ -616,10 +607,10 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Maker,
     label: 'WBTC-C/DAI',
-    fee: new BigNumber(0.049),
-    liquidity: new BigNumber(29096112),
-    maxMultiply: new BigNumber(2.33),
-    maxLtv: new BigNumber(0.5714),
+    fee: '0.049',
+    liquidity: '29096112',
+    maxMultiply: '2.33',
+    maxLtv: '0.5714',
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WBTC',
   },
@@ -700,7 +691,7 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Ajna,
     label: 'ETH/USDC',
-    '7DayNetApy': new BigNumber(0.0001),
+    '7DayNetApy': '0.0001',
     earnStrategy: 'ETH/USDC LP',
     managementType: 'active',
     reverseTokens: true,
@@ -724,7 +715,7 @@ const oasisCreateTable: ProductHubItem[] = [
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.Ajna,
     label: 'WBTC/USDC',
-    '7DayNetApy': new BigNumber(0.0002),
+    '7DayNetApy': '0.0002',
     earnStrategy: 'WBTC/USDC LP',
     managementType: 'active',
     reverseTokens: true,
@@ -820,7 +811,7 @@ const oasisCreateTable: ProductHubItem[] = [
     label: 'DSR',
     managementType: 'passive',
     earnStrategy: 'DSR',
-    '7DayNetApy': new BigNumber(0.022),
+    '7DayNetApy': '0.022',
   },
 ]
 

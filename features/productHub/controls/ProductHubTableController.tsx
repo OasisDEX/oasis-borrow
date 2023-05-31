@@ -10,8 +10,8 @@ interface ProductHubTableControllerProps {
 }
 
 export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({
-  rows,
   selectedToken,
+  rows,
 }) => {
   return (
     <>

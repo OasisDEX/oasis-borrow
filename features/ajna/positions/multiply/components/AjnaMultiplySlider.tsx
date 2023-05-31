@@ -36,14 +36,15 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     BigNumber.ROUND_UP,
   )
 
-  const debtMax = getAjnaBorrowDebtMax({
+  const generateMax = getAjnaBorrowDebtMax({
     precision: getToken(quoteToken).precision,
     position,
     simulation,
   })
 
-  const max = !debtMax.isZero()
-    ? debtMax
+  const max = !generateMax.isZero()
+    ? generateMax
+        .plus(position.debtAmount)
         .div((simulation || position).collateralAmount.times(collateralPrice))
         .decimalPlaces(2, BigNumber.ROUND_DOWN)
     : zero

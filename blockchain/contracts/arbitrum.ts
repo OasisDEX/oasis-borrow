@@ -48,8 +48,8 @@ import {
 } from 'blockchain/addresses/addressesUtils'
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import { tokensArbitrum } from 'blockchain/tokens/'
+import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
-import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'

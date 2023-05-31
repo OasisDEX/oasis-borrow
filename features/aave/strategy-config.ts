@@ -53,7 +53,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-ethusdc',
-    urlSlug: 'optimism-ethusdc',
+    urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -82,7 +82,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wstethusdc',
-    urlSlug: 'optimism-wstethusdc',
+    urlSlug: 'wstethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -111,7 +111,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wbtcusdc',
-    urlSlug: 'optimism-wbtcusdc',
+    urlSlug: 'wbtcusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -561,6 +561,7 @@ export function loadStrategyFromUrl(
 export function loadStrategyFromTokens(
   collateralToken: string,
   debtToken: string,
+  networkName: NetworkNames,
 ): IStrategyConfig {
   // Aave uses WETH gateway for ETH (we have ETH strategy specified)
   // so we have to convert that on the fly just to find the strategy
@@ -568,7 +569,10 @@ export function loadStrategyFromTokens(
   const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
   const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
   const strategy = strategies.find(
-    (s) => s.tokens.collateral === actualCollateralToken && s.tokens.debt === actualDebtToken,
+    (s) =>
+      s.tokens.collateral === actualCollateralToken &&
+      s.tokens.debt === actualDebtToken &&
+      s.network === networkName,
   )
   if (!strategy) {
     throw new Error(

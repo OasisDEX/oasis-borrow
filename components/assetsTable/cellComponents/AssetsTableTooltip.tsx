@@ -1,16 +1,32 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
-import React, { ReactChild } from 'react'
+import React from 'react'
+import { Text } from 'theme-ui'
 
 export interface AssetsTableTooltipProps {
-  content: ReactChild
+  content: {
+    title?: string
+    description: string
+  }
   icon: string
 }
 
-export function AssetsTableTooltip({ content, icon }: AssetsTableTooltipProps) {
+export function AssetsTableTooltip({
+  content: { title, description },
+  icon,
+}: AssetsTableTooltipProps) {
   return (
     <StatefulTooltip
-      tooltip={content}
+      tooltip={
+        <>
+          {title && (
+            <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
+              {title}
+            </Text>
+          )}
+          {description}
+        </>
+      }
       containerSx={{ position: 'relative', top: '2px', display: 'inline-flex', ml: 1 }}
       tooltipSx={{
         width: '240px',
