@@ -59,7 +59,7 @@ function WithStrategy({
     protocol,
     network,
   )
-  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId))
+  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId, network))
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
