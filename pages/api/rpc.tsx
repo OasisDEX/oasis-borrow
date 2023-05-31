@@ -63,8 +63,7 @@ const blockRecheckDelay = 3000
 const cache: { [key: string]: Cache } = {}
 
 function getRpcNode(network: NetworkNames, forkId: string) {
-  console.log('getRpcNode', network, forkId)
-  if (forkId) {
+  if (forkId && (network === NetworkNames.ethereumFork || network === NetworkNames.ethereumMainnet)) {
     return `https://rpc.tenderly.co/fork/${forkId}`
   }
   switch (network) {
@@ -95,6 +94,7 @@ function getRpcNode(network: NetworkNames, forkId: string) {
 }
 function getSpotAddress(network: NetworkNames) {
   switch (network) {
+    case NetworkNames.ethereumFork:
     case NetworkNames.ethereumMainnet:
       return `0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3`
     case NetworkNames.ethereumGoerli:
@@ -105,6 +105,7 @@ function getSpotAddress(network: NetworkNames) {
 }
 function getMulticall(network: NetworkNames) {
   switch (network) {
+    case NetworkNames.ethereumFork:
     case NetworkNames.ethereumMainnet:
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case NetworkNames.ethereumGoerli:
@@ -186,7 +187,6 @@ async function makeCall(network: NetworkNames, calls: any[], rpcForkSecret: stri
 
   const forkConfig: TenderlyConfig = getConfig()
   const isFork = !!rpcForkSecret && rpcForkSecret === process.env.TENDERLY_FORK_SECRET
-  console.log('isFork', isFork)
   const fork = isFork ? await refreshFork(forkConfig) : { uuid: '' }
 
   if (calls.length === 1) {
@@ -196,8 +196,10 @@ async function makeCall(network: NetworkNames, calls: any[], rpcForkSecret: stri
         'Content-Length': JSON.stringify(calls[0]).length.toString(),
       },
     }
+    const rpcUrl =  getRpcNode(network, fork.uuid);
+    console.log("getRpcNode", rpcUrl, network, fork.uuid);
     const response = await axios.post(
-      getRpcNode(network, fork.uuid),
+      rpcUrl,
       JSON.stringify(calls[0]),
       config,
     )
@@ -209,7 +211,9 @@ async function makeCall(network: NetworkNames, calls: any[], rpcForkSecret: stri
         'Content-Length': callsLength.toString(),
       },
     }
-    const response = await axios.post(getRpcNode(network, fork.uuid), calls, config)
+    const rpcUrl =  getRpcNode(network, fork.uuid);
+    console.log("getRpcNode", rpcUrl, network, fork.uuid);
+    const response = await axios.post(rpcUrl, calls, config)
     return response.data
   }
 }
@@ -235,9 +239,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   const clientIdQuery = req.query.clientId!
   const rpcForkSecret = req.query.rpcForkSecret! as string
 
-  console.log('networkQuery', networkQuery)
-  console.log('clientIdQuery', clientIdQuery)
-  console.log('rpcForkSecret', rpcForkSecret)
   const network = networkQuery.toString() as NetworkNames
   const clientId = clientIdQuery.toString()
   //withCache = req.query.withCache.toString() === "true"
@@ -419,8 +420,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       if (error instanceof Error) errMsg = error.message
       else errMsg = JSON.stringify(error)
       if (error instanceof Error) errStack = error.stack
-      console.log(errMsg)
-      console.log(errStack)
+      console.log("!!!!!!",errMsg)
+      //console.log("@@@@@@@@", errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(requestBody).length
       counters.bypassedCallsCount += requestBody.length

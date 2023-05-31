@@ -547,7 +547,7 @@ export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
   if (rpcForkSecret) {
-    chainIdToRpcUrl[NetworkIds.MAINNET] = getCustomForkRpcUrl(rpcForkSecret)
+    chainIdToRpcUrl[NetworkIds.MAINNET] = getCustomForkRpcUrl();
   }
   const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
 

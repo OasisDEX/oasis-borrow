@@ -29,12 +29,10 @@ export function getConfig(): TenderlyConfig {
 const defaultConfig: TenderlyConfig = getConfig()
 
 export async function refreshFork(config: TenderlyConfig = defaultConfig): Promise<Fork> {
-  console.log('refreshFork')
   return await refreshForkThrottled(config)
 }
 
 const refreshForkInternal = async (config: TenderlyConfig = defaultConfig): Promise<Fork> => {
-  console.log('refreshForkInternal')
   const existingFork = await getLatestFork()
   if (!existingFork || isOverdue(existingFork, config)) {
     if (existingFork) {

@@ -1,9 +1,12 @@
 import { NetworkNames } from 'blockchain/networks/network-names'
 import { clientId } from 'helpers/clientId'
+import { getStorageValue } from 'helpers/useLocalStorage'
 
 import { infuraProjectId } from './runtimeConfig'
 
-function getRpc(network: NetworkNames, rpcForkSecret: string = ''): string {
+function getRpc(network: NetworkNames): string {
+
+  const rpcForkSecret = getStorageValue<string>('rpcForkSecret', '')
   if (rpcForkSecret !== '' && network === NetworkNames.ethereumMainnet) {
     network = NetworkNames.ethereumFork
   }
@@ -17,8 +20,8 @@ function getRpc(network: NetworkNames, rpcForkSecret: string = ''): string {
   }
 }
 
-export const getCustomForkRpcUrl = (secret: string) => {
-  return getRpc(NetworkNames.ethereumFork, secret)
+export const getCustomForkRpcUrl = () => {
+  return getRpc(NetworkNames.ethereumFork)
 }
 export const mainnetRpc = getRpc(NetworkNames.ethereumMainnet)
 export const goerliRpc = getRpc(NetworkNames.ethereumGoerli)
