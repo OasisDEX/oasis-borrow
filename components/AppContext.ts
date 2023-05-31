@@ -1031,7 +1031,11 @@ export function setupAppContext() {
   const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
 
   const strategyConfig$ = memoize(
-    curry(getStrategyConfig$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+    curry(getStrategyConfig$)(
+      proxiesRelatedWithPosition$,
+      aaveV2.aaveProxyConfiguration$,
+      lastCreatedPositionForProxy$,
+    ),
     (positionId: PositionId, networkName: NetworkNames) =>
       `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
   )
