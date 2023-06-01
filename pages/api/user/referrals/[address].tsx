@@ -1,5 +1,4 @@
 import { User } from '@prisma/client'
-import { withSentry } from '@sentry/nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
@@ -25,4 +24,4 @@ export async function selectUsersByReferredAddress(address: string): Promise<Use
   })
 }
 
-export default withSentry(handler)
+export default handler

@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
@@ -33,4 +32,4 @@ async function tunnel(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default withSentry(handler)
+export default handler

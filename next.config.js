@@ -10,9 +10,9 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
-const { withSentryConfig } = require('@sentry/nextjs')
 const { publicRuntimeConfig } = require('./runtime.config.js')
 const path = require('path')
+const { withSentryConfig } = require('@sentry/nextjs')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
@@ -184,28 +184,12 @@ const baseConfig = {
   transpilePackages: ['@lifi/widget', '@lifi/wallet-management'],
 }
 
-module.exports = withSentryConfig(withBundleAnalyzer(withMDX(baseConfig)), {
-  org: 'oazo-apps',
-  project: 'oazo-apps',
-  url: 'https://sentry.io/',
-})
-
-
-// Injected content via Sentry wizard below
-
-const { withSentryConfig } = require("@sentry/nextjs");
-
 module.exports = withSentryConfig(
-  module.exports,
+  withBundleAnalyzer(withMDX(baseConfig)),
   {
-    // For all available options, see:
-    // https://github.com/getsentry/sentry-webpack-plugin#options
-
-    // Suppresses source map uploading logs during build
-    silent: true,
-
-    org: "oazo-apps",
-    project: "oazo-apps",
+    org: 'oazo-apps',
+    project: 'oazo-apps',
+    url: 'https://sentry.io/',
   },
   {
     // For all available options, see:
@@ -218,12 +202,12 @@ module.exports = withSentryConfig(
     transpileClientSDK: true,
 
     // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
-    tunnelRoute: "/monitoring",
+    tunnelRoute: '/monitoring',
 
     // Hides source maps from generated client bundles
     hideSourceMaps: true,
 
     // Automatically tree-shake Sentry logger statements to reduce bundle size
     disableLogger: true,
-  }
-);
+  },
+)

@@ -4,9 +4,10 @@
 
 import * as Sentry from '@sentry/nextjs'
 
-Sentry.init({
-  dsn: 'https://2fdf00b007464e2784ef445e16a6039f@o1143494.ingest.sentry.io/6204127',
+import { sentryBaseConfig } from './sentry.base.config'
 
+Sentry.init({
+  ...sentryBaseConfig,
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1,
 

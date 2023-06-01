@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import { cacheObject } from 'helpers/api/cacheObject'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getOasisStats } from 'server/services/getOasisStats'
@@ -19,4 +18,4 @@ async function oasisStatsHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default withSentry(oasisStatsHandler)
+export default oasisStatsHandler
