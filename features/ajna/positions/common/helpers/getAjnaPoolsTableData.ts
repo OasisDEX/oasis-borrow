@@ -11,7 +11,9 @@ export interface AjnaPoolsDataResponse {
   dailyPercentageRate30dAverage: string
   poolMinDebtAmount: string
   lup: string
+  lupIndex: string
   htp: string
+  htpIndex: string
 }
 
 interface AjnaPoolsTableData {
@@ -23,7 +25,9 @@ interface AjnaPoolsTableData {
   dailyPercentageRate30dAverage: BigNumber
   poolMinDebtAmount: BigNumber
   lowestUtilizedPrice: BigNumber
+  lowestUtilizedPriceIndex: number
   highestThresholdPrice: BigNumber
+  highestThresholdPriceIndex: number
 }
 
 export const getAjnaPoolsTableData = async (): Promise<AjnaPoolsTableData[]> => {
@@ -42,7 +46,9 @@ export const getAjnaPoolsTableData = async (): Promise<AjnaPoolsTableData[]> => 
         dailyPercentageRate30dAverage,
         poolMinDebtAmount,
         lup,
+        lupIndex,
         htp,
+        htpIndex,
       }) => ({
         collateralAddress,
         quoteTokenAddress,
@@ -54,7 +60,9 @@ export const getAjnaPoolsTableData = async (): Promise<AjnaPoolsTableData[]> => 
           .shiftedBy(2),
         poolMinDebtAmount: new BigNumber(poolMinDebtAmount).shiftedBy(negativeWadPrecision),
         lowestUtilizedPrice: new BigNumber(lup).shiftedBy(negativeWadPrecision),
+        lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
         highestThresholdPrice: new BigNumber(htp).shiftedBy(negativeWadPrecision),
+        highestThresholdPriceIndex: parseInt(htpIndex, 10),
       }),
     )
   }

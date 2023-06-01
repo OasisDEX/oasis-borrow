@@ -44,6 +44,7 @@ export function getAjnaPoolsTableContent$(
                   dailyPercentageRate30dAverage,
                   poolMinDebtAmount,
                   lowestUtilizedPrice,
+                  lowestUtilizedPriceIndex,
                   highestThresholdPrice,
                 } = curr
 
@@ -72,9 +73,10 @@ export function getAjnaPoolsTableContent$(
                       ),
                       annualFee: interestRate,
                       liquidityAvaliable: depositSize.minus(debt),
+                      lowestUtilizedPriceIndex,
                       maxLtv,
-                      minLtv: highestThresholdPrice.div(marketPrice),
                       maxMultiply,
+                      minLtv: highestThresholdPrice.div(marketPrice),
                       minPositionSize: poolMinDebtAmount,
                       tvl: depositSize,
                       with50Tokens: maxMultiply.times(50),
