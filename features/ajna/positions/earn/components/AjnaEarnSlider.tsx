@@ -33,7 +33,7 @@ function getMinMaxAndRange({
 }) {
   // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
   if (lowestUtilizedPriceIndex.eq(zero)) {
-    const defaultRange = [quotePrice.times(ajnaDefaultPoolRangeMarketPriceOffset)]
+    const defaultRange = [quotePrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
 
     while (defaultRange[defaultRange.length - 1].lt(quotePrice)) {
       defaultRange.push(
