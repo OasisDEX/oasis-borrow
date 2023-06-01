@@ -167,6 +167,12 @@ export const optimismContracts: MainnetContracts = {
   ajnaPoolPairs: {
     'ETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHUSDC),
     'WBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WSTETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHDAI),
+    'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
+    'WBTC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCDAI),
+    'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWETH),
+    'USDC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCDAI),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
   // TODO update address
