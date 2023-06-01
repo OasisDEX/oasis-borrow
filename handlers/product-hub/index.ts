@@ -3,7 +3,7 @@ import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
-import { checkIfAllHandlersExist, filterTableData } from './helpers'
+import { checkIfAllHandlersExist, filterTableData, measureTime } from './helpers'
 import { HandleGetProductHubDataProps, HandleUpdateProductHubDataProps } from './types'
 import { PRODUCT_HUB_HANDLERS } from './update-handlers'
 
@@ -71,10 +71,17 @@ export async function updateProductHubData(
       call: PRODUCT_HUB_HANDLERS[protocol],
     }
   })
-  const data = handlersList.map(({ name, call }) => {
-    return { name, data: call() }
-  })
-  return res.status(200).json({ data })
+  const dataHandlersPromiseList = await Promise.all(
+    handlersList.map(({ name, call }) => {
+      const startTime = Date.now()
+      return call().then((data) => ({
+        name,
+        data,
+        processingTime: measureTime ? Date.now() - startTime : undefined,
+      }))
+    }),
+  )
+  return res.status(200).json({ data: dataHandlersPromiseList })
 }
 
 export async function mockProductHubData(req: NextApiRequest, res: NextApiResponse) {

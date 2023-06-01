@@ -37,3 +37,5 @@ export const productHubEthersProviders: Record<
     getNetworkRpcEndpoint(NetworkIds.OPTIMISMMAINNET, NetworkIds.OPTIMISMMAINNET),
   ),
 }
+
+export const measureTime = true
