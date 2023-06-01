@@ -11,7 +11,6 @@ export const sentryBaseConfig = {
   dsn: SENTRY_DSN,
   projectId: SENTRY_PROJECT_ID,
   host: SENTRY_HOST,
-  tracesSampleRate: 1.0,
   environment: process.env.NEXT_PUBLIC_SENTRY_ENV,
   // release is also used for source map uploads at build time,
   // so ensure that SENTRY_RELEASE is the same at build time.
