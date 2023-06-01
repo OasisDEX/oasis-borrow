@@ -52,12 +52,12 @@ export async function updateProductHubData(
   res: NextApiResponse,
 ) {
   const { query, body } = req
-  if ([undefined, ''].includes(process.env.PRODUCT_HUB_SECRET)) {
+  if ([undefined, ''].includes(process.env.PRODUCT_HUB_KEY)) {
     return res.status(400).json({
       errorMessage: 'Missing env variable',
     })
   }
-  if (query.secret !== process.env.PRODUCT_HUB_SECRET) {
+  if (query.secret !== process.env.PRODUCT_HUB_KEY) {
     return res.status(400).json({
       errorMessage: 'Missing query parameter',
     })
