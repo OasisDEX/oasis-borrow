@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import { WAD_PRECISION } from 'components/constants'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
-import { ajnaLastIndexBucketPrice } from 'features/ajna/common/consts'
+import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
@@ -31,9 +31,9 @@ function getMinMaxAndRange({
   quotePrice: BigNumber
   offset: number
 }) {
-  // check whether pool contain liquidity and borrowers, if no generate default range from lowest price to market price
+  // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
   if (lowestUtilizedPriceIndex.eq(zero)) {
-    const defaultRange = [ajnaLastIndexBucketPrice.shiftedBy(NEGATIVE_WAD_PRECISION)]
+    const defaultRange = [quotePrice.times(ajnaDefaultPoolRangeMarketPriceOffset)]
 
     while (defaultRange[defaultRange.length - 1].lt(quotePrice)) {
       defaultRange.push(
@@ -138,10 +138,6 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
     lowestUtilizedPriceIndex,
   } = position.pool
 
-  const resolvedValue = price || lowestUtilizedPrice
-
-  const maxLtv = position.getMaxLtv(price)
-
   const { min, max, range } = useMemo(
     () =>
       getMinMaxAndRange({
@@ -160,6 +156,10 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
       quotePrice.toString(),
     ],
   )
+
+  const resolvedLup = lowestUtilizedPriceIndex.isZero() ? max : lowestUtilizedPrice
+  const resolvedValue = price || resolvedLup
+  const maxLtv = position.getMaxLtv(resolvedValue)
 
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
     () =>
