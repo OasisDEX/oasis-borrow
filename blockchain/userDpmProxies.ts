@@ -95,7 +95,6 @@ export function getUserDpmProxies$(
       }))
     }),
     catchError((error) => {
-      // Figure out Sentry logging pattern.
       console.error(`Error getting user DPM proxies`, walletAddress, error)
       return of([])
     }),

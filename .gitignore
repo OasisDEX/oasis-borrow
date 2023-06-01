@@ -31,3 +31,6 @@ next-env.d.ts
 # xstate autogenereted files
 *.typegen.ts
 
+
+# Sentry Auth Token
+.sentryclirc

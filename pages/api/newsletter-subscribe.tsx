@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import md5 from 'crypto-js/md5'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -71,4 +70,4 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default withSentry(handler)
+export default handler

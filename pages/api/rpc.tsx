@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 import { NetworkNames } from 'blockchain/networks'
 import * as ethers from 'ethers'
@@ -507,7 +506,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   return res.status(200).send(finalResponse)
 }
 
-export default withSentry(rpc)
+export default rpc
 async function sleepUntill(check: () => boolean, maxCount: number, message: string) {
   return new Promise((res, rej) => {
     if (!check()) {

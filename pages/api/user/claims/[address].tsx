@@ -1,5 +1,4 @@
 import { WeeklyClaim } from '@prisma/client'
-import { withSentry } from '@sentry/nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
@@ -25,4 +24,4 @@ export async function selectClaimsByAddress(address: string): Promise<WeeklyClai
   })
 }
 
-export default withSentry(handler)
+export default handler
