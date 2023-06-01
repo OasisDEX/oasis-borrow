@@ -1,12 +1,24 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { flatten } from 'lodash'
 
 import { aaveV2ProductHubProducts } from './aaveV2Products'
 
 export default async function (): ProductHubHandlerResponse {
   // Multiply: max multiple, liq available, variable fee
   // Earn: 7 day net APY, liq available
+  const primaryTokensList = [
+    ...new Set(
+      flatten(
+        aaveV2ProductHubProducts.map((product) =>
+          product.depositToken
+            ? [product.primaryToken, product.depositToken]
+            : [product.primaryToken],
+        ),
+      ),
+    ),
+  ]
   const secondaryTokensList = [
     ...new Set(aaveV2ProductHubProducts.map((product) => product.secondaryToken)),
   ]
@@ -23,7 +35,7 @@ export default async function (): ProductHubHandlerResponse {
   })
 
   // reserveData -> max multiple
-  const tokensReserveConfigurationDataPromises = secondaryTokensList.map(async (token) => {
+  const tokensReserveConfigurationDataPromises = primaryTokensList.map(async (token) => {
     const reserveConfigurationData = await getAaveV2ReserveConfigurationData({ token })
     return {
       [token]: {
@@ -38,13 +50,13 @@ export default async function (): ProductHubHandlerResponse {
     Promise.all(tokensReserveConfigurationDataPromises),
   ]).then(([tokensReserveData, tokensReserveConfigurationData]) => {
     return aaveV2ProductHubProducts.map((product) => {
-      const { secondaryToken } = product
+      const { secondaryToken, primaryToken, depositToken } = product
       const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
         secondaryToken
       ]
       const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-        (data) => data[secondaryToken],
-      )![secondaryToken]
+        (data) => data[depositToken || primaryToken],
+      )![depositToken || primaryToken]
       return {
         ...product,
         maxMultiply: riskRatio.multiple.toString(),

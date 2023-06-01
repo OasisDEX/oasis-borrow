@@ -1,11 +1,16 @@
 import { Protocol } from '@prisma/client'
 import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
+import { flatten } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
 import { checkIfAllHandlersExist, filterTableData, measureTime } from './helpers'
 import { HandleGetProductHubDataProps, HandleUpdateProductHubDataProps } from './types'
 import { PRODUCT_HUB_HANDLERS } from './update-handlers'
+
+if (process.env.PRODUCT_HUB_SECRET === undefined) {
+  throw new Error("Missing env variable 'PRODUCT_HUB_SECRET'")
+}
 
 export async function handleGetProductHubData(
   req: HandleGetProductHubDataProps,
@@ -50,7 +55,13 @@ export async function updateProductHubData(
   req: HandleUpdateProductHubDataProps,
   res: NextApiResponse,
 ) {
-  const { protocols } = req.body
+  const { query, body } = req
+  if (query.secret !== process.env.PRODUCT_HUB_SECRET) {
+    return res.status(400).json({
+      errorMessage: 'Missing query parameter',
+    })
+  }
+  const { protocols } = body
   if (!protocols || !protocols.length) {
     return res.status(400).json({
       errorMessage: 'Missing required parameters (protocols), check error object for more details',
@@ -75,12 +86,58 @@ export async function updateProductHubData(
     handlersList.map(({ name, call }) => {
       const startTime = Date.now()
       return call().then((data) => ({
-        name,
+        name, // protocol name
         data,
         processingTime: measureTime ? Date.now() - startTime : undefined,
       }))
     }),
   )
+
+  console.log(
+    'deleteMany',
+    JSON.stringify(
+      {
+        where: {
+          protocol: {
+            in: dataHandlersPromiseList.map(({ name }) => name),
+          },
+        },
+      },
+      null,
+      4,
+    ),
+  )
+
+  try {
+    await prisma.productHubItems.deleteMany({
+      where: {
+        protocol: {
+          in: dataHandlersPromiseList.map(({ name }) => name),
+        },
+      },
+    })
+  } catch (error) {
+    return res.status(502).json({
+      errorMessage: 'Error removing old Product Hub data',
+      // @ts-ignore
+      error: error.toString(),
+      data: dataHandlersPromiseList,
+    })
+  }
+
+  try {
+    await prisma.productHubItems.createMany({
+      data: flatten([...dataHandlersPromiseList.map(({ data }) => data)]),
+    })
+  } catch (error) {
+    return res.status(502).json({
+      errorMessage: 'Error updating Product Hub data',
+      // @ts-ignore
+      error: error.toString(),
+      data: dataHandlersPromiseList,
+      createData: flatten([...dataHandlersPromiseList.map(({ data }) => data)]),
+    })
+  }
   return res.status(200).json({ data: dataHandlersPromiseList })
 }
 

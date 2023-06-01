@@ -15,14 +15,14 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
   },
   {
     product: [ProductHubProductType.Multiply],
-    primaryToken: 'CBETH',
+    primaryToken: 'STETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
     network: BaseNetworkNames.Ethereum,
     protocol: LendingProtocol.AaveV2,
-    label: 'CBETH/USDC',
+    label: 'STETH/USDC',
     multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long CBETH',
+    multiplyStrategy: 'Long STETH',
   },
   {
     product: [ProductHubProductType.Multiply],

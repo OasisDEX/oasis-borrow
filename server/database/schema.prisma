@@ -235,18 +235,18 @@ model ProductHubItems {
   protocol Protocol
   secondaryToken String
   secondaryTokenGroup String?
-  weeklyNetApy Decimal?
+  weeklyNetApy String?
   depositToken String?
   earnStrategy String?
-  fee Decimal?
-  liquidity Decimal?
+  fee String?
+  liquidity String?
   managementType ProductHubManagement?
-  maxLtv Decimal?
-  maxMultiply Decimal?
+  maxLtv String?
+  maxMultiply String?
   multiplyStrategy String?
   multiplyStrategyType ProductHubStrategy?
   reverseTokens Boolean?
-  with50Tokens Decimal?
+  with50Tokens String?
   updatedAt DateTime @updatedAt
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
