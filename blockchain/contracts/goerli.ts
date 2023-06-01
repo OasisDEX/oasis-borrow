@@ -165,6 +165,12 @@ export const goerliContracts: MainnetContracts = {
   ajnaPoolPairs: {
     'ETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHUSDC),
     'WBTC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WSTETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHDAI),
+    'RETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHDAI),
+    'WBTC-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCDAI),
+    'USDC-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWETH),
+    'USDC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCDAI),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, goerli.ajna.AjnaRewardsManager),
   // TODO update address
