@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import { cacheObject } from 'helpers/api/cacheObject'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -16,4 +15,4 @@ async function tokensPricesHandler(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default withSentry(tokensPricesHandler)
+export default tokensPricesHandler

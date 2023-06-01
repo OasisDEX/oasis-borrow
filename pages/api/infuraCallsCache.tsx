@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import { networksById } from 'blockchain/networks'
 import { BatchManager } from 'helpers/api/BatchManager'
 import { Request } from 'helpers/api/BatchManager'
@@ -34,4 +33,4 @@ async function infuraCallsCacheHandler(req: NextApiRequest, res: NextApiResponse
   return respond(req, res, batchResults)
 }
 
-export default withSentry(infuraCallsCacheHandler)
+export default infuraCallsCacheHandler

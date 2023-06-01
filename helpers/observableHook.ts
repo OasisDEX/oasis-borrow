@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs'
+import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
 import { Observable } from 'rxjs'
 

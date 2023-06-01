@@ -54,6 +54,7 @@ function WithStrategy({
   protocol: AaveLendingProtocol
   network: NetworkNames
 }) {
+  const { push } = useRouter()
   const { t } = useTranslation()
   const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
     protocol,
@@ -63,6 +64,15 @@ function WithStrategy({
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
+  if (strategyConfigError) {
+    console.warn(
+      `Strategy config not found for network: ${network} and positionId`,
+      positionId,
+      strategyConfigError,
+    )
+    void push(INTERNAL_LINKS.notFound)
+    return <></>
+  }
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator

@@ -1,4 +1,5 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
+import * as Sentry from '@sentry/react'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
@@ -578,6 +579,7 @@ export function setupAppContext() {
     )
     .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
       if (account) {
+        Sentry.setUser({ id: account, walletLabel: walletLabel })
         mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
         trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }
@@ -1031,7 +1033,11 @@ export function setupAppContext() {
   const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
 
   const strategyConfig$ = memoize(
-    curry(getStrategyConfig$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+    curry(getStrategyConfig$)(
+      proxiesRelatedWithPosition$,
+      aaveV2.aaveProxyConfiguration$,
+      lastCreatedPositionForProxy$,
+    ),
     (positionId: PositionId, networkName: NetworkNames) =>
       `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
   )
