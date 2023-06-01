@@ -23,6 +23,7 @@ export async function handleGetProductHubData(
       },
     })
   }
+
   await prisma.productHubItems
     .findMany({
       where: {
@@ -92,21 +93,6 @@ export async function updateProductHubData(
         processingTime: measureTime ? Date.now() - startTime : undefined,
       }))
     }),
-  )
-
-  console.log(
-    'deleteMany',
-    JSON.stringify(
-      {
-        where: {
-          protocol: {
-            in: dataHandlersPromiseList.map(({ name }) => name),
-          },
-        },
-      },
-      null,
-      4,
-    ),
   )
 
   try {
