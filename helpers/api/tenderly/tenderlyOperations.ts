@@ -36,7 +36,11 @@ const refreshForkInternal = async (config: TenderlyConfig = defaultConfig): Prom
   const existingFork = await getLatestFork()
   if (!existingFork || isOverdue(existingFork, config)) {
     if (existingFork) {
-      await deleteFork(existingFork.uuid)
+      try{
+        await deleteFork(existingFork.uuid)
+      }catch(err){
+        console.error("Fork deletion failed");
+      }
     }
     const latestFork = await createForkInternal()
     await saveLatestFork(latestFork)
