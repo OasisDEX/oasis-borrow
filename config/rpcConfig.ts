@@ -5,7 +5,6 @@ import { getStorageValue } from 'helpers/useLocalStorage'
 import { infuraProjectId } from './runtimeConfig'
 
 function getRpc(network: NetworkNames): string {
-
   const rpcForkSecret = getStorageValue<string>('rpcForkSecret', '')
   if (rpcForkSecret !== '' && network === NetworkNames.ethereumMainnet) {
     network = NetworkNames.ethereumFork
