@@ -8,10 +8,6 @@ import { checkIfAllHandlersExist, filterTableData, measureTime } from './helpers
 import { HandleGetProductHubDataProps, HandleUpdateProductHubDataProps } from './types'
 import { PRODUCT_HUB_HANDLERS } from './update-handlers'
 
-if (process.env.PRODUCT_HUB_SECRET === undefined) {
-  throw new Error("Missing env variable 'PRODUCT_HUB_SECRET'")
-}
-
 export async function handleGetProductHubData(
   req: HandleGetProductHubDataProps,
   res: NextApiResponse,
@@ -56,6 +52,11 @@ export async function updateProductHubData(
   res: NextApiResponse,
 ) {
   const { query, body } = req
+  if ([undefined, ''].includes(process.env.PRODUCT_HUB_SECRET)) {
+    return res.status(400).json({
+      errorMessage: 'Missing env variable',
+    })
+  }
   if (query.secret !== process.env.PRODUCT_HUB_SECRET) {
     return res.status(400).json({
       errorMessage: 'Missing query parameter',
