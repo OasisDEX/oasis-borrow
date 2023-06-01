@@ -63,7 +63,10 @@ const blockRecheckDelay = 3000
 const cache: { [key: string]: Cache } = {}
 
 function getRpcNode(network: NetworkNames, forkId: string) {
-  if (forkId && (network === NetworkNames.ethereumFork || network === NetworkNames.ethereumMainnet)) {
+  if (
+    forkId &&
+    (network === NetworkNames.ethereumFork || network === NetworkNames.ethereumMainnet)
+  ) {
     return `https://rpc.tenderly.co/fork/${forkId}`
   }
   switch (network) {
@@ -196,13 +199,9 @@ async function makeCall(network: NetworkNames, calls: any[], rpcForkSecret: stri
         'Content-Length': JSON.stringify(calls[0]).length.toString(),
       },
     }
-    const rpcUrl =  getRpcNode(network, fork.uuid);
-    console.log("getRpcNode", rpcUrl, network, fork.uuid);
-    const response = await axios.post(
-      rpcUrl,
-      JSON.stringify(calls[0]),
-      config,
-    )
+    const rpcUrl = getRpcNode(network, fork.uuid)
+    console.log('getRpcNode', rpcUrl, network, fork.uuid)
+    const response = await axios.post(rpcUrl, JSON.stringify(calls[0]), config)
     return [response.data]
   } else {
     config = {
@@ -211,8 +210,8 @@ async function makeCall(network: NetworkNames, calls: any[], rpcForkSecret: stri
         'Content-Length': callsLength.toString(),
       },
     }
-    const rpcUrl =  getRpcNode(network, fork.uuid);
-    console.log("getRpcNode", rpcUrl, network, fork.uuid);
+    const rpcUrl = getRpcNode(network, fork.uuid)
+    console.log('getRpcNode', rpcUrl, network, fork.uuid)
     const response = await axios.post(rpcUrl, calls, config)
     return response.data
   }
@@ -420,8 +419,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       if (error instanceof Error) errMsg = error.message
       else errMsg = JSON.stringify(error)
       if (error instanceof Error) errStack = error.stack
-      console.log("!!!!!!",errMsg)
-      //console.log("@@@@@@@@", errStack)
+      console.log('!!!!!!', errMsg)
+      console.log('@@@@@@@@', errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(requestBody).length
       counters.bypassedCallsCount += requestBody.length
