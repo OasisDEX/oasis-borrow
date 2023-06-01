@@ -11,8 +11,9 @@ const handler: NextApiHandler = async (req, res) => {
   }
 }
 
-const SENTRY_HOST = sentryBaseConfig.host
-const SENTRY_PROJECT_IDS = [sentryBaseConfig.projectId]
+const SENTRY_URL = new URL(sentryBaseConfig.dsn || '')
+const SENTRY_PROJECT_IDS = [SENTRY_URL.pathname.replace('/', '')]
+const SENTRY_HOST = SENTRY_URL.hostname
 
 async function tunnel(req: NextApiRequest, res: NextApiResponse) {
   const envelope = req.body
