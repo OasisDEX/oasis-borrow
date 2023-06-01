@@ -1,4 +1,4 @@
-import { BaseNetworkNames } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -7,7 +7,7 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'USDC',
-    network: BaseNetworkNames.Ethereum,
+    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
     label: 'ETH/USDC',
     multiplyStrategyType: 'long',
@@ -18,7 +18,7 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
     primaryToken: 'STETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
-    network: BaseNetworkNames.Ethereum,
+    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
     label: 'STETH/USDC',
     multiplyStrategyType: 'long',
@@ -28,7 +28,7 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'USDC',
-    network: BaseNetworkNames.Ethereum,
+    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
     label: 'WBTC/USDC',
     multiplyStrategyType: 'long',
@@ -40,7 +40,7 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
     primaryToken: 'STETH',
     secondaryToken: 'ETH',
     depositToken: 'ETH',
-    network: BaseNetworkNames.Ethereum,
+    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
     label: 'STETH/ETH',
     earnStrategy: 'STETH/ETH Yield',

@@ -1,4 +1,3 @@
-import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
@@ -15,6 +14,7 @@ import {
   ProductHubItem,
   ProductHubMultiplyStrategyType,
   ProductHubProductType,
+  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -134,7 +134,10 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         onChange={(value) => {
           onChange({
             or: selectedFilters.or,
-            and: { ...selectedFilters.and, network: value as unknown as BaseNetworkNames[] },
+            and: {
+              ...selectedFilters.and,
+              network: value as unknown as ProductHubSupportedNetworks[],
+            },
           })
         }}
       />

@@ -125,9 +125,10 @@ export async function updateProductHubData(
     })
   }
 
+  const createData = flatten([...dataHandlersPromiseList.map(({ data }) => data)])
   try {
     await prisma.productHubItems.createMany({
-      data: flatten([...dataHandlersPromiseList.map(({ data }) => data)]),
+      data: createData,
     })
   } catch (error) {
     return res.status(502).json({
@@ -135,7 +136,7 @@ export async function updateProductHubData(
       // @ts-ignore
       error: error.toString(),
       data: dataHandlersPromiseList,
-      createData: flatten([...dataHandlersPromiseList.map(({ data }) => data)]),
+      createData,
     })
   }
   return res.status(200).json({ data: dataHandlersPromiseList })

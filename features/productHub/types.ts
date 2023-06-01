@@ -1,4 +1,4 @@
-import { BaseNetworkNames } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps } from 'components/PromoCard'
 import { LendingProtocol } from 'lendingProtocols'
@@ -13,9 +13,9 @@ export enum ProductHubProductType {
 }
 
 export type ProductHubSupportedNetworks =
-  | BaseNetworkNames.Ethereum
-  | BaseNetworkNames.Arbitrum
-  | BaseNetworkNames.Optimism
+  | NetworkNames.ethereumMainnet
+  | NetworkNames.arbitrumMainnet
+  | NetworkNames.optimismMainnet
 
 export interface ProductHubItemBasics {
   label: string
