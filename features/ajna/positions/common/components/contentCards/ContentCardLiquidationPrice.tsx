@@ -6,13 +6,13 @@ import {
 } from 'components/DetailsSectionContentCard'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardLiquidationPriceProps {
   isLoading?: boolean
-  collateralToken: string
-  quoteToken: string
+  priceFormat: string
   liquidationPrice: BigNumber
   afterLiquidationPrice?: BigNumber
   belowCurrentPrice: BigNumber
@@ -21,8 +21,7 @@ interface ContentCardLiquidationPriceProps {
 
 export function ContentCardLiquidationPrice({
   isLoading,
-  collateralToken,
-  quoteToken,
+  priceFormat,
   liquidationPrice,
   afterLiquidationPrice,
   belowCurrentPrice,
@@ -33,36 +32,36 @@ export function ContentCardLiquidationPrice({
   const formatted = {
     liquidationPrice: formatCryptoBalance(liquidationPrice),
     afterLiquidationPrice: afterLiquidationPrice && formatCryptoBalance(afterLiquidationPrice),
-    belowCurrentPrice: formatDecimalAsPercent(belowCurrentPrice),
+    belowCurrentPrice: formatDecimalAsPercent(belowCurrentPrice.abs()),
   }
 
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.position-page.borrow.common.overview.liquidation-price'),
     value: `${formatted.liquidationPrice}`,
-    unit: `${collateralToken}/${quoteToken}`,
+    unit: `${priceFormat}`,
     change: {
       isLoading,
       value:
         afterLiquidationPrice &&
-        `${formatted.afterLiquidationPrice} ${collateralToken}/${quoteToken} ${t(
-          'system.cards.common.after',
-        )}`,
+        `${formatted.afterLiquidationPrice} ${priceFormat} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.borrow.common.overview.liquidation-price')}
         description={t('ajna.position-page.borrow.common.overview.liquidation-price-modal-desc')}
-        value={`${formatted.liquidationPrice} ${collateralToken}/${quoteToken}`}
+        value={`${formatted.liquidationPrice} ${priceFormat}`}
       />
     ),
   }
 
   if (!liquidationPrice.isZero()) {
     contentCardSettings.footnote = t(
-      'ajna.position-page.borrow.common.overview.below-current-price',
+      `ajna.position-page.borrow.common.overview.${
+        belowCurrentPrice.gt(zero) ? 'below' : 'above'
+      }-current-price`,
       {
-        belowCurrentPrice: formatted.belowCurrentPrice,
+        priceRatio: formatted.belowCurrentPrice,
       },
     )
   }

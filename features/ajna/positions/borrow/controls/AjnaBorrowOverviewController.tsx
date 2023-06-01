@@ -18,7 +18,15 @@ import { Grid } from 'theme-ui'
 export function AjnaBorrowOverviewController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralPrice, collateralToken, quotePrice, quoteToken, flow },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      isShort,
+      priceFormat,
+      quotePrice,
+      quoteToken,
+      flow,
+    },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -28,6 +36,13 @@ export function AjnaBorrowOverviewController() {
     notifications,
   } = useAjnaProductContext('borrow')
 
+  const liquidationPrice = isShort ? one.div(position.liquidationPrice) : position.liquidationPrice
+  const belowCurrentPrice = one.minus(
+    isShort ? one.div(position.liquidationToMarketPrice) : position.liquidationToMarketPrice,
+  )
+  const afterLiquidationPrice =
+    simulation?.liquidationPrice &&
+    (isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
   const changeVariant = getBorrowishChangeVariant(simulation)
 
   return (
@@ -39,11 +54,10 @@ export function AjnaBorrowOverviewController() {
           <DetailsSectionContentCardWrapper>
             <ContentCardLiquidationPrice
               isLoading={isSimulationLoading}
-              collateralToken={collateralToken}
-              quoteToken={quoteToken}
-              liquidationPrice={position.liquidationPrice}
-              afterLiquidationPrice={simulation?.liquidationPrice}
-              belowCurrentPrice={one.minus(position.liquidationToMarketPrice)}
+              priceFormat={priceFormat}
+              liquidationPrice={liquidationPrice}
+              afterLiquidationPrice={afterLiquidationPrice}
+              belowCurrentPrice={belowCurrentPrice}
               changeVariant={changeVariant}
             />
             <ContentCardLoanToValue

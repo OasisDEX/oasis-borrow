@@ -39,7 +39,7 @@ export function AjnaFormView({
   const [context] = useObservable(context$)
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, dpmProxy, flow, isOwner, product, quoteToken },
+    environment: { collateralToken, dpmProxy, flow, isOwner, product, quoteToken, strategy },
     steps: {
       currentStep,
       editingStep,
@@ -161,7 +161,7 @@ export function AjnaFormView({
       isTxSuccess
         ? `ajna.position-page.common.form.transaction.success-${flow}`
         : `ajna.position-page.common.form.transaction.progress-${flow}`,
-      { collateralToken, quoteToken },
+      { collateralToken, quoteToken, strategy },
     ),
     txDetails,
   })
