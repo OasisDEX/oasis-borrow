@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 interface AjnaBorrowHeadlinePropsParams {
   collateralToken?: string
   flow: AjnaFlow
+  isShort: boolean
   id?: string
   product?: AjnaProduct
   quoteToken?: string
@@ -14,6 +15,7 @@ export function getAjnaHeadlineProps({
   collateralToken,
   flow,
   id,
+  isShort,
   product,
   quoteToken,
 }: AjnaBorrowHeadlinePropsParams) {
@@ -26,6 +28,7 @@ export function getAjnaHeadlineProps({
           collateralToken,
           id,
           product: upperFirst(product),
+          strategy: t(isShort ? 'short' : 'long'),
           quoteToken,
         }),
         token: [collateralToken, quoteToken],

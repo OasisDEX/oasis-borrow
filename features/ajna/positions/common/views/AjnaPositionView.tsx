@@ -31,6 +31,7 @@ export function AjnaPositionView({
       collateralToken,
       flow,
       id,
+      isShort,
       owner,
       product,
       quotePrice,
@@ -47,7 +48,7 @@ export function AjnaPositionView({
       )}
       <VaultHeadline
         header=""
-        {...getAjnaHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
+        {...getAjnaHeadlineProps({ collateralToken, flow, id, isShort, product, quoteToken })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[
           ...(headlineDetails || []),

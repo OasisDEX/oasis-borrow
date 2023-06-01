@@ -1006,6 +1006,8 @@
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
+  "short": "Short",
+  "long": "Long",
   "slider": {
     "adjust-multiply": {
       "introduction-header": "Adjust your multiply",
@@ -2517,8 +2519,8 @@
     "position-page": {
       "common": {
         "headline": {
-          "open": "{{collateralToken}}/{{quoteToken}} {{product}} Position",
-          "manage": "{{collateralToken}}/{{quoteToken}} {{product}} #{{id}}",
+          "open": "{{collateralToken}}/{{quoteToken}} {{strategy}} {{product}} Position",
+          "manage": "{{collateralToken}}/{{quoteToken}} {{strategy}} {{product}} #{{id}}",
           "current-market-price": "Current Market Price"
         },
         "banners": {
