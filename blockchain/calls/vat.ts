@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { amountFromRad, amountFromRay } from 'blockchain/utils'
 import { Vat } from 'types/web3-v1-contracts'
 import Web3 from 'web3'

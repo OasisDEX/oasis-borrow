@@ -1,3 +1,5 @@
+import type { Route } from '@lifi/sdk'
+import type { RouteExecutionUpdate } from '@lifi/widget'
 import { ProductType } from 'analytics/common'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
@@ -143,6 +145,13 @@ export interface AutomationEventsAdditionalParams {
   closeTo?: CloseVaultTo
 }
 
+export enum SwapWidgetEvents {
+  ExecutionStarted = 'SwapWidgetExecutionStarted',
+  ExecutionUpdated = 'SwapWidgetExecutionUpdated',
+  ExecutionCompleted = 'SwapWidgetExecutionCompleted',
+  ExecutionFailed = 'SwapWidgetExecutionFailed',
+}
+
 export enum NotificationsEventIds {
   OpenNotificationCenter = 'OpenNotificationCenter',
   ScrollNotificationCenter = 'ScrollNotificationCenter',
@@ -174,6 +183,7 @@ export enum EventTypes {
   InputChange = 'input-change',
   ButtonClick = 'btn-click',
   OnScroll = 'on-scroll',
+  SwapWidgetEvent = 'swap-widget-event',
 }
 
 // https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -1125,6 +1135,10 @@ export const trackingEvents = {
 
       !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
+  },
+  swapWidgetEvent: (id: SwapWidgetEvents, eventData: Route | RouteExecutionUpdate) => {
+    const eventBody = { id, section: 'SwapWidget', product: 'SwapWidget', eventData }
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.SwapWidgetEvent, eventBody)
   },
 }
 

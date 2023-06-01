@@ -1,8 +1,9 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
+import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { getDiscoverData } from 'features/discover/api'
 import { DiscoverData } from 'features/discover/common/DiscoverData'
-import { DiscoverFilters } from 'features/discover/common/DiscoverFilters'
+import { DiscoverFilter } from 'features/discover/common/DiscoverFilters'
 import { getDefaultSettingsState } from 'features/discover/helpers/getDefaultSettingsState'
 import { parseBannerData } from 'features/discover/helpers/parseBannerData'
 import { parseDiscoverRowData } from 'features/discover/helpers/parseDiscoverRowData'
@@ -75,12 +76,14 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
   return (
     <AssetsTableContainer>
       <Box ref={anchor} />
-      <DiscoverFilters
-        filters={filters}
-        isSmallerScreen={isSmallerScreen}
+      <AssetsFiltersContainer
         isSticky={isSticky}
-        onChange={onChangeHandler}
-      />
+        gridTemplateColumns={['100%', null, 'repeat(2, 1fr)', 'repeat(4, 1fr)']}
+      >
+        {Object.keys(filters).map((key) => (
+          <DiscoverFilter filter={key} item={filters[key]} key={key} onChange={onChangeHandler} />
+        ))}
+      </AssetsFiltersContainer>
       <DiscoverData
         banner={banner}
         error={response?.error}

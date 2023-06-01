@@ -22,7 +22,7 @@ import { BehaviorSubject, of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
 
 type GlobalMock = NodeJS.Global & { window: { location: { reload: () => void } } }
-;(global as GlobalMock).window = {
+;(global as unknown as GlobalMock).window = {
   location: { reload: () => null },
 }
 

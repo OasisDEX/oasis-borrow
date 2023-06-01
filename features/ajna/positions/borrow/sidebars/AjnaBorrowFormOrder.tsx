@@ -43,6 +43,10 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     afterLiquidationPrice:
       simulationData?.liquidationPrice &&
       `${formatCryptoBalance(simulationData.liquidationPrice)} ${collateralToken}/${quoteToken}`,
+    liquidationThreshold: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
+    afterLiquidationThreshold:
+      simulationData?.maxRiskRatio.loanToValue &&
+      formatDecimalAsPercent(simulationData.maxRiskRatio.loanToValue),
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&
@@ -79,6 +83,12 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           label: t('system.liquidation-price'),
           value: formatted.liquidationPrice,
           change: formatted.afterLiquidationPrice,
+          isLoading,
+        },
+        {
+          label: t('system.liquidation-threshold'),
+          value: formatted.liquidationThreshold,
+          change: formatted.afterLiquidationThreshold,
           isLoading,
         },
         {

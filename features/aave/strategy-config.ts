@@ -1,6 +1,7 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
+import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { AaveBorrowManageComponent } from 'features/borrow/aave/AaveBorrowManageComponent'
 import { AaveEarnFaqV2, AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
@@ -14,7 +15,6 @@ import { ViewPositionSectionComponent } from 'features/earn/aave/components/View
 import { adjustRiskSliders } from 'features/earn/aave/riskSliderConfig'
 import { AaveMultiplyManageComponent } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/multiply/aave/riskSliderConfig'
-import { isSupportedNetwork, NetworkNames } from 'helpers/networkNames'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { AaveLendingProtocol, isLendingProtocol, LendingProtocol } from 'lendingProtocols'
@@ -53,7 +53,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-ethusdc',
-    urlSlug: 'optimism-ethusdc',
+    urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -75,14 +75,14 @@ const optimismStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
-    featureToggle: 'OptimismAaveV3',
   },
   {
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wstethusdc',
-    urlSlug: 'optimism-wstethusdc',
+    urlSlug: 'wstethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -104,14 +104,14 @@ const optimismStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
-    featureToggle: 'OptimismAaveV3',
   },
   {
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
     name: 'optimism-wbtcusdc',
-    urlSlug: 'optimism-wbtcusdc',
+    urlSlug: 'wbtcusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveOpenHeader,
@@ -133,8 +133,98 @@ const optimismStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
-    featureToggle: 'OptimismAaveV3',
+  },
+]
+
+const arbitrumStrategies: Array<IStrategyConfig> = [
+  {
+    network: NetworkNames.arbitrumMainnet,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+    name: 'arbitrum-ethusdc',
+    urlSlug: 'arbitrum-ethusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'ETH',
+      debt: 'USDC',
+      deposit: 'ETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Arbitrum',
+    availableActions: ['close'],
+  },
+  {
+    network: NetworkNames.arbitrumMainnet,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+    name: 'arbitrum-wstethusdc',
+    urlSlug: 'arbitrum-wstethusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WSTETH',
+      debt: 'USDC',
+      deposit: 'WSTETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Arbitrum',
+    availableActions: ['close'],
+  },
+  {
+    network: NetworkNames.arbitrumMainnet,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+    name: 'arbitrum-wbtcusdc',
+    urlSlug: 'arbitrum-wbtcusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WBTC',
+      debt: 'USDC',
+      deposit: 'WBTC',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3Arbitrum',
+    availableActions: ['close'],
   },
 ]
 
@@ -142,8 +232,8 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    name: 'wstETHethV3',
     urlSlug: 'wstETHeth',
-    name: 'wstETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
@@ -165,15 +255,15 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.wstethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
-    featureToggle: 'AaveV3EarnWSTETH' as const,
+    featureToggle: 'AaveV3EarnWSTETH',
     availableActions: ['adjust', 'close'],
     defaultSlippage: new BigNumber(0.001),
   },
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    name: 'stETHethV2',
     urlSlug: 'stETHeth',
-    name: 'stETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(adjustRiskSliders.stethEth.riskRatios.minimum),
@@ -195,12 +285,13 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.stethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
   },
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'ethusdc',
+    name: 'ethusdcV2',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -223,12 +314,13 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
   },
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'stETHusdc',
+    name: 'stETHusdcV2',
     urlSlug: 'stETHusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -251,12 +343,13 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
   },
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'wBTCusdc',
+    name: 'wBTCusdcV2',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -279,6 +372,123 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    featureToggle: 'AaveV2ProductCard',
+    availableActions: allActionsAvailable,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    name: 'ethusdcV3',
+    urlSlug: 'ethusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'ETH',
+      debt: 'USDC',
+      deposit: 'ETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplyETHusdc',
+    availableActions: allActionsAvailable,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    name: 'cbETHusdcV3',
+    urlSlug: 'cbETHusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'CBETH',
+      debt: 'USDC',
+      deposit: 'CBETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplycbETHusdc',
+    availableActions: allActionsAvailable,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    name: 'wBTCusdcV2',
+    urlSlug: 'wBTCusdc',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WBTC',
+      debt: 'USDC',
+      deposit: 'WBTC',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplywBTCusdc',
+    availableActions: allActionsAvailable,
+  },
+  {
+    network: NetworkNames.ethereumMainnet,
+    networkId: NetworkIds.MAINNET,
+    name: 'wstETHethV3',
+    urlSlug: 'wstETHeth',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WSTETH',
+      debt: 'ETH',
+      deposit: 'ETH',
+    },
+    riskRatios: adjustRiskSliders.wstethEth.riskRatios,
+    type: 'Multiply',
+    protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3MultiplywstETHeth',
     availableActions: allActionsAvailable,
   },
 
@@ -308,14 +518,14 @@ const ethereumStrategies: Array<IStrategyConfig> = [
       },
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
       featureToggle: 'AaveBorrow' as const,
-      type: 'Borrow' as const,
+      type: 'Borrow' as ProductType,
       protocol: LendingProtocol.AaveV2 as AaveLendingProtocol,
       availableActions: allActionsAvailable,
     }
   }),
 ]
 
-export const strategies = [...optimismStrategies, ...ethereumStrategies]
+export const strategies = [...optimismStrategies, ...arbitrumStrategies, ...ethereumStrategies]
 
 export function aaveStrategiesList(
   filterProduct?: IStrategyConfig['type'],
@@ -351,12 +561,23 @@ export function loadStrategyFromUrl(
 export function loadStrategyFromTokens(
   collateralToken: string,
   debtToken: string,
+  networkName: NetworkNames,
 ): IStrategyConfig {
+  // Aave uses WETH gateway for ETH (we have ETH strategy specified)
+  // so we have to convert that on the fly just to find the strategy
+  // this is then converted back to WETH using wethToEthAddress
+  const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
+  const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
   const strategy = strategies.find(
-    (s) => s.tokens.collateral === collateralToken && s.tokens.debt === debtToken,
+    (s) =>
+      s.tokens.collateral === actualCollateralToken &&
+      s.tokens.debt === actualDebtToken &&
+      s.network === networkName,
   )
   if (!strategy) {
-    throw new Error(`Strategy not found for ${collateralToken}/${debtToken}`)
+    throw new Error(
+      `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken})`,
+    )
   }
   return strategy
 }

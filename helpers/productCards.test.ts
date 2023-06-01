@@ -1,12 +1,12 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { NetworkNames } from 'blockchain/networks'
 import { OraclePriceData } from 'blockchain/prices'
 import { mockIlkData } from 'helpers/mocks/ilks.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { LendingProtocol } from 'lendingProtocols'
 import { Observable, of } from 'rxjs'
 
-import { NetworkNames } from './networkNames'
 import {
   borrowPageCardsData,
   createProductCardsData$,

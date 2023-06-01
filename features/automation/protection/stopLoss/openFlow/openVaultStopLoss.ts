@@ -6,7 +6,7 @@ import {
 } from 'blockchain/calls/automationBotAggregator'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
-import { emptyNetworkConfig } from 'blockchain/networksConfig'
+import { emptyNetworkConfig } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { AutomationPositionData } from 'components/AutomationContextProvider'

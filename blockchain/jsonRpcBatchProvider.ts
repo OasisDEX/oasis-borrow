@@ -1,17 +1,21 @@
 import { deepCopy } from '@ethersproject/properties'
 import { fetchJson } from '@ethersproject/web'
-import { providers } from 'ethers'
+import { ethers } from 'ethers'
 
 // Experimental
-type PendingBatch = Array<{
-  request: { method: string; params: Array<any>; id: number; jsonrpc: '2.0' }
-  resolve: (result: any) => void
-  reject: (error: Error) => void
-}>
+type PendingBatch = Record<
+  string,
+  Array<{
+    request: { method: string; params: Array<any>; id: number; jsonrpc: '2.0' }
+    resolve: (result: any) => void
+    reject: (error: Error) => void
+  }>
+>
 
-export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
-  _pendingBatchAggregator: NodeJS.Timer | null = null
+export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
+  _pendingBatchAggregator: NodeJS.Timeout | null = null
   _pendingBatch: PendingBatch | null = null
+
   send(method: string, params: Array<any>): Promise<any> {
     const request = {
       method: method,
@@ -21,7 +25,11 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
     }
 
     if (this._pendingBatch == null) {
-      this._pendingBatch = []
+      this._pendingBatch = {}
+    }
+
+    if (this._pendingBatch[method] == null) {
+      this._pendingBatch[method] = []
     }
 
     interface InflightRequest {
@@ -37,7 +45,7 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
       inflightRequest.reject = reject
     })
 
-    this._pendingBatch.push(inflightRequest)
+    this._pendingBatch[method].push(inflightRequest)
 
     if (!this._pendingBatchAggregator) {
       // Schedule batch for next event loop + short duration
@@ -45,53 +53,63 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
         // Get teh current batch and clear it, so new requests
         // go into the next batch
         const batch = this._pendingBatch
+        if (batch === null) {
+          return Promise.resolve()
+        }
         this._pendingBatch = null
         this._pendingBatchAggregator = null
 
         // Get the request as an array of requests
-        const request = batch!.map((inflight) => inflight.request)
-
-        this.emit('debug', {
-          action: 'requestBatch',
-          request: deepCopy(request),
-          provider: this,
-        })
-        return fetchJson(this.connection, JSON.stringify(request)).then(
-          (result) => {
+        return Object.entries(batch)
+          .map(([method, inflights]) => {
+            return {
+              method,
+              request: inflights.map((inflight) => inflight.request),
+            }
+          })
+          .map(({ method, request }) => {
             this.emit('debug', {
-              action: 'response',
-              request: request,
-              response: result,
+              action: 'requestBatch',
+              request: deepCopy(request),
               provider: this,
             })
+            return fetchJson(this.connection, JSON.stringify(request)).then(
+              (result) => {
+                this.emit('debug', {
+                  action: 'response',
+                  request: request,
+                  response: result,
+                  provider: this,
+                })
 
-            // For each result, feed it to the correct Promise, depending
-            // on whether it was a success or error
-            batch!.forEach((inflightRequest, index) => {
-              const payload = result[index]
-              if (payload.error) {
-                const error = new Error(payload.error.message)
-                ;(<any>error).code = payload.error.code
-                ;(<any>error).data = payload.error.data
-                inflightRequest.reject(error)
-              } else {
-                inflightRequest.resolve(payload.result)
-              }
-            })
-          },
-          (error) => {
-            this.emit('debug', {
-              action: 'response',
-              error: error,
-              request: request,
-              provider: this,
-            })
+                // For each result, feed it to the correct Promise, depending
+                // on whether it was a success or error
+                batch[method].forEach((inflightRequest, index) => {
+                  const payload = result[index]
+                  if (payload.error) {
+                    const error = new Error(payload.error.message)
+                    ;(<any>error).code = payload.error.code
+                    ;(<any>error).data = payload.error.data
+                    inflightRequest.reject(error)
+                  } else {
+                    inflightRequest.resolve(payload.result)
+                  }
+                })
+              },
+              (error) => {
+                this.emit('debug', {
+                  action: 'response',
+                  error: error,
+                  request: request,
+                  provider: this,
+                })
 
-            batch!.forEach((inflightRequest) => {
-              inflightRequest.reject(error)
-            })
-          },
-        )
+                batch[method].forEach((inflightRequest) => {
+                  inflightRequest.reject(error)
+                })
+              },
+            )
+          })
       }, 200)
     }
 

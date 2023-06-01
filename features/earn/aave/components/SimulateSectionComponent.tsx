@@ -1,6 +1,12 @@
-import { IPositionTransition, IRiskRatio, ISimplePositionTransition } from '@oasisdex/oasis-actions'
+import { PositionTransition } from '@oasisdex/dma-library'
+import {
+  IPositionTransition,
+  IRiskRatio,
+  ISimplePositionTransition,
+  ISimulatedTransition,
+} from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
-import { getFee, transitionHasSwap } from 'actions/aave'
+import { getFee } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
@@ -32,6 +38,12 @@ function mapSimulation(simulation?: Simulation): string[] {
 
 const defaultYieldFields: FilterYieldFieldsType[] = ['7Days', '30Days', '90Days', '1Year']
 
+function transitionHasSwap(
+  transition?: ISimplePositionTransition | PositionTransition,
+): transition is IPositionTransition {
+  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+}
+
 function SimulationSection({
   strategy,
   transition,
@@ -41,7 +53,7 @@ function SimulationSection({
   defaultRiskRatio,
 }: {
   strategy: IStrategyConfig
-  transition?: ISimplePositionTransition | IPositionTransition
+  transition?: ISimplePositionTransition | IPositionTransition | PositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation

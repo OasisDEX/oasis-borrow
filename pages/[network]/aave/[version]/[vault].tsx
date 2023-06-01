@@ -1,3 +1,4 @@
+import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
@@ -10,7 +11,6 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { isSupportedNetwork, NetworkNames } from 'helpers/networkNames'
 import { useObservable } from 'helpers/observableHook'
 import { AaveLendingProtocol, checkIfAave } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
@@ -54,15 +54,25 @@ function WithStrategy({
   protocol: AaveLendingProtocol
   network: NetworkNames
 }) {
+  const { push } = useRouter()
   const { t } = useTranslation()
   const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
     protocol,
     network,
   )
-  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId))
+  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId, network))
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
+  if (strategyConfigError) {
+    console.warn(
+      `Strategy config not found for network: ${network} and positionId`,
+      positionId,
+      strategyConfigError,
+    )
+    void push(INTERNAL_LINKS.notFound)
+    return <></>
+  }
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator

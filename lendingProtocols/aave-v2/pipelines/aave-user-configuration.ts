@@ -20,8 +20,8 @@ export type AaveUserConfigurationResult = {
 
 export type AaveUserConfigurationResults = AaveUserConfigurationResult[] & {
   hasAssets: (
-    collateralToken: AaveUserConfigurationResult['assetName'],
-    debtToken: AaveUserConfigurationResult['assetName'],
+    collateralToken: AaveUserConfigurationResult['assetName'][],
+    debtToken: AaveUserConfigurationResult['assetName'][],
   ) => boolean
 }
 
@@ -77,13 +77,14 @@ export function createAaveUserConfiguration(
 
 export function hasAssets(
   userAssetList: AaveUserConfigurationResult[],
-  collateralToken: AaveUserConfigurationResult['assetName'],
-  debtToken: AaveUserConfigurationResult['assetName'],
+  collateralToken: AaveUserConfigurationResult['assetName'][],
+  debtToken: AaveUserConfigurationResult['assetName'][],
 ) {
   return (
-    userAssetList.filter(({ collateral, assetName }) => collateral && assetName === collateralToken)
-      .length > 0 &&
-    userAssetList.filter(({ borrowed, assetName }) => borrowed && assetName === debtToken).length >
-      0
+    userAssetList.filter(
+      ({ collateral, assetName }) => collateral && collateralToken.includes(assetName),
+    ).length > 0 &&
+    userAssetList.filter(({ borrowed, assetName }) => borrowed && debtToken.includes(assetName))
+      .length > 0
   )
 }

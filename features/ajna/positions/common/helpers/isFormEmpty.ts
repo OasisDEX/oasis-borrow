@@ -8,6 +8,7 @@ import {
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 
 interface IsFormEmptyParams {
   product: AjnaProduct
@@ -30,6 +31,8 @@ export function isFormEmpty({ product, state, position, currentStep }: IsFormEmp
       switch (currentStep) {
         case 'setup':
           return !depositAmount && !withdrawAmount
+        case 'nft':
+          return false
         case 'manage':
           if ((position as AjnaEarnPosition).quoteTokenAmount.isZero()) {
             return !depositAmount && !withdrawAmount
@@ -45,6 +48,21 @@ export function isFormEmpty({ product, state, position, currentStep }: IsFormEmp
       }
     }
     case 'multiply':
-      return true
+      const { depositAmount, loanToValue, withdrawAmount, generateAmount, paybackAmount, action } =
+        state as AjnaMultiplyFormState
+
+      switch (currentStep) {
+        case 'setup':
+          return !depositAmount
+        case 'manage':
+          if (action === 'close-multiply') {
+            return false
+          }
+          return (
+            !loanToValue && !withdrawAmount && !depositAmount && !generateAmount && !paybackAmount
+          )
+        default:
+          return true
+      }
   }
 }

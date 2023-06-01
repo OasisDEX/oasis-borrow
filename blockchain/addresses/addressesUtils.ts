@@ -1,6 +1,6 @@
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as mcdOsm from 'blockchain/abi/mcd-osm.json'
-import { contractDesc } from 'blockchain/networksConfig'
+import { contractDesc } from 'blockchain/networks'
 import { Dictionary } from 'ts-essentials'
 
 export function getOsms(addresses: Dictionary<string>, ilks: readonly string[]) {

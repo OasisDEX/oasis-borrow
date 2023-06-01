@@ -17,8 +17,9 @@ export interface AjnaEarnFormState {
   price?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
+  isStakingNft?: boolean
   uiDropdown: AjnaEarnPanel
-  uiPill: Exclude<AjnaEarnAction, 'open-earn'>
+  uiPill: Exclude<AjnaEarnAction, 'open-earn' | 'claim-earn'>
 }
 
 export type AjnaEarnFormAction = ReductoActions<
@@ -34,6 +35,7 @@ export const ajnaEarnReset = {
   depositAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+  isStakingNft: undefined,
 }
 
 export const ajnaEarnDefault: AjnaEarnFormState = {

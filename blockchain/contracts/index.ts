@@ -1,19 +1,21 @@
-import { NetworkIds } from 'blockchain/networkIds'
-import { getContractNetworkByWalletNetwork } from 'helpers/networkHelpers'
+import { getContractNetworkByWalletNetwork, NetworkIds } from 'blockchain/networks'
+import { ContractDesc } from 'features/web3Context'
 
+import { arbitrumContracts } from './arbitrum'
 import { goerliContracts } from './goerli'
 import { mainnetContracts } from './mainnet'
+import { optimismContracts } from './optimism'
 
 export const allNetworksContracts = {
   [NetworkIds.MAINNET]: mainnetContracts,
   [NetworkIds.HARDHAT]: mainnetContracts,
   [NetworkIds.GOERLI]: goerliContracts,
+  [NetworkIds.OPTIMISMMAINNET]: optimismContracts,
   // empty contracts config - to be filled
-  [NetworkIds.ARBITRUMMAINNET]: {},
+  [NetworkIds.ARBITRUMMAINNET]: arbitrumContracts,
   [NetworkIds.ARBITRUMGOERLI]: {},
   [NetworkIds.POLYGONMAINNET]: {},
   [NetworkIds.POLYGONMUMBAI]: {},
-  [NetworkIds.OPTIMISMMAINNET]: {},
   [NetworkIds.OPTIMISMGOERLI]: {},
   [NetworkIds.EMPTYNET]: {},
 }
@@ -35,3 +37,19 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
     NetworkId
   >[NetworkId]
 }
+
+export function ensureContractsExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+  properties: ReadonlyArray<string>,
+): asserts contracts is {
+  [K in (typeof properties)[number]]: ContractDesc & { genesisBlock: number }
+} {
+  if (properties.some((p) => !contracts.hasOwnProperty(p))) {
+    throw new Error(
+      `Can't find contracts definitions: ${JSON.stringify(properties)} on ${chainId} chain`,
+    )
+  }
+}
+
+export * from './extend-contract'

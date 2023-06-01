@@ -1,12 +1,17 @@
+import { PositionTransition } from '@oasisdex/dma-library'
 import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { DpmExecuteParameters, estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ethNullAddress } from 'blockchain/networksConfig'
+import { ethNullAddress, NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
+import { ethers } from 'ethers'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
+import { fromPromise } from 'rxjs/internal-compatibility'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 import { actions, createMachine, sendParent } from 'xstate'
 
@@ -22,15 +27,20 @@ export interface BaseTransactionParameters {
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: IPositionTransition | ISimplePositionTransition
+  strategy?: IPositionTransition | ISimplePositionTransition | PositionTransition
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
+  signer?: ethers.Signer
   retries?: number // number of retries for gas estimation
+  networkId: NetworkIds
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; transition?: IPositionTransition | ISimplePositionTransition }
+  | {
+      type: 'STRATEGY_RECEIVED'
+      transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
+    }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -43,21 +53,25 @@ export type TransactionParametersStateMachineEvent<T> =
     }
   | { type: 'TX_HELPER_CHANGED'; txHelper: TxHelpers }
   | { type: 'GAS_ESTIMATION_CHANGED'; estimatedGas: number }
+  | { type: 'SIGNER_CHANGED'; signer: ethers.Signer }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = IPositionTransition | ISimplePositionTransition
+export type LibraryCallReturn = IPositionTransition | ISimplePositionTransition | PositionTransition
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
   txHelpers$: Observable<TxHelpers>,
   gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
   libraryCall: LibraryCallDelegate<T>,
+  networkId: NetworkIds,
   transactionType: 'open' | 'close' | 'adjust' | 'depositBorrow' | 'openDepositBorrow' | 'types',
 ) {
   /** @xstate-layout N4IgpgJg5mDOIC5QBcBOBDAdrdBjZAlgPaYAK6GAtmMmKrAHQzKGZTlU12wDEEJYBgUwA3IgGtBAGwIAjDKgCeAWlzopUgNoAGALqJQAByKwChEgZAAPRAGYAbAHYGATgAsAVlsBGAEweAGhBFRA9tbVdHew97fwBfOKC0LBx8YjIKdGpaegY4Qkp0VigmdFhSVAJcMB4AcQBBAGUAfVIAJQBJAGEAUWaexoAVDoBZeuGAeQA5Zq6ACXqp2p6AER19JBBjU3NMSxsEWxdnbXsXW19vAA5HDz9tWyCQhEdHWwZvRyvrh98XFzOVwSSQw2Dwuw4WS4uXyBEKxTqTX6Q1G4w601mCyWq3Wlm2ZnS+0Q3m0vieiGOETcp3iiRAyTBaRIkOy3B4ADV6p16gAhAAyA2abR6vQ67JxejxJgJFk2Bw8jnJCG8Lm8wPpoNSEMyrPoPEGAA1mnMenzSD02pjFss1pLNvjdkTDtpnFd7Bdvv4ld5vB4XAwrldfJ6PAk6ZgiBA4JYGVr0izoYwCBApGApTtCXLQorgsSfOrY+D4zrE0waMUEzl4PbpY6sy8ybmEHc3K4vH5Q3TC0yMpwq3lYAUisISlAyumZXt6y4IrZPG4Lh4FY43G43Uq3d4GL5buF7PY3L57CTHAXNUXmSX+7D4SPSuVKtUJ3XQAdbI4t74jx43I5fG4-BJdwlX+f1A2DDszxSC9eyha9BzhYc2GfTNX0QQ8GDnH9F2XVd1ybd17A+L5rgXbQfXsK4XCgxltT7bgUNlNCEGUDwGGiTwnFXL8l28BclWUIjwmExxhOPFU-TDOIgA */
   return createMachine(
     {
-      context: {},
+      context: {
+        networkId: networkId,
+      },
       tsTypes: {} as import('./transactionParametersStateMachine.typegen').Typegen0,
       schema: {
         context: {} as TransactionParametersStateMachineContext<T>,
@@ -67,10 +81,12 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         },
       },
       predictableActionArguments: true,
-      invoke: {
-        src: 'txHelpers$',
-        id: 'tx-helpers',
-      },
+      invoke: [
+        {
+          src: 'txHelpers$',
+          id: 'tx-helpers',
+        },
+      ],
       id: 'transactionParameters',
       initial: 'idle',
       states: {
@@ -145,6 +161,9 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         TX_HELPER_CHANGED: {
           actions: ['updateContext'],
         },
+        SIGNER_CHANGED: {
+          actions: ['updateContext'],
+        },
       },
     },
     {
@@ -176,20 +195,36 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
       },
       services: {
         getParameters: async (context) => libraryCall(context.parameters!),
-        estimateGas: ({ txHelper, parameters, strategy }) => {
-          return txHelper!
-            .estimateGas(callOperationExecutorWithDpmProxy, {
-              kind: TxMetaKind.operationExecutor,
-              calls: strategy!.transaction.calls as any,
+        estimateGas: ({ txHelper, parameters, strategy, signer, networkId }) => {
+          // right now we don't set signer, but it is a first step to move from Web3 to Ethers
+          if (signer) {
+            const dpmParams: DpmExecuteParameters = {
+              calls: strategy!.transaction.calls,
               operationName: strategy!.transaction.operationName,
-              token: parameters!.token,
-              amount: parameters!.amount,
+              signer: signer!,
               proxyAddress: parameters!.proxyAddress,
-            })
-            .pipe(
+              value: parameters!.token === 'ETH' ? parameters!.amount! : zero,
+              networkId: networkId!,
+            }
+            return fromPromise(estimateGasOnDpm(dpmParams)).pipe(
               map((estimatedGas) => ({ type: 'GAS_ESTIMATION_CHANGED', estimatedGas })),
               distinctUntilChanged<number>(isEqual),
             )
+          } else {
+            return txHelper!
+              .estimateGas(callOperationExecutorWithDpmProxy, {
+                kind: TxMetaKind.operationExecutor,
+                calls: strategy!.transaction.calls as any,
+                operationName: strategy!.transaction.operationName,
+                token: parameters!.token,
+                amount: parameters!.amount,
+                proxyAddress: parameters!.proxyAddress,
+              })
+              .pipe(
+                map((estimatedGas) => ({ type: 'GAS_ESTIMATION_CHANGED', estimatedGas })),
+                distinctUntilChanged<number>(isEqual),
+              )
+          }
         },
         estimateGasPrice: ({ estimatedGas }) =>
           gasEstimation$(estimatedGas!).pipe(
@@ -237,6 +272,7 @@ class TransactionParametersStateMachineTypes<T extends BaseTransactionParameters
       txHelpers$,
       gasEstimation$,
       libraryCall,
+      NetworkIds.MAINNET,
       'types',
       // @ts-ignore
     ).withConfig({})

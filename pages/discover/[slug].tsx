@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import {
-  discoverPageLayout,
+  DiscoverPageLayout,
   discoverPageLayoutProps,
   discoverPageSeoTags,
 } from 'features/discover/layout'
@@ -25,7 +25,7 @@ function DiscoverPage({ kind }: { kind: DiscoverPages }) {
   )
 }
 
-DiscoverPage.layout = discoverPageLayout
+DiscoverPage.layout = DiscoverPageLayout
 DiscoverPage.layoutProps = discoverPageLayoutProps
 DiscoverPage.seoTags = discoverPageSeoTags
 

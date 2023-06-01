@@ -4,7 +4,6 @@ import {
   getChainlinkOraclePrice,
 } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AppContext } from 'components/AppContext'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -41,9 +40,7 @@ export function getCommonPartsFromAppContext(
 ) {
   const disconnectedGraphQLClient$ = context$.pipe(
     distinctUntilKeyChanged('chainId'),
-    map(
-      ({ chainId }) => new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi),
-    ),
+    map(({ chainId }) => new GraphQLClient(getNetworkContracts(networkId, chainId).cacheApi)),
   )
 
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(

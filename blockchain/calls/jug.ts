@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { RAY, SECONDS_PER_YEAR } from 'components/constants'
 import { McdJug } from 'types/web3-v1-contracts'
 import Web3 from 'web3'

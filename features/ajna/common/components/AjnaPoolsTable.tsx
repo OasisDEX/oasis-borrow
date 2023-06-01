@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
@@ -108,7 +108,7 @@ export const AjnaPoolsTable: FC<AjnaPoolsTableProps> = ({
   )
 
   return (
-    <AssetsTableContainer tableOnly>
+    <AssetsTableContainer>
       <AssetsResponsiveTable headerTranslationProps={{ token: selectedValue }} rows={rows} />
     </AssetsTableContainer>
   )

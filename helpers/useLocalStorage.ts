@@ -8,7 +8,7 @@ export function getStorageValue<V>(
 ) {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem(key)
-    const parsed = parseJSON<V>(saved)
+    const parsed = parseJSON<V>(saved, key)
     if (isValid) {
       return isValid(parsed) ? parsed : (defaultValue as V)
     } else {
@@ -34,7 +34,7 @@ export function useLocalStorage<T>(
 
     try {
       const item = window.localStorage.getItem(key)
-      const parsedItem = item ? parseJSON<T>(item) : initialValue
+      const parsedItem = item ? parseJSON<T>(item, key) : initialValue
       if (isValid) {
         return isValid(parsedItem) ? parsedItem : initialValue
       } else {
@@ -85,11 +85,11 @@ export function useLocalStorage<T>(
   return [storedValue, setValue]
 }
 
-function parseJSON<T>(value: string | null): T | undefined {
+function parseJSON<T>(value: string | null, key: string): T | undefined {
   try {
-    return value === 'undefined' ? undefined : JSON.parse(value ?? '')
-  } catch {
-    console.log('parsing error on', { value })
+    return typeof value === 'undefined' || value === null ? undefined : JSON.parse(value ?? '')
+  } catch (error) {
+    console.log('parsing error on', { value, key, error })
     return undefined
   }
 }

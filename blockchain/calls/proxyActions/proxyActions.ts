@@ -4,8 +4,8 @@ import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
-import { contractDesc } from 'blockchain/networksConfig'
+import { contractDesc } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
@@ -44,7 +44,6 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
   const { defaultExchange, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } =
     getNetworkContracts(NetworkIds.MAINNET, context.chainId)
   const { contract } = context
-
   const exchangeData = {
     fromTokenAddress: tokens['DAI'].address,
     toTokenAddress: tokens[data.token].address,

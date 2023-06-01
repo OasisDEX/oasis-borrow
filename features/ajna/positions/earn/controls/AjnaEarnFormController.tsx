@@ -5,6 +5,7 @@ import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/Ajn
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
 import { AjnaEarnFormContentManage } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentManage'
+import { AjnaEarnFormContentNft } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentNft'
 import { AjnaEarnFormContentOpen } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentOpen'
 import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormOrder'
 import { zero } from 'helpers/zero'
@@ -14,7 +15,7 @@ import React from 'react'
 export function AjnaEarnFormController() {
   const { t } = useTranslation()
   const {
-    environment: { flow, quoteToken },
+    environment: { flow, quoteToken, collateralToken },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -25,7 +26,7 @@ export function AjnaEarnFormController() {
     },
     position: {
       currentPosition: {
-        position: { quoteTokenAmount },
+        position: { quoteTokenAmount, collateralTokenAmount },
         simulation,
       },
     },
@@ -66,6 +67,22 @@ export function AjnaEarnFormController() {
                   updateState('action', 'deposit-earn')
                 },
               },
+              ...(!collateralTokenAmount.isZero()
+                ? [
+                    {
+                      label: t('system.claim-collateral'),
+                      panel: 'claim-collateral',
+                      shortLabel: collateralToken,
+                      icon: getToken(collateralToken).iconCircle,
+                      iconShrink: 2,
+                      action: () => {
+                        dispatch({ type: 'reset' })
+                        updateState('uiDropdown', 'claim-collateral')
+                        updateState('action', 'claim-earn')
+                      },
+                    },
+                  ]
+                : []),
             ],
           },
         })}
@@ -73,11 +90,13 @@ export function AjnaEarnFormController() {
         if (quoteTokenAmount.isZero() || simulation?.quoteTokenAmount.isZero()) {
           updateState('uiPill', 'deposit-earn')
           updateState('action', 'deposit-earn')
+          updateState('uiDropdown', 'adjust')
         }
       }}
     >
       {currentStep === 'risk' && <AjnaFormContentRisk />}
       {currentStep === 'setup' && <AjnaEarnFormContentOpen />}
+      {currentStep === 'nft' && <AjnaEarnFormContentNft />}
       {currentStep === 'manage' && <AjnaEarnFormContentManage />}
       {currentStep === 'transaction' && (
         <AjnaFormContentTransaction orderInformation={AjnaEarnFormOrder} />

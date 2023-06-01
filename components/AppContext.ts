@@ -97,8 +97,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
-import { networksById } from 'blockchain/networksConfig'
+import { NetworkIds, NetworkNames, networksById } from 'blockchain/networks'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -627,6 +626,14 @@ export function setupAppContext() {
   })
 
   const aaveV3 = getAaveV3Services({ refresh$: onEveryBlock$, networkId: NetworkIds.MAINNET })
+  const aaveV3Optimism = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.OPTIMISMMAINNET,
+  })
+  const aaveV3Arbitrum = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+  })
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
@@ -1029,7 +1036,8 @@ export function setupAppContext() {
       aaveV2.aaveProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
-    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+    (positionId: PositionId, networkName: NetworkNames) =>
+      `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
   )
 
   const automationTriggersData$ = memoize(
@@ -1391,6 +1399,8 @@ export function setupAppContext() {
     [LendingProtocol.AaveV2]: aaveV2,
     [LendingProtocol.AaveV3]: {
       [NetworkIds.MAINNET]: aaveV3,
+      [NetworkIds.OPTIMISMMAINNET]: aaveV3Optimism,
+      [NetworkIds.ARBITRUMMAINNET]: aaveV3Arbitrum,
     },
   }
 
@@ -1544,6 +1554,8 @@ export type ProtocolsServices = {
   [LendingProtocol.AaveV2]: AaveServices
   [LendingProtocol.AaveV3]: {
     [NetworkIds.MAINNET]: AaveServices
+    [NetworkIds.OPTIMISMMAINNET]: AaveServices
+    [NetworkIds.ARBITRUMMAINNET]: AaveServices
   }
 }
 

@@ -4,20 +4,29 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import React, { PropsWithChildren } from 'react'
 
-export function AjnaFormContentSummary({ children }: PropsWithChildren<{}>) {
+interface AjnaFormContentSummaryProps {
+  showReset?: boolean
+}
+
+export function AjnaFormContentSummary({
+  children,
+  showReset = true,
+}: PropsWithChildren<AjnaFormContentSummaryProps>) {
   const {
     environment: { product },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch },
-    validation: { errors, warnings },
+    validation: { errors, notices, successes, warnings },
   } = useAjnaProductContext(product)
 
   return (
     <>
-      <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
+      {showReset && <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />}
       <AjnaValidationMessages validations={errors} type="error" />
       <AjnaValidationMessages validations={warnings} type="warning" />
+      <AjnaValidationMessages validations={notices} type="notice" />
+      <AjnaValidationMessages validations={successes} type="success" />
       {children}
     </>
   )

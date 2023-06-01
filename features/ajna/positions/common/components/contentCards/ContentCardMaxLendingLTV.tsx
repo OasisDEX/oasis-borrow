@@ -4,41 +4,10 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid, Heading, Text } from 'theme-ui'
-
-interface ContentCardMaxLendingLTVModalProps {
-  maxLendingPercentage: string
-  quoteToken: string
-  collateralToken: string
-}
-
-function ContentCardMaxLendingLTVModal({
-  maxLendingPercentage,
-  quoteToken,
-  collateralToken,
-}: ContentCardMaxLendingLTVModalProps) {
-  const { t } = useTranslation()
-
-  return (
-    <Grid gap={2}>
-      <Heading variant="header3">
-        {t('ajna.position-page.earn.manage.overview.max-lending-ltv')}
-      </Heading>
-      <Text variant="paragraph2" as="p" sx={{ pb: 2 }}>
-        {t('ajna.position-page.earn.manage.overview.max-lending-ltv-modal-desc', {
-          quoteToken,
-          collateralToken,
-        })}
-      </Text>
-      <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
-        {maxLendingPercentage}
-      </Card>
-    </Grid>
-  )
-}
 
 interface ContentCardMaxLendingLTVProps {
   maxLendingPercentage: BigNumber
@@ -79,10 +48,13 @@ export function ContentCardMaxLendingLTV({
     },
     footnote: `${formatCryptoBalance(price)} ${quoteToken}`,
     modal: (
-      <ContentCardMaxLendingLTVModal
-        collateralToken={collateralToken}
-        quoteToken={quoteToken}
-        maxLendingPercentage={formatted.maxLendingPercentage}
+      <AjnaDetailsSectionContentSimpleModal
+        title={t('ajna.position-page.earn.manage.overview.max-lending-ltv')}
+        description={t('ajna.position-page.earn.manage.overview.max-lending-ltv-modal-desc', {
+          quoteToken,
+          collateralToken,
+        })}
+        value={formatted.maxLendingPercentage}
       />
     ),
   }

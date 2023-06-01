@@ -1,13 +1,18 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
+import { Skeleton } from 'components/Skeleton'
 import { WithArrow } from 'components/WithArrow'
-import React from 'react'
+import React, { FC } from 'react'
 import { Box, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
 
-type PromoCardVariant = 'neutral' | 'positive' | 'negative'
+export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
 
-interface PromoCardProps {
+export interface PromoCardWrapperProps {
+  withHover?: boolean
+}
+
+export interface PromoCardProps {
   icon: string
   title: string
   protocol?: ProtocolLabelProps
@@ -39,15 +44,7 @@ export const dataColors: { [key in PromoCardVariant]: SxStyleProp } = {
   neutral: { color: 'primary100' },
 }
 
-export function PromoCard({
-  data,
-  description,
-  icon,
-  link,
-  pills,
-  protocol,
-  title,
-}: PromoCardProps) {
+export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, withHover = true }) => {
   return (
     <Box
       sx={{
@@ -58,11 +55,54 @@ export function PromoCard({
         borderColor: 'neutral20',
         borderRadius: 'large',
         bg: 'neutral10',
+        transition: 'border-color 200ms',
+        ...(withHover && {
+          '&:hover': {
+            borderColor: 'primary100',
+          },
+        }),
       }}
     >
+      {children}
+    </Box>
+  )
+}
+
+export const PromoCardLoadingState: FC = () => {
+  return (
+    <PromoCardWrapper withHover={false}>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Skeleton circle width="42px" height="42px" sx={{ mt: 1 }} />
+        <Skeleton width="200px" sx={{ mt: '20px' }} />
+        <Skeleton width="200px" height="30px" sx={{ mt: 3 }} />
+        <Skeleton sx={{ mt: '22px' }} />
+      </Flex>
+    </PromoCardWrapper>
+  )
+}
+
+export const PromoCard: FC<PromoCardProps> = ({
+  data,
+  description,
+  icon,
+  link,
+  pills,
+  protocol,
+  title,
+}) => {
+  return (
+    <PromoCardWrapper>
       <Icon name={icon} size={50} sx={{ display: 'block', mx: 'auto', mb: '12px' }} />
       {protocol && (
-        <Box sx={{ position: 'absolute', top: '12px', right: '12px' }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            outline: '4px solid white',
+            borderRadius: 'large',
+          }}
+        >
           <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
         </Box>
       )}
@@ -80,7 +120,8 @@ export function PromoCard({
           sx={{
             listStyle: 'none',
             justifyContent: 'center',
-            columnGap: 2,
+            gap: 2,
+            flexWrap: 'wrap',
             mx: 0,
             mt: '12px',
             p: 0,
@@ -88,6 +129,7 @@ export function PromoCard({
         >
           {pills.map(({ label, variant = 'neutral' }) => (
             <Flex
+              key={label}
               as="li"
               variant="text.paragraph4"
               sx={{
@@ -108,7 +150,7 @@ export function PromoCard({
       {data && (
         <Flex as="ul" sx={{ flexDirection: 'column', listStyle: 'none', mx: 0, mt: 3, p: 0 }}>
           {data.map(({ label, value, variant = 'neutral' }) => (
-            <Flex as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
+            <Flex key={label} as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text as="span" variant="paragraph3" sx={{ color: 'neutral80' }}>
                 {label}
               </Text>
@@ -128,6 +170,6 @@ export function PromoCard({
           </WithArrow>
         </AppLink>
       )}
-    </Box>
+    </PromoCardWrapper>
   )
 }

@@ -4,6 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -45,6 +46,13 @@ export function ContentCardCollateralLocked({
         `${formatted.afterCollateralLocked} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
+    modal: (
+      <AjnaDetailsSectionContentSimpleModal
+        title={t('ajna.position-page.borrow.common.overview.collateral-locked')}
+        description={t('ajna.position-page.borrow.common.overview.collateral-locked-modal-desc')}
+        value={`${formatted.collateralLocked} ${collateralToken}`}
+      />
+    ),
   }
 
   if (!collateralLocked.isZero()) {

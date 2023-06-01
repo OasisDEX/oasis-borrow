@@ -1,5 +1,5 @@
 import { ajnaFormExternalSteps, ajnaFormStepsWithTransaction } from 'features/ajna/common/consts'
-import { AjnaSidebarStep } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 
 export interface GeneralStepManager {
   currentStep: AjnaSidebarStep
@@ -19,4 +19,30 @@ export function isNextStep({
 
 export function isStepWithTransaction({ currentStep }: GeneralStepManager) {
   return ajnaFormStepsWithTransaction.includes(currentStep)
+}
+
+export const getAjnaEditingStep = ({
+  flow,
+  currentStep,
+  product,
+}: {
+  flow: AjnaFlow
+  currentStep: AjnaSidebarStep
+  product: AjnaProduct
+}) => {
+  const defaultEditingStep = flow === 'open' ? 'setup' : 'manage'
+
+  switch (product) {
+    case 'borrow':
+    case 'multiply':
+      return defaultEditingStep
+    case 'earn':
+      if (flow === 'open') {
+        return currentStep === 'transaction' ? 'nft' : 'setup'
+      }
+
+      return defaultEditingStep
+    default:
+      return defaultEditingStep
+  }
 }

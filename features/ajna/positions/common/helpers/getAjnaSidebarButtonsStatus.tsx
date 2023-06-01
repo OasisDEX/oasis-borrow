@@ -4,6 +4,7 @@ export function getAjnaSidebarButtonsStatus({
   currentStep,
   editingStep,
   hasErrors,
+  isFormFrozen,
   isAllowanceLoading,
   isFormValid,
   isOwner,
@@ -19,6 +20,7 @@ export function getAjnaSidebarButtonsStatus({
   currentStep: AjnaSidebarStep
   editingStep: AjnaSidebarEditingStep
   hasErrors: boolean
+  isFormFrozen: boolean
   isAllowanceLoading: boolean
   isFormValid: boolean
   isOwner: boolean
@@ -35,6 +37,7 @@ export function getAjnaSidebarButtonsStatus({
     !!walletAddress &&
     (!isFormValid ||
       hasErrors ||
+      isFormFrozen ||
       isAllowanceLoading ||
       isSimulationLoading ||
       isTxInProgress ||
@@ -50,10 +53,11 @@ export function getAjnaSidebarButtonsStatus({
       isTransitionInProgress)
 
   const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
-  const isTextButtonHidden = !(
-    (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
-    (isTransitionWaitingForApproval && !isTransitionInProgress)
-  )
+  const isTextButtonHidden =
+    !(
+      (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
+      (isTransitionWaitingForApproval && !isTransitionInProgress)
+    ) && currentStep !== 'nft'
 
   return {
     isPrimaryButtonDisabled,

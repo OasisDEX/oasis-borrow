@@ -92,7 +92,7 @@ function convertSliderThresholds({
   }
 }
 
-export function AjnaEarnSlider() {
+export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken },
@@ -105,6 +105,7 @@ export function AjnaEarnSlider() {
     position: {
       currentPosition: { position },
     },
+    validation: { isFormFrozen },
   } = useAjnaProductContext('earn')
 
   const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
@@ -157,7 +158,7 @@ export function AjnaEarnSlider() {
       rightBoundryFormatter={(v) =>
         !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
       }
-      disabled={false}
+      disabled={isDisabled || isFormFrozen}
       onChange={handleChange}
       leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {
         quoteToken,

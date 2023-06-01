@@ -4,7 +4,7 @@ import { Card, Flex, Grid, Text } from 'theme-ui'
 
 interface NoticeCardProps {
   messages: (TranslateStringType | JSX.Element)[]
-  type: 'error' | 'warning' | 'ok'
+  type: 'error' | 'warning' | 'ok' | 'notice'
   withBullet?: boolean
   handleClick?: () => void
 }
@@ -17,6 +17,10 @@ const cardStyles = {
   warning: {
     cardVariant: 'warning',
     textColor: 'warning100',
+  },
+  notice: {
+    cardVariant: 'notice',
+    textColor: 'primary100',
   },
   ok: {
     cardVariant: 'ok',

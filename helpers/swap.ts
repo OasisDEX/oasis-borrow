@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { defaultExchangeProtocols } from 'features/exchange/exchange'
 
 import { one } from './zero'
@@ -9,6 +10,8 @@ async function swapOneInchTokens(
   amount: string,
   recipient: string,
   slippage: string,
+  chainId: number,
+  oneInchVersion: 'v4.0' | 'v5.0',
   protocols: string[] = [],
 ): Promise<any> {
   const url = formatOneInchSwapUrl(
@@ -17,6 +20,8 @@ async function swapOneInchTokens(
     amount,
     slippage,
     recipient,
+    chainId,
+    oneInchVersion,
     protocols,
   )
 
@@ -29,10 +34,12 @@ function formatOneInchSwapUrl(
   amount: string,
   slippage: string,
   recepient: string,
+  chainId: number,
+  oneInchVersion: 'v4.0' | 'v5.0',
   protocols: string[] = [],
 ) {
   const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
-  return `https://oasis.api.enterprise.1inch.exchange/v4.0/1/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
+  return `https://oasis.api.enterprise.1inch.exchange/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
 }
 
 async function exchangeTokens(url: string): Promise<any> {
@@ -66,7 +73,12 @@ export async function oneInchCallMock(
 }
 
 // TODO: export from oasis-earn-sc into @oasisdex/oasis-actions lib and import from there
-export function getOneInchCall(swapAddress: string, debug?: true) {
+export function getOneInchCall(
+  swapAddress: string,
+  networkId: NetworkIds = NetworkIds.MAINNET,
+  oneInchVersion: 'v4.0' | 'v5.0' = 'v4.0',
+  debug?: true,
+) {
   return async (
     from: string,
     to: string,
@@ -80,6 +92,8 @@ export function getOneInchCall(swapAddress: string, debug?: true) {
       amount.toString(),
       swapAddress,
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
+      networkId,
+      oneInchVersion,
       protocols,
     )
 
@@ -88,6 +102,9 @@ export function getOneInchCall(swapAddress: string, debug?: true) {
       console.log('fromTokenAmount', response.fromTokenAmount.toString())
       console.log('toTokenAmount', response.toTokenAmount.toString())
       console.log('slippage', slippage.times('100').toString())
+      console.log('minToTokenAmount', response.toTokenAmount.toString())
+      console.log('exchangeCalldata', response.tx.data)
+      console.log('protocols', protocols)
     }
 
     return {

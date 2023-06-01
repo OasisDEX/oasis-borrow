@@ -1,10 +1,9 @@
 import { ethers } from 'ethers'
-import { getNetworkRpcEndpoint } from 'helpers/networkHelpers'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { Context } from './network'
-import { NetworkIds } from './networkIds'
+import { getNetworkRpcEndpoint, NetworkIds } from './networks'
 
 export function resolveENSName$(context$: Observable<Context>, address: string) {
   return context$.pipe(

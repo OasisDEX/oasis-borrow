@@ -1,5 +1,5 @@
+import { NetworkNames } from 'blockchain/networks/network-names'
 import { clientId } from 'helpers/clientId'
-import { NetworkNames } from 'helpers/networkNames'
 
 import { infuraProjectId } from './runtimeConfig'
 

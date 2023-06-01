@@ -931,19 +931,35 @@
     "lowest-annual-fee-cheapest-vault": "此为使用质押 ETH 借贷选项中，最低年费和最便宜的金库",
     "unprofitable-position": "此仓位目前无法获利，但只要您明白现况，仍可以开启金库。",
     "aave": {
-      "stETHeth": {
+      "stETHethV2": {
         "title": "stETH/ETH AAVE",
         "description": "通过增加质押奖励赚取你的 ETH，在 AAVE 上借贷 ETH 来得到更多 stETH 的风险敞口。"
       },
-      "stETHusdc": {
+      "stETHethV3": {
+        "title": "stETH/ETH AAVE",
+        "description": "通过增加质押奖励赚取你的 ETH，在 AAVE 上借贷 ETH 来得到更多 stETH 的风险敞口。"
+      },
+      "stETHusdcV2": {
         "title": "最大的 stETH 杠杆倍率",
         "description": "通过 AAVE 和 USDC 最大化你的 stETH 敞口。"
       },
-      "ethusdc": {
+      "stETHusdcV3": {
+        "title": "最大的 stETH 杠杆倍率",
+        "description": "通过 AAVE 和 USDC 最大化你的 stETH 敞口。"
+      },
+      "ethusdcV2": {
         "title": "最大的 ETH 杠杆倍率",
         "description": "通过 AAVE 和 USDC 最大化你的 ETH 敞口。"
       },
-      "wBTCusdc": {
+      "ethusdcV3": {
+        "title": "最大的 ETH 杠杆倍率",
+        "description": "通过 AAVE 和 USDC 最大化你的 ETH 敞口。"
+      },
+      "wBTCusdcV2": {
+        "title": "最大的 WBTC 杠杆倍率",
+        "description": "通过 AAVE 和 USDC 最大化你的 WBTC 敞口。"
+      },
+      "wBTCusdcV3": {
         "title": "最大的 WBTC 杠杆倍率",
         "description": "通过 AAVE 和 USDC 最大化你的 WBTC 敞口。"
       }
@@ -1073,7 +1089,6 @@
       "title": "Oasis Swap & Bridge 打招呼",
       "subtitle": "向 Oasis Swap & Bridge 打招呼",
       "body": "在 Oasis 上快速安全兑换代币。 前往 <0>Oasis Swap 的常见问题 →</0>",
-      "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
       "button": "知道了"
     }
   },

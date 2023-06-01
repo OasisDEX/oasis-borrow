@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators'
 import { legacyToggle } from './legacyToggle'
 
 type GlobalMock = NodeJS.Global & { document: { getElementById: () => void } }
-;(global as GlobalMock).document = {
+;(global as unknown as GlobalMock).document = {
   getElementById: () => null,
 }
 

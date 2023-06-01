@@ -5,34 +5,14 @@ import {
   getCloseAaveParameters,
   getManageAaveParameters,
   getOpenDepositBorrowParameters,
-  getOpenTransaction,
   ManageAaveParameters,
   OpenAaveDepositBorrowParameters,
-  OpenMultiplyAaveParameters,
 } from 'actions/aave'
+import { NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import { HasGasEstimation } from 'helpers/form'
 import { Observable } from 'rxjs'
-
-export function getOpenMultiplyAaveParametersMachine(
-  txHelpers$: Observable<TxHelpers>,
-  gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
-) {
-  return createTransactionParametersStateMachine(
-    txHelpers$,
-    gasPriceEstimation$,
-    async (parameters: OpenMultiplyAaveParameters) => {
-      try {
-        return await getOpenTransaction(parameters)
-      } catch (e) {
-        console.error(e)
-        throw e
-      }
-    },
-    'open',
-  )
-}
 
 export function getCloseAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
@@ -42,6 +22,7 @@ export function getCloseAaveParametersMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: CloseAaveParameters) => getCloseAaveParameters(parameters),
+    NetworkIds.MAINNET,
     'close',
   )
 }
@@ -54,6 +35,7 @@ export function getAdjustAaveParametersMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: AdjustAaveParameters) => getAdjustAaveParameters(parameters),
+    NetworkIds.MAINNET,
     'adjust',
   )
 }
@@ -66,6 +48,7 @@ export function getDepositBorrowAaveMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: ManageAaveParameters) => getManageAaveParameters(parameters),
+    NetworkIds.MAINNET,
     'depositBorrow',
   )
 }
@@ -78,6 +61,7 @@ export function getOpenDepositBorrowAaveMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: OpenAaveDepositBorrowParameters) => getOpenDepositBorrowParameters(parameters),
+    NetworkIds.MAINNET,
     'openDepositBorrow',
   )
 }

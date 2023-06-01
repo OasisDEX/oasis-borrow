@@ -1,6 +1,6 @@
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { Card, Flex, SxStyleProp } from 'theme-ui'
+import { Box, Card, SxStyleProp } from 'theme-ui'
 
 export function useTooltip() {
   const [tooltipOpen, setTooltipOpen] = useState(false)
@@ -64,14 +64,24 @@ export function StatefulTooltip({
   const handleClick = useCallback(() => tooltip && setTooltipOpen(true), [])
 
   return (
-    <Flex
+    <Box
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
-      sx={containerSx}
+      sx={{ display: 'flex', ...containerSx }}
     >
       {children}
-      {tooltipOpen && <Tooltip sx={tooltipSx}>{tooltip}</Tooltip>}
-    </Flex>
+      <Tooltip
+        sx={{
+          opacity: tooltipOpen ? 1 : 0,
+          pointerEvents: tooltipOpen ? 'auto' : 'none',
+          transform: tooltipOpen ? 'translateY(0px)' : 'translateY(5px)',
+          transition: 'opacity 200ms, transform 200ms',
+          ...tooltipSx,
+        }}
+      >
+        {tooltip}
+      </Tooltip>
+    </Box>
   )
 }

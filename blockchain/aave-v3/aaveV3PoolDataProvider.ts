@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
+import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'
 
-import { BaseParameters, getNetworkMapping } from './utils'
+import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface AaveV3UserReserveDataParameters extends BaseParameters {
   token: string
@@ -58,6 +59,16 @@ const networkMappings = {
     NetworkIds.MAINNET,
     'aaveV3PoolDataProvider',
   ),
+  [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.OPTIMISMMAINNET,
+    'aaveV3PoolDataProvider',
+  ),
+  [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
+    AaveV3PoolDataProvider__factory,
+    NetworkIds.ARBITRUMMAINNET,
+    'aaveV3PoolDataProvider',
+  ),
 }
 
 export function getAaveV3UserReserveData({
@@ -66,7 +77,10 @@ export function getAaveV3UserReserveData({
   networkId,
 }: AaveV3UserReserveDataParameters): Promise<AaveV3UserReserveData> {
   const { contract, tokenMappings } = networkMappings[networkId]
-  const tokenAddress = tokenMappings[token].address
+  if (!networkMappings[networkId]) {
+    console.warn('No getAaveV3UserReserveData network mapping for', networkId)
+  }
+  const tokenAddress = wethToEthAddress(tokenMappings, token)
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
       currentATokenBalance: amountFromWei(
@@ -95,19 +109,19 @@ export function getAaveV3ReserveData({
   networkId,
 }: AaveV3ReserveDataParameters): Promise<AaveV3ReserveDataReply> {
   const { contract, tokenMappings } = networkMappings[networkId]
-  const tokenAddress = tokenMappings[token].address
+  const tokenAddress = wethToEthAddress(tokenMappings, token)
+  warnIfAddressIsZero(tokenAddress, networkId, 'aaveV3PoolDataProvider', 'getReserveData')
   return contract.getReserveData(tokenAddress).then((result) => {
+    const totalAToken = amountFromWei(new BigNumber(result.totalAToken.toString()), token)
+    const totalStableDebt = amountFromWei(new BigNumber(result.totalStableDebt.toString()), token)
+    const totalVariableDebt = amountFromWei(
+      new BigNumber(result.totalVariableDebt.toString()),
+      token,
+    )
     return {
-      availableLiquidity: new BigNumber(result.totalAToken.toString()).minus(
-        new BigNumber(result.totalStableDebt.toString()).plus(
-          new BigNumber(result.totalVariableDebt.toString()),
-        ),
-      ),
+      availableLiquidity: totalAToken.minus(totalStableDebt).minus(totalVariableDebt),
       unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
-      totalAToken: amountFromWei(new BigNumber(result.totalAToken.toString()), token),
-      totalStableDebt: amountFromWei(new BigNumber(result.totalStableDebt.toString()), token),
-      totalVariableDebt: amountFromWei(new BigNumber(result.totalVariableDebt.toString()), token),
       liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
       variableBorrowRate: amountFromRay(new BigNumber(result.variableBorrowRate.toString())),
       stableBorrowRate: amountFromRay(new BigNumber(result.stableBorrowRate.toString())),
@@ -117,6 +131,9 @@ export function getAaveV3ReserveData({
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
+      totalAToken,
+      totalStableDebt,
+      totalVariableDebt,
     }
   })
 }
@@ -126,7 +143,13 @@ export function getAaveV3ReserveConfigurationData({
   token,
 }: AaveV3ReserveConfigurationParameters): Promise<AaveV3ReserveConfigurationData> {
   const { contract, tokenMappings } = networkMappings[networkId]
-  const tokenAddress = tokenMappings[token].address
+  warnIfAddressIsZero(
+    tokenMappings[token].address,
+    networkId,
+    'aaveV3PoolDataProvider',
+    'getAaveV3ReserveConfigurationData',
+  )
+  const tokenAddress = wethToEthAddress(tokenMappings, token)
   return contract.getReserveConfigurationData(tokenAddress).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
@@ -145,7 +168,13 @@ export function getAaveV3EModeCategoryForAsset({
   networkId,
 }: AaveV3EModeForAssetParameters): Promise<BigNumber> {
   const { contract, tokenMappings } = networkMappings[networkId]
-  const address = tokenMappings[token].address
+  const address = wethToEthAddress(tokenMappings, token)
+  warnIfAddressIsZero(
+    address,
+    networkId,
+    'aaveV3PoolDataProvider',
+    'getAaveV3EModeCategoryForAsset',
+  )
   return contract.getReserveEModeCategory(address).then((result) => {
     return new BigNumber(result.toString())
   })

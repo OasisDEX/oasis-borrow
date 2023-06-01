@@ -6,7 +6,7 @@ import { defer, from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
-import { NetworkIds } from './networkIds'
+import { NetworkIds } from './networks'
 
 export function createTokenBalance$(
   { contract, chainId }: Context,

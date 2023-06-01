@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networkIds'
+import { NetworkIds } from 'blockchain/networks'
 import { productCardsAjna } from 'features/ajna/common/content'
 import { AjnaProductCardsData, AlternateProductCardBase } from 'features/ajna/common/types'
 import { Observable } from 'rxjs'

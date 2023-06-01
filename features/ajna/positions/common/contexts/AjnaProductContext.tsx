@@ -23,7 +23,6 @@ import {
   AjnaMultiplyFormState,
   useAjnaMultiplyFormReducto,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
-import { AjnaMultiplyPosition } from 'features/ajna/positions/multiply/temp'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React, {
@@ -53,7 +52,7 @@ interface AjnaProductContextProviderPropsWithEarn {
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
   formDefaults: Partial<AjnaMultiplyFormState>
-  position: AjnaMultiplyPosition
+  position: AjnaPosition
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
 }
@@ -84,7 +83,10 @@ interface AjnaProductContext<P, F, A> {
   validation: {
     errors: AjnaValidationItem[]
     hasErrors: boolean
+    isFormFrozen: boolean
     isFormValid: boolean
+    notices: AjnaValidationItem[]
+    successes: AjnaValidationItem[]
     warnings: AjnaValidationItem[]
   }
   notifications: DetailsSectionNotificationItem[]
@@ -101,7 +103,7 @@ type AjnaProductContextWithEarn = AjnaProductContext<
   AjnaEarnPositionAuction
 >
 type AjnaProductContextWithMultiply = AjnaProductContext<
-  AjnaMultiplyPosition,
+  AjnaPosition,
   ReturnType<typeof useAjnaMultiplyFormReducto>,
   AjnaBorrowishPositionAuction
 >
@@ -188,6 +190,8 @@ export function AjnaProductContextProvider({
         quoteBalance,
         simulationErrors: simulation?.errors,
         simulationWarnings: simulation?.warnings,
+        simulationNotices: simulation?.notices,
+        simulationSuccesses: simulation?.successes,
         state,
         position,
         positionAuction,

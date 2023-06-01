@@ -17,6 +17,7 @@ export function AssetsTableBanner({
         flexWrap: ['wrap', null, 'nowrap'],
         gap: ['24px', null, 4],
         alignItems: 'center',
+        my: '12px',
         py: ['24px', null, 3],
         px: ['24px', null, 4],
         borderRadius: 'medium',

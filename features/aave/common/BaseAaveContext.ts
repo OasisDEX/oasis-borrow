@@ -1,3 +1,4 @@
+import { PositionTransition } from '@oasisdex/dma-library'
 import {
   IPosition,
   IPositionTransition,
@@ -123,7 +124,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  transition?: IPositionTransition | ISimplePositionTransition
+  transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
   estimatedGasPrice?: HasGasEstimation
   /**
    * @deprecated no idea what token it is. use **balance.__token__.balance** instead

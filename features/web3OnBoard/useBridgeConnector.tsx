@@ -1,9 +1,10 @@
 import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { useCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
-import { useCallback, useMemo } from 'react'
+import { networksListWithForksByHexId, useCustomNetworkParameter } from 'blockchain/networks'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
+import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
 export function useBridgeConnector(): [
   BridgeConnector | undefined,
@@ -20,6 +21,20 @@ export function useBridgeConnector(): [
     },
     [disconnect, connect],
   )
+
+  useEffect(() => {
+    if (wallet) {
+      const connectedChain = wallet.chains[0]
+      const network = networksListWithForksByHexId[connectedChain.id]
+      if (network.isCustomFork) {
+        // that means we are connected to a fork
+        // we need to try to add a current fork to the metaMask
+        void addCustomForkToTheWallet(network).then(() => {
+          console.log('Fork added to the wallet')
+        })
+      }
+    }
+  }, [wallet])
 
   const changeNetwork = useCallback(
     async (wallet: WalletState) => {
