@@ -11,9 +11,7 @@ function getPrismaClient() {
   } else {
     const newGlobalThis = globalThis as GlobalThisWithPrismaClient
     if (!newGlobalThis[prismaClientPropertyName]) {
-      newGlobalThis[prismaClientPropertyName] = new PrismaClient({
-        log: ['query', 'info', 'warn', 'error'],
-      })
+      newGlobalThis[prismaClientPropertyName] = new PrismaClient()
     }
     return newGlobalThis[prismaClientPropertyName]
   }
