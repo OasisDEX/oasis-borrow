@@ -420,7 +420,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       else errMsg = JSON.stringify(error)
       if (error instanceof Error) errStack = error.stack
       console.log('!!!!!!', errMsg)
-      console.log("@@@@@@@@", errStack)
+      console.log('@@@@@@@@', errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(requestBody).length
       counters.bypassedCallsCount += requestBody.length
