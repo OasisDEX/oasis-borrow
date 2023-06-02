@@ -24,8 +24,19 @@ export function useBridgeConnector(): [
 
   useEffect(() => {
     if (wallet) {
+      if (!wallet) {
+        return
+      }
+
       const connectedChain = wallet.chains[0]
       const network = networksListWithForksByHexId[connectedChain.id]
+      if (!network) {
+        console.warn(
+          `Network ${connectedChain.id} is not supported. User shouldn't be able to connect to it from our app.`,
+        )
+        return
+      }
+
       if (network.isCustomFork) {
         // that means we are connected to a fork
         // we need to try to add a current fork to the metaMask
