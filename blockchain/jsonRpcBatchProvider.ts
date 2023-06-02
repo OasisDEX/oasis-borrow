@@ -87,6 +87,11 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
                 batch[method].forEach((inflightRequest, index) => {
                   const payload = result[index]
                   if (payload.error) {
+                    console.error(
+                      `Error with batched request: ${JSON.stringify(
+                        inflightRequest.request,
+                      )}. Payload: ${JSON.stringify(payload)}`,
+                    )
                     const error = new Error(payload.error.message)
                     ;(<any>error).code = payload.error.code
                     ;(<any>error).data = payload.error.data
