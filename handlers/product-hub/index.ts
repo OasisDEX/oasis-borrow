@@ -52,15 +52,15 @@ export async function updateProductHubData(
   req: HandleUpdateProductHubDataProps,
   res: NextApiResponse,
 ) {
-  const { query, body } = req
+  const { headers, body } = req
   if ([undefined, ''].includes(process.env.PRODUCT_HUB_KEY)) {
     return res.status(400).json({
       errorMessage: 'Missing env variable',
     })
   }
-  if (query.secret !== process.env.PRODUCT_HUB_KEY) {
+  if (headers.authorization !== process.env.PRODUCT_HUB_KEY) {
     return res.status(400).json({
-      errorMessage: 'Missing query parameter',
+      errorMessage: 'Missing header parameter',
     })
   }
   const { protocols } = body
@@ -130,13 +130,13 @@ export async function updateProductHubData(
 }
 
 export async function mockProductHubData(req: NextApiRequest, res: NextApiResponse) {
-  const { query } = req
+  const { headers } = req
   if ([undefined, ''].includes(process.env.PRODUCT_HUB_KEY)) {
     return res.status(400).json({
       errorMessage: 'Missing env variable',
     })
   }
-  if (query.secret !== process.env.PRODUCT_HUB_KEY) {
+  if (headers.authorization !== process.env.PRODUCT_HUB_KEY) {
     return res.status(400).json({
       errorMessage: 'Missing query parameter',
     })
