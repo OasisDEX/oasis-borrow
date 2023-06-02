@@ -92,7 +92,9 @@ export const subgraphMethodsRecord: {
         interestRate
         poolMinDebtAmount
         lup
+        lupIndex
         htp
+        htpIndex
       }
     }
   `,

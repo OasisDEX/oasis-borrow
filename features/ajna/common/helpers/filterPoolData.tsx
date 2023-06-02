@@ -21,7 +21,12 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
 
         return {
           minPositionSize: `$${formatFiatBalance(payload.minPositionSize)}`,
-          maxLtv: formatDecimalAsPercent(payload.maxLtv),
+          maxLtv:
+            payload.lowestUtilizedPriceIndex > 0 ? (
+              formatDecimalAsPercent(payload.maxLtv)
+            ) : (
+              <AssetsTableDataCellInactive />
+            ),
           liquidityAvaliable: `$${formatFiatBalance(payload.liquidityAvaliable)}`,
           annualFee: formatDecimalAsPercent(payload.annualFee),
         }
@@ -40,7 +45,12 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
           '90DayNetApy': formatDecimalAsPercent(payload['90DayNetApy']),
           '7DayNetApy': formatDecimalAsPercent(payload['7DayNetApy']),
           tvl: `$${formatFiatBalance(payload.tvl)}`,
-          minLtv: formatDecimalAsPercent(payload.minLtv),
+          minLtv:
+            payload.lowestUtilizedPriceIndex > 0 ? (
+              formatDecimalAsPercent(payload.minLtv)
+            ) : (
+              <AssetsTableDataCellInactive />
+            ),
         }
       } else
         return {
@@ -55,8 +65,18 @@ export function filterPoolData({ data, pair, product }: FilterPoolDataParams) {
         const payload = data[pair as keyof typeof data]
 
         return {
-          with50Tokens: `${formatCryptoBalance(payload.with50Tokens)} ${pair.split('-')[0]}`,
-          maxMultiple: `${payload.maxMultiply.toFixed(2)}`,
+          with50Tokens:
+            payload.lowestUtilizedPriceIndex > 0 ? (
+              `${formatCryptoBalance(payload.with50Tokens)} ${pair.split('-')[0]}`
+            ) : (
+              <AssetsTableDataCellInactive />
+            ),
+          maxMultiple:
+            payload.lowestUtilizedPriceIndex > 0 ? (
+              `${payload.maxMultiply.toFixed(2)}`
+            ) : (
+              <AssetsTableDataCellInactive />
+            ),
           liquidityAvaliable: `$${formatFiatBalance(payload.liquidityAvaliable)}`,
           annualFee: formatDecimalAsPercent(payload.annualFee),
         }
