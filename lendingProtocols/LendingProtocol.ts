@@ -24,5 +24,5 @@ export const checkIfAave = (
 }
 
 export const isLendingProtocol = (value: string): value is LendingProtocol => {
-  return value in LendingProtocol
+  return Object.values<string>(LendingProtocol).includes(value)
 }
