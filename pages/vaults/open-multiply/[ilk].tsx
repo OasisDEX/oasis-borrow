@@ -39,7 +39,7 @@ function OpenVault({ ilk }: { ilk: string }) {
             title="seo.title-product-w-tokens"
             titleParams={{
               product: t('seo.multiply.title'),
-              protocol: LendingProtocolLabel.Maker,
+              protocol: LendingProtocolLabel.maker,
               token1: ilk,
               token2: 'DAI',
             }}

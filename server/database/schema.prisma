@@ -225,6 +225,34 @@ model UsersWhoFollowVaults {
   @@map("users_who_follow_vaults")
 }
 
+model ProductHubItems {
+  id String @id @default(uuid())
+  label String
+  network NetworkNames
+  primaryToken String
+  primaryTokenGroup String?
+  product Product[]
+  protocol Protocol
+  secondaryToken String
+  secondaryTokenGroup String?
+  weeklyNetApy String?
+  depositToken String?
+  earnStrategy String?
+  fee String?
+  liquidity String?
+  managementType ProductHubManagement?
+  maxLtv String?
+  maxMultiply String?
+  multiplyStrategy String?
+  multiplyStrategyType ProductHubStrategy?
+  reverseTokens Boolean?
+  with50Tokens String?
+  updatedAt DateTime @updatedAt
+
+  @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
+  @@map("product_hub_items")
+}
+
 enum Protocol {
   maker
   aavev2
@@ -232,4 +260,36 @@ enum Protocol {
   ajna
 
   @@map("protocol")
+}
+
+enum NetworkNames {
+  ethereum
+  arbitrum
+  polygon
+  optimism
+
+  @@map("network")
+}
+
+enum Product {
+  borrow
+  multiply
+  earn
+
+  @@map("product")
+}
+
+enum ProductHubManagement {
+  active
+  active_with_liq_risk
+  passive
+
+  @@map("managementType")
+}
+
+enum ProductHubStrategy {
+  long
+  short
+
+  @@map("multiplyStrategyType")
 }

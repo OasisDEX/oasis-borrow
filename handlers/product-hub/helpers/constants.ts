@@ -1,0 +1,1 @@
+export const measureTime = true

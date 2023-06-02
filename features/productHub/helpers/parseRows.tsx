@@ -5,7 +5,7 @@ import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponen
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { ProductHubItem, ProductType } from 'features/productHub/types'
+import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import { upperFirst } from 'lodash'
 import React from 'react'
@@ -17,7 +17,7 @@ function parseProductNumbers(stringNumbers: (string | undefined)[]): (BigNumber 
 
 function parseProduct(
   {
-    '7DayNetApy': weeklyNetApyString,
+    weeklyNetApy: weeklyNetApyString,
     earnStrategy,
     fee: feeString,
     liquidity: liquidityString,
@@ -28,7 +28,7 @@ function parseProduct(
     tooltips,
     with50Tokens,
   }: ProductHubItem,
-  product: ProductType,
+  product: ProductHubProductType,
 ): AssetsTableRowData {
   const [weeklyNetApy, fee, liquidity, maxLtv, maxMultiply] = parseProductNumbers([
     weeklyNetApyString,
@@ -38,7 +38,7 @@ function parseProduct(
     maxMultiplyString,
   ])
   switch (product) {
-    case ProductType.Borrow:
+    case ProductHubProductType.Borrow:
       return {
         with50Tokens: {
           sortable: with50Tokens ? parseInt(with50Tokens, 10) : 0,
@@ -85,7 +85,7 @@ function parseProduct(
           ),
         },
       }
-    case ProductType.Multiply:
+    case ProductHubProductType.Multiply:
       return {
         strategy: multiplyStrategy ? (
           <>
@@ -129,7 +129,7 @@ function parseProduct(
           ),
         },
       }
-    case ProductType.Earn:
+    case ProductHubProductType.Earn:
       return {
         strategy: earnStrategy ? (
           <>
@@ -152,7 +152,7 @@ function parseProduct(
           value: weeklyNetApy ? (
             <>
               {formatDecimalAsPercent(weeklyNetApy)}
-              {tooltips?.['7DayNetApy'] && <AssetsTableTooltip {...tooltips['7DayNetApy']} />}
+              {tooltips?.weeklyNetApy && <AssetsTableTooltip {...tooltips.weeklyNetApy} />}
             </>
           ) : (
             <AssetsTableDataCellInactive />
@@ -173,17 +173,20 @@ function parseProduct(
   }
 }
 
-export function parseRows(rows: ProductHubItem[], product: ProductType): AssetsTableRowData[] {
+export function parseRows(
+  rows: ProductHubItem[],
+  product: ProductHubProductType,
+): AssetsTableRowData[] {
   return rows.map((row) => {
     const { depositToken, label, network, primaryToken, protocol, reverseTokens, secondaryToken } =
       row
     const icons = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
-    const asset = product === ProductType.Earn ? depositToken || primaryToken : label
+    const asset = product === ProductHubProductType.Earn ? depositToken || primaryToken : label
 
     if (reverseTokens) icons.reverse()
 
     return {
-      [product === ProductType.Earn ? 'depositToken' : 'collateralDebt']: (
+      [product === ProductHubProductType.Earn ? 'depositToken' : 'collateralDebt']: (
         <AssetsTableDataCellAsset asset={asset} icons={icons} />
       ),
       ...parseProduct(row, product),
