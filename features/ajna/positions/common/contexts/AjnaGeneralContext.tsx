@@ -25,7 +25,6 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useTranslation } from 'react-i18next'
 
 interface AjnaGeneralContextProviderProps {
   collateralBalance: BigNumber
@@ -49,7 +48,6 @@ type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'step
   isOwner: boolean
   isShort: boolean
   priceFormat: string
-  strategy: string
 }
 
 interface AjnaGeneralContextSteps {
@@ -98,7 +96,6 @@ export function AjnaGeneralContextProvider({
 }: PropsWithChildren<AjnaGeneralContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const { t } = useTranslation()
   const { flow, collateralBalance, collateralToken, quoteBalance, quoteToken, owner, product } =
     props
   const { walletAddress } = useAccount()
@@ -144,7 +141,6 @@ export function AjnaGeneralContextProvider({
       priceFormat: isShort
         ? `${quoteToken}/${collateralToken}`
         : `${collateralToken}/${quoteToken}`,
-      strategy: t(isShort ? 'short' : 'long'),
       isOwner: owner === walletAddress || flow === 'open',
     },
     steps: setupStepManager(),

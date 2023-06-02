@@ -11,6 +11,7 @@ import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/a
 import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
+import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
@@ -160,6 +161,13 @@ export function AjnaProductController({
                     {...getAjnaHeadlineProps({
                       collateralToken: dpmPositionData?.collateralToken,
                       flow,
+                      strategy: dpmPositionData
+                        ? t(
+                            isShortPosition({ collateralToken: dpmPositionData?.collateralToken })
+                              ? 'short'
+                              : 'long',
+                          )
+                        : '',
                       product: dpmPositionData?.product as AjnaProduct,
                       quoteToken: dpmPositionData?.quoteToken,
                       id,

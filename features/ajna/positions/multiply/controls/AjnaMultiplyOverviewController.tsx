@@ -18,7 +18,7 @@ import { Grid } from 'theme-ui'
 export function AjnaMultiplyOverviewController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, flow, collateralPrice, quotePrice },
+    environment: { collateralToken, quoteToken, flow, collateralPrice, priceFormat, quotePrice },
   } = useAjnaGeneralContext()
 
   const {
@@ -41,8 +41,7 @@ export function AjnaMultiplyOverviewController() {
           <DetailsSectionContentCardWrapper>
             <ContentCardLiquidationPrice
               isLoading={isSimulationLoading}
-              collateralToken={collateralToken}
-              quoteToken={quoteToken}
+              priceFormat={priceFormat}
               liquidationPrice={position.liquidationPrice}
               afterLiquidationPrice={simulation?.liquidationPrice}
               belowCurrentPrice={one.minus(position.liquidationToMarketPrice)}
