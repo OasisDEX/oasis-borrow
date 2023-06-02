@@ -24,7 +24,7 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const network = ctx.query.network as string
   const version = ctx.query.version as string
-  const protocol = `Aave${version.toUpperCase()}`
+  const protocol = `Aave${version.toLowerCase()}`
 
   if (checkIfAave(protocol) && isSupportedNetwork(network)) {
     return {
