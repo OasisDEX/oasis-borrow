@@ -1,7 +1,13 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
+import { NetworkNames } from 'blockchain/networks'
+import { ProductHubProductType } from 'features/productHub/types'
+import { graphQlProviders } from 'handlers/product-hub/helpers/graphQLProviders'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
-import { flatten } from 'lodash'
+import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
+import { cloneDeep, flatten } from 'lodash'
+import moment from 'moment'
+import { curry } from 'ramda'
 
 import { aaveV2ProductHubProducts } from './aaveV2Products'
 
@@ -22,6 +28,11 @@ export default async function (): ProductHubHandlerResponse {
   const secondaryTokensList = [
     ...new Set(aaveV2ProductHubProducts.map((product) => product.secondaryToken)),
   ]
+
+  const yieldsPromisesMap = {
+    // a crude map, but it works for now since we only have one earn product
+    'STETH/ETH': curry(getAaveStEthYield)(graphQlProviders[NetworkNames.ethereumMainnet], moment()),
+  }
 
   // reserveData -> liq available and variable fee
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
@@ -45,24 +56,46 @@ export default async function (): ProductHubHandlerResponse {
     }
   })
 
+  // getting the APYs
+  const earnProducts = aaveV2ProductHubProducts.filter((product) =>
+    product.product.includes(ProductHubProductType.Earn),
+  )
+  const earnProductsPromises = earnProducts.map(async (product) => {
+    const tokensReserveData = await Promise.all(tokensReserveConfigurationDataPromises)
+    const { riskRatio } = tokensReserveData.find((data) => data[product.primaryToken])![
+      product.primaryToken
+    ]
+    const response = await yieldsPromisesMap[product.label as keyof typeof yieldsPromisesMap](
+      riskRatio,
+      ['7Days'],
+    )
+    return {
+      [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
+    }
+  })
+
   return Promise.all([
     Promise.all(tokensReserveDataPromises),
     Promise.all(tokensReserveConfigurationDataPromises),
-  ]).then(([tokensReserveData, tokensReserveConfigurationData]) => {
+    Promise.all(earnProductsPromises),
+  ]).then(([tokensReserveData, tokensReserveConfigurationData, earnProductsYields]) => {
     return aaveV2ProductHubProducts.map((product) => {
-      const { secondaryToken, primaryToken, depositToken } = product
+      const newProduct = cloneDeep(product)
+      const { secondaryToken, primaryToken, depositToken, label } = newProduct
       const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
         secondaryToken
       ]
       const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
         (data) => data[depositToken || primaryToken],
       )![depositToken || primaryToken]
+      const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
       return {
-        ...product,
+        ...newProduct,
         maxMultiply: riskRatio.multiple.toString(),
         maxLtv: maxLtv.toString(),
         liquidity: liquidity.toString(),
         fee: fee.toString(),
+        weeklyNetApy: weeklyNetApy[label] ? weeklyNetApy[label]!.toString() : undefined,
       }
     })
   })

@@ -13,22 +13,22 @@ services:
       - '5432:5432'
     volumes:
       - db_data:/var/lib/postgresql/data
-  localnode:
-    image: oasisdexorg/multiply-proxy-actions:latest
-    container_name: multiply-proxy-actions
-    environment:
-      - ALCHEMY_NODE=https://eth-mainnet.alchemyapi.io/v2/K7pZy8x91lW2KwbtJLtYNOYwB8LMJYYZ
-      - ALCHEMY_NODE_RINKEBY=https://eth-rinkeby.alchemyapi.io/v2/sJ7rvwzHpW3lEd3UaO_T8tPfUre2u5_j
-      - ALCHEMY_NODE_GOERLI=https://eth-goerli.alchemyapi.io/v2/sJ7rvwzHpW3lEd3UaO_T8tPfUre2u5_j
-      - ETHERSCAN_API_KEY=YAJI4NVD8QTQ9JVWG2NKN3FFUK6IZTMV5S
-      - PRIV_KEY_MAINNET=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-      - TENDERLY_USERNAME=georgi2
-      - TENDERLY_PROJECT=mpoc
-      - USE_DUMMY=${USE_DUMMY}
-      - BLOCK_NUMBER=${BLOCK_NUMBER}
-    ports:
-      - '8545:8545'
-    volumes:
-      - '../.hardhat/cache:/usr/src/mpa/cache'
+  # localnode:
+  #   image: oasisdexorg/multiply-proxy-actions:latest
+  #   container_name: multiply-proxy-actions
+  #   environment:
+  #     - ALCHEMY_NODE=https://eth-mainnet.alchemyapi.io/v2/K7pZy8x91lW2KwbtJLtYNOYwB8LMJYYZ
+  #     - ALCHEMY_NODE_RINKEBY=https://eth-rinkeby.alchemyapi.io/v2/sJ7rvwzHpW3lEd3UaO_T8tPfUre2u5_j
+  #     - ALCHEMY_NODE_GOERLI=https://eth-goerli.alchemyapi.io/v2/sJ7rvwzHpW3lEd3UaO_T8tPfUre2u5_j
+  #     - ETHERSCAN_API_KEY=YAJI4NVD8QTQ9JVWG2NKN3FFUK6IZTMV5S
+  #     - PRIV_KEY_MAINNET=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+  #     - TENDERLY_USERNAME=georgi2
+  #     - TENDERLY_PROJECT=mpoc
+  #     - USE_DUMMY=${USE_DUMMY}
+  #     - BLOCK_NUMBER=${BLOCK_NUMBER}
+  #   ports:
+  #     - '8545:8545'
+  #   volumes:
+  #     - '../.hardhat/cache:/usr/src/mpa/cache'
 volumes:
   db_data: {}
