@@ -1,10 +1,10 @@
 import { ethers } from 'ethers'
 
-import { networksListWithForksById } from './network-helpers'
+import { networkSetById } from './network-helpers'
 import { NetworkIds } from './network-ids'
 
 export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider {
-  const provider = networksListWithForksById[networkId]?.readProvider
+  const provider = networkSetById[networkId]?.getReadProvider()
 
   if (provider) {
     return provider
@@ -17,14 +17,29 @@ export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider
   })
 }
 
+export function ensureRpcProvider(
+  provider: ethers.providers.Provider | undefined,
+  networkId: NetworkIds,
+): asserts provider is ethers.providers.Provider {
+  if (!provider) {
+    throw new Error(`Provider does not exist for network ${networkId}`)
+  }
+}
+
 export function getRpcProvidersForLogs(networkId: NetworkIds): {
   mainProvider: ethers.providers.Provider
   forkProvider?: ethers.providers.Provider
 } {
-  const network = networksListWithForksById[networkId]
-  if (network.parentNetwork) {
-    return { mainProvider: network.parentNetwork.readProvider, forkProvider: network.readProvider }
+  const network = networkSetById[networkId]
+  const givenNetworkProvider = network?.getReadProvider()
+
+  const parentNetwork = network.getParentNetwork()
+  if (!parentNetwork) {
+    ensureRpcProvider(givenNetworkProvider, networkId)
+    return { mainProvider: givenNetworkProvider }
   }
 
-  return { mainProvider: network.readProvider }
+  const parentNetworkProvider = parentNetwork?.getReadProvider()
+  ensureRpcProvider(parentNetworkProvider, parentNetwork.id)
+  return { mainProvider: parentNetworkProvider, forkProvider: givenNetworkProvider }
 }

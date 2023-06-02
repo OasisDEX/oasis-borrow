@@ -14,7 +14,7 @@ import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
 import { Abi } from 'helpers/types'
-import { keyBy } from 'lodash'
+import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
 import arbitrumMainnetIcon from 'public/static/img/network_icons/arbitrum_mainnet.svg'
@@ -27,8 +27,9 @@ import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.
 
 import { NetworkIds } from './network-ids'
 import { NetworkLabelType, NetworkNames } from './network-names'
-
 export type NetworkConfigHexId = `0x${number | string}`
+
+export const ethereumMainnetHexId: NetworkConfigHexId = '0x1'
 
 export type NetworkConfig = {
   id: NetworkIds
@@ -46,9 +47,9 @@ export type NetworkConfig = {
   enabled: boolean
   token: string
   rpcUrl: string
-  readProvider: ethers.providers.Provider
-  parentNetwork?: NetworkConfig
-  cacheApi?: GraphQLClient
+  getReadProvider: () => ethers.providers.Provider | undefined
+  getParentNetwork: () => NetworkConfig | undefined
+  getCacheApi: () => GraphQLClient | undefined
   isCustomFork?: boolean
 }
 
@@ -81,12 +82,16 @@ const mainnetConfig: NetworkConfig = {
   testnet: false,
   enabled: true,
   rpcUrl: mainnetRpc,
-  readProvider: new JsonRpcBatchProvider(mainnetRpc, {
-    chainId: NetworkIds.MAINNET,
-    name: NetworkNames.ethereumMainnet,
-  }),
-  cacheApi: new GraphQLClient(mainnetCacheUrl),
+  getReadProvider: memoize(
+    () =>
+      new JsonRpcBatchProvider(mainnetRpc, {
+        chainId: NetworkIds.MAINNET,
+        name: NetworkNames.ethereumMainnet,
+      }),
+  ),
+  getCacheApi: memoize(() => new GraphQLClient(mainnetCacheUrl)),
   isCustomFork: false,
+  getParentNetwork: () => undefined,
 }
 
 const goerliConfig: NetworkConfig = {
@@ -103,12 +108,18 @@ const goerliConfig: NetworkConfig = {
   testnet: true,
   enabled: true,
   rpcUrl: goerliRpc,
-  readProvider: new JsonRpcBatchProvider(goerliRpc, {
-    chainId: NetworkIds.GOERLI,
-    name: NetworkNames.ethereumGoerli,
-  }),
-  cacheApi: new GraphQLClient('https://oazo-bcache-goerli-staging.new.oasis.app/api/v1'),
+  getReadProvider: memoize(
+    () =>
+      new JsonRpcBatchProvider(goerliRpc, {
+        chainId: NetworkIds.GOERLI,
+        name: NetworkNames.ethereumGoerli,
+      }),
+  ),
+  getCacheApi: memoize(
+    () => new GraphQLClient('https://oazo-bcache-goerli-staging.new.oasis.app/api/v1'),
+  ),
   isCustomFork: false,
+  getParentNetwork: () => undefined,
 }
 
 const arbitrumMainnetConfig: NetworkConfig = {
@@ -125,10 +136,15 @@ const arbitrumMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
-  readProvider: new JsonRpcBatchProvider(arbitrumMainnetRpc, {
-    chainId: NetworkIds.ARBITRUMMAINNET,
-    name: NetworkNames.arbitrumMainnet,
-  }),
+  getReadProvider: memoize(
+    () =>
+      new JsonRpcBatchProvider(arbitrumMainnetRpc, {
+        chainId: NetworkIds.ARBITRUMMAINNET,
+        name: NetworkNames.arbitrumMainnet,
+      }),
+  ),
+  getCacheApi: () => undefined,
+  getParentNetwork: () => undefined,
   isCustomFork: false,
 }
 
@@ -146,10 +162,15 @@ const arbitrumGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
-  readProvider: new JsonRpcBatchProvider(arbitrumGoerliRpc, {
-    chainId: NetworkIds.ARBITRUMGOERLI,
-    name: NetworkNames.arbitrumGoerli,
-  }),
+  getReadProvider: memoize(
+    () =>
+      new JsonRpcBatchProvider(arbitrumGoerliRpc, {
+        chainId: NetworkIds.ARBITRUMGOERLI,
+        name: NetworkNames.arbitrumGoerli,
+      }),
+  ),
+  getParentNetwork: () => undefined,
+  getCacheApi: () => undefined,
   isCustomFork: false,
 }
 
@@ -167,7 +188,9 @@ const polygonMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
-  readProvider: new JsonRpcBatchProvider(''),
+  getReadProvider: () => undefined,
+  getCacheApi: () => undefined,
+  getParentNetwork: () => undefined,
   isCustomFork: false,
 }
 
@@ -185,7 +208,9 @@ const polygonMumbaiConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
-  readProvider: new JsonRpcBatchProvider(''),
+  getReadProvider: () => undefined,
+  getParentNetwork: () => undefined,
+  getCacheApi: () => undefined,
   isCustomFork: false,
 }
 
@@ -203,10 +228,15 @@ const optimismMainnetConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
-  readProvider: new JsonRpcBatchProvider(optimismMainnetRpc, {
-    chainId: NetworkIds.OPTIMISMMAINNET,
-    name: NetworkNames.optimismMainnet,
-  }),
+  getReadProvider: memoize(
+    () =>
+      new JsonRpcBatchProvider(optimismMainnetRpc, {
+        chainId: NetworkIds.OPTIMISMMAINNET,
+        name: NetworkNames.optimismMainnet,
+      }),
+  ),
+  getCacheApi: () => undefined,
+  getParentNetwork: () => undefined,
   isCustomFork: false,
 }
 
@@ -224,7 +254,9 @@ const optimismGoerliConfig: NetworkConfig = {
   enabled: true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
-  readProvider: new JsonRpcBatchProvider(''),
+  getReadProvider: () => undefined,
+  getParentNetwork: () => undefined,
+  getCacheApi: () => undefined,
   isCustomFork: false,
 }
 
@@ -241,7 +273,9 @@ export const emptyNetworkConfig: NetworkConfig = {
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
   rpcUrl: 'empty',
-  readProvider: mainnetConfig.readProvider,
+  getReadProvider: () => undefined,
+  getCacheApi: () => undefined,
+  getParentNetwork: () => undefined,
   isCustomFork: false,
 }
 
@@ -268,7 +302,9 @@ export const defaultForkSettings: NetworkConfig = {
   enabled: false,
   token: 'ETH',
   rpcUrl: '',
-  readProvider: new JsonRpcBatchProvider(''),
+  getReadProvider: () => undefined,
+  getParentNetwork: () => undefined,
+  getCacheApi: () => undefined,
   isCustomFork: true,
 }
 

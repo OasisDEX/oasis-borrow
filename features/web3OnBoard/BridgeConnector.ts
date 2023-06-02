@@ -1,6 +1,12 @@
 import { Chain } from '@web3-onboard/common'
 import { DisconnectOptions, EIP1193Provider, WalletState } from '@web3-onboard/core'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+import {
+  NetworkConfigHexId,
+  NetworkIds,
+  NetworkNames,
+  networkSetByHexId,
+} from 'blockchain/networks'
 import { ConnectionKind } from 'features/web3Context'
 
 interface ConnectorUpdate {
@@ -9,17 +15,22 @@ interface ConnectorUpdate {
   account?: null | string
 }
 
+export interface ConnectorInformation {
+  chainId: NetworkIds
+  hexChainId: NetworkConfigHexId
+  provider: EIP1193Provider
+  account: string | undefined
+  networkName: NetworkNames
+}
+
 export class BridgeConnector extends AbstractConnector {
-  public readonly basicInfo: {
-    chainId: number
-    provider: EIP1193Provider
-    account: string | undefined
-  }
+  public readonly basicInfo: ConnectorInformation
 
   private disconnectExecuted = false
 
-  public isTheSame(other: BridgeConnector | undefined) {
+  public isTheSame(other: AbstractConnector | undefined) {
     return (
+      other instanceof BridgeConnector &&
       this.basicInfo.account === other?.basicInfo.account &&
       this.basicInfo.chainId === other?.basicInfo.chainId &&
       this.isConnected === other?.isConnected
@@ -44,12 +55,30 @@ export class BridgeConnector extends AbstractConnector {
     return !this.disconnectExecuted
   }
 
+  get chainId(): NetworkIds {
+    return this.basicInfo.chainId
+  }
+
+  get hexChainId(): NetworkConfigHexId {
+    return this.basicInfo.hexChainId
+  }
+
+  get networkName(): NetworkNames {
+    return this.basicInfo.networkName
+  }
+
+  get connectedAccount(): string | undefined {
+    return this.basicInfo.account
+  }
+
   private getBasicInfoFromWallet() {
-    const chainId = parseInt(this.wallet.chains[0].id, 16)
+    const chainId = parseInt(this.wallet.chains[0].id, 16) as NetworkIds
+    const hexChainId = this.wallet.chains[0].id as NetworkConfigHexId
+    const networkName = networkSetByHexId[hexChainId].name
     const account = this.wallet.accounts[0]?.address
     const provider = this.wallet.provider
 
-    return { chainId, account, provider }
+    return { chainId, account, provider, hexChainId, networkName }
   }
 
   activate(): Promise<ConnectorUpdate> {
@@ -58,14 +87,10 @@ export class BridgeConnector extends AbstractConnector {
     })
   }
 
-  deactivate(): void {
-    void this.disconnect({ label: this.wallet.label }).then(() => {
-      this.disconnectExecuted = true
-    })
-  }
+  // @deprecated - Use `disconnect` from our hook to disconnect.
+  deactivate(): void {}
 
   getAccount(): Promise<string | null> {
-    console.log(`Trying to get account`)
     return Promise.resolve(this.basicInfo.account || null)
   }
 
