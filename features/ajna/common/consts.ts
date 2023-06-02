@@ -48,3 +48,6 @@ export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
 export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']
 
 export const LTVWarningThreshold = new BigNumber(0.05)
+
+export const ajnaLastIndexBucketPrice = new BigNumber(99836282890)
+export const ajnaDefaultPoolRangeMarketPriceOffset = 0.75 // 75%

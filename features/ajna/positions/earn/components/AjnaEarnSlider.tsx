@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js'
+import { WAD_PRECISION } from 'components/constants'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
@@ -17,14 +19,35 @@ function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) 
 function getMinMaxAndRange({
   highestThresholdPrice,
   lowestUtilizedPrice,
+  lowestUtilizedPriceIndex,
   mostOptimisticMatchingPrice,
+  marketPrice,
   offset, // 0 - 1, percentage value
 }: {
   highestThresholdPrice: BigNumber
   lowestUtilizedPrice: BigNumber
+  lowestUtilizedPriceIndex: BigNumber
   mostOptimisticMatchingPrice: BigNumber
+  marketPrice: BigNumber
   offset: number
 }) {
+  // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
+  if (lowestUtilizedPriceIndex.eq(zero)) {
+    const defaultRange = [marketPrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
+
+    while (defaultRange[defaultRange.length - 1].lt(marketPrice)) {
+      defaultRange.push(
+        defaultRange[defaultRange.length - 1].times(1.005).decimalPlaces(WAD_PRECISION),
+      )
+    }
+
+    return {
+      min: defaultRange[0],
+      max: defaultRange[defaultRange.length - 1],
+      range: defaultRange,
+    }
+  }
+
   // Generate ranges from min to lup
   const lupNearHtpRange = [lowestUtilizedPrice]
 
@@ -108,11 +131,12 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
     validation: { isFormFrozen },
   } = useAjnaProductContext('earn')
 
-  const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
-
-  const resolvedValue = price || lowestUtilizedPrice
-
-  const maxLtv = position.getMaxLtv(price)
+  const {
+    highestThresholdPrice,
+    lowestUtilizedPrice,
+    mostOptimisticMatchingPrice,
+    lowestUtilizedPriceIndex,
+  } = position.pool
 
   const { min, max, range } = useMemo(
     () =>
@@ -120,14 +144,22 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
         highestThresholdPrice,
         mostOptimisticMatchingPrice,
         lowestUtilizedPrice,
+        lowestUtilizedPriceIndex,
+        marketPrice: position.marketPrice,
         offset: AJNA_LUP_MOMP_OFFSET,
       }),
     [
       highestThresholdPrice.toString(),
       mostOptimisticMatchingPrice.toString(),
       lowestUtilizedPrice.toString(),
+      lowestUtilizedPriceIndex.toString(),
+      position.marketPrice.toString(),
     ],
   )
+
+  const resolvedLup = lowestUtilizedPriceIndex.isZero() ? max : lowestUtilizedPrice
+  const resolvedValue = price || resolvedLup
+  const maxLtv = position.getMaxLtv(resolvedValue)
 
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
     () =>
@@ -151,7 +183,7 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
       lastValue={resolvedValue}
       minBoundry={min}
       maxBoundry={max}
-      step={1}
+      step={range[1].minus(range[0]).toNumber()}
       leftBoundry={resolvedValue}
       rightBoundry={maxLtv}
       leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
