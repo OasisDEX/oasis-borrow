@@ -24,10 +24,6 @@ export function useBridgeConnector(): [
 
   useEffect(() => {
     if (wallet) {
-      if (!wallet) {
-        return
-      }
-
       const connectedChain = wallet.chains[0]
       const network = networksListWithForksByHexId[connectedChain.id]
       if (!network) {

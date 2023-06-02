@@ -193,7 +193,7 @@ async function makeMulticall(
   let data: any[]
   if (multicallFailedCalls.length !== 0) {
     const failedMultiCallsResponse = await makeCall(
-      network,
+      rpcEndpoint,
       multicallFailedCalls.map(([to, data], i) => {
         return {
           jsonrpc: '2.0',
