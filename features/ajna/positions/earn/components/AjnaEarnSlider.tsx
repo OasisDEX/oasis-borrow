@@ -174,7 +174,7 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
   const maxLtv = position.getMaxLtv(resolvedValue)
 
   useEffect(() => {
-    // triggered only once to initialize price on state
+    // triggered only once to initialize price on state when lup index is zero
     if (lowestUtilizedPriceIndex.isZero()) {
       handleChange(max)
     }
