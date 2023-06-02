@@ -19,7 +19,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const network = ctx.query.network as string
   const [product, strategy] = ctx.query.strategy as string[]
   const version = ctx.query.version as string
-  const protocol = `Aave${version.toUpperCase()}`
+  const protocol = `aave${version.toLowerCase()}`
 
   const [supported] = isSupportedStrategy(network, protocol, product, strategy)
   if (supported) {
