@@ -68,6 +68,7 @@ jobs:
                      --build-arg NODE_ENV=production \
                      --build-arg NEXT_PUBLIC_SENTRY_ENV=production \
                      --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
+                     --build-arg PRODUCT_HUB_KEY=${{ secrets.PRODUCT_HUB_KEY }} \
                      --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
