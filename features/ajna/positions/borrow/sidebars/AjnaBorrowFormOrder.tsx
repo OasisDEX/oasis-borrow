@@ -47,8 +47,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       simulationData?.riskRatio && formatDecimalAsPercent(simulationData.riskRatio.loanToValue),
     liquidationPrice: `${formatCryptoBalance(liquidationPrice)} ${priceFormat}`,
     afterLiquidationPrice:
-      afterLiquidationPrice &&
-      `${formatCryptoBalance(afterLiquidationPrice)} ${priceFormat}`,
+      afterLiquidationPrice && `${formatCryptoBalance(afterLiquidationPrice)} ${priceFormat}`,
     liquidationThreshold: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
     afterLiquidationThreshold:
       simulationData?.maxRiskRatio.loanToValue &&
