@@ -130,6 +130,17 @@ export async function updateProductHubData(
 }
 
 export async function mockProductHubData(req: NextApiRequest, res: NextApiResponse) {
+  const { query } = req
+  if ([undefined, ''].includes(process.env.PRODUCT_HUB_KEY)) {
+    return res.status(400).json({
+      errorMessage: 'Missing env variable',
+    })
+  }
+  if (query.secret !== process.env.PRODUCT_HUB_KEY) {
+    return res.status(400).json({
+      errorMessage: 'Missing query parameter',
+    })
+  }
   // this mocks the data using a static file mock
   // and creates necessary rows in the db (careful with this)
   // add this to the handler
