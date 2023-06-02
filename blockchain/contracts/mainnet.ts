@@ -133,7 +133,7 @@ export const mainnetContracts = {
     mainnet.aave.v2.LendingPool,
     AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   ),
-  operationExecutor: contractDesc(operationExecutor, mainnet.mpa.core.OperationExecutor),
+  operationExecutor: contractDesc(operationExecutor, '0xc1cd3654ab3b37e0bc26bafb5ae4c096892d0b0c'),
   swapAddress: mainnet.mpa.core.Swap,
   accountFactory: contractDesc(
     accountFactory,
