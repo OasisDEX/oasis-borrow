@@ -18,7 +18,7 @@ export type LendingProtocolConfig = {
 
 const aaveV2Config: LendingProtocolConfig = {
   name: LendingProtocol.AaveV2,
-  label: LendingProtocolLabel.AaveV2,
+  label: LendingProtocolLabel.aavev2,
   icon: aaveIcon as string,
   logo: aaveV2Logo as string,
   logoScale: 1,
@@ -26,7 +26,7 @@ const aaveV2Config: LendingProtocolConfig = {
 
 const aaveV3Config: LendingProtocolConfig = {
   name: LendingProtocol.AaveV3,
-  label: LendingProtocolLabel.AaveV3,
+  label: LendingProtocolLabel.aavev3,
   icon: aaveIcon as string,
   logo: aaveV3Logo as string,
   logoScale: 1,
@@ -34,7 +34,7 @@ const aaveV3Config: LendingProtocolConfig = {
 
 const ajnaConfig: LendingProtocolConfig = {
   name: LendingProtocol.Ajna,
-  label: LendingProtocolLabel.Ajna,
+  label: LendingProtocolLabel.ajna,
   icon: ajnaIcon as string,
   logo: ajnaLogo as string,
   logoScale: 1.4,
@@ -42,7 +42,7 @@ const ajnaConfig: LendingProtocolConfig = {
 
 const makerConfig: LendingProtocolConfig = {
   name: LendingProtocol.Maker,
-  label: LendingProtocolLabel.Maker,
+  label: LendingProtocolLabel.maker,
   icon: makerIcon as string,
   logo: makerLogo as string,
   logoScale: 1,

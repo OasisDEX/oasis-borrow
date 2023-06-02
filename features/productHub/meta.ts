@@ -1,7 +1,7 @@
 import { BaseNetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
-import { ProductType } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
@@ -9,25 +9,25 @@ import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs
 export const ALL_ASSETS = 'all assets'
 export const EMPTY_FILTERS = { or: [], and: {} }
 
-export const productHubLinksMap: { [key in ProductType]: string } = {
+export const productHubLinksMap: { [key in ProductHubProductType]: string } = {
   borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,
   multiply: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY,
   earn: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY,
 }
 
-export const productHubFiltersCount: { [key in ProductType]: number } = {
-  [ProductType.Borrow]: 3,
-  [ProductType.Multiply]: 4,
-  [ProductType.Earn]: 2,
+export const productHubFiltersCount: { [key in ProductHubProductType]: number } = {
+  [ProductHubProductType.Borrow]: 3,
+  [ProductHubProductType.Multiply]: 4,
+  [ProductHubProductType.Earn]: 2,
 }
-export const productHubGridTemplateColumns: { [key in ProductType]: string } = {
-  [ProductType.Borrow]: '270px auto 220px 220px',
-  [ProductType.Multiply]: '270px auto 220px 220px 220px',
-  [ProductType.Earn]: 'auto 220px 220px',
+export const productHubGridTemplateColumns: { [key in ProductHubProductType]: string } = {
+  [ProductHubProductType.Borrow]: '270px auto 220px 220px',
+  [ProductHubProductType.Multiply]: '270px auto 220px 220px 220px',
+  [ProductHubProductType.Earn]: 'auto 220px 220px',
 }
 
 // TODO: find a way how to put translations into metadata
-export const productHubProductOptions: { [key in ProductType]: HeaderSelectorOption } = {
+export const productHubProductOptions: { [key in ProductHubProductType]: HeaderSelectorOption } = {
   borrow: {
     title: 'Borrow',
     description: 'Borrow against your favorite crypto assets',
@@ -80,7 +80,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
 }
 
 export const productHubOptionsMap: {
-  [key in ProductType]: {
+  [key in ProductHubProductType]: {
     product: HeaderSelectorOption
     tokens: { [key: string]: HeaderSelectorOption }
   }

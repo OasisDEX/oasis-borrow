@@ -1,30 +1,35 @@
-import { BaseNetworkNames } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps } from 'components/PromoCard'
 import { LendingProtocol } from 'lendingProtocols'
 
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
-export type ProductHubManagementType = 'active' | 'active-with-liq-risk' | 'passive'
+export type ProductHubManagementType = 'active' | 'active_with_liq_risk' | 'passive'
 
-export enum ProductType {
+export enum ProductHubProductType {
   Borrow = 'borrow',
   Multiply = 'multiply',
   Earn = 'earn',
 }
 
+export type ProductHubSupportedNetworks =
+  | NetworkNames.ethereumMainnet
+  | NetworkNames.arbitrumMainnet
+  | NetworkNames.optimismMainnet
+
 export interface ProductHubItemBasics {
   label: string
-  network: BaseNetworkNames
+  network: ProductHubSupportedNetworks
   primaryToken: string
   primaryTokenGroup?: string
-  product: ProductType | ProductType[]
+  product: ProductHubProductType[]
   protocol: LendingProtocol
   secondaryToken: string
   secondaryTokenGroup?: string
 }
 
 export interface ProductHubItemDetails {
-  '7DayNetApy'?: string
+  weeklyNetApy?: string
   depositToken?: string
   earnStrategy?: string
   fee?: string
@@ -50,7 +55,7 @@ export interface ProductHubItemTooltips {
 export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
 
 export type ProductHubPromoCards = {
-  [key in ProductType]: {
+  [key in ProductHubProductType]: {
     default: PromoCardProps[]
     tokens: {
       [key: string]: PromoCardProps[]

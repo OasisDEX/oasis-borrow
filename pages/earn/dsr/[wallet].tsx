@@ -33,7 +33,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
               title="seo.title-dsr"
               titleParams={{
                 product: t('seo.earn.title'),
-                protocol: LendingProtocolLabel.Maker,
+                protocol: LendingProtocolLabel.maker,
               }}
               description="seo.multiply.description"
               url="/earn/dsr"
