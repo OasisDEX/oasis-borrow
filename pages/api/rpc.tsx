@@ -109,7 +109,7 @@ const abi = [
   },
 ]
 
-async function makeCall(rpcEndpoint: string, calls: any[]) {
+async function makeCall(rpcEndpoint: string, calls: RpcCall[]) {
   const callsLength = JSON.stringify(calls).length
   const config = {
     headers: {
@@ -150,18 +150,18 @@ async function makeCall(rpcEndpoint: string, calls: any[]) {
 
 async function makeMulticall(
   multicallAddress: string,
-  requestBody: any[],
+  requestBody: RpcCall[],
   rpcEndpoint: string,
   network: NetworkNames,
-) {
+): Promise<RpcResponse[] | undefined> {
   const calls = requestBody
-    .map((rpcCall: any) => rpcCall.params)
-    .map((params: any) => [params[0].to, params[0].data])
+    .map((rpcCall) => rpcCall.params)
+    .map((params) => [params[0].to, params[0].data])
 
   const multicall = new ethers.Contract(multicallAddress, abi)
   const multicallTx = await multicall.populateTransaction.tryAggregate(false, calls)
 
-  const callBody = {
+  const callBody: RpcCall = {
     jsonrpc: '2.0',
     id: requestBody[0].id,
     method: 'eth_call',
@@ -195,15 +195,15 @@ async function makeMulticall(
   if (multicallFailedCalls.length !== 0) {
     const failedMultiCallsResponse = await makeCall(
       network,
-      multicallFailedCalls.map((x, i) => {
+      multicallFailedCalls.map(([to, data], i) => {
         return {
           jsonrpc: '2.0',
           id: +requestBody[0].id + i,
           method: 'eth_call',
           params: [
             {
-              data: x[1],
-              to: x[0],
+              data: data,
+              to: to!,
               from: spotAddress,
             },
             'latest',
@@ -225,18 +225,96 @@ async function makeMulticall(
 
   return requestBody.map((entry, index) => ({
     id: entry.id,
-    jsonrpc: entry.jsonrpc,
+    jsonrpc: '2.0',
     result: data[index],
   }))
 }
 
+// {
+//   "method": "eth_call",
+//   "params": [
+//   {
+//     "to": "0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2",
+//     "data": "0x6c6f6ae10000000000000000000000000000000000000000000000000000000000000001"
+//   },
+//   "latest"
+// ],
+//   "id": 124,
+//   "jsonrpc": "2.0"
+// }
+
+type RpcCallParam = unknown & {
+  to: string
+  data: string | undefined
+}
+
+// /{
+// "method": "net_version",
+//   "params": [],
+//   "id": 45,
+//   "jsonrpc": "2.0"
+// }
+
+type RpcCall = {
+  method: string
+  params: [RpcCallParam, unknown]
+  id: number
+  jsonrpc: '2.0'
+}
+
+type CallWithHash = {
+  hash: string
+  call: RpcCall
+}
+
+type RpcResponse = {
+  id: number
+  jsonrpc: '2.0'
+  result: string
+}
+
+interface CallWithHashAndResponse extends CallWithHash {
+  response: RpcResponse
+}
+
+function isValidBody<T extends Record<string, unknown>>(body: any, fields: (keyof T)[]): body is T {
+  return Object.keys(body).every((key) => fields.includes(key))
+}
+
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    res.status(405).send({ message: 'Only POST requests allowed' })
+    return
+  }
+
   const requestBody = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
+
+  const isBatch = Array.isArray(requestBody)
+
+  const calls: RpcCall[] = []
+
+  if (isBatch) {
+    requestBody
+      .filter((call) => isValidBody<RpcCall>(call, ['method', 'params', 'id', 'jsonrpc']))
+      .forEach((call) => {
+        calls.push(call)
+      })
+  } else {
+    if (isValidBody<RpcCall>(requestBody, ['method', 'params', 'id', 'jsonrpc'])) {
+      calls.push(requestBody)
+    }
+  }
+
+  if (calls.length === 0) {
+    res.status(400).send({ error: 'Invalid request body' })
+    return
+  }
 
   const networkQuery = req.query.network
 
   if (!networkQuery) {
-    return res.status(400).send({ error: 'Missing network query' })
+    res.status(400).send({ error: 'Missing network query' })
+    return
   }
 
   const network = networkQuery.toString() as NetworkNames
@@ -247,35 +325,60 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     return
   }
 
+  const callsWithHash: CallWithHash[] = calls.map((call) => {
+    return {
+      call: call,
+      hash: ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${JSON.stringify(call.params)}`)),
+    }
+  })
+
+  const dedupedCalls = callsWithHash.filter(
+    (call, index) => callsWithHash.map((call) => call.hash).indexOf(call.hash) === index,
+  )
+
+  const mappedCalls = callsWithHash.map((item) =>
+    dedupedCalls.map((call) => call.hash).indexOf(item.hash),
+  )
+
+  const missingCallsIndexes = dedupedCalls
+    .map((call) => call.hash)
+    .map((x) => dedupedCalls.map((x) => x.hash).indexOf(x))
+
   const multicallAddress = getMulticall(network)
 
-  if (
-    Array.isArray(requestBody) &&
-    requestBody.every((call) => call.method === 'eth_call') &&
-    multicallAddress !== undefined
-  ) {
+  if (calls.every((call) => call.method === 'eth_call') && multicallAddress !== undefined) {
     try {
-      const result = await makeMulticall(multicallAddress, requestBody, rpcEndpoint, network)
+      const result = await makeMulticall(
+        multicallAddress,
+        dedupedCalls.map((c) => c.call),
+        rpcEndpoint,
+        network,
+      )
       if (result === undefined) {
         const response = await makeCall(network, requestBody)
         return res.status(200).send(response)
       }
-      return res.status(200).send(result)
+      const mappedResult: CallWithHashAndResponse[] = callsWithHash.map((call, index) => {
+        return {
+          ...call,
+          response: result[missingCallsIndexes[mappedCalls[index]]],
+        }
+      })
+
+      const response: RpcResponse[] = calls.map((entry, index) => ({
+        id: entry.id,
+        jsonrpc: entry.jsonrpc,
+        result: mappedResult[index].response.result,
+      }))
+
+      return res.status(200).send(response)
     } catch (error) {
       console.warn('RPC multicall failed, falling back to individual calls', error)
     }
   }
 
   try {
-    if (Array.isArray(requestBody)) {
-      const response = await makeCall(rpcEndpoint, requestBody)
-      return res.status(200).send(response)
-    }
-
-    const response = await makeCall(rpcEndpoint, [requestBody])
-    if (Array.isArray(response) && response.length === 1) {
-      return res.status(200).send(response[0])
-    }
+    const response = await makeCall(rpcEndpoint, requestBody)
 
     return res.status(200).send(response)
   } catch (error) {
