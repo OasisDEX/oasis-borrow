@@ -1,14 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
-import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
+import {
+  ajnaDefaultMarketPriceOffset,
+  ajnaDefaultPoolRangeMarketPriceOffset,
+} from 'features/ajna/common/consts'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) {
   return predefinedSteps.reduce((prev, curr) => {
@@ -35,7 +38,11 @@ function getMinMaxAndRange({
   if (lowestUtilizedPriceIndex.eq(zero)) {
     const defaultRange = [marketPrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
 
-    while (defaultRange[defaultRange.length - 1].lt(marketPrice)) {
+    while (
+      defaultRange[defaultRange.length - 1].lt(
+        marketPrice.times(one.minus(ajnaDefaultMarketPriceOffset)),
+      )
+    ) {
       defaultRange.push(
         defaultRange[defaultRange.length - 1].times(1.005).decimalPlaces(WAD_PRECISION),
       )
@@ -157,9 +164,21 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
     ],
   )
 
+  function handleChange(v: BigNumber) {
+    const newValue = snapToPredefinedValues(v, range)
+    updateState('price', newValue)
+  }
+
   const resolvedLup = lowestUtilizedPriceIndex.isZero() ? max : lowestUtilizedPrice
   const resolvedValue = price || resolvedLup
   const maxLtv = position.getMaxLtv(resolvedValue)
+
+  useEffect(() => {
+    // triggered only once to initialize price on state
+    if (lowestUtilizedPriceIndex.isZero()) {
+      handleChange(max)
+    }
+  }, [])
 
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
     () =>
@@ -172,11 +191,6 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
       }),
     [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
   )
-
-  function handleChange(v: BigNumber) {
-    const newValue = snapToPredefinedValues(v, range)
-    updateState('price', newValue)
-  }
 
   return (
     <SliderValuePicker
