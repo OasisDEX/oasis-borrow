@@ -5,7 +5,7 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { graphQlProviders } from 'handlers/product-hub/helpers/graphQLProviders'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
-import { cloneDeep, flatten } from 'lodash'
+import { flatten } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
 
@@ -80,8 +80,7 @@ export default async function (): ProductHubHandlerResponse {
     Promise.all(earnProductsPromises),
   ]).then(([tokensReserveData, tokensReserveConfigurationData, earnProductsYields]) => {
     return aaveV2ProductHubProducts.map((product) => {
-      const newProduct = cloneDeep(product)
-      const { secondaryToken, primaryToken, depositToken, label } = newProduct
+      const { secondaryToken, primaryToken, depositToken, label } = product
       const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
         secondaryToken
       ]
@@ -90,7 +89,7 @@ export default async function (): ProductHubHandlerResponse {
       )![depositToken || primaryToken]
       const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
       return {
-        ...newProduct,
+        ...product,
         maxMultiply: riskRatio.multiple.toString(),
         maxLtv: maxLtv.toString(),
         liquidity: liquidity.toString(),
