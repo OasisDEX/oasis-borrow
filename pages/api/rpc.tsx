@@ -115,7 +115,6 @@ async function makeCall(rpcEndpoint: string, calls: RpcCall[]) {
     headers: {
       'Content-Type': 'application/json',
       Connection: 'keep-alive',
-      // 'Content-Encoding': 'gzip, br',
       'Content-Length': '',
     },
   }
@@ -230,30 +229,10 @@ async function makeMulticall(
   }))
 }
 
-// {
-//   "method": "eth_call",
-//   "params": [
-//   {
-//     "to": "0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2",
-//     "data": "0x6c6f6ae10000000000000000000000000000000000000000000000000000000000000001"
-//   },
-//   "latest"
-// ],
-//   "id": 124,
-//   "jsonrpc": "2.0"
-// }
-
 type RpcCallParam = unknown & {
   to: string
   data: string | undefined
 }
-
-// /{
-// "method": "net_version",
-//   "params": [],
-//   "id": 45,
-//   "jsonrpc": "2.0"
-// }
 
 type RpcCall = {
   method: string
