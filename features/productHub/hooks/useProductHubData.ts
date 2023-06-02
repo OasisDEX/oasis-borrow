@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import { ProductHubData } from 'features/productHub/types'
-import { ProductHubDataParams } from 'handlers/product-hub'
+import { ProductHubDataParams, PromoCardsCollection } from 'handlers/product-hub/types'
 import { useCallback, useEffect, useState } from 'react'
 
 export interface ProductHubDataState {
@@ -10,10 +10,14 @@ export interface ProductHubDataState {
   refetch(): void
 }
 
+type ProductHubDataWithCards = ProductHubDataParams & {
+  promoCardsCollection: PromoCardsCollection
+}
+
 export const useProductHubData = ({
-  protocol,
+  protocols,
   promoCardsCollection,
-}: ProductHubDataParams): ProductHubDataState => {
+}: ProductHubDataWithCards): ProductHubDataState => {
   const [state, setState] = useState<ProductHubDataState>({
     isError: false,
     isLoading: true,
@@ -27,12 +31,12 @@ export const useProductHubData = ({
     })
 
     axios
-      .request<ProductHubDataParams, AxiosResponse<ProductHubData>>({
+      .request<ProductHubDataWithCards, AxiosResponse<ProductHubData>>({
         method: 'post',
         url: '/api/product-hub',
         responseType: 'json',
         headers: { Accept: 'application/json' },
-        data: { protocol, promoCardsCollection },
+        data: { protocols, promoCardsCollection },
       })
       .then(({ data }) => {
         setState({
@@ -50,7 +54,7 @@ export const useProductHubData = ({
           isLoading: false,
         })
       })
-  }, [protocol.map((p) => p).join('-'), promoCardsCollection])
+  }, [protocols.map((p) => p).join('-'), promoCardsCollection])
 
   useEffect(() => void fetchData(), [fetchData])
 
