@@ -21,21 +21,21 @@ function getMinMaxAndRange({
   lowestUtilizedPrice,
   lowestUtilizedPriceIndex,
   mostOptimisticMatchingPrice,
-  quotePrice,
+  marketPrice,
   offset, // 0 - 1, percentage value
 }: {
   highestThresholdPrice: BigNumber
   lowestUtilizedPrice: BigNumber
   lowestUtilizedPriceIndex: BigNumber
   mostOptimisticMatchingPrice: BigNumber
-  quotePrice: BigNumber
+  marketPrice: BigNumber
   offset: number
 }) {
   // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
   if (lowestUtilizedPriceIndex.eq(zero)) {
-    const defaultRange = [quotePrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
+    const defaultRange = [marketPrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
 
-    while (defaultRange[defaultRange.length - 1].lt(quotePrice)) {
+    while (defaultRange[defaultRange.length - 1].lt(marketPrice)) {
       defaultRange.push(
         defaultRange[defaultRange.length - 1].times(1.005).decimalPlaces(WAD_PRECISION),
       )
@@ -118,7 +118,7 @@ function convertSliderThresholds({
 export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, quotePrice },
+    environment: { collateralToken, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -145,7 +145,7 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
         mostOptimisticMatchingPrice,
         lowestUtilizedPrice,
         lowestUtilizedPriceIndex,
-        quotePrice,
+        marketPrice: position.marketPrice,
         offset: AJNA_LUP_MOMP_OFFSET,
       }),
     [
@@ -153,7 +153,7 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
       mostOptimisticMatchingPrice.toString(),
       lowestUtilizedPrice.toString(),
       lowestUtilizedPriceIndex.toString(),
-      quotePrice.toString(),
+      position.marketPrice.toString(),
     ],
   )
 
