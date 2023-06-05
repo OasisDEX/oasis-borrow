@@ -18,7 +18,15 @@ import { Grid } from 'theme-ui'
 export function AjnaMultiplyOverviewController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, flow, collateralPrice, priceFormat, quotePrice },
+    environment: {
+      collateralToken,
+      quoteToken,
+      flow,
+      collateralPrice,
+      priceFormat,
+      quotePrice,
+      isShort,
+    },
   } = useAjnaGeneralContext()
 
   const {
@@ -33,6 +41,15 @@ export function AjnaMultiplyOverviewController() {
   // TODO: replace with data from simulation
   const pnl = new BigNumber(-110.26)
 
+  const liquidationPrice = isShort ? position.shortLiquidationPrice : position.liquidationPrice
+  const afterLiquidationPrice =
+    simulation?.liquidationPrice &&
+    (isShort ? simulation.shortLiquidationPrice : simulation.liquidationPrice)
+
+  const belowCurrentPrice = one.minus(
+    isShort ? position.shortLiquidationToMarketPrice : position.liquidationToMarketPrice,
+  )
+
   return (
     <Grid gap={2}>
       <DetailsSection
@@ -42,9 +59,9 @@ export function AjnaMultiplyOverviewController() {
             <ContentCardLiquidationPrice
               isLoading={isSimulationLoading}
               priceFormat={priceFormat}
-              liquidationPrice={position.liquidationPrice}
-              afterLiquidationPrice={simulation?.liquidationPrice}
-              belowCurrentPrice={one.minus(position.liquidationToMarketPrice)}
+              liquidationPrice={liquidationPrice}
+              afterLiquidationPrice={afterLiquidationPrice}
+              belowCurrentPrice={belowCurrentPrice}
               changeVariant={changeVariant}
             />
             <ContentCardLoanToValue

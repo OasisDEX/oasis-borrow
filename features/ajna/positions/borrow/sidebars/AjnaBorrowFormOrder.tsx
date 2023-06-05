@@ -8,7 +8,6 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -30,11 +29,11 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   })
 
   const liquidationPrice = isShort
-    ? one.div(positionData.liquidationPrice)
+    ? positionData.shortLiquidationPrice
     : positionData.liquidationPrice
   const afterLiquidationPrice =
     simulationData?.liquidationPrice &&
-    (isShort ? one.div(simulationData.liquidationPrice) : simulationData.liquidationPrice)
+    (isShort ? simulationData.shortLiquidationPrice : simulationData.liquidationPrice)
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {

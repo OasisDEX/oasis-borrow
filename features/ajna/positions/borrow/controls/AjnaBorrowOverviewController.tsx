@@ -36,13 +36,14 @@ export function AjnaBorrowOverviewController() {
     notifications,
   } = useAjnaProductContext('borrow')
 
-  const liquidationPrice = isShort ? one.div(position.liquidationPrice) : position.liquidationPrice
+  const liquidationPrice = isShort ? position.shortLiquidationPrice : position.liquidationPrice
   const belowCurrentPrice = one.minus(
-    isShort ? one.div(position.liquidationToMarketPrice) : position.liquidationToMarketPrice,
+    isShort ? position.shortLiquidationToMarketPrice : position.liquidationToMarketPrice,
   )
+
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
-    (isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
+    (isShort ? simulation.shortLiquidationPrice : simulation.liquidationPrice)
   const changeVariant = getBorrowishChangeVariant(simulation)
 
   return (

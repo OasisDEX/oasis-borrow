@@ -4,6 +4,7 @@ import { InfoSection } from 'components/infoSection/InfoSection'
 import { SecondaryVariantType } from 'components/infoSection/Item'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -24,11 +25,14 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     form: {
       state: { action },
     },
-    position: {
-      isSimulationLoading,
-      currentPosition: { position, simulation },
-    },
+    position: { cachedPosition, isSimulationLoading, currentPosition },
   } = useAjnaProductContext('multiply')
+
+  const { positionData, simulationData } = resolveIfCachedPosition({
+    cached,
+    cachedPosition,
+    currentPosition,
+  })
 
   const withSlippage =
     action &&
@@ -53,25 +57,26 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
-    totalExposure: `${position.collateralAmount} ${collateralToken}`,
+    totalExposure: `${positionData.collateralAmount} ${collateralToken}`,
     afterTotalExposure:
-      simulation?.collateralAmount && `${simulation.collateralAmount} ${collateralToken}`,
-    multiple: `${position.riskRatio.multiple.toFixed(2)}x`,
-    afterMultiple: simulation?.riskRatio && `${simulation.riskRatio.multiple.toFixed(2)}x`,
+      simulationData?.collateralAmount && `${simulationData.collateralAmount} ${collateralToken}`,
+    multiple: `${positionData.riskRatio.multiple.toFixed(2)}x`,
+    afterMultiple: simulationData?.riskRatio && `${simulationData.riskRatio.multiple.toFixed(2)}x`,
     slippageLimit: formatDecimalAsPercent(slippageLimit),
-    positionDebt: `${formatCryptoBalance(position.debtAmount)} ${quoteToken}`,
+    positionDebt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterPositionDebt:
-      simulation?.debtAmount && `${formatCryptoBalance(simulation?.debtAmount)} ${quoteToken}`,
-    loanToValue: formatDecimalAsPercent(position.riskRatio.loanToValue),
+      simulationData?.debtAmount &&
+      `${formatCryptoBalance(simulationData?.debtAmount)} ${quoteToken}`,
+    loanToValue: formatDecimalAsPercent(positionData.riskRatio.loanToValue),
     afterLoanToValue:
-      simulation?.riskRatio &&
+      simulationData?.riskRatio &&
       formatDecimalAsPercent(
-        simulation.riskRatio.loanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN),
+        simulationData.riskRatio.loanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN),
       ),
-    liquidationThreshold: formatDecimalAsPercent(position.maxRiskRatio.loanToValue),
+    liquidationThreshold: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
     afterLiquidationThreshold:
-      simulation?.maxRiskRatio.loanToValue &&
-      formatDecimalAsPercent(simulation.maxRiskRatio.loanToValue),
+      simulationData?.maxRiskRatio.loanToValue &&
+      formatDecimalAsPercent(simulationData.maxRiskRatio.loanToValue),
     buyingCollateral: `${formatCryptoBalance(buyingCollateral)} ${collateralToken}`,
     buyingCollateralUSD: `$${formatAmount(buyingCollateral.times(collateralPrice), 'USD')}`,
     sellingCollateral: `${formatCryptoBalance(sellingCollateral)} ${collateralToken}`,
