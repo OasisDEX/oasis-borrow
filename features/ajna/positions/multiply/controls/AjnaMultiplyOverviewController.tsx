@@ -1,3 +1,4 @@
+import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -41,13 +42,17 @@ export function AjnaMultiplyOverviewController() {
   // TODO: replace with data from simulation
   const pnl = new BigNumber(-110.26)
 
-  const liquidationPrice = isShort ? one.div(position.liquidationPrice) : position.liquidationPrice
+  const liquidationPrice = isShort
+    ? normalizeValue(one.div(position.liquidationPrice))
+    : position.liquidationPrice
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
-    (isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
+    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
 
   const belowCurrentPrice = one.minus(
-    isShort ? one.div(position.liquidationToMarketPrice) : position.liquidationToMarketPrice,
+    isShort
+      ? normalizeValue(one.div(position.liquidationToMarketPrice))
+      : position.liquidationToMarketPrice,
   )
 
   return (

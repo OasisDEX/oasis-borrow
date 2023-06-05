@@ -1,3 +1,4 @@
+import { normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -36,14 +37,18 @@ export function AjnaBorrowOverviewController() {
     notifications,
   } = useAjnaProductContext('borrow')
 
-  const liquidationPrice = isShort ? one.div(position.liquidationPrice) : position.liquidationPrice
+  const liquidationPrice = isShort
+    ? normalizeValue(one.div(position.liquidationPrice))
+    : position.liquidationPrice
   const belowCurrentPrice = one.minus(
-    isShort ? one.div(position.liquidationToMarketPrice) : position.liquidationToMarketPrice,
+    isShort
+      ? normalizeValue(one.div(position.liquidationToMarketPrice))
+      : position.liquidationToMarketPrice,
   )
 
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
-    (isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
+    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
   const changeVariant = getBorrowishChangeVariant(simulation)
 
   return (

@@ -1,3 +1,4 @@
+import { normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -30,11 +31,13 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   })
 
   const liquidationPrice = isShort
-    ? one.div(positionData.liquidationPrice)
+    ? normalizeValue(one.div(positionData.liquidationPrice))
     : positionData.liquidationPrice
   const afterLiquidationPrice =
     simulationData?.liquidationPrice &&
-    (isShort ? one.div(simulationData.liquidationPrice) : simulationData.liquidationPrice)
+    (isShort
+      ? normalizeValue(one.div(simulationData.liquidationPrice))
+      : simulationData.liquidationPrice)
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
