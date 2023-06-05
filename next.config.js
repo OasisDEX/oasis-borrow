@@ -182,7 +182,9 @@ const baseConfig = {
     ]
   },
   transpilePackages: ['@lifi/widget', '@lifi/wallet-management'],
-  largePageDataBytes: 200 * 1024, // 200 KB. The default one is 128 KB, but we have a lot of that kind of errors, so we increase it.
+  experimental: {
+    largePageDataBytes: 256 * 1024, // 256 KB. The default one is 128 KB, but we have a lot of that kind of errors, so we increase it.
+  },
 }
 
 module.exports = withBundleAnalyzer(withMDX(baseConfig))
