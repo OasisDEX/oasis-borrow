@@ -14,6 +14,7 @@ import {
   isStepWithTransaction,
 } from 'features/ajna/positions/common/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
+import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
 import React, {
@@ -45,6 +46,8 @@ interface AjnaGeneralContextProviderProps {
 
 type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'> & {
   isOwner: boolean
+  isShort: boolean
+  priceFormat: string
 }
 
 interface AjnaGeneralContextSteps {
@@ -93,11 +96,13 @@ export function AjnaGeneralContextProvider({
 }: PropsWithChildren<AjnaGeneralContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const { flow, collateralBalance, quoteBalance, owner, product } = props
+  const { flow, collateralBalance, collateralToken, quoteBalance, quoteToken, owner, product } =
+    props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
   const [txDetails, setTxDetails] = useState<TxDetails>()
+  const isShort = isShortPosition({ collateralToken })
 
   const shiftStep = (direction: 'next' | 'prev') => {
     const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
@@ -130,7 +135,14 @@ export function AjnaGeneralContextProvider({
   }
 
   const [context, setContext] = useState<AjnaGeneralContext>({
-    environment: { ...props, isOwner: owner === walletAddress || flow === 'open' },
+    environment: {
+      ...props,
+      isShort,
+      priceFormat: isShort
+        ? `${quoteToken}/${collateralToken}`
+        : `${collateralToken}/${quoteToken}`,
+      isOwner: owner === walletAddress || flow === 'open',
+    },
     steps: setupStepManager(),
     tx: setupTxManager(),
   })

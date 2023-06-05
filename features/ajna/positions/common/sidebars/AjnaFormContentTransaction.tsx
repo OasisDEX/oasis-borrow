@@ -16,7 +16,7 @@ export function AjnaFormContentTransaction({
 }: AjnaFormContentTransactionProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, product, quoteToken },
+    environment: { collateralToken, isShort, product, quoteToken },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxInProgress, isTxSuccess },
   } = useAjnaGeneralContext()
 
@@ -29,6 +29,7 @@ export function AjnaFormContentTransaction({
               collateralToken,
               product: upperFirst(product),
               quoteToken,
+              strategy: t(isShort ? 'short' : 'long'),
             })}
           </Text>
           <OrderInformation />

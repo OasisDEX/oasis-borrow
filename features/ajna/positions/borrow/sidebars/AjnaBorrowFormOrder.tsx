@@ -8,13 +8,14 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralToken, isShort, priceFormat, quoteToken },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
@@ -28,6 +29,13 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     currentPosition,
   })
 
+  const liquidationPrice = isShort
+    ? one.div(positionData.liquidationPrice)
+    : positionData.liquidationPrice
+  const afterLiquidationPrice =
+    simulationData?.liquidationPrice &&
+    (isShort ? one.div(simulationData.liquidationPrice) : simulationData.liquidationPrice)
+
   const isLoading = !cached && isSimulationLoading
   const formatted = {
     collateralLocked: `${formatCryptoBalance(positionData.collateralAmount)} ${collateralToken}`,
@@ -37,12 +45,9 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     ltv: formatDecimalAsPercent(positionData.riskRatio.loanToValue),
     afterLtv:
       simulationData?.riskRatio && formatDecimalAsPercent(simulationData.riskRatio.loanToValue),
-    liquidationPrice: `${formatCryptoBalance(
-      positionData.liquidationPrice,
-    )} ${collateralToken}/${quoteToken}`,
+    liquidationPrice: `${formatCryptoBalance(liquidationPrice)} ${priceFormat}`,
     afterLiquidationPrice:
-      simulationData?.liquidationPrice &&
-      `${formatCryptoBalance(simulationData.liquidationPrice)} ${collateralToken}/${quoteToken}`,
+      afterLiquidationPrice && `${formatCryptoBalance(afterLiquidationPrice)} ${priceFormat}`,
     liquidationThreshold: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
     afterLiquidationThreshold:
       simulationData?.maxRiskRatio.loanToValue &&

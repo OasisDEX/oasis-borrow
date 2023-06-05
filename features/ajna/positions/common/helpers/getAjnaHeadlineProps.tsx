@@ -8,6 +8,7 @@ interface AjnaBorrowHeadlinePropsParams {
   id?: string
   product?: AjnaProduct
   quoteToken?: string
+  strategy: string
 }
 
 export function getAjnaHeadlineProps({
@@ -16,6 +17,7 @@ export function getAjnaHeadlineProps({
   id,
   product,
   quoteToken,
+  strategy,
 }: AjnaBorrowHeadlinePropsParams) {
   const { t } = useTranslation()
 
@@ -26,6 +28,7 @@ export function getAjnaHeadlineProps({
           collateralToken,
           id,
           product: upperFirst(product),
+          strategy,
           quoteToken,
         }),
         token: [collateralToken, quoteToken],

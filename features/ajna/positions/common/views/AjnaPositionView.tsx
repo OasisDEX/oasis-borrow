@@ -31,7 +31,9 @@ export function AjnaPositionView({
       collateralToken,
       flow,
       id,
+      isShort,
       owner,
+      priceFormat,
       product,
       quotePrice,
       quoteToken,
@@ -47,7 +49,14 @@ export function AjnaPositionView({
       )}
       <VaultHeadline
         header=""
-        {...getAjnaHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
+        {...getAjnaHeadlineProps({
+          collateralToken,
+          flow,
+          id,
+          product,
+          quoteToken,
+          strategy: t(isShort ? 'short' : 'long'),
+        })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[
           ...(headlineDetails || []),
@@ -56,8 +65,8 @@ export function AjnaPositionView({
               collateralToken,
             }),
             value: `${formatCryptoBalance(
-              collateralPrice.dividedBy(quotePrice),
-            )} ${collateralToken}/${quoteToken}`,
+              isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
+            )} ${priceFormat}`,
           },
         ]}
       />
