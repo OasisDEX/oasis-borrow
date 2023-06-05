@@ -41,13 +41,13 @@ export function AjnaMultiplyOverviewController() {
   // TODO: replace with data from simulation
   const pnl = new BigNumber(-110.26)
 
-  const liquidationPrice = isShort ? position.shortLiquidationPrice : position.liquidationPrice
+  const liquidationPrice = isShort ? one.div(position.liquidationPrice) : position.liquidationPrice
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
-    (isShort ? simulation.shortLiquidationPrice : simulation.liquidationPrice)
+    (isShort ? one.div(simulation.liquidationPrice) : simulation.liquidationPrice)
 
   const belowCurrentPrice = one.minus(
-    isShort ? position.shortLiquidationToMarketPrice : position.liquidationToMarketPrice,
+    isShort ? one.div(position.liquidationToMarketPrice) : position.liquidationToMarketPrice,
   )
 
   return (
