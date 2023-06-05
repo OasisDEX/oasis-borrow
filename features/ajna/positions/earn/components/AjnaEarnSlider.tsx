@@ -125,7 +125,7 @@ function convertSliderThresholds({
 export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralToken, quoteToken, isShort },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -192,13 +192,15 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
     [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
   )
 
+  const leftBoundry = isShort ? one.div(resolvedValue) : resolvedValue
+
   return (
     <SliderValuePicker
       lastValue={resolvedValue}
       minBoundry={min}
       maxBoundry={max}
       step={range[1].minus(range[0]).toNumber()}
-      leftBoundry={resolvedValue}
+      leftBoundry={leftBoundry}
       rightBoundry={maxLtv}
       leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
       rightBoundryFormatter={(v) =>
@@ -207,8 +209,8 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
       disabled={isDisabled || isFormFrozen}
       onChange={handleChange}
       leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {
-        quoteToken,
-        collateralToken,
+        quoteToken: isShort ? collateralToken : quoteToken,
+        collateralToken: isShort ? quoteToken : collateralToken,
       })}
       rightLabel={t('ajna.position-page.earn.common.form.max-ltv-to-lend-at')}
       leftBottomLabel={t('safer')}
