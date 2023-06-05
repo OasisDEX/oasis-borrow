@@ -44,7 +44,7 @@ export function ContentFooterItemsBorrow({
   return (
     <>
       <DetailsSectionFooterItem
-        title={t('ajna.position-page.borrow.common.footer.annual-net-borrow-cost')}
+        title={t('ajna.position-page.borrow.common.footer.borrow-rate')}
         value={formatted.cost}
       />
       <DetailsSectionFooterItem
