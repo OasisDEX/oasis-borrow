@@ -2612,7 +2612,7 @@
         "common": {
           "overview": {
             "liquidation-price": "Liquidation Price",
-            "liquidation-price-modal-desc": "The liquidation prices represents the price at which it is expected that liquidatiors sucesfully action your collateral to repay your debt. Monitor this value compared to market price.",
+            "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price",
             "above-current-price": "{{priceRatio}} above current price",
             "below-current-price": "{{priceRatio}} below current price",
             "loan-to-value": "Loan to value",
@@ -2627,7 +2627,7 @@
             "origination-fee": "{{quoteToken}} Origination Fee"
           },
           "footer": {
-            "annual-net-borrow-cost": "Annual net borrow cost",
+            "borrow-rate": "Borrow Rate",
             "available-to-borrow": "Available to borrow",
             "available-to-withdraw": "Available to withdraw"
           }
@@ -2733,7 +2733,7 @@
       "earning-no-apy": "You will be lending without earning any yield.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount, please try to withdraw less.",
-      "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the dust limit of the pool. Please enter an amount at least equal to dust limit.",
+      "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the minimum required by the pool. Please enter an amount at least equal to the minimum borrow amount.",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
