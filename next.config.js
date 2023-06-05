@@ -182,32 +182,37 @@ const baseConfig = {
     ]
   },
   transpilePackages: ['@lifi/widget', '@lifi/wallet-management'],
+  largePageDataBytes: 200 * 1024, // 200 KB. The default one is 128 KB, but we have a lot of that kind of errors, so we increase it.
 }
 
-module.exports = withSentryConfig(
-  withBundleAnalyzer(withMDX(baseConfig)),
-  {
-    org: 'oazo-apps',
-    project: 'oazo-apps',
-    url: 'https://sentry.io/',
-  },
-  {
-    // For all available options, see:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+module.exports = withBundleAnalyzer(withMDX(baseConfig))
 
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
-    widenClientFileUpload: true,
+if (process.env.SENTRY_AUTH_TOKEN !== undefined) {
+  module.exports = withSentryConfig(
+    module.exports,
+    {
+      org: 'oazo-apps',
+      project: 'oazo-apps',
+      url: 'https://sentry.io/',
+    },
+    {
+      // For all available options, see:
+      // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
-    // Transpiles SDK to be compatible with IE11 (increases bundle size)
-    transpileClientSDK: true,
+      // Upload a larger set of source maps for prettier stack traces (increases build time)
+      widenClientFileUpload: true,
 
-    // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
-    tunnelRoute: '/monitoring',
+      // Transpiles SDK to be compatible with IE11 (increases bundle size)
+      transpileClientSDK: true,
 
-    // Hides source maps from generated client bundles
-    hideSourceMaps: true,
+      // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
+      tunnelRoute: '/monitoring',
 
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
-    disableLogger: true,
-  },
-)
+      // Hides source maps from generated client bundles
+      hideSourceMaps: true,
+
+      // Automatically tree-shake Sentry logger statements to reduce bundle size
+      disableLogger: true,
+    },
+  )
+}

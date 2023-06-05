@@ -48,3 +48,9 @@ export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
 export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']
 
 export const LTVWarningThreshold = new BigNumber(0.05)
+
+export const ajnaLastIndexBucketPrice = new BigNumber(99836282890)
+
+// safe defaults which should ensure reasonable slider range for newly created pools
+export const ajnaDefaultPoolRangeMarketPriceOffset = 0.8 // 80%
+export const ajnaDefaultMarketPriceOffset = 0.45 // 45%

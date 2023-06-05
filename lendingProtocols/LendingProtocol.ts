@@ -1,15 +1,15 @@
 export enum LendingProtocol {
-  AaveV2 = 'AaveV2',
-  AaveV3 = 'AaveV3',
-  Ajna = 'Ajna',
-  Maker = 'Maker',
+  AaveV2 = 'aavev2',
+  AaveV3 = 'aavev3',
+  Ajna = 'ajna',
+  Maker = 'maker',
 }
 
 export enum LendingProtocolLabel {
-  AaveV2 = 'Aave V2',
-  AaveV3 = 'Aave V3',
-  Ajna = 'Ajna',
-  Maker = 'Maker',
+  aavev2 = 'Aave V2',
+  aavev3 = 'Aave V3',
+  ajna = 'Ajna',
+  maker = 'Maker',
 }
 
 export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
@@ -24,5 +24,5 @@ export const checkIfAave = (
 }
 
 export const isLendingProtocol = (value: string): value is LendingProtocol => {
-  return value in LendingProtocol
+  return Object.values<string>(LendingProtocol).includes(value)
 }

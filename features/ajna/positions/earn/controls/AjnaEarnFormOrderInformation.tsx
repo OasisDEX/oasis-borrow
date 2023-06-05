@@ -35,7 +35,8 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const apySimulation = simulationData?.apy
 
   const feeWhenActionBelowLup = simulationData?.getFeeWhenBelowLup || zero
-  const withAjnaFee = feeWhenActionBelowLup.gt(zero)
+  const withAjnaFee =
+    feeWhenActionBelowLup.gt(zero) && !positionData.pool.lowestUtilizedPriceIndex.isZero()
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {

@@ -1,4 +1,3 @@
-import { BaseNetworkNames } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
@@ -14,7 +13,8 @@ import {
   ProductHubFilters,
   ProductHubItem,
   ProductHubMultiplyStrategyType,
-  ProductType,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -27,7 +27,7 @@ import { useMediaQuery } from 'usehooks-ts'
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductType
+  selectedProduct: ProductHubProductType
   selectedToken: string
   onChange: (selectedFilters: ProductHubFilters) => void
 }
@@ -80,7 +80,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         productHubGridTemplateColumns[selectedProduct],
       ]}
     >
-      {selectedProduct === ProductType.Borrow && (
+      {selectedProduct === ProductHubProductType.Borrow && (
         <GenericMultiselect
           label={t('product-hub.filters.debt-tokens')}
           options={debtTokens}
@@ -92,7 +92,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
           }}
         />
       )}
-      {selectedProduct === ProductType.Multiply && (
+      {selectedProduct === ProductHubProductType.Multiply && (
         <GenericMultiselect
           label={t('product-hub.filters.secondary-tokens')}
           options={secondaryTokens}
@@ -113,7 +113,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         />
       )}
       {!isSmallerScreen && <Box />}
-      {selectedProduct === ProductType.Multiply && (
+      {selectedProduct === ProductHubProductType.Multiply && (
         <GenericMultiselect
           label={t('product-hub.filters.strategies')}
           options={productHubStrategyFilter}
@@ -134,7 +134,10 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         onChange={(value) => {
           onChange({
             or: selectedFilters.or,
-            and: { ...selectedFilters.and, network: value as unknown as BaseNetworkNames[] },
+            and: {
+              ...selectedFilters.and,
+              network: value as unknown as ProductHubSupportedNetworks[],
+            },
           })
         }}
       />
