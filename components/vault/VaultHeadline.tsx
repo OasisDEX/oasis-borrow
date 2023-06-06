@@ -26,6 +26,7 @@ export type VaultHeadlineProps = {
   loading?: boolean
   shareButton?: boolean
   token?: string[]
+  handleClick?: () => void
 }
 
 export function VaultHeadline({
@@ -36,6 +37,7 @@ export function VaultHeadline({
   loading = false,
   shareButton,
   token = [],
+  handleClick,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
@@ -51,6 +53,7 @@ export function VaultHeadline({
         mb: 4,
         rowGap: 3,
       }}
+      onClick={handleClick}
     >
       <Heading
         as="h1"

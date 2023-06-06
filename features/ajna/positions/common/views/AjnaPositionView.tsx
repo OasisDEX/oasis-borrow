@@ -6,6 +6,7 @@ import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/get
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Container } from 'theme-ui'
@@ -25,6 +26,7 @@ export function AjnaPositionView({
 }: AjnaPositionViewProps) {
   const { t } = useTranslation()
   const { contextIsLoaded, walletAddress } = useAccount()
+  const proxyReveal = useFeatureToggle('ProxyReveal')
   const {
     environment: {
       collateralPrice,
@@ -37,6 +39,7 @@ export function AjnaPositionView({
       product,
       quotePrice,
       quoteToken,
+      dpmProxy,
     },
   } = useAjnaGeneralContext()
 
@@ -69,6 +72,9 @@ export function AjnaPositionView({
             )} ${priceFormat}`,
           },
         ]}
+        handleClick={
+          proxyReveal ? () => console.log(`DPM proxy: ${dpmProxy?.toLowerCase()}`) : undefined
+        }
       />
       <TabBar
         variant="underline"

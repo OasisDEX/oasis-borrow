@@ -41,6 +41,7 @@ export type Feature =
   | 'OasisCreate'
   | 'SwapWidget'
   | '🌞'
+  | 'ProxyReveal'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -79,6 +80,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3MultiplyETHusdc: false,
   OasisCreate: false,
   SwapWidget: true,
+  ProxyReveal: false,
   '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
 }
 
