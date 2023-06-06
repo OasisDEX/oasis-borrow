@@ -517,11 +517,11 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     fmm,
     guniResolver,
     guniRouter,
-    lowerFeesExchange,
+    noFeesExchange,
   } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
   const { contract } = context
 
-  const exchange = lowerFeesExchange
+  const exchange = noFeesExchange
 
   const { token0: token0Symbol, token1: token1Symbol } = getToken(data.token)
 
