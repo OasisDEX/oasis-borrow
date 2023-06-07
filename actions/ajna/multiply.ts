@@ -5,8 +5,11 @@ import {
   RiskRatio,
   strategies,
 } from '@oasisdex/dma-library'
+import { BigNumber } from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
 import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 
 export const ajnaOpenMultiply = ({
@@ -24,9 +27,25 @@ export const ajnaOpenMultiply = ({
     {
       ...commonPayload,
       collateralAmount: depositAmount!,
-      riskRatio: new RiskRatio(loanToValue || zero, RiskRatio.TYPE.LTV),
+      // TODO mocked riskRatio because slider doesn't work as expected
+      riskRatio: new RiskRatio(loanToValue || new BigNumber('0.20'), RiskRatio.TYPE.LTV),
+      slippage: new BigNumber(0.01),
+      collateralTokenSymbol: '',
+      quoteTokenSymbol: '',
+      user: '0x0',
     },
-    dependencies,
+    {
+      ...dependencies,
+      getSwapData: getOneInchCall(getNetworkContracts(1).swapAddress),
+      operationExecutor: '',
+      addresses: {
+        DAI: '0x0',
+        ETH: '0x0',
+        WSTETH: '0x0',
+        USDC: '0x0',
+        WBTC: '0x0',
+      },
+    },
   )
 }
 
