@@ -2459,6 +2459,10 @@
     "errors": {
       "amountBiggerThanBalance": "You cannot deposit more Dai than the amount in your wallet",
       "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
+    },
+    "notification": {
+      "title": "Maker Protocol DSR rates will increase to 3.49% on June 12th",
+      "message": "Learn more about the MakerDAO proposal <2><1>here</1></2>"
     }
   },
   "ajna": {
