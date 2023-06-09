@@ -269,7 +269,6 @@ export function HomepageView() {
           icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
         />
       </Flex>
-      {/*)}*/}
 
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
