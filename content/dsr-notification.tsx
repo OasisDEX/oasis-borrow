@@ -19,7 +19,7 @@ const DsrNotificationWithLink: FC<DsrNotificationWithLinkProps> = ({ translation
         <AppLink
           sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
           // TODO update link once available
-          href={EXTERNAL_LINKS.KB.HELP}
+          href={EXTERNAL_LINKS.BLOG.MAIN}
         />
       ),
     }}
@@ -28,7 +28,7 @@ const DsrNotificationWithLink: FC<DsrNotificationWithLinkProps> = ({ translation
 
 export const dsrNotification: DetailsSectionNotificationItem = {
   title: {
-    translationKey: 'Maker Protocol DSR rates will increase to 3.49% on June 12th ',
+    translationKey: 'dsr.notification.title',
   },
   message: {
     component: <DsrNotificationWithLink translationKey="dsr.notification.message" />,

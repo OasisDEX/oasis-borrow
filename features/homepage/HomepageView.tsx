@@ -193,7 +193,6 @@ export function HomepageView() {
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const notificationsEnabled = useFeatureToggle('Notifications')
-  const aaveV3EarnWSTETHEnabled = useFeatureToggle('AaveV3EarnWSTETH')
   const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
@@ -255,20 +254,22 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      {aaveV3EarnWSTETHEnabled && (
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            mt: '80px',
-            mb: 0,
-          }}
-        >
-          <HomePageBanner
-            heading={t('ref.banner')}
-            link={EXTERNAL_LINKS.BLOG.EXPANDING_EARN_AAVE_V3}
-          />
-        </Flex>
-      )}
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          mt: '80px',
+          mb: 0,
+          width: 'unset',
+        }}
+      >
+        <HomePageBanner
+          heading={t('dsr.landing-page-banner.title')}
+          // TODO update copy
+          link={EXTERNAL_LINKS.BLOG.MAIN}
+          icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
+        />
+      </Flex>
+      {/*)}*/}
 
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
