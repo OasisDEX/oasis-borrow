@@ -21,6 +21,8 @@ interface AjnaEarnInputButtonProps {
 }
 interface AjnaEarnInputProps {
   disabled?: boolean
+  max: BigNumber
+  min: BigNumber
   range: BigNumber[]
 }
 
@@ -47,13 +49,15 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
         fontSize: 6,
         fontWeight: 'regular',
         lineHeight: '26px',
-        transition: 'border-color 200ms',
-        pointerEvents: disabled ? 'none' : 'auto',
+        opacity: disabled ? 0.5 : 1,
+        cursor: disabled ? 'not-allowed' : 'default',
+        transition: 'border-color 200ms, opacity 200ms',
         '&:hover': {
-          borderColor: 'neutral70',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          borderColor: disabled ? 'neutral20' : 'neutral70',
           bg: 'neutral10',
           '&::before, &::after': {
-            width: '12px',
+            width: disabled ? '10px' : '12px',
           },
         },
         '&::before, &::after': {
@@ -78,12 +82,14 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
           }),
         },
       }}
-      onClick={() => onClick(variant)}
+      onClick={() => {
+        if (!disabled) onClick(variant)
+      }}
     />
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, range }) => {
   const { t } = useTranslation()
   const {
     environment: { priceFormat, quoteToken },
@@ -115,13 +121,12 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
   }, [price])
 
   return (
-    <Box
-      sx={{
-        opacity: disabled ? 0.5 : 1,
-        transition: 'opacity 200ms',
-      }}
-    >
-      <Text as="p" variant="paragraph4" sx={{ textAlign: 'center' }}>
+    <Box>
+      <Text
+        as="p"
+        variant="paragraph4"
+        sx={{ textAlign: 'center', opacity: disabled ? 0.5 : 1, transition: 'opacity 200ms' }}
+      >
         {t('ajna.position-page.earn.common.form.input-lending-price', { quoteToken })}
       </Text>
       <Box
@@ -151,7 +156,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
           mask={createNumberMask({
             allowDecimal: true,
             decimalLimit: FIAT_PRECISION,
-            prefix: '$',
+            prefix: '',
           })}
           onFocus={() => {
             setIsFocus(true)
@@ -170,7 +175,9 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
             border: 'none',
             fontSize: 4,
             textAlign: 'center',
+            opacity: disabled ? 0.5 : 1,
             pointerEvents: disabled ? 'none' : 'auto',
+            transition: 'opacity 200ms',
           }}
         />
         <Text
@@ -183,13 +190,23 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
             left: 0,
             textAlign: 'center',
             color: 'neutral80',
+            opacity: disabled ? 0.5 : 1,
             pointerEvents: 'none',
+            transition: 'opacity 200ms',
           }}
         >
           {priceFormat} {t('ajna.position-page.earn.common.form.lending-price')}
         </Text>
-        <AjnaEarnInputButton disabled={disabled} variant="-" onClick={clickHandler} />
-        <AjnaEarnInputButton disabled={disabled} variant="+" onClick={clickHandler} />
+        <AjnaEarnInputButton
+          disabled={disabled || manualAmount.lte(min)}
+          variant="-"
+          onClick={clickHandler}
+        />
+        <AjnaEarnInputButton
+          disabled={disabled || manualAmount.gte(max)}
+          variant="+"
+          onClick={clickHandler}
+        />
       </Box>
     </Box>
   )
