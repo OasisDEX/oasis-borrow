@@ -1,12 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { PillAccordion } from 'components/PillAccordion'
 import {
   ajnaDefaultMarketPriceOffset,
   ajnaDefaultPoolRangeMarketPriceOffset,
 } from 'features/ajna/common/consts'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnInput'
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
@@ -125,7 +127,7 @@ function convertSliderThresholds({
 export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, isShort },
+    environment: { collateralToken, priceFormat, quoteToken, isShort },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -195,31 +197,40 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
   const leftBoundry = isShort ? one.div(resolvedValue) : resolvedValue
 
   return (
-    <SliderValuePicker
-      lastValue={resolvedValue}
-      minBoundry={min}
-      maxBoundry={max}
-      step={range[1].minus(range[0]).toNumber()}
-      leftBoundry={leftBoundry}
-      rightBoundry={maxLtv}
-      leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
-      rightBoundryFormatter={(v) =>
-        !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
-      }
-      disabled={isDisabled || isFormFrozen}
-      onChange={handleChange}
-      leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {
-        quoteToken: isShort ? collateralToken : quoteToken,
-        collateralToken: isShort ? quoteToken : collateralToken,
-      })}
-      rightLabel={t('ajna.position-page.earn.common.form.max-ltv-to-lend-at')}
-      leftBottomLabel={t('safer')}
-      rightBottomLabel={t('riskier')}
-      colorfulRanges={`linear-gradient(to right,
+    <>
+      <SliderValuePicker
+        lastValue={resolvedValue}
+        minBoundry={min}
+        maxBoundry={max}
+        step={range[1].minus(range[0]).toNumber()}
+        leftBoundry={leftBoundry}
+        rightBoundry={maxLtv}
+        leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
+        rightBoundryFormatter={(v) =>
+          !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
+        }
+        disabled={isDisabled || isFormFrozen}
+        onChange={handleChange}
+        leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {
+          quoteToken: isShort ? collateralToken : quoteToken,
+          collateralToken: isShort ? quoteToken : collateralToken,
+        })}
+        rightLabel={t('ajna.position-page.earn.common.form.max-ltv-to-lend-at')}
+        leftBottomLabel={t('safer')}
+        rightBottomLabel={t('riskier')}
+        colorfulRanges={`linear-gradient(to right,
         #D3D4D8 0 ${htpPercentage}%,
         #1ECBAE ${htpPercentage}% ${lupPercentage}%,
         #EABE4C ${lupPercentage}% ${mompPercentage}%,
         #EE5728 ${mompPercentage}% 100%)`}
-    />
+      />
+      <PillAccordion
+        title={t('ajna.position-page.earn.common.form.or-enter-specific-lending-price', {
+          priceFormat,
+        })}
+      >
+        <AjnaEarnInput />
+      </PillAccordion>
+    </>
   )
 }

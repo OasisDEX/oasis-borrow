@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 
+export const FIAT_PRECISION = 2
 export const WAD_PRECISION = 18
 export const NEGATIVE_WAD_PRECISION = -18
 export const RAY_PRECISION = 27
