@@ -118,7 +118,7 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
           priceFormat,
         })}
       >
-        <AjnaEarnInput range={range} />
+        <AjnaEarnInput disabled={isDisabled || isFormFrozen} range={range} />
       </PillAccordion>
     </>
   )

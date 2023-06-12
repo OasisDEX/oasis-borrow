@@ -15,14 +15,16 @@ import { Box, Button, Text } from 'theme-ui'
 type AjnaEarnInputButtonVariant = '-' | '+'
 
 interface AjnaEarnInputButtonProps {
+  disabled?: boolean
   variant: AjnaEarnInputButtonVariant
   onClick: (variant: AjnaEarnInputButtonVariant) => void
 }
 interface AjnaEarnInputProps {
+  disabled?: boolean
   range: BigNumber[]
 }
 
-const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ variant, onClick }) => {
+const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, onClick }) => {
   return (
     <Button
       sx={{
@@ -46,6 +48,7 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ variant, onClick })
         fontWeight: 'regular',
         lineHeight: '26px',
         transition: 'border-color 200ms',
+        pointerEvents: disabled ? 'none' : 'auto',
         '&:hover': {
           borderColor: 'neutral70',
           bg: 'neutral10',
@@ -80,7 +83,7 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ variant, onClick })
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ range }) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
   const { t } = useTranslation()
   const {
     environment: { priceFormat, quoteToken },
@@ -112,7 +115,12 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ range }) => {
   }, [price])
 
   return (
-    <>
+    <Box
+      sx={{
+        opacity: disabled ? 0.5 : 1,
+        transition: 'opacity 200ms',
+      }}
+    >
       <Text as="p" variant="paragraph4" sx={{ textAlign: 'center' }}>
         {t('ajna.position-page.earn.common.form.input-lending-price', { quoteToken })}
       </Text>
@@ -124,8 +132,9 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ range }) => {
           borderColor: isFocus ? 'neutral70' : 'neutral20',
           borderRadius: 'medium',
           transition: 'border-color 200ms',
+          cursor: disabled ? 'not-allowed' : 'default',
           '&:hover': {
-            borderColor: 'neutral70',
+            borderColor: disabled ? 'neutral20' : 'neutral70',
           },
         }}
         onBlur={(e) => {
@@ -154,7 +163,15 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ range }) => {
             setManualAmount(n)
           })}
           value={manualAmount ? formatBigNumber(manualAmount, FIAT_PRECISION) : ''}
-          sx={{ px: 5, pt: 3, pb: '40px', border: 'none', fontSize: 4, textAlign: 'center' }}
+          sx={{
+            px: 5,
+            pt: 3,
+            pb: '40px',
+            border: 'none',
+            fontSize: 4,
+            textAlign: 'center',
+            pointerEvents: disabled ? 'none' : 'auto',
+          }}
         />
         <Text
           as="span"
@@ -171,9 +188,9 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ range }) => {
         >
           {priceFormat} {t('ajna.position-page.earn.common.form.lending-price')}
         </Text>
-        <AjnaEarnInputButton variant="-" onClick={clickHandler} />
-        <AjnaEarnInputButton variant="+" onClick={clickHandler} />
+        <AjnaEarnInputButton disabled={disabled} variant="-" onClick={clickHandler} />
+        <AjnaEarnInputButton disabled={disabled} variant="+" onClick={clickHandler} />
       </Box>
-    </>
+    </Box>
   )
 }
