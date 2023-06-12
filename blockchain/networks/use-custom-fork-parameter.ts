@@ -2,7 +2,7 @@ import { useLocalStorage } from 'helpers/useLocalStorage'
 
 import { NetworkNames } from './network-names'
 
-export type CustomForkParameterFieldsType = 'url' | 'id'
+export type CustomForkParameterFieldsType = 'url' | 'id' | 'isAddedToWallet'
 export type CustomForkParameterType = Partial<
   Record<NetworkNames, Record<CustomForkParameterFieldsType, string>>
 >

@@ -2,11 +2,13 @@ import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import {
   NetworkConfigHexId,
   networkSetByHexId,
+  useCustomForkParameter,
   useCustomNetworkParameter,
 } from 'blockchain/networks'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
+import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
 export interface BridgeConnectorState {
   createConnector: (networkId?: NetworkConfigHexId) => Promise<void>
@@ -20,12 +22,36 @@ export function useBridgeConnector(): BridgeConnectorState {
   const [connector, setConnector] = useState<BridgeConnector | undefined>(undefined)
   const [networkHexId, setNetworkHexId] = useState<NetworkConfigHexId | undefined>(undefined)
   const [, setCustomNetwork] = useCustomNetworkParameter()
+  const [customFork, setCustomFrok] = useCustomForkParameter()
 
   useEffect(() => {
     if (wallet && networkHexId && wallet.chains[0].id !== networkHexId) {
       void setChain({ chainId: networkHexId })
     }
   }, [wallet, setChain, networkHexId])
+
+  useEffect(() => {
+    if (wallet) {
+      const networkConfig = networkSetByHexId[wallet.chains[0].id]
+      if (networkConfig.isCustomFork && wallet.label === 'MetaMask') {
+        const parentConfig = networkConfig.getParentNetwork()
+        if (parentConfig) {
+          const forkConfig = customFork[parentConfig.name]
+          if (forkConfig && !forkConfig.isAddedToWallet) {
+            void addCustomForkToTheWallet(networkConfig).then(() => {
+              setCustomFrok({
+                ...customFork,
+                [parentConfig.name]: {
+                  ...forkConfig,
+                  isAddedToWallet: true,
+                },
+              })
+            })
+          }
+        }
+      }
+    }
+  }, [wallet])
 
   const automaticConnector = useMemo(() => {
     if (wallet) {
