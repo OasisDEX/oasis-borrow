@@ -91,6 +91,7 @@
   "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "See products",
   "connect-wallet-button": "Connect Wallet",
+  "change-wallet-chain": "Change wallet network",
   "connect-with": "{{ connectionKind }}",
   "connect-install-metamask": "Install Metamask",
   "connected-with": "Connected with {{ connectionKind }}",

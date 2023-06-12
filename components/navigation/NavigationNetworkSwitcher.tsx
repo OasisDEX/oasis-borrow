@@ -1,30 +1,23 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { ConnectedChain } from '@web3-onboard/core'
-import { useSetChain } from '@web3-onboard/react'
 import {
-  CustomNetworkStorageKey,
   enableNetworksSet,
+  getOppositeNetworkHexIdByHexId,
   mainnetNetworkParameter,
-  networksListWithForksByHexId,
-  useCustomNetworkParameter,
+  NetworkConfigHexId,
+  networkSetByHexId,
 } from 'blockchain/networks'
 import {
   filterNetworksAccordingToSavedNetwork,
   filterNetworksAccordingToWalletNetwork,
-  getOppositeNetworkHexIdByHexId,
   isTestnet,
   isTestnetEnabled,
   isTestnetNetworkHexId,
 } from 'blockchain/networks'
-import { NetworkConfig, NetworkConfigHexId } from 'blockchain/networks'
-import { useAppContext } from 'components/AppContextProvider'
-import { addCustomForkToTheWallet } from 'features/web3OnBoard'
+import { NetworkConfig } from 'blockchain/networks'
+import { useConnection } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useModal } from 'helpers/modalHook'
-import { useObservable } from 'helpers/observableHook'
-import { getStorageValue } from 'helpers/useLocalStorage'
-import { useNetworkName } from 'helpers/useNetworkName'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Box, Button, Image } from 'theme-ui'
 
 import { NavigationOrb } from './NavigationMenuOrb'
@@ -32,58 +25,16 @@ import { NavigationNetworkSwitcherIcon } from './NavigationNetworkSwitcherIcon'
 import { NavigationNetworkSwitcherModal } from './NavigationNetworkSwitcherModal'
 
 export function NavigationNetworkSwitcher() {
-  const { web3Context$ } = useAppContext()
-  const [{ settingChain, connectedChain }, setChain] = useSetChain()
-  const currentNetworkName = useNetworkName()
-  const [, setCustomNetwork] = useCustomNetworkParameter()
-  const [web3Context] = useObservable(web3Context$)
+  const { connectedChain, connect, connecting } = useConnection({
+    initialConnect: false,
+  })
+  const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
   const openModal = useModal()
-  const changeChain = useCallback(
-    async (networkHexId: NetworkConfigHexId) => {
-      const network = networksListWithForksByHexId[networkHexId]
 
-      const chainToSet = network.isCustomFork
-        ? {
-            chainId: network.hexId,
-            rpcUrl: network.rpcUrl,
-            label: network.label,
-          }
-        : { chainId: network.hexId }
-
-      if (connectedChain) {
-        if (network.isCustomFork) {
-          await addCustomForkToTheWallet(network)
-        }
-
-        const chainSet = await setChain(chainToSet)
-
-        if (chainSet) {
-          setCustomNetwork({
-            network: network.name!,
-            id: network.id!,
-            hexId: network.hexId!,
-          })
-        }
-
-        window && window.location.reload() // duh
-      }
-      if (web3Context?.status === 'connectedReadonly') {
-        setCustomNetwork({
-          network: network.name!,
-          id: network.id!,
-          hexId: network.hexId!,
-        })
-        window && window.location.reload() // duh
-      }
-    },
-    [connectedChain, setChain, setCustomNetwork, web3Context?.status],
-  )
-
-  const toggleChains = (currentConnectedChain: ConnectedChain) =>
-    changeChain(getOppositeNetworkHexIdByHexId(currentConnectedChain.id)!)
-  const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
-  const { hexId: customNetworkHexId } = (customNetworkData ||
-    mainnetNetworkParameter) as typeof mainnetNetworkParameter
+  const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
+    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain))
+  }
+  const { hexId: customNetworkHexId } = mainnetNetworkParameter
 
   const handleNetworkButton = (network: NetworkConfig) => {
     const isCurrentNetwork = network.name === currentNetworkName
@@ -118,8 +69,8 @@ export function NavigationNetworkSwitcher() {
             },
           }),
         }}
-        onClick={() => changeChain(network.hexId)}
-        disabled={settingChain}
+        onClick={() => connect(network.hexId)}
+        disabled={connecting}
         key={network.hexId}
       >
         <Image
@@ -182,14 +133,7 @@ export function NavigationNetworkSwitcher() {
                 <Button
                   variant="bean"
                   sx={{ fontSize: 2 }}
-                  onClick={() =>
-                    toggleChains(
-                      connectedChain || {
-                        id: customNetworkHexId as ConnectedChain['id'],
-                        namespace: 'evm',
-                      },
-                    )
-                  }
+                  onClick={() => toggleChains(connectedChain ?? customNetworkHexId)}
                 >
                   <Box sx={{ width: '100%' }}>
                     {(() => {
@@ -216,7 +160,7 @@ export function NavigationNetworkSwitcher() {
               </>
             )}
           </Box>
-          {settingChain && <AppSpinnerWholePage />}
+          {connecting && <AppSpinnerWholePage />}
         </>
       )}
     </NavigationOrb>

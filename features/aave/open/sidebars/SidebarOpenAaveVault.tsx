@@ -1,6 +1,5 @@
 import { useActor } from '@xstate/react'
-import { useCustomNetworkParameter } from 'blockchain/networks'
-import { networksById } from 'blockchain/networks'
+import { networkSetById } from 'blockchain/networks'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -9,7 +8,7 @@ import { StrategyInformationContainer } from 'features/aave/common/components/in
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
 import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { hasUserInteracted } from 'features/aave/helpers'
+import { hasUserInteracted, isConnectedToCorrectNetwork } from 'features/aave/helpers'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
@@ -18,7 +17,7 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTomfoolery } from 'helpers/useTomfoolery'
@@ -178,50 +177,48 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
 
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
-    walletConnect: true,
+  const { connect, connecting } = useConnection({
+    initialConnect: true,
   })
 
   return useMemo(
     () => ({
       label: t('connect-wallet'),
       action: () => {
-        if (!connected && !connecting) {
-          void executeConnection()
+        if (!connecting) {
+          void connect()
         }
       },
       steps: undefined,
       isLoading: connecting,
       disabled: connecting,
     }),
-    [t, connected, connecting, executeConnection],
+    [t, connecting, connect],
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useChangeChainButton({
   strategy,
 }: {
   strategy: IStrategyConfig
 }): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const [, setCustomNetwork] = useCustomNetworkParameter()
+  const { connect } = useConnection({
+    initialConnect: true,
+    chainId: networkSetById[strategy.networkId].hexId,
+  })
 
   return useMemo(
     () => ({
-      label: t('change-chain'),
-      action: () => {
-        setCustomNetwork({
-          id: strategy.networkId,
-          hexId: networksById[strategy.networkId].hexId,
-          network: strategy.network,
-        })
+      label: t('change-wallet-chain'),
+      action: async () => {
+        await connect()
       },
       steps: undefined,
       isLoading: false,
       disabled: false,
     }),
-    [t, strategy, setCustomNetwork],
+    [connect, t],
   )
 }
 
@@ -231,6 +228,14 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
   const [pumpTheGas, setPumpTheGas] = useState(false)
 
   const connectWalletPrimaryButton = useConnectWalletPrimaryButton()
+  const changeChainButton = useChangeChainButton({ strategy: state.context.strategyConfig })
+  const nextStepButton = {
+    steps: [state.context.currentStep, state.context.totalSteps] as [number, number],
+    isLoading: isLoading(),
+    disabled: isLoading() || !state.can('NEXT_STEP'),
+    label: t('open-earn.aave.vault-form.confirm-btn'),
+    action: () => send('NEXT_STEP'),
+  }
 
   const { stopLossSkipped, stopLossLevel } = state.context
 
@@ -239,15 +244,11 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     ? t(state.context.strategyConfig.viewComponents.sidebarTitle)
     : t('open-vault-two-tx-first-step-title', { type: t('position') })
 
-  const primaryButton = !isUserWalletConnected(state.context)
-    ? connectWalletPrimaryButton
-    : {
-        steps: [state.context.currentStep, state.context.totalSteps] as [number, number],
-        isLoading: isLoading(),
-        disabled: isLoading() || !state.can('NEXT_STEP'),
-        label: t('open-earn.aave.vault-form.confirm-btn'),
-        action: () => send('NEXT_STEP'),
-      }
+  const primaryButton = isUserWalletConnected(state.context)
+    ? isConnectedToCorrectNetwork(state.context)
+      ? nextStepButton
+      : changeChainButton
+    : connectWalletPrimaryButton
 
   const sidebarSectionProps: SidebarSectionProps = tomfooleryEnabled
     ? {
@@ -342,11 +343,16 @@ function EditingStateViewSidebarPrimaryButton({
 > {
   const { t } = useTranslation()
   const connectWalletPrimaryButton = useConnectWalletPrimaryButton()
+  const changeChainButton = useChangeChainButton({ strategy: state.context.strategyConfig })
 
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   if (!isUserWalletConnected(state.context)) {
     return connectWalletPrimaryButton
+  }
+
+  if (!isConnectedToCorrectNetwork(state.context)) {
+    return changeChainButton
   }
 
   const hasProxy =

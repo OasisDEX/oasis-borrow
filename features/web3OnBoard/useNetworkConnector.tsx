@@ -1,15 +1,26 @@
 import { NetworkConnector } from '@web3-react/network-connector'
-import { networksListWithForksById, useCustomNetworkParameter } from 'blockchain/networks'
+import { NetworkConfig, networkSetById, useCustomNetworkParameter } from 'blockchain/networks'
 import { useMemo } from 'react'
 
-export function useNetworkConnector(): NetworkConnector | null {
+export interface NetworkConnectorState {
+  networkConnector: NetworkConnector
+  networkConfig: NetworkConfig
+}
+export function useNetworkConnector(): NetworkConnectorState {
   const [customNetwork] = useCustomNetworkParameter()
-  return useMemo(() => {
+  const connector = useMemo(() => {
     return new NetworkConnector({
       urls: {
-        [customNetwork?.id]: networksListWithForksById[customNetwork?.id].rpcUrl,
+        [customNetwork?.id]: networkSetById[customNetwork?.id].rpcUrl,
       },
       defaultChainId: parseInt(customNetwork?.id as unknown as string),
     })
   }, [customNetwork])
+
+  const config = networkSetById[customNetwork.id]
+
+  return {
+    networkConnector: connector,
+    networkConfig: config,
+  }
 }

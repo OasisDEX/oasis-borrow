@@ -1,18 +1,12 @@
-import { getNetworkRpcEndpoint, NetworkIds, NetworkNames } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { ProductHubSupportedNetworks } from 'features/productHub/types'
 
 export const productHubEthersProviders: Record<
   ProductHubSupportedNetworks,
-  ethers.providers.JsonRpcProvider
+  () => ethers.providers.Provider
 > = {
-  [NetworkNames.ethereumMainnet]: new ethers.providers.JsonRpcProvider(
-    getNetworkRpcEndpoint(NetworkIds.MAINNET, NetworkIds.MAINNET),
-  ),
-  [NetworkNames.arbitrumMainnet]: new ethers.providers.JsonRpcProvider(
-    getNetworkRpcEndpoint(NetworkIds.ARBITRUMMAINNET, NetworkIds.ARBITRUMMAINNET),
-  ),
-  [NetworkNames.optimismMainnet]: new ethers.providers.JsonRpcProvider(
-    getNetworkRpcEndpoint(NetworkIds.OPTIMISMMAINNET, NetworkIds.OPTIMISMMAINNET),
-  ),
+  [NetworkNames.ethereumMainnet]: () => getRpcProvider(NetworkIds.MAINNET),
+  [NetworkNames.arbitrumMainnet]: () => getRpcProvider(NetworkIds.ARBITRUMMAINNET),
+  [NetworkNames.optimismMainnet]: () => getRpcProvider(NetworkIds.OPTIMISMMAINNET),
 }

@@ -17,8 +17,6 @@ export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
   connectionKind: 'injected',
   web3: new Web3(),
   chainId: 1,
-  deactivate: () => null,
-  connect: () => Promise.resolve(true),
   walletLabel: undefined,
   connectionMethod: 'web3-onboard',
 }
@@ -28,7 +26,6 @@ export const mockWeb3ContextConnected: Web3ContextConnected = {
   connectionKind: 'injected',
   web3: new Web3(),
   chainId: 1,
-  deactivate: () => null,
   account: '0xUserAddress',
   walletLabel: 'MetaMask',
   connectionMethod: 'web3-onboard',
