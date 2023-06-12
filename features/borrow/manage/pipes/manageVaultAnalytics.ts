@@ -1,7 +1,7 @@
 import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { networksListWithForksById } from 'blockchain/networks'
+import { networkSetById } from 'blockchain/networks'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
@@ -288,7 +288,7 @@ export function createManageVaultAnalytics$(
                 )
                 break
               case 'manageVaultConfirmTransaction':
-                const network = networksListWithForksById[context.id].name
+                const network = networkSetById[context.id].name
                 const walletType = context.connectionKind
 
                 tracker.manageVaultConfirmTransaction(

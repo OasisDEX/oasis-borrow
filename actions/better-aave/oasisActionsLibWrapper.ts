@@ -11,8 +11,8 @@ import {
 import { OpenMultiplyAaveParameters } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { ethNullAddress, networksById } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { ethNullAddress } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
@@ -74,7 +74,7 @@ async function openAave(
 
   const dependencies: Parameters<typeof strategies.aave.v3.open>[1] = {
     addresses: getTokenAddresses(networkId),
-    provider: networksById[networkId].readProvider,
+    provider: getRpcProvider(networkId),
     getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress, networkId, 'v5.0'),
     proxy: proxyAddress,
     user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress, // mocking the address before wallet connection
@@ -154,7 +154,7 @@ export async function getOnChainPosition({
 }: GetOnChainPositionParams): Promise<IPosition> {
   assertNetwork(networkId)
 
-  const provider = networksById[networkId].readProvider
+  const provider = getRpcProvider(networkId)
 
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
@@ -192,7 +192,7 @@ export async function getAdjustAaveParameters({
 }: AdjustAaveParameters): Promise<PositionTransition> {
   assertNetwork(networkId)
 
-  const provider = networksById[networkId].readProvider
+  const provider = getRpcProvider(networkId)
 
   const collateralToken = {
     symbol: currentPosition.collateral.symbol as AAVETokens,
@@ -272,7 +272,7 @@ export async function getCloseAaveParameters({
   const stratDeps: closeParameters[1] = {
     addresses: getTokenAddresses(networkId),
     currentPosition,
-    provider: networksById[networkId].readProvider,
+    provider: getRpcProvider(networkId),
     getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
     user: userAddress,

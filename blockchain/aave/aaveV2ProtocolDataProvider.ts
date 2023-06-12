@@ -1,8 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { wethToEthAddress } from 'blockchain/aave-v3/utils'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { networksById } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { AaveV2ProtocolDataProvider__factory } from 'types/ethers-contracts'
 
@@ -47,7 +46,7 @@ export type AaveV2ReserveConfigurationData = {
 }
 
 const factory = AaveV2ProtocolDataProvider__factory
-const rpcProvider = networksById[NetworkIds.MAINNET].readProvider
+const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
 const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2ProtocolDataProvider.address
 const tokenMappings = getNetworkContracts(NetworkIds.MAINNET).tokens
 const contract = factory.connect(address, rpcProvider)

@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { networksById } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 import { one } from 'helpers/zero'
 import { AaveV2PriceOracle__factory } from 'types/ethers-contracts'
@@ -15,7 +14,7 @@ export type AaveV2GetAssetPriceParameters = {
 }
 
 const factory = AaveV2PriceOracle__factory
-const rpcProvider = networksById[NetworkIds.MAINNET].readProvider
+const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
 const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2PriceOracle.address
 const contract = factory.connect(address, rpcProvider)
 const tokenMappings = getNetworkContracts(NetworkIds.MAINNET).tokens

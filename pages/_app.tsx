@@ -181,14 +181,14 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         <CacheProvider value={cache}>
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
-            <Web3ReactProvider {...{ getLibrary }}>
-              <AppContextProvider>
-                <ModalProvider>
-                  <HeadTags />
-                  {seoTags}
-                  <SetupWeb3Context>
-                    <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-                      <Web3OnBoardConnectorProvider>
+            <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+              <Web3OnBoardConnectorProvider>
+                <Web3ReactProvider {...{ getLibrary }}>
+                  <AppContextProvider>
+                    <ModalProvider>
+                      <HeadTags />
+                      {seoTags}
+                      <SetupWeb3Context>
                         <SharedUIProvider>
                           <GasEstimationContextProvider>
                             <NotificationSocketProvider>
@@ -201,12 +201,12 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                             </NotificationSocketProvider>
                           </GasEstimationContextProvider>
                         </SharedUIProvider>
-                      </Web3OnBoardConnectorProvider>
-                    </Web3OnboardProvider>
-                  </SetupWeb3Context>
-                </ModalProvider>
-              </AppContextProvider>
-            </Web3ReactProvider>
+                      </SetupWeb3Context>
+                    </ModalProvider>
+                  </AppContextProvider>
+                </Web3ReactProvider>
+              </Web3OnBoardConnectorProvider>
+            </Web3OnboardProvider>
           </MDXProvider>
         </CacheProvider>
       </ThemeProvider>

@@ -67,7 +67,7 @@
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.1",
     "@web3-react/network-connector": "^6.1.5",
-    "@xstate/react": "^3.0.1",
+    "@xstate/react": "^3.2.2",
     "axios": "^0.22.0",
     "bignumber.js": "9.0.1",
     "browser-detect": "^0.2.28",
@@ -122,7 +122,7 @@
     "usehooks-ts": "^2.9.1",
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
-    "xstate": "^4.33.6",
+    "xstate": "^4.37.2",
     "zod": "^1.5.0"
   },
   "resolutions": {
@@ -155,8 +155,8 @@
     "@types/theme-ui": "^0.3.1",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
-    "@xstate/cli": "^0.3.3",
-    "@xstate/inspect": "^0.7.0",
+    "@xstate/cli": "^0.5.1",
+    "@xstate/inspect": "^0.8.0",
     "@xstate/test": "^0.5.1",
     "circular-dependency-plugin": "^5.2.2",
     "crypto-browserify": "^3.12.0",
