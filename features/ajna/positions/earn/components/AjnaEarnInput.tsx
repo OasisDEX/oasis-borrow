@@ -2,20 +2,27 @@ import BigNumber from 'bignumber.js'
 import { FIAT_PRECISION } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatBigNumber } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Text } from 'theme-ui'
 
+type AjnaEarnInputButtonVariant = '-' | '+'
+
 interface AjnaEarnInputButtonProps {
-  variant: '-' | '+'
+  variant: AjnaEarnInputButtonVariant
+  onClick: (variant: AjnaEarnInputButtonVariant) => void
+}
+interface AjnaEarnInputProps {
+  range: BigNumber[]
 }
 
-const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ variant }) => {
+const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ variant, onClick }) => {
   return (
     <Button
       sx={{
@@ -68,11 +75,12 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ variant }) => {
           }),
         },
       }}
+      onClick={() => onClick(variant)}
     />
   )
 }
 
-export const AjnaEarnInput: FC = () => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ range }) => {
   const { t } = useTranslation()
   const {
     environment: { priceFormat, quoteToken },
@@ -80,11 +88,28 @@ export const AjnaEarnInput: FC = () => {
   const {
     form: {
       state: { price },
+      updateState,
     },
   } = useAjnaProductContext('earn')
-  console.log('refreshed')
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const [manualAmount, setManualAmount] = useState<BigNumber>(price || zero)
+
+  function clickHandler(variant: AjnaEarnInputButtonVariant) {
+    const snappedValue = snapToPredefinedValues(manualAmount, range)
+    let index = range.indexOf(snappedValue)
+
+    if (variant === '-') index = Math.max(0, index - 1)
+    if (variant === '+') index = Math.min(range.length - 1, index + 1)
+
+    const selectedValue = range.at(index) || zero
+
+    setManualAmount(selectedValue)
+    updateState('price', selectedValue)
+  }
+
+  useEffect(() => {
+    setManualAmount(price || zero)
+  }, [price])
 
   return (
     <>
@@ -103,6 +128,14 @@ export const AjnaEarnInput: FC = () => {
             borderColor: 'neutral70',
           },
         }}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node) && manualAmount !== price) {
+            const snappedValue = snapToPredefinedValues(manualAmount, range)
+
+            setManualAmount(snappedValue)
+            updateState('price', snappedValue)
+          }
+        }}
       >
         <BigNumberInput
           type="text"
@@ -117,8 +150,8 @@ export const AjnaEarnInput: FC = () => {
           onBlur={() => {
             setIsFocus(false)
           }}
-          onChange={handleNumericInput((n) => {
-            console.log(`value: ${n}`)
+          onChange={handleNumericInput((n = zero) => {
+            setManualAmount(n)
           })}
           value={manualAmount ? formatBigNumber(manualAmount, FIAT_PRECISION) : ''}
           sx={{ px: 5, pt: 3, pb: '40px', border: 'none', fontSize: 4, textAlign: 'center' }}
@@ -138,8 +171,8 @@ export const AjnaEarnInput: FC = () => {
         >
           {priceFormat} {t('ajna.position-page.earn.common.form.lending-price')}
         </Text>
-        <AjnaEarnInputButton variant="-" />
-        <AjnaEarnInputButton variant="+" />
+        <AjnaEarnInputButton variant="-" onClick={clickHandler} />
+        <AjnaEarnInputButton variant="+" onClick={clickHandler} />
       </Box>
     </>
   )
