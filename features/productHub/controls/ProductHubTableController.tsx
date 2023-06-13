@@ -7,15 +7,11 @@ interface ProductHubTableControllerProps {
   rows: AssetsTableRowData[]
 }
 
-export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({
-  rows,
-}) => {
+export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({ rows }) => {
   return (
     <>
       {rows.length > 0 ? (
-        <AssetsResponsiveTable
-          rows={rows}
-        />
+        <AssetsResponsiveTable rows={rows} />
       ) : (
         <AssetsTableNoResults
           // TODO replace with translations when copy is available
