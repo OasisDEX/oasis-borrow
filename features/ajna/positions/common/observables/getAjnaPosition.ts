@@ -114,7 +114,7 @@ export function getAjnaPositionsWithDetails$(
           return combineLatest(
             positionCreatedEvents
               // @ts-ignore
-              .filter(({ protocol }) => protocol === LendingProtocol.Ajna)
+              .filter(({ protocol }) => protocol.toLowerCase() === LendingProtocol.Ajna)
               .map(
                 ({
                   collateralTokenSymbol,
