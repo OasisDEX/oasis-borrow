@@ -1,4 +1,3 @@
--- Active: 1649325454675@@localhost@5432@db
 ALTER TABLE "product_hub_items"
 DROP COLUMN "with50Tokens";
 
