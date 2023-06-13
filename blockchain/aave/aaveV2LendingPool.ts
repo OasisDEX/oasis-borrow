@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { networksById } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 import { AaveV2LendingPool__factory } from 'types/ethers-contracts'
 
@@ -32,7 +31,7 @@ export type AaveV2GetUserConfigurationParameters = {
 }
 
 const factory = AaveV2LendingPool__factory
-const rpcProvider = networksById[NetworkIds.MAINNET].readProvider
+const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
 const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2LendingPool.address
 const contract = factory.connect(address, rpcProvider)
 

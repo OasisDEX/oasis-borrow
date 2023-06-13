@@ -98,7 +98,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { NetworkIds, NetworkNames, networksById } from 'blockchain/networks'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -319,7 +319,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
-import { isEqual, mapValues, memoize } from 'lodash'
+import { isEqual, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
@@ -543,8 +543,7 @@ function initializeUIChanges() {
 
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
-  const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$()
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)

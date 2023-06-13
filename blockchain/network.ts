@@ -67,7 +67,7 @@ export function createContext$(
         ...networkData,
         ...web3Context,
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,
-        rpcProvider: networksById[NetworkIds.MAINNET].readProvider,
+        rpcProvider: networksById[NetworkIds.MAINNET].getReadProvider(),
         web3ProviderGetPastLogs,
       } as Context
     }),

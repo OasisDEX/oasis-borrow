@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { MainNetworkNames } from 'blockchain/networks'
 import { useAppContext } from 'components/AppContextProvider'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -22,14 +22,14 @@ export function ProductCardEarnDsr() {
   const [potDsr] = useObservable(potDsr$)
   const [potTotalValueLocked] = useObservable(potTotalValueLocked$)
   const [connectedContext] = useObservable(connectedContext$)
-  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { connect } = useConnection({ initialConnect: true })
   const { push } = useRedirect()
 
   const handleClick = useCallback(async () => {
     if (!connectedContext) {
-      await executeConnection((account) => push(`${INTERNAL_LINKS.earnDSR}/${account}`))
+      await connect('0x1', ({ account }) => push(`${INTERNAL_LINKS.earnDSR}/${account}`))
     }
-  }, [connectedContext, executeConnection, push])
+  }, [connectedContext, connect, push])
 
   const apy = potDsr
     ? getYearlyRate(potDsr || zero)

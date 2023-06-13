@@ -1,3 +1,4 @@
+import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
@@ -31,7 +32,7 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <WithWalletConnection>
+    <WithWalletConnection chainId={ethereumMainnetHexId}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <PageSEOTags

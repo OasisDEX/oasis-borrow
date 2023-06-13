@@ -1,6 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { networksById } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { AaveV2LendingPool__factory } from 'types/ethers-contracts'
@@ -70,7 +69,7 @@ export async function getAaveV2PositionLiquidation({
 
   return await getLastLiquidationEvent(
     getNetworkContracts(NetworkIds.MAINNET).aaveV2LendingPool,
-    networksById[NetworkIds.MAINNET].readProvider,
+    getRpcProvider(NetworkIds.MAINNET),
     proxyAddress,
   )
 }
