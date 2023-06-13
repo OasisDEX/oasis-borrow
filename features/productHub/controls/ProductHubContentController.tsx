@@ -42,7 +42,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         selectedToken={selectedToken}
         onChange={onChange}
       />
-      <ProductHubTableController rows={rows} selectedToken={selectedToken} />
+      <ProductHubTableController rows={rows} />
     </AssetsTableContainer>
   )
 }
