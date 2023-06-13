@@ -4,15 +4,15 @@ import {
   IRiskRatio,
   ISimplePositionTransition,
   ISimulatedTransition,
+  Network,
   Position,
   PositionTransition,
   strategies,
 } from '@oasisdex/dma-library'
 import { OpenMultiplyAaveParameters } from 'actions/aave'
 import BigNumber from 'bignumber.js'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { ethNullAddress } from 'blockchain/networks'
+import { ensurePropertiesExist, getNetworkContracts } from 'blockchain/contracts'
+import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
@@ -72,13 +72,20 @@ async function openAave(
     positionType: positionType,
   }
 
+  const contracts = getNetworkContracts(networkId)
+  ensurePropertiesExist(networkId, contracts, ['swapAddress'])
+  const { swapAddress } = contracts
+
+  // TODO: [JS] Pass proper network.
+
   const dependencies: Parameters<typeof strategies.aave.v3.open>[1] = {
     addresses: getTokenAddresses(networkId),
     provider: getRpcProvider(networkId),
-    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress, networkId, 'v5.0'),
+    getSwapData: getOneInchCall(swapAddress, networkId, 'v5.0'),
     proxy: proxyAddress,
     user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress, // mocking the address before wallet connection
     isDPMProxy: proxyType === ProxyType.DpmProxy,
+    network: 'optimism' as Network,
   }
 
   return await strategies.aave.v3.open(args, dependencies)
@@ -223,6 +230,7 @@ export async function getAdjustAaveParameters({
     proxy: proxyAddress,
     user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
+    network: Network.OPTIMISM,
   }
 
   return await strategies.aave.v3.adjust(args, stratDeps)
@@ -277,6 +285,7 @@ export async function getCloseAaveParameters({
     proxy: proxyAddress,
     user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
+    network: Network.OPTIMISM,
   }
 
   switch (protocol) {

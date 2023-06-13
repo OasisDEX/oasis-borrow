@@ -184,7 +184,7 @@ export const optimismContracts: MainnetContracts = {
   taxProxyRegistries: [],
   etherscan: {
     url: 'https://optimistic.etherscan.io/',
-    apiUrl: 'not-implemented',
+    apiUrl: 'https://api-optimistic.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
   },
   ethtx: {

@@ -513,6 +513,7 @@ export function SidebarOpenAaveVault() {
     case state.matches('frontend.reviewing'):
       return <OpenAaveReviewingStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txInProgress'):
+    case state.matches('frontend.txInProgressEthers'):
       return (
         <OpenAaveTransactionInProgressStateView state={state} send={send} isLoading={loading} />
       )

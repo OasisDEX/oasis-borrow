@@ -1421,6 +1421,7 @@ export function setupAppContext() {
   )
 
   const dpmAccountStateMachine = getDPMAccountStateMachine(
+    context$,
     txHelpers$,
     gasEstimation$,
     dpmAccountTransactionMachine,

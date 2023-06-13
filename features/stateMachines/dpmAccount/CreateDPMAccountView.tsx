@@ -206,6 +206,7 @@ export function CreateDPMAccountViewConsumed({
         <InfoStateView state={state} send={send} backButtonOnFirstStep={backButtonOnFirstStep} />
       )
     case state.matches('txInProgress'):
+    case state.matches('txInProgressEthers'):
       return <InProgressView state={state} send={send} />
     case state.matches('txSuccess'):
       return <SuccessStateView state={state} send={send} />
