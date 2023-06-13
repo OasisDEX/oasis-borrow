@@ -32,7 +32,6 @@ export function AjnaEarnOverviewManageController() {
       content={
         <DetailsSectionContentCardWrapper>
           <ContentCardCurrentEarnings
-            isLoading={isSimulationLoading}
             quoteToken={quoteToken}
             // TODO adjust once data available in subgraph
             currentEarnings={zero}

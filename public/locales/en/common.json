@@ -2648,7 +2648,10 @@
             "ajna-fee": "Ajna fee",
             "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit",
             "total-deposited-into-position": "Total deposited into Position",
-            "collateral-available-to-withdraw": "Collateral available to withdraw"
+            "collateral-available-to-withdraw": "Collateral available to withdraw",
+            "input-lending-price": "Input {{quoteToken}} Lending Price",
+            "or-enter-specific-lending-price": "Or enter specific {{priceFormat}} Lending Price",
+            "lending-price": "Lending Price"
           }
         },
         "open": {
