@@ -1,7 +1,6 @@
 import { NetworkIds } from 'blockchain/networks'
 import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
 import { getNetworkId } from 'features/web3Context'
-import { useLocalStorage } from 'helpers/useLocalStorage'
 import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader<R> {
@@ -18,9 +17,10 @@ export async function loadSubgraph<
   subgraph: S,
   method: M,
   params: P = {} as P,
-  customUrl: string | undefined = undefined,
 ): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
   const networkId = getNetworkId() as NetworkIds
+  const customUrl = localStorage.getItem('SubgraphCustomUrl')
+
   const response = await fetch(`/api/subgraph`, {
     method: 'POST',
     body: JSON.stringify({
@@ -41,7 +41,6 @@ export function useSubgraphLoader<
   P extends Subgraphs[S][M],
 >(subgraph: S, method: M, params: P) {
   const stringifiedParams = JSON.stringify(params)
-  const [customUrl] = useLocalStorage<string | undefined>(`SubgraphCustomUrl`, undefined)
   const [state, setState] = useState<
     UseSubgraphLoader<SubgraphsResponses[S][keyof SubgraphsResponses[S]]>
   >({
@@ -56,7 +55,7 @@ export function useSubgraphLoader<
       isLoading: true,
     }))
 
-    loadSubgraph(subgraph, method, params, customUrl)
+    loadSubgraph(subgraph, method, params)
       // @ts-ignore
       // TODO adjust types
       .then(({ success, response }) => {
