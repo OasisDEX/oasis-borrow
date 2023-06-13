@@ -11,9 +11,15 @@ import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/sna
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo } from 'react'
+import React, { FC, useEffect, useMemo } from 'react'
+import { Box } from 'theme-ui'
 
-export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
+interface AjnaEarnSliderProps {
+  isDisabled?: boolean
+  nestedManualInput?: boolean
+}
+
+export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManualInput }) => {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, priceFormat, quoteToken, isShort },
@@ -113,13 +119,19 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
         #EABE4C ${lupPercentage}% ${mompPercentage}%,
         #EE5728 ${mompPercentage}% 100%)`}
       />
-      <PillAccordion
-        title={t('ajna.position-page.earn.common.form.or-enter-specific-lending-price', {
-          priceFormat,
-        })}
-      >
-        <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
-      </PillAccordion>
+      {nestedManualInput ? (
+        <PillAccordion
+          title={t('ajna.position-page.earn.common.form.or-enter-specific-lending-price', {
+            priceFormat,
+          })}
+        >
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+        </PillAccordion>
+      ) : (
+        <Box sx={{ mt: 3 }}>
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+        </Box>
+      )}
     </>
   )
 }

@@ -121,7 +121,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
   }, [price])
 
   return (
-    <Box>
+    <>
       <Text
         as="p"
         variant="paragraph4"
@@ -208,6 +208,6 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
           onClick={clickHandler}
         />
       </Box>
-    </Box>
+    </>
   )
 }
