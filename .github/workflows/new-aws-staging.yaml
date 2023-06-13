@@ -80,7 +80,7 @@ jobs:
                      --build-arg PRODUCT_HUB_KEY=${{ secrets.PRODUCT_HUB_KEY }} \
                      --cache-from=$ECR_REGISTRY/${{ secrets.BASE_NAME }}-staging:$LATEST_TAG \
                      -t $ECR_REGISTRY/${{ secrets.BASE_NAME }}-staging:$SHA_TAG \
-                     -t $ECR_REGISTRY/${{ secrets.BASE_NAME }}-stagingE:$LATEST_TAG \
+                     -t $ECR_REGISTRY/${{ secrets.BASE_NAME }}-staging:$LATEST_TAG \
                      -t $ECR_REGISTRY/${{ secrets.BASE_NAME }}-staging:$ENVIRONMENT_TAG \
                      -t $DOCKERHUB_ORG/$REPO_NAME:$SHA_TAG \
                      -t $DOCKERHUB_ORG/$REPO_NAME:$LATEST_TAG \
