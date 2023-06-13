@@ -91,7 +91,7 @@ jobs:
     - name: Update ECS service with latest Docker image
       id: service-update
       run: |
-        aws ecs update-service --cluster ${{ secrets.BASE_NAME }}-staging --service ${{ secrets.BASE_NAME }}-staging--force-new-deployment --region $AWS_REGION
+        aws ecs update-service --cluster ${{ secrets.BASE_NAME }}-staging --service ${{ secrets.BASE_NAME }}-staging --force-new-deployment --region $AWS_REGION
 
     - name: Wait for all services to become stable
       uses: oryanmoshe/ecs-wait-action@v1.3
