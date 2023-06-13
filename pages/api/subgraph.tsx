@@ -7,7 +7,8 @@ async function get({ req: { body } }: { req: NextApiRequest }) {
   try {
     const { subgraph, method, params, networkId, customUrl } = JSON.parse(body)
     const response = await request(
-      customUrl??subgraphsRecord[subgraph as keyof typeof subgraphsRecord][Number(networkId) as NetworkIds],
+      customUrl ??
+        subgraphsRecord[subgraph as keyof typeof subgraphsRecord][Number(networkId) as NetworkIds],
       subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord],
       params,
     )

@@ -41,7 +41,7 @@ export function useSubgraphLoader<
   P extends Subgraphs[S][M],
 >(subgraph: S, method: M, params: P) {
   const stringifiedParams = JSON.stringify(params)
-  const [customUrl,] = useLocalStorage<string | undefined>(`SubgraphCustomUrl`, undefined)
+  const [customUrl] = useLocalStorage<string | undefined>(`SubgraphCustomUrl`, undefined)
   const [state, setState] = useState<
     UseSubgraphLoader<SubgraphsResponses[S][keyof SubgraphsResponses[S]]>
   >({
