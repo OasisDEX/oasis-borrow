@@ -6,9 +6,10 @@ import {
   ISimplePositionTransition,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Context } from 'blockchain/network'
+import { Context, ContextConnected } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
@@ -180,6 +181,19 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
     proxyAddress: context.effectiveProxyAddress!,
     token,
     amount,
+  }
+}
+
+export function contextToEthersTransactions(context: BaseAaveContext): DpmExecuteParameters {
+  const { amount, token } = getTxTokenAndAmount(context)
+
+  return {
+    networkId: context.strategyConfig.networkId,
+    proxyAddress: context.effectiveProxyAddress!,
+    calls: context.transition!.transaction.calls,
+    operationName: context.transition!.transaction.operationName,
+    value: token === 'ETH' ? amount : zero,
+    signer: (context.web3Context as ContextConnected).transactionProvider,
   }
 }
 
