@@ -67,6 +67,16 @@ export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: Netwo
   )
 }
 
+export const getAllHexIds = () => {
+  return networks.map((network) => network.hexId)
+}
+
+export const getPossibleHexIds = (networkHexId: NetworkConfigHexId): NetworkConfigHexId[] => {
+  return networksSet
+    .filter((network) => network.mainnetHexId === networkHexId)
+    .map((network) => network.hexId)
+}
+
 export const getOppositeNetworkIdById = (networkId: NetworkIds) => {
   return networksById[networkId].testnetId! || networksById[networkId].mainnetId!
 }

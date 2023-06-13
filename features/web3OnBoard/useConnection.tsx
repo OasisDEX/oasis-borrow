@@ -1,7 +1,7 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import { NetworkConnector } from '@web3-react/network-connector'
-import { NetworkConfigHexId } from 'blockchain/networks'
-import { useEffect, useState } from 'react'
+import { getAllHexIds, getPossibleHexIds, NetworkConfigHexId } from 'blockchain/networks'
+import { useEffect, useMemo, useState } from 'react'
 
 import { BridgeConnector, ConnectorInformation } from './BridgeConnector'
 import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
@@ -26,8 +26,23 @@ export interface ConnectionProps {
 }
 
 export function useConnection({ initialConnect, chainId }: ConnectionProps): ConnectionState {
-  const { connect, networkConnector, connectedAddress, connector, connecting } =
-    useWeb3OnBoardConnectorContext()
+  const {
+    connect,
+    networkConnector,
+    connectedAddress,
+    connector,
+    connecting,
+    setPossibleNetworks,
+  } = useWeb3OnBoardConnectorContext()
+
+  const possibleNetworks = useMemo(
+    () => (chainId ? getPossibleHexIds(chainId) : getAllHexIds()),
+    [chainId],
+  )
+
+  useEffect(() => {
+    setPossibleNetworks(possibleNetworks)
+  }, [possibleNetworks, setPossibleNetworks])
 
   const [onConnectHandler, setOnConnectHandler] = useState<
     ((info: ConnectorInformation) => void) | undefined
@@ -35,9 +50,9 @@ export function useConnection({ initialConnect, chainId }: ConnectionProps): Con
 
   useEffect(() => {
     if (initialConnect) {
-      void connect(chainId)
+      if (!connector || !possibleNetworks.includes(connector.hexChainId)) void connect(chainId)
     }
-  }, [initialConnect, chainId, connect])
+  }, [initialConnect, chainId, connect, connector])
 
   useEffect(() => {
     if (connector && onConnectHandler) {

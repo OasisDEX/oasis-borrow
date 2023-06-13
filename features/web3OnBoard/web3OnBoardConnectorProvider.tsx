@@ -19,6 +19,7 @@ export type Web3OnBoardConnectorContext = {
   connectedAddress: string | undefined
   connecting: boolean
   networkConfig: NetworkConfig | undefined
+  setPossibleNetworks: React.Dispatch<NetworkConfigHexId[]>
 }
 
 const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
@@ -33,6 +34,7 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
   connectedAddress: undefined,
   connecting: false,
   networkConfig: undefined,
+  setPossibleNetworks: () => undefined,
 })
 
 export const useWeb3OnBoardConnectorContext = () => useContext(web3OnBoardConnectorContext)
@@ -42,6 +44,7 @@ function InternalProvider({ children }: WithChildren) {
     connecting,
     createConnector,
     connectorState: [bridgeConnector],
+    setPossibleNetworks,
   } = useBridgeConnector()
   const { networkConnector, networkConfig: networkConnectorNetwork } = useNetworkConnector()
   const [account, setAccount] = useState<string | undefined>(undefined)
@@ -60,6 +63,7 @@ function InternalProvider({ children }: WithChildren) {
         networkConfig: bridgeConnector
           ? networkSetByHexId[bridgeConnector.hexChainId]
           : networkConnectorNetwork,
+        setPossibleNetworks,
       }}
     >
       {children}
