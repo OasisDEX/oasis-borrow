@@ -1,7 +1,7 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import { NetworkConnector } from '@web3-react/network-connector'
-import { getAllHexIds, getPossibleHexIds, NetworkConfigHexId } from 'blockchain/networks'
-import { useEffect, useMemo, useState } from 'react'
+import { NetworkConfigHexId } from 'blockchain/networks'
+import { useEffect, useState } from 'react'
 
 import { BridgeConnector, ConnectorInformation } from './BridgeConnector'
 import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
@@ -9,7 +9,10 @@ import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
 export interface ConnectionState {
   connect: (
     chainId?: NetworkConfigHexId,
-    onConnect?: (info: ConnectorInformation) => void,
+    options?: {
+      forced?: boolean
+      onConnect?: (info: ConnectorInformation) => void
+    },
   ) => Promise<void>
   connecting: boolean
   connectedChain: NetworkConfigHexId | undefined
@@ -26,23 +29,8 @@ export interface ConnectionProps {
 }
 
 export function useConnection({ initialConnect, chainId }: ConnectionProps): ConnectionState {
-  const {
-    connect,
-    networkConnector,
-    connectedAddress,
-    connector,
-    connecting,
-    setPossibleNetworks,
-  } = useWeb3OnBoardConnectorContext()
-
-  const possibleNetworks = useMemo(
-    () => (chainId ? getPossibleHexIds(chainId) : getAllHexIds()),
-    [chainId],
-  )
-
-  useEffect(() => {
-    setPossibleNetworks(possibleNetworks)
-  }, [possibleNetworks, setPossibleNetworks])
+  const { connect, networkConnector, connectedAddress, connector, connecting } =
+    useWeb3OnBoardConnectorContext()
 
   const [onConnectHandler, setOnConnectHandler] = useState<
     ((info: ConnectorInformation) => void) | undefined
@@ -50,9 +38,9 @@ export function useConnection({ initialConnect, chainId }: ConnectionProps): Con
 
   useEffect(() => {
     if (initialConnect) {
-      if (!connector || !possibleNetworks.includes(connector.hexChainId)) void connect(chainId)
+      void connect(chainId)
     }
-  }, [initialConnect, chainId, connect, connector])
+  }, [initialConnect, chainId, connect])
 
   useEffect(() => {
     if (connector && onConnectHandler) {
@@ -61,9 +49,11 @@ export function useConnection({ initialConnect, chainId }: ConnectionProps): Con
   }, [connector, onConnectHandler])
 
   return {
-    connect: async (chainId, onConnect) => {
-      setOnConnectHandler(onConnect)
-      await connect(chainId)
+    connect: async (chainId, options) => {
+      if (options?.onConnect) {
+        setOnConnectHandler(options.onConnect)
+      }
+      await connect(chainId, options?.forced)
     },
     connecting,
     connectedAddress,

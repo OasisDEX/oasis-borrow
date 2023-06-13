@@ -32,7 +32,7 @@ export function NavigationNetworkSwitcher() {
   const openModal = useModal()
 
   const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain))
+    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
   }
   const { hexId: customNetworkHexId } = mainnetNetworkParameter
 

@@ -74,7 +74,9 @@ export class BridgeConnector extends AbstractConnector {
   private getBasicInfoFromWallet() {
     const chainId = parseInt(this.wallet.chains[0].id, 16) as NetworkIds
     const hexChainId = this.wallet.chains[0].id as NetworkConfigHexId
-    const networkName = networkSetByHexId[hexChainId].name
+    const networkConfig = networkSetByHexId[hexChainId]
+
+    const networkName = networkConfig?.name as NetworkNames
     const account = this.wallet.accounts[0]?.address
     const provider = this.wallet.provider
 

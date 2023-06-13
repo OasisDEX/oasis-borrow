@@ -3,34 +3,38 @@ import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import {
   NetworkConfigHexId,
   networkSetByHexId,
+  shouldSetRequestedNetworkHexId,
   useCustomForkParameter,
   useCustomNetworkParameter,
 } from 'blockchain/networks'
+import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
 import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
 export interface BridgeConnectorState {
-  createConnector: (networkId?: NetworkConfigHexId) => Promise<void>
+  createConnector: (networkId?: NetworkConfigHexId, forced?: boolean) => Promise<void>
   connecting: boolean
   connectorState: [BridgeConnector | undefined, React.Dispatch<BridgeConnector | undefined>]
-  setPossibleNetworks: React.Dispatch<NetworkConfigHexId[]>
 }
 
 export function useBridgeConnector(): BridgeConnectorState {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const [{ chains }, setChain] = useSetChain()
   const [connector, setConnector] = useState<BridgeConnector | undefined>(undefined)
-  const [networkHexId, setNetworkHexId] = useState<NetworkConfigHexId | undefined>(undefined)
-  const [, setCustomNetwork] = useCustomNetworkParameter()
+  const [customNetwork, setCustomNetwork] = useCustomNetworkParameter()
+  const [networkHexId, setNetworkHexId] = useState<NetworkConfigHexId>(customNetwork.hexId)
+
   const [customFork, setCustomFrok] = useCustomForkParameter()
-  const [possibleNetworks, setPossibleNetworks] = useState<NetworkConfigHexId[]>([])
+  const { reload } = useRouter()
 
   const addForkToWallet = useCallback(
     async (wallet: WalletState, networkHexId: NetworkConfigHexId) => {
       const networkConfig = networkSetByHexId[networkHexId]
-
+      if (!networkConfig) {
+        return
+      }
       if (networkConfig.isCustomFork && wallet.label === 'MetaMask') {
         const parentConfig = networkConfig.getParentNetwork()
         if (parentConfig) {
@@ -54,11 +58,15 @@ export function useBridgeConnector(): BridgeConnectorState {
 
   useEffect(() => {
     if (wallet && networkHexId && wallet.chains[0].id !== networkHexId) {
-      void addForkToWallet(wallet, networkHexId).then(() => {
-        return setChain({ chainId: networkHexId })
-      })
+      void addForkToWallet(wallet, networkHexId)
+        .then(() => {
+          return setChain({ chainId: networkHexId })
+        })
+        .then(() => {
+          return reload()
+        })
     }
-  }, [wallet, setChain, networkHexId, addForkToWallet])
+  }, [wallet, setChain, networkHexId, addForkToWallet, reload])
 
   useEffect(() => {
     if (wallet) {
@@ -99,35 +107,28 @@ export function useBridgeConnector(): BridgeConnectorState {
     }
   }, [setCustomNetwork, wallet])
 
-  useEffect(() => {
-    if (
-      wallet &&
-      networkHexId &&
-      possibleNetworks.length > 0 &&
-      !possibleNetworks.includes(networkHexId)
-    ) {
-      setConnector(undefined)
-      void disconnect({ label: wallet.label })
-    }
-  }, [disconnect, networkHexId, possibleNetworks, wallet])
-
   const createConnector = useCallback(
-    async (networkId?: NetworkConfigHexId) => {
+    async (networkId?: NetworkConfigHexId, forced: boolean = false) => {
       if (!connecting) {
-        setNetworkHexId(networkId)
+        if (networkId && shouldSetRequestedNetworkHexId(customNetwork.hexId, networkId)) {
+          setNetworkHexId(networkId)
+        }
+        if (networkId && forced) {
+          console.log(`Forced network change to ${networkId}`)
+          setNetworkHexId(networkId)
+        }
         if (automaticConnector) {
           return
         }
         await connect()
       }
     },
-    [automaticConnector, connect, connecting],
+    [customNetwork, automaticConnector, connect, connecting],
   )
 
   return {
     createConnector,
     connecting,
     connectorState: [connector, setConnector],
-    setPossibleNetworks,
   }
 }
