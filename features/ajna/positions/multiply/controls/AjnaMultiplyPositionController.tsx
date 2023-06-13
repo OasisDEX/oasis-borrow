@@ -1,7 +1,7 @@
 import {
-  AjnaPositionViewHistoryPlaceholder,
+  AjnaPositionHistoryController,
   AjnaPositionViewInfoPlaceholder,
-} from 'features/ajna/positions/common/components/AjnaPositionViewPlaceholders'
+} from 'features/ajna/positions/common/controls/AjnaPositionHistoryController'
 import { AjnaPositionView } from 'features/ajna/positions/common/views/AjnaPositionView'
 import { AjnaMultiplyFormController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyFormController'
 import { AjnaMultiplyOverviewController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyOverviewController'
@@ -19,7 +19,7 @@ export function AjnaMultiplyPositionController() {
           </Grid>
         ),
         info: <AjnaPositionViewInfoPlaceholder />,
-        history: <AjnaPositionViewHistoryPlaceholder />,
+        history: <AjnaPositionHistoryController />,
       }}
     />
   )
