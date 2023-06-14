@@ -32,7 +32,7 @@ export function getAjnaPosition$(
     iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined)),
   ).pipe(
     switchMap(async ([context]) => {
-      if (protocol !== 'Ajna') return null
+      if (protocol.toLowerCase() !== LendingProtocol.Ajna) return null
       const { ajnaPoolPairs, ajnaPoolInfo, ajnaRewardsManager } = getNetworkContracts(
         NetworkIds.MAINNET,
         context.chainId,
