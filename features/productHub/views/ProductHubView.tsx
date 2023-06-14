@@ -10,7 +10,6 @@ import { ProductHubContentController } from 'features/productHub/controls/Produc
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
 import { ProductHubFilters, ProductHubProductType } from 'features/productHub/types'
-import ajnaHandler from 'handlers/product-hub/update-handlers/ajnaHandler'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
