@@ -10,7 +10,6 @@ import {
   MultiplyProductCardsContainer,
 } from 'components/productCards/ProductCardsContainer'
 import { TabBar } from 'components/TabBar'
-import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -24,7 +23,7 @@ import { debounce } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Flex, Grid, Image, SxProps, Text } from 'theme-ui'
+import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 import { backgroundSize } from 'theme/Background'
 import { useOnMobile } from 'theme/useBreakpointIndex'
@@ -68,16 +67,6 @@ function Pill(props: PillProps) {
       <Icon name={props.icon} size="26px" sx={{ mr: 2 }} />
       {props.label}
     </AppLink>
-  )
-}
-
-function Pills({ sx }: { sx?: SxProps }) {
-  return (
-    <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
-      {LANDING_PILLS.map((pill) => (
-        <Pill key={pill.label} label={pill.label} link={pill.link} icon={pill.icon} />
-      ))}
-    </Flex>
   )
 }
 
@@ -257,7 +246,7 @@ export function HomepageView() {
       {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
       <Flex
         sx={{
-          height: backgroundSize.height,
+          height: ['auto', backgroundSize.height],
           flexDirection: 'column',
         }}
       >
@@ -268,7 +257,6 @@ export function HomepageView() {
         />
         <ManagedVolumeStats oasisStatsValue={oasisStatsValue} />
       </Flex>
-      <Pills sx={{ mb: 5 }} />
       <WhyOasisStats oasisStatsValue={oasisStatsValue} />
       <Box
         sx={{
