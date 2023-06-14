@@ -1,4 +1,4 @@
-import { FTPolarMedium } from 'helpers/fonts'
+import { FTPolar } from 'helpers/fonts'
 
 import { fadeInAnimation } from './animations'
 import { icons } from './icons'
@@ -40,7 +40,7 @@ export const oasisBaseTheme = {
     neutral30: '#F3F7F9',
     neutral60: '#BEC9D0',
     neutral70: '#A8A9B1',
-    neutral80: '#787A9B',
+    neutral80: '#596F78',
     success100: '#1AAB9B',
     success10: '#E7FCFA',
     warning100: '#D8762D',
@@ -70,7 +70,7 @@ export const oasisBaseTheme = {
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
-    heading: `${FTPolarMedium.style.fontFamily}, "Helvetica Neue", sans-serif`,
+    heading: `${FTPolar.style.fontFamily}, "Helvetica Neue", sans-serif`,
     monospace: 'monospace',
   },
   //           0   1   2   3   4   5   6   7   8   9  10
@@ -92,7 +92,7 @@ export const oasisBaseTheme = {
     smallButton: 1.9,
   },
   text: {
-    heroheader: {
+    heroHeader: {
       fontFamily: 'heading',
       fontWeight: 'medium',
       lineHeight: '80px',
@@ -190,6 +190,12 @@ export const oasisBaseTheme = {
       fontWeight: 'bold',
       lineHeight: '29px',
       fontSize: '24px',
+      color: 'primary100',
+    },
+    managedVolumeValue: {
+      fontWeight: 'medium',
+      lineHeight: '64px',
+      fontSize: '52px',
       color: 'primary100',
     },
   },

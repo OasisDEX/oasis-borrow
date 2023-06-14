@@ -84,26 +84,20 @@ function Pills({ sx }: { sx?: SxProps }) {
 function StatCell({ label, value }: { label: string; value: string }) {
   return (
     <Box sx={{ mb: [3, 1, 1] }}>
+      <Text variant="managedVolumeValue" sx={{ textAlign: 'center' }}>
+        {value}
+      </Text>
       <Text
         variant="paragraph2"
         sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'neutral80' }}
       >
         {label}
       </Text>
-      <Text variant="header2" sx={{ textAlign: 'center' }}>
-        {value}
-      </Text>
     </Box>
   )
 }
 
-function ManagedVolumeStats({
-  sx,
-  oasisStatsValue,
-}: {
-  sx?: SxProps
-  oasisStatsValue?: OasisStats
-}) {
+function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
   const { t } = useTranslation()
 
   if (!oasisStatsValue) {
@@ -111,23 +105,26 @@ function ManagedVolumeStats({
   }
 
   return (
-    <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
-      <StatCell
-        label={t('landing.stats.30-day-volume')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
-      />
-      <StatCell
-        label={t('landing.stats.managed-on-oasis')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
-      />
-      <StatCell
-        label={t('landing.stats.collateral-automated')}
-        value={`$${formatAsShorthandNumbers(
-          new BigNumber(oasisStatsValue.lockedCollateralActiveTrigger),
-          2,
-        )}`}
-      />
-    </Grid>
+    <HomepagePromoBlock.Big
+      background="rgba(255, 255, 255, 0.5)"
+      height="auto"
+      sx={{ mt: 3, py: '50px', mb: 6, border: '1px solid', borderColor: 'neutral10' }}
+    >
+      <Grid columns={['1fr', '1fr 1fr 1fr']}>
+        <StatCell
+          label={t('landing.stats.30-day-volume')}
+          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
+        />
+        <StatCell
+          label={t('landing.stats.managed-on-oasis')}
+          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
+        />
+        <StatCell
+          label={t('landing.stats.median-vault')}
+          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
+        />
+      </Grid>
+    </HomepagePromoBlock.Big>
   )
 }
 
@@ -269,10 +266,10 @@ export function HomepageView() {
           heading="landing.hero.main.headline"
           subheading={<Trans i18nKey="landing.hero.main.subheader" components={[<br />]} />}
         />
-        <WhyOasisStats oasisStatsValue={oasisStatsValue} />
+        <ManagedVolumeStats oasisStatsValue={oasisStatsValue} />
       </Flex>
       <Pills sx={{ mb: 5 }} />
-      <ManagedVolumeStats sx={{ mb: 6 }} oasisStatsValue={oasisStatsValue} />
+      <WhyOasisStats oasisStatsValue={oasisStatsValue} />
       <Box
         sx={{
           width: '100%',
