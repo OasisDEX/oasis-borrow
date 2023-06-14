@@ -3,23 +3,18 @@ import { getStorageValue } from 'helpers/useLocalStorage'
 import { keyBy, memoize } from 'lodash'
 
 import { NetworkIds } from './network-ids'
-import { isSupportedNetwork, NetworkLabelType, NetworkNames } from './network-names'
+import { NetworkLabelType, NetworkNames } from './network-names'
 import { NetworkConfig, NetworkConfigHexId, networksByName } from './networks-config'
-import { CustomForkParameterType, CustomForkStorageKey } from './use-custom-fork-parameter'
-
-function isValidCustomForkParameters(
-  element?: CustomForkParameterType,
-): element is CustomForkParameterType {
-  if (!element) {
-    return false
-  }
-  return Object.keys(element).every((key) => isSupportedNetwork(key))
-}
+import {
+  CustomForkParameterType,
+  CustomForkStorageKey,
+  isValidCustomForkParameter,
+} from './use-custom-fork-parameter'
 
 export const forkSettings = getStorageValue<CustomForkParameterType>(
   CustomForkStorageKey,
   {},
-  isValidCustomForkParameters,
+  isValidCustomForkParameter,
 )
 
 export const forkNetworks: NetworkConfig[] = Object.entries(forkSettings).map(

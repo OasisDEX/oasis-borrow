@@ -62,9 +62,39 @@ export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: Netwo
   if (!networkConfig)
     console.log('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
   return (
-    (networkConfig && (networkConfig.testnetHexId || networkConfig.mainnetHexId)) ||
+    (networkConfig &&
+      (networkConfig.testnet ? networkConfig.mainnetHexId : networkConfig.testnetHexId)) ||
     networksById['1'].hexId
   )
+}
+
+export const shouldSetRequestedNetworkHexId = (
+  current?: NetworkConfigHexId,
+  requested?: NetworkConfigHexId,
+): boolean => {
+  if (current !== undefined && requested === undefined) {
+    return false
+  }
+  if (current === undefined && requested !== undefined) {
+    return true
+  }
+
+  if (current === undefined && requested === undefined) {
+    return false
+  }
+
+  const currentNetwork = networkSetByHexId[current!]
+  const requestedNetwork = networkSetByHexId[requested!]
+
+  if (requestedNetwork.isCustomFork) {
+    return true
+  }
+
+  if (requestedNetwork.testnet) {
+    return true
+  }
+
+  return currentNetwork.mainnetHexId !== requestedNetwork.mainnetHexId
 }
 
 export const getOppositeNetworkIdById = (networkId: NetworkIds) => {

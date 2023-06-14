@@ -13,7 +13,7 @@ import { useBridgeConnector } from './useBridgeConnector'
 import { useNetworkConnector } from './useNetworkConnector'
 
 export type Web3OnBoardConnectorContext = {
-  connect: (networkId?: NetworkConfigHexId) => Promise<void>
+  connect: (networkId?: NetworkConfigHexId, forced?: boolean) => Promise<void>
   connector: BridgeConnector | undefined
   networkConnector: NetworkConnector
   connectedAddress: string | undefined

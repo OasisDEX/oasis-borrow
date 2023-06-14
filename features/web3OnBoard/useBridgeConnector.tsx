@@ -1,17 +1,20 @@
+import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import {
   NetworkConfigHexId,
   networkSetByHexId,
+  shouldSetRequestedNetworkHexId,
   useCustomForkParameter,
   useCustomNetworkParameter,
 } from 'blockchain/networks'
+import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
 import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
 export interface BridgeConnectorState {
-  createConnector: (networkId?: NetworkConfigHexId) => Promise<void>
+  createConnector: (networkId?: NetworkConfigHexId, forced?: boolean) => Promise<void>
   connecting: boolean
   connectorState: [BridgeConnector | undefined, React.Dispatch<BridgeConnector | undefined>]
 }
@@ -20,25 +23,24 @@ export function useBridgeConnector(): BridgeConnectorState {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const [{ chains }, setChain] = useSetChain()
   const [connector, setConnector] = useState<BridgeConnector | undefined>(undefined)
-  const [networkHexId, setNetworkHexId] = useState<NetworkConfigHexId | undefined>(undefined)
-  const [, setCustomNetwork] = useCustomNetworkParameter()
+  const [customNetwork, setCustomNetwork] = useCustomNetworkParameter()
+  const [networkHexId, setNetworkHexId] = useState<NetworkConfigHexId>(customNetwork.hexId)
+
   const [customFork, setCustomFrok] = useCustomForkParameter()
+  const { reload } = useRouter()
 
-  useEffect(() => {
-    if (wallet && networkHexId && wallet.chains[0].id !== networkHexId) {
-      void setChain({ chainId: networkHexId })
-    }
-  }, [wallet, setChain, networkHexId])
-
-  useEffect(() => {
-    if (wallet) {
-      const networkConfig = networkSetByHexId[wallet.chains[0].id]
+  const addForkToWallet = useCallback(
+    async (wallet: WalletState, networkHexId: NetworkConfigHexId) => {
+      const networkConfig = networkSetByHexId[networkHexId]
+      if (!networkConfig) {
+        return
+      }
       if (networkConfig.isCustomFork && wallet.label === 'MetaMask') {
         const parentConfig = networkConfig.getParentNetwork()
         if (parentConfig) {
           const forkConfig = customFork[parentConfig.name]
           if (forkConfig && !forkConfig.isAddedToWallet) {
-            void addCustomForkToTheWallet(networkConfig).then(() => {
+            await addCustomForkToTheWallet(networkConfig).then(() => {
               setCustomFrok({
                 ...customFork,
                 [parentConfig.name]: {
@@ -50,8 +52,27 @@ export function useBridgeConnector(): BridgeConnectorState {
           }
         }
       }
+    },
+    [],
+  )
+
+  useEffect(() => {
+    if (wallet && networkHexId && wallet.chains[0].id !== networkHexId) {
+      void addForkToWallet(wallet, networkHexId)
+        .then(() => {
+          return setChain({ chainId: networkHexId })
+        })
+        .then(() => {
+          return reload()
+        })
     }
-  }, [wallet])
+  }, [wallet, setChain, networkHexId, addForkToWallet, reload])
+
+  useEffect(() => {
+    if (wallet) {
+      void addForkToWallet(wallet, wallet.chains[0].id as NetworkConfigHexId)
+    }
+  }, [addForkToWallet, wallet])
 
   const automaticConnector = useMemo(() => {
     if (wallet) {
@@ -87,16 +108,22 @@ export function useBridgeConnector(): BridgeConnectorState {
   }, [setCustomNetwork, wallet])
 
   const createConnector = useCallback(
-    async (networkId?: NetworkConfigHexId) => {
+    async (networkId?: NetworkConfigHexId, forced: boolean = false) => {
       if (!connecting) {
-        setNetworkHexId(networkId)
+        if (networkId && shouldSetRequestedNetworkHexId(customNetwork.hexId, networkId)) {
+          setNetworkHexId(networkId)
+        }
+        if (networkId && forced) {
+          console.log(`Forced network change to ${networkId}`)
+          setNetworkHexId(networkId)
+        }
         if (automaticConnector) {
           return
         }
         await connect()
       }
     },
-    [automaticConnector, connect, connecting],
+    [customNetwork, automaticConnector, connect, connecting],
   )
 
   return {
