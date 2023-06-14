@@ -117,7 +117,7 @@ export function AjnaRewardsController() {
               textSx={{
                 fontWeight: 'semiBold',
               }}
-              imageUrl="/static/img/logo_monolithic.svg"
+              imageUrl="/static/img/logos/dot_light.svg"
             />
           }
         />

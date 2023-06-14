@@ -92,6 +92,14 @@ export const oasisBaseTheme = {
     smallButton: 1.9,
   },
   text: {
+    heroheader: {
+      fontFamily: 'heading',
+      fontWeight: 'medium',
+      lineHeight: '80px',
+      fontSize: '76px',
+      letterSpacing: '-0.02em',
+      color: 'primary100',
+    },
     header1: {
       fontFamily: 'heading',
       fontWeight: 'medium',

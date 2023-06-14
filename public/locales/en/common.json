@@ -90,6 +90,7 @@
   "connect-wallet": "Connect a wallet",
   "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "See products",
+  "find-your-defi-product": "Find your DeFi product",
   "connect-wallet-button": "Connect Wallet",
   "change-wallet-chain": "Change wallet network",
   "connect-with": "{{ connectionKind }}",
@@ -483,9 +484,9 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "maker": {
-        "headline": "Simple and Secure DeFi",
-        "subheader": "Borrow, Multiply and Earn on the assets you hold across multiple protocols. Take advantage of powerful automation strategies and simple UX."
+      "main": {
+        "headline": "DeFi made simple and secure",
+        "subheader": "Take advantage of powerful automation strategies and user-friendly UX."
       },
       "ajna": {
         "headline": "Borrow and lend your crypto on Ajna",

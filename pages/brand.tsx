@@ -23,9 +23,9 @@ const assetsList = {
     { imageName: 'oasisapp_logo_white', backgroundColor: 'black' },
   ],
   palmLeaves: [
-    { imageName: 'logomark_gradient' },
-    { imageName: 'logomark_black' },
-    { imageName: 'logomark_white', backgroundColor: 'black' },
+    { imageName: 'dot_gradient' },
+    { imageName: 'dot_black' },
+    { imageName: 'dot_white', backgroundColor: 'black' },
   ],
   minimumSizeList: ['digital', 'print'],
   incorrectUseCasesMap: [

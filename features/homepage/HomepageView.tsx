@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { HomePageBanner } from 'components/HomePageBanner'
 import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { InfoCard } from 'components/InfoCard'
 import { AppLink } from 'components/Links'
@@ -14,7 +13,6 @@ import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
-import { useConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -25,11 +23,13 @@ import { useLocalStorage } from 'helpers/useLocalStorage'
 import { debounce } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
-import { Box, Button, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
+import React, { useEffect, useRef, useState } from 'react'
+import { Box, Flex, Grid, Image, SxProps, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
+import { backgroundSize } from 'theme/Background'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
+import { Hero } from './common/Hero'
 import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 import { OasisStats } from './OasisStats'
@@ -193,7 +193,6 @@ export function HomepageView() {
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const notificationsEnabled = useFeatureToggle('Notifications')
-  const aaveV3EarnWSTETHEnabled = useFeatureToggle('AaveV3EarnWSTETH')
   const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
@@ -255,30 +254,23 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      {aaveV3EarnWSTETHEnabled && (
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            mt: '80px',
-            mb: 0,
-          }}
-        >
-          <HomePageBanner
-            heading={t('ref.banner')}
-            link={EXTERNAL_LINKS.BLOG.EXPANDING_EARN_AAVE_V3}
-          />
-        </Flex>
-      )}
-
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
       {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
-      <Hero
-        isConnected={context?.status === 'connected'}
-        heading="landing.hero.maker.headline"
-        subheading={<Trans i18nKey="landing.hero.maker.subheader" components={[<br />]} />}
-      />
+      <Flex
+        sx={{
+          height: backgroundSize.height,
+          flexDirection: 'column',
+        }}
+      >
+        <Hero
+          isConnected={context?.status === 'connected'}
+          heading="landing.hero.main.headline"
+          subheading={<Trans i18nKey="landing.hero.main.subheader" components={[<br />]} />}
+        />
+        <WhyOasisStats oasisStatsValue={oasisStatsValue} />
+      </Flex>
       <Pills sx={{ mb: 5 }} />
       <ManagedVolumeStats sx={{ mb: 6 }} oasisStatsValue={oasisStatsValue} />
       <Box
@@ -555,7 +547,6 @@ export function HomepageView() {
             </Flex>
           </HomepagePromoBlock.Big>
         </Grid>
-        <WhyOasisStats oasisStatsValue={oasisStatsValue} />
         <Box
           sx={{
             mt: 7,
@@ -699,74 +690,5 @@ export function HomepageView() {
         </Grid>
       </Box>
     </Box>
-  )
-}
-
-export function Hero({
-  sx,
-  isConnected,
-  heading,
-  subheading,
-  showButton = true,
-}: {
-  sx?: SxStyleProp
-  isConnected: boolean
-  heading: string
-  subheading: ReactNode
-  showButton?: boolean
-}) {
-  const { t } = useTranslation()
-  const referralsEnabled = useFeatureToggle('Referrals')
-  const { connecting, connect } = useConnection({
-    initialConnect: false,
-  })
-
-  return (
-    <Flex
-      sx={{
-        position: 'relative',
-        justifySelf: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        mt: referralsEnabled ? '24px' : '64px',
-        mb: 5,
-        flexDirection: 'column',
-        ...sx,
-      }}
-    >
-      <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
-        {t(heading)}
-      </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
-        {subheading}
-      </Text>
-      {showButton && (
-        <Button
-          variant="primary"
-          sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            alignItems: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
-          }}
-          onClick={async () => connecting || (await connect())}
-        >
-          {isConnected ? t('see-products') : t('connect-wallet')}
-          <Icon
-            name="arrow_right"
-            sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
-            }}
-          />
-        </Button>
-      )}
-    </Flex>
   )
 }
