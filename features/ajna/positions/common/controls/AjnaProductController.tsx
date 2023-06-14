@@ -134,7 +134,7 @@ export function AjnaProductController({
   const [ajnaHistoryData, ajnaHistoryError] = useObservable(
     useMemo(
       () => (dpmPositionData ? getAjnaHistory$({ dpmPositionData }) : EMPTY),
-      [dpmPositionData],
+      [dpmPositionData, ajnaPositionData],
     ),
   )
 
