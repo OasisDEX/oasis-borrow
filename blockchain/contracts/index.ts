@@ -52,4 +52,43 @@ export function ensureContractsExist(
   }
 }
 
+export function ensurePropertiesExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+  properties: ReadonlyArray<string>,
+): asserts contracts is {
+  [K in (typeof properties)[number]]: string
+} {
+  if (properties.some((p) => !contracts.hasOwnProperty(p))) {
+    throw new Error(`Can't find properties: ${JSON.stringify(properties)} on ${chainId} chain`)
+  }
+}
+
+export function ensureSafeConfirmationsExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+): asserts contracts is { safeConfirmations: number } {
+  if (!contracts.hasOwnProperty('safeConfirmations')) {
+    throw new Error(`Can't find safeConfirmations definition on ${chainId} chain`)
+  }
+}
+
+export function ensureEtherscanExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+): asserts contracts is { etherscan: { url: string; apiUrl: string } } {
+  if (!contracts.hasOwnProperty('etherscan')) {
+    throw new Error(`Can't find etherscan definition on ${chainId} chain`)
+  }
+}
+
+export function ensureTokensExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+): asserts contracts is { tokens: Record<string, ContractDesc> } {
+  if (!contracts.hasOwnProperty('tokens')) {
+    throw new Error(`Can't find tokens definition on ${chainId} chain`)
+  }
+}
+
 export * from './extend-contract'

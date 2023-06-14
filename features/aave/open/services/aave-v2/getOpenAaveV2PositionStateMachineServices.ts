@@ -45,6 +45,7 @@ export function getOpenAaveV2PositionStateMachineServices(
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
+    runEthersTransaction: (_context) => async (_sendBack, _onReceive) => {},
     context$: (_) => {
       return context$.pipe(
         map((context) => ({

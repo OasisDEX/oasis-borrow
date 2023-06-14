@@ -240,13 +240,12 @@ model ProductHubItems {
   earnStrategy String?
   fee String?
   liquidity String?
-  managementType ProductHubManagement?
+  managementType ProductHubManagementSimple?
   maxLtv String?
   maxMultiply String?
   multiplyStrategy String?
   multiplyStrategyType ProductHubStrategy?
   reverseTokens Boolean?
-  with50Tokens String?
   updatedAt DateTime @updatedAt
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
@@ -285,6 +284,13 @@ enum ProductHubManagement {
   passive
 
   @@map("managementType")
+}
+
+enum ProductHubManagementSimple {
+  active
+  passive
+
+  @@map("managementTypeSimple")
 }
 
 enum ProductHubStrategy {

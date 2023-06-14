@@ -72,6 +72,7 @@ export interface IStrategyConfig {
   protocol: AaveLendingProtocol
   featureToggle?: Feature
   defaultSlippage?: BigNumber
+  executeTransactionWith: 'web3' | 'ethers'
 }
 export type AaveHeaderProps = {
   strategyConfig: IStrategyConfig

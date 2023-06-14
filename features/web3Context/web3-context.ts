@@ -27,7 +27,7 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
 
   function useWeb3Context$() {
     const context = useWeb3React<Web3Provider>()
-    const { connector, library, activate } = context
+    const { connector, library, activate, chainId, account, deactivate } = context
 
     const {
       connector: bridgeConnector,
@@ -42,14 +42,20 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     }, [bridgeConnector, activate, connector])
 
     useEffect(() => {
-      if (library && bridgeConnector) {
+      if (connector && !bridgeConnector) {
+        void deactivate()
+      }
+    }, [bridgeConnector, deactivate, connector])
+
+    useEffect(() => {
+      if (library && bridgeConnector && bridgeConnector.chainId === chainId && account) {
         push({
           status: 'connected',
           connectionKind: 'injected',
           web3: library as any,
           chainId: bridgeConnector.chainId,
           connectionMethod: 'web3-onboard',
-          account: bridgeConnector.wallet.accounts[0].address,
+          account: account,
           magicLinkEmail: undefined,
           walletLabel: bridgeConnector.wallet.label,
           transactionProvider: new ethers.providers.Web3Provider(
@@ -57,7 +63,7 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
           ).getSigner(),
         })
       }
-    }, [library, bridgeConnector])
+    }, [account, chainId, library, bridgeConnector])
 
     useEffect(() => {
       if (networkConnector && !bridgeConnector && !connector) {

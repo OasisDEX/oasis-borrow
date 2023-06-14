@@ -43,7 +43,7 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
     label: 'STETH/ETH',
-    earnStrategy: 'STETH/ETH Yield',
-    managementType: 'active_with_liq_risk',
+    earnStrategy: 'STETH/ETH Yield Loop',
+    managementType: 'active',
   },
 ]

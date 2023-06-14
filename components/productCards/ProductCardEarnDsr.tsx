@@ -27,7 +27,9 @@ export function ProductCardEarnDsr() {
 
   const handleClick = useCallback(async () => {
     if (!connectedContext) {
-      await connect('0x1', ({ account }) => push(`${INTERNAL_LINKS.earnDSR}/${account}`))
+      await connect('0x1', {
+        onConnect: ({ account }) => push(`${INTERNAL_LINKS.earnDSR}/${account}`),
+      })
     }
   }, [connectedContext, connect, push])
 

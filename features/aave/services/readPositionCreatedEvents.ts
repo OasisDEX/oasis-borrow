@@ -1,7 +1,7 @@
 import { ensureContractsExist, extendContract, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { getRpcProvidersForLogs } from 'blockchain/networks'
-import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
+import { getRpcProvidersForLogs, NetworkIds } from 'blockchain/networks'
+import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
@@ -54,15 +54,15 @@ async function getPositionCreatedEventForProxyAddress(
 
 function mapEvent(
   positionCreatedEvents: CreatePositionEvent[][],
-  context: Context,
+  chainId: NetworkIds,
 ): Array<PositionCreated> {
   return positionCreatedEvents
     .flatMap((events) => events)
     .map((e) => {
       return {
         positionType: e.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
-        collateralTokenSymbol: getTokenSymbolFromAddress(context, e.args.collateralToken),
-        debtTokenSymbol: getTokenSymbolFromAddress(context, e.args.debtToken),
+        collateralTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.collateralToken),
+        debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.debtToken),
         protocol: extractLendingProtocolFromPositionCreatedEvent(e),
         proxyAddress: e.args.proxyAddress,
       }
@@ -79,9 +79,7 @@ function extractLendingProtocolFromPositionCreatedEvent(
     case 'AAVE_V3':
       return LendingProtocol.AaveV3
     case 'Ajna':
-      return 'Ajna' as LendingProtocol
-    // TODO we will need proper handling for Ajna, filtered for now
-    // return LendingProtocol.Ajna
+      return LendingProtocol.Ajna
     default:
       throw new Error(
         `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
@@ -105,8 +103,11 @@ export function getLastCreatedPositionForProxy$(
     map(({ context, event }) => {
       return {
         positionType: event!.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
-        collateralTokenSymbol: getTokenSymbolFromAddress(context, event!.args.collateralToken),
-        debtTokenSymbol: getTokenSymbolFromAddress(context, event!.args.debtToken),
+        collateralTokenSymbol: getTokenSymbolBasedOnAddress(
+          context.chainId,
+          event!.args.collateralToken,
+        ),
+        debtTokenSymbol: getTokenSymbolBasedOnAddress(context.chainId, event!.args.debtToken),
         protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
         proxyAddress: event!.args.proxyAddress,
       }
@@ -131,7 +132,7 @@ export function createReadPositionCreatedEvents$(
         }),
       ).pipe(
         map((positionCreatedEvents) => {
-          return mapEvent(positionCreatedEvents, context)
+          return mapEvent(positionCreatedEvents, context.chainId)
         }),
       )
     }),

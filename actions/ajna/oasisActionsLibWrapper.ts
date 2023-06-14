@@ -1,4 +1,4 @@
-import { AjnaCommonDependencies, AjnaCommonPayload, Strategy } from '@oasisdex/dma-library'
+import { AjnaCommonDependencies, AjnaCommonPayload, Network, Strategy } from '@oasisdex/dma-library'
 import {
   ajnaDepositGenerateBorrow,
   ajnaOpenBorrow,
@@ -53,6 +53,7 @@ export async function getAjnaParameters({
     provider: rpcProvider,
     WETH: addressesConfig.tokens.ETH.address,
     getPoolData: getAjnaPoolData,
+    network: 'mainnet' as Network,
   }
 
   if (!addressesConfig.ajnaPoolPairs[tokenPair]) {

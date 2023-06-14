@@ -9,7 +9,10 @@ import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
 export interface ConnectionState {
   connect: (
     chainId?: NetworkConfigHexId,
-    onConnect?: (info: ConnectorInformation) => void,
+    options?: {
+      forced?: boolean
+      onConnect?: (info: ConnectorInformation) => void
+    },
   ) => Promise<void>
   connecting: boolean
   connectedChain: NetworkConfigHexId | undefined
@@ -46,9 +49,11 @@ export function useConnection({ initialConnect, chainId }: ConnectionProps): Con
   }, [connector, onConnectHandler])
 
   return {
-    connect: async (chainId, onConnect) => {
-      setOnConnectHandler(onConnect)
-      await connect(chainId)
+    connect: async (chainId, options) => {
+      if (options?.onConnect) {
+        setOnConnectHandler(options.onConnect)
+      }
+      await connect(chainId, options?.forced)
     },
     connecting,
     connectedAddress,
