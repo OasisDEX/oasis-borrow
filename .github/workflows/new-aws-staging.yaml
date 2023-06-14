@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - TECH-1747-updating-gha
+      - dev
 
 name: Deploy to AWS Staging
 
