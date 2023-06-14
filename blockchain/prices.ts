@@ -109,12 +109,8 @@ function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefine
 }
 
 export function getTokenPrice(token: string, tickers: Tickers) {
-  const {
-    coinpaprikaTicker,
-    coinbaseTicker,
-    coinGeckoTicker,
-    coinpaprikaFallbackTicker,
-  } = getToken(token)
+  const { coinpaprikaTicker, coinbaseTicker, coinGeckoTicker, coinpaprikaFallbackTicker } =
+    getToken(token)
 
   return getPrice(tickers, [
     coinbaseTicker,

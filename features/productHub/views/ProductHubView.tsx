@@ -37,8 +37,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
 
-  void ajnaHandler()
-
   return (
     <AnimatedWrapper sx={{ mb: 5 }}>
       <Box

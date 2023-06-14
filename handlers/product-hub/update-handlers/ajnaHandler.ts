@@ -1,3 +1,4 @@
+import { calculateAjnaApyPerDays } from '@oasisdex/dma-library'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -8,10 +9,12 @@ import {
   AjnaPoolsTableData,
   getAjnaPoolsTableData,
 } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
-import { getTokenGroup } from 'handlers/product-hub/helpers/getTokenGroup'
+import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 
@@ -25,7 +28,7 @@ export default async function (): ProductHubHandlerResponse {
     {},
   )
 
-  const r = (await getAjnaPoolsTableData())
+  return (await getAjnaPoolsTableData())
     .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>((v, pool) => {
       try {
         return [
@@ -48,16 +51,40 @@ export default async function (): ProductHubHandlerResponse {
       supportedPairs.includes(`${collateralToken}-${quoteToken}`),
     )
     .reduce<ProductHubItem[]>(
-      (v, { pair: [collateralToken, quoteToken], pool: { lowestUtilizedPrice } }) => {
+      (
+        v,
+        {
+          pair: [collateralToken, quoteToken],
+          pool: {
+            dailyPercentageRate30dAverage,
+            debt,
+            depositSize,
+            interestRate,
+            lowestUtilizedPrice,
+          },
+        },
+      ) => {
+        const isShort = isShortPosition({ collateralToken })
         const collateralPrice = prices[collateralToken]
         const quotePrice = prices[quoteToken]
         const marketPrice = collateralPrice.div(quotePrice)
+        const label = `${collateralToken}/${quoteToken}`
         const maxLtv = formatDecimalAsPercent(lowestUtilizedPrice.div(marketPrice))
+        const liquidity = `$${formatFiatBalance(depositSize.minus(debt).times(prices[quoteToken]))}`
+        const fee = formatDecimalAsPercent(interestRate)
+        const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
+        const multiplyStrategyType = isShort ? 'short' : 'long'
+        const maxMultiply = `${one.plus(one.div(one.div(maxLtv).minus(one))).toFixed(2)}x`
+        const earnStrategy = `${collateralToken}/${quoteToken} LP`
+        const managementType = 'active'
+        const weeklyNetApy = formatDecimalAsPercent(
+          calculateAjnaApyPerDays(depositSize, dailyPercentageRate30dAverage, 7),
+        )
 
         return [
           ...v,
           {
-            label: `${collateralToken}/${quoteToken}`,
+            label,
             network: NetworkNames.ethereumMainnet,
             primaryToken: collateralToken,
             ...getTokenGroup(collateralToken, 'primary'),
@@ -66,9 +93,14 @@ export default async function (): ProductHubHandlerResponse {
             secondaryToken: quoteToken,
             ...getTokenGroup(quoteToken, 'secondary'),
             maxLtv,
+            liquidity,
+            fee,
+            multiplyStrategy,
+            multiplyStrategyType,
+            maxMultiply,
           },
           {
-            label: `${collateralToken}/${quoteToken}`,
+            label,
             network: NetworkNames.ethereumMainnet,
             primaryToken: quoteToken,
             ...getTokenGroup(quoteToken, 'primary'),
@@ -76,11 +108,13 @@ export default async function (): ProductHubHandlerResponse {
             protocol: LendingProtocol.Ajna,
             secondaryToken: collateralToken,
             ...getTokenGroup(collateralToken, 'secondary'),
+            earnStrategy,
+            managementType,
+            weeklyNetApy,
+            reverseTokens: true,
           },
         ]
       },
       [],
     )
-
-  return r
 }
