@@ -69,7 +69,7 @@ export function AjnaFormView({
     },
     validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
-  const { connect } = useConnection({ initialConnect: true })
+  const { connect } = useConnection({ initialConnect: false })
 
   const txHandler = useAjnaTxHandler()
 

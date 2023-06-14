@@ -22,7 +22,7 @@ export function ProductCardEarnDsr() {
   const [potDsr] = useObservable(potDsr$)
   const [potTotalValueLocked] = useObservable(potTotalValueLocked$)
   const [connectedContext] = useObservable(connectedContext$)
-  const { connect } = useConnection({ initialConnect: true })
+  const { connect } = useConnection({ initialConnect: false })
   const { push } = useRedirect()
 
   const handleClick = useCallback(async () => {

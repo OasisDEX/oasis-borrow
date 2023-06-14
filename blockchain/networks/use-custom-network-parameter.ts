@@ -1,7 +1,8 @@
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Dispatch, SetStateAction } from 'react'
 
-import { isSupportedNetwork, NetworkNames } from './network-names'
+import { enableNetworksSet } from './network-helpers'
+import { NetworkNames } from './network-names'
 import { NetworkConfig, networksByName } from './networks-config'
 
 type CustomNetworkParameterType = Pick<NetworkConfig, 'id' | 'hexId'> & { network: NetworkNames }
@@ -18,7 +19,7 @@ function isValidCustomNetworkParameter(
   if (!element) {
     return false
   }
-  return !!isSupportedNetwork(element.network)
+  return enableNetworksSet.some((network) => network.name === element.network)
 }
 
 export function useCustomNetworkParameter(): [

@@ -12,21 +12,21 @@ import { AaveNetworkProtocolParameters, getProperAction } from './common'
 export function getOpenMultiplyAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
-  netwrokProtocolParameters: AaveNetworkProtocolParameters,
+  networkProtocolParameters: AaveNetworkProtocolParameters,
 ): TransactionParametersStateMachine<OpenMultiplyAaveParameters> {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
     async (parameters: OpenMultiplyAaveParameters) => {
       try {
-        const operation = getProperAction(netwrokProtocolParameters, 'getOpenTransaction')
+        const operation = getProperAction(networkProtocolParameters, 'getOpenTransaction')
         return await operation(parameters)
       } catch (e) {
         console.error(e)
         throw e
       }
     },
-    netwrokProtocolParameters.networkId,
+    networkProtocolParameters.networkId,
     'open',
   )
 }

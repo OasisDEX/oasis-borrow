@@ -22,10 +22,7 @@ export function isValidCustomForkParameter(
     if (!isSupportedNetwork(key)) {
       return false
     }
-    if (typeof value !== 'object') {
-      return false
-    }
-    return value.hasOwnProperty('url') && value.hasOwnProperty('id')
+    return typeof value === 'object'
   })
 }
 

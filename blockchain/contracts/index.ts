@@ -1,4 +1,4 @@
-import { getContractNetworkByWalletNetwork, NetworkIds } from 'blockchain/networks'
+import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
 
 import { arbitrumContracts } from './arbitrum'
@@ -29,13 +29,23 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   const correctNetworkId = walletChainId
     ? getContractNetworkByWalletNetwork(contractChainId, walletChainId)
     : contractChainId
-  if (!allNetworksContracts[correctNetworkId]) {
+
+  const networkConfig = networkSetById[correctNetworkId]
+  let contracts: Record<string, unknown> = allNetworksContracts[correctNetworkId]
+
+  if (!contracts && networkConfig.isCustomFork) {
+    const parentConfig = networkConfig.getParentNetwork()
+    if (!parentConfig) {
+      throw new Error(
+        `Can't find parent network for ${correctNetworkId} chain  even though it's a custom fork`,
+      )
+    }
+    contracts = allNetworksContracts[parentConfig.id]
+  }
+  if (!contracts) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
-  return allNetworksContracts[correctNetworkId] as Pick<
-    AllNetworksContractsType,
-    NetworkId
-  >[NetworkId]
+  return contracts as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
 }
 
 export function ensureContractsExist(

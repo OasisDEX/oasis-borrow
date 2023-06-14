@@ -178,7 +178,7 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
   const { connect, connecting } = useConnection({
-    initialConnect: true,
+    initialConnect: false,
   })
 
   return useMemo(
@@ -204,7 +204,7 @@ function useChangeChainButton({
 }): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
   const { connect } = useConnection({
-    initialConnect: true,
+    initialConnect: false,
     chainId: networkSetById[strategy.networkId].hexId,
   })
 

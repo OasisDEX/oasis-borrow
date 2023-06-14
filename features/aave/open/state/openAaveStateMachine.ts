@@ -52,7 +52,7 @@ import { canOpenPosition } from 'helpers/canOpenPosition'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
+import { ActorRefFrom, assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
@@ -440,7 +440,12 @@ export function createOpenAaveStateMachine(
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: ['resetWalletValues', 'updateContext', 'calculateEffectiveProxyAddress'],
+          actions: [
+            'resetWalletValues',
+            'updateContext',
+            'calculateEffectiveProxyAddress',
+            'sendSigner',
+          ],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
@@ -635,13 +640,24 @@ export function createOpenAaveStateMachine(
           if (context.strategyConfig.type === 'Borrow') {
             return {
               refParametersMachine: spawn(
-                openDepositBorrowTransactionParametersMachine,
+                openDepositBorrowTransactionParametersMachine.withContext({
+                  ...openDepositBorrowTransactionParametersMachine.context,
+                  runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+                  signer: (context.web3Context as ContextConnected)?.transactionProvider,
+                }),
                 'transactionParameters',
               ),
             }
           } else {
             return {
-              refParametersMachine: spawn(openMultiplyParametersMachine, 'transactionParameters'),
+              refParametersMachine: spawn(
+                openMultiplyParametersMachine.withContext({
+                  ...openMultiplyParametersMachine.context,
+                  runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+                  signer: (context.web3Context as ContextConnected)?.transactionProvider,
+                }),
+                'transactionParameters',
+              ),
             }
           }
         }),
@@ -857,6 +873,15 @@ export function createOpenAaveStateMachine(
             } as AutomationAddTriggerData,
           }
         }),
+        sendSigner: sendTo(
+          (context) => context.refParametersMachine!,
+          (context) => {
+            return {
+              type: 'SIGNER_CHANGED',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+            }
+          },
+        ),
       },
     },
   )
