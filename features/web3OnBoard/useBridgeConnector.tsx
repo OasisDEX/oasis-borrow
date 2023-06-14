@@ -53,7 +53,7 @@ export function useBridgeConnector(): BridgeConnectorState {
         }
       }
     },
-    [],
+    [customFork],
   )
 
   useEffect(() => {
@@ -62,11 +62,25 @@ export function useBridgeConnector(): BridgeConnectorState {
         .then(() => {
           return setChain({ chainId: networkHexId })
         })
-        .then(() => {
-          return reload()
+        .then((chainAdded) => {
+          if (chainAdded) {
+            const currentNetwork = networkSetByHexId[networkHexId]
+            setCustomNetwork({
+              hexId: currentNetwork.hexId,
+              id: currentNetwork.id,
+              network: currentNetwork.name,
+            })
+          }
+
+          return chainAdded
+        })
+        .then((value) => {
+          if (value) {
+            return reload()
+          }
         })
     }
-  }, [wallet, setChain, networkHexId, addForkToWallet, reload])
+  }, [wallet, setChain, networkHexId, addForkToWallet, reload, customFork, setCustomNetwork])
 
   useEffect(() => {
     if (wallet) {
@@ -111,10 +125,15 @@ export function useBridgeConnector(): BridgeConnectorState {
     async (networkId?: NetworkConfigHexId, forced: boolean = false) => {
       if (!connecting) {
         if (networkId && shouldSetRequestedNetworkHexId(customNetwork.hexId, networkId)) {
+          console.log(
+            `Network change to ${networkId} because shouldSetRequestedNetworkHexId. Current network is ${customNetwork.hexId}`,
+          )
           setNetworkHexId(networkId)
         }
         if (networkId && forced) {
-          console.log(`Forced network change to ${networkId}`)
+          console.log(
+            `Forced network change to ${networkId}. Current network is ${customNetwork.hexId}`,
+          )
           setNetworkHexId(networkId)
         }
         if (automaticConnector) {

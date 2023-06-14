@@ -1,7 +1,7 @@
 import { ActionCall } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import { NetworkIds, networkSetById } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { AccountImplementation__factory, OperationExecutor__factory } from 'types/ethers-contracts'
 
@@ -21,9 +21,17 @@ async function validateParameters({
 }: Pick<DpmExecuteParameters, 'proxyAddress' | 'signer' | 'networkId'>) {
   const signerChainId = await signer.getChainId()
   if (signerChainId !== networkId) {
-    throw new Error(
-      `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
-    )
+    const signerNetworkConfig = networkSetById[signerChainId]
+    if (
+      signerNetworkConfig?.isCustomFork &&
+      networkId === signerNetworkConfig.getParentNetwork()?.id
+    ) {
+      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+    } else {
+      throw new Error(
+        `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
+      )
+    }
   }
 
   const dpm = AccountImplementation__factory.connect(proxyAddress, signer)
@@ -77,6 +85,7 @@ export async function createExecuteTransaction({
   value,
 }: DpmExecuteParameters): Promise<ethers.ContractTransaction> {
   const { dpm, operationExecutor } = await validateParameters({ signer, networkId, proxyAddress })
+
   const encodedCallDAta = operationExecutor.interface.encodeFunctionData('executeOp', [
     calls,
     operationName,
