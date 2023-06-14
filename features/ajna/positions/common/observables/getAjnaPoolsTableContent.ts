@@ -49,7 +49,10 @@ export function getAjnaPoolsTableContent$(
                 } = curr
 
                 try {
-                  const collateralToken = getTokenSymbolFromAddress(context.chainId, collateralAddress)
+                  const collateralToken = getTokenSymbolFromAddress(
+                    context.chainId,
+                    collateralAddress,
+                  )
                   const quoteToken = getTokenSymbolFromAddress(context.chainId, quoteTokenAddress)
 
                   const collateralPrice = prices[collateralToken]

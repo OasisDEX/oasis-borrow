@@ -1,4 +1,7 @@
-export function getTokenGroup(token: string, type: 'primary' | 'secondary'): {
+export function getTokenGroup(
+  token: string,
+  type: 'primary' | 'secondary',
+): {
   primaryTokenGroup?: string
   secondaryTokenGroup?: string
 } {
