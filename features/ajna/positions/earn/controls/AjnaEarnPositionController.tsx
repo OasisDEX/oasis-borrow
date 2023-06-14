@@ -1,8 +1,8 @@
-import {
-  AjnaPositionViewHistoryPlaceholder,
-  AjnaPositionViewInfoPlaceholder,
-} from 'features/ajna/positions/common/components/AjnaPositionViewPlaceholders'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import {
+  AjnaPositionHistoryController,
+  AjnaPositionViewInfoPlaceholder,
+} from 'features/ajna/positions/common/controls/AjnaPositionHistoryController'
 import { AjnaPositionView } from 'features/ajna/positions/common/views/AjnaPositionView'
 import { AjnaEarnFormController } from 'features/ajna/positions/earn/controls/AjnaEarnFormController'
 import { AjnaEarnOverviewController } from 'features/ajna/positions/earn/controls/AjnaEarnOverviewController'
@@ -39,7 +39,7 @@ export function AjnaEarnPositionController() {
           </Grid>
         ),
         info: <AjnaPositionViewInfoPlaceholder />,
-        history: <AjnaPositionViewHistoryPlaceholder />,
+        history: <AjnaPositionHistoryController />,
       }}
     />
   )
