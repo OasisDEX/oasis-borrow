@@ -21,8 +21,8 @@ export function getAjnaPoolsTableContent$(
               data.flatMap((pool) => {
                 try {
                   return [
-                    getTokenSymbolFromAddress(context, pool.quoteTokenAddress),
-                    getTokenSymbolFromAddress(context, pool.collateralAddress),
+                    getTokenSymbolFromAddress(context.chainId, pool.quoteTokenAddress),
+                    getTokenSymbolFromAddress(context.chainId, pool.collateralAddress),
                   ]
                 } catch (e) {
                   console.warn('Token address not found within context', e)
@@ -49,8 +49,8 @@ export function getAjnaPoolsTableContent$(
                 } = curr
 
                 try {
-                  const collateralToken = getTokenSymbolFromAddress(context, collateralAddress)
-                  const quoteToken = getTokenSymbolFromAddress(context, quoteTokenAddress)
+                  const collateralToken = getTokenSymbolFromAddress(context.chainId, collateralAddress)
+                  const quoteToken = getTokenSymbolFromAddress(context.chainId, quoteTokenAddress)
 
                   const collateralPrice = prices[collateralToken]
                   const quotePrice = prices[quoteToken]

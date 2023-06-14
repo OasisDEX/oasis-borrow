@@ -10,6 +10,7 @@ import { ProductHubContentController } from 'features/productHub/controls/Produc
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
 import { ProductHubFilters, ProductHubProductType } from 'features/productHub/types'
+import ajnaHandler from 'handlers/product-hub/update-handlers/ajnaHandler'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -35,6 +36,8 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
+
+  void ajnaHandler()
 
   return (
     <AnimatedWrapper sx={{ mb: 5 }}>

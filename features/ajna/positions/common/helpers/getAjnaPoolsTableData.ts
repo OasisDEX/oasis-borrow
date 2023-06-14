@@ -16,7 +16,7 @@ export interface AjnaPoolsDataResponse {
   htpIndex: string
 }
 
-interface AjnaPoolsTableData {
+export interface AjnaPoolsTableData {
   collateralAddress: string
   quoteTokenAddress: string
   debt: BigNumber
