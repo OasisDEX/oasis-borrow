@@ -125,7 +125,7 @@ export const mainnetContracts = {
   ),
   aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.PriceOracle),
   chainlinkPriceOracle: {
-    USDCUSD: contractDesc(chainLinkPriceOracle, '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6'), // TODO: We have a wrong value in the library
+    USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
   },
   aaveV2LendingPool: contractDesc(
@@ -133,7 +133,7 @@ export const mainnetContracts = {
     mainnet.aave.v2.LendingPool,
     AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   ),
-  operationExecutor: contractDesc(operationExecutor, '0xc1cd3654ab3b37e0bc26bafb5ae4c096892d0b0c'), // TODO: We will change that soon, as soon as we support a new version of the operation executor.
+  operationExecutor: contractDesc(operationExecutor, mainnet.mpa.core.OperationExecutor),
   swapAddress: mainnet.mpa.core.Swap,
   accountFactory: contractDesc(
     accountFactory,
