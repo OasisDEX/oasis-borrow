@@ -1,4 +1,5 @@
 import { Protocol } from '@prisma/client'
+import { networks } from 'blockchain/networks'
 import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
 import { flatten } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -12,7 +13,7 @@ export async function handleGetProductHubData(
   req: HandleGetProductHubDataProps,
   res: NextApiResponse,
 ) {
-  const { protocols, promoCardsCollection } = req.body
+  const { protocols, promoCardsCollection, testnet = false } = req.body
   if (!protocols || !protocols.length || !promoCardsCollection) {
     return res.status(400).json({
       errorMessage:
@@ -24,12 +25,19 @@ export async function handleGetProductHubData(
     })
   }
 
+  const network = networks
+    .filter((network) => network.testnet === testnet)
+    .map((network) => network.name)
+
   await prisma.productHubItems
     .findMany({
       where: {
         OR: protocols.map((protocol) => ({
           protocol: {
             equals: protocol as Protocol,
+          },
+          network: {
+            in: network,
           },
         })),
       },
