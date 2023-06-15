@@ -31,7 +31,7 @@ import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } fr
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
-import { NavigationNetworkSwitcher } from './navigation/NavigationNetworkSwitcher'
+import { NavigationNetworkSwitcherOrb } from './navigation/NavigationNetworkSwitcher'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { SwapWidgetShowHide } from './swapWidget/SwapWidgetShowHide'
 
@@ -313,7 +313,7 @@ function UserDesktopMenu() {
         )}
         {useNetworkSwitcher ? (
           <Box sx={{ mr: 2 }}>
-            <NavigationNetworkSwitcher />
+            <NavigationNetworkSwitcherOrb />
           </Box>
         ) : null}
 
@@ -791,7 +791,7 @@ function DisconnectedHeader() {
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
             {useNetworkSwitcher ? (
               <Box sx={{ mr: 2 }}>
-                <NavigationNetworkSwitcher />
+                <NavigationNetworkSwitcherOrb />
               </Box>
             ) : null}
             <ConnectButton />

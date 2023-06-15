@@ -15,7 +15,9 @@ export function ConnectButton() {
         variant="buttons.secondary"
         sx={{
           display: 'flex',
+          alignItems: 'center',
           flexShrink: 0,
+          height: '100%',
           p: 0,
           textDecoration: 'none',
           bg: 'neutral10',
