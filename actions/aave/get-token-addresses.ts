@@ -15,9 +15,12 @@ export function getTokenAddresses(
   const contracts = getNetworkContracts(networkId)
   ensureContractsExist(networkId, contracts, [
     'aaveV3Pool',
-    'aaveOracle',
     'operationExecutor',
     'aaveV3PoolDataProvider',
+    'aaveV2LendingPool',
+    'aaveV2PriceOracle',
+    'aaveV2ProtocolDataProvider',
+    'aaveV3Oracle',
   ])
   ensureTokensExist(networkId, contracts)
   ensureChainlinkTokenPairsExist(networkId, contracts, ['ETHUSD'])

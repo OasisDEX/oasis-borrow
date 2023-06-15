@@ -709,6 +709,7 @@ export function SidebarManageAaveVault() {
         />
       )
     case state.matches('frontend.txInProgress'):
+    case state.matches('frontend.txInProgressEthers'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />

@@ -1,6 +1,5 @@
-import { Position } from '@oasisdex/dma-library'
+import { AavePosition } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
-import { getToken } from 'blockchain/tokensMetadata'
 import { IStrategyConfig, ProxyType } from 'features/aave/common'
 import { OpenAaveStateMachine } from 'features/aave/open/state'
 import { zero } from 'helpers/zero'
@@ -24,23 +23,9 @@ function setupOpenAaveStateContext({
       tokens: config.tokens,
       currentStep: 1,
       totalSteps: 4,
-      currentPosition: new Position(
-        {
-          amount: zero,
-          symbol: config.tokens.debt,
-          precision: getToken(config.tokens.debt).precision,
-        },
-        {
-          amount: zero,
-          symbol: config.tokens.collateral,
-          precision: getToken(config.tokens.collateral).precision,
-        },
-        zero,
-        {
-          maxLoanToValue: zero,
-          liquidationThreshold: zero,
-          dustLimit: zero,
-        },
+      currentPosition: AavePosition.emptyPosition(
+        { amount: zero, symbol: effectiveStrategy.tokens.debt },
+        { amount: zero, symbol: effectiveStrategy.tokens.collateral },
       ),
       getSlippageFrom:
         effectiveStrategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',

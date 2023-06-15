@@ -22,6 +22,7 @@ import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  RefTransactionMachine,
 } from 'features/aave/common/BaseAaveContext'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { isUserWalletConnected } from 'features/aave/helpers'
@@ -39,10 +40,7 @@ import {
   DPMAccountStateMachine,
 } from 'features/stateMachines/dpmAccount/'
 import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
-import {
-  EthersTransactionStateMachine,
-  TransactionStateMachine,
-} from 'features/stateMachines/transaction'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
   TransactionParametersStateMachine,
   TransactionParametersStateMachineEvent,
@@ -61,10 +59,6 @@ export const totalStepsMap = {
   proxySteps: (needCreateProxy: boolean) => (needCreateProxy ? 2 : 0),
   allowanceSteps: (needAllowance: boolean) => (needAllowance ? 1 : 0),
 }
-
-type RefTransactionMachine =
-  | ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
-  | ActorRefFrom<EthersTransactionStateMachine<any>> // todo
 
 export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
@@ -95,7 +89,6 @@ export type OpenAaveEvent =
   | { type: 'NEXT_STEP' }
   | { type: 'UPDATE_META_INFO'; hasOpenedPosition: boolean }
   | { type: 'RESERVE_CONFIG_UPDATED'; reserveConfig: AaveV2ReserveConfigurationData }
-  | { type: 'CREATED_MACHINE'; refTransactionMachine: RefTransactionMachine }
   | BaseAaveEvent
   | ProxyResultEvent
   | DMPAccountStateMachineResultEvents

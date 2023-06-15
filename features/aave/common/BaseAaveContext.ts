@@ -18,7 +18,11 @@ import {
   AllowanceStateMachine,
   AllowanceStateMachineResponseEvent,
 } from 'features/stateMachines/allowance'
-import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
+import {
+  EthersTransactionStateMachine,
+  TransactionStateMachine,
+  TransactionStateMachineResultEvents,
+} from 'features/stateMachines/transaction'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
@@ -81,6 +85,10 @@ export type UpdateTokenActionValueType = {
   manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
 }
 
+export type RefTransactionMachine =
+  | ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
+  | ActorRefFrom<EthersTransactionStateMachine<any>> // todo
+
 type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
   | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
@@ -110,6 +118,7 @@ export type BaseAaveEvent =
   | AllowanceStateMachineResponseEvent
   | { type: 'SET_DEBT'; debt: BigNumber }
   | AaveOpenPositionWithStopLossEvents
+  | { type: 'CREATED_MACHINE'; refTransactionMachine: RefTransactionMachine }
 
 export interface BaseAaveContext {
   strategyConfig: IStrategyConfig
