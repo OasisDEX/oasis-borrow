@@ -13,4 +13,5 @@ export const FTPolar = localFont({
       style: 'normal',
     },
   ],
+  display: 'block',
 })
