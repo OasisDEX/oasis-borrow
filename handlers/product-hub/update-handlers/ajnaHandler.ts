@@ -20,7 +20,6 @@ import getConfig from 'next/config'
 export default async function (): ProductHubHandlerResponse {
   // TODO: replace this with loading data for both mainnet and testnet
   const networkId = NetworkIds.GOERLI
-  const networkName = NetworkNames.ethereumGoerli
 
   const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
   const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))
@@ -32,7 +31,7 @@ export default async function (): ProductHubHandlerResponse {
     {},
   )
 
-  return (await getAjnaPoolsTableData(networkName))
+  return (await getAjnaPoolsTableData(networkId))
     .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>((v, pool) => {
       try {
         return [
