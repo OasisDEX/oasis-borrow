@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { WAD_PRECISION } from 'components/constants'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
@@ -16,7 +17,7 @@ export interface AjnaPoolsDataResponse {
   htpIndex: string
 }
 
-interface AjnaPoolsTableData {
+export interface AjnaPoolsTableData {
   collateralAddress: string
   quoteTokenAddress: string
   debt: BigNumber
@@ -30,8 +31,10 @@ interface AjnaPoolsTableData {
   highestThresholdPriceIndex: number
 }
 
-export const getAjnaPoolsTableData = async (): Promise<AjnaPoolsTableData[]> => {
-  const { response } = await loadSubgraph('Ajna', 'getPoolsTableData')
+export const getAjnaPoolsTableData = async (
+  networkId?: NetworkIds,
+): Promise<AjnaPoolsTableData[]> => {
+  const { response } = await loadSubgraph('Ajna', 'getPoolsTableData', {}, networkId)
 
   const negativeWadPrecision = WAD_PRECISION * -1
 

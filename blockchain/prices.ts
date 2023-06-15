@@ -108,6 +108,18 @@ function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefine
   throw new Error(`No price data for given token`)
 }
 
+export function getTokenPrice(token: string, tickers: Tickers) {
+  const { coinpaprikaTicker, coinbaseTicker, coinGeckoTicker, coinpaprikaFallbackTicker } =
+    getToken(token)
+
+  return getPrice(tickers, [
+    coinbaseTicker,
+    coinpaprikaTicker,
+    coinGeckoTicker,
+    coinpaprikaFallbackTicker,
+  ])
+}
+
 export function createTokenPriceInUSD$(
   every10Seconds$: Observable<any>,
   tokenTicker$: Observable<Tickers>,
@@ -118,19 +130,7 @@ export function createTokenPriceInUSD$(
       forkJoin(
         tokens.map((token) => {
           try {
-            const {
-              coinpaprikaTicker,
-              coinbaseTicker,
-              coinGeckoTicker,
-              coinpaprikaFallbackTicker,
-            } = getToken(token)
-
-            const tokenPrice = getPrice(tickers, [
-              coinbaseTicker,
-              coinpaprikaTicker,
-              coinGeckoTicker,
-              coinpaprikaFallbackTicker,
-            ])
+            const tokenPrice = getTokenPrice(token, tickers)
 
             return of({
               [token]: new BigNumber(tokenPrice),

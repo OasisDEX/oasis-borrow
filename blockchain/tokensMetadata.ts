@@ -3,7 +3,6 @@ import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
 
 import { ensureTokensExist, getNetworkContracts } from './contracts'
-import { Context } from './network'
 import { MainNetworkNames, NetworkIds } from './networks'
 import {
   aaveV2TokensMetadata,
@@ -81,7 +80,7 @@ export function getTokensWithChain(
 }
 
 // @deprecated
-export function getTokenSymbolFromAddress({ chainId }: Context, tokenAddress: string) {
+export function getTokenSymbolFromAddress(chainId: NetworkIds, tokenAddress: string) {
   const token = findKey(
     getNetworkContracts(NetworkIds.MAINNET, chainId).tokens,
     (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
