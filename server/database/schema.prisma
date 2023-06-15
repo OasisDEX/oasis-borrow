@@ -228,7 +228,7 @@ model UsersWhoFollowVaults {
 model ProductHubItems {
   id String @id @default(uuid())
   label String
-  network NetworkNames
+  network NetworkNamesWithTestnets
   primaryToken String
   primaryTokenGroup String?
   product Product[]
@@ -268,6 +268,19 @@ enum NetworkNames {
   optimism
 
   @@map("network")
+}
+
+enum NetworkNamesWithTestnets {
+  ethereum
+  ethereum_goerli
+  arbitrum
+  arbitrum_goerli
+  polygon
+  polygon_mumbai
+  optimism
+  optimism_goerli
+
+  @@map("networkWithTestnets")
 }
 
 enum Product {
