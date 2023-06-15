@@ -45,9 +45,11 @@ export function PriceImpact({ tokens, transactionParameters, slippage }: PriceIm
     ).then((response) => {
       const from = amountFromWei(response.fromTokenAmount, sourceToken.precision)
       const to = amountFromWei(response.toTokenAmount, targetToken.precision)
-      setMarketPrice(from.div(to))
+
+      const price = sourceToken.symbol === tokens.collateral ? to.div(from) : from.div(to)
+      setMarketPrice(price)
     })
-  }, [targetToken, oneInchCall, sourceToken, slippage])
+  }, [targetToken, oneInchCall, sourceToken, slippage, tokens.collateral])
 
   if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
     return <></>
