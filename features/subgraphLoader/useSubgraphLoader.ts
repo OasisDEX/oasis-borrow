@@ -27,7 +27,7 @@ export async function loadSubgraph<
       subgraph,
       method,
       params,
-      resolvedNetworkId,
+      networkId: resolvedNetworkId,
     }),
   })
 
