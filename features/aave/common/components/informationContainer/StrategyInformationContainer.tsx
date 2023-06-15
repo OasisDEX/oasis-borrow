@@ -72,7 +72,11 @@ export function StrategyInformationContainer({
         />
       )}
       {simulationHasSwap && balance && (
-        <PriceImpact {...state.context} transactionParameters={transition} balance={balance} />
+        <PriceImpact
+          {...state.context}
+          transactionParameters={transition}
+          slippage={getSlippage(state.context)}
+        />
       )}
       {simulationHasSwap && (
         <SlippageInformation
