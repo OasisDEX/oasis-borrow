@@ -129,8 +129,7 @@ export function useBridgeConnector(): BridgeConnectorState {
             `Network change to ${networkId} because shouldSetRequestedNetworkHexId. Current network is ${customNetwork.hexId}`,
           )
           setNetworkHexId(networkId)
-        }
-        if (networkId && forced) {
+        } else if (networkId && forced) {
           console.log(
             `Forced network change to ${networkId}. Current network is ${customNetwork.hexId}`,
           )

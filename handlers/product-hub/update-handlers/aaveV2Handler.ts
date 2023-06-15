@@ -1,4 +1,4 @@
-import { RiskRatio } from '@oasisdex/oasis-actions'
+import { RiskRatio } from '@oasisdex/dma-library'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { NetworkNames } from 'blockchain/networks'
 import { ProductHubProductType } from 'features/productHub/types'

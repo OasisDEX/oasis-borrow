@@ -1,4 +1,4 @@
-import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { PositionId } from 'features/aave/types'

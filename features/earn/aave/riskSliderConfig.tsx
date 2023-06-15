@@ -1,4 +1,4 @@
-import { RiskRatio } from '@oasisdex/oasis-actions'
+import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import {
   AdjustRiskViewConfig,

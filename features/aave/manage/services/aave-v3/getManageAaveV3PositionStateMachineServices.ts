@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { createExecuteTransaction, DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
 import { TxHelpers } from 'components/AppContext'
-import { IStrategyConfig } from 'features/aave/common'
+import { contextToEthersTransactions, IStrategyConfig } from 'features/aave/common'
 import {
   IStrategyInfo,
   StrategyTokenAllowance,
@@ -13,12 +15,14 @@ import { getPricesFeed$ } from 'features/aave/common/services/getPricesFeed'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { PositionId } from 'features/aave/types'
+import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
+import { interpret } from 'xstate'
 
 export function getManageAaveV3PositionStateMachineServices(
   context$: Observable<Context>,
@@ -38,6 +42,37 @@ export function getManageAaveV3PositionStateMachineServices(
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
+    runEthersTransaction: (context) => async (sendBack, _onReceive) => {
+      const networkId = context.strategyConfig.networkId
+      const contracts = getNetworkContracts(networkId)
+      ensureEtherscanExist(networkId, contracts)
+
+      const { etherscan } = contracts
+
+      const machine = createEthersTransactionStateMachine<DpmExecuteParameters>().withContext({
+        etherscanUrl: etherscan.url,
+        transaction: createExecuteTransaction,
+        transactionParameters: contextToEthersTransactions(context),
+      })
+
+      const actor = interpret(machine, {
+        id: 'ethersTransactionMachine',
+      }).start()
+
+      sendBack({ type: 'CREATED_MACHINE', refTransactionMachine: actor })
+
+      actor.onTransition((state) => {
+        if (state.matches('success')) {
+          sendBack({ type: 'TRANSACTION_COMPLETED' })
+        } else if (state.matches('failure')) {
+          sendBack({ type: 'TRANSACTION_FAILED', error: state.context.txError })
+        }
+      })
+
+      return () => {
+        actor.stop()
+      }
+    },
     context$: (_) => {
       return context$.pipe(
         map((contextConnected) => ({

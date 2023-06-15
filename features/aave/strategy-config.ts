@@ -1,4 +1,4 @@
-import { RiskRatio } from '@oasisdex/oasis-actions'
+import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
@@ -414,7 +414,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplyETHusdc',
     availableActions: allActionsAvailable,
-    executeTransactionWith: 'web3',
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -444,7 +444,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplycbETHusdc',
     availableActions: allActionsAvailable,
-    executeTransactionWith: 'web3',
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -474,7 +474,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplywBTCusdc',
     availableActions: allActionsAvailable,
-    executeTransactionWith: 'web3',
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -504,7 +504,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplywstETHeth',
     availableActions: allActionsAvailable,
-    executeTransactionWith: 'web3',
+    executeTransactionWith: 'ethers',
   },
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
@@ -578,6 +578,7 @@ export function loadStrategyFromTokens(
   collateralToken: string,
   debtToken: string,
   networkName: NetworkNames,
+  protocol: LendingProtocol,
 ): IStrategyConfig {
   // Aave uses WETH gateway for ETH (we have ETH strategy specified)
   // so we have to convert that on the fly just to find the strategy
@@ -588,11 +589,12 @@ export function loadStrategyFromTokens(
     (s) =>
       s.tokens.collateral === actualCollateralToken &&
       s.tokens.debt === actualDebtToken &&
-      s.network === networkName,
+      s.network === networkName &&
+      s.protocol === protocol,
   )
   if (!strategy) {
     throw new Error(
-      `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken})`,
+      `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken}) for protocol: ${protocol} on network: ${networkName}`,
     )
   }
   return strategy

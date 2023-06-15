@@ -101,4 +101,32 @@ export function ensureTokensExist(
   }
 }
 
+export function ensureChainlinkTokenPairsExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+  tokenPairs: ReadonlyArray<string>,
+): asserts contracts is {
+  chainlinkPriceOracle: {
+    [K in (typeof tokenPairs)[number]]: ContractDesc
+  }
+} {
+  if (!contracts.hasOwnProperty('chainlinkPriceOracle')) {
+    throw new Error(`Can't find chainlinkTokenPairs definition on ${chainId} chain`)
+  }
+
+  const chainlinkPriceOracle = (contracts as { chainlinkPriceOracle: unknown }).chainlinkPriceOracle
+
+  if (typeof chainlinkPriceOracle !== 'object' || chainlinkPriceOracle === null) {
+    throw new Error(`chainlinkPriceOracle definition on ${chainId} chain is not an object`)
+  }
+
+  if (tokenPairs.some((p) => !chainlinkPriceOracle.hasOwnProperty(p))) {
+    throw new Error(
+      `Can't find chainlinkTokenPairs definitions: ${JSON.stringify(
+        tokenPairs,
+      )} on ${chainId} chain`,
+    )
+  }
+}
+
 export * from './extend-contract'

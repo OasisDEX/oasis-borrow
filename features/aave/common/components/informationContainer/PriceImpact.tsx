@@ -1,4 +1,4 @@
-import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { PositionTransition } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -19,7 +19,7 @@ interface PriceImpactProps {
     collateral: string
     debt: string
   }
-  transactionParameters: IPositionTransition
+  transactionParameters: PositionTransition
 }
 
 export function PriceImpact({ tokens, transactionParameters, slippage }: PriceImpactProps) {

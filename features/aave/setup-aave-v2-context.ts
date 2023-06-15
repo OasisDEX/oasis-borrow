@@ -104,7 +104,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const openMultiplyAaveParameters = getOpenMultiplyAaveParametersMachine(
     txHelpers$,
     gasEstimation$,
-    { networkId: NetworkIds.MAINNET, lendingProtocol: LendingProtocol.AaveV2 },
+    NetworkIds.MAINNET,
   )
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
