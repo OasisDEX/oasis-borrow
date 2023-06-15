@@ -144,7 +144,7 @@ export function NavigationOrbIcon({
         <>{customIcon(isOpen)}</>
       ) : (
         <>
-          {typeof beacon === 'boolean' && (
+          {typeof beacon === 'boolean' && beacon && (
             <Box
               sx={{
                 position: 'absolute',
