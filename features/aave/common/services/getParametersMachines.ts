@@ -1,10 +1,10 @@
 import {
   AdjustAaveParameters,
   CloseAaveParameters,
-  getAdjustAaveParameters,
+  getAdjustPositionParameters,
   getCloseAaveParameters,
-  getManageAaveParameters,
-  getOpenDepositBorrowParameters,
+  getManagePositionParameters,
+  getOpenDepositBorrowPositionParameters,
   ManageAaveParameters,
   OpenAaveDepositBorrowParameters,
 } from 'actions/aave'
@@ -34,7 +34,7 @@ export function getAdjustAaveParametersMachine(
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
-    (parameters: AdjustAaveParameters) => getAdjustAaveParameters(parameters),
+    (parameters: AdjustAaveParameters) => getAdjustPositionParameters(parameters),
     NetworkIds.MAINNET,
     'adjust',
   )
@@ -47,7 +47,7 @@ export function getDepositBorrowAaveMachine(
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
-    (parameters: ManageAaveParameters) => getManageAaveParameters(parameters),
+    (parameters: ManageAaveParameters) => getManagePositionParameters(parameters),
     NetworkIds.MAINNET,
     'depositBorrow',
   )
@@ -60,7 +60,8 @@ export function getOpenDepositBorrowAaveMachine(
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
-    (parameters: OpenAaveDepositBorrowParameters) => getOpenDepositBorrowParameters(parameters),
+    (parameters: OpenAaveDepositBorrowParameters) =>
+      getOpenDepositBorrowPositionParameters(parameters),
     NetworkIds.MAINNET,
     'openDepositBorrow',
   )

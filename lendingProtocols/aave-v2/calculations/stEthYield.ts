@@ -1,4 +1,4 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import {

@@ -1,13 +1,11 @@
-import { ISimplePositionTransition } from '@oasisdex/dma-library'
-import { strategies } from '@oasisdex/oasis-actions'
-import { getTokenAddresses } from 'actions/aave/getTokenAddresses'
-import { OpenAaveDepositBorrowParameters } from 'actions/better-aave/types'
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ISimplePositionTransition, Network } from '@oasisdex/dma-library'
+import { strategies } from '@oasisdex/dma-library'
+import { getTokenAddresses } from 'actions/aave/get-token-addresses'
+import { OpenAaveDepositBorrowParameters } from 'actions/aave/types'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/common'
-import { getOneInchCall } from 'helpers/swap'
 
 function assertNetwork(networkId: NetworkIds): asserts networkId is NetworkIds.MAINNET {
   if (networkId !== NetworkIds.MAINNET) {
@@ -31,7 +29,9 @@ export async function getOpenDepositBorrowPositionParameters(
 
   assertNetwork(networkId)
 
-  const libArgs = {
+  type types = Parameters<typeof strategies.aave.v2.openDepositAndBorrowDebt>
+
+  const libArgs: types[0] = {
     slippage,
     collateralToken: {
       symbol: collateralToken,
@@ -46,14 +46,13 @@ export async function getOpenDepositBorrowPositionParameters(
     positionType: 'Borrow' as const,
   }
 
-  const deps = {
+  const deps: types[1] = {
     addresses: getTokenAddresses(networkId),
     provider: getRpcProvider(networkId),
-    getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
     proxy: proxyAddress,
     user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
-    proxyAddress,
+    network: 'mainnet' as Network,
   }
 
   return await strategies.aave.v2.openDepositAndBorrowDebt(libArgs, deps)

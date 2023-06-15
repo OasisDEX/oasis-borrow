@@ -1,5 +1,5 @@
 import { OpenMultiplyAaveParameters } from 'actions/aave'
-import { getOpenPositionParameters } from 'actions/better-aave'
+import { getOpenPositionParameters } from 'actions/aave'
 import { NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
 import {

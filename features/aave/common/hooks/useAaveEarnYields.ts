@@ -1,4 +1,4 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio } from '@oasisdex/dma-library'
 import { NetworkNames } from 'blockchain/networks'
 import { useAaveContext } from 'features/aave'
 import { AaveLendingProtocol } from 'lendingProtocols'

@@ -1,8 +1,8 @@
-import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ProductType, ProxyType } from 'features/aave/common'
 import { AaveLendingProtocol } from 'lendingProtocols'
-import { NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from '../../../blockchain/networks'
 
 export interface AdjustAaveParameters {
   userAddress: string

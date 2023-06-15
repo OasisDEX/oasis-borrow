@@ -1,4 +1,4 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ProxyType } from 'features/aave/common'
 import { AaveLendingProtocol } from 'lendingProtocols'

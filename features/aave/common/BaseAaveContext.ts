@@ -1,10 +1,10 @@
-import { PositionTransition } from '@oasisdex/dma-library'
 import {
   IPosition,
-  IPositionTransition,
   IRiskRatio,
   ISimplePositionTransition,
-} from '@oasisdex/oasis-actions'
+  IStrategy,
+  PositionTransition,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
@@ -125,7 +125,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
+  transition?: ISimplePositionTransition | PositionTransition | IStrategy
   estimatedGasPrice?: HasGasEstimation
   /**
    * @deprecated no idea what token it is. use **balance.__token__.balance** instead

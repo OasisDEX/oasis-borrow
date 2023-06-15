@@ -1,5 +1,4 @@
-import { PositionTransition } from '@oasisdex/dma-library'
-import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
+import { ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters, estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
@@ -27,7 +26,7 @@ export interface BaseTransactionParameters {
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: IPositionTransition | ISimplePositionTransition | PositionTransition
+  strategy?: ISimplePositionTransition | PositionTransition | IStrategy
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
@@ -40,7 +39,7 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 export type TransactionParametersStateMachineResponseEvent =
   | {
       type: 'STRATEGY_RECEIVED'
-      transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
+      transition?: ISimplePositionTransition | PositionTransition | IStrategy
     }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
@@ -57,7 +56,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'SIGNER_CHANGED'; signer: ethers.Signer }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = IPositionTransition | ISimplePositionTransition | PositionTransition
+export type LibraryCallReturn = ISimplePositionTransition | PositionTransition | IStrategy
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(

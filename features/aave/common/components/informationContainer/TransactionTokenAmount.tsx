@@ -1,4 +1,4 @@
-import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { PositionTransition } from '@oasisdex/dma-library'
 import { Flex, Text } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface BuyingTokenAmountProps {
-  transactionParameters: IPositionTransition
+  transactionParameters: PositionTransition
   tokens: { collateral: string }
   balance: StrategyTokenBalance
 }
