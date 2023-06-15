@@ -24,7 +24,7 @@ import { NavigationOrb } from './NavigationMenuOrb'
 import { NavigationNetworkSwitcherIcon } from './NavigationNetworkSwitcherIcon'
 import { NavigationNetworkSwitcherModal } from './NavigationNetworkSwitcherModal'
 
-export function NavigationNetworkSwitcher() {
+export function NavigationNetworkSwitcherOrb() {
   const { connectedChain, connect, connecting } = useConnection({
     initialConnect: false,
   })
@@ -102,13 +102,7 @@ export function NavigationNetworkSwitcher() {
   }
 
   return (
-    <NavigationOrb
-      customIcon={NavigationNetworkSwitcherIcon}
-      outline={{
-        outline: '1px solid',
-        outlineColor: 'primary100',
-      }}
-    >
+    <NavigationOrb customIcon={NavigationNetworkSwitcherIcon}>
       {(_isOpen) => (
         <>
           <Box

@@ -1,7 +1,6 @@
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
-import { AppHeader, ConnectPageHeader } from 'components/Header'
-import { AppLinkProps } from 'components/Links'
+import { NavigationController } from 'features/navigation/controls/NavigationController'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useCoolMode } from 'helpers/sweet/useCoolMode'
 import { WithChildren } from 'helpers/types'
@@ -108,7 +107,7 @@ export function AppLayout({
         sx={{ zIndex: 2, position: 'relative' }}
         showAnnouncement={false}
         footer={<Footer />}
-        header={<AppHeader />}
+        header={<NavigationController />}
         bg={shortBackground ? <Background short /> : <BackgroundLight />}
       >
         {children}
@@ -133,7 +132,7 @@ export function LandingPageLayout({ children }: WithChildren) {
   return (
     <>
       <WithAnnouncementLayout
-        header={<AppHeader />}
+        header={<NavigationController />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
@@ -154,7 +153,7 @@ export function ProductPagesLayout({ children }: WithChildren) {
   return (
     <>
       <WithAnnouncementLayout
-        header={<AppHeader />}
+        header={<NavigationController />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
@@ -184,7 +183,7 @@ export function MarketingLayout({
   return (
     <>
       <BasicLayout
-        header={<AppHeader />}
+        header={<NavigationController />}
         footer={<Footer />}
         variant={variant || 'marketingContainer'}
         sx={{ position: 'relative' }}
@@ -193,16 +192,5 @@ export function MarketingLayout({
         {children}
       </BasicLayout>
     </>
-  )
-}
-
-export function ConnectPageLayout({ children }: WithChildren & { backLink: AppLinkProps }) {
-  if (!isAppContextAvailable()) {
-    return null
-  }
-  return (
-    <BasicLayout header={<ConnectPageHeader />} bg={null}>
-      {children}
-    </BasicLayout>
   )
 }

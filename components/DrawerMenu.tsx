@@ -3,10 +3,11 @@ import React, { PropsWithChildren } from 'react'
 import { Box, SxProps } from 'theme-ui'
 
 export type DrawerMenuProps = {
+  mobileCloseOnTop?: boolean
   isOpen: boolean
   onClose: () => void
-  position?: 'left' | 'right'
   overlay?: boolean
+  position?: 'left' | 'right'
   sxOverride?: Partial<SxProps['sx']>
 }
 
@@ -14,12 +15,14 @@ export const DrawerMenu = ({
   children,
   isOpen,
   onClose,
-  position = 'left',
   overlay = false,
+  position = 'left',
   sxOverride = {},
+  mobileCloseOnTop = true,
 }: PropsWithChildren<DrawerMenuProps>) => {
   const isPositionLeft = position === 'left'
   const isPositionRight = position === 'right'
+
   return (
     <>
       <Box
@@ -30,7 +33,7 @@ export const DrawerMenu = ({
           right: isPositionRight ? 0 : 'auto',
           bottom: 0,
           width: ['100%', 'auto'],
-          minWidth: ['50%', 'auto'],
+          minWidth: '400px',
           p: 3,
           bg: 'neutral10',
           boxShadow: 'buttonMenu',
@@ -57,12 +60,12 @@ export const DrawerMenu = ({
         <Box
           sx={{
             position: 'absolute',
-            bottom: ['auto', 3],
-            top: [3, 'auto'],
+            bottom: [...(mobileCloseOnTop ? ['auto'] : []), 3],
+            top: [...(mobileCloseOnTop ? [3] : []), 'auto'],
             right: 0,
-            left: [3, 0],
-            width: ['40px', '58px'],
-            margin: [null, 'auto'],
+            left: [...(mobileCloseOnTop ? [3] : []), 0],
+            width: [...(mobileCloseOnTop ? ['40px'] : []), '58px'],
+            margin: [...(mobileCloseOnTop ? [null] : ['auto']), 'auto'],
             color: 'neutral80',
             overflow: 'hidden',
             cursor: 'pointer',
@@ -74,7 +77,7 @@ export const DrawerMenu = ({
         >
           <Icon
             name="mobile_menu_close"
-            size={[40, 58]}
+            size={[...(mobileCloseOnTop ? [40] : []), 50]}
             sx={{
               p: 1,
               borderRadius: 'circle',
