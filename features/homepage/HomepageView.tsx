@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { HomepageTabLayout } from 'components/HomepageTabLayout'
@@ -10,112 +9,21 @@ import {
   MultiplyProductCardsContainer,
 } from 'components/productCards/ProductCardsContainer'
 import { TabBar } from 'components/TabBar'
-import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
-import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { productCardsConfig } from 'helpers/productCards'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useLocalStorage } from 'helpers/useLocalStorage'
 import { debounce } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
-import { backgroundSize } from 'theme/Background'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
-import { Hero } from './common/Hero'
 import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 import { OasisStats } from './OasisStats'
-
-interface PillProps {
-  label: string
-  link: string
-  icon: string
-}
-
-function Pill(props: PillProps) {
-  return (
-    <AppLink
-      href={props.link}
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minWidth: 140,
-        background: 'rgba(255, 255, 255, 0.5)',
-        mx: 2,
-        my: 2,
-        borderRadius: 'round',
-        variant: 'text.paragraph2',
-        fontWeight: 'semiBold',
-        color: 'neutral80',
-        py: 2,
-        border: '1px solid',
-        borderColor: 'neutral20',
-        transition: 'background 0.2s ease-in-out',
-        '&:hover': {
-          background: 'rgba(255, 255, 255, 0.8)',
-        },
-      }}
-    >
-      <Icon name={props.icon} size="26px" sx={{ mr: 2 }} />
-      {props.label}
-    </AppLink>
-  )
-}
-
-function StatCell({ label, value }: { label: string; value: string }) {
-  return (
-    <Box sx={{ mb: [3, 1, 1] }}>
-      <Text variant="managedVolumeValue" sx={{ textAlign: 'center' }}>
-        {value}
-      </Text>
-      <Text
-        variant="paragraph2"
-        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'neutral80' }}
-      >
-        {label}
-      </Text>
-    </Box>
-  )
-}
-
-function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
-  const { t } = useTranslation()
-
-  if (!oasisStatsValue) {
-    return null
-  }
-
-  return (
-    <HomepagePromoBlock.Big
-      background="rgba(255, 255, 255, 0.5)"
-      height="auto"
-      sx={{ mt: 3, py: '50px', mb: 6, border: '1px solid', borderColor: 'neutral10' }}
-    >
-      <Grid columns={['1fr', '1fr 1fr 1fr']}>
-        <StatCell
-          label={t('landing.stats.30-day-volume')}
-          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
-        />
-        <StatCell
-          label={t('landing.stats.managed-on-oasis')}
-          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
-        />
-        <StatCell
-          label={t('landing.stats.median-vault')}
-          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
-        />
-      </Grid>
-    </HomepagePromoBlock.Big>
-  )
-}
 
 function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
   const { t } = useTranslation()
@@ -177,14 +85,6 @@ export function HomepageView() {
 
   const [oasisStatsValue] = useObservable(getOasisStats$())
 
-  const referralsEnabled = useFeatureToggle('Referrals')
-  const notificationsEnabled = useFeatureToggle('Notifications')
-  const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
-  const [context] = useObservable(context$)
-  const [checkReferralLocal] = useObservable(checkReferralLocal$)
-  const [userReferral] = useObservable(userReferral$)
-  const [landedWithRef, setLandedWithRef] = useState('')
-  const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   const [scrollPercentage, setScrollPercentage] = useState(0)
   // Magic number which is the rough height of three HomepagePromoBlocks + margins (search for sub-headers.security)
   // Why: cause the refs + calculations were singnificantly expensive than this
@@ -192,18 +92,6 @@ export function HomepageView() {
   const controlPointsHeight = 2000
   // Rough height of the HomepagePromoBlock mentioned above
   const controlPointsBlockHeight = 330
-
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!localReferral && referralsEnabled) {
-      const linkReferral = router.query.ref as string
-      if (linkReferral) {
-        setLocalReferral(linkReferral)
-        setLandedWithRef(linkReferral)
-      }
-    }
-  }, [checkReferralLocal, router.isReady])
 
   const scrollingBlockRef = useRef<HTMLDivElement>(null)
   const scrollingGridRef = useRef<HTMLDivElement>(null)
@@ -240,23 +128,6 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
-        <NewReferralModal />
-      )}
-      {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
-      <Flex
-        sx={{
-          height: ['auto', backgroundSize.height],
-          flexDirection: 'column',
-        }}
-      >
-        <Hero
-          isConnected={context?.status === 'connected'}
-          heading="landing.hero.main.headline"
-          subheading={<Trans i18nKey="landing.hero.main.subheader" components={[<br />]} />}
-        />
-        <ManagedVolumeStats oasisStatsValue={oasisStatsValue} />
-      </Flex>
       <WhyOasisStats oasisStatsValue={oasisStatsValue} />
       <Box
         sx={{

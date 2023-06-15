@@ -37,7 +37,7 @@ export function Hero({
         ...sx,
       }}
     >
-      <Heading as="h1" variant="heroHeader" sx={{ mt: 5, mb: 3, maxWidth: ['100%', '700px'] }}>
+      <Heading as="h1" variant="heroHeader" sx={{ mt: [2, 5], mb: 3, maxWidth: ['100%', '700px'] }}>
         {t(heading)}
       </Heading>
       <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: ['100%', '450px'] }}>

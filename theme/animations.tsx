@@ -4,7 +4,7 @@ import { Box, SxStyleProp } from 'theme-ui'
 import addingStopLossAnimation from 'theme/lottie/addingStopLossAnimation.json'
 import openVaultAnimation from 'theme/lottie/openVaultAnimation.json'
 
-import { fadeIn, slideIn } from './keyframes'
+import { fadeIn, slideIn, zoomInBackground } from './keyframes'
 
 export const slideInAnimation = {
   opacity: 0,
@@ -13,6 +13,14 @@ export const slideInAnimation = {
   animationTimingFunction: 'ease-out',
   animationFillMode: 'forwards',
   animationDelay: '0.4s',
+}
+
+export const zoomInBackgroundAnimation = {
+  animation: zoomInBackground,
+  animationDuration: '1.8s',
+  animationTimingFunction: 'ease-out',
+  animationFillMode: 'forwards',
+  animationDelay: '1.4s',
 }
 
 export const fadeInAnimation = {

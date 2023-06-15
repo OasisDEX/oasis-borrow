@@ -11,6 +11,15 @@ export const slideIn = keyframes({
   },
 })
 
+export const zoomInBackground = keyframes({
+  from: {
+    backgroundPosition: 'center top',
+  },
+  to: {
+    backgroundPosition: 'center bottom',
+  },
+})
+
 export const fadeIn = keyframes({
   from: {
     opacity: 0,
