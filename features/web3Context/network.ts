@@ -51,7 +51,7 @@ export function getNetworkName(): string {
   return networkName
 }
 
-export function getNetworkId(): number {
-  const networkName = getNetworkName()
+export function getNetworkId(name?: NetworkNames): number {
+  const networkName = name || getNetworkName()
   return Number({ ...networksByName, ...keyBy(forkNetworks, 'name') }[networkName].id)
 }
