@@ -15,18 +15,24 @@ import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
+import getConfig from 'next/config'
 
 export default async function (): ProductHubHandlerResponse {
+  // TODO: replace this with loading data for both mainnet and testnet
   const networkId = NetworkIds.GOERLI
+  const networkName = NetworkNames.ethereumGoerli
+
   const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
   const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))
-  const tickers = (await (await fetch('http://localhost:3000/api/tokensPrices')).json()) as Tickers
+  const tickers = (await (
+    await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/tokensPrices`)
+  ).json()) as Tickers
   const prices = tokens.reduce<{ [key: string]: BigNumber }>(
     (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
     {},
   )
 
-  return (await getAjnaPoolsTableData(NetworkNames.ethereumGoerli))
+  return (await getAjnaPoolsTableData(networkName))
     .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>((v, pool) => {
       try {
         return [
