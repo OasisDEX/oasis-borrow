@@ -9,8 +9,6 @@ import React, { Ref } from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
 import { BackgroundLight } from 'theme/BackgroundLight'
-import { BackgroundLighter } from 'theme/BackgroundLighter'
-import { ProductBackground } from 'theme/ProductBackground'
 
 import { Announcement } from './Announcement'
 import { ModalTrezorMetamaskEIP1559 } from './Modal'
@@ -162,7 +160,7 @@ export function AppLayout({
 const marketingBackgrounds = {
   default: <Background />,
   light: <BackgroundLight />,
-  lighter: <BackgroundLighter />,
+  lighter: <BackgroundLight />,
   none: null,
 }
 
@@ -203,7 +201,7 @@ export function ProductPagesLayout({ children }: WithChildren) {
         showAnnouncement={false}
         variant="landingContainer"
         sx={{ position: 'relative' }}
-        bg={<ProductBackground />}
+        bg={<BackgroundLight />}
       >
         {children}
       </WithAnnouncementLayout>
