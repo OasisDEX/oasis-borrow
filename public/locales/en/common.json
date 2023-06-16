@@ -2811,6 +2811,8 @@
       "get-to-know-ajna-multiply": "Get to know Ajna Multiply",
       "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity",
       "learn-how-to-use-multiply-to-optimize-your-position": "Learn how to use Multiply to optimize your position.",
+      "lend-against-collateral": "Lend {{quoteToken}} against {{collateralToken}} collateral",
+      "lends-to-one-token": "Lends to 1 token",
       "max-ltv": "Max loan to value: {{maxLtv}}",
       "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
       "up-to-multiple": "Up to {{maxMultiple}} multiple"

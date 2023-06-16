@@ -22,7 +22,7 @@ export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
             as="li"
             sx={{
               position: 'relative',
-              mr: `-${(forceSize || defaultMultipleSize) * 0.55}px`,
+              mr: `-${Math.ceil(forceSize || defaultMultipleSize) * 0.55}px`,
               zIndex: tokens.length - i,
               '&:last-child': { mr: 0 },
             }}

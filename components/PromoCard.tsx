@@ -100,7 +100,14 @@ export const PromoCardLoadingState: FC = () => {
   return (
     <PromoCardWrapper withHover={false}>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Skeleton circle width="42px" height="42px" sx={{ mt: 1 }} />
+        <Flex>
+          <Box sx={{ mr: '-20px' }}>
+            <Skeleton circle width="42px" height="42px" sx={{ mt: 1, mr: '-30px' }} />
+          </Box>
+          <Box>
+            <Skeleton circle width="42px" height="42px" sx={{ mt: 1 }} />
+          </Box>
+        </Flex>
         <Skeleton width="200px" sx={{ mt: '20px' }} />
         <Skeleton width="300px" sx={{ mt: 3 }} />
         <Skeleton width="300px" height="30px" sx={{ mt: '14px' }} />

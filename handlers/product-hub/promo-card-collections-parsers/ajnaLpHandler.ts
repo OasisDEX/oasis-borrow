@@ -1,87 +1,25 @@
-import BigNumber from 'bignumber.js'
-import { NetworkNames } from 'blockchain/networks'
-import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
-import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import {
   ProductHubItem,
   ProductHubProductType,
   ProductHubPromoCards,
 } from 'features/productHub/types'
+import {
+  parseAjnaBorrowPromoCard,
+  parseAjnaEarnPromoCard,
+  parseAjnaMultiplyPromoCard,
+} from 'handlers/product-hub/helpers'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
-
-const protocol = { network: NetworkNames.ethereumMainnet, protocol: LendingProtocol.Ajna }
-const getAjnaTokensPill = {
-  label: { key: 'ajna.promo-cards.get-ajna-tokens' },
-  variant: 'positive' as PromoCardVariant,
-}
-
-function parseBorrowishPromoCard(
-  collateralToken: string,
-  quoteToken: string,
-  maxLtv?: string,
-): PromoCardProps {
-  return {
-    tokens: [collateralToken, quoteToken],
-    title: `${collateralToken}/${quoteToken}`,
-    description: {
-      key: 'ajna.promo-cards.borrow-and-earn-ajna',
-      props: { collateralToken, quoteToken },
-    },
-    protocol,
-    pills: [
-      {
-        label: {
-          key: 'ajna.promo-cards.max-ltv',
-          props: {
-            maxLtv: maxLtv ? formatDecimalAsPercent(new BigNumber(maxLtv)) : 'n/a',
-          },
-        },
-      },
-      getAjnaTokensPill,
-    ],
-  }
-}
-
-function parseMultiplyPromoCard(
-  collateralToken: string,
-  quoteToken: string,
-  maxMultiply?: string,
-): PromoCardProps {
-  const isShort = isShortPosition({ collateralToken })
-
-  return {
-    tokens: [collateralToken, quoteToken],
-    title: `${collateralToken}/${quoteToken}`,
-    description: {
-      key: 'ajna.promo-cards.multiply-and-earn-ajna',
-      props: {
-        token: isShort ? quoteToken : collateralToken,
-        strategy: isShort ? 'Short' : 'Long',
-      },
-    },
-    protocol,
-    pills: [
-      {
-        label: {
-          key: 'ajna.promo-cards.up-to-multiple',
-          props: {
-            maxMultiple: maxMultiply ? `${parseFloat(maxMultiply).toFixed(2)}x` : 'n/a',
-          },
-        },
-      },
-      getAjnaTokensPill,
-    ],
-  }
-}
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const ajnaProducts = table.filter((product) => product.protocol === LendingProtocol.Ajna)
   const borrowishProducts = ajnaProducts.filter((product) =>
     product.product.includes(ProductHubProductType.Borrow),
   )
+  // const earnProducts = ajnaProducts.filter((product) =>
+  //   product.product.includes(ProductHubProductType.Earn),
+  // )
 
   const ETHUSDCBorrowish = borrowishProducts.find(
     (product) => product.primaryToken === 'ETH' && product.secondaryToken === 'USDC',
@@ -118,47 +56,58 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
 
-  const promoCardETHUSDCBorrow = parseBorrowishPromoCard('ETH', 'USDC', ETHUSDCBorrowish?.maxLtv)
-  const promoCardETHDAIBorrow = parseBorrowishPromoCard('ETH', 'DAI', ETHDAIBorrowish?.maxLtv)
-  const promoCardWSTETHUSDCBorrow = parseBorrowishPromoCard(
+  const promoCardETHUSDCBorrow = parseAjnaBorrowPromoCard('ETH', 'USDC', ETHUSDCBorrowish?.maxLtv)
+  const promoCardETHDAIBorrow = parseAjnaBorrowPromoCard('ETH', 'DAI', ETHDAIBorrowish?.maxLtv)
+  const promoCardWSTETHUSDCBorrow = parseAjnaBorrowPromoCard(
     'WSTETH',
     'USDC',
     WSTETHUSDCBorrowish?.maxLtv,
   )
-  const promoCardWBTCUSDCBorrow = parseBorrowishPromoCard('WBTC', 'USDC', WBTCUSDCBorrowish?.maxLtv)
-  const promoCardWBTCDAICBorrow = parseBorrowishPromoCard('WBTC', 'DAI', WBTCDAIBorrowish?.maxLtv)
-  const promoCardUSDCETHBorrow = parseBorrowishPromoCard('USDC', 'ETH', USDCETHBorrowish?.maxLtv)
-  const promoCardUSDCWBTCBorrow = parseBorrowishPromoCard('USDC', 'WBTC', USDCWBTCBorrowish?.maxLtv)
-  const promoCardETHUSDCMultiply = parseMultiplyPromoCard(
+  const promoCardWBTCUSDCBorrow = parseAjnaBorrowPromoCard(
+    'WBTC',
+    'USDC',
+    WBTCUSDCBorrowish?.maxLtv,
+  )
+  const promoCardWBTCDAICBorrow = parseAjnaBorrowPromoCard('WBTC', 'DAI', WBTCDAIBorrowish?.maxLtv)
+  const promoCardUSDCETHBorrow = parseAjnaBorrowPromoCard('USDC', 'ETH', USDCETHBorrowish?.maxLtv)
+  const promoCardUSDCWBTCBorrow = parseAjnaBorrowPromoCard(
+    'USDC',
+    'WBTC',
+    USDCWBTCBorrowish?.maxLtv,
+  )
+  const promoCardETHUSDCMultiply = parseAjnaMultiplyPromoCard(
     'ETH',
     'USDC',
     ETHUSDCBorrowish?.maxMultiply,
   )
-  const promoCardWSTETHUSDCMultiply = parseMultiplyPromoCard(
+  const promoCardWSTETHUSDCMultiply = parseAjnaMultiplyPromoCard(
     'WSTETH',
     'USDC',
     WSTETHUSDCBorrowish?.maxMultiply,
   )
-  const promoCardWBTCUSDCMultiply = parseMultiplyPromoCard(
+  const promoCardWBTCUSDCMultiply = parseAjnaMultiplyPromoCard(
     'WBTC',
     'USDC',
     WBTCUSDCBorrowish?.maxMultiply,
   )
-  const promoCardWBTCDAIMultiply = parseMultiplyPromoCard(
+  const promoCardWBTCDAIMultiply = parseAjnaMultiplyPromoCard(
     'WBTC',
     'DAI',
     WBTCDAIBorrowish?.maxMultiply,
   )
-  const promoCardUSDCETHMultiply = parseMultiplyPromoCard(
+  const promoCardUSDCETHMultiply = parseAjnaMultiplyPromoCard(
     'USDC',
     'ETH',
     USDCETHBorrowish?.maxMultiply,
   )
-  const promoCardUSDCWBTCMultiply = parseMultiplyPromoCard(
+  const promoCardUSDCWBTCMultiply = parseAjnaMultiplyPromoCard(
     'USDC',
     'WBTC',
     USDCWBTCBorrowish?.maxMultiply,
   )
+  const promoCardETHUSDCEarn = parseAjnaEarnPromoCard('ETH', 'USDC')
+  const promoCardWBTCUSDCEarn = parseAjnaEarnPromoCard('WBTC', 'USDC')
+  const promoCardETHDAIEarn = parseAjnaEarnPromoCard('ETH', 'DAI')
 
   return {
     [ProductHubProductType.Borrow]: {
@@ -174,11 +123,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       tokens: {
         ETH: [promoCardETHUSDCMultiply, promoCardWSTETHUSDCMultiply, promoCardUSDCETHMultiply],
         WBTC: [promoCardWBTCUSDCMultiply, promoCardWBTCDAIMultiply, promoCardUSDCWBTCMultiply],
-        USDC: [promoCardUSDCETHMultiply, promoCardUSDCWBTCMultiply, promoCardMultiplyGeneral]
+        USDC: [promoCardUSDCETHMultiply, promoCardUSDCWBTCMultiply, promoCardMultiplyGeneral],
       },
     },
     [ProductHubProductType.Earn]: {
-      default: [],
+      default: [promoCardETHUSDCEarn, promoCardWBTCUSDCEarn, promoCardETHDAIEarn],
       tokens: {},
     },
   }
