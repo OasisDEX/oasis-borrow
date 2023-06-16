@@ -2,10 +2,11 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
+import { TokensGroup } from 'components/TokensGroup'
 import { WithArrow } from 'components/WithArrow'
 import React, { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
 
@@ -18,8 +19,29 @@ export interface PromoCardTranslationProps {
   props?: { [key: string]: string }
 }
 
-export interface PromoCardProps {
+interface PromoCardPropsWithIcon {
   icon: string
+  image?: never
+  tokens?: never
+}
+
+interface PromoCardPropsWithImage {
+  icon?: never
+  image: string
+  tokens?: never
+}
+
+interface PromoCardPropsWithTokens {
+  icon?: never
+  image?: never
+  tokens: string[]
+}
+
+export type PromoCardProps = (
+  | PromoCardPropsWithIcon
+  | PromoCardPropsWithImage
+  | PromoCardPropsWithTokens
+) & {
   title: string | PromoCardTranslationProps
   protocol?: ProtocolLabelProps
   description?: string | PromoCardTranslationProps
@@ -80,8 +102,8 @@ export const PromoCardLoadingState: FC = () => {
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Skeleton circle width="42px" height="42px" sx={{ mt: 1 }} />
         <Skeleton width="200px" sx={{ mt: '20px' }} />
-        <Skeleton width="200px" height="30px" sx={{ mt: 3 }} />
-        <Skeleton sx={{ mt: '22px' }} />
+        <Skeleton width="300px" sx={{ mt: 3 }} />
+        <Skeleton width="300px" height="30px" sx={{ mt: '14px' }} />
       </Flex>
     </PromoCardWrapper>
   )
@@ -99,14 +121,28 @@ export const PromoCard: FC<PromoCardProps> = ({
   data,
   description,
   icon,
+  image,
   link,
   pills,
   protocol,
   title,
+  tokens,
 }) => {
   return (
     <PromoCardWrapper>
-      <Icon name={icon} size={50} sx={{ display: 'block', mx: 'auto', mb: '12px' }} />
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50px',
+          mx: 'auto',
+          mb: '12px',
+        }}
+      >
+        {icon && <Icon name={icon} size={50} />}
+        {tokens && <TokensGroup tokens={tokens} forceSize={50} />}
+        {image && <Image src={image} sx={{ height: '44px' }} />}
+      </Flex>
       {protocol && (
         <Box
           sx={{
