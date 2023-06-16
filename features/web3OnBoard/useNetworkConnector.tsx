@@ -8,16 +8,18 @@ export interface NetworkConnectorState {
 }
 export function useNetworkConnector(): NetworkConnectorState {
   const [customNetwork] = useCustomNetworkParameter()
-  const connector = useMemo(() => {
-    return new NetworkConnector({
-      urls: {
-        [customNetwork?.id]: networkSetById[customNetwork?.id].rpcUrl,
-      },
-      defaultChainId: parseInt(customNetwork?.id as unknown as string),
-    })
+  const [connector, config] = useMemo(() => {
+    const network = customNetwork ? networkSetById[customNetwork.id] : networkSetById[1]
+    return [
+      new NetworkConnector({
+        urls: {
+          [network.id]: network.rpcUrl,
+        },
+        defaultChainId: parseInt(customNetwork?.id as unknown as string),
+      }),
+      network,
+    ]
   }, [customNetwork])
-
-  const config = networkSetById[customNetwork.id]
 
   return {
     networkConnector: connector,

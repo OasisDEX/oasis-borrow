@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { isTestnetNetworkId, useCustomNetworkParameter } from 'blockchain/networks'
+import { isTestnetNetworkId, NetworkIds, useCustomNetworkParameter } from 'blockchain/networks'
 import { ProductHubData } from 'features/productHub/types'
 import { ProductHubDataParams, PromoCardsCollection } from 'handlers/product-hub/types'
 import { useCallback, useEffect, useState } from 'react'
@@ -19,7 +19,7 @@ export const useProductHubData = ({
   protocols,
   promoCardsCollection,
 }: ProductHubDataWithCards): ProductHubDataState => {
-  const [networketworkParameter] = useCustomNetworkParameter()
+  const [networkParameter] = useCustomNetworkParameter()
   const [state, setState] = useState<ProductHubDataState>({
     isError: false,
     isLoading: true,
@@ -41,7 +41,7 @@ export const useProductHubData = ({
         data: {
           protocols,
           promoCardsCollection,
-          testnet: isTestnetNetworkId(networketworkParameter.id),
+          testnet: isTestnetNetworkId(networkParameter?.id ?? NetworkIds.MAINNET),
         },
       })
       .then(({ data }) => {
