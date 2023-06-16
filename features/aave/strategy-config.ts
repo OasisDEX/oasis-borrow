@@ -449,7 +449,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'wBTCusdcV2',
+    name: 'wBTCusdcV3',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
