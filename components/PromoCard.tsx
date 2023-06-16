@@ -77,7 +77,8 @@ export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, withHove
     <Box
       sx={{
         position: 'relative',
-        p: '24px',
+        px: 3,
+        py: '24px',
         textAlign: 'center',
         border: '1px solid',
         borderColor: 'neutral20',
