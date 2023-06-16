@@ -69,8 +69,8 @@ export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: Netwo
 }
 
 export const shouldSetRequestedNetworkHexId = (
-  current?: NetworkConfigHexId,
-  requested?: NetworkConfigHexId,
+  current: NetworkConfigHexId | undefined,
+  requested: NetworkConfigHexId | undefined,
 ): boolean => {
   if (current !== undefined && requested === undefined) {
     return false

@@ -14,7 +14,7 @@ export const mainnetNetworkParameter: CustomNetworkParameterType = {
 export const CustomNetworkStorageKey = 'CustomNetwork'
 
 function isValidCustomNetworkParameter(
-  element?: CustomNetworkParameterType,
+  element?: CustomNetworkParameterType | null,
 ): element is CustomNetworkParameterType {
   if (!element) {
     return false
@@ -23,12 +23,12 @@ function isValidCustomNetworkParameter(
 }
 
 export function useCustomNetworkParameter(): [
-  CustomNetworkParameterType,
+  CustomNetworkParameterType | null,
   Dispatch<SetStateAction<CustomNetworkParameterType | null>>,
 ] {
-  const [state, setState] = useLocalStorage(
+  const [state, setState] = useLocalStorage<CustomNetworkParameterType | null>(
     CustomNetworkStorageKey,
-    mainnetNetworkParameter,
+    null,
     isValidCustomNetworkParameter,
   )
 
