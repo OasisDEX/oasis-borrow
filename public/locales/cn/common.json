@@ -3,7 +3,7 @@
   "404-message": "抱歉，页面不存在。",
   "about": {
     "heading": "关于我们",
-    "description": "Oasis 的目标是为用户提供最好和最值得信赖的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，而我们的团队是由一群区块链爱好者所组成。",
+    "description": "Oasis 的目标是为用户提供最好和最值得信赖的方式来部署资金。我们开发 Summer.fi 让用户能在 DeFi 的领域获得最大的利益，而我们的团队是由一群区块链爱好者所组成。",
     "careers-link": "加入我们",
     "pics-title": "团队"
   },
@@ -280,14 +280,14 @@
       "have-some-questions": "有任何疑问吗？",
       "learn": {
         "learn": "学习",
-        "deep-dive": "深入了解 Oasis.app 的功能和重要概念",
+        "deep-dive": "深入了解 Summer.fi 的功能和重要概念",
         "get-started": "开始",
         "tutorials": "教程",
         "key-concepts": "重要概念"
       },
       "support": {
         "support": "帮助",
-        "contact-whenever": "任何您需要帮助时，请联系 Oasis.app 团队",
+        "contact-whenever": "任何您需要帮助时，请联系 Summer.fi 团队",
         "faq": "常见问题",
         "discord": "Discord",
         "contact-us": "联系我们",
@@ -302,7 +302,7 @@
       "cookies": {
         "marketing": {
           "title": "行销 Cookies",
-          "description": "Oasis.app 使用来自 adRoll 的匿名 Cookies 在广告平台上重新定位营销策略。"
+          "description": "Summer.fi 使用来自 adRoll 的匿名 Cookies 在广告平台上重新定位营销策略。"
         },
         "analytics": {
           "title": "分析 Cookies",
@@ -388,7 +388,7 @@
   },
   "manage-multiply-vault": {
     "tooltip": {
-      "vaultId": "金库的 ID 是在 Oasis.app 上面专属于你的 Maker 金库而生的独一无二数字码。",
+      "vaultId": "金库的 ID 是在 Summer.fi 上面专属于你的 Maker 金库而生的独一无二数字码。",
       "stabilityFee": "从 Maker 金库借出 Dai 的时候，Maker Protocol 会索取稳定费。稳定费是一种变动费率，它会因为 Maker 基金会的风险团队所提的提议及治理者投票后采用的提议而产生改变。",
       "liquidationFee": "如果你的金库被清算了，清算罚金将会以 Dai 计算，并且加到你金库中尚未结算的总债务里，这将导致更多的抵押品被拍卖以偿还你尚未结算的债务。这个机制是为了鼓励金库拥有者避免被清算。至于清算罚金的金额，是依据金库里的债务而计算出来的清算手续费所决定。",
       "min-collateral": "最低抵押率也被称为清算率。如果金库低于最低抵押率，就会被视为抵押不足而可能被清算。",
@@ -562,10 +562,10 @@
     },
     "default": {
       "description": "以您的加密货币作为抵押品借出 Dai，一种与美元挂钩的稳定币。",
-      "title": "Oasis.app"
+      "title": "Summer.fi"
     },
     "latam500": {
-      "description": "通过 Oasis.app 上的 Latamex 购买 Dai。每月可获得价值 10 美元的 ETH，为期三个月。",
+      "description": "通过 Summer.fi 上的 Latamex 购买 Dai。每月可获得价值 10 美元的 ETH，为期三个月。",
       "title": "LATAM500"
     },
     "support": {
@@ -578,19 +578,19 @@
     },
     "about": {
       "title": "关于我们",
-      "description": "Oasis 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。"
+      "description": "Oasis 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Summer.fi 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。"
     },
     "referrals": {
       "title": "推荐好友使用 Oasis 并赚取 Dai",
-      "description": "我们让 Oasis.app 的用户可以经由推荐朋友而得到回报。您可以邀请好友使用我们的产品，您和朋友都可以因此赚取少许的手续费。"
+      "description": "我们让 Summer.fi 的用户可以经由推荐朋友而得到回报。您可以邀请好友使用我们的产品，您和朋友都可以因此赚取少许的手续费。"
     },
     "brand-assets": {
       "title": "品牌资产",
-      "description": "在这里可以找到 Oasis.app 的 Logo 和图像。"
+      "description": "在这里可以找到 Summer.fi 的 Logo 和图像。"
     },
     "security": {
       "title": "安全性",
-      "description": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。"
+      "description": "Summer.fi 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Summer.fi。"
     }
   },
   "set-allowance-for": "设置 {{token}} 许可额度",
@@ -714,7 +714,7 @@
   "tos-accept-message-updated": "在继续之前，您必须阅读并接受我们更新后的服务条款。",
   "tos-acceptance-check-in-progress": "许可检查进行中…",
   "tos-desc": "通过创建一个储蓄金库，我接受 Oasis",
-  "tos-jwt-signature-message": "您似乎第一次使用 Oasis.app 或正在通过新设备连接。为了安全起见，请用您的钱包签名以继续。",
+  "tos-jwt-signature-message": "您似乎第一次使用 Summer.fi 或正在通过新设备连接。为了安全起见，请用您的钱包签名以继续。",
   "tos-read": "我已阅读并接受服务条款。",
   "tos-view": "查看服务条款",
   "tos-wallet-connection-in-progress": "正在连接钱包…",
@@ -770,7 +770,7 @@
       "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
       "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
       "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。",
-      "vault-suggestions": "{{address}} 在 Oasis.app 上更多的可能"
+      "vault-suggestions": "{{address}} 在 Summer.fi 上更多的可能"
     },
     "number-of-vaults": "金库数量",
     "subheader-no-vaults": "开启 Maker 金库，存入抵押品，生成 Dai。",
@@ -868,7 +868,7 @@
   "vault-created": "金库 #{{id}} 已创建！",
   "changing-vault": "正在修改金库",
   "your-wallet": "你的钱包",
-  "welcome": "欢迎来到全新的 Oasis.app",
+  "welcome": "欢迎来到全新的 Summer.fi",
   "read-blog-post": "阅览博客",
   "visit-old-oasis": "前往旧版 Oasis",
   "oracles": {
@@ -896,8 +896,8 @@
     }
   },
   "newsletter": {
-    "title": "获取 Oasis.app 的最新信息",
-    "subtitle": "订阅我们的电子报以获得 Oasis.app 的最新信息 ",
+    "title": "获取 Summer.fi 的最新信息",
+    "subtitle": "订阅我们的电子报以获得 Summer.fi 的最新信息 ",
     "placeholder": "电子邮箱",
     "button": "订阅",
     "success": "感谢您订阅我们的电子报",
@@ -1019,10 +1019,10 @@
   },
   "get-started-button": "开始使用 Oasis",
   "wallet-wrong-network": "你的钱包似乎不在正确的网路里。",
-  "app-wrong-network": "现在的 Oasis.app 似乎不支持你的钱包。",
-  "wallet-wrong-network-desc": "你的钱包似乎在另一个与 Oasis.app 不同的网路里运行，请手动转换你的钱包网路，或者可以直接按下方的按钮。",
-  "app-wrong-network-desc": "Oasis.app 似乎运行在一个你的钱包不支持的网路，请按下方按钮转换网路。",
-  "user-wrong-network-desc": "你的钱包似乎在另一个与 Oasis.app 不同的网路里运行，请手动转换你的钱包网路。",
+  "app-wrong-network": "现在的 Summer.fi 似乎不支持你的钱包。",
+  "wallet-wrong-network-desc": "你的钱包似乎在另一个与 Summer.fi 不同的网路里运行，请手动转换你的钱包网路，或者可以直接按下方的按钮。",
+  "app-wrong-network-desc": "Summer.fi 似乎运行在一个你的钱包不支持的网路，请按下方按钮转换网路。",
+  "user-wrong-network-desc": "你的钱包似乎在另一个与 Summer.fi 不同的网路里运行，请手动转换你的钱包网路。",
   "switch-network": "转换网路",
   "switch-to-mainnet": "转换成主网",
   "and": "和",
@@ -1072,7 +1072,7 @@
       },
       "bullet-points": [
         "在同个钱包里拥有多个 Aave 仓位",
-        "启用进阶的 Oasis.app 功能，如：自动化和再融資",
+        "启用进阶的 Summer.fi 功能，如：自动化和再融資",
         "通过在交易中设置和删除限额以提高安全性"
       ]
     }
@@ -1275,7 +1275,7 @@
     "auto-buy-target-close-to-auto-sell-trigger": "设置较低的目标率有可能启动已设置的  Auto-Sell。如果想要使用较低的目标率，请先调整  Auto-Sell 触发器。",
     "auto-buy-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Buy 即刻执行。如果这不是你预期的结果，请调降触发率。",
     "auto-sell-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Sell 即刻执行。如果这不是你预期的结果，请调降触发率。",
-    "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@oasis.app</0>",
+    "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@summer.fi</0>",
     "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "你无法设置低于你的 Stop-Loss 的 Constant Multiple Sell 触发器。进一步了解此机制<0>如何运作</0>",
     "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "你无法设置高于已设置的 Constant Multiple 触发器的 Stop-Loss 触发器。进一步了解此机制<0>如何运作</0>",
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "设置 Constant Multiple 将移除已存在的 {{enabledTriggers}}。确定继续？",
@@ -1368,7 +1368,7 @@
     "max-cost": "最大的交易支出",
     "token-on-stop-loss-trigger": "Stop-Loss 触发器的 {{token}}",
     "zero-debt-heading": "在设置自动化保护前，你须先生成 DAI",
-    "zero-debt-description": "Oasis.app 自动化保护依据抵押率，让你在金库设置变量的 Stop-Loss 或 Auto-Sell 策略。这个功保护你的金库免于清算或降低抵押资产的风险敞口，特别是在价格骤跌时。进一步了解它如何实行",
+    "zero-debt-description": "Summer.fi 自动化保护依据抵押率，让你在金库设置变量的 Stop-Loss 或 Auto-Sell 策略。这个功保护你的金库免于清算或降低抵押资产的风险敞口，特别是在价格骤跌时。进一步了解它如何实行",
     "below-dust-limit-heading": "在设置 Stop-Loss 保护前，你必须生成高于最低债务限制的 Dai",
     "summary-of-protection": "保护功能摘要",
     "on-stop-loss-trigger": "在触发器上",
@@ -1432,9 +1432,9 @@
     "update-failure": "发生错误"
   },
   "modal-trezor-eip1559-title": "使用 Metamask 连接 Trezor 不支持 EIP-1559",
-  "modal-trezor-eip1559-paragraph1": "Oasis.app 最近已更新所有交易以支持 EIP-155。不支持在 Metamask 连接 Trezor 进行 EIP-1559 交易，详情请见<0>这里</0>.",
-  "modal-trezor-eip1559-paragraph2": "你可以在（<0>legacy.oasis.app</0>）继续使用 Metamask 连接 Trezor 进行旧的交易格式。",
-  "modal-trezor-eip1559-paragraph3": "或者，如果你有 Model T Trezor，你可以直接连接 Oasis.app。",
+  "modal-trezor-eip1559-paragraph1": "Summer.fi 最近已更新所有交易以支持 EIP-155。不支持在 Metamask 连接 Trezor 进行 EIP-1559 交易，详情请见<0>这里</0>.",
+  "modal-trezor-eip1559-paragraph2": "你可以在（<0>legacy.summer.fi</0>）继续使用 Metamask 连接 Trezor 进行旧的交易格式。",
+  "modal-trezor-eip1559-paragraph3": "或者，如果你有 Model T Trezor，你可以直接连接 Summer.fi。",
   "product-card-title": {
     "ETH-A": "中等成本和杠杆的 ETH",
     "ETH-B": "最大杠杆倍率的 ETH 选项",
@@ -1480,8 +1480,8 @@
       "link": "https://yearn.finance/"
     },
     "dai": {
-      "description": "Dai 是最大的超额抵押去中心稳定币。你可以在 Oasis.app 使用多种抵押资产来生成 Dai。在这里我们展示了让你的 Dai 产生回报的产品。",
-      "link": "https://kb.oasis.app/help/what-is-dai"
+      "description": "Dai 是最大的超额抵押去中心稳定币。你可以在 Summer.fi 使用多种抵押资产来生成 Dai。在这里我们展示了让你的 Dai 产生回报的产品。",
+      "link": "https://kb.summer.fi/help/what-is-dai"
     },
     "uni": {
       "description": "UNI 是 Uniswap 协议的治理代币，它由去中心化社群所治理，可以提案和投票升级协议。Uniswap 是一个去中心化的交易协议，提供 ERC20 代币的兑换。",
@@ -1519,7 +1519,7 @@
       },
       "position-id": {
         "label": "倉位 ID",
-        "tooltip": "倉位 ID 是用來在 Oasis.app 上的仓位指引"
+        "tooltip": "倉位 ID 是用來在 Summer.fi 上的仓位指引"
       },
       "collateral-ratio": {
         "label": "抵押率",
@@ -1683,7 +1683,7 @@
   },
   "optimization": {
     "zero-debt-heading": "在设置 Optimization 前，你必须生成 DAI。",
-    "zero-debt-description": "Oasis.app Optimization 会以抵押率为基础，让你在金库设置变量的 Auto-Buy 策略。当价格上升时，它会增加抵押品的风险敞口。进一步了解它如何执行",
+    "zero-debt-description": "Summer.fi Optimization 会以抵押率为基础，让你在金库设置变量的 Auto-Buy 策略。当价格上升时，它会增加抵押品的风险敞口。进一步了解它如何执行",
     "adding-new-triggers-disabled": "目前关闭创建新的 Optimization 触发器的功能。",
     "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Optimization 触发器。",
     "unable-to-access-auto-buy": "无法使用 Auto-Buy",
@@ -1743,7 +1743,7 @@
   "ref": {
     "banner": "推荐你的好友，一起来赚取 DAI",
     "ref-a-friend": "推荐好友",
-    "intro-1": "只要你推荐好友使用 Oasis.app，你和你的好友就可以永远赚取 5% 共享的手续费奖励。进一步了解",
+    "intro-1": "只要你推荐好友使用 Summer.fi，你和你的好友就可以永远赚取 5% 共享的手续费奖励。进一步了解",
     "intro-link": "Oasis 推荐好友",
     "total": "已赚取的 DAI 手续费总金额",
     "not-claimed": "尚未领取的 DAI",
@@ -1752,32 +1752,32 @@
     "no-claim": "尚无奖励",
     "claiming": "领取中",
     "top": "顶尖赚取者",
-    "link": "你的 Oasis.app 推荐链接",
+    "link": "你的 Summer.fi 推荐链接",
     "copy": "复制",
     "copied": "已复制",
     "explanation": "只要你的好友点击你的推荐连接并接受邀请，你就会看见他们显示在下方的”你已推荐的账户“。如此一来，手续费奖励立即生效！只要你想要，你可以无限次分享你的推荐链接。",
     "faq-link": "进一步了解 Oasis 推荐规则",
     "you-referred": "你已推荐的账户",
     "not-referred-yet": "你尚未推荐任何人",
-    "you-were-not-referred": "还没有人推荐你使用 Oasis.app",
+    "you-were-not-referred": "还没有人推荐你使用 Summer.fi",
     "you-have-been-invited": "已邀请你的账户",
     "accept-invite": "接受邀请",
     "reject-invite": "拒绝邀请",
     "referred-you": "推荐你的账户",
     "get-started": "立即开始",
     "how": "如何运作",
-    "how-p1-not-connected": "1. 连接你的以太坊钱包到 Oasis.app",
+    "how-p1-not-connected": "1. 连接你的以太坊钱包到 Summer.fi",
     "how-p1-connected": "1. 点击下方的<1>“立即开始”</1>",
-    "how-p2": "2. 分享你的连接给潜在的 Oasis.app 用户",
-    "how-p3": "3. 双方皆永远获得来自 Oasis.app 上手续费的 5% 奖励！",
+    "how-p2": "2. 分享你的连接给潜在的 Summer.fi 用户",
+    "how-p3": "3. 双方皆永远获得来自 Summer.fi 上手续费的 5% 奖励！",
     "need-help": "需要协助？",
     "help-link-1": "Oasis 推荐规则",
     "help-link-2": "前往 Oasis 知识中心",
     "etherscan": "Etherscan",
     "modal": {
-      "you-have-been-ref": "你已经受邀加入 Oasis.app 好友推荐计划，推荐人是",
-      "body-text": "Oasis.app 是部署资金到 DeFi 上最值得信赖的平台。加入我们的好友推荐计划，你可以：",
-      "p1_1": "收到全部在 Oasis.app 上产生的",
+      "you-have-been-ref": "你已经受邀加入 Summer.fi 好友推荐计划，推荐人是",
+      "body-text": "Summer.fi 是部署资金到 DeFi 上最值得信赖的平台。加入我们的好友推荐计划，你可以：",
+      "p1_1": "收到全部在 Summer.fi 上产生的",
       "p1_2": "5%手续费的奖励",
       "p2": "完全免费、随时获取",
       "p3": "以 DAI 支付的所有手续费",
@@ -1785,20 +1785,20 @@
       "read": "了解更多",
       "accept": "接受邀请",
       "later": "稍后再决定",
-      "joined": "你已成功加入 Oasis.app 的推荐好友计划。",
-      "joined-body": "你将获得所有你在 Oasis.app 上产生的手续费的 5%。现在可以马上前往 Oasis.app 的主页，开始探索我们的产品并不是你的资金到 DeFi 上。",
-      "go-home": "前往 Oasis.app 主页",
+      "joined": "你已成功加入 Summer.fi 的推荐好友计划。",
+      "joined-body": "你将获得所有你在 Summer.fi 上产生的手续费的 5%。现在可以马上前往 Summer.fi 的主页，开始探索我们的产品并不是你的资金到 DeFi 上。",
+      "go-home": "前往 Summer.fi 主页",
       "go-dashboard": "前往推荐好友仪表板",
-      "link-1": "Oasis.app 推荐好友计划博客文章, ",
+      "link-1": "Summer.fi 推荐好友计划博客文章, ",
       "link-2": "推荐好友规则",
-      "successful-body": "你将获得所有你在 Oasis.app 上产生的手续费的 5%。现在可以马上前往 Oasis.app 的主页或前往推荐好友仪表板。",
-      "successful-head": "你已成功推荐<1>{{referred}}</1>加入 Oasis.app 推荐好友计划。",
-      "successful-join": "你已成功加入 Oasis.app 推荐好友计划。"
+      "successful-body": "你将获得所有你在 Summer.fi 上产生的手续费的 5%。现在可以马上前往 Summer.fi 的主页或前往推荐好友仪表板。",
+      "successful-head": "你已成功推荐<1>{{referred}}</1>加入 Summer.fi 推荐好友计划。",
+      "successful-join": "你已成功加入 Summer.fi 推荐好友计划。"
     }
   },
   "notifications": {
     "enable-notifications-email-heading": "启用邮件通知",
-    "enable-notifications-email-description": "你将会收到关于 Oasis.app 更新的邮件",
+    "enable-notifications-email-description": "你将会收到关于 Summer.fi 更新的邮件",
     "enable-notifications-email-placeholder": "输入邮箱...",
     "confirm-btn": "确定",
     "change-btn": "更改",
@@ -1817,9 +1817,9 @@
     "action-notifications-description": "你将会收到关于自动化触发、清算和开启金库的通知。",
     "info-notifications": "金库信息通知",
     "info-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-    "user-communication-notifications": "Oasis.app  用户沟通通知",
+    "user-communication-notifications": "Summer.fi  用户沟通通知",
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-    "news-notifications": "Oasis.app 新消息通知",
+    "news-notifications": "Summer.fi 新消息通知",
     "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "service-not-available": "目前不提供通知服务，请稍后再试一次。"
   },
@@ -1913,7 +1913,7 @@
   },
   "brand-assets": {
     "heading": "品牌资产",
-    "intro": "在这里可以找到 Oasis.app 的 Logo 和图像。",
+    "intro": "在这里可以找到 Summer.fi 的 Logo 和图像。",
     "intro-cta": "下载所有档案",
     "category": {
       "logo": {
@@ -1922,7 +1922,7 @@
       },
       "dot": {
         "heading": "椰子叶图标",
-        "info": "请只有在以下情况时才单独使用图标：完整的 Logo 难以阅读、在有限的空间展示完整的 Logo，或者 Oasis.app 的品牌形象已完整建立。"
+        "info": "请只有在以下情况时才单独使用图标：完整的 Logo 难以阅读、在有限的空间展示完整的 Logo，或者 Summer.fi 的品牌形象已完整建立。"
       },
       "minimum-size": {
         "heading": "最小尺寸",
@@ -1947,7 +1947,7 @@
   },
   "security": {
     "heading": "用户相信我们的原因",
-    "intro": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。",
+    "intro": "Summer.fi 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Summer.fi。",
     "category": {
       "people": {
         "header": "我们有最顶尖的人才",

@@ -76,7 +76,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
                 fontWeight: 'regular',
               }}
             >
-              Oasis.app {t(`nav.${selectedProduct}`)}
+              Summer.fi {t(`nav.${selectedProduct}`)}
             </WithArrow>
           </AppLink>
         </Text>

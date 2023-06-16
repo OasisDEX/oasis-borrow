@@ -3,7 +3,7 @@
   "404-message": "Desculpe, página não encontrada.",
   "about": {
     "heading": "Sobre nós",
-    "description": "Nossa missão é disponibilizar a melhor e mais confiável forma de utilizar seu capital. Nós estamos construindo Oasis.app para que nossos clientes possam se beneficiar de todo o potencial das Finanças Descentralizadas (DeFi).\n\n Nosso time é feito de colaboradores apaixonados e dedicados.",
+    "description": "Nossa missão é disponibilizar a melhor e mais confiável forma de utilizar seu capital. Nós estamos construindo Summer.fi para que nossos clientes possam se beneficiar de todo o potencial das Finanças Descentralizadas (DeFi).\n\n Nosso time é feito de colaboradores apaixonados e dedicados.",
     "careers-link": "Junte-se a nós",
     "pics-title": "Conheça o time"
   },
@@ -318,7 +318,7 @@
   },
   "manage-multiply-vault": {
     "tooltip": {
-      "vaultId": "O ID do seu Cofre (Vault) é uma referência única do seu Cofre Maker no Oasis.app.",
+      "vaultId": "O ID do seu Cofre (Vault) é uma referência única do seu Cofre Maker no Summer.fi.",
       "stabilityFee": "O protocolo Maker coleta uma Taxa de Estabilidade em Dai, que é gerada dos Cofres Maker. Esta é uma taxa variável, que muda de acordo com os votos do corpo governante do Maker, feita pelos times de Risco.",
       "liquidationFee": "Se o seu cofre for liquidado, é cobrada uma penalidade de liquidação em Dai que é adicionada ao valor total da dívida do seu cofre, o que resulta em mais colateral sendo vendido para cobrir a dívida atual. Isso é feito para incentivar com que donos de Cofre evitem a liquidação. O tamanho da penalidade de liquidação é determinada pela Taxa de liquidação, que é calculada de acordo com a dívida do cofre.",
       "dust-limit": "O Limite de Poeira (Dust Limit) especifica o mínimo valor de Dai que pode ser gerado para este tipo de Cofre. Este valor também é chamado de \"Dívida Mínima\"."
@@ -435,7 +435,7 @@
     },
     "default": {
       "description": "Gere Dai, uma moeda estável lastreada em USD, usando cripto como colateral",
-      "title": "Oasis.app"
+      "title": "Summer.fi"
     },
     "support": {
       "description": "Todas as respostas para as perguntas mais frequentes.",
@@ -567,7 +567,7 @@
       "connected-viewer-withVaults": "Visão geral de Cofres Maker de {{address}}",
       "notConnected-noVaults": "{{address}} atualmente não possui Cofres Maker.<0/> Conecte sua carteira e abre um cofre.",
       "notConnected-withVaults": "Visão geral de Cofres Maker de {{address}}.<0/> Conecte sua carteira.",
-      "vault-suggestions": "{{address}}, faça mais no Oasis.app"
+      "vault-suggestions": "{{address}}, faça mais no Summer.fi"
     },
     "number-of-vaults": "Número de Cofres",
     "subheader-no-vaults": "Abra um Cofre Maker, deposite seu colateral e gere Dai.",
@@ -651,7 +651,7 @@
   "vault-created": "Cofre #{{id}} criado!",
   "changing-vault": "Alterando Cofre",
   "your-wallet": "Sua carteira",
-  "welcome": "Bem-vindo ao novo Oasis.app.",
+  "welcome": "Bem-vindo ao novo Summer.fi.",
   "read-blog-post": "Leia nosso artigo no blog",
   "visit-old-oasis": "Entre no Oasis legado",
   "oracles": {
@@ -794,7 +794,7 @@
   "moonpay-purchase-notification": "Moonpay compra",
   "moonpay-purchase-notification-past": "Compra Moonpay",
   "no-camera": "Não há câmera disponível",
-  "notice-app-homescreen": "Adicionar Oasis.app na minha tela inicial",
+  "notice-app-homescreen": "Adicionar Summer.fi na minha tela inicial",
   "wyre-badge-country": "EUA & Europa",
   "wyre-badge-fees": "Taxas de 2,9%",
   "wyre-desc": "Wyre é uma ponte segura entre moedas fiduciárias e criptomoedas.",
@@ -804,7 +804,7 @@
   "wyre-purchase-notification": "Wyre compra",
   "wyre-purchase-notification-past": "Wyre comprado",
   "newsletter": {
-    "title": "Stay up to date with Oasis.app",
+    "title": "Stay up to date with Summer.fi",
     "subtitle": "Subscribe to the newsletter for Oasis updates",
     "placeholder": "Email Address",
     "button": "Subscribe",

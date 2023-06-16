@@ -100,7 +100,7 @@ export function AjnaHomepageView() {
             components={[
               <AppLink
                 sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
-                href="https://oasis.app/anja"
+                href="https://summer.fi/ajna"
               />,
             ]}
           />

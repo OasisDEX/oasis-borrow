@@ -176,7 +176,7 @@ export const goerliContracts: MainnetContracts = {
   // TODO update address
   ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, goerli.ajna.AjnaRewardsClaimer),
   // NOT contracts
-  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
+  cacheApi: 'https://oazo-bcache-goerli-staging.new.summer.fi/api/v1',
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],

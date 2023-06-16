@@ -10,15 +10,15 @@ const content = [
   },
   {
     titleTranslationKey: 'seo.default.title',
-    link: 'https://oasis.app',
+    link: 'https://summer.fi',
   },
   {
     titleTranslationKey: 'nav.terms',
-    link: 'https://oasis.app/ajna',
+    link: 'https://summer.fi/ajna',
   },
   {
     titleTranslationKey: 'nav.privacy',
-    link: 'https://oasis.app/ajna',
+    link: 'https://summer.fi/ajna',
   },
 ]
 

@@ -11,14 +11,14 @@
 
 | Environment | URL                                            | Branch |                                     Build Status                                     |
 | ----------- | ---------------------------------------------- | :----: | :----------------------------------------------------------------------------------: |
-| Production  | [oasis.app](https://oasis.app)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
-| Staging     | [staging.oasis.app](https://staging.oasis.app) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
+| Production  | [summer.fi](https://summer.fi)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
+| Staging     | [staging.summer.fi](https://staging.summer.fi) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
 
 <br>
 
-# Oasis.app
+# Summer.fi
 
-[Oasis.app](https://oasis.app) is the most popular user-interface to interact with the
+[Summer.fi](https://summer.fi) is the most popular user-interface to interact with the
 [Maker protocol](https://docs.makerdao.com/). It enables users to generate Dai, the most used and
 decentralized stablecoin, using a variety of crypto assets as collateral.
 
@@ -68,7 +68,7 @@ The application will be viewable on <http://localhost:3000> or <https://localhos
 
 ### Run staging site locally
 
-You can run the current staging site, (found at <https://staging.oasis.app>) alongside the database,
+You can run the current staging site, (found at <https://staging.summer.fi>) alongside the database,
 by running:
 
 ```sh

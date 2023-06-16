@@ -77,7 +77,7 @@ export function WithAnnouncementLandingLayout({
       {showAnnouncement && (
         <Container variant="announcement">
           <Announcement
-            text="Welcome to the new Oasis.app. We are thrilled to have you here."
+            text="Welcome to the new Summer.fi. We are thrilled to have you here."
             discordLink={EXTERNAL_LINKS.DISCORD}
             link={EXTERNAL_LINKS.ETHEREUM_ORG_MERKLING}
             linkText="Check blog post"
@@ -118,7 +118,7 @@ export function WithAnnouncementLayout({
       {showAnnouncement && (
         <Container variant="announcement">
           <Announcement
-            text="Welcome to the new Oasis.app. We are thrilled to have you here."
+            text="Welcome to the new Summer.fi. We are thrilled to have you here."
             discordLink={EXTERNAL_LINKS.DISCORD}
             link={EXTERNAL_LINKS.ETHEREUM_ORG_MERKLING}
             linkText="Check blog post"

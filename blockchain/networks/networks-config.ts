@@ -120,7 +120,7 @@ const goerliConfig: NetworkConfig = {
       }),
   ),
   getCacheApi: memoize(
-    () => new GraphQLClient('https://oazo-bcache-goerli-staging.new.oasis.app/api/v1'),
+    () => new GraphQLClient('https://oazo-bcache-goerli-staging.new.summer.fi/api/v1'),
   ),
   isCustomFork: false,
   getParentNetwork: () => undefined,

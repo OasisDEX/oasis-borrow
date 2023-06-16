@@ -11,7 +11,7 @@ export default ({ children }) => (
 
 You need to monitor this position often to asses its liquidation risk and profitability. Changes in
 market conditions like the ratio of stETH/ETH or updates to the AAVE market could impact the
-returns. <a href="https://oasis.app" target="_blank">Oasis.app</a> will announce Governance changes
+returns. <a href="https://summer.fi" target="_blank">Summer.fi</a> will announce Governance changes
 from AAVE that affect this strategy. Since ETH interest rates are variable the profitability of this
 strategy changes with the demand to borrow ETH in AAVE.
 
@@ -50,13 +50,13 @@ borrowing cost of ETH is lower than the returns from StETH.
 
 This Earn position uses 3 protocols and the power of
 
-<a href="https://oasis.app" target="_blank">Oasis.app</a> smart contracts: All capital is deposited
+<a href="https://summer.fi" target="_blank">Summer.fi</a> smart contracts: All capital is deposited
 to AAVE v2 protocol and held there for the strategy to work. StETH represents ETH held by Lido,
 which in turn gives it to the node operators that perform the validator duties for Lido.
 
 ##### How much does it cost?
 
-The Oasis.app fee is 0.20% of the amount swapped. This fee is paid on setup and on each strategy
+The Summer.fi fee is 0.20% of the amount swapped. This fee is paid on setup and on each strategy
 adjustment. This strategy pays interest on the ETH borrowed from AAVE. This variable fee is
 accounted for in the net APY, but it changes continually as the market demands more or less ETH.
 Users need to take into account gas costs related to the Ethereum network which vary with congestion
