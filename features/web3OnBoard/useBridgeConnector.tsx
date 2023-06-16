@@ -1,68 +1,98 @@
 import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { networksListWithForksByHexId, useCustomNetworkParameter } from 'blockchain/networks'
-import { useCallback, useEffect, useMemo } from 'react'
+import {
+  NetworkConfigHexId,
+  networkSetByHexId,
+  shouldSetRequestedNetworkHexId,
+  useCustomForkParameter,
+  useCustomNetworkParameter,
+} from 'blockchain/networks'
+import { useRouter } from 'next/router'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
 import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
-export function useBridgeConnector(): [
-  BridgeConnector | undefined,
-  () => Promise<BridgeConnector | undefined>,
-] {
-  const [{ wallet }, connect, disconnect] = useConnectWallet()
-  const [{ chains }, setChain] = useSetChain()
-  const [customNetwork] = useCustomNetworkParameter()
+export interface BridgeConnectorState {
+  createConnector: (networkId?: NetworkConfigHexId, forced?: boolean) => Promise<void>
+  connecting: boolean
+  connectorState: [BridgeConnector | undefined, React.Dispatch<BridgeConnector | undefined>]
+}
 
-  const reconnect = useCallback(
-    async (wallet: WalletState) => {
-      await disconnect(wallet)
-      return await connect({ autoSelect: { label: wallet.label, disableModals: true } })
+export function useBridgeConnector(): BridgeConnectorState {
+  const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
+  const [{ chains }, setChain] = useSetChain()
+  const [connector, setConnector] = useState<BridgeConnector | undefined>(undefined)
+  const [customNetwork, setCustomNetwork] = useCustomNetworkParameter()
+  const [networkHexId, setNetworkHexId] = useState<NetworkConfigHexId | undefined>(
+    customNetwork?.hexId,
+  )
+
+  const [customFork, setCustomFrok] = useCustomForkParameter()
+  const { reload } = useRouter()
+
+  const addForkToWallet = useCallback(
+    async (wallet: WalletState, networkHexId: NetworkConfigHexId) => {
+      const networkConfig = networkSetByHexId[networkHexId]
+      if (!networkConfig) {
+        return
+      }
+      if (networkConfig.isCustomFork && wallet.label === 'MetaMask') {
+        const parentConfig = networkConfig.getParentNetwork()
+        if (parentConfig) {
+          const forkConfig = customFork[parentConfig.name]
+          if (forkConfig && !forkConfig.isAddedToWallet) {
+            await addCustomForkToTheWallet(networkConfig).then(() => {
+              setCustomFrok({
+                ...customFork,
+                [parentConfig.name]: {
+                  ...forkConfig,
+                  isAddedToWallet: true,
+                },
+              })
+            })
+          }
+        }
+      }
     },
-    [disconnect, connect],
+    [customFork],
   )
 
   useEffect(() => {
-    if (wallet) {
-      const connectedChain = wallet.chains[0]
-      const network = networksListWithForksByHexId[connectedChain.id]
-      if (!network) {
-        console.warn(
-          `Network ${connectedChain.id} is not supported. User shouldn't be able to connect to it from our app.`,
-        )
-        return
-      }
+    if (wallet && networkHexId) {
+      const walletNetwork = networkSetByHexId[wallet.chains[0].id]
+      const currentNetwork = networkSetByHexId[networkHexId]
 
-      if (network.isCustomFork) {
-        // that means we are connected to a fork
-        // we need to try to add a current fork to the metaMask
-        void addCustomForkToTheWallet(network).then(() => {
-          console.log('Fork added to the wallet')
-        })
+      if (walletNetwork.hexId !== networkHexId) {
+        void addForkToWallet(wallet, networkHexId)
+          .then(() => {
+            return setChain({ chainId: networkHexId })
+          })
+          .then((chainAdded) => {
+            if (chainAdded) {
+              setCustomNetwork({
+                hexId: currentNetwork.hexId,
+                id: currentNetwork.id,
+                network: currentNetwork.name,
+              })
+            }
+
+            return chainAdded
+          })
+          .then((value) => {
+            if (value) {
+              return reload()
+            }
+          })
       }
     }
-  }, [wallet])
+  }, [wallet, setChain, networkHexId, addForkToWallet, reload, customFork, setCustomNetwork])
 
-  const changeNetwork = useCallback(
-    async (wallet: WalletState) => {
-      const forcedChain = chains.find((chain) => chain.id === customNetwork.hexId)
-      console.log(`Forcing chain to be: ${JSON.stringify(forcedChain, null, 2)}`)
-      if (forcedChain && wallet && wallet.chains[0].id !== forcedChain.id) {
-        await setChain({ chainId: forcedChain.id })
-        const result = await reconnect(wallet)
-        return result[0]
-      }
-      return wallet
-    },
-    [customNetwork, chains, setChain, reconnect],
-  )
-
-  const bridgeConnector = useCallback(
-    (wallet: WalletState) => {
-      return new BridgeConnector(wallet, chains, disconnect)
-    },
-    [chains, disconnect],
-  )
+  useEffect(() => {
+    if (wallet) {
+      void addForkToWallet(wallet, wallet.chains[0].id as NetworkConfigHexId)
+    }
+  }, [addForkToWallet, wallet])
 
   const automaticConnector = useMemo(() => {
     if (wallet) {
@@ -71,15 +101,58 @@ export function useBridgeConnector(): [
     return undefined
   }, [wallet, chains, disconnect])
 
-  const connectCallback = useCallback(async () => {
-    if (automaticConnector) {
-      return automaticConnector
-    }
-    const _wallet = await connect()
-    if (_wallet.length === 0) return
-    const walletWithCorrectNetwork = await changeNetwork(_wallet[0])
-    return bridgeConnector(walletWithCorrectNetwork)
-  }, [automaticConnector, connect, changeNetwork, bridgeConnector])
+  useEffect(() => {
+    setConnector(automaticConnector)
+  }, [automaticConnector])
 
-  return [automaticConnector, connectCallback]
+  useEffect(() => {
+    if (wallet) {
+      wallet.provider.on('connect', ({ chainId }) => {
+        const currentNetwork = networkSetByHexId[chainId]
+        setCustomNetwork({
+          hexId: currentNetwork.hexId,
+          id: currentNetwork.id,
+          network: currentNetwork.name,
+        })
+      })
+
+      wallet.provider.on('chainChanged', (chainId) => {
+        const currentNetwork = networkSetByHexId[chainId]
+        setCustomNetwork({
+          hexId: currentNetwork.hexId,
+          id: currentNetwork.id,
+          network: currentNetwork.name,
+        })
+      })
+    }
+  }, [setCustomNetwork, wallet])
+
+  const createConnector = useCallback(
+    async (networkId?: NetworkConfigHexId, forced: boolean = false) => {
+      if (!connecting) {
+        if (networkId && shouldSetRequestedNetworkHexId(customNetwork?.hexId, networkId)) {
+          console.log(
+            `Network change to ${networkId} because shouldSetRequestedNetworkHexId. Current network is ${customNetwork?.hexId}`,
+          )
+          setNetworkHexId(networkId)
+        } else if (networkId && forced) {
+          console.log(
+            `Forced network change to ${networkId}. Current network is ${customNetwork?.hexId}`,
+          )
+          setNetworkHexId(networkId)
+        }
+        if (automaticConnector) {
+          return
+        }
+        await connect()
+      }
+    },
+    [customNetwork, automaticConnector, connect, connecting],
+  )
+
+  return {
+    createConnector,
+    connecting,
+    connectorState: [connector, setConnector],
+  }
 }

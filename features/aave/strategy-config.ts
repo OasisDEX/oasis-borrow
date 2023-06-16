@@ -1,4 +1,4 @@
-import { RiskRatio } from '@oasisdex/oasis-actions'
+import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
@@ -77,6 +77,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.optimismMainnet,
@@ -106,6 +107,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.optimismMainnet,
@@ -135,6 +137,7 @@ const optimismStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
     availableActions: ['close'],
+    executeTransactionWith: 'ethers',
   },
 ]
 
@@ -167,6 +170,7 @@ const arbitrumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.arbitrumMainnet,
@@ -196,6 +200,7 @@ const arbitrumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.arbitrumMainnet,
@@ -225,6 +230,7 @@ const arbitrumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
+    executeTransactionWith: 'ethers',
   },
 ]
 
@@ -258,6 +264,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3EarnWSTETH',
     availableActions: ['adjust', 'close'],
     defaultSlippage: new BigNumber(0.001),
+    executeTransactionWith: 'web3',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -287,6 +294,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'web3',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -316,6 +324,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'web3',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -345,6 +354,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'web3',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -374,6 +384,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'web3',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -403,6 +414,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplyETHusdc',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -432,11 +444,12 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplycbETHusdc',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
-    name: 'wBTCusdcV2',
+    name: 'wBTCusdcV3',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
@@ -461,6 +474,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplywBTCusdc',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'ethers',
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -490,6 +504,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3MultiplywstETHeth',
     availableActions: allActionsAvailable,
+    executeTransactionWith: 'ethers',
   },
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
@@ -521,6 +536,7 @@ const ethereumStrategies: Array<IStrategyConfig> = [
       type: 'Borrow' as ProductType,
       protocol: LendingProtocol.AaveV2 as AaveLendingProtocol,
       availableActions: allActionsAvailable,
+      executeTransactionWith: 'web3' as const,
     }
   }),
 ]
@@ -562,6 +578,7 @@ export function loadStrategyFromTokens(
   collateralToken: string,
   debtToken: string,
   networkName: NetworkNames,
+  protocol: LendingProtocol,
 ): IStrategyConfig {
   // Aave uses WETH gateway for ETH (we have ETH strategy specified)
   // so we have to convert that on the fly just to find the strategy
@@ -572,11 +589,12 @@ export function loadStrategyFromTokens(
     (s) =>
       s.tokens.collateral === actualCollateralToken &&
       s.tokens.debt === actualDebtToken &&
-      s.network === networkName,
+      s.network === networkName &&
+      s.protocol === protocol,
   )
   if (!strategy) {
     throw new Error(
-      `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken})`,
+      `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken}) for protocol: ${protocol} on network: ${networkName}`,
     )
   }
   return strategy

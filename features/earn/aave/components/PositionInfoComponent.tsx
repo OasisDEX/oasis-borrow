@@ -1,4 +1,4 @@
-import { IPosition, TYPICAL_PRECISION } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { DetailsSection } from 'components/DetailsSection'
@@ -66,8 +66,7 @@ export const PositionInfoComponent = ({
     .times(position.oraclePriceForCollateralDebtExchangeRate)
     .minus(position.debt.normalisedAmount)
 
-  const formattedNetValueInDebtToken =
-    (position && amountFromWei(netValueInDebtToken, TYPICAL_PRECISION)) || zero
+  const formattedNetValueInDebtToken = (position && amountFromWei(netValueInDebtToken, 18)) || zero // TODO
 
   const formattedCollateralValue = formatPositionBalance(position.collateral)
   const formattedDebtValue = formatPositionBalance(position.debt)

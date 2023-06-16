@@ -9,6 +9,7 @@ import {
   useAjnaBorrowFormReducto,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { AjnaHistoryEvents } from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import {
   AjnaBorrowishPositionAuction,
@@ -41,6 +42,7 @@ interface AjnaProductContextProviderPropsWithBorrow {
   position: AjnaPosition
   product: 'borrow'
   positionAuction: AjnaBorrowishPositionAuction
+  positionHistory: AjnaHistoryEvents
 }
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
@@ -48,6 +50,7 @@ interface AjnaProductContextProviderPropsWithEarn {
   position: AjnaEarnPosition
   product: 'earn'
   positionAuction: AjnaEarnPositionAuction
+  positionHistory: AjnaHistoryEvents
 }
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
@@ -55,6 +58,7 @@ interface AjnaProductContextProviderPropsWithMultiply {
   position: AjnaPosition
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
+  positionHistory: AjnaHistoryEvents
 }
 type AjnaProductDetailsContextProviderProps =
   | AjnaProductContextProviderPropsWithBorrow
@@ -75,6 +79,7 @@ interface AjnaProductContextPosition<P, A> {
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
   positionAuction: A
+  history: AjnaHistoryEvents
 }
 
 interface AjnaProductContext<P, F, A> {
@@ -146,6 +151,7 @@ export function AjnaProductContextProvider({
   product,
   position,
   positionAuction,
+  positionHistory,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
@@ -236,6 +242,7 @@ export function AjnaProductContextProvider({
       currentPosition: { position },
       isSimulationLoading,
       resolvedId: positionIdFromDpmProxyData,
+      history: positionHistory,
       setCachedPosition: (positionSet) => setCachedPosition(positionSet),
       setIsLoadingSimulation,
       setSimulation,
@@ -258,6 +265,7 @@ export function AjnaProductContextProvider({
         isSimulationLoading,
         resolvedId: positionIdFromDpmProxyData,
         positionAuction,
+        history: positionHistory,
       },
       validation,
       notifications,
@@ -278,6 +286,7 @@ export function AjnaProductContextProvider({
     validation,
     notifications,
     walletAddress,
+    positionHistory,
   ])
 
   switch (product) {

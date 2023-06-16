@@ -26,7 +26,6 @@ function parseProduct(
     maxMultiply: maxMultiplyString,
     multiplyStrategy,
     tooltips,
-    with50Tokens,
   }: ProductHubItem,
   product: ProductHubProductType,
 ): AssetsTableRowData {
@@ -40,17 +39,6 @@ function parseProduct(
   switch (product) {
     case ProductHubProductType.Borrow:
       return {
-        with50Tokens: {
-          sortable: with50Tokens ? parseInt(with50Tokens, 10) : 0,
-          value: with50Tokens ? (
-            <>
-              {with50Tokens}
-              {tooltips?.with50Tokens && <AssetsTableTooltip {...tooltips.with50Tokens} />}
-            </>
-          ) : (
-            <AssetsTableDataCellInactive />
-          ),
-        },
         maxLtv: {
           sortable: maxLtv ? maxLtv.toNumber() : 0,
           value: maxLtv ? (

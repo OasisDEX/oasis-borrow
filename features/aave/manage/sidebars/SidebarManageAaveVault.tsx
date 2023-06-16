@@ -1,12 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { PositionTransition } from '@oasisdex/dma-library'
 import {
   IPosition,
-  IPositionTransition,
   ISimplePositionTransition,
   ISimulatedTransition,
+  IStrategy,
   OPERATION_NAMES,
-} from '@oasisdex/oasis-actions'
+  PositionTransition,
+} from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -91,13 +91,18 @@ function textButtonReturningToAdjust({
 }
 
 function transitionHasSwap(
-  transition?: ISimplePositionTransition | PositionTransition,
-): transition is IPositionTransition {
+  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
+): transition is PositionTransition {
   return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
 }
 
 function getAmountReceivedAfterClose(
-  strategy: IPositionTransition | ISimplePositionTransition | PositionTransition | undefined,
+  strategy:
+    | PositionTransition
+    | ISimplePositionTransition
+    | PositionTransition
+    | IStrategy
+    | undefined,
   currentPosition: IPosition | undefined,
   isCloseToCollateral: boolean,
 ) {
@@ -704,6 +709,7 @@ export function SidebarManageAaveVault() {
         />
       )
     case state.matches('frontend.txInProgress'):
+    case state.matches('frontend.txInProgressEthers'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />

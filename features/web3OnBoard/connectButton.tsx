@@ -3,11 +3,11 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button } from 'theme-ui'
 
-import { useWeb3OnBoardConnection } from './useWeb3OnBoardConnection'
+import { useConnection } from './useConnection'
 
 export function ConnectButton() {
   const { t } = useTranslation()
-  const { connecting, executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { connecting, connect } = useConnection({ initialConnect: false })
 
   return (
     <div>
@@ -15,14 +15,16 @@ export function ConnectButton() {
         variant="buttons.secondary"
         sx={{
           display: 'flex',
+          alignItems: 'center',
           flexShrink: 0,
+          height: '100%',
           p: 0,
           textDecoration: 'none',
           bg: 'neutral10',
           boxShadow: 'buttonMenu',
         }}
         disabled={connecting}
-        onClick={() => executeConnection()}
+        onClick={() => connect()}
       >
         <WithArrow
           sx={{

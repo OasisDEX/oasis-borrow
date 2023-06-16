@@ -1,14 +1,15 @@
-import { PositionTransition } from '@oasisdex/dma-library'
 import {
   IPosition,
-  IPositionTransition,
   IRiskRatio,
   ISimplePositionTransition,
-} from '@oasisdex/oasis-actions'
+  IStrategy,
+  PositionTransition,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Context } from 'blockchain/network'
+import { Context, ContextConnected } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
@@ -17,7 +18,11 @@ import {
   AllowanceStateMachine,
   AllowanceStateMachineResponseEvent,
 } from 'features/stateMachines/allowance'
-import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
+import {
+  EthersTransactionStateMachine,
+  TransactionStateMachine,
+  TransactionStateMachineResultEvents,
+} from 'features/stateMachines/transaction'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
@@ -80,6 +85,10 @@ export type UpdateTokenActionValueType = {
   manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
 }
 
+export type RefTransactionMachine =
+  | ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
+  | ActorRefFrom<EthersTransactionStateMachine<any>> // todo
+
 type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
   | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
@@ -109,6 +118,7 @@ export type BaseAaveEvent =
   | AllowanceStateMachineResponseEvent
   | { type: 'SET_DEBT'; debt: BigNumber }
   | AaveOpenPositionWithStopLossEvents
+  | { type: 'CREATED_MACHINE'; refTransactionMachine: RefTransactionMachine }
 
 export interface BaseAaveContext {
   strategyConfig: IStrategyConfig
@@ -124,7 +134,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
+  transition?: ISimplePositionTransition | PositionTransition | IStrategy
   estimatedGasPrice?: HasGasEstimation
   /**
    * @deprecated no idea what token it is. use **balance.__token__.balance** instead
@@ -180,6 +190,19 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
     proxyAddress: context.effectiveProxyAddress!,
     token,
     amount,
+  }
+}
+
+export function contextToEthersTransactions(context: BaseAaveContext): DpmExecuteParameters {
+  const { amount, token } = getTxTokenAndAmount(context)
+
+  return {
+    networkId: context.strategyConfig.networkId,
+    proxyAddress: context.effectiveProxyAddress!,
+    calls: context.transition!.transaction.calls,
+    operationName: context.transition!.transaction.operationName,
+    value: token === 'ETH' ? amount : zero,
+    signer: (context.web3Context as ContextConnected).transactionProvider,
   }
 }
 

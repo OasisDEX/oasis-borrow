@@ -154,7 +154,7 @@ export function getAaveV3ReserveConfigurationData({
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
       liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000), // 8100 -> 0.81
-      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).div(10000), // 10500 -> 1.05
+      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10500 -> 1.05 -> 0.05
     }
   })
 }

@@ -14,7 +14,7 @@ import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -717,8 +717,8 @@ export function Hero({
 }) {
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
-  const { connecting, connected, executeConnection } = useWeb3OnBoardConnection({
-    walletConnect: true,
+  const { connecting, connect } = useConnection({
+    initialConnect: false,
   })
 
   return (
@@ -753,7 +753,7 @@ export function Hero({
               transform: 'translateX(10px)',
             },
           }}
-          onClick={async () => connected || connecting || (await executeConnection())}
+          onClick={async () => connecting || (await connect())}
         >
           {isConnected ? t('see-products') : t('connect-wallet')}
           <Icon

@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AaveV2ConfigurationData } from 'blockchain/aave/aaveV2LendingPool'
 import {

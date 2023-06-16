@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/dma-library'
 import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
@@ -7,6 +7,7 @@ import {
   callOperationExecutorWithDsProxy,
   OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
+import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import {
@@ -17,6 +18,7 @@ import {
   isAllowanceNeeded,
   ManageTokenInput,
   ProxyType,
+  RefTransactionMachine,
 } from 'features/aave/common'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
@@ -29,7 +31,7 @@ import {
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { zero } from 'helpers/zero'
-import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
+import { ActorRefFrom, assign, createMachine, send, sendTo, spawn, StateFrom } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
@@ -39,7 +41,7 @@ type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<ManageAaveParameters>>
 
 export interface ManageAaveContext extends BaseAaveContext {
-  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
+  refTransactionMachine?: RefTransactionMachine
   refParametersMachine?: ActorFromTransactionParametersStateMachine
   positionId: PositionId
   proxyAddress?: string
@@ -343,11 +345,17 @@ export function createManageAaveStateMachine(
                 'requestParameters',
               ],
               on: {
-                NEXT_STEP: {
-                  cond: 'validClosingTransactionParameters',
-                  target: 'txInProgress',
-                  actions: ['closePositionTransactionEvent'],
-                },
+                NEXT_STEP: [
+                  {
+                    target: 'txInProgressEthers',
+                    cond: 'isEthersTransaction',
+                  },
+                  {
+                    cond: 'validClosingTransactionParameters',
+                    target: 'txInProgress',
+                    actions: ['closePositionTransactionEvent'],
+                  },
+                ],
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
@@ -355,7 +363,28 @@ export function createManageAaveStateMachine(
                 },
               },
             },
-
+            txInProgressEthers: {
+              entry: [],
+              invoke: {
+                src: 'runEthersTransaction',
+                id: 'runEthersTransaction',
+                onError: {
+                  target: 'txFailure',
+                },
+              },
+              on: {
+                CREATED_MACHINE: {
+                  actions: ['updateContext'],
+                },
+                TRANSACTION_COMPLETED: {
+                  target: 'txSuccess',
+                },
+                TRANSACTION_FAILED: {
+                  target: 'txFailure',
+                  actions: ['updateContext'],
+                },
+              },
+            },
             txInProgress: {
               entry: ['spawnTransactionMachine'],
               on: {
@@ -371,9 +400,15 @@ export function createManageAaveStateMachine(
             txFailure: {
               entry: ['killTransactionMachine'],
               on: {
-                RETRY: {
-                  target: 'txInProgress',
-                },
+                RETRY: [
+                  {
+                    target: 'txInProgressEthers',
+                    cond: 'isEthersTransaction',
+                  },
+                  {
+                    target: 'txInProgress',
+                  },
+                ],
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
@@ -402,7 +437,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
+          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendSigner'],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
@@ -493,6 +528,8 @@ export function createManageAaveStateMachine(
         isAllowanceNeeded,
         canAdjustPosition: ({ strategyConfig }) =>
           strategyConfig.availableActions.includes('adjust'),
+        isEthersTransaction: ({ strategyConfig }) =>
+          strategyConfig.executeTransactionWith === 'ethers',
       },
       actions: {
         resetTokenActionValue: assign((_) => ({
@@ -623,14 +660,37 @@ export function createManageAaveStateMachine(
           }
           return undefined
         }),
-        spawnDepositBorrowMachine: assign((_) => ({
-          refParametersMachine: spawn(depositBorrowAaveMachine, 'transactionParameters'),
+        spawnDepositBorrowMachine: assign((context) => ({
+          refParametersMachine: spawn(
+            depositBorrowAaveMachine.withContext({
+              ...depositBorrowAaveMachine.context,
+              runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+            }),
+            'transactionParameters',
+          ),
         })),
-        spawnAdjustParametersMachine: assign((_) => ({
-          refParametersMachine: spawn(adjustParametersStateMachine, 'transactionParameters'),
+        spawnAdjustParametersMachine: assign((context) => ({
+          refParametersMachine: spawn(
+            adjustParametersStateMachine.withContext({
+              ...adjustParametersStateMachine.context,
+              runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+            }),
+            'transactionParameters',
+          ),
         })),
-        spawnCloseParametersMachine: assign((_) => ({
-          refParametersMachine: spawn(closeParametersStateMachine, 'transactionParameters'),
+        spawnCloseParametersMachine: assign((context) => ({
+          refParametersMachine: spawn(
+            closeParametersStateMachine.withContext(() => {
+              return {
+                ...closeParametersStateMachine.context,
+                runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+                signer: (context.web3Context as ContextConnected)?.transactionProvider,
+              }
+            }),
+            'transactionParameters',
+          ),
         })),
         killCurrentParametersMachine: pure((context) => {
           if (context.refParametersMachine && context.refParametersMachine.stop) {
@@ -657,6 +717,9 @@ export function createManageAaveStateMachine(
                 context.manageTokenInput?.manageTokenActionValue ||
                 context.userInput.amount ||
                 zero,
+              runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+              networkId: context.strategyConfig.networkId,
             }),
             'allowanceMachine',
           ),
@@ -722,6 +785,15 @@ export function createManageAaveStateMachine(
             }
           },
           { delay: 0 },
+        ),
+        sendSigner: sendTo(
+          (context) => context.refParametersMachine!,
+          (context) => {
+            return {
+              type: 'SIGNER_CHANGED',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+            }
+          },
         ),
       },
     },

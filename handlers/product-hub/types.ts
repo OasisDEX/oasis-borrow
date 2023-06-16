@@ -6,6 +6,7 @@ export type PromoCardsCollection = 'Home' | 'AjnaLP'
 
 export type ProductHubDataParams = {
   protocols: LendingProtocol[]
+  testnet?: boolean
 }
 export interface HandleGetProductHubDataProps extends NextApiRequest {
   body: ProductHubDataParams & {

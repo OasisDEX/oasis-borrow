@@ -107,10 +107,11 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
-  const openAaveParameters = getOpenMultiplyAaveParametersMachine(txHelpers$, gasEstimation$, {
-    lendingProtocol: LendingProtocol.AaveV3,
+  const openAaveParameters = getOpenMultiplyAaveParametersMachine(
+    txHelpers$,
+    gasEstimation$,
     networkId,
-  })
+  )
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)

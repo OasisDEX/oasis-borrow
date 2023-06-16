@@ -6,7 +6,7 @@ import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveS
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
 import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -66,13 +66,13 @@ export function AjnaRewardsController() {
 
   const { isConnected } = useAccount()
 
-  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { connect } = useConnection({ initialConnect: false })
 
   const handleConnect = useCallback(async () => {
     if (!isConnected) {
-      await executeConnection()
+      await connect()
     }
-  }, [isConnected, executeConnection])
+  }, [isConnected, connect])
 
   return (
     <AnimatedWrapper>

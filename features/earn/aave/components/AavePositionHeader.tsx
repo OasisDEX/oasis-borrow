@@ -1,4 +1,4 @@
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, RiskRatio } from '@oasisdex/dma-library'
 import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'

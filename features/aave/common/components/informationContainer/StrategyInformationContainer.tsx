@@ -1,10 +1,10 @@
-import { PositionTransition } from '@oasisdex/dma-library'
 import {
   IPosition,
-  IPositionTransition,
   ISimplePositionTransition,
   ISimulatedTransition,
-} from '@oasisdex/oasis-actions'
+  IStrategy,
+  PositionTransition,
+} from '@oasisdex/dma-library'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
 import { getSlippage, StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
@@ -35,7 +35,7 @@ type OpenAaveInformationContainerProps = {
       }
       balance?: StrategyTokenBalance
       estimatedGasPrice?: HasGasEstimation
-      transition?: IPositionTransition | ISimplePositionTransition | PositionTransition
+      transition?: ISimplePositionTransition | PositionTransition | IStrategy
       userSettings?: UserSettingsState
       currentPosition?: IPosition
       strategyConfig: IStrategyConfig
@@ -46,8 +46,8 @@ type OpenAaveInformationContainerProps = {
 }
 
 function transitionHasSwap(
-  transition?: ISimplePositionTransition | PositionTransition,
-): transition is IPositionTransition {
+  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
+): transition is PositionTransition {
   return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
 }
 
@@ -72,7 +72,11 @@ export function StrategyInformationContainer({
         />
       )}
       {simulationHasSwap && balance && (
-        <PriceImpact {...state.context} transactionParameters={transition} balance={balance} />
+        <PriceImpact
+          {...state.context}
+          transactionParameters={transition}
+          slippage={getSlippage(state.context)}
+        />
       )}
       {simulationHasSwap && (
         <SlippageInformation

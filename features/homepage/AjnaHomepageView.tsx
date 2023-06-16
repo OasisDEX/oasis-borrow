@@ -9,7 +9,6 @@ import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { TabBar } from 'components/TabBar'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
-import { otherAssets } from 'features/ajna/common/controls/AjnaNavigationController'
 import { AjnaProductCardBorrowController } from 'features/ajna/common/controls/AjnaProductCardBorrowController'
 import { AjnaProductCardEarnController } from 'features/ajna/common/controls/AjnaProductCardEarnController'
 import { Hero } from 'features/homepage/HomepageView'
@@ -17,6 +16,41 @@ import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
+
+export const otherAssets = [
+  {
+    token: 'AAVE',
+    link: '/',
+  },
+  {
+    token: 'BAL',
+    link: '/',
+  },
+  {
+    token: 'COMP',
+    link: '/',
+  },
+  {
+    token: 'LINK',
+    link: '/',
+  },
+  {
+    token: 'COMP',
+    link: '/',
+  },
+  {
+    token: 'MANA',
+    link: '/',
+  },
+  {
+    token: 'UNI',
+    link: '/',
+  },
+  {
+    token: 'YFI',
+    link: '/',
+  },
+]
 
 export const benefitCardsAnja = [
   {

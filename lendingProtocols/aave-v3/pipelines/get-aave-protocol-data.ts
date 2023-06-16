@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import {
   AaveV3ConfigurationData,
@@ -41,7 +41,11 @@ export function getAaveProtocolData$(
     aaveOracleAssetPriceData$({ token: collateralToken }),
     aaveUserConfiguration$({ address: proxyAddress }),
     aaveReservesList$,
-    aaveOnChainPosition$({ collateralToken, debtToken, proxyAddress }),
+    aaveOnChainPosition$({
+      collateralToken,
+      debtToken,
+      proxyAddress,
+    }),
   ).pipe(
     map(
       ([

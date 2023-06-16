@@ -1,7 +1,7 @@
 import { ActionCall } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import { NetworkIds, networkSetById } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { AccountImplementation__factory, OperationExecutor__factory } from 'types/ethers-contracts'
 
@@ -14,14 +14,26 @@ export interface DpmExecuteParameters {
   value: BigNumber
 }
 
-export async function estimateGasOnDpm({
+async function validateParameters({
+  signer,
   networkId,
   proxyAddress,
-  signer,
-  calls,
-  operationName,
-  value,
-}: DpmExecuteParameters): Promise<number | undefined> {
+}: Pick<DpmExecuteParameters, 'proxyAddress' | 'signer' | 'networkId'>) {
+  const signerChainId = await signer.getChainId()
+  if (signerChainId !== networkId) {
+    const signerNetworkConfig = networkSetById[signerChainId]
+    if (
+      signerNetworkConfig?.isCustomFork &&
+      networkId === signerNetworkConfig.getParentNetwork()?.id
+    ) {
+      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+    } else {
+      throw new Error(
+        `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
+      )
+    }
+  }
+
   const dpm = AccountImplementation__factory.connect(proxyAddress, signer)
   const contracts = getNetworkContracts(networkId)
   ensureContractsExist(networkId, contracts, ['operationExecutor'])
@@ -31,7 +43,21 @@ export async function estimateGasOnDpm({
     operationExecutor.address,
     signer,
   )
-  const encodedCallDAta = operationExecutorContract.interface.encodeFunctionData('executeOp', [
+
+  return { dpm, operationExecutor: operationExecutorContract }
+}
+
+export async function estimateGasOnDpm({
+  networkId,
+  proxyAddress,
+  signer,
+  calls,
+  operationName,
+  value,
+}: DpmExecuteParameters): Promise<number | undefined> {
+  const { dpm, operationExecutor } = await validateParameters({ signer, networkId, proxyAddress })
+
+  const encodedCallDAta = operationExecutor.interface.encodeFunctionData('executeOp', [
     calls,
     operationName,
   ])
@@ -42,53 +68,31 @@ export async function estimateGasOnDpm({
     })
     return result.toNumber()
   } catch (e) {
-    console.error(
-      `Error estimating gas. Action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`,
-      e,
-    )
-    return undefined
+    const message = `Error estimating gas. Action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`
+    console.error(message, e)
+    throw new Error(message, {
+      cause: e,
+    })
   }
 }
 
-export async function executeOnDpm({
+export async function createExecuteTransaction({
   networkId,
   proxyAddress,
   signer,
   calls,
   operationName,
   value,
-}: DpmExecuteParameters) {
-  const dpm = AccountImplementation__factory.connect(proxyAddress, signer)
-  const contracts = getNetworkContracts(networkId)
-  ensureContractsExist(networkId, contracts, ['operationExecutor'])
-  const { operationExecutor } = contracts
+}: DpmExecuteParameters): Promise<ethers.ContractTransaction> {
+  const { dpm, operationExecutor } = await validateParameters({ signer, networkId, proxyAddress })
 
-  const operationExecutorContract = OperationExecutor__factory.connect(
-    operationExecutor.address,
-    signer,
-  )
-
-  console.assert(
-    operationExecutor.address === '0xFDFf46fF5752CE2A4CAbAAf5a2cFF3744E1D09de',
-    'Wrong operation executor address',
-  )
-
-  const encodedCallDAta = operationExecutorContract.interface.encodeFunctionData('executeOp', [
+  const encodedCallDAta = operationExecutor.interface.encodeFunctionData('executeOp', [
     calls,
     operationName,
   ])
 
-  try {
-    const result = await dpm.execute(operationExecutor.address, encodedCallDAta, {
-      value: ethers.utils.parseEther(value.toString()).toHexString(),
-      gasLimit: ethers.BigNumber.from(1000000),
-    })
-    return await result.wait()
-  } catch (e) {
-    console.error(
-      `Error executing action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`,
-      e,
-    )
-    throw e
-  }
+  return await dpm.execute(operationExecutor.address, encodedCallDAta, {
+    value: ethers.utils.parseEther(value.toString()).toHexString(),
+    gasLimit: ethers.BigNumber.from(10000000),
+  })
 }

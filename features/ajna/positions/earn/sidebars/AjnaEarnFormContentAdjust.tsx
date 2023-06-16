@@ -11,7 +11,7 @@ export function AjnaEarnFormContentAdjust() {
 
   return (
     <>
-      <AjnaEarnSlider />
+      <AjnaEarnSlider nestedManualInput={true} />
       {isFormValid && (
         <AjnaFormContentSummary>
           <AjnaEarnFormOrder />

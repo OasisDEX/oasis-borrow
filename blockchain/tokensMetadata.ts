@@ -2,8 +2,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
 
-import { getNetworkContracts } from './contracts'
-import { Context } from './network'
+import { ensureTokensExist, getNetworkContracts } from './contracts'
 import { MainNetworkNames, NetworkIds } from './networks'
 import {
   aaveV2TokensMetadata,
@@ -80,13 +79,30 @@ export function getTokensWithChain(
   throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
 }
 
-export function getTokenSymbolFromAddress({ chainId }: Context, tokenAddress: string) {
+// @deprecated
+export function getTokenSymbolFromAddress(chainId: NetworkIds, tokenAddress: string) {
   const token = findKey(
     getNetworkContracts(NetworkIds.MAINNET, chainId).tokens,
     (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
   )
   if (!token) {
     throw new Error(`could not find token for address ${tokenAddress}`)
+  }
+
+  return token
+}
+
+export function getTokenSymbolBasedOnAddress(chainId: NetworkIds, tokenAddress: string) {
+  const contracts = getNetworkContracts(chainId)
+  ensureTokensExist(chainId, contracts)
+  const { tokens } = contracts
+
+  const token = findKey(
+    tokens,
+    (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
+  )
+  if (!token) {
+    throw new Error(`could not find token for address ${tokenAddress} for chain ${chainId}`)
   }
 
   return token

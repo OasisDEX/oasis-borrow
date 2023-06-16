@@ -27,7 +27,10 @@ export function AjnaEarnFormContentOpen() {
         maxAmount={quoteBalance}
         resetOnClear
       />
-      <AjnaEarnSlider isDisabled={!depositAmount || depositAmount?.lte(0)} />
+      <AjnaEarnSlider
+        isDisabled={!depositAmount || depositAmount?.lte(0)}
+        nestedManualInput={true}
+      />
       {isFormValid && (
         <AjnaFormContentSummary>
           <AjnaEarnFormOrder />

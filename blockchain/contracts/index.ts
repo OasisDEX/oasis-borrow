@@ -1,4 +1,4 @@
-import { getContractNetworkByWalletNetwork, NetworkIds } from 'blockchain/networks'
+import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
 
 import { arbitrumContracts } from './arbitrum'
@@ -29,13 +29,23 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   const correctNetworkId = walletChainId
     ? getContractNetworkByWalletNetwork(contractChainId, walletChainId)
     : contractChainId
-  if (!allNetworksContracts[correctNetworkId]) {
+
+  const networkConfig = networkSetById[correctNetworkId]
+  let contracts: Record<string, unknown> = allNetworksContracts[correctNetworkId]
+
+  if (!contracts && networkConfig.isCustomFork) {
+    const parentConfig = networkConfig.getParentNetwork()
+    if (!parentConfig) {
+      throw new Error(
+        `Can't find parent network for ${correctNetworkId} chain  even though it's a custom fork`,
+      )
+    }
+    contracts = allNetworksContracts[parentConfig.id]
+  }
+  if (!contracts) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
-  return allNetworksContracts[correctNetworkId] as Pick<
-    AllNetworksContractsType,
-    NetworkId
-  >[NetworkId]
+  return contracts as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
 }
 
 export function ensureContractsExist(
@@ -48,6 +58,73 @@ export function ensureContractsExist(
   if (properties.some((p) => !contracts.hasOwnProperty(p))) {
     throw new Error(
       `Can't find contracts definitions: ${JSON.stringify(properties)} on ${chainId} chain`,
+    )
+  }
+}
+
+export function ensurePropertiesExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+  properties: ReadonlyArray<string>,
+): asserts contracts is {
+  [K in (typeof properties)[number]]: string
+} {
+  if (properties.some((p) => !contracts.hasOwnProperty(p))) {
+    throw new Error(`Can't find properties: ${JSON.stringify(properties)} on ${chainId} chain`)
+  }
+}
+
+export function ensureSafeConfirmationsExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+): asserts contracts is { safeConfirmations: number } {
+  if (!contracts.hasOwnProperty('safeConfirmations')) {
+    throw new Error(`Can't find safeConfirmations definition on ${chainId} chain`)
+  }
+}
+
+export function ensureEtherscanExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+): asserts contracts is { etherscan: { url: string; apiUrl: string } } {
+  if (!contracts.hasOwnProperty('etherscan')) {
+    throw new Error(`Can't find etherscan definition on ${chainId} chain`)
+  }
+}
+
+export function ensureTokensExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+): asserts contracts is { tokens: Record<string, ContractDesc> } {
+  if (!contracts.hasOwnProperty('tokens')) {
+    throw new Error(`Can't find tokens definition on ${chainId} chain`)
+  }
+}
+
+export function ensureChainlinkTokenPairsExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+  tokenPairs: ReadonlyArray<string>,
+): asserts contracts is {
+  chainlinkPriceOracle: {
+    [K in (typeof tokenPairs)[number]]: ContractDesc
+  }
+} {
+  if (!contracts.hasOwnProperty('chainlinkPriceOracle')) {
+    throw new Error(`Can't find chainlinkTokenPairs definition on ${chainId} chain`)
+  }
+
+  const chainlinkPriceOracle = (contracts as { chainlinkPriceOracle: unknown }).chainlinkPriceOracle
+
+  if (typeof chainlinkPriceOracle !== 'object' || chainlinkPriceOracle === null) {
+    throw new Error(`chainlinkPriceOracle definition on ${chainId} chain is not an object`)
+  }
+
+  if (tokenPairs.some((p) => !chainlinkPriceOracle.hasOwnProperty(p))) {
+    throw new Error(
+      `Can't find chainlinkTokenPairs definitions: ${JSON.stringify(
+        tokenPairs,
+      )} on ${chainId} chain`,
     )
   }
 }
