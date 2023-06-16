@@ -68,7 +68,7 @@ function parseMultiplyPromoCard(
         label: {
           key: 'ajna.promo-cards.up-to-multiple',
           props: {
-            maxMultiple: maxMultiply ? parseFloat(maxMultiply).toFixed(2) : 'n/a',
+            maxMultiple: maxMultiply ? `${parseFloat(maxMultiply).toFixed(2)}x` : 'n/a',
           },
         },
       },
@@ -111,6 +111,12 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     description: { key: 'ajna.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
+  const promoCardMultiplyGeneral = {
+    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+    title: { key: 'ajna.promo-cards.get-to-know-ajna-multiply' },
+    description: { key: 'ajna.promo-cards.learn-how-to-use-multiply-to-optimize-your-position' },
+    link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
+  }
 
   const promoCardETHUSDCBorrow = parseBorrowishPromoCard('ETH', 'USDC', ETHUSDCBorrowish?.maxLtv)
   const promoCardETHDAIBorrow = parseBorrowishPromoCard('ETH', 'DAI', ETHDAIBorrowish?.maxLtv)
@@ -128,15 +134,30 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     'USDC',
     ETHUSDCBorrowish?.maxMultiply,
   )
+  const promoCardWSTETHUSDCMultiply = parseMultiplyPromoCard(
+    'WSTETH',
+    'USDC',
+    WSTETHUSDCBorrowish?.maxMultiply,
+  )
   const promoCardWBTCUSDCMultiply = parseMultiplyPromoCard(
     'WBTC',
     'USDC',
     WBTCUSDCBorrowish?.maxMultiply,
   )
+  const promoCardWBTCDAIMultiply = parseMultiplyPromoCard(
+    'WBTC',
+    'DAI',
+    WBTCDAIBorrowish?.maxMultiply,
+  )
   const promoCardUSDCETHMultiply = parseMultiplyPromoCard(
     'USDC',
     'ETH',
     USDCETHBorrowish?.maxMultiply,
+  )
+  const promoCardUSDCWBTCMultiply = parseMultiplyPromoCard(
+    'USDC',
+    'WBTC',
+    USDCWBTCBorrowish?.maxMultiply,
   )
 
   return {
@@ -150,7 +171,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     },
     [ProductHubProductType.Multiply]: {
       default: [promoCardETHUSDCMultiply, promoCardWBTCUSDCMultiply, promoCardUSDCETHMultiply],
-      tokens: {},
+      tokens: {
+        ETH: [promoCardETHUSDCMultiply, promoCardWSTETHUSDCMultiply, promoCardUSDCETHMultiply],
+        WBTC: [promoCardWBTCUSDCMultiply, promoCardWBTCDAIMultiply, promoCardUSDCWBTCMultiply],
+        USDC: [promoCardUSDCETHMultiply, promoCardUSDCWBTCMultiply, promoCardMultiplyGeneral]
+      },
     },
     [ProductHubProductType.Earn]: {
       default: [],
