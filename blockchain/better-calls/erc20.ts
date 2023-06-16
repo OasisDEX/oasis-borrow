@@ -1,25 +1,22 @@
 import BigNumber from 'bignumber.js'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider } from 'blockchain/networks'
+import { maxUint256 } from 'blockchain/calls/erc20'
+import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
+import { getRpcProvider, networkSetById } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
 import { Erc20__factory } from 'types/ethers-contracts'
 
-import { BaseParameters } from './utils'
+import { BaseCallParameters, BaseTransactionParameters } from './utils'
 
-export interface TokenBalanceArgs extends BaseParameters {
+export interface TokenBalanceArgs extends BaseCallParameters {
   token: string
   account: string
 }
 
-export interface TokenAllowanceArgs extends BaseParameters {
+export interface TokenAllowanceArgs extends BaseCallParameters {
   token: string
   owner: string
   spender: string
-}
-
-export interface BaseTransactionParameters extends BaseParameters {
-  signer: ethers.Signer
 }
 
 export interface ApproveTokenTransactionParameters extends BaseTransactionParameters {
@@ -30,9 +27,11 @@ export interface ApproveTokenTransactionParameters extends BaseTransactionParame
 
 export function tokenBalance({ token, account, networkId }: TokenBalanceArgs) {
   const rpcProvider = getRpcProvider(networkId)
-  const tokenMappings = getNetworkContracts(networkId).tokens
+  const contracts = getNetworkContracts(networkId)
+  ensureTokensExist(networkId, contracts)
+  const { tokens } = contracts
 
-  const contract = Erc20__factory.connect(tokenMappings[token].address, rpcProvider)
+  const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
   return contract.balanceOf(account).then((result) => {
     return amountFromWei(new BigNumber(result.toString()), token)
   })
@@ -40,44 +39,74 @@ export function tokenBalance({ token, account, networkId }: TokenBalanceArgs) {
 
 export function tokenAllowance({ owner, spender, token, networkId }: TokenAllowanceArgs) {
   const rpcProvider = getRpcProvider(networkId)
-  const tokenMappings = getNetworkContracts(networkId).tokens
+  const contracts = getNetworkContracts(networkId)
+  ensureTokensExist(networkId, contracts)
+  const { tokens } = contracts
 
-  const contract = Erc20__factory.connect(tokenMappings[token].address, rpcProvider)
+  const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
   return contract.allowance(owner, spender).then((result) => {
     return amountFromWei(new BigNumber(result.toString()), token)
   })
 }
 
-export async function approve({
+export async function createApproveTransaction({
   token,
   networkId,
   signer,
   spender,
   amount,
-}: ApproveTokenTransactionParameters): Promise<ethers.ContractReceipt> {
-  if (networkId !== (await signer.getChainId())) {
-    throw new Error('Network mismatch')
+}: ApproveTokenTransactionParameters): Promise<ethers.ContractTransaction> {
+  const signerChainId = await signer.getChainId()
+  if (signerChainId !== networkId) {
+    const signerNetworkConfig = networkSetById[signerChainId]
+    if (
+      signerNetworkConfig?.isCustomFork &&
+      networkId === signerNetworkConfig.getParentNetwork()?.id
+    ) {
+      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+    } else {
+      throw new Error(
+        `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
+      )
+    }
   }
-  const tokenMappings = getNetworkContracts(networkId).tokens
-  const confirmations = getNetworkContracts(networkId).safeConfirmations
-  const contract = Erc20__factory.connect(tokenMappings[token].address, signer)
+  const contracts = getNetworkContracts(networkId)
+  ensureTokensExist(networkId, contracts)
+  const { tokens } = contracts
 
-  const transaction = await contract.approve(spender, amount.toString(16))
-  return await transaction.wait(confirmations)
+  const contract = Erc20__factory.connect(tokens[token].address, signer)
+
+  const ethersAmount = amount.eq(maxUint256)
+    ? ethers.constants.MaxUint256
+    : ethers.BigNumber.from(amount.toString())
+
+  return await contract.approve(spender, ethersAmount)
 }
 
-export async function disapprove({
+export async function createDisapproveTransaction({
   token,
   networkId,
   signer,
   spender,
-}: ApproveTokenTransactionParameters): Promise<ethers.ContractReceipt> {
-  if (networkId !== (await signer.getChainId())) {
-    throw new Error('Network mismatch')
+}: ApproveTokenTransactionParameters): Promise<ethers.ContractTransaction> {
+  const signerChainId = await signer.getChainId()
+  if (signerChainId !== networkId) {
+    const signerNetworkConfig = networkSetById[signerChainId]
+    if (
+      signerNetworkConfig?.isCustomFork &&
+      networkId === signerNetworkConfig.getParentNetwork()?.id
+    ) {
+      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+    } else {
+      throw new Error(
+        `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
+      )
+    }
   }
-  const tokenMappings = getNetworkContracts(networkId).tokens
-  const confirmations = getNetworkContracts(networkId).safeConfirmations
-  const contract = Erc20__factory.connect(tokenMappings[token].address, signer)
-  const transaction = await contract.approve(spender, 0)
-  return await transaction.wait(confirmations)
+  const contracts = getNetworkContracts(networkId)
+  ensureTokensExist(networkId, contracts)
+  const { tokens } = contracts
+
+  const contract = Erc20__factory.connect(tokens[token].address, signer)
+  return await contract.approve(spender, 0)
 }

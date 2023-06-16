@@ -68,11 +68,11 @@ export async function estimateGasOnDpm({
     })
     return result.toNumber()
   } catch (e) {
-    console.error(
-      `Error estimating gas. Action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`,
-      e,
-    )
-    return undefined
+    const message = `Error estimating gas. Action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`
+    console.error(message, e)
+    throw new Error(message, {
+      cause: e,
+    })
   }
 }
 

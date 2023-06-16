@@ -1,10 +1,9 @@
 import { AAVETokens, PositionTransition, strategies } from '@oasisdex/dma-library'
 import { getTokenAddresses } from 'actions/aave/get-token-addresses'
-import { networkIdToLibraryNetwork } from 'actions/aave/helpers'
+import { networkIdToLibraryNetwork, swapCall } from 'actions/aave/helpers'
 import { CloseAaveParameters } from 'actions/aave/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/common'
-import { getOneInchCall } from 'helpers/swap'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function getCloseAaveParameters({
@@ -39,16 +38,15 @@ export async function getCloseAaveParameters({
     collateralToken,
     positionType,
     shouldCloseToCollateral,
-    collateral: {
-      amount: currentPosition.collateral.amount.minus(1),
-    },
+    // @ts-ignore
+    collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount.minus(1),
   }
 
   const stratDeps: closeParameters[1] = {
     addresses,
     currentPosition,
     provider: getRpcProvider(networkId),
-    getSwapData: getOneInchCall(addresses.swapAddress),
+    getSwapData: swapCall(addresses, networkId),
     proxy: proxyAddress,
     user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,

@@ -717,6 +717,9 @@ export function createManageAaveStateMachine(
                 context.manageTokenInput?.manageTokenActionValue ||
                 context.userInput.amount ||
                 zero,
+              runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+              networkId: context.strategyConfig.networkId,
             }),
             'allowanceMachine',
           ),

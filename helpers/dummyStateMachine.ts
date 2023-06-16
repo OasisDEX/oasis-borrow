@@ -1,4 +1,5 @@
 import { useInterpret } from '@xstate/react'
+import { NetworkIds } from 'blockchain/networks'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { createMachine, send } from 'xstate'
@@ -34,7 +35,12 @@ export function setupAllowanceContext(machine: AllowanceStateMachine) {
   const parentService = useInterpret(dummyParent).start()
   const service = useInterpret(machine, {
     parent: parentService,
-    context: { minimumAmount: zero, token: 'ETH' },
+    context: {
+      minimumAmount: zero,
+      token: 'ETH',
+      runWithEthers: false,
+      networkId: NetworkIds.MAINNET,
+    },
   }).start()
   return {
     stateMachine: service,
