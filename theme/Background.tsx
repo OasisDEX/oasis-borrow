@@ -3,7 +3,6 @@ import React, { PropsWithChildren } from 'react'
 import { Box } from 'theme-ui'
 
 import { zoomInBackgroundAnimation } from './animations'
-import { fadeOut } from './keyframes'
 
 export const backgroundSize = {
   width: 1440,
@@ -22,7 +21,6 @@ export function Background({
         left: 0,
         top: short ? '-650px' : '0',
         right: 0,
-        zIndex: -1,
         backgroundColor: 'white',
         overflow: 'hidden',
         height: wrapper ? 'auto' : `${backgroundSize.height}px`,
@@ -32,21 +30,6 @@ export function Background({
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         ...zoomInBackgroundAnimation,
-        '&::after': {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          content: '""',
-          background: 'white',
-          opacity: 1,
-          animation: fadeOut,
-          animationDuration: '0.4s',
-          animationDelay: '0.1s',
-          animationTimingFunction: 'ease-out',
-          animationFillMode: 'forwards',
-        },
       }}
     >
       {children}

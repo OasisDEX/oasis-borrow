@@ -33,11 +33,6 @@ function StatCell({ label, value }: { label: string; value: string }) {
 
 function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
   const { t } = useTranslation()
-
-  if (!oasisStatsValue) {
-    return null
-  }
-
   return (
     <HomepagePromoBlock.Big
       background="rgba(255, 255, 255, 0.5)"
@@ -47,15 +42,27 @@ function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats 
       <Grid columns={['1fr', '1fr 1fr 1fr']}>
         <StatCell
           label={t('landing.stats.30-day-volume')}
-          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
+          value={
+            oasisStatsValue
+              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`
+              : '-'
+          }
         />
         <StatCell
           label={t('landing.stats.managed-on-oasis')}
-          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
+          value={
+            oasisStatsValue
+              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`
+              : '-'
+          }
         />
         <StatCell
           label={t('landing.stats.median-vault')}
-          value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
+          value={
+            oasisStatsValue
+              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`
+              : '-'
+          }
         />
       </Grid>
     </HomepagePromoBlock.Big>

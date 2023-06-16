@@ -31,6 +31,14 @@ export const fadeInAnimation = {
   animationFillMode: 'forwards',
 }
 
+export const fadeInAnimationMobile = {
+  opacity: [0, 1],
+  animation: [fadeIn, 'none'],
+  animationDuration: '0.4s',
+  animationTimingFunction: 'ease-out',
+  animationFillMode: 'forwards',
+}
+
 const openVaultAnimationOptions = {
   loop: true,
   autoplay: true,
