@@ -1,14 +1,13 @@
 import { AAVETokens, IRiskRatio, PositionTransition, strategies } from '@oasisdex/dma-library'
 import { getTokenAddresses } from 'actions/aave/get-token-addresses'
 import { assertProtocol } from 'actions/aave/guards'
-import { networkIdToLibraryNetwork } from 'actions/aave/helpers'
+import { networkIdToLibraryNetwork, swapCall } from 'actions/aave/helpers'
 import { OpenMultiplyAaveParameters } from 'actions/aave/types'
 import BigNumber from 'bignumber.js'
 import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/common'
-import { getOneInchCall } from 'helpers/swap'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 async function openPosition(
@@ -50,7 +49,7 @@ async function openPosition(
     Parameters<typeof strategies.aave.v3.open>[1] = {
     addresses,
     provider: getRpcProvider(networkId),
-    getSwapData: getOneInchCall(addresses.swapAddress),
+    getSwapData: swapCall(addresses, networkId),
     proxy: proxyAddress,
     user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,

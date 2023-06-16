@@ -1,10 +1,9 @@
 import { AAVETokens, PositionTransition, strategies } from '@oasisdex/dma-library'
 import { getTokenAddresses } from 'actions/aave/get-token-addresses'
-import { networkIdToLibraryNetwork } from 'actions/aave/helpers'
+import { networkIdToLibraryNetwork, swapCall } from 'actions/aave/helpers'
 import { AdjustAaveParameters } from 'actions/aave/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/common'
-import { getOneInchCall } from 'helpers/swap'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function getAdjustPositionParameters({
@@ -50,7 +49,7 @@ export async function getAdjustPositionParameters({
       addresses,
       currentPosition,
       provider: provider,
-      getSwapData: getOneInchCall(addresses.swapAddress),
+      getSwapData: swapCall(addresses, networkId),
       proxy: proxyAddress,
       user: userAddress,
       isDPMProxy: proxyType === ProxyType.DpmProxy,
