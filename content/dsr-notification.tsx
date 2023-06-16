@@ -18,8 +18,7 @@ const DsrNotificationWithLink: FC<DsrNotificationWithLinkProps> = ({ translation
       2: (
         <AppLink
           sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
-          // TODO update link once available
-          href={EXTERNAL_LINKS.BLOG.MAIN}
+          href={EXTERNAL_LINKS.BLOG.MAKER_STABILITY_FEE_CHANGES}
         />
       ),
     }}

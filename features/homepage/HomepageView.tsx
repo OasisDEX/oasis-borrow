@@ -264,8 +264,7 @@ export function HomepageView() {
       >
         <HomePageBanner
           heading={t('dsr.landing-page-banner.title')}
-          // TODO update copy
-          link={EXTERNAL_LINKS.BLOG.MAIN}
+          link={EXTERNAL_LINKS.BLOG.DSR_RATE_HIKE}
           icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
         />
       </Flex>
