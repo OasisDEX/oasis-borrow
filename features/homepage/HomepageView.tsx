@@ -1,9 +1,19 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { ImagesSlider } from 'components/ImagesSlider'
+import { InfoCard } from 'components/InfoCard'
+import { AppLink } from 'components/Links'
+import {
+  BorrowProductCardsContainer,
+  EarnProductCardsContainer,
+  MultiplyProductCardsContainer,
+} from 'components/productCards/ProductCardsContainer'
+import { TabBar } from 'components/TabBar'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { productCardsConfig } from 'helpers/productCards'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -153,6 +163,158 @@ export function HomepageView() {
         </HomepagePromoBlock.Big>
       </Grid>
       <WhyOasisStats oasisStatsValue={oasisStatsValue} />
+      <Box
+        sx={{
+          width: '100%',
+          mt: '126px',
+        }}
+        id="product-cards-wrapper"
+      >
+        <TabBar
+          variant="large"
+          useDropdownOnMobile
+          defaultTab="earn"
+          sections={[
+            {
+              label: t('landing.tabs.maker.multiply.tabLabel'),
+              value: 'multiply',
+              content: (
+                <HomepageTabLayout
+                  paraText={
+                    <>
+                      {t('landing.tabs.maker.multiply.tabParaContent')}{' '}
+                      <AppLink href="/multiply" variant="inText">
+                        {t('landing.tabs.maker.multiply.tabParaLinkContent')}
+                      </AppLink>
+                      <Box sx={{ mt: 3 }}>
+                        {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
+                        <AppLink href={EXTERNAL_LINKS.BLOG.MULTIPLY_FOR_AAVE} variant="inText">
+                          {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
+                        </AppLink>
+                      </Box>
+                    </>
+                  }
+                  cards={
+                    <MultiplyProductCardsContainer
+                      strategies={{
+                        maker: productCardsConfig.landing.featuredIlkCards['multiply'],
+                        aave: productCardsConfig.landing.featuredAaveCards['multiply'],
+                      }}
+                    />
+                  }
+                />
+              ),
+            },
+            {
+              label: t('landing.tabs.maker.borrow.tabLabel'),
+              value: 'borrow',
+              content: (
+                <HomepageTabLayout
+                  paraText={
+                    <>
+                      <Text as="p">{t('landing.tabs.maker.borrow.tabParaContent')} </Text>
+                      <AppLink href="/borrow" variant="inText">
+                        {t('landing.tabs.maker.borrow.tabParaLinkContent')}
+                      </AppLink>
+                    </>
+                  }
+                  cards={
+                    <BorrowProductCardsContainer
+                      strategies={{
+                        maker: productCardsConfig.landing.featuredIlkCards['borrow'],
+                        aave: productCardsConfig.landing.featuredAaveCards['borrow'],
+                      }}
+                    />
+                  }
+                />
+              ),
+            },
+            {
+              label: t('landing.tabs.maker.earn.tabLabel'),
+              value: 'earn',
+              content: (
+                <HomepageTabLayout
+                  paraText={
+                    <>
+                      {t('landing.tabs.maker.earn.tabParaContent')}{' '}
+                      <AppLink href="/earn" variant="inText">
+                        {t('landing.tabs.maker.earn.tabParaLinkContent')}
+                      </AppLink>
+                    </>
+                  }
+                  cards={
+                    <EarnProductCardsContainer
+                      strategies={{
+                        maker: productCardsConfig.landing.featuredIlkCards['earn'],
+                        aave: productCardsConfig.landing.featuredAaveCards['earn'],
+                      }}
+                    />
+                  }
+                />
+              ),
+            },
+          ]}
+        />
+      </Box>
+      <Box
+        sx={{
+          mb: [3, 3, 6],
+        }}
+      >
+        <Text as="p" variant="header3" sx={{ textAlign: 'center', mt: [6, 6, '205px'], mb: 4 }}>
+          {t('landing.info-cards.have-some-questions')}
+        </Text>
+        <Grid
+          gap={4}
+          sx={{
+            margin: 'auto',
+            gridTemplateColumns: ['1fr', '1fr 1fr'],
+          }}
+        >
+          <InfoCard
+            title={t('landing.info-cards.learn.learn')}
+            subtitle={t('landing.info-cards.learn.deep-dive')}
+            links={[
+              {
+                href: EXTERNAL_LINKS.KB.GETTING_STARTED,
+                text: t('landing.info-cards.learn.get-started'),
+              },
+              {
+                href: EXTERNAL_LINKS.KB.TUTORIALS,
+                text: t('landing.info-cards.learn.tutorials'),
+              },
+              {
+                href: EXTERNAL_LINKS.KB.BORROW,
+                text: t('landing.info-cards.learn.key-concepts'),
+              },
+            ]}
+            backgroundGradient="linear-gradient(0deg, #fff 0%, #fff 100%)"
+            backgroundImage="/static/img/homepage/learn.svg"
+            sx={{ backgroundSize: 'cover' }}
+          />
+          <InfoCard
+            title={t('landing.info-cards.support.support')}
+            subtitle={t('landing.info-cards.support.contact-whenever')}
+            links={[
+              {
+                href: `${EXTERNAL_LINKS.KB.HELP}/frequently-asked-questions`,
+                text: t('landing.info-cards.support.faq'),
+              },
+              {
+                href: EXTERNAL_LINKS.DISCORD,
+                text: t('landing.info-cards.support.discord'),
+              },
+              {
+                href: EXTERNAL_LINKS.TWITTER,
+                text: t('landing.info-cards.support.twitter'),
+              },
+            ]}
+            backgroundGradient="linear-gradient(0deg, #fff 0%, #fff 100%)"
+            backgroundImage="/static/img/homepage/support.svg"
+            sx={{ backgroundSize: 'cover' }}
+          />
+        </Grid>
+      </Box>
     </Box>
   )
 }

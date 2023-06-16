@@ -15,11 +15,9 @@ function CardContent({
   subtitle: string
 } & WithChildren) {
   return (
-    <Box sx={{ position: 'relative', zIndex: 2 }}>
+    <Box sx={{ position: 'relative', zIndex: 2, pb: 4 }}>
       <Heading sx={{ my: 2, fontWeight: 'bold', color: 'primary100' }}>{title}</Heading>
-      <Text sx={{ mb: 3, color: 'neutral80', minHeight: '3em', maxWidth: ['unset', '320px'] }}>
-        {subtitle}
-      </Text>
+      <Text sx={{ mb: 3, color: 'neutral80', minHeight: '3em' }}>{subtitle}</Text>
       {children}
     </Box>
   )
