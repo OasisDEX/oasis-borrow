@@ -100,7 +100,7 @@ export function HomepageView() {
           sx={{ height: ['auto', '300px'], width: ['auto', '450px'], justifySelf: 'right' }}
         />
       </Grid>
-      <Grid columns={[1, 2]} sx={{ mt: 5 }}>
+      <Grid columns={[1, 2]} sx={{ mt: 7 }}>
         <HomepagePromoBlock.Big
           height={['320px', '100%']}
           background="linear-gradient(111.72deg, #F2FCFF 2.94%, #FFE7D8 100%), #FFFFFF"
