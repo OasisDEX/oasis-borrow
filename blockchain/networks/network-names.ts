@@ -1,16 +1,16 @@
 // all the network names we use in the app
 export enum NetworkNames {
   ethereumMainnet = 'ethereum',
-  ethereumGoerli = 'ethereum-goerli',
+  ethereumGoerli = 'ethereum_goerli',
 
   arbitrumMainnet = 'arbitrum',
-  arbitrumGoerli = 'arbitrum-goerli',
+  arbitrumGoerli = 'arbitrum_goerli',
 
   polygonMainnet = 'polygon',
-  polygonMumbai = 'polygon-mumbai',
+  polygonMumbai = 'polygon_mumbai',
 
   optimismMainnet = 'optimism',
-  optimismGoerli = 'optimism-goerli',
+  optimismGoerli = 'optimism_goerli',
 }
 
 export type NetworkLabelType =

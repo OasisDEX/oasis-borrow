@@ -1,8 +1,9 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
-import { NetworkNames } from 'blockchain/networks'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { ProductHubProductType } from 'features/productHub/types'
-import { graphQlProviders } from 'handlers/product-hub/helpers/graphQLProviders'
+import { GraphQLClient } from 'graphql-request'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { flatten } from 'lodash'
@@ -29,9 +30,12 @@ export default async function (): ProductHubHandlerResponse {
     ...new Set(aaveV2ProductHubProducts.map((product) => product.secondaryToken)),
   ]
 
+  const graphQlProvider = new GraphQLClient(
+    getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
+  )
   const yieldsPromisesMap = {
     // a crude map, but it works for now since we only have one earn product
-    'STETH/ETH': curry(getAaveStEthYield)(graphQlProviders[NetworkNames.ethereumMainnet], moment()),
+    'STETH/ETH': curry(getAaveStEthYield)(graphQlProvider, moment()),
   }
 
   // reserveData -> liq available and variable fee

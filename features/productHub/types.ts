@@ -14,8 +14,11 @@ export enum ProductHubProductType {
 
 export type ProductHubSupportedNetworks =
   | NetworkNames.ethereumMainnet
+  | NetworkNames.ethereumGoerli
   | NetworkNames.arbitrumMainnet
+  | NetworkNames.arbitrumGoerli
   | NetworkNames.optimismMainnet
+  | NetworkNames.optimismGoerli
 
 export interface ProductHubItemBasics {
   label: string

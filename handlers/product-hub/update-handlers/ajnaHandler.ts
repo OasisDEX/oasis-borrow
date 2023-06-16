@@ -1,7 +1,7 @@
 import { calculateAjnaApyPerDays } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import {
@@ -9,7 +9,11 @@ import {
   getAjnaPoolsTableData,
 } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import {
+  ProductHubItem,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
+} from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { one, zero } from 'helpers/zero'
@@ -17,10 +21,9 @@ import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import getConfig from 'next/config'
 
-export default async function (): ProductHubHandlerResponse {
-  // TODO: replace this with loading data for both mainnet and testnet
-  const networkId = NetworkIds.GOERLI
-
+async function getAjnaPoolData(
+  networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
+): Promise<ProductHubItem[]> {
   const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
   const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))
   const tickers = (await (
@@ -72,6 +75,8 @@ export default async function (): ProductHubHandlerResponse {
         const quotePrice = prices[quoteToken]
         const marketPrice = collateralPrice.div(quotePrice)
         const label = `${collateralToken}/${quoteToken}`
+        const network = networksById[networkId].name as ProductHubSupportedNetworks
+        const protocol = LendingProtocol.Ajna
         const maxLtv = lowestUtilizedPrice.div(marketPrice).toString()
         const liquidity = depositSize.minus(debt).times(prices[quoteToken]).toString()
         const fee = interestRate.toString()
@@ -93,11 +98,11 @@ export default async function (): ProductHubHandlerResponse {
           ...v,
           {
             label,
-            network: NetworkNames.ethereumMainnet,
+            network,
             primaryToken: collateralToken,
             ...getTokenGroup(collateralToken, 'primary'),
             product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
-            protocol: LendingProtocol.Ajna,
+            protocol,
             secondaryToken: quoteToken,
             ...getTokenGroup(quoteToken, 'secondary'),
             fee,
@@ -109,11 +114,11 @@ export default async function (): ProductHubHandlerResponse {
           },
           {
             label,
-            network: NetworkNames.ethereumMainnet,
+            network,
             primaryToken: quoteToken,
             ...getTokenGroup(quoteToken, 'primary'),
             product: [ProductHubProductType.Earn],
-            protocol: LendingProtocol.Ajna,
+            protocol,
             secondaryToken: collateralToken,
             ...getTokenGroup(collateralToken, 'secondary'),
             earnStrategy,
@@ -126,4 +131,13 @@ export default async function (): ProductHubHandlerResponse {
       },
       [],
     )
+}
+
+export default async function (): ProductHubHandlerResponse {
+  return Promise.all([
+    getAjnaPoolData(NetworkIds.MAINNET),
+    getAjnaPoolData(NetworkIds.GOERLI),
+  ]).then((response) => {
+    return response.flat()
+  })
 }
