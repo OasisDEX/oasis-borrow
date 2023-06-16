@@ -133,10 +133,7 @@ export function WithAnnouncementLayout({
   )
 }
 
-export function AppLayout({
-  children,
-  shortBackground = false,
-}: { shortBackground?: boolean } & WithChildren) {
+export function AppLayout({ children }: WithChildren) {
   if (!isAppContextAvailable()) {
     return null
   }
@@ -148,7 +145,7 @@ export function AppLayout({
         showAnnouncement={false}
         footer={<Footer />}
         header={<NavigationController />}
-        bg={shortBackground ? <Background short /> : <BackgroundLight />}
+        bg={<BackgroundLight />}
       >
         {children}
         <ModalTrezorMetamaskEIP1559 />

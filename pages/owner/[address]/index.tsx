@@ -41,8 +41,6 @@ function VaultsSummary({ address }: { address: string }) {
   ) : null
 }
 
-VaultsSummary.layout = ({ children }: WithChildren) => (
-  <AppLayout shortBackground={true}>{children}</AppLayout>
-)
+VaultsSummary.layout = ({ children }: WithChildren) => <AppLayout>{children}</AppLayout>
 
 export default VaultsSummary

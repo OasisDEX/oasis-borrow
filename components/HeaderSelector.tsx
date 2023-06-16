@@ -15,7 +15,7 @@ export interface HeaderSelectorOption {
 
 interface HeaderSelectorProps {
   defaultOption?: HeaderSelectorOption
-  gradient?: [string, string]
+  gradient?: [string, string, string]
   options: HeaderSelectorOption[]
   overwriteOption?: HeaderSelectorOption
   parentRef: RefObject<HTMLDivElement>
@@ -92,8 +92,8 @@ export function HeaderSelector({
           className="withGradient"
           sx={
             gradient && {
-              backgroundImage: `linear-gradient(90deg, ${gradient[0]} 0%, ${gradient[0]} 50%, ${gradient[1]} 100%)`,
-              backgroundSize: '200% 100%',
+              backgroundImage: `linear-gradient(90deg, ${gradient[0]} 0%, ${gradient[1]} 70%, ${gradient[2]} 100%)`,
+              backgroundSize: '120% 100%',
               backgroundPosition: isOpen ? '0 0 ' : '100% 0',
               transition: 'background-position 300ms',
               // @ts-ignore

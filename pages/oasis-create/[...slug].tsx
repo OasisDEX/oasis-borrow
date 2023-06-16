@@ -19,9 +19,7 @@ function OasisCreatePage({ product, token }: { product: ProductHubProductType; t
   )
 }
 
-OasisCreatePage.layout = ({ children }: WithChildren) => (
-  <AppLayout shortBackground={true}>{children}</AppLayout>
-)
+OasisCreatePage.layout = ({ children }: WithChildren) => <AppLayout>{children}</AppLayout>
 
 export default OasisCreatePage
 

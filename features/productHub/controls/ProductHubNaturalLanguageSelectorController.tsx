@@ -39,7 +39,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
         {t('product-hub.header.i-want-to')}
         <HeaderSelector
           defaultOption={productHubOptionsMap[product].product}
-          gradient={['#2a30ee', '#a4a6ff']}
+          gradient={['#007DA3', '#E7A77F', '#E97047']}
           options={Object.values(productHubOptionsMap).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
@@ -69,7 +69,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
               ? productHubOptionsMap[product].tokens[token]
               : productHubOptionsMap[product].tokens.all
           }
-          gradient={['#2a30ee', '#a4a6ff']}
+          gradient={['#007DA3', '#E7A77F', '#E97047']}
           options={Object.values(productHubOptionsMap[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
