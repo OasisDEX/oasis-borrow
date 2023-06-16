@@ -1,4 +1,4 @@
-import { BaseNetworkNames, networksByName } from 'blockchain/networks'
+import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -141,6 +141,24 @@ export const productHubNetworkFilter = [
     label: networksByName[BaseNetworkNames.Optimism].label,
     value: networksByName[BaseNetworkNames.Optimism].name,
     image: networksByName[BaseNetworkNames.Optimism].icon,
+  },
+]
+
+export const productHubTestNetworkFilter = [
+  {
+    label: networksByName[BaseNetworkNames.Ethereum].label,
+    value: networksByName[NetworkNames.ethereumGoerli].name,
+    image: networksByName[NetworkNames.ethereumGoerli].icon,
+  },
+  {
+    label: networksByName[BaseNetworkNames.Arbitrum].label,
+    value: networksByName[NetworkNames.arbitrumGoerli].name,
+    image: networksByName[NetworkNames.arbitrumGoerli].icon,
+  },
+  {
+    label: networksByName[BaseNetworkNames.Optimism].label,
+    value: networksByName[NetworkNames.optimismGoerli].name,
+    image: networksByName[NetworkNames.optimismGoerli].icon,
   },
 ]
 
