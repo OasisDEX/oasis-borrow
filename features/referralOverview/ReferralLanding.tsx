@@ -85,7 +85,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
         <Image
           src={staticFilesRuntimeUrl('/static/img/referral_landing.svg')}
           mb="8px"
-          width="240px"
+          width="300px"
           py="58px"
         />
 
