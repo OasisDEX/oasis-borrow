@@ -4,6 +4,7 @@ import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { WithArrow } from 'components/WithArrow'
 import React, { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Box, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
 
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
@@ -12,22 +13,27 @@ export interface PromoCardWrapperProps {
   withHover?: boolean
 }
 
+export interface PromoCardTranslationProps {
+  key: string
+  props?: { [key: string]: string }
+}
+
 export interface PromoCardProps {
   icon: string
-  title: string
+  title: string | PromoCardTranslationProps
   protocol?: ProtocolLabelProps
-  description?: string
+  description?: string | PromoCardTranslationProps
   pills?: {
-    label: string
+    label: string | PromoCardTranslationProps
     variant?: PromoCardVariant
   }[]
   link?: {
     href: string
-    label: string
+    label: string | PromoCardTranslationProps
   }
   data?: {
-    label: string
-    value: string
+    label: string | PromoCardTranslationProps
+    value: string | PromoCardTranslationProps
     variant?: PromoCardVariant
   }[]
 }
@@ -81,6 +87,14 @@ export const PromoCardLoadingState: FC = () => {
   )
 }
 
+export const PromoCardTranslation: FC<{ text: string | PromoCardTranslationProps }> = ({
+  text,
+}) => {
+  const { t } = useTranslation()
+
+  return <>{typeof text === 'object' ? t(text.key, text.props) : text}</>
+}
+
 export const PromoCard: FC<PromoCardProps> = ({
   data,
   description,
@@ -107,11 +121,11 @@ export const PromoCard: FC<PromoCardProps> = ({
         </Box>
       )}
       <Heading as="h3" variant="boldParagraph2">
-        {title}
+        <PromoCardTranslation text={title} />
       </Heading>
       {description && (
         <Text as="p" variant="paragraph3" sx={{ mt: 2 }}>
-          {description}
+          <PromoCardTranslation text={description} />
         </Text>
       )}
       {pills && (
@@ -129,7 +143,7 @@ export const PromoCard: FC<PromoCardProps> = ({
         >
           {pills.map(({ label, variant = 'neutral' }) => (
             <Flex
-              key={label}
+              key={JSON.stringify(label)}
               as="li"
               variant="text.paragraph4"
               sx={{
@@ -142,7 +156,7 @@ export const PromoCard: FC<PromoCardProps> = ({
                 ...pillColors[variant],
               }}
             >
-              {label}
+              <PromoCardTranslation text={label} />
             </Flex>
           ))}
         </Flex>
@@ -150,9 +164,13 @@ export const PromoCard: FC<PromoCardProps> = ({
       {data && (
         <Flex as="ul" sx={{ flexDirection: 'column', listStyle: 'none', mx: 0, mt: 3, p: 0 }}>
           {data.map(({ label, value, variant = 'neutral' }) => (
-            <Flex key={label} as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
+            <Flex
+              key={JSON.stringify(label)}
+              as="li"
+              sx={{ justifyContent: 'space-between', width: '100%' }}
+            >
               <Text as="span" variant="paragraph3" sx={{ color: 'neutral80' }}>
-                {label}
+                <PromoCardTranslation text={label} />
               </Text>
               <Text as="span" variant="boldParagraph3" sx={dataColors[variant]}>
                 {variant === 'negative' && <Icon name="arrow_decrease" size={12} sx={{ mr: 1 }} />}
@@ -166,7 +184,7 @@ export const PromoCard: FC<PromoCardProps> = ({
       {link && (
         <AppLink href={link.href} sx={{ display: 'inline-block', mt: 2 }}>
           <WithArrow variant="paragraph3" sx={{ color: 'interactive100', fontWeight: 'regular' }}>
-            {link.label}
+            <PromoCardTranslation text={link.label} />
           </WithArrow>
         </AppLink>
       )}

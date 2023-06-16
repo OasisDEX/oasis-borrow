@@ -1,13 +1,17 @@
 import { Protocol } from '@prisma/client'
 import { networks } from 'blockchain/networks'
+import { ProductHubItem } from 'features/productHub/types'
+import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
+import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-card-collections-parsers'
+import {
+  HandleGetProductHubDataProps,
+  HandleUpdateProductHubDataProps,
+} from 'handlers/product-hub/types'
+import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
 import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
 import { flatten } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
-
-import { checkIfAllHandlersExist, filterTableData, measureTime } from './helpers'
-import { HandleGetProductHubDataProps, HandleUpdateProductHubDataProps } from './types'
-import { PRODUCT_HUB_HANDLERS } from './update-handlers'
 
 export async function handleGetProductHubData(
   req: HandleGetProductHubDataProps,
@@ -42,10 +46,13 @@ export async function handleGetProductHubData(
         })),
       },
     })
-    .then((table) => {
+    .then((rawTable) => {
+      const table = rawTable.map(filterTableData) as ProductHubItem[]
+      const promoCards = PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)
+
       return res.status(200).json({
-        promoCards: mockData.promoCards,
-        table: table.map(filterTableData),
+        promoCards,
+        table,
       })
     })
     .catch((error) => {

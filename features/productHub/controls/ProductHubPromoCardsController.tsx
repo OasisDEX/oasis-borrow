@@ -14,6 +14,7 @@ export const ProductHubPromoCardsController: FC<ProductHubPromoCardsControllerPr
   selectedProduct,
   selectedToken,
 }) => {
+  console.log(promoCardsData)
   const promoCards = useMemo(
     () =>
       Object.keys(promoCardsData[selectedProduct].tokens).includes(selectedToken)

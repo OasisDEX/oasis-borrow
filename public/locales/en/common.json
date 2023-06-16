@@ -2803,6 +2803,11 @@
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
         "button": "Claim AJNA tokens"
       }
+    },
+    "promo-cards": {
+      "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
+      "max-ltv": "Max loan to value: {{maxLtv}}",
+      "get-ajna-tokens": "Get Ajna Tokens"
     }
   },
   "product-hub": {
