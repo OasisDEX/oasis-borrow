@@ -1,4 +1,5 @@
 import { normalizeValue } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -9,7 +10,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -58,7 +59,13 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&
-      `${formatCryptoBalance(simulationData.debtAmount)} ${quoteToken}`,
+      `${formatCryptoBalance(
+        simulationData.debtAmount.plus(
+          positionData.originationFee(
+            BigNumber.max(zero, simulationData.debtAmount.minus(positionData.debtAmount)),
+          ),
+        ),
+      )} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralAvailable,
     )} ${collateralToken}`,

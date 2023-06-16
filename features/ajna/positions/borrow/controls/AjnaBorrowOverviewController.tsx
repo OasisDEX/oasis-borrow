@@ -1,4 +1,5 @@
 import { normalizeValue } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -11,7 +12,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -86,7 +87,11 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               positionDebt={position.debtAmount}
               positionDebtUSD={position.debtAmount.times(quotePrice)}
-              afterPositionDebt={simulation?.debtAmount}
+              afterPositionDebt={simulation?.debtAmount.plus(
+                position.originationFee(
+                  BigNumber.max(zero, simulation.debtAmount.minus(position.debtAmount)),
+                ),
+              )}
               changeVariant={changeVariant}
             />
           </DetailsSectionContentCardWrapper>
