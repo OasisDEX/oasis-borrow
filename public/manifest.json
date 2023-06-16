@@ -1,8 +1,8 @@
 {
-  "name": "Oasis",
-  "description": "Generate Dai on Oasis using crypto as your collateral",
+  "name": "Summer.fi",
+  "description": "Generate Dai on Summer.fi using crypto as your collateral",
   "iconPath": "static/img/logos/logo_color.svg",
-  "short_name": "Oasis",
+  "short_name": "Summer.fi",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#FFFFFF",
