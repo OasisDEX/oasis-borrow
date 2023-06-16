@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
+import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import {
   ProductHubItem,
   ProductHubProductType,
@@ -44,6 +45,38 @@ function parseBorrowishPromoCard(
   }
 }
 
+function parseMultiplyPromoCard(
+  collateralToken: string,
+  quoteToken: string,
+  maxMultiply?: string,
+): PromoCardProps {
+  const isShort = isShortPosition({ collateralToken })
+
+  return {
+    tokens: [collateralToken, quoteToken],
+    title: `${collateralToken}/${quoteToken}`,
+    description: {
+      key: 'ajna.promo-cards.multiply-and-earn-ajna',
+      props: {
+        token: isShort ? quoteToken : collateralToken,
+        strategy: isShort ? 'Short' : 'Long',
+      },
+    },
+    protocol,
+    pills: [
+      {
+        label: {
+          key: 'ajna.promo-cards.up-to-multiple',
+          props: {
+            maxMultiple: maxMultiply ? parseFloat(maxMultiply).toFixed(2) : 'n/a',
+          },
+        },
+      },
+      getAjnaTokensPill,
+    ],
+  }
+}
+
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const ajnaProducts = table.filter((product) => product.protocol === LendingProtocol.Ajna)
   const borrowishProducts = ajnaProducts.filter((product) =>
@@ -72,6 +105,13 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     (product) => product.primaryToken === 'USDC' && product.secondaryToken === 'WBTC',
   )
 
+  const promoCardBorrowGeneral = {
+    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+    title: { key: 'ajna.promo-cards.get-liquidity-from-your-assets-using-ajna' },
+    description: { key: 'ajna.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
+    link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
+  }
+
   const promoCardETHUSDCBorrow = parseBorrowishPromoCard('ETH', 'USDC', ETHUSDCBorrowish?.maxLtv)
   const promoCardETHDAIBorrow = parseBorrowishPromoCard('ETH', 'DAI', ETHDAIBorrowish?.maxLtv)
   const promoCardWSTETHUSDCBorrow = parseBorrowishPromoCard(
@@ -83,12 +123,21 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const promoCardWBTCDAICBorrow = parseBorrowishPromoCard('WBTC', 'DAI', WBTCDAIBorrowish?.maxLtv)
   const promoCardUSDCETHBorrow = parseBorrowishPromoCard('USDC', 'ETH', USDCETHBorrowish?.maxLtv)
   const promoCardUSDCWBTCBorrow = parseBorrowishPromoCard('USDC', 'WBTC', USDCWBTCBorrowish?.maxLtv)
-  const promoCardBorrowGeneral = {
-    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    title: { key: 'ajna.promo-cards.get-liquidity-from-your-assets-using-ajna' },
-    description: { key: 'ajna.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
-    link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
-  }
+  const promoCardETHUSDCMultiply = parseMultiplyPromoCard(
+    'ETH',
+    'USDC',
+    ETHUSDCBorrowish?.maxMultiply,
+  )
+  const promoCardWBTCUSDCMultiply = parseMultiplyPromoCard(
+    'WBTC',
+    'USDC',
+    WBTCUSDCBorrowish?.maxMultiply,
+  )
+  const promoCardUSDCETHMultiply = parseMultiplyPromoCard(
+    'USDC',
+    'ETH',
+    USDCETHBorrowish?.maxMultiply,
+  )
 
   return {
     [ProductHubProductType.Borrow]: {
@@ -100,7 +149,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       },
     },
     [ProductHubProductType.Multiply]: {
-      default: [],
+      default: [promoCardETHUSDCMultiply, promoCardWBTCUSDCMultiply, promoCardUSDCETHMultiply],
       tokens: {},
     },
     [ProductHubProductType.Earn]: {

@@ -2806,7 +2806,9 @@
     },
     "promo-cards": {
       "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
+      "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
       "max-ltv": "Max loan to value: {{maxLtv}}",
+      "up-to-multiple": "Up to: {{maxMultiple}}x",
       "get-ajna-tokens": "Get Ajna Tokens",
       "get-liquidity-from-your-assets-using-ajna": "Get liquidity from your assets using Ajna",
       "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity"
