@@ -2367,9 +2367,9 @@
         "heading": "Logo",
         "info": "Please don’t modify, edit, or distort the logo."
       },
-      "palm-leaf": {
-        "heading": "The Palm Leaf",
-        "info": "lease only use the mark-only logo in these situations: The full-version logo is illegible, a limited space to display the full-version logo or Summer.fi brand is already established well."
+      "dot": {
+        "heading": "The S. icon",
+        "info": "Please only use the mark-only logo in these situations: The full-version logo is illegible, a limited space to display the full-version logo or Summer.fi brand is already established well."
       },
       "minimum-size": {
         "heading": "Minimum Size",
@@ -2383,12 +2383,9 @@
       "best-practices": {
         "heading": "Best Practices",
         "info": "Please avoid the examples blow when using the logo.",
-        "no-gradient": "Do not use gradient for the wordmark",
+        "no-color-change": "Do not use the wrong color for the logo",
         "no-shadow": "Do not add shadow",
-        "no-rotate": "Do not rotate the logo",
-        "no-alone": "Do not use the wordmark alone",
-        "no-stack": "Do not stack the logo",
-        "no-ratio": "Do not change the ratio"
+        "no-rotate": "Do not rotate the logo"
       }
     }
   },

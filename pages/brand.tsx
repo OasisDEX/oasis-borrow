@@ -17,25 +17,24 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 const assetsList = {
   logos: [
-    { imageName: 'oasisapp_logo_dark' },
-    { imageName: 'oasisapp_logo_light', backgroundColor: 'primary100' },
-    { imageName: 'oasisapp_logo_black' },
-    { imageName: 'oasisapp_logo_white', backgroundColor: 'black' },
+    {
+      imageName: 'logo_color',
+      backgroundGradient: 'linear-gradient(181.14deg, #EBFAFF 1%, #FFE7D8 69.98%, #FFCFA3 119.25%)',
+    },
+    { imageName: 'logo_dark', backgroundColor: 'white' },
+    { imageName: 'logo_black' },
+    { imageName: 'logo_light', backgroundColor: 'black' },
   ],
-  palmLeaves: [
-    { imageName: 'dot_gradient' },
-    { imageName: 'dot_black' },
-    { imageName: 'dot_white', backgroundColor: 'black' },
+  dots: [
+    {
+      imageName: 'dot_color',
+      backgroundGradient: 'linear-gradient(181.14deg, #EBFAFF 1%, #FFE7D8 69.98%, #FFCFA3 119.25%)',
+    },
+    { imageName: 'dot_dark' },
+    { imageName: 'dot_light', backgroundColor: 'black' },
   ],
   minimumSizeList: ['digital', 'print'],
-  incorrectUseCasesMap: [
-    'no-gradient',
-    'no-shadow',
-    'no-rotate',
-    'no-alone',
-    'no-stack',
-    'no-ratio',
-  ],
+  incorrectUseCasesMap: ['no-color-change', 'no-shadow', 'no-rotate'],
 }
 
 const twoColumnsLayoutBoxSX = {
@@ -50,7 +49,7 @@ const threeColumnsLayoutBoxSX = {
   gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(3, calc(33.333% - 22px))'],
 }
 
-const brandAssetsZipUrl = 'https://drive.google.com/drive/folders/1lhDfHoY3uUUuiYlkl8LSuh2GZuNkbEzY'
+const brandAssetsZipUrl = 'https://drive.google.com/drive/folders/1oTs06RTOTgBQC0jtKLip4Shf1Mm4ohmH'
 const BlockHeading = ({
   headingTranslation,
   infoTranslation,
@@ -109,44 +108,46 @@ function BrandAssetsPage() {
         {assetsList.logos.map((asset) => (
           <Box
             key={asset.imageName}
-            bg={asset.backgroundColor || 'neutral10'}
             sx={{
               borderRadius: 12,
               borderColor: 'neutral20',
               borderStyle: 'solid',
               borderWidth: 1,
+              backgroundColor: asset.backgroundColor || 'neutral10',
+              backgroundImage: asset.backgroundGradient,
               display: 'flex',
               mt: 25,
             }}
           >
             <Image
-              src={staticFilesRuntimeUrl(`/static/img/brand_assets/${asset.imageName}.svg`)}
-              sx={{ height: '75px', margin: '70px auto' }}
+              src={staticFilesRuntimeUrl(`/static/img/logos/${asset.imageName}.svg`)}
+              sx={{ height: '45px', margin: '70px auto' }}
             />
           </Box>
         ))}
       </Grid>
       <BlockHeading
-        headingTranslation={t('brand-assets.category.palm-leaf.heading')}
-        infoTranslation={t('brand-assets.category.palm-leaf.info')}
+        headingTranslation={t('brand-assets.category.dot.heading')}
+        infoTranslation={t('brand-assets.category.dot.info')}
       />
       <Grid sx={threeColumnsLayoutBoxSX}>
-        {assetsList.palmLeaves.map((palmLeaf) => (
+        {assetsList.dots.map((dot) => (
           <Box
-            key={palmLeaf.imageName}
-            bg={palmLeaf.backgroundColor || 'neutral10'}
+            key={dot.imageName}
             sx={{
               borderRadius: 12,
               borderColor: 'neutral20',
               borderStyle: 'solid',
+              backgroundColor: dot.backgroundColor || 'neutral10',
+              backgroundImage: dot.backgroundGradient,
               borderWidth: 1,
               display: 'flex',
               mt: 25,
             }}
           >
             <Image
-              src={staticFilesRuntimeUrl(`/static/img/brand_assets/${palmLeaf.imageName}.svg`)}
-              sx={{ height: '140px', margin: '30px auto' }}
+              src={staticFilesRuntimeUrl(`/static/img/logos/${dot.imageName}.svg`)}
+              sx={{ height: '75px', margin: '30px auto' }}
             />
           </Box>
         ))}
@@ -170,9 +171,9 @@ function BrandAssetsPage() {
               }}
             >
               <Image
-                src={staticFilesRuntimeUrl('/static/img/brand_assets/oasisapp_logo_dark.svg')}
+                src={staticFilesRuntimeUrl('/static/img/logos/logo_black.svg')}
                 sx={{
-                  height: '75px',
+                  height: '45px',
                   mt: 80,
                   mr: 'auto',
                   mb: 10,
@@ -222,7 +223,7 @@ function BrandAssetsPage() {
             >
               <Image
                 src={staticFilesRuntimeUrl(
-                  `/static/img/brand_assets/incorrect-uses/${incorrectUseCase}.png`,
+                  `/static/img/logos/incorrect-uses/${incorrectUseCase}.png`,
                 )}
                 sx={{ width: '60%' }}
               />

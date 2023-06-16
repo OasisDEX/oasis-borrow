@@ -23,6 +23,7 @@ function CookiePage() {
 CookiePage.layout = MarketingLayout
 CookiePage.layoutProps = {
   variant: 'termsContainer',
+  topBackground: 'lighter',
 }
 
 export default CookiePage
