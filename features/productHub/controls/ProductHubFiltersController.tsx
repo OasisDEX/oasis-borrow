@@ -1,3 +1,4 @@
+import { isTestnetNetworkId, NetworkIds, useCustomNetworkParameter } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
@@ -8,6 +9,7 @@ import {
   productHubNetworkFilter,
   productHubProtocolFilter,
   productHubStrategyFilter,
+  productHubTestNetworkFilter,
 } from 'features/productHub/meta'
 import {
   ProductHubFilters,
@@ -40,7 +42,9 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
   onChange,
 }) => {
   const { t } = useTranslation()
+  const [networkParameter] = useCustomNetworkParameter()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
+  const isTestnet = isTestnetNetworkId(networkParameter?.id ?? NetworkIds.MAINNET)
 
   const debtTokens = useMemo(
     () =>
@@ -130,7 +134,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
       )}
       <GenericMultiselect
         label={t('product-hub.filters.networks')}
-        options={productHubNetworkFilter}
+        options={isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter}
         onChange={(value) => {
           onChange({
             or: selectedFilters.or,
