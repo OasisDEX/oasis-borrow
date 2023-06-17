@@ -82,6 +82,8 @@ export const EXTERNAL_LINKS = {
     VAULT_AFTER_MERGE: 'https://blog.oasis.app/what-to-expect-for-your-vault-after-the-merge',
     EXPANDING_EARN_AAVE_V3: 'https://blog.oasis.app/expanding-earn-with-aave-v3',
     MULTIPLY_FOR_AAVE: 'https://blog.oasis.app/introducing-oasis-multiply-for-aave',
+    DSR_RATE_HIKE: 'https://blog.oasis.app/dsr-rate-hike/',
+    MAKER_STABILITY_FEE_CHANGES: 'https://blog.oasis.app/major-stability-fee-changes/',
   },
   LEGACY_APP: 'https://legacy.oasis.app',
   WORKABLE: 'https://oasisapp.workable.com',

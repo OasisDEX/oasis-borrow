@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { Trans } from 'next-i18next'
 import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
 
@@ -9,19 +10,23 @@ import { Notice } from './Notice'
 interface HomePageBannerProps {
   heading: string
   link: string
+  image?: string
+  icon?: {
+    name: string
+    background: string
+  }
 }
-const handleClose = () => null
-export function HomePageBanner({ heading, link }: HomePageBannerProps) {
+
+export function HomePageBanner({ heading, link, image, icon }: HomePageBannerProps) {
   return (
     <Notice
-      close={() => {
-        handleClose()
-      }}
+      close={() => null}
       sx={{
         marginBottom: 0,
         overflow: 'hidden',
         borderRadius: '50px',
         maxWidth: ['353px', '530px'],
+        width: 'fit-content',
         p: '3px 8px 3px 4px',
         '&:hover': {
           opacity: '80%',
@@ -37,9 +42,8 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
             alignItems: 'center',
             textAlign: 'left',
             flexDirection: ['row'],
-            justifyContent: ['start', 'space-between', 'space-between', 'space-between'],
             minHeight: '44px',
-            '&:hover svg': {
+            '&:hover span + svg': {
               transform: 'translateX(10px)',
             },
           }}
@@ -55,10 +59,23 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
               mr: '8px',
             }}
           >
-            <Image
-              src={staticFilesRuntimeUrl('/static/img/tokens/Aave.png')}
-              sx={{ height: '44px', width: '44px' }}
-            />
+            {image && (
+              <Image src={staticFilesRuntimeUrl(image)} sx={{ height: '44px', width: '44px' }} />
+            )}
+            {icon && (
+              <Flex
+                sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '40px',
+                  width: '40px',
+                  background: icon.background,
+                  borderRadius: '50%',
+                }}
+              >
+                <Icon name={icon.name} size="34px" />
+              </Flex>
+            )}
           </Flex>
           <Flex
             sx={{
@@ -68,6 +85,7 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
             }}
           >
             <Text
+              as="span"
               variant="text.paragraph3"
               sx={{
                 zIndex: 1,
@@ -76,19 +94,23 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
                 lineHeight: '30px',
               }}
             >
-              {heading}
+              <Trans
+                i18nKey={heading}
+                components={{
+                  1: <Text as="span" sx={{ color: 'interactive100' }} />,
+                }}
+              />
               <Icon
                 key="arrow"
                 name="arrow_right"
-                size="20px"
+                size="18px"
                 sx={{
                   position: 'relative',
-                  ml: '4px',
-                  top: '0.35em',
-                  left: '0.3em',
+                  ml: '6px',
+                  top: '3px',
                   transition: '0.2s',
-                  color: 'black',
-                  pr: 2,
+                  color: 'interactive100',
+                  pr: 1,
                 }}
               />
             </Text>
