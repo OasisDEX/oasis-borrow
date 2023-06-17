@@ -14,7 +14,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useState } from 'react'
-import { Box, Button, Text } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
   product: ProductHubProductType
@@ -23,7 +23,7 @@ interface ProductHubViewProps {
 
 export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
   const { t } = useTranslation()
-  const { data, refetch } = useProductHubData({
+  const { data } = useProductHubData({
     protocols: [
       LendingProtocol.Ajna,
       LendingProtocol.AaveV2,
@@ -81,7 +81,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
           </AppLink>
         </Text>
       </Box>
-      <Button onClick={refetch}>refetch</Button>
       <WithLoadingIndicator value={[data]} customLoader={<ProductHubLoadingState />}>
         {([_data]) => (
           <>

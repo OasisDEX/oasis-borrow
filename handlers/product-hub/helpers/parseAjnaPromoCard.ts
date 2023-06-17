@@ -73,6 +73,7 @@ export function parseAjnaMultiplyPromoCard(
 export function parseAjnaEarnPromoCard(
   collateralToken: string,
   quoteToken: string,
+  weeklyNetApy?: string,
 ): PromoCardProps {
   return {
     tokens: [collateralToken, quoteToken],
@@ -85,7 +86,14 @@ export function parseAjnaEarnPromoCard(
     pills: [
       {
         label: {
-          key: 'ajna.promo-cards.lends-to-one-token',
+          key: weeklyNetApy
+            ? 'ajna.promo-cards.get-weekly-apy'
+            : 'ajna.promo-cards.lends-to-one-token',
+          props: {
+            weeklyNetApy: weeklyNetApy
+              ? formatDecimalAsPercent(new BigNumber(weeklyNetApy))
+              : 'n/a',
+          },
         },
       },
       getAjnaTokensPill,
