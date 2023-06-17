@@ -30,7 +30,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
       LendingProtocol.AaveV3,
       LendingProtocol.Maker,
     ],
-    promoCardsCollection: 'AjnaLP',
+    promoCardsCollection: 'Home',
   })
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
