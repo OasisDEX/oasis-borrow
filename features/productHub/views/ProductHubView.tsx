@@ -1,4 +1,3 @@
-import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { ProductHubLoadingState } from 'features/productHub/components'
@@ -8,20 +7,36 @@ import {
 } from 'features/productHub/controls'
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
-import { ALL_ASSETS, EMPTY_FILTERS, productHubLinksMap } from 'features/productHub/meta'
-import { ProductHubFilters, ProductHubProductType } from 'features/productHub/types'
+import { ALL_ASSETS, productHubLinksMap } from 'features/productHub/meta'
+import {
+  ProductHubFilters,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
+} from 'features/productHub/types'
+import { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import { Box, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
   product: ProductHubProductType
+  promoCardsCollection: PromoCardsCollection
   token?: string
+  url?: string
 }
 
-export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
+export const ProductHubView: FC<ProductHubViewProps> = ({
+  initialNetwork,
+  initialProtocol,
+  product,
+  promoCardsCollection,
+  token,
+  url,
+}) => {
   const { t } = useTranslation()
   const { data } = useProductHubData({
     protocols: [
@@ -30,14 +45,24 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
       LendingProtocol.AaveV3,
       LendingProtocol.Maker,
     ],
-    promoCardsCollection: 'Home',
+    promoCardsCollection,
   })
+  const defaultFilters = useMemo(
+    () => ({
+      or: [],
+      and: {
+        ...(initialNetwork && { network: initialNetwork }),
+        ...(initialProtocol && { protocol: initialProtocol }),
+      },
+    }),
+    [initialNetwork, initialProtocol],
+  )
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
-  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(EMPTY_FILTERS)
+  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(defaultFilters)
 
   return (
-    <AnimatedWrapper sx={{ mb: 5 }}>
+    <>
       <Box
         sx={{
           position: 'relative',
@@ -46,15 +71,14 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
           zIndex: 3,
         }}
       >
-        {}
         <ProductHubNaturalLanguageSelectorController
           product={product}
           token={token}
-          url="/oasis-create/"
+          url={url}
           onChange={(_selectedProduct, _selectedToken) => {
             setSelectedProduct(_selectedProduct)
             setSelectedToken(_selectedToken)
-            setSelectedFilters(EMPTY_FILTERS)
+            setSelectedFilters(defaultFilters)
           }}
         />
         <Text
@@ -90,6 +114,8 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
               selectedToken={selectedToken}
             />
             <ProductHubContentController
+              initialNetwork={initialNetwork}
+              initialProtocol={initialProtocol}
               selectedFilters={selectedFilters}
               selectedProduct={selectedProduct}
               selectedToken={selectedToken}
@@ -99,6 +125,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({ product, token }) => {
           </>
         )}
       </WithLoadingIndicator>
-    </AnimatedWrapper>
+    </>
   )
 }
