@@ -7,7 +7,6 @@ import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
 export const ALL_ASSETS = 'all assets'
-export const EMPTY_FILTERS = { or: [], and: {} }
 
 export const productHubLinksMap: { [key in ProductHubProductType]: string } = {
   borrow: EXTERNAL_LINKS.KB.WHAT_IS_BORROW,

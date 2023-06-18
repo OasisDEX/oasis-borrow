@@ -82,6 +82,8 @@ export const EXTERNAL_LINKS = {
     VAULT_AFTER_MERGE: 'https://blog.summer.fi/what-to-expect-for-your-vault-after-the-merge',
     EXPANDING_EARN_AAVE_V3: 'https://blog.summer.fi/expanding-earn-with-aave-v3',
     MULTIPLY_FOR_AAVE: 'https://blog.summer.fi/introducing-oasis-multiply-for-aave',
+    DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
+    MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
   },
   LEGACY_APP: 'https://legacy.summer.fi',
   WORKABLE: 'https://oasisapp.workable.com',

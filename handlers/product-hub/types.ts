@@ -1,4 +1,4 @@
-import { ProductHubData } from 'features/productHub/types'
+import { ProductHubItem } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { NextApiRequest } from 'next'
 
@@ -17,4 +17,9 @@ export interface HandleUpdateProductHubDataProps extends NextApiRequest {
   body: ProductHubDataParams
 }
 
-export type ProductHubHandlerResponse = Promise<ProductHubData['table']>
+export interface ProductHubHandlerResponseData {
+  table: ProductHubItem[]
+  warnings: string[]
+}
+
+export type ProductHubHandlerResponse = Promise<ProductHubHandlerResponseData>

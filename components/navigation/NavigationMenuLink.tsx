@@ -1,4 +1,5 @@
 import { AppLink } from 'components/Links'
+import { useRouter } from 'next/router'
 import React, { ReactNode } from 'react'
 import { Box } from 'theme-ui'
 
@@ -11,6 +12,8 @@ type NavigationMenuPanelLinkProps = NavigationMenuPanelLinkType & {
 }
 
 export function NavigationMenuLink({ label, link, onMouseEnter }: NavigationMenuPanelLinkProps) {
+  const { asPath } = useRouter()
+
   return (
     <Box
       as="li"
@@ -23,7 +26,7 @@ export function NavigationMenuLink({ label, link, onMouseEnter }: NavigationMenu
       <AppLink
         href={link}
         sx={{
-          color: 'neutral80',
+          color: asPath.includes(link) ? 'primary100' : 'neutral80',
           whiteSpace: 'nowrap',
           transition: 'color 200ms',
           '&:hover': { color: 'primary100' },

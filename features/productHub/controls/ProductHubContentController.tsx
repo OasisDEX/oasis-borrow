@@ -2,10 +2,18 @@ import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContaine
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
-import { ProductHubFilters, ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import {
+  ProductHubFilters,
+  ProductHubItem,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
+} from 'features/productHub/types'
+import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
   selectedToken: string
@@ -14,6 +22,8 @@ interface ProductHubContentControllerProps {
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
+  initialNetwork = [],
+  initialProtocol = [],
   selectedFilters,
   selectedProduct,
   selectedToken,
@@ -37,6 +47,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     <AssetsTableContainer>
       <ProductHubFiltersController
         data={dataMatchedByNL}
+        initialNetwork={initialNetwork}
+        initialProtocol={initialProtocol}
         selectedFilters={selectedFilters}
         selectedProduct={selectedProduct}
         selectedToken={selectedToken}

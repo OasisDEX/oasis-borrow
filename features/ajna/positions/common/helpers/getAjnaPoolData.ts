@@ -114,5 +114,7 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
     }
   }
 
-  throw new Error('No pool data found')
+  throw new Error(
+    `No pool data found for poolAddress: ${poolAddress}, Response: ${JSON.stringify(response)}`,
+  )
 }

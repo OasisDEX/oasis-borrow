@@ -70,5 +70,7 @@ export const getAjnaPoolsTableData = async (
     )
   }
 
-  throw new Error('No pool data found')
+  throw new Error(
+    `No pool data found for networkId: ${networkId}, Response: ${JSON.stringify(response)}`,
+  )
 }

@@ -1,56 +1,20 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
-import { AssetPill } from 'components/AssetPill'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
-import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
-import { TabBar } from 'components/TabBar'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
-import { AjnaProductCardBorrowController } from 'features/ajna/common/controls/AjnaProductCardBorrowController'
-import { AjnaProductCardEarnController } from 'features/ajna/common/controls/AjnaProductCardEarnController'
-import { Hero } from 'features/homepage/common/Hero'
+import { ProductHubProductType } from 'features/productHub/types'
+import { ProductHubView } from 'features/productHub/views'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useObservable } from 'helpers/observableHook'
+import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Heading, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
-export const otherAssets = [
-  {
-    token: 'AAVE',
-    link: '/',
-  },
-  {
-    token: 'BAL',
-    link: '/',
-  },
-  {
-    token: 'COMP',
-    link: '/',
-  },
-  {
-    token: 'LINK',
-    link: '/',
-  },
-  {
-    token: 'COMP',
-    link: '/',
-  },
-  {
-    token: 'MANA',
-    link: '/',
-  },
-  {
-    token: 'UNI',
-    link: '/',
-  },
-  {
-    token: 'YFI',
-    link: '/',
-  },
-]
+import { Hero } from './common/Hero'
 
 export const benefitCardsAnja = [
   {
@@ -88,98 +52,31 @@ export function AjnaHomepageView() {
 
   return (
     <AnimatedWrapper>
-      <Hero
-        isConnected={context?.status === 'connected'}
-        sx={{
-          mt: '117px ',
-        }}
-        heading="landing.hero.ajna.headline"
-        subheading={
-          <Trans
-            i18nKey="landing.hero.ajna.subheader"
-            components={[
-              <AppLink
-                sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
-                href="https://summer.fi/ajna"
-              />,
-            ]}
-          />
-        }
-        showButton={false}
-      />
-      <Box
-        sx={{
-          width: '100%',
-          mt: '84px',
-        }}
-        id="product-cards-wrapper"
-      >
-        <TabBar
-          variant="large"
-          useDropdownOnMobile
-          defaultTab="borrow"
-          sections={[
-            {
-              label: t('landing.tabs.ajna.borrow.tabLabel'),
-              value: 'borrow',
-              content: <HomepageTabLayout cards={<AjnaProductCardBorrowController />} />,
-            },
-            // // TODO uncomment and configure once multiply available
-            // {
-            //   label: t('landing.tabs.ajna.multiply.tabLabel'),
-            //   value: 'multiply',
-            //   content: <HomepageTabLayout cards={<AjnaProductCardBorrowController />} />,
-            // },
-            {
-              label: t('landing.tabs.ajna.earn.tabLabel'),
-              value: 'earn',
-              content: <HomepageTabLayout cards={<AjnaProductCardEarnController />} />,
-            },
-          ]}
+      <Box sx={{ maxWidth: '670px', mt: 5, mx: 'auto' }}>
+        <Hero
+          isConnected={context?.status === 'connected'}
+          heading="landing.hero.ajna.headline"
+          subheading={
+            <Trans
+              i18nKey="landing.hero.ajna.subheader"
+              components={[
+                <AppLink
+                  sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
+                  href={EXTERNAL_LINKS.KB.AJNA}
+                />,
+              ]}
+            />
+          }
+          showButton={false}
         />
       </Box>
-      {otherAssets && otherAssets?.length > 0 && (
-        <Flex
-          sx={{
-            mt: '56px',
-            pt: 5,
-            flexDirection: 'column',
-            alignItems: 'center',
-            borderTop: '1px solid',
-            borderColor: 'neutral20',
-          }}
-        >
-          <Heading
-            as="h2"
-            sx={{
-              fontSize: '28px',
-              fontWeight: 'semiBold',
-              mb: '40px',
-              color: 'primary100',
-              textAlign: 'center',
-            }}
-          >
-            {t('ajna.other-assets')}
-          </Heading>
-          <Flex
-            as="ul"
-            sx={{
-              flexWrap: 'wrap',
-              columnGap: 3,
-              rowGap: 2,
-              listStyle: 'none',
-              p: 0,
-              justifyContent: 'center',
-            }}
-          >
-            {otherAssets.map(({ link, token }, i) => (
-              <Box key={i} as="li">
-                <AssetPill icon={getToken(token).iconCircle} label={token} link={link} />
-              </Box>
-            ))}
-          </Flex>
-        </Flex>
-      )}
+      <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
+        <ProductHubView
+          initialProtocol={[LendingProtocol.Ajna]}
+          product={ProductHubProductType.Borrow}
+          promoCardsCollection="AjnaLP"
+        />
+      </Box>
       <Flex
         sx={{
           flexDirection: 'column',

@@ -5,6 +5,7 @@ import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponen
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
+import { getActionUrl } from 'features/productHub/helpers'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import { upperFirst } from 'lodash'
@@ -184,7 +185,12 @@ export function parseRows(
           protocol={protocol}
         />
       ),
-      action: <AssetsTableDataCellAction cta={upperFirst(product)} link="/" />,
+      action: (
+        <AssetsTableDataCellAction
+          cta={upperFirst(product)}
+          link={getActionUrl({ ...row, product: [product] })}
+        />
+      ),
     }
   })
 }
