@@ -185,7 +185,12 @@ export function parseRows(
           protocol={protocol}
         />
       ),
-      action: <AssetsTableDataCellAction cta={upperFirst(product)} link={getActionUrl(row)} />,
+      action: (
+        <AssetsTableDataCellAction
+          cta={upperFirst(product)}
+          link={getActionUrl({ ...row, product: [product] })}
+        />
+      ),
     }
   })
 }
