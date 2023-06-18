@@ -67,6 +67,7 @@ async function getAjnaPoolData(
             depositSize,
             interestRate,
             lowestUtilizedPrice,
+            lowestUtilizedPriceIndex,
           },
         },
       ) => {
@@ -107,8 +108,10 @@ async function getAjnaPoolData(
             ...getTokenGroup(quoteToken, 'secondary'),
             fee,
             liquidity,
-            maxLtv,
-            maxMultiply,
+            ...(lowestUtilizedPriceIndex > 0 && {
+              maxLtv,
+              maxMultiply,
+            }),
             multiplyStrategy,
             multiplyStrategyType,
           },
