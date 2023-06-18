@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { HomePageBanner } from 'components/HomePageBanner'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -76,6 +78,7 @@ export const HomepageHero = () => {
   const [context] = useObservable(context$)
   const [userReferral] = useObservable(userReferral$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (!localReferral && referralsEnabled) {
@@ -103,6 +106,20 @@ export const HomepageHero = () => {
           flexDirection: 'column',
         }}
       >
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            mt: '20px',
+            mb: -3,
+            width: 'unset',
+          }}
+        >
+          <HomePageBanner
+            heading={t('dsr.landing-page-banner.title')}
+            link={EXTERNAL_LINKS.BLOG.DSR_RATE_HIKE}
+            icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
+          />
+        </Flex>
         <Hero
           isConnected={context?.status === 'connected'}
           heading="landing.hero.main.headline"

@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { HomePageBanner } from 'components/HomePageBanner'
 import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
@@ -97,21 +96,6 @@ export function HomepageView() {
       <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
         {t('landing.why-oasis.main-header')}
       </Text>
-      <Flex
-        sx={{
-          justifyContent: 'center',
-          mt: '80px',
-          mb: 0,
-          width: 'unset',
-        }}
-      >
-        <HomePageBanner
-          heading={t('dsr.landing-page-banner.title')}
-          link={EXTERNAL_LINKS.BLOG.DSR_RATE_HIKE}
-          icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
-        />
-      </Flex>
-
       <Grid columns={['1fr', '1.8fr 1.2fr']}>
         <HomepageHeadline
           primaryText={t('landing.why-oasis.sub-headers.security.primary')}
