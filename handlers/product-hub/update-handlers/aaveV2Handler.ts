@@ -83,23 +83,26 @@ export default async function (): ProductHubHandlerResponse {
     Promise.all(tokensReserveConfigurationDataPromises),
     Promise.all(earnProductsPromises),
   ]).then(([tokensReserveData, tokensReserveConfigurationData, earnProductsYields]) => {
-    return aaveV2ProductHubProducts.map((product) => {
-      const { secondaryToken, primaryToken, depositToken, label } = product
-      const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
-        secondaryToken
-      ]
-      const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-        (data) => data[depositToken || primaryToken],
-      )![depositToken || primaryToken]
-      const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
-      return {
-        ...product,
-        maxMultiply: riskRatio.multiple.toString(),
-        maxLtv: maxLtv.toString(),
-        liquidity: liquidity.toString(),
-        fee: fee.toString(),
-        weeklyNetApy: weeklyNetApy[label] ? weeklyNetApy[label]!.toString() : undefined,
-      }
-    })
+    return {
+      table: aaveV2ProductHubProducts.map((product) => {
+        const { secondaryToken, primaryToken, depositToken, label } = product
+        const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
+          secondaryToken
+        ]
+        const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
+          (data) => data[depositToken || primaryToken],
+        )![depositToken || primaryToken]
+        const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
+        return {
+          ...product,
+          maxMultiply: riskRatio.multiple.toString(),
+          maxLtv: maxLtv.toString(),
+          liquidity: liquidity.toString(),
+          fee: fee.toString(),
+          weeklyNetApy: weeklyNetApy[label] ? weeklyNetApy[label]!.toString() : undefined,
+        }
+      }),
+      warnings: [],
+    }
   })
 }

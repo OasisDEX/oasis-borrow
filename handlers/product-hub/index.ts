@@ -104,9 +104,10 @@ export async function updateProductHubData(
     const dataHandlersPromiseList = await Promise.all(
       handlersList.map(({ name, call }) => {
         const startTime = Date.now()
-        return call().then((data) => ({
+        return call().then(({ table, warnings }) => ({
           name, // protocol name
-          data,
+          warnings,
+          data: table,
           processingTime: measureTime ? Date.now() - startTime : undefined,
         }))
       }),
