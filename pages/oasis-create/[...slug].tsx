@@ -1,3 +1,4 @@
+import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AppLayout } from 'components/Layouts'
@@ -13,7 +14,14 @@ function OasisCreatePage({ product, token }: { product: ProductHubProductType; t
   return (
     <WithConnection>
       <WithFeatureToggleRedirect feature="OasisCreate">
-        <ProductHubView product={product} token={token} />
+        <AnimatedWrapper sx={{ mb: 5 }}>
+          <ProductHubView
+            product={product}
+            promoCardsCollection="Home"
+            token={token}
+            url="/oasis-create/"
+          />
+        </AnimatedWrapper>
       </WithFeatureToggleRedirect>
     </WithConnection>
   )
