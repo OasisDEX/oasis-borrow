@@ -2,9 +2,11 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
+import { TokensGroup } from 'components/TokensGroup'
 import { WithArrow } from 'components/WithArrow'
 import React, { FC } from 'react'
-import { Box, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
+import { useTranslation } from 'react-i18next'
+import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
 
@@ -12,22 +14,48 @@ export interface PromoCardWrapperProps {
   withHover?: boolean
 }
 
-export interface PromoCardProps {
+export interface PromoCardTranslationProps {
+  key: string
+  props?: { [key: string]: string }
+}
+
+interface PromoCardPropsWithIcon {
   icon: string
-  title: string
+  image?: never
+  tokens?: never
+}
+
+interface PromoCardPropsWithImage {
+  icon?: never
+  image: string
+  tokens?: never
+}
+
+interface PromoCardPropsWithTokens {
+  icon?: never
+  image?: never
+  tokens: string[]
+}
+
+export type PromoCardProps = (
+  | PromoCardPropsWithIcon
+  | PromoCardPropsWithImage
+  | PromoCardPropsWithTokens
+) & {
+  title: string | PromoCardTranslationProps
   protocol?: ProtocolLabelProps
-  description?: string
+  description?: string | PromoCardTranslationProps
   pills?: {
-    label: string
+    label: string | PromoCardTranslationProps
     variant?: PromoCardVariant
   }[]
   link?: {
     href: string
-    label: string
+    label: string | PromoCardTranslationProps
   }
   data?: {
-    label: string
-    value: string
+    label: string | PromoCardTranslationProps
+    value: string | PromoCardTranslationProps
     variant?: PromoCardVariant
   }[]
 }
@@ -49,7 +77,8 @@ export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, withHove
     <Box
       sx={{
         position: 'relative',
-        p: '24px',
+        px: 3,
+        py: '24px',
         textAlign: 'center',
         border: '1px solid',
         borderColor: 'neutral20',
@@ -72,27 +101,56 @@ export const PromoCardLoadingState: FC = () => {
   return (
     <PromoCardWrapper withHover={false}>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Skeleton circle width="42px" height="42px" sx={{ mt: 1 }} />
+        <Flex>
+          <Box sx={{ mr: '-20px' }}>
+            <Skeleton circle width="42px" height="42px" sx={{ mt: 1, mr: '-30px' }} />
+          </Box>
+          <Box>
+            <Skeleton circle width="42px" height="42px" sx={{ mt: 1 }} />
+          </Box>
+        </Flex>
         <Skeleton width="200px" sx={{ mt: '20px' }} />
-        <Skeleton width="200px" height="30px" sx={{ mt: 3 }} />
-        <Skeleton sx={{ mt: '22px' }} />
+        <Skeleton width="300px" sx={{ mt: 3 }} />
+        <Skeleton width="300px" height="30px" sx={{ mt: '14px' }} />
       </Flex>
     </PromoCardWrapper>
   )
+}
+
+export const PromoCardTranslation: FC<{ text: string | PromoCardTranslationProps }> = ({
+  text,
+}) => {
+  const { t } = useTranslation()
+
+  return <>{typeof text === 'object' ? t(text.key, text.props) : text}</>
 }
 
 export const PromoCard: FC<PromoCardProps> = ({
   data,
   description,
   icon,
+  image,
   link,
   pills,
   protocol,
   title,
+  tokens,
 }) => {
   return (
     <PromoCardWrapper>
-      <Icon name={icon} size={50} sx={{ display: 'block', mx: 'auto', mb: '12px' }} />
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50px',
+          mx: 'auto',
+          mb: '12px',
+        }}
+      >
+        {icon && <Icon name={icon} size={50} />}
+        {tokens && <TokensGroup tokens={tokens} forceSize={50} />}
+        {image && <Image src={image} sx={{ height: '44px' }} />}
+      </Flex>
       {protocol && (
         <Box
           sx={{
@@ -107,11 +165,11 @@ export const PromoCard: FC<PromoCardProps> = ({
         </Box>
       )}
       <Heading as="h3" variant="boldParagraph2">
-        {title}
+        <PromoCardTranslation text={title} />
       </Heading>
       {description && (
         <Text as="p" variant="paragraph3" sx={{ mt: 2 }}>
-          {description}
+          <PromoCardTranslation text={description} />
         </Text>
       )}
       {pills && (
@@ -129,7 +187,7 @@ export const PromoCard: FC<PromoCardProps> = ({
         >
           {pills.map(({ label, variant = 'neutral' }) => (
             <Flex
-              key={label}
+              key={JSON.stringify(label)}
               as="li"
               variant="text.paragraph4"
               sx={{
@@ -142,7 +200,7 @@ export const PromoCard: FC<PromoCardProps> = ({
                 ...pillColors[variant],
               }}
             >
-              {label}
+              <PromoCardTranslation text={label} />
             </Flex>
           ))}
         </Flex>
@@ -150,9 +208,13 @@ export const PromoCard: FC<PromoCardProps> = ({
       {data && (
         <Flex as="ul" sx={{ flexDirection: 'column', listStyle: 'none', mx: 0, mt: 3, p: 0 }}>
           {data.map(({ label, value, variant = 'neutral' }) => (
-            <Flex key={label} as="li" sx={{ justifyContent: 'space-between', width: '100%' }}>
+            <Flex
+              key={JSON.stringify(label)}
+              as="li"
+              sx={{ justifyContent: 'space-between', width: '100%' }}
+            >
               <Text as="span" variant="paragraph3" sx={{ color: 'neutral80' }}>
-                {label}
+                <PromoCardTranslation text={label} />
               </Text>
               <Text as="span" variant="boldParagraph3" sx={dataColors[variant]}>
                 {variant === 'negative' && <Icon name="arrow_decrease" size={12} sx={{ mr: 1 }} />}
@@ -166,7 +228,7 @@ export const PromoCard: FC<PromoCardProps> = ({
       {link && (
         <AppLink href={link.href} sx={{ display: 'inline-block', mt: 2 }}>
           <WithArrow variant="paragraph3" sx={{ color: 'interactive100', fontWeight: 'regular' }}>
-            {link.label}
+            <PromoCardTranslation text={link.label} />
           </WithArrow>
         </AppLink>
       )}

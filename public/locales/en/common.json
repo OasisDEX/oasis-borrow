@@ -2810,6 +2810,24 @@
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
         "button": "Claim AJNA tokens"
       }
+    },
+    "promo-cards": {
+      "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
+      "get-ajna-tokens": "Get Ajna Tokens",
+      "get-liquidity-from-your-assets-using-ajna": "Get liquidity from your assets using Ajna",
+      "get-to-know-ajna-multiply": "Get to know Ajna Multiply",
+      "get-weekly-apy": "Get {{weeklyNetApy}} 7 day net APY",
+      "learn-how-can-you-earn-by-lending-your-assets": "Learn how can you earn by lending your assets",
+      "learn-how-to-avoid-getting-your-position-liquidated": "Learn how to avoid getting your position liquidated",
+      "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity",
+      "learn-how-to-use-multiply-to-optimize-your-position": "Learn how to use Multiply to optimize your position",
+      "lend-against-collateral": "Lend {{quoteToken}} against {{collateralToken}} collateral",
+      "lends-to-one-token": "Lends to 1 token",
+      "max-ltv": "Max loan to value: {{maxLtv}}",
+      "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
+      "up-to-multiple": "Up to {{maxMultiple}} multiple",
+      "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
+      "what-is-earn-on-ajna": "What is Earn on Ajna?"
     }
   },
   "product-hub": {
