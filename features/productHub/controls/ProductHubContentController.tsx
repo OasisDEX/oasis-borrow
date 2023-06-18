@@ -38,7 +38,6 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
     [dataMatchedByNL, selectedFilters],
   )
-  console.log(selectedFilters)
   const rows = useMemo(
     () => parseRows(dataMatchedByFilters, selectedProduct),
     [dataMatchedByFilters, selectedProduct],

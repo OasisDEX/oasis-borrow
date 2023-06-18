@@ -61,8 +61,8 @@ export default async function (): ProductHubHandlerResponse {
   })
 
   // getting the APYs
-  const earnProducts = aaveV2ProductHubProducts.filter((product) =>
-    product.product.includes(ProductHubProductType.Earn),
+  const earnProducts = aaveV2ProductHubProducts.filter(({ product }) =>
+    product.includes(ProductHubProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
     const tokensReserveData = await Promise.all(tokensReserveConfigurationDataPromises)
