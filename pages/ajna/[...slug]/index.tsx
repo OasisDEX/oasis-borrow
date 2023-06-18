@@ -4,11 +4,11 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AjnaProductHubController } from 'features/ajna/common/controls/AjnaProductHubController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
+import { getProductHubStaticProps } from 'features/productHub/helpers/getProductHubStaticProps'
 import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { uniq, upperFirst } from 'lodash'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 function AjnaProductSlugPage({
@@ -75,14 +75,5 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const product = params?.slug![0] as ProductHubProductType
-  const token = params?.slug![1]
-
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || 'en', ['common'])),
-      ...(product && { product }),
-      ...(token && { token }),
-    },
-  }
+  return await getProductHubStaticProps(locale, params)
 }
