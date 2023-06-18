@@ -28,6 +28,8 @@ import { useMediaQuery } from 'usehooks-ts'
 
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
   selectedToken: string
@@ -36,6 +38,8 @@ interface ProductHubFiltersControllerProps {
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
   data,
+  initialNetwork = [],
+  initialProtocol = [],
   selectedFilters,
   selectedProduct,
   selectedToken,
@@ -133,6 +137,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         />
       )}
       <GenericMultiselect
+        initialValues={initialNetwork}
         label={t('product-hub.filters.networks')}
         options={isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter}
         onChange={(value) => {
@@ -146,6 +151,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         }}
       />
       <GenericMultiselect
+        initialValues={initialProtocol}
         label={t('product-hub.filters.protocols')}
         options={productHubProtocolFilter}
         onChange={(value) => {

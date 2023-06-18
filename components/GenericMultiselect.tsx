@@ -16,6 +16,7 @@ export interface GenericMultiselectOption {
 
 export interface GenericMultiselectProps {
   icon?: string
+  initialValues?: string[]
   label: string
   options: GenericMultiselectOption[]
   onChange: (value: string[]) => void
@@ -134,11 +135,17 @@ function GenericMultiselectItem({
   )
 }
 
-export function GenericMultiselect({ icon, label, options, onChange }: GenericMultiselectProps) {
+export function GenericMultiselect({
+  icon,
+  initialValues = [],
+  label,
+  options,
+  onChange,
+}: GenericMultiselectProps) {
   const { t } = useTranslation()
 
   const didMountRef = useRef(false)
-  const [values, setValues] = useState<string[]>([])
+  const [values, setValues] = useState<string[]>(initialValues)
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)

@@ -15,11 +15,11 @@ import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const ajnaProducts = table.filter((product) => product.protocol === LendingProtocol.Ajna)
-  const borrowishProducts = ajnaProducts.filter((product) =>
-    product.product.includes(ProductHubProductType.Borrow),
+  const borrowishProducts = ajnaProducts.filter(({ product }) =>
+    product.includes(ProductHubProductType.Borrow),
   )
-  const earnProducts = ajnaProducts.filter((product) =>
-    product.product.includes(ProductHubProductType.Earn),
+  const earnProducts = ajnaProducts.filter(({ product }) =>
+    product.includes(ProductHubProductType.Earn),
   )
 
   const ETHUSDCBorrowishProduct = findByTokenPair(borrowishProducts, ['ETH', 'USDC'])

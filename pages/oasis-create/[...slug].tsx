@@ -1,19 +1,27 @@
+import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AppLayout } from 'components/Layouts'
+import { getProductHubStaticProps } from 'features/productHub/helpers/getProductHubStaticProps'
 import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { WithChildren } from 'helpers/types'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 function OasisCreatePage({ product, token }: { product: ProductHubProductType; token?: string }) {
   return (
     <WithConnection>
       <WithFeatureToggleRedirect feature="OasisCreate">
-        <ProductHubView product={product} token={token} />
+        <AnimatedWrapper sx={{ mb: 5 }}>
+          <ProductHubView
+            product={product}
+            promoCardsCollection="Home"
+            token={token}
+            url="/oasis-create/"
+          />
+        </AnimatedWrapper>
       </WithFeatureToggleRedirect>
     </WithConnection>
   )
@@ -45,14 +53,5 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const product = params?.slug![0] as ProductHubProductType
-  const token = params?.slug![1]
-
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || 'en', ['common'])),
-      ...(product && { product }),
-      ...(token && { token }),
-    },
-  }
+  return await getProductHubStaticProps(locale, params)
 }
