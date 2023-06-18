@@ -8,11 +8,12 @@ import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveS
 import { Hero } from 'features/homepage/HomepageView'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useObservable } from 'helpers/observableHook'
 import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 export const benefitCardsAnja = [
   {
@@ -50,30 +51,31 @@ export function AjnaHomepageView() {
 
   return (
     <AnimatedWrapper>
-      <Hero
-        isConnected={context?.status === 'connected'}
-        sx={{
-          mt: '117px ',
-        }}
-        heading="landing.hero.ajna.headline"
-        subheading={
-          <Trans
-            i18nKey="landing.hero.ajna.subheader"
-            components={[
-              <AppLink
-                sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
-                href="https://oasis.app/anja"
-              />,
-            ]}
-          />
-        }
-        showButton={false}
-      />
+      <Box sx={{ maxWidth: '670px', mt: 5, mx: 'auto' }}>
+        <Hero
+          isConnected={context?.status === 'connected'}
+          heading="landing.hero.ajna.headline"
+          subheading={
+            <Trans
+              i18nKey="landing.hero.ajna.subheader"
+              components={[
+                <AppLink
+                  sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
+                  href={EXTERNAL_LINKS.KB.AJNA}
+                />,
+              ]}
+            />
+          }
+          showButton={false}
+        />
+      </Box>
+      <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
       <ProductHubView
         initialProtocol={[LendingProtocol.Ajna]}
         product={ProductHubProductType.Borrow}
         promoCardsCollection="AjnaLP"
       />
+      </Box>
       <Flex
         sx={{
           flexDirection: 'column',

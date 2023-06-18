@@ -733,10 +733,10 @@ export function Hero({
         ...sx,
       }}
     >
-      <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
+      <Heading as="h1" variant="header1" sx={{ mb: '24px' }}>
         {t(heading)}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
+      <Text as="p" variant="paragraph2" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
         {subheading}
       </Text>
       {showButton && (
