@@ -70,11 +70,11 @@ export function AjnaHomepageView() {
         />
       </Box>
       <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
-      <ProductHubView
-        initialProtocol={[LendingProtocol.Ajna]}
-        product={ProductHubProductType.Borrow}
-        promoCardsCollection="AjnaLP"
-      />
+        <ProductHubView
+          initialProtocol={[LendingProtocol.Ajna]}
+          product={ProductHubProductType.Borrow}
+          promoCardsCollection="AjnaLP"
+        />
       </Box>
       <Flex
         sx={{
