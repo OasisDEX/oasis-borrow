@@ -128,11 +128,7 @@ export function HomePageBanner({ link, ...rest }: HomePageBannerProps) {
           <HomePageBannerButton {...rest} />
         </AppLink>
       ) : (
-        <Box
-          onClick={() => {
-            void connect()
-          }}
-        >
+        <Box onClick={() => void connect()}>
           <HomePageBannerButton {...rest} />
         </Box>
       )}
