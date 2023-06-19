@@ -17,7 +17,7 @@ import { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useMemo, useState } from 'react'
+import React, { FC, Fragment, useMemo, useState } from 'react'
 import { Box, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
@@ -62,7 +62,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(defaultFilters)
 
   return (
-    <>
+    <Fragment key={product}>
       <Box
         sx={{
           position: 'relative',
@@ -125,6 +125,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           </>
         )}
       </WithLoadingIndicator>
-    </>
+    </Fragment>
   )
 }

@@ -3,9 +3,9 @@ import { useAppContext } from 'components/AppContextProvider'
 import { HomePageBanner } from 'components/HomePageBanner'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
@@ -94,6 +94,7 @@ export const HomepageHero = () => {
   const notificationsEnabled = useFeatureToggle('Notifications')
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
+  const { walletAddress } = useAccount()
   return (
     <>
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
@@ -116,8 +117,8 @@ export const HomepageHero = () => {
         >
           <HomePageBanner
             heading={t('dsr.landing-page-banner.title')}
-            link={EXTERNAL_LINKS.BLOG.DSR_RATE_HIKE}
             icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
+            {...(walletAddress && { link: `earn/dsr/${walletAddress}` })}
           />
         </Flex>
         <Hero

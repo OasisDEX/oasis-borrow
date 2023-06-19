@@ -2,6 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { ethers } from 'ethers'
+import { BridgeConnector } from 'features/web3OnBoard'
 import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
 import { isEqual } from 'lodash'
 import { useEffect } from 'react'
@@ -42,7 +43,7 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     }, [bridgeConnector, activate, connector])
 
     useEffect(() => {
-      if (connector && !bridgeConnector) {
+      if (connector && !bridgeConnector && connector instanceof BridgeConnector) {
         void deactivate()
       }
     }, [bridgeConnector, deactivate, connector])
