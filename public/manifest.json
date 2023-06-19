@@ -3,7 +3,7 @@
   "description": "Generate Dai on Summer.fi using crypto as your collateral",
   "iconPath": "static/img/logos/logo_color.svg",
   "short_name": "Summer.fi",
-  "display": "standalone",
+  "display": "browser",
   "orientation": "portrait",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
