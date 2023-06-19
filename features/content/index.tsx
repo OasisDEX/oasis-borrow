@@ -26,11 +26,11 @@ const v1: Content = {
     content: <TranslatedContent content={tosContent} />,
   },
   privacy: {
-    version: 'ver-26.06.2022',
+    version: 'ver-26.06.2023',
     content: <TranslatedContent content={privacyContent} />,
   },
   cookie: {
-    version: 'ver-1.7.2022',
+    version: 'ver-26.06.2023',
     content: <TranslatedContent content={cookieContent} />,
   },
 }
