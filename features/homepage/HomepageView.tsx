@@ -20,6 +20,7 @@ import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { productCardsConfig } from 'helpers/productCards'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { debounce } from 'lodash'
@@ -200,6 +201,7 @@ export function HomepageView() {
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   const [scrollPercentage, setScrollPercentage] = useState(0)
+  const { walletAddress } = useAccount()
   // Magic number which is the rough height of three HomepagePromoBlocks + margins (search for sub-headers.security)
   // Why: cause the refs + calculations were singnificantly expensive than this
   // If you ever add/subtract a block from there this number needs to change
@@ -264,8 +266,8 @@ export function HomepageView() {
       >
         <HomePageBanner
           heading={t('dsr.landing-page-banner.title')}
-          link={EXTERNAL_LINKS.BLOG.DSR_RATE_HIKE}
           icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
+          {...(walletAddress && { link: `earn/dsr/${walletAddress}` })}
         />
       </Flex>
 
