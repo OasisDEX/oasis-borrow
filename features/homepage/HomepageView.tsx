@@ -160,7 +160,6 @@ export function HomepageView() {
           product={ProductHubProductType.Multiply}
           promoCardsCollection="Home"
           token="ETH"
-          url="/"
         />
       </Box>
       <Box
