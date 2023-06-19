@@ -115,7 +115,12 @@ export function AjnaGeneralContextProvider({
     return {
       currentStep,
       steps,
-      editingStep: getAjnaEditingStep({ currentStep, product, flow }),
+      editingStep: getAjnaEditingStep({
+        currentStep,
+        flow,
+        product,
+        steps,
+      }),
       isExternalStep: isExternalStep({ currentStep }),
       isFlowStateReady,
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
