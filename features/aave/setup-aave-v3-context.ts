@@ -84,7 +84,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   )
 
   const earnCollateralsReserveData = {
-    WSTETH: aaveReserveConfigurationData$({ token: 'WSTETH' }),
+    WSTETH: aaveReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
   } as Record<string, Observable<ReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(

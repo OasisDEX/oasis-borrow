@@ -30,7 +30,10 @@ export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) 
   const [strategy] = getAaveStrategy(cardData.symbol)
   const displayNetwork = useFeatureToggle('UseNetworkRowProductCard')
   const [aaveReserveState, aaveReserveStateError] = useObservable(
-    aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
+    aaveReserveConfigurationData$({
+      collateralToken: strategy.tokens.collateral,
+      debtToken: strategy.tokens.debt,
+    }),
   )
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
