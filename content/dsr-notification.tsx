@@ -14,8 +14,7 @@ const DsrNotificationWithLink: FC<DsrNotificationWithLinkProps> = ({ translation
     i18nKey={translationKey}
     values={values}
     components={{
-      1: <strong />,
-      2: (
+      1: (
         <AppLink
           sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
           href={EXTERNAL_LINKS.BLOG.MAKER_STABILITY_FEE_CHANGES}

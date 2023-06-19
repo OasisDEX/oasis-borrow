@@ -2486,8 +2486,8 @@
       "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
     },
     "notification": {
-      "title": "Maker vaults cost going up!",
-      "message": "Learn more <2><1>here</1></2>."
+      "title": " The borrowing rate for Maker positions is increasing!",
+      "message": "<1>Learn more →</1>"
     },
     "landing-page-banner": {
       "title": "NEW DSR RATE! Earn 3.49% on your DAI. <1>Get started</1>"
