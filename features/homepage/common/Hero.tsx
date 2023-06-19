@@ -21,7 +21,7 @@ export function Hero({
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
   const { connecting, connect } = useConnection({
-    initialConnect: true,
+    initialConnect: false,
   })
 
   return (
