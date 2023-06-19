@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { TopBannerEvents, trackingEvents } from 'analytics/analytics'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useLocalStorage } from 'helpers/useLocalStorage'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box } from 'theme-ui'
 
