@@ -18,6 +18,7 @@ import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
 import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
+import { TopBanner } from 'components/TopBanner'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
@@ -192,6 +193,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                           <GasEstimationContextProvider>
                             <NotificationSocketProvider>
                               <WithFollowVaults>
+                                <TopBanner name="rebranding" />
                                 <Layout {...layoutProps}>
                                   <Component {...pageProps} />
                                   <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />

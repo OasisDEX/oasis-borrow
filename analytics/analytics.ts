@@ -151,6 +151,10 @@ export enum SwapWidgetEvents {
   ExecutionCompleted = 'SwapWidgetExecutionCompleted',
   ExecutionFailed = 'SwapWidgetExecutionFailed',
 }
+export enum TopBannerEvents {
+  TopBannerClosed = 'TopBannerClosed',
+  TopBannerClicked = 'TopBannerClicked',
+}
 
 export enum NotificationsEventIds {
   OpenNotificationCenter = 'OpenNotificationCenter',
@@ -184,6 +188,7 @@ export enum EventTypes {
   ButtonClick = 'btn-click',
   OnScroll = 'on-scroll',
   SwapWidgetEvent = 'swap-widget-event',
+  TopBannerEvent = 'top-banner-event',
 }
 
 // https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -1139,6 +1144,10 @@ export const trackingEvents = {
   swapWidgetEvent: (id: SwapWidgetEvents, eventData: Route | RouteExecutionUpdate) => {
     const eventBody = { id, section: 'SwapWidget', product: 'SwapWidget', eventData }
     !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.SwapWidgetEvent, eventBody)
+  },
+  topBannerEvent: (id: TopBannerEvents, topBannerName: string) => {
+    const eventBody = { id, section: 'TopBanner', product: 'TopBanner', topBannerName }
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.TopBannerEvent, eventBody)
   },
 }
 
