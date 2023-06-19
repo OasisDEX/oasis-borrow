@@ -7,7 +7,7 @@ export function BackgroundLight() {
     <Box
       sx={{
         position: 'absolute',
-        left: 'calc((100% - 1617px) / 2)',
+        left: 0,
         top: 0,
         right: 0,
         zIndex: -1,
