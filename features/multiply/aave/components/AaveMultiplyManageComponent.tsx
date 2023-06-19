@@ -40,7 +40,10 @@ export function AaveMultiplyManageComponent({
     getAaveReserveData$({ token: strategyConfig.tokens.collateral }),
   )
   const [debtTokenReserveConfigurationData, debtTokenReserveConfigurationDataError] = useObservable(
-    aaveReserveConfigurationData$({ token: strategyConfig.tokens.debt }),
+    aaveReserveConfigurationData$({
+      collateralToken: strategyConfig.tokens.debt,
+      debtToken: strategyConfig.tokens.collateral,
+    }),
   )
 
   return (

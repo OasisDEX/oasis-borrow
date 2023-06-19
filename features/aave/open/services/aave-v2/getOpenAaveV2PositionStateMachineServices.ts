@@ -19,6 +19,7 @@ import { createEthersTransactionStateMachine } from 'features/stateMachines/tran
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
 import {
+  AaveReserveConfigurationDataParams,
   ProtocolData,
   ReserveConfigurationData,
   UserAccountData,
@@ -46,7 +47,9 @@ export function getOpenAaveV2PositionStateMachineServices(
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
-  aaveReserveConfiguration$: (args: { token: string }) => Observable<ReserveConfigurationData>,
+  aaveReserveConfiguration$: (
+    args: AaveReserveConfigurationDataParams,
+  ) => Observable<ReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -195,7 +198,10 @@ export function getOpenAaveV2PositionStateMachineServices(
       )
     },
     aaveReserveConfiguration$: (context) => {
-      return aaveReserveConfiguration$({ token: context.strategyConfig.tokens.collateral }).pipe(
+      return aaveReserveConfiguration$({
+        collateralToken: context.strategyConfig.tokens.collateral,
+        debtToken: context.strategyConfig.tokens.debt,
+      }).pipe(
         map((reserveConfig) => {
           return {
             type: 'RESERVE_CONFIG_UPDATED',

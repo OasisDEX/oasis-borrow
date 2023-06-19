@@ -55,6 +55,8 @@ export const EXTERNAL_LINKS = {
     WHAT_IS_SLIPPAGE:
       'https://kb.oasis.app/help/frequently-asked-questions#h_8073651997861662481520644',
     CURATED_TOKEN_LIST: 'https://kb.oasis.app/help/curated-token-list',
+    SUPPORTED_COLLATERALS:
+      'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
     TOKENS: {
       ETH: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
       WSTETH:

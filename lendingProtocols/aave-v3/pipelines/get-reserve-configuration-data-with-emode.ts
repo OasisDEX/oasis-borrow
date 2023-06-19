@@ -4,27 +4,29 @@ import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-export type GetReserveConfigurationDataWithEModeParameters = { token: string }
+export type GetReserveConfigurationDataWithEModeParameters = {
+  collateralToken: string
+  debtToken: string
+}
 
 export function getReserveConfigurationDataWithEMode$(
-  getReserveConfigurationData: ({
-    token,
-  }: {
-    token: string
-  }) => Observable<ReserveConfigurationData>,
-  getAaveV3EModeCategoryForAsset: ({ token }: { token: string }) => Observable<BigNumber>,
+  getReserveConfigurationData: (args: { token: string }) => Observable<ReserveConfigurationData>,
+  getAaveV3EModeCategoryForAsset: (args: { token: string }) => Observable<BigNumber>,
   getEModeCategoryData: (
     params: Omit<GetEModeCategoryDataParameters, 'networkId'>,
   ) => Observable<GetEModeCategoryDataResult>,
   parameters: GetReserveConfigurationDataWithEModeParameters,
 ): Observable<ReserveConfigurationData> {
   return combineLatest(
-    getAaveV3EModeCategoryForAsset(parameters),
-    getReserveConfigurationData(parameters),
+    getAaveV3EModeCategoryForAsset({ token: parameters.collateralToken }),
+    getAaveV3EModeCategoryForAsset({ token: parameters.debtToken }),
+    getReserveConfigurationData({ token: parameters.collateralToken }),
   ).pipe(
-    switchMap(([categoryId, reserveData]) => {
-      if (categoryId.isZero()) return of(reserveData)
-      return getEModeCategoryData({ categoryId })
+    switchMap(([collateralCategory, debtCategory, reserveData]) => {
+      if (collateralCategory.isZero()) return of(reserveData)
+      if (!collateralCategory.eq(debtCategory)) return of(reserveData)
+
+      return getEModeCategoryData({ categoryId: collateralCategory })
     }),
   )
 }
