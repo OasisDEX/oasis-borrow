@@ -124,7 +124,7 @@ export function HomePageBanner({ link, ...rest }: HomePageBannerProps) {
       withClose={false}
     >
       {link ? (
-        <AppLink href={link}>
+        <AppLink href={link} target="_self">
           <HomePageBannerButton {...rest} />
         </AppLink>
       ) : (
