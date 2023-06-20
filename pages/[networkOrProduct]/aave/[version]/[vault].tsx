@@ -22,16 +22,16 @@ import { Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const network = ctx.query.network as string
+  const networkOrProduct = ctx.query.networkOrProduct as string
   const version = ctx.query.version as string
   const protocol = `aave${version.toLowerCase()}`
 
-  if (checkIfAave(protocol) && isSupportedNetwork(network)) {
+  if (checkIfAave(protocol) && isSupportedNetwork(networkOrProduct)) {
     return {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
         vault: ctx.query.vault || null,
-        network: network,
+        network: networkOrProduct,
         protocol: protocol,
       },
     }

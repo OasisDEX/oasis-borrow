@@ -16,17 +16,17 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const network = ctx.query.network as string
+  const networkOrProduct = ctx.query.networkOrProduct as string
   const [product, strategy] = ctx.query.strategy as string[]
   const version = ctx.query.version as string
   const protocol = `aave${version.toLowerCase()}`
 
-  const [supported] = isSupportedStrategy(network, protocol, product, strategy)
+  const [supported] = isSupportedStrategy(networkOrProduct, protocol, product, strategy)
   if (supported) {
     return {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
-        network: network,
+        network: networkOrProduct,
         protocol: protocol,
         product: product,
         strategy: strategy,

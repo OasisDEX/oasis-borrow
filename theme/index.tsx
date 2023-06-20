@@ -15,7 +15,7 @@ export const GRADIENTS = {
 
 // Used to share design system colours with theme-ui default color fields
 const COLORS = {
-  primary100: '#0B2333',
+  primary100: '#17344F',
   secondary100: '#E6E9EB',
   neutral10: '#FFFFFF',
 }

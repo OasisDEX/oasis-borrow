@@ -46,6 +46,11 @@ export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSl
               cursor: item.url ? 'pointer' : 'default',
               ...fadeInAnimationMobile,
               ...itemSx,
+              opacity: [0, 0.5],
+              transition: 'opacity 0.2s ease-in-out',
+              '&:hover': {
+                opacity: [0, 1],
+              },
             }}
             key={`${item.imgSrc}${item.imgAlt}`}
             src={item.imgSrc}

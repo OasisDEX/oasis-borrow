@@ -38,6 +38,7 @@
   "adjust-your-position": "Adjust your position",
   "adjust": "Adjust",
   "claim": "Claim",
+  "view-all": "View all",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
   "after-closing": "{{token}} after closing",
@@ -601,13 +602,13 @@
       "sub-headers": {
         "security": {
           "primary": "Your funds, your choice: ",
-          "secondary": "park you capital while staying in full control, with no exceptions",
+          "secondary": "put your capital to work while staying in full control, with no exceptions",
           "cta": "Know more about security"
         }
       },
       "image-labels": {
-        "peace-of-mind": "Get peace of mind with protection against liquidation and capital losses with Stop-Loss and Auto-Sell.",
-        "no-hassle": "Make position management less of a hassle with automated Buys, Sells and Take Profit"
+        "peace-of-mind": "Gain peace of mind with automated protection against liquidation using Stop-Loss and Auto-Sell.",
+        "no-hassle": "Take the hassle out of position management with automated Buys, Sells and Take Profit"
       }
     }
   },

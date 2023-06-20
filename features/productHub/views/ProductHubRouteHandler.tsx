@@ -10,26 +10,27 @@ import { WithChildren } from 'helpers/types'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import React from 'react'
 
-function OasisCreatePage({ product, token }: { product: ProductHubProductType; token?: string }) {
+function ProductHubRouteHandler({
+  product,
+  token,
+}: {
+  product: ProductHubProductType
+  token?: string
+}) {
   return (
     <WithConnection>
       <WithFeatureToggleRedirect feature="OasisCreate">
         <AnimatedWrapper sx={{ mb: 5 }}>
-          <ProductHubView
-            product={product}
-            promoCardsCollection="Home"
-            token={token}
-            url="/oasis-create/"
-          />
+          <ProductHubView product={product} promoCardsCollection="Home" token={token} url="/" />
         </AnimatedWrapper>
       </WithFeatureToggleRedirect>
     </WithConnection>
   )
 }
 
-OasisCreatePage.layout = ({ children }: WithChildren) => <AppLayout>{children}</AppLayout>
+ProductHubRouteHandler.layout = ({ children }: WithChildren) => <AppLayout>{children}</AppLayout>
 
-export default OasisCreatePage
+export default ProductHubRouteHandler
 
 export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   const paths =

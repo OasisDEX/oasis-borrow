@@ -11,8 +11,8 @@ import NotFoundPage from 'pages/not-found'
 import React from 'react'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const network = ctx.query.network as string
-  if (isSupportedNetwork(network) && network === NetworkNames.ethereumMainnet) {
+  const networkOrProduct = ctx.query.networkOrProduct as string
+  if (isSupportedNetwork(networkOrProduct) && networkOrProduct === NetworkNames.ethereumMainnet) {
     return {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),

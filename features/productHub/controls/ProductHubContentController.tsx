@@ -19,6 +19,7 @@ interface ProductHubContentControllerProps {
   selectedToken: string
   tableData: ProductHubItem[]
   onChange: (selectedFilters: ProductHubFilters) => void
+  limitRows?: number
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
@@ -29,6 +30,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   selectedToken,
   tableData,
   onChange,
+  limitRows,
 }) => {
   const dataMatchedByNL = useMemo(
     () => matchRowsByNL(tableData, selectedProduct, selectedToken),
@@ -54,7 +56,9 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         selectedToken={selectedToken}
         onChange={onChange}
       />
-      <ProductHubTableController rows={rows} />
+      <ProductHubTableController
+        rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
+      />
     </AssetsTableContainer>
   )
 }

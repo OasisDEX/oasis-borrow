@@ -27,6 +27,7 @@ interface ProductHubViewProps {
   promoCardsCollection: PromoCardsCollection
   token?: string
   url?: string
+  limitRows?: number
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
@@ -36,6 +37,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   promoCardsCollection,
   token,
   url,
+  limitRows,
 }) => {
   const { t } = useTranslation()
   const { data } = useProductHubData({
@@ -121,7 +123,32 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               selectedToken={selectedToken}
               tableData={_data.table}
               onChange={setSelectedFilters}
+              limitRows={limitRows}
             />
+            {limitRows && limitRows > 0 && (
+              <Box
+                sx={{
+                  textAlign: 'center',
+                  py: 4,
+                  borderBottom: '1px solid',
+                  borderBottomColor: 'neutral20',
+                }}
+              >
+                <AppLink
+                  href={
+                    selectedToken === ALL_ASSETS
+                      ? `/${selectedProduct}`
+                      : `/${selectedProduct}/${selectedToken}`
+                  }
+                >
+                  <WithArrow
+                    sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}
+                  >
+                    {t('view-all')}
+                  </WithArrow>
+                </AppLink>
+              </Box>
+            )}
           </>
         )}
       </WithLoadingIndicator>

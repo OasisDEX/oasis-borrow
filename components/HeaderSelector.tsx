@@ -164,7 +164,12 @@ export function HeaderSelector({
                 bg: selected.value === option.value ? 'neutral30' : 'transparent',
                 '&:hover': {
                   bg: 'neutral30',
-                  svg: { opacity: 1 },
+                  svg: {
+                    opacity: 1,
+                    '&.icon-under': {
+                      transform: 'scale(0.95)',
+                    },
+                  },
                 },
               }}
               onClick={() => {
@@ -176,8 +181,14 @@ export function HeaderSelector({
               {option.icon && (
                 <Icon
                   size={36}
-                  sx={{ flexShrink: 0, mr: 3 }}
+                  sx={{
+                    flexShrink: 0,
+                    mr: 3,
+                    transform: selected.value === option.value ? 'scale(0.95)' : 'none',
+                  }}
                   name={Array.isArray(option.icon) ? option.icon[0] : option.icon}
+                  // @ts-ignore
+                  className="icon-under"
                 />
               )}
               {Array.isArray(option.icon) && (
