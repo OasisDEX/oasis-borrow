@@ -91,19 +91,20 @@ export function AjnaRewardsController() {
       )}
       <ProductCardsWrapper gap={24} desktopWidthOfCard={448} sx={{ mt: 5 }}>
         <AjnaRewardCard
-          {...miningRewardsCard}
-          onBtnClick={userNftsData.handler}
-          txStatus={userNftsData.txDetails?.txStatus}
-          rewards={userNftsData.rewards}
-          isLoading={userNftsData.isLoading}
           key="miningRewards"
+          isLoading={userNftsData.isLoading}
+          notAvailable
+          onBtnClick={userNftsData.handler}
+          rewards={userNftsData.rewards}
+          txStatus={userNftsData.txDetails?.txStatus}
+          {...miningRewardsCard}
         />
         <AjnaRewardCard
-          {...oasisRewardsCard}
           key="oasisRewards"
-          notAvailable
           isLoading={false}
+          notAvailable
           rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
+          {...oasisRewardsCard}
           floatingLabel={
             <FloatingLabel
               text={t('ajna.rewards.cards.token.floatingLabel')}

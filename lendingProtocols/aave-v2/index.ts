@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import * as blockchainCalls from 'blockchain/aave'
-import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
+import { AaveReserveConfigurationDataParams, AaveServices } from 'lendingProtocols/aaveCommon'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservable, makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
@@ -60,9 +60,13 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
     curry(pipelines.getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
   )
 
+  const wrapAaveReserveData$ = ({ collateralToken }: AaveReserveConfigurationDataParams) => {
+    return aaveReserveConfigurationData$({ token: collateralToken })
+  }
+
   return {
     protocol: LendingProtocol.AaveV2,
-    aaveReserveConfigurationData$,
+    aaveReserveConfigurationData$: wrapAaveReserveData$,
     getAaveReserveData$,
     aaveAvailableLiquidityInUSDC$,
     aaveLiquidations$,

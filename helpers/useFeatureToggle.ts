@@ -35,8 +35,11 @@ export type Feature =
   | 'AaveV3Arbitrum'
   | 'AaveV3MultiplycbETHusdc'
   | 'AaveV3MultiplywBTCusdc'
-  | 'AaveV3MultiplywstETHeth'
+  | 'AaveV3MultiplywstETHusdc'
   | 'AaveV3MultiplyETHusdc'
+  | 'AaveV3MultiplyrETHusdc'
+  | 'AaveV3EarnrETHeth'
+  | 'AaveV3EarncbETHeth'
   | 'AaveV2ProductCard'
   | 'OasisCreate'
   | 'SwapWidget'
@@ -74,10 +77,13 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3Optimism: false,
   AaveV3Arbitrum: false,
   AaveV2ProductCard: true,
-  AaveV3MultiplycbETHusdc: false,
-  AaveV3MultiplywBTCusdc: false,
-  AaveV3MultiplywstETHeth: false,
-  AaveV3MultiplyETHusdc: false,
+  AaveV3MultiplycbETHusdc: true,
+  AaveV3MultiplywBTCusdc: true,
+  AaveV3MultiplyETHusdc: true,
+  AaveV3EarncbETHeth: false,
+  AaveV3MultiplyrETHusdc: true,
+  AaveV3EarnrETHeth: false,
+  AaveV3MultiplywstETHusdc: true,
   OasisCreate: false,
   SwapWidget: true,
   ProxyReveal: false,

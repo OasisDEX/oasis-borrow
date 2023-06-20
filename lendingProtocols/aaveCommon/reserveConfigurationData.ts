@@ -5,3 +5,8 @@ export interface ReserveConfigurationData {
   liquidationThreshold: BigNumber
   liquidationBonus: BigNumber
 }
+
+export interface AaveReserveConfigurationDataParams {
+  collateralToken: string
+  debtToken: string
+}

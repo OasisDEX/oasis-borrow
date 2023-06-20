@@ -3,6 +3,7 @@ import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
@@ -51,14 +52,16 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     liquidationPrice: `${formatCryptoBalance(liquidationPrice)} ${priceFormat}`,
     afterLiquidationPrice:
       afterLiquidationPrice && `${formatCryptoBalance(afterLiquidationPrice)} ${priceFormat}`,
-    liquidationThreshold: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
-    afterLiquidationThreshold:
+    dynamicMaxLtv: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
+    afterDynamicMaxLtv:
       simulationData?.maxRiskRatio.loanToValue &&
       formatDecimalAsPercent(simulationData.maxRiskRatio.loanToValue),
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&
-      `${formatCryptoBalance(simulationData.debtAmount)} ${quoteToken}`,
+      `${formatCryptoBalance(
+        simulationData.debtAmount.plus(getOriginationFee(positionData, simulationData)),
+      )} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralAvailable,
     )} ${collateralToken}`,
@@ -94,9 +97,9 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           isLoading,
         },
         {
-          label: t('system.liquidation-threshold'),
-          value: formatted.liquidationThreshold,
-          change: formatted.afterLiquidationThreshold,
+          label: t('system.dynamic-max-ltv'),
+          value: formatted.dynamicMaxLtv,
+          change: formatted.afterDynamicMaxLtv,
           isLoading,
         },
         {

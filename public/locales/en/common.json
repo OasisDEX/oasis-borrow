@@ -1077,6 +1077,7 @@
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
     "liquidation-threshold": "Liquidation Threshold",
+    "dynamic-max-ltv": "Dynamic Max LTV",
     "buying-power": "Buying Power",
     "net-value": "Net Value",
     "net-value-pnl": "Net Value & P&L",
@@ -1683,23 +1684,7 @@
         "title": "stETH/ETH Aave",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
       },
-      "stETHethV3": {
-        "title": "stETH/ETH Aave",
-        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
-      },
-      "wstETHethV2": {
-        "title": "wstETH/ETH Aave",
-        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
-      },
-      "wstETHethV3": {
-        "title": "wstETH/ETH Aave",
-        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
-      },
       "stETHusdcV2": {
-        "title": "Highest stETH multiple option",
-        "description": "Maximise your stETH exposure with Aave and USDC."
-      },
-      "stETHusdcV3": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
       },
@@ -1707,26 +1692,43 @@
         "title": "Highest ETH multiple option",
         "description": "Maximise your ETH exposure with Aave and USDC."
       },
+      "wBTCusdcV2": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      },
+      "wstETHethV3": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
+      },
+      "rethethV3": {
+        "title": "rETH/ETH Aave",
+        "description": "The biggest possible Multiple to maximize your exposure to rETH"
+      },
+      "cbethethV3": {
+        "title": "cbETH/ETH Aave",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      },
       "ethusdcV3": {
         "title": "Highest ETH multiple option",
         "description": "Maximise your ETH exposure with Aave and USDC."
       },
-      "wBTCusdcV2": {
-        "title": "High wBTC multiple option",
-        "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      "cbETHusdcV3": {
+        "title": "High cbETH multiple option",
+        "description": "Maximise your cbETH exposure with Aave and USDC."
       },
       "wBTCusdcV3": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
       },
-      "cbETHusdcV2": {
-        "title": "High cbETH multiple option",
-        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      "wstethusdcV3": {
+        "title": "High wstETH multiple option",
+        "description": "Maximise your wstETH exposure with Aave and USDC."
       },
-      "cbETHusdcV3": {
-        "title": "High cbETH multiple option",
-        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      "rethusdcV3": {
+        "title": "High rETH multiple option",
+        "description": "Maximise your rETH exposure with Aave and USDC."
       },
+
       "borrow-against-ETH": {
         "title": "AAVE ETH",
         "description": "A position to borrow against your ETH in AAVE"
@@ -2620,7 +2622,7 @@
             "below-current-price": "{{priceRatio}} below current price",
             "loan-to-value": "Loan to value",
             "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
-            "liquidation-threshold": "Liquidation Threshold: {{liquidationThreshold}}",
+            "liquidation-threshold": "Dynamic Max LTV: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
             "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
             "position-debt": "Position debt",
@@ -2645,7 +2647,7 @@
           },
           "form": {
             "max-ltv-to-lend-at": "Max LTV to lend at",
-            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
+            "token-pair-lending-price": "{{collateralToken}}/{{quoteToken}} lending price",
             "adjust-lending-price-bucket": "Adjust lending price bucket",
             "ajna-fee": "Ajna fee",
             "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit",

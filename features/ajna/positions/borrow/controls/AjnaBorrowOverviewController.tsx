@@ -11,6 +11,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
+import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -70,7 +71,7 @@ export function AjnaBorrowOverviewController() {
               isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
-              liquidationThreshold={position.maxRiskRatio.loanToValue}
+              dynamicMaxLtv={position.maxRiskRatio.loanToValue}
               changeVariant={changeVariant}
             />
             <ContentCardCollateralLocked
@@ -86,7 +87,9 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               positionDebt={position.debtAmount}
               positionDebtUSD={position.debtAmount.times(quotePrice)}
-              afterPositionDebt={simulation?.debtAmount}
+              afterPositionDebt={simulation?.debtAmount.plus(
+                getOriginationFee(position, simulation),
+              )}
               changeVariant={changeVariant}
             />
           </DetailsSectionContentCardWrapper>

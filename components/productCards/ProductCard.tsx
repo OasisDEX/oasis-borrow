@@ -101,7 +101,7 @@ export function ProductCardNetworkRow({ chain }: Pick<ProductCardData, 'chain'>)
 export function ProductCardProtocolLink({
   ilk: strategyName,
   protocol,
-}: Pick<ProductCardData, 'ilk' | 'protocol'>) {
+}: Pick<ProductCardData, 'ilk' | 'protocol'> & { link?: string }) {
   const { link } = productCardsConfig.descriptionLinks[strategyName!] ?? {
     link: `https://makerburn.com/#/collateral/${strategyName}`,
     ilk: strategyName,
