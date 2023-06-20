@@ -122,7 +122,9 @@ export function AjnaFormView({
     isTransitionInProgress,
     isTxError,
     isTxSuccess,
+    position,
     product,
+    state,
     walletAddress,
   })
   const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
