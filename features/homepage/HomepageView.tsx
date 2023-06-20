@@ -99,12 +99,16 @@ export function HomepageView() {
         />
         <Image
           src={staticFilesRuntimeUrl('/static/img/homepage/security.svg')}
-          sx={{ height: ['auto', '300px'], width: ['auto', '450px'], justifySelf: 'right' }}
+          sx={{
+            height: ['auto', '300px'],
+            width: ['100%', '450px'],
+            justifySelf: ['center', 'right'],
+          }}
         />
       </Grid>
       <Grid columns={[1, 2]} sx={{ mt: 7 }}>
         <HomepagePromoBlock.Big
-          height={['320px', '100%']}
+          height={['auto', '100%']}
           background="linear-gradient(111.72deg, #F2FCFF 2.94%, #FFE7D8 100%), #FFFFFF"
         >
           <Flex
@@ -129,7 +133,7 @@ export function HomepageView() {
           </Flex>
         </HomepagePromoBlock.Big>
         <HomepagePromoBlock.Big
-          height={['320px', '100%']}
+          height={['auto', '100%']}
           background="linear-gradient(147.66deg, #FFE7D8 0%, #F2FCFF 43.21%, #FEF1E1 88.25%), #FFFFFF"
         >
           <Flex
