@@ -2675,7 +2675,7 @@
           },
           "form": {
             "max-ltv-to-lend-at": "Max LTV to lend at",
-            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
+            "token-pair-lending-price": "{{collateralToken}}/{{quoteToken}} lending price",
             "adjust-lending-price-bucket": "Adjust lending price bucket",
             "ajna-fee": "Ajna fee",
             "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit",

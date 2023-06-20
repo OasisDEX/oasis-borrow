@@ -106,7 +106,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         }
         disabled={isDisabled || isFormFrozen}
         onChange={handleChange}
-        leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {
+        leftLabel={t('ajna.position-page.earn.common.form.token-pair-lending-price', {
           quoteToken: isShort ? collateralToken : quoteToken,
           collateralToken: isShort ? quoteToken : collateralToken,
         })}
