@@ -19,7 +19,6 @@ export interface TokenConfig {
   name: string
   icon: string
   iconCircle: string
-  iconColor: string
   coinpaprikaTicker?: string
   coinpaprikaFallbackTicker?: string
   tags: CoinTag[]
