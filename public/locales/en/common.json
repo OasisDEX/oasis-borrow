@@ -1103,6 +1103,7 @@
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
     "liquidation-threshold": "Liquidation Threshold",
+    "dynamic-max-ltv": "Dynamic Max LTV",
     "buying-power": "Buying Power",
     "net-value": "Net Value",
     "net-value-pnl": "Net Value & P&L",
