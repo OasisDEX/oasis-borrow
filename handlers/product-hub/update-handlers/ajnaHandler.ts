@@ -56,6 +56,7 @@ async function getAjnaPoolData(
       .filter(({ pair: [collateralToken, quoteToken] }) =>
         supportedPairs.includes(`${collateralToken}-${quoteToken}`),
       )
+      .sort((a, b) => (`${a.pair[0]}-${a.pair[1]}` > `${b.pair[0]}-${b.pair[1]}` ? 1 : -1))
       .reduce<ProductHubHandlerResponseData>(
         (
           v,
