@@ -299,8 +299,6 @@ export const productCardsConfig: {
         { strategy: 'rethethV3', featureToggle: 'AaveV3EarnrETHeth' },
         { strategy: 'cbethethV3', featureToggle: 'AaveV3EarncbETHeth' },
         { strategy: 'wBTCusdcV3', featureToggle: 'AaveV3MultiplywBTCusdc' },
-        { strategy: 'ethusdcV2', featureToggle: 'AaveV2ProductCard' },
-        { strategy: 'wBTCusdcV2', featureToggle: 'AaveV2ProductCard' },
         { strategy: 'optimism-ethusdc', featureToggle: 'AaveV3Optimism' },
         { strategy: 'optimism-wstethusdc', featureToggle: 'AaveV3Optimism' },
         { strategy: 'optimism-wbtcusdc', featureToggle: 'AaveV3Optimism' },
