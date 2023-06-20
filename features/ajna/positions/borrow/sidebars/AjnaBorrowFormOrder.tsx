@@ -3,6 +3,7 @@ import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
@@ -58,7 +59,9 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&
-      `${formatCryptoBalance(simulationData.debtAmount)} ${quoteToken}`,
+      `${formatCryptoBalance(
+        simulationData.debtAmount.plus(getOriginationFee(positionData, simulationData)),
+      )} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralAvailable,
     )} ${collateralToken}`,
