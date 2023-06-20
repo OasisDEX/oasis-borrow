@@ -2650,7 +2650,7 @@
             "below-current-price": "{{priceRatio}} below current price",
             "loan-to-value": "Loan to value",
             "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
-            "liquidation-threshold": "Liquidation Threshold: {{liquidationThreshold}}",
+            "liquidation-threshold": "Dynamic Max LTV: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
             "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
             "position-debt": "Position debt",

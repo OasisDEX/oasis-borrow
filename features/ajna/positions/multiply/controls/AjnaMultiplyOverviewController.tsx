@@ -73,7 +73,7 @@ export function AjnaMultiplyOverviewController() {
               isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
-              liquidationThreshold={position.maxRiskRatio.loanToValue}
+              dynamicMaxLtv={position.maxRiskRatio.loanToValue}
               changeVariant={changeVariant}
             />
             <ContentCardNetBorrowCost
