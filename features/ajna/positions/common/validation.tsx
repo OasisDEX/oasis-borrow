@@ -305,7 +305,7 @@ export function getAjnaValidation({
   ]
 
   const isFormFrozen =
-    product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen || !isOwner
+    (product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen) || !isOwner
 
   return {
     isFormValid: isFormValid({ currentStep, product, state, position }),
