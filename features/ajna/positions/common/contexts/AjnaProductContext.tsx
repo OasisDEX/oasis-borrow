@@ -165,6 +165,7 @@ export function AjnaProductContextProvider({
       ethBalance,
       ethPrice,
       quoteBalance,
+      isOwner,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -201,6 +202,7 @@ export function AjnaProductContextProvider({
         state,
         position,
         positionAuction,
+        isOwner,
         txError: txDetails?.txError,
       }),
     [

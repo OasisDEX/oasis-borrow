@@ -30,6 +30,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     position: {
       currentPosition: { position, simulation },
     },
+    validation: { isFormFrozen },
   } = useAjnaProductContext('multiply')
 
   const min = (simulation?.minRiskRatio || position.minRiskRatio).loanToValue.decimalPlaces(
@@ -85,7 +86,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
       minBoundry={min}
       maxBoundry={max}
       lastValue={resolvedValue}
-      disabled={disabled}
+      disabled={disabled || isFormFrozen}
       step={0.01}
       leftBottomLabel={t('slider.adjust-multiply.left-footer')}
       leftLabel={t('slider.adjust-multiply.left-label')}

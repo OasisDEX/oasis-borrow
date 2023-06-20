@@ -3,7 +3,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
-import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { PositionOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -47,7 +47,7 @@ export function AjnaPositionView({
     <Container variant="vaultPageContainerStatic">
       {contextIsLoaded && owner !== walletAddress && flow === 'manage' && (
         <Box sx={{ mb: 4 }}>
-          <VaultOwnershipBanner controller={owner} account={walletAddress} />
+          <PositionOwnershipBanner account={owner} connectedWalletAddress={walletAddress} />
         </Box>
       )}
       <VaultHeadline
