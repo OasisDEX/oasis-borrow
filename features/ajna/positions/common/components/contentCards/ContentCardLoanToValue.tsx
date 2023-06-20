@@ -13,7 +13,7 @@ interface ContentCardLoanToValueProps {
   isLoading?: boolean
   loanToValue: BigNumber
   afterLoanToValue?: BigNumber
-  liquidationThreshold: BigNumber
+  dynamicMaxLtv: BigNumber
   changeVariant?: ChangeVariantType
 }
 
@@ -21,7 +21,7 @@ export function ContentCardLoanToValue({
   isLoading,
   loanToValue,
   afterLoanToValue,
-  liquidationThreshold,
+  dynamicMaxLtv,
   changeVariant = 'positive',
 }: ContentCardLoanToValueProps) {
   const { t } = useTranslation()
@@ -29,7 +29,7 @@ export function ContentCardLoanToValue({
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
     afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
-    liquidationThreshold: liquidationThreshold && formatDecimalAsPercent(liquidationThreshold),
+    liquidationThreshold: dynamicMaxLtv && formatDecimalAsPercent(dynamicMaxLtv),
   }
 
   const contentCardSettings: ContentCardProps = {

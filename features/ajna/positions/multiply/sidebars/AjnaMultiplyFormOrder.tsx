@@ -73,8 +73,8 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       formatDecimalAsPercent(
         simulationData.riskRatio.loanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN),
       ),
-    liquidationThreshold: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
-    afterLiquidationThreshold:
+    dynamicMaxLtv: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
+    afterDynamicMaxLtv:
       simulationData?.maxRiskRatio.loanToValue &&
       formatDecimalAsPercent(simulationData.maxRiskRatio.loanToValue),
     buyingCollateral: `${formatCryptoBalance(buyingCollateral)} ${collateralToken}`,
@@ -162,9 +162,9 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           isLoading,
         },
         {
-          label: t('system.liquidation-threshold'),
-          value: formatted.liquidationThreshold,
-          change: formatted.afterLiquidationThreshold,
+          label: t('system.dynamic-max-ltv'),
+          value: formatted.dynamicMaxLtv,
+          change: formatted.afterDynamicMaxLtv,
           isLoading,
         },
         ...(isTxSuccess && cached
