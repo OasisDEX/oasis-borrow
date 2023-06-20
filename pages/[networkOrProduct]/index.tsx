@@ -16,8 +16,6 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
       })),
     ) || []
 
-  console.log('paths', JSON.stringify(paths, null, 2))
-
   return {
     paths,
     fallback: false,
