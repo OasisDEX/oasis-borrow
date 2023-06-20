@@ -1,6 +1,15 @@
-import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import {
+  AjnaFlow,
+  AjnaFormState,
+  AjnaGenericPosition,
+  AjnaProduct,
+  AjnaSidebarStep,
+} from 'features/ajna/common/types'
+import { isFormEmpty } from 'features/ajna/positions/common/helpers/isFormEmpty'
 
 interface GetPrimaryButtonLabelKeyParams {
+  state: AjnaFormState
+  position: AjnaGenericPosition
   currentStep: AjnaSidebarStep
   flow: AjnaFlow
   hasAllowance: boolean
@@ -20,6 +29,9 @@ export function getPrimaryButtonLabelKey({
   isTransitionInProgress,
   isTxError,
   isTxSuccess,
+  position,
+  product,
+  state,
   walletAddress,
 }: GetPrimaryButtonLabelKeyParams): string {
   switch (currentStep) {
@@ -35,7 +47,11 @@ export function getPrimaryButtonLabelKey({
       if (isTransitionInProgress) return 'borrow-to-multiply.button-progress'
       else return 'confirm'
     default:
-      if (walletAddress && hasDpmAddress && hasAllowance) return 'confirm'
+      if (
+        isFormEmpty({ product, state, position, currentStep }) ||
+        (walletAddress && hasDpmAddress && hasAllowance)
+      )
+        return 'confirm'
       else if (walletAddress && hasDpmAddress) return 'set-token-allowance'
       else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
       else return 'connect-wallet-button'
