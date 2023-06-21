@@ -1,12 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
+import { Translatable, TranslatableType } from 'components/Translatable'
 import React from 'react'
 import { Text } from 'theme-ui'
 
 export interface AssetsTableTooltipProps {
   content: {
-    title?: string
-    description: string
+    title?: TranslatableType
+    description: TranslatableType
   }
   icon: string
   iconColor?: string
@@ -23,10 +24,10 @@ export function AssetsTableTooltip({
         <>
           {title && (
             <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
-              {title}
+              <Translatable text={title} />
             </Text>
           )}
-          {description}
+          <Translatable text={description} />
         </>
       }
       containerSx={{ position: 'relative', top: '2px', display: 'inline-flex', ml: 1 }}
