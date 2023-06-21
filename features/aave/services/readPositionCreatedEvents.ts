@@ -72,10 +72,6 @@ function mapEvent(
 function extractLendingProtocolFromPositionCreatedEvent(
   positionCreatedChainEvent: CreatePositionEvent,
 ): LendingProtocol {
-  console.log('---')
-  console.log(positionCreatedChainEvent.args.protocol)
-  console.log(positionCreatedChainEvent)
-
   switch (positionCreatedChainEvent.args.protocol) {
     case 'AAVE':
     case 'AaveV2':
