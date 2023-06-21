@@ -1,6 +1,6 @@
 import { Protocol } from '@prisma/client'
 import { networks } from 'blockchain/networks'
-import { ProductHubItem } from 'features/productHub/types'
+import { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-card-collections-parsers'
 import {
@@ -134,7 +134,9 @@ export async function updateProductHubData(
       })
     }
 
-    const createData = flatten([...dataHandlersPromiseList.map(({ data }) => data)])
+    const createData = flatten([
+      ...dataHandlersPromiseList.map(({ data }) => data),
+    ]) as ProductHubItemWithFlattenTooltip[]
     try {
       !dryRun &&
         (await prisma.productHubItems.createMany({
