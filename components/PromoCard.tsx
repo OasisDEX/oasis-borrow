@@ -3,19 +3,14 @@ import { AppLink } from 'components/Links'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
+import { Translatable, TranslatableType } from 'components/Translatable'
 import React, { FC } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
 
 export interface PromoCardWrapperProps {
   link?: string
-}
-
-export interface PromoCardTranslationProps {
-  key: string
-  props?: { [key: string]: string }
 }
 
 interface PromoCardPropsWithIcon {
@@ -41,20 +36,20 @@ export type PromoCardProps = (
   | PromoCardPropsWithImage
   | PromoCardPropsWithTokens
 ) & {
-  title: string | PromoCardTranslationProps
+  title: TranslatableType
   protocol?: ProtocolLabelProps
-  description?: string | PromoCardTranslationProps
+  description?: TranslatableType
   pills?: {
-    label: string | PromoCardTranslationProps
+    label: TranslatableType
     variant?: PromoCardVariant
   }[]
   link?: {
     href: string
-    label?: string | PromoCardTranslationProps
+    label?: TranslatableType
   }
   data?: {
-    label: string | PromoCardTranslationProps
-    value: string | PromoCardTranslationProps
+    label: TranslatableType
+    value: TranslatableType
     variant?: PromoCardVariant
   }[]
 }
@@ -126,14 +121,6 @@ export const PromoCardLoadingState: FC = () => {
   )
 }
 
-export const PromoCardTranslation: FC<{ text: string | PromoCardTranslationProps }> = ({
-  text,
-}) => {
-  const { t } = useTranslation()
-
-  return <>{typeof text === 'object' ? t(text.key, text.props) : text}</>
-}
-
 export const PromoCard: FC<PromoCardProps> = ({
   data,
   description,
@@ -174,11 +161,11 @@ export const PromoCard: FC<PromoCardProps> = ({
         </Box>
       )}
       <Heading as="h3" variant="boldParagraph2">
-        <PromoCardTranslation text={title} />
+        <Translatable text={title} />
       </Heading>
       {description && (
         <Text as="p" variant="paragraph3" sx={{ mt: 2 }}>
-          <PromoCardTranslation text={description} />
+          <Translatable text={description} />
         </Text>
       )}
       {pills && (
@@ -209,7 +196,7 @@ export const PromoCard: FC<PromoCardProps> = ({
                 ...pillColors[variant],
               }}
             >
-              <PromoCardTranslation text={label} />
+              <Translatable text={label} />
             </Flex>
           ))}
         </Flex>
@@ -223,7 +210,7 @@ export const PromoCard: FC<PromoCardProps> = ({
               sx={{ justifyContent: 'space-between', width: '100%' }}
             >
               <Text as="span" variant="paragraph3" sx={{ color: 'neutral80' }}>
-                <PromoCardTranslation text={label} />
+                <Translatable text={label} />
               </Text>
               <Text as="span" variant="boldParagraph3" sx={dataColors[variant]}>
                 {variant === 'negative' && <Icon name="arrow_decrease" size={12} sx={{ mr: 1 }} />}
@@ -236,7 +223,7 @@ export const PromoCard: FC<PromoCardProps> = ({
       )}
       {link?.label && (
         <Text as="p" sx={{ mt: 2, fontSize: 2, color: 'interactive100' }}>
-          <PromoCardTranslation text={link.label} /> →
+          <Translatable text={link.label} /> →
         </Text>
       )}
     </PromoCardWrapper>
