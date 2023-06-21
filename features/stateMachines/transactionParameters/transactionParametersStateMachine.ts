@@ -239,7 +239,16 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             )
           }
 
-          return fromPromise(signer!.getGasPrice()).pipe(map((gasPrice) => ({})))
+          return fromPromise(signer!.getGasPrice()).pipe(
+            map((_) => {
+              return {
+                type: 'GAS_PRICE_ESTIMATION_CHANGED',
+                estimatedGasPrice: {
+                  gasEstimationStatus: GasEstimationStatus.unknown,
+                },
+              }
+            }),
+          )
         },
         txHelpers$: (_) =>
           txHelpers$.pipe(map((txHelper) => ({ type: 'TX_HELPER_CHANGED', txHelper }))),

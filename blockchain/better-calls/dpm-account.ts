@@ -5,6 +5,8 @@ import { NetworkIds, networkSetById } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { AccountImplementation__factory, OperationExecutor__factory } from 'types/ethers-contracts'
 
+import { isDangerTransactionEnabled } from './is-danger-transaction-enabled'
+
 export interface DpmExecuteParameters {
   networkId: NetworkIds
   proxyAddress: string
@@ -91,8 +93,19 @@ export async function createExecuteTransaction({
     operationName,
   ])
 
+  const dangerTransactionEnabled = isDangerTransactionEnabled()
+  if (dangerTransactionEnabled.enabled) {
+    console.warn(
+      `Danger transaction enabled. Gas limit: ${dangerTransactionEnabled.gasLimit}. Operation name: ${operationName}`,
+      calls,
+    )
+    return await dpm.execute(operationExecutor.address, encodedCallDAta, {
+      value: ethers.utils.parseEther(value.toString()).toHexString(),
+      gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
+    })
+  }
+
   return await dpm.execute(operationExecutor.address, encodedCallDAta, {
     value: ethers.utils.parseEther(value.toString()).toHexString(),
-    gasLimit: ethers.BigNumber.from(10000000),
   })
 }

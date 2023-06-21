@@ -20,7 +20,7 @@ import {
 } from 'features/stateMachines/transaction'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { isEqual } from 'lodash'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs/operators'
 import { ActorRefFrom, assign, createMachine, interpret, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -232,7 +232,14 @@ export function getDPMAccountStateMachineServices(
           switchMap(({ chainId, transactionProvider }: ContextConnected) =>
             estimateGasCreateAccount({ networkId: chainId, signer: transactionProvider }),
           ),
-          switchMap((gas) => gasEstimation$(gas ?? 0)),
+          switchMap((gas) => {
+            if (context.networkId === NetworkIds.MAINNET) {
+              return gasEstimation$(gas ?? 0)
+            }
+            return of({
+              gasEstimationStatus: GasEstimationStatus.unknown,
+            })
+          }),
           map((gasData) => ({ type: 'GAS_COST_ESTIMATION', gasData })),
           startWith({
             type: 'GAS_COST_ESTIMATION',
@@ -245,7 +252,9 @@ export function getDPMAccountStateMachineServices(
         switchMap((txHelpers) =>
           txHelpers.estimateGas(createAccount, { kind: TxMetaKind.createAccount }),
         ),
-        switchMap((gas) => gasEstimation$(gas)),
+        switchMap((gas) => {
+          return gasEstimation$(gas)
+        }),
         map((gasData) => ({ type: 'GAS_COST_ESTIMATION', gasData })),
         startWith({
           type: 'GAS_COST_ESTIMATION',
