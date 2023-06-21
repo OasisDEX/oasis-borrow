@@ -79,6 +79,7 @@ function extractLendingProtocolFromPositionCreatedEvent(
     case 'AAVE_V3':
       return LendingProtocol.AaveV3
     case 'Ajna':
+    case 'AJNA_RC5':
       return LendingProtocol.Ajna
     default:
       throw new Error(
