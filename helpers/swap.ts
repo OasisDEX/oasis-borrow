@@ -72,6 +72,26 @@ export async function oneInchCallMock(
   }
 }
 
+export const optimismLiquidityProviders = [
+  'OPTIMISM_UNISWAP_V3',
+  'OPTIMISM_SYNTHETIX',
+  'OPTIMISM_SYNTHETIX_WRAPPER',
+  'OPTIMISM_ONE_INCH_LIMIT_ORDER',
+  'OPTIMISM_ONE_INCH_LIMIT_ORDER_V2',
+  'OPTIMISM_ONE_INCH_LIMIT_ORDER_V3',
+  'OPTIMISM_CURVE',
+  // 'OPTIMISM_BALANCER_V2', - We can't use balancer due to reentrancy issues
+  'OPTIMISM_VELODROME',
+  'OPTIMISM_KYBERSWAP_ELASTIC',
+  'OPTIMISM_CLIPPER_COVES',
+  'OPTIMISM_KYBER_DMM_STATIC',
+  'OPTIMISM_AAVE_V3',
+  'OPTIMISM_ELK',
+  'OPTIMISM_WOOFI_V2',
+  'OPTIMISM_TRIDENT',
+  'OPTIMISM_MUMMY_FINANCE',
+]
+
 // TODO: export from oasis-earn-sc into @oasisdex/oasis-actions lib and import from there
 export function getOneInchCall(
   swapAddress: string,
@@ -86,6 +106,8 @@ export function getOneInchCall(
     slippage: BigNumber,
     protocols: string[] = defaultExchangeProtocols,
   ) => {
+    const shouldUseOptimismLiquidityProviders =
+      networkId === NetworkIds.OPTIMISMMAINNET && protocols.length === 0
     const response = await swapOneInchTokens(
       from,
       to,
@@ -94,7 +116,7 @@ export function getOneInchCall(
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
       networkId,
       oneInchVersion,
-      protocols,
+      shouldUseOptimismLiquidityProviders ? optimismLiquidityProviders : protocols,
     )
 
     if (debug) {
