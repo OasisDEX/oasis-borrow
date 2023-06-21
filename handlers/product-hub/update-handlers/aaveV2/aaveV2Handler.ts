@@ -85,13 +85,13 @@ export default async function (): ProductHubHandlerResponse {
   ]).then(([tokensReserveData, tokensReserveConfigurationData, earnProductsYields]) => {
     return {
       table: aaveV2ProductHubProducts.map((product) => {
-        const { secondaryToken, primaryToken, depositToken, label } = product
+        const { secondaryToken, primaryToken, label } = product
         const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
           secondaryToken
         ]
         const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-          (data) => data[depositToken || primaryToken],
-        )![depositToken || primaryToken]
+          (data) => data[primaryToken],
+        )![primaryToken]
         const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
         return {
           ...product,

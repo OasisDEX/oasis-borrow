@@ -2,6 +2,7 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/aave'
+import { wstethRiskRatio } from 'features/aave/common/constants'
 import { useSimulationYields } from 'features/aave/common/hooks/useSimulationYields'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -43,7 +44,7 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
   )
   const maximumMultiple =
     strategy.name === 'wstETHeth'
-      ? new RiskRatio(new BigNumber(9.99), RiskRatio.TYPE.MULITPLE)
+      ? wstethRiskRatio
       : aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
   const simulationYields = useSimulationYields({
