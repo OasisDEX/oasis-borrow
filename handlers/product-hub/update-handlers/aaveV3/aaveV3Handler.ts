@@ -6,6 +6,7 @@ import {
 } from 'blockchain/aave-v3'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { wstethRiskRatio } from 'features/aave/common/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
 // import { ProductHubProductType } from 'features/productHub/types'
@@ -105,11 +106,13 @@ export default async function (): ProductHubHandlerResponse {
     const tokensReserveData = await getAaveV3TokensData({
       networkName: product.network as AaveV3Networks,
     })
-    const { riskRatio } = tokensReserveData[
-      product.network as AaveV3Networks
-    ].tokensReserveConfigurationData.find((data) => data[product.primaryToken])![
-      product.primaryToken
-    ]
+
+    const riskRatio =
+      product.label === 'WSTETH/ETH'
+        ? wstethRiskRatio
+        : tokensReserveData[product.network as AaveV3Networks].tokensReserveConfigurationData.find(
+            (data) => data[product.primaryToken],
+          )![product.primaryToken].riskRatio
     const response = await yieldsPromisesMap[product.label as keyof typeof yieldsPromisesMap](
       riskRatio,
       ['7Days'],
@@ -135,11 +138,14 @@ export default async function (): ProductHubHandlerResponse {
         )![depositToken || secondaryToken]
         const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
         const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-          (data) => data[depositToken || primaryToken],
-        )![depositToken || primaryToken]
+          (data) => data[primaryToken],
+        )![primaryToken]
         return {
           ...product,
-          maxMultiply: riskRatio.multiple.toString(),
+          maxMultiply:
+            product.label === 'WSTETH/ETH'
+              ? wstethRiskRatio.multiple.toString()
+              : riskRatio.multiple.toString(),
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),

@@ -8,6 +8,7 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Earn],
     primaryToken: 'WSTETH',
     secondaryToken: 'ETH',
+    depositToken: 'ETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'WSTETH/ETH',
