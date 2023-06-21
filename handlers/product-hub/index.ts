@@ -79,7 +79,7 @@ export async function updateProductHubData(
         errorMessage: 'Missing header parameter',
       })
     }
-    const { protocols } = body
+    const { protocols, dryRun = false } = body
     if (!protocols || !protocols.length) {
       return res.status(400).json({
         errorMessage:
@@ -87,12 +87,14 @@ export async function updateProductHubData(
         error: {
           protocols: JSON.stringify(protocols),
         },
+        dryRun,
       })
     }
     const missingHandlers = checkIfAllHandlersExist(protocols)
     if (missingHandlers.length > 0) {
       return res.status(501).json({
         errorMessage: `Handler for protocol "${missingHandlers.join('", "')}" not implemented`,
+        dryRun,
       })
     }
     const handlersList = protocols.map((protocol) => {
@@ -114,19 +116,21 @@ export async function updateProductHubData(
     )
 
     try {
-      await prisma.productHubItems.deleteMany({
-        where: {
-          protocol: {
-            in: dataHandlersPromiseList.map(({ name }) => name),
+      !dryRun &&
+        (await prisma.productHubItems.deleteMany({
+          where: {
+            protocol: {
+              in: dataHandlersPromiseList.map(({ name }) => name),
+            },
           },
-        },
-      })
+        }))
     } catch (error) {
       return res.status(502).json({
         errorMessage: 'Error removing old Product Hub data',
         // @ts-ignore
         error: error.toString(),
         data: dataHandlersPromiseList,
+        dryRun,
       })
     }
 
@@ -134,9 +138,10 @@ export async function updateProductHubData(
       ...dataHandlersPromiseList.map(({ data }) => data),
     ]) as ProductHubItemWithFlattenTooltip[]
     try {
-      await prisma.productHubItems.createMany({
-        data: createData,
-      })
+      !dryRun &&
+        (await prisma.productHubItems.createMany({
+          data: createData,
+        }))
     } catch (error) {
       return res.status(502).json({
         errorMessage: 'Error updating Product Hub data',
@@ -144,9 +149,10 @@ export async function updateProductHubData(
         error: error.toString(),
         data: dataHandlersPromiseList,
         createData,
+        dryRun,
       })
     }
-    return res.status(200).json({ data: dataHandlersPromiseList })
+    return res.status(200).json({ data: dataHandlersPromiseList, dryRun })
   } catch (error) {
     const { body } = req
     return res.status(502).json({
@@ -154,6 +160,7 @@ export async function updateProductHubData(
       // @ts-ignore
       error: error.toString(),
       body: JSON.stringify(body),
+      dryRun: body.dryRun,
     })
   }
 }

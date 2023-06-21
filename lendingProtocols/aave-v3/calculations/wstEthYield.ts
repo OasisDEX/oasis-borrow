@@ -7,7 +7,7 @@ import {
   yieldsDateFormat,
 } from 'lendingProtocols/aaveCommon/yields'
 import moment from 'moment/moment'
-import { Observable } from 'rxjs'
+import { isObservable, Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
 
 const aavewStEthYield = gql`
@@ -123,14 +123,14 @@ const aavewStEthYield = gql`
 `
 
 export async function getAaveWstEthYield(
-  client: Observable<GraphQLClient>,
+  client: Observable<GraphQLClient> | GraphQLClient,
   currentDate: moment.Moment,
   riskRatio: IRiskRatio,
   fields: FilterYieldFieldsType[],
 ): Promise<AaveYieldsResponse> {
   const currentDateGuarded = currentDate.clone()
   const reserveAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
-  const getClient = await client.pipe(first()).toPromise()
+  const getClient = isObservable(client) ? await client.pipe(first()).toPromise() : client
   const response = await getClient.request(aavewStEthYield, {
     reserveAddress,
     multiply: riskRatio.multiple.toString(),
