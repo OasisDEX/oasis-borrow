@@ -31,6 +31,8 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     currentPosition,
   })
 
+  const originationFee = getOriginationFee(positionData, simulationData)
+
   const liquidationPrice = isShort
     ? normalizeValue(one.div(positionData.liquidationPrice))
     : positionData.liquidationPrice
@@ -59,9 +61,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&
-      `${formatCryptoBalance(
-        simulationData.debtAmount.plus(getOriginationFee(positionData, simulationData)),
-      )} ${quoteToken}`,
+      `${formatCryptoBalance(simulationData.debtAmount.plus(originationFee))} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralAvailable,
     )} ${collateralToken}`,
@@ -70,7 +70,8 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       `${formatCryptoBalance(simulationData.collateralAvailable)} ${collateralToken}`,
     availableToBorrow: `${formatCryptoBalance(positionData.debtAvailable())} ${quoteToken}`,
     afterAvailableToBorrow:
-      simulationData && `${formatCryptoBalance(simulationData.debtAvailable())} ${quoteToken}`,
+      simulationData &&
+      `${formatCryptoBalance(simulationData.debtAvailable().minus(originationFee))} ${quoteToken}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
