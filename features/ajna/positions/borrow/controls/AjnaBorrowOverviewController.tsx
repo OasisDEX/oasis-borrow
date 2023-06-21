@@ -1,4 +1,4 @@
-import { normalizeValue } from '@oasisdex/dma-library'
+import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -102,7 +102,9 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               cost={position.pool.interestRate}
               availableToBorrow={position.debtAvailable()}
-              afterAvailableToBorrow={simulation?.debtAvailable().minus(originationFee)}
+              afterAvailableToBorrow={
+                simulation && negativeToZero(simulation.debtAvailable().minus(originationFee))
+              }
               availableToWithdraw={position.collateralAvailable}
               afterAvailableToWithdraw={simulation?.collateralAvailable}
               changeVariant={changeVariant}

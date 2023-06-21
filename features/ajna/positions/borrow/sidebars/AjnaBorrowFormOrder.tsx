@@ -1,4 +1,4 @@
-import { normalizeValue } from '@oasisdex/dma-library'
+import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -71,7 +71,9 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     availableToBorrow: `${formatCryptoBalance(positionData.debtAvailable())} ${quoteToken}`,
     afterAvailableToBorrow:
       simulationData &&
-      `${formatCryptoBalance(simulationData.debtAvailable().minus(originationFee))} ${quoteToken}`,
+      `${formatCryptoBalance(
+        negativeToZero(simulationData.debtAvailable().minus(originationFee)),
+      )} ${quoteToken}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
