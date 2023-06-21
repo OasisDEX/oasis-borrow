@@ -9,11 +9,13 @@ export interface AssetsTableTooltipProps {
     description: string
   }
   icon: string
+  iconColor?: string
 }
 
 export function AssetsTableTooltip({
   content: { title, description },
   icon,
+  iconColor,
 }: AssetsTableTooltipProps) {
   return (
     <StatefulTooltip
@@ -38,7 +40,7 @@ export function AssetsTableTooltip({
         boxShadow: 'buttonMenu',
       }}
     >
-      <Icon size={16} name={icon} color="interactive100" />
+      <Icon size={16} name={icon} color={iconColor || 'interactive100'} />
     </StatefulTooltip>
   )
 }

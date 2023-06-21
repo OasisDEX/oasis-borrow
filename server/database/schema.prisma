@@ -247,6 +247,7 @@ model ProductHubItems {
   multiplyStrategyType ProductHubStrategy?
   reverseTokens Boolean?
   updatedAt DateTime @updatedAt
+  tooltips Json?
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
   @@map("product_hub_items")
