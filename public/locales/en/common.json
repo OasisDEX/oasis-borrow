@@ -893,7 +893,8 @@
     "bug-bounty": "Bug Bounty",
     "brand-assets": "Brand assets",
     "security": "Security",
-    "discover": "Discover"
+    "discover": "Discover",
+    "app": "Oasis.app"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -2496,7 +2497,7 @@
     }
   },
   "ajna": {
-    "title": "Anja Website",
+    "title": "Ajna Website",
     "navigation": {
       "common": {
         "other-assets": "Other assets you can borrow against"

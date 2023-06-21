@@ -87,6 +87,9 @@ export const EXTERNAL_LINKS = {
     DSR_RATE_HIKE: 'https://blog.oasis.app/dsr-rate-hike/',
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.oasis.app/major-stability-fee-changes/',
   },
+  AJNA: {
+    HOME: 'https://www.ajna.finance/',
+  },
   LEGACY_APP: 'https://legacy.oasis.app',
   WORKABLE: 'https://oasisapp.workable.com',
   TWITTER: 'https://twitter.com/oasisdotapp',

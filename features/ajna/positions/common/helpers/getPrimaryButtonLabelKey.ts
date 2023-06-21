@@ -5,7 +5,7 @@ import {
   AjnaProduct,
   AjnaSidebarStep,
 } from 'features/ajna/common/types'
-import { isFormEmpty } from 'features/ajna/positions/common/helpers/isFormEmpty'
+import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 
 interface GetPrimaryButtonLabelKeyParams {
   state: AjnaFormState
@@ -48,7 +48,7 @@ export function getPrimaryButtonLabelKey({
       else return 'confirm'
     default:
       if (
-        isFormEmpty({ product, state, position, currentStep }) ||
+        getIsFormEmpty({ product, state, position, currentStep }) ||
         (walletAddress && hasDpmAddress && hasAllowance)
       )
         return 'confirm'

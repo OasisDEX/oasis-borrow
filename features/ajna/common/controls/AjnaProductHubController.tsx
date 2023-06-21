@@ -17,6 +17,7 @@ export function AjnaProductHubController({ product, token }: AjnaProductHubContr
       <WithFeatureToggleRedirect feature="OasisCreate">
         <AnimatedWrapper sx={{ mb: 5 }}>
           <ProductHubView
+            headerGradient={['#f154db', '#974eea']}
             initialProtocol={[LendingProtocol.Ajna]}
             product={product}
             promoCardsCollection="AjnaLP"
