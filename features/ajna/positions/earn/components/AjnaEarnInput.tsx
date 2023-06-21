@@ -8,7 +8,7 @@ import { formatBigNumber } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, KeyboardEvent, useEffect, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Text } from 'theme-ui'
 
@@ -103,7 +103,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const [manualAmount, setManualAmount] = useState<BigNumber>(price || zero)
 
-  function clickHandler(variant: AjnaEarnInputButtonVariant) {
+  const clickHandler = (variant: AjnaEarnInputButtonVariant) => {
     const snappedValue = snapToPredefinedValues(manualAmount, range)
     let index = range.indexOf(snappedValue)
 
@@ -114,6 +114,17 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
 
     setManualAmount(selectedValue)
     updateState('price', selectedValue)
+  }
+
+  const enterPressedHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      const snappedValue = snapToPredefinedValues(manualAmount, range)
+      const index = range.indexOf(snappedValue)
+      const selectedValue = range.at(index) || zero
+
+      setManualAmount(selectedValue)
+      updateState('price', selectedValue)
+    }
   }
 
   useEffect(() => {
@@ -167,6 +178,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
           onChange={handleNumericInput((n = zero) => {
             setManualAmount(n)
           })}
+          onKeyPress={enterPressedHandler}
           value={manualAmount ? formatBigNumber(manualAmount, FIAT_PRECISION) : ''}
           sx={{
             px: 5,
