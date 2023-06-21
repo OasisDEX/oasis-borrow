@@ -2,6 +2,8 @@ import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
+import { getActionUrl } from 'features/productHub/helpers'
+import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -14,7 +16,7 @@ const getAjnaTokensPill = {
 export function parseAjnaBorrowPromoCard(
   collateralToken: string,
   quoteToken: string,
-  maxLtv?: string,
+  product?: ProductHubItem,
 ): PromoCardProps {
   return {
     tokens: [collateralToken, quoteToken],
@@ -29,19 +31,24 @@ export function parseAjnaBorrowPromoCard(
         label: {
           key: 'ajna.promo-cards.max-ltv',
           props: {
-            maxLtv: maxLtv ? formatDecimalAsPercent(new BigNumber(maxLtv)) : 'n/a',
+            maxLtv: product?.maxLtv ? formatDecimalAsPercent(new BigNumber(product.maxLtv)) : 'n/a',
           },
         },
       },
       getAjnaTokensPill,
     ],
+    ...(product && {
+      link: {
+        href: getActionUrl({ ...product, product: [ProductHubProductType.Borrow] }),
+      },
+    }),
   }
 }
 
 export function parseAjnaMultiplyPromoCard(
   collateralToken: string,
   quoteToken: string,
-  maxMultiply?: string,
+  product?: ProductHubItem,
 ): PromoCardProps {
   const isShort = isShortPosition({ collateralToken })
 
@@ -61,19 +68,26 @@ export function parseAjnaMultiplyPromoCard(
         label: {
           key: 'ajna.promo-cards.up-to-multiple',
           props: {
-            maxMultiple: maxMultiply ? `${parseFloat(maxMultiply).toFixed(2)}x` : 'n/a',
+            maxMultiple: product?.maxMultiply
+              ? `${parseFloat(product.maxMultiply).toFixed(2)}x`
+              : 'n/a',
           },
         },
       },
       getAjnaTokensPill,
     ],
+    ...(product && {
+      link: {
+        href: getActionUrl({ ...product, product: [ProductHubProductType.Multiply] }),
+      },
+    }),
   }
 }
 
 export function parseAjnaEarnPromoCard(
   collateralToken: string,
   quoteToken: string,
-  weeklyNetApy?: string,
+  product?: ProductHubItem,
 ): PromoCardProps {
   return {
     tokens: [collateralToken, quoteToken],
@@ -86,17 +100,22 @@ export function parseAjnaEarnPromoCard(
     pills: [
       {
         label: {
-          key: weeklyNetApy
+          key: product?.weeklyNetApy
             ? 'ajna.promo-cards.get-weekly-apy'
             : 'ajna.promo-cards.lends-to-one-token',
           props: {
-            weeklyNetApy: weeklyNetApy
-              ? formatDecimalAsPercent(new BigNumber(weeklyNetApy))
+            weeklyNetApy: product?.weeklyNetApy
+              ? formatDecimalAsPercent(new BigNumber(product.weeklyNetApy))
               : 'n/a',
           },
         },
       },
       getAjnaTokensPill,
     ],
+    ...(product && {
+      link: {
+        href: getActionUrl({ ...product, product: [ProductHubProductType.Earn] }),
+      },
+    }),
   }
 }
