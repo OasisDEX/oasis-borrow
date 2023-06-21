@@ -24,8 +24,8 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
 
   const ETHUSDCBorrowishProduct = findByTokenPair(borrowishProducts, ['ETH', 'USDC'])
   const ETHDAIBorrowishProduct = findByTokenPair(borrowishProducts, ['ETH', 'DAI'])
-  const WSTETHUSDCBorrowishProduct = findByTokenPair(borrowishProducts, ['WSTETH', 'WSTETH'])
-  const WBTCUSDCBorrowishProduct = findByTokenPair(borrowishProducts, ['WBTC', 'WBTC'])
+  const WSTETHUSDCBorrowishProduct = findByTokenPair(borrowishProducts, ['WSTETH', 'USDC'])
+  const WBTCUSDCBorrowishProduct = findByTokenPair(borrowishProducts, ['WBTC', 'USDC'])
   const WBTCDAIBorrowishProduct = findByTokenPair(borrowishProducts, ['WBTC', 'DAI'])
   const USDCETHBorrowishProduct = findByTokenPair(borrowishProducts, ['USDC', 'ETH'])
   const USDCWBTCBorrowishProduct = findByTokenPair(borrowishProducts, ['USDC', 'WBTC'])
@@ -66,122 +66,58 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
 
-  const promoCardETHUSDCBorrow = parseAjnaBorrowPromoCard(
-    'ETH',
-    'USDC',
-    ETHUSDCBorrowishProduct?.maxLtv,
-  )
-  const promoCardETHDAIBorrow = parseAjnaBorrowPromoCard(
-    'ETH',
-    'DAI',
-    ETHDAIBorrowishProduct?.maxLtv,
-  )
+  const promoCardETHUSDCBorrow = parseAjnaBorrowPromoCard('ETH', 'USDC', ETHUSDCBorrowishProduct)
+  const promoCardETHDAIBorrow = parseAjnaBorrowPromoCard('ETH', 'DAI', ETHDAIBorrowishProduct)
   const promoCardWSTETHUSDCBorrow = parseAjnaBorrowPromoCard(
     'WSTETH',
     'USDC',
-    WSTETHUSDCBorrowishProduct?.maxLtv,
+    WSTETHUSDCBorrowishProduct,
   )
-  const promoCardWBTCUSDCBorrow = parseAjnaBorrowPromoCard(
-    'WBTC',
-    'USDC',
-    WBTCUSDCBorrowishProduct?.maxLtv,
-  )
-  const promoCardWBTCDAICBorrow = parseAjnaBorrowPromoCard(
-    'WBTC',
-    'DAI',
-    WBTCDAIBorrowishProduct?.maxLtv,
-  )
-  const promoCardUSDCETHBorrow = parseAjnaBorrowPromoCard(
-    'USDC',
-    'ETH',
-    USDCETHBorrowishProduct?.maxLtv,
-  )
-  const promoCardUSDCWBTCBorrow = parseAjnaBorrowPromoCard(
-    'USDC',
-    'WBTC',
-    USDCWBTCBorrowishProduct?.maxLtv,
-  )
+  const promoCardWBTCUSDCBorrow = parseAjnaBorrowPromoCard('WBTC', 'USDC', WBTCUSDCBorrowishProduct)
+  const promoCardWBTCDAICBorrow = parseAjnaBorrowPromoCard('WBTC', 'DAI', WBTCDAIBorrowishProduct)
+  const promoCardUSDCETHBorrow = parseAjnaBorrowPromoCard('USDC', 'ETH', USDCETHBorrowishProduct)
+  const promoCardUSDCWBTCBorrow = parseAjnaBorrowPromoCard('USDC', 'WBTC', USDCWBTCBorrowishProduct)
   const promoCardETHUSDCMultiply = parseAjnaMultiplyPromoCard(
     'ETH',
     'USDC',
-    ETHUSDCBorrowishProduct?.maxMultiply,
+    ETHUSDCBorrowishProduct,
   )
   const promoCardWSTETHUSDCMultiply = parseAjnaMultiplyPromoCard(
     'WSTETH',
     'USDC',
-    WSTETHUSDCBorrowishProduct?.maxMultiply,
+    WSTETHUSDCBorrowishProduct,
   )
   const promoCardWBTCUSDCMultiply = parseAjnaMultiplyPromoCard(
     'WBTC',
     'USDC',
-    WBTCUSDCBorrowishProduct?.maxMultiply,
+    WBTCUSDCBorrowishProduct,
   )
   const promoCardWBTCDAIMultiply = parseAjnaMultiplyPromoCard(
     'WBTC',
     'DAI',
-    WBTCDAIBorrowishProduct?.maxMultiply,
+    WBTCDAIBorrowishProduct,
   )
   const promoCardUSDCETHMultiply = parseAjnaMultiplyPromoCard(
     'USDC',
     'ETH',
-    USDCETHBorrowishProduct?.maxMultiply,
+    USDCETHBorrowishProduct,
   )
   const promoCardUSDCWBTCMultiply = parseAjnaMultiplyPromoCard(
     'USDC',
     'WBTC',
-    USDCWBTCBorrowishProduct?.maxMultiply,
+    USDCWBTCBorrowishProduct,
   )
-  const promoCardETHUSDCEarn = parseAjnaEarnPromoCard(
-    'ETH',
-    'USDC',
-    ETHUSDCEarnProduct?.weeklyNetApy,
-  )
-  const promoCardWSTETHUSDCEarn = parseAjnaEarnPromoCard(
-    'WSTETH',
-    'USDC',
-    WSTETHUSDCEarnProduct?.weeklyNetApy,
-  )
-  const promoCardWSTETHDAIEarn = parseAjnaEarnPromoCard(
-    'WSTETH',
-    'DAI',
-    WSTETHDAIEarnProduct?.weeklyNetApy,
-  )
-  const promoCardRETHDAIEarn = parseAjnaEarnPromoCard(
-    'RETH',
-    'DAI',
-    RETHDAIEarnProduct?.weeklyNetApy,
-  )
-  const promoCardETHDAIEarn = parseAjnaEarnPromoCard('ETH', 'DAI', ETHDAIEarnProduct?.weeklyNetApy)
-  const promoCardWBTCUSDCEarn = parseAjnaEarnPromoCard(
-    'WBTC',
-    'USDC',
-    WBTCUSDCEarnProduct?.weeklyNetApy,
-  )
-  const promoCardWBTCDAIEarn = parseAjnaEarnPromoCard(
-    'WBTC',
-    'DAI',
-    WBTCDAIEarnProduct?.weeklyNetApy,
-  )
-  const promoCardUSDCETHEarn = parseAjnaEarnPromoCard(
-    'USDC',
-    'ETH',
-    USDCETHEarnProduct?.weeklyNetApy,
-  )
-  const promoCardUSDCWSTETHEarn = parseAjnaEarnPromoCard(
-    'USDC',
-    'WSTETH',
-    USDCWSTETHEarnProduct?.weeklyNetApy,
-  )
-  const promoCardUSDCRETHEarn = parseAjnaEarnPromoCard(
-    'USDC',
-    'RETH',
-    USDCRETHEarnProduct?.weeklyNetApy,
-  )
-  const promoCardUSDCWBTCEarn = parseAjnaEarnPromoCard(
-    'USDC',
-    'WBTC',
-    USDCWBTCEarnProduct?.weeklyNetApy,
-  )
+  const promoCardETHUSDCEarn = parseAjnaEarnPromoCard('ETH', 'USDC', ETHUSDCEarnProduct)
+  const promoCardWSTETHUSDCEarn = parseAjnaEarnPromoCard('WSTETH', 'USDC', WSTETHUSDCEarnProduct)
+  const promoCardWSTETHDAIEarn = parseAjnaEarnPromoCard('WSTETH', 'DAI', WSTETHDAIEarnProduct)
+  const promoCardRETHDAIEarn = parseAjnaEarnPromoCard('RETH', 'DAI', RETHDAIEarnProduct)
+  const promoCardETHDAIEarn = parseAjnaEarnPromoCard('ETH', 'DAI', ETHDAIEarnProduct)
+  const promoCardWBTCUSDCEarn = parseAjnaEarnPromoCard('WBTC', 'USDC', WBTCUSDCEarnProduct)
+  const promoCardWBTCDAIEarn = parseAjnaEarnPromoCard('WBTC', 'DAI', WBTCDAIEarnProduct)
+  const promoCardUSDCETHEarn = parseAjnaEarnPromoCard('USDC', 'ETH', USDCETHEarnProduct)
+  const promoCardUSDCWSTETHEarn = parseAjnaEarnPromoCard('USDC', 'WSTETH', USDCWSTETHEarnProduct)
+  const promoCardUSDCRETHEarn = parseAjnaEarnPromoCard('USDC', 'RETH', USDCRETHEarnProduct)
+  const promoCardUSDCWBTCEarn = parseAjnaEarnPromoCard('USDC', 'WBTC', USDCWBTCEarnProduct)
 
   return {
     [ProductHubProductType.Borrow]: {

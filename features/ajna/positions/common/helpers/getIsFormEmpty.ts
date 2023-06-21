@@ -10,14 +10,19 @@ import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarn
 import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 
-interface IsFormEmptyParams {
+interface GetIsFormEmptyParams {
   product: AjnaProduct
   state: AjnaFormState
   position: AjnaGenericPosition
   currentStep: AjnaSidebarStep
 }
 
-export function isFormEmpty({ product, state, position, currentStep }: IsFormEmptyParams): boolean {
+export function getIsFormEmpty({
+  product,
+  state,
+  position,
+  currentStep,
+}: GetIsFormEmptyParams): boolean {
   switch (product) {
     case 'borrow': {
       const { depositAmount, generateAmount, paybackAmount, withdrawAmount } =
