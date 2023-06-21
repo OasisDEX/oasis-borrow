@@ -56,6 +56,10 @@ export interface ProductHubItemTooltips {
 
 export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
 
+export type ProductHubItemWithFlattenTooltip = Omit<ProductHubItem, 'tooltips'> & {
+  tooltips: string
+}
+
 export type ProductHubPromoCards = {
   [key in ProductHubProductType]: {
     default: PromoCardProps[]
