@@ -3,7 +3,6 @@ import { AppLink } from 'components/Links'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
-import { WithArrow } from 'components/WithArrow'
 import React, { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
@@ -11,7 +10,7 @@ import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
 
 export interface PromoCardWrapperProps {
-  withHover?: boolean
+  link?: string
 }
 
 export interface PromoCardTranslationProps {
@@ -51,7 +50,7 @@ export type PromoCardProps = (
   }[]
   link?: {
     href: string
-    label: string | PromoCardTranslationProps
+    label?: string | PromoCardTranslationProps
   }
   data?: {
     label: string | PromoCardTranslationProps
@@ -72,34 +71,44 @@ export const dataColors: { [key in PromoCardVariant]: SxStyleProp } = {
   neutral: { color: 'primary100' },
 }
 
-export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, withHover = true }) => {
+export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link }) => {
+  const sx: SxStyleProp = {
+    position: 'relative',
+    px: 3,
+    py: '24px',
+    textAlign: 'center',
+    border: '1px solid',
+    borderColor: 'neutral20',
+    borderRadius: 'large',
+    bg: 'neutral10',
+  }
+
   return (
-    <Box
-      sx={{
-        position: 'relative',
-        px: 3,
-        py: '24px',
-        textAlign: 'center',
-        border: '1px solid',
-        borderColor: 'neutral20',
-        borderRadius: 'large',
-        bg: 'neutral10',
-        transition: 'border-color 200ms',
-        ...(withHover && {
-          '&:hover': {
-            borderColor: 'primary100',
-          },
-        }),
-      }}
-    >
-      {children}
-    </Box>
+    <>
+      {link ? (
+        <AppLink
+          href={link}
+          sx={{
+            ...sx,
+            fontWeight: 'inherit',
+            transition: 'border-color 200ms',
+            '&:hover': {
+              borderColor: 'neutral70',
+            },
+          }}
+        >
+          {children}
+        </AppLink>
+      ) : (
+        <Box sx={sx}>{children}</Box>
+      )}
+    </>
   )
 }
 
 export const PromoCardLoadingState: FC = () => {
   return (
-    <PromoCardWrapper withHover={false}>
+    <PromoCardWrapper>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Flex>
           <Box sx={{ mr: '-20px' }}>
@@ -137,7 +146,7 @@ export const PromoCard: FC<PromoCardProps> = ({
   tokens,
 }) => {
   return (
-    <PromoCardWrapper>
+    <PromoCardWrapper link={link?.href}>
       <Flex
         sx={{
           justifyContent: 'center',
@@ -225,12 +234,10 @@ export const PromoCard: FC<PromoCardProps> = ({
           ))}
         </Flex>
       )}
-      {link && (
-        <AppLink href={link.href} sx={{ display: 'inline-block', mt: 2 }}>
-          <WithArrow variant="paragraph3" sx={{ color: 'interactive100', fontWeight: 'regular' }}>
-            <PromoCardTranslation text={link.label} />
-          </WithArrow>
-        </AppLink>
+      {link?.label && (
+        <Text as="p" sx={{ mt: 2, fontSize: 2, color: 'interactive100' }}>
+          <PromoCardTranslation text={link.label} /> →
+        </Text>
       )}
     </PromoCardWrapper>
   )

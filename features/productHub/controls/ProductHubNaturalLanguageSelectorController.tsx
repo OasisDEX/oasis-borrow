@@ -7,6 +7,7 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 interface ProductHubNaturalLanguageSelectorControllerProps {
+  gradient: [string, string],
   product: ProductHubProductType
   token?: string
   url?: string
@@ -15,7 +16,7 @@ interface ProductHubNaturalLanguageSelectorControllerProps {
 
 export const ProductHubNaturalLanguageSelectorController: FC<
   ProductHubNaturalLanguageSelectorControllerProps
-> = ({ product, token, url, onChange }) => {
+> = ({ gradient, product, token, url, onChange }) => {
   const { t } = useTranslation()
 
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
@@ -39,7 +40,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
         {t('product-hub.header.i-want-to')}
         <HeaderSelector
           defaultOption={productHubOptionsMap[product].product}
-          gradient={['#2a30ee', '#a4a6ff']}
+          gradient={gradient}
           options={Object.values(productHubOptionsMap).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
@@ -69,7 +70,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
               ? productHubOptionsMap[product].tokens[token]
               : productHubOptionsMap[product].tokens.all
           }
-          gradient={['#2a30ee', '#a4a6ff']}
+          gradient={gradient}
           options={Object.values(productHubOptionsMap[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
