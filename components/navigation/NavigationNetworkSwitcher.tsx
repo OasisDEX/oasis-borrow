@@ -17,6 +17,7 @@ import { NetworkConfig } from 'blockchain/networks'
 import { useConnection } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useModal } from 'helpers/modalHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Box, Button, Image } from 'theme-ui'
 
@@ -30,6 +31,9 @@ export function NavigationNetworkSwitcherOrb() {
   })
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
   const openModal = useModal()
+
+  const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
+  const useForks = useFeatureToggle('UseNetworkSwitcherForks')
 
   const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
     return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
@@ -124,33 +128,37 @@ export function NavigationNetworkSwitcherOrb() {
               .map(handleNetworkButton)}
             {(connectedChain || isTestnetEnabled()) && (
               <>
-                <Button
-                  variant="bean"
-                  sx={{ fontSize: 2 }}
-                  onClick={() => toggleChains(connectedChain ?? customNetworkHexId)}
-                >
-                  <Box sx={{ width: '100%' }}>
-                    {(() => {
-                      if (connectedChain) {
-                        return `Change to ${
-                          isTestnet(connectedChain) ? 'main net 🏠' : 'test net 🌲'
-                        }`
-                      }
-                      if (isTestnetNetworkHexId(customNetworkHexId)) {
-                        return 'Change to main net 🏠'
-                      }
-                      return 'Change to test net 🌲'
-                    })()}
-                  </Box>
-                </Button>
+                {useTestnets && (
+                  <Button
+                    variant="bean"
+                    sx={{ fontSize: 2 }}
+                    onClick={() => toggleChains(connectedChain ?? customNetworkHexId)}
+                  >
+                    <Box sx={{ width: '100%' }}>
+                      {(() => {
+                        if (connectedChain) {
+                          return `Change to ${
+                            isTestnet(connectedChain) ? 'main net 🏠' : 'test net 🌲'
+                          }`
+                        }
+                        if (isTestnetNetworkHexId(customNetworkHexId)) {
+                          return 'Change to main net 🏠'
+                        }
+                        return 'Change to test net 🌲'
+                      })()}
+                    </Box>
+                  </Button>
+                )}
 
-                <Button
-                  variant="bean"
-                  sx={{ fontSize: 2 }}
-                  onClick={() => openModal(NavigationNetworkSwitcherModal, {})}
-                >
-                  <Box sx={{ width: '100%' }}>Fork settings 👷‍♂️</Box>
-                </Button>
+                {useForks && (
+                  <Button
+                    variant="bean"
+                    sx={{ fontSize: 2 }}
+                    onClick={() => openModal(NavigationNetworkSwitcherModal, {})}
+                  >
+                    <Box sx={{ width: '100%' }}>Fork settings 👷‍♂️</Box>
+                  </Button>
+                )}
               </>
             )}
           </Box>
