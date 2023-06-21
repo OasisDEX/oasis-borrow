@@ -1,4 +1,5 @@
 import { InfoCard } from 'components/InfoCard'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -28,7 +29,7 @@ export function AjnaHaveSomeQuestions() {
           subtitle={t('landing.info-cards.learn.deep-dive')}
           links={[
             {
-              href: 'https://www.ajna.finance/',
+              href: EXTERNAL_LINKS.AJNA.HOME,
               text: t('ajna.learn.ajna-website'),
             },
             {

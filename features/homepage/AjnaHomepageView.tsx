@@ -72,6 +72,7 @@ export function AjnaHomepageView() {
       </Box>
       <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
         <ProductHubView
+          headerGradient={['#f154db', '#974eea']}
           initialProtocol={[LendingProtocol.Ajna]}
           product={ProductHubProductType.Borrow}
           promoCardsCollection="AjnaLP"

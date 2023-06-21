@@ -41,121 +41,107 @@ function parseProduct(
     case ProductHubProductType.Borrow:
       return {
         maxLtv: {
-          sortable: maxLtv ? maxLtv.toNumber() : 0,
-          value: maxLtv ? (
+          sortable: maxLtv?.toNumber() || 0,
+          value: (
             <>
-              {formatDecimalAsPercent(maxLtv)}
+              {maxLtv ? formatDecimalAsPercent(maxLtv) : <AssetsTableDataCellInactive />}
               {tooltips?.maxLtv && <AssetsTableTooltip {...tooltips.maxLtv} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
         liquidityAvaliable: {
-          sortable: liquidity ? liquidity.toNumber() : 0,
-          value: liquidity ? (
+          sortable: liquidity?.toNumber() || 0,
+          value: (
             <>
-              ${formatFiatBalance(liquidity)}
+              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
         borrowRate: {
-          sortable: fee ? fee.toNumber() : 0,
-          value: fee ? (
+          sortable: fee?.toNumber() || 0,
+          value: (
             <>
-              {formatDecimalAsPercent(fee)}
+              {fee ? formatDecimalAsPercent(fee) : <AssetsTableDataCellInactive />}
               {tooltips?.fee && <AssetsTableTooltip {...tooltips.fee} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
       }
     case ProductHubProductType.Multiply:
       return {
-        strategy: multiplyStrategy ? (
+        strategy: (
           <>
-            {multiplyStrategy}
+            {multiplyStrategy || <AssetsTableDataCellInactive />}
             {tooltips?.multiplyStrategy && <AssetsTableTooltip {...tooltips.multiplyStrategy} />}
           </>
-        ) : (
-          <AssetsTableDataCellInactive />
         ),
         maxMultiple: {
-          sortable: maxMultiply ? maxMultiply.toNumber() : 0,
-          value: maxMultiply ? (
+          sortable: maxMultiply?.toNumber() || 0,
+          value: (
             <>
-              {maxMultiply.toFixed(2)}x
+              {maxMultiply ? `${maxMultiply.toFixed(2)}x` : <AssetsTableDataCellInactive />}
               {tooltips?.maxMultiply && <AssetsTableTooltip {...tooltips.maxMultiply} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
         liquidityAvaliable: {
-          sortable: liquidity ? liquidity.toNumber() : 0,
-          value: liquidity ? (
+          sortable: liquidity?.toNumber() || 0,
+          value: (
             <>
-              ${formatFiatBalance(liquidity)}
+              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
-        variableFeeYr: {
+        borrowRate: {
           sortable: fee ? fee.toNumber() : 0,
-          value: fee ? (
+          value: (
             <>
-              {formatDecimalAsPercent(fee)}
+              {fee ? formatDecimalAsPercent(fee) : <AssetsTableDataCellInactive />}
               {tooltips?.fee && <AssetsTableTooltip {...tooltips.fee} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
       }
     case ProductHubProductType.Earn:
       return {
-        strategy: earnStrategy ? (
+        strategy: (
           <>
-            {earnStrategy}
+            {earnStrategy || <AssetsTableDataCellInactive />}
             {tooltips?.earnStrategy && <AssetsTableTooltip {...tooltips.earnStrategy} />}
           </>
-        ) : (
-          <AssetsTableDataCellInactive />
         ),
-        management: managementType ? (
+        management: (
           <>
-            <Trans i18nKey={`product-hub.table.${managementType}`} />
+            {managementType ? (
+              <Trans i18nKey={`product-hub.table.${managementType}`} />
+            ) : (
+              <AssetsTableDataCellInactive />
+            )}
             {tooltips?.managementType && <AssetsTableTooltip {...tooltips.managementType} />}
           </>
-        ) : (
-          <AssetsTableDataCellInactive />
         ),
         '7DayNetApy': {
-          sortable: weeklyNetApy ? weeklyNetApy.toNumber() : 0,
-          value: weeklyNetApy ? (
+          sortable: weeklyNetApy?.toNumber() || 0,
+          value: (
             <>
-              {formatDecimalAsPercent(weeklyNetApy)}
+              {weeklyNetApy ? (
+                formatDecimalAsPercent(weeklyNetApy)
+              ) : (
+                <AssetsTableDataCellInactive />
+              )}
               {tooltips?.weeklyNetApy && <AssetsTableTooltip {...tooltips.weeklyNetApy} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
         liquidityAvaliable: {
-          sortable: liquidity ? liquidity.toNumber() : 0,
-          value: liquidity ? (
+          sortable: liquidity?.toNumber() || 0,
+          value: (
             <>
-              ${formatFiatBalance(liquidity)}
+              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
-          ) : (
-            <AssetsTableDataCellInactive />
           ),
         },
       }

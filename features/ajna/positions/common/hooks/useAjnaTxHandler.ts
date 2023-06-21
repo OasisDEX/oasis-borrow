@@ -8,7 +8,7 @@ import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { isFormEmpty } from 'features/ajna/positions/common/helpers/isFormEmpty'
+import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -47,10 +47,12 @@ export function useAjnaTxHandler(): () => void {
     useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
+  const isFormEmpty = getIsFormEmpty({ product, state, position, currentStep })
 
   useEffect(() => {
     cancelablePromise?.cancel()
-    if (isFormEmpty({ product, state, position, currentStep })) {
+
+    if (isFormEmpty) {
       setSimulation(undefined)
       setIsLoadingSimulation(false)
     } else {
@@ -60,7 +62,7 @@ export function useAjnaTxHandler(): () => void {
 
   useDebouncedEffect(
     () => {
-      if (context && !isExternalStep && currentStep !== 'risk') {
+      if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
         const promise = cancelable(
           getAjnaParameters({
             collateralPrice,

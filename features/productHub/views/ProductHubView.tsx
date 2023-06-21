@@ -23,6 +23,7 @@ import { Box, Text } from 'theme-ui'
 interface ProductHubViewProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
+  headerGradient?: [string, string]
   product: ProductHubProductType
   promoCardsCollection: PromoCardsCollection
   token?: string
@@ -33,6 +34,7 @@ interface ProductHubViewProps {
 export const ProductHubView: FC<ProductHubViewProps> = ({
   initialNetwork,
   initialProtocol,
+  headerGradient = ['#2a30ee', '#a4a6ff'],
   product,
   promoCardsCollection,
   token,
@@ -74,6 +76,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         }}
       >
         <ProductHubNaturalLanguageSelectorController
+          gradient={headerGradient}
           product={product}
           token={token}
           url={url}

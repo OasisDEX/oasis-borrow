@@ -88,6 +88,9 @@ export const EXTERNAL_LINKS = {
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
   },
   LEGACY_APP: 'https://legacy.summer.fi',
+  AJNA: {
+    HOME: 'https://www.ajna.finance/',
+  },
   WORKABLE: 'https://oasisapp.workable.com',
   TWITTER: 'https://twitter.com/oasisdotapp',
   DISCORD: 'https://discord.gg/oasisapp',
