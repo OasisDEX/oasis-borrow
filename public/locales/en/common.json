@@ -2831,6 +2831,10 @@
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
       "what-is-earn-on-ajna": "What is Earn on Ajna?"
+    },
+    "product-hub-tooltips": {
+      "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
+      "no-max-multiple": "There are currently no borrow or multiply positions for this pool. Max multiple will be calculated following the creation of the first position."
     }
   },
   "product-hub": {

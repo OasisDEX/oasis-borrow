@@ -116,6 +116,28 @@ async function getAjnaPoolData(
                 }),
                 multiplyStrategy,
                 multiplyStrategyType,
+                ...(lowestUtilizedPriceIndex === 0 && {
+                  tooltips: {
+                    maxLtv: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-max-ltv',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                    maxMultiply: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-max-multiple',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                  },
+                }),
               },
               {
                 label,
