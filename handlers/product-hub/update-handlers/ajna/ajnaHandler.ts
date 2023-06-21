@@ -135,14 +135,17 @@ async function getAjnaPoolData(
                 }),
                 multiplyStrategy,
                 multiplyStrategyType,
-                tooltips: {
-                  fee: ajnaRewardsTooltip,
-                },
                 ...(isYieldLoop && {
                   earnStrategy: earnYieldLoopStrategy,
                   managementType,
                   weeklyNetApy,
                 }),
+                tooltips: {
+                  fee: ajnaRewardsTooltip,
+                  ...(isYieldLoop && {
+                    weeklyNetApy: ajnaRewardsTooltip,
+                  }),
+                },
               },
               {
                 label,
