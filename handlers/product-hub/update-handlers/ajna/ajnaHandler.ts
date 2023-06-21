@@ -9,6 +9,7 @@ import {
   getAjnaPoolsTableData,
 } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
+import { isYieldLoopPool } from 'features/ajna/positions/common/helpers/isYieldLoopPool'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import {
@@ -73,6 +74,7 @@ async function getAjnaPoolData(
           },
         ) => {
           const isShort = isShortPosition({ collateralToken })
+          const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const collateralPrice = prices[collateralToken]
           const quotePrice = prices[quoteToken]
           const marketPrice = collateralPrice.div(quotePrice)
@@ -88,7 +90,8 @@ async function getAjnaPoolData(
             one.plus(one.div(one.div(maxLtv).minus(one))),
             zero,
           ).toString()
-          const earnStrategy = `${collateralToken}/${quoteToken} LP`
+          const earnLPStrategy = `${collateralToken}/${quoteToken} LP`
+          const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
           const weeklyNetApy = calculateAjnaApyPerDays(
             depositSize,
@@ -104,7 +107,11 @@ async function getAjnaPoolData(
                 network,
                 primaryToken: collateralToken,
                 ...getTokenGroup(collateralToken, 'primary'),
-                product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
+                product: [
+                  ProductHubProductType.Borrow,
+                  ProductHubProductType.Multiply,
+                  ...(isYieldLoop ? [ProductHubProductType.Earn] : []),
+                ],
                 protocol,
                 secondaryToken: quoteToken,
                 ...getTokenGroup(quoteToken, 'secondary'),
@@ -116,6 +123,11 @@ async function getAjnaPoolData(
                 }),
                 multiplyStrategy,
                 multiplyStrategyType,
+                ...(isYieldLoop && {
+                  earnStrategy: earnYieldLoopStrategy,
+                  managementType,
+                  weeklyNetApy,
+                }),
                 ...(lowestUtilizedPriceIndex === 0 && {
                   tooltips: {
                     maxLtv: {
@@ -148,7 +160,7 @@ async function getAjnaPoolData(
                 protocol,
                 secondaryToken: collateralToken,
                 ...getTokenGroup(collateralToken, 'secondary'),
-                earnStrategy,
+                earnStrategy: earnLPStrategy,
                 liquidity,
                 managementType,
                 weeklyNetApy,
