@@ -72,6 +72,10 @@ function mapEvent(
 function extractLendingProtocolFromPositionCreatedEvent(
   positionCreatedChainEvent: CreatePositionEvent,
 ): LendingProtocol {
+  console.log('---')
+  console.log(positionCreatedChainEvent.args.protocol)
+  console.log(positionCreatedChainEvent)
+
   switch (positionCreatedChainEvent.args.protocol) {
     case 'AAVE':
     case 'AaveV2':
@@ -79,6 +83,7 @@ function extractLendingProtocolFromPositionCreatedEvent(
     case 'AAVE_V3':
       return LendingProtocol.AaveV3
     case 'Ajna':
+    case 'AJNA_RC5':
       return LendingProtocol.Ajna
     default:
       throw new Error(
