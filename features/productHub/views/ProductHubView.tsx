@@ -34,7 +34,7 @@ interface ProductHubViewProps {
 export const ProductHubView: FC<ProductHubViewProps> = ({
   initialNetwork,
   initialProtocol,
-  headerGradient = ['#2a30ee', '#a4a6ff'],
+  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
   product,
   promoCardsCollection,
   token,
