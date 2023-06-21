@@ -30,6 +30,8 @@ export type Feature =
   | 'FollowAAVEVaults'
   | 'Sillyness'
   | 'UseNetworkSwitcher'
+  | 'UseNetworkSwitcherForks'
+  | 'UseNetworkSwitcherTestnets'
   | 'UseNetworkRowProductCard'
   | 'AaveV3Optimism'
   | 'AaveV3Arbitrum'
@@ -73,6 +75,8 @@ const configuredFeatures: Record<Feature, boolean> = {
   FollowAAVEVaults: false,
   Sillyness: false,
   UseNetworkSwitcher: false,
+  UseNetworkSwitcherForks: false,
+  UseNetworkSwitcherTestnets: false,
   UseNetworkRowProductCard: false,
   AaveV3Optimism: false,
   AaveV3Arbitrum: false,
