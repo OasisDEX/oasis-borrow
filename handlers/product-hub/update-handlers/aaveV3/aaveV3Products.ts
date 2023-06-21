@@ -11,6 +11,8 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'WSTETH/ETH',
+    earnStrategy: 'WSTETH/ETH Yield Loop',
+    managementType: 'active',
   },
   {
     product: [ProductHubProductType.Multiply],
