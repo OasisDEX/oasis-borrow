@@ -27,14 +27,20 @@ export function parseAjnaBorrowPromoCard(
     },
     protocol,
     pills: [
-      {
-        label: {
-          key: 'ajna.promo-cards.max-ltv',
-          props: {
-            maxLtv: product?.maxLtv ? formatDecimalAsPercent(new BigNumber(product.maxLtv)) : 'n/a',
-          },
-        },
-      },
+      ...(product?.maxLtv
+        ? [
+            {
+              label: {
+                key: 'ajna.promo-cards.max-ltv',
+                props: {
+                  maxLtv: product?.maxLtv
+                    ? formatDecimalAsPercent(new BigNumber(product.maxLtv))
+                    : 'n/a',
+                },
+              },
+            },
+          ]
+        : []),
       getAjnaTokensPill,
     ],
     ...(product && {
@@ -64,16 +70,20 @@ export function parseAjnaMultiplyPromoCard(
     },
     protocol,
     pills: [
-      {
-        label: {
-          key: 'ajna.promo-cards.up-to-multiple',
-          props: {
-            maxMultiple: product?.maxMultiply
-              ? `${parseFloat(product.maxMultiply).toFixed(2)}x`
-              : 'n/a',
-          },
-        },
-      },
+      ...(product?.maxMultiply
+        ? [
+            {
+              label: {
+                key: 'ajna.promo-cards.up-to-multiple',
+                props: {
+                  maxMultiple: product?.maxMultiply
+                    ? `${parseFloat(product.maxMultiply).toFixed(2)}x`
+                    : 'n/a',
+                },
+              },
+            },
+          ]
+        : []),
       getAjnaTokensPill,
     ],
     ...(product && {
