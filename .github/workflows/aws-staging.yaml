@@ -30,28 +30,19 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    # - name: Log in to Docker Hub
-    #   uses: docker/login-action@v2
-    #   with:
-    #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-
     - name: Extract commit hash
       id: vars
       shell: bash
       run: |
         echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-    - name: Build, tag, and push image to Amazon ECR and Dockerhub
+    - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
         SHA_TAG: ${{ steps.vars.outputs.sha_short }}
         LATEST_TAG: latest
         ENVIRONMENT_TAG: staging
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REPO_NAME: ${{ github.event.repository.name }}
-        DOCKERHUB_ORG: "oasisdexorg"
-        DOCKER_BUILDKIT: 1
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -82,11 +73,8 @@ jobs:
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
-                    #  -t $DOCKERHUB_ORG/$REPO_NAME:$SHA_TAG \
-                    #  -t $DOCKERHUB_ORG/$REPO_NAME:$LATEST_TAG \
                      .
         docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
-        # docker push $DOCKERHUB_ORG/$REPO_NAME --all-tags
 
     - name: Update ECS service with latest Docker image
       id: service-update
