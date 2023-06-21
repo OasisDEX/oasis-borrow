@@ -23,7 +23,7 @@ import { Box, Text } from 'theme-ui'
 interface ProductHubViewProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
-  headerGradient?: [string, string]
+  headerGradient?: [string, string, string]
   product: ProductHubProductType
   promoCardsCollection: PromoCardsCollection
   token?: string
