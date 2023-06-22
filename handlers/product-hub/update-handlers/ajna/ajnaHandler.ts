@@ -109,6 +109,18 @@ async function getAjnaPoolData(
             7,
           ).toString()
 
+          const ajnaRewardsTooltip = {
+            content: {
+              title: {
+                key: 'ajna.product-hub-tooltips.this-pool-is-earning-ajna-tokens',
+              },
+              description: {
+                key: 'ajna.product-hub-tooltips.rewards-available-soon',
+              },
+            },
+            icon: 'sparks',
+          }
+
           return {
             table: [
               ...v.table,
@@ -138,8 +150,12 @@ async function getAjnaPoolData(
                   managementType,
                   weeklyNetApy,
                 }),
-                ...(lowestUtilizedPriceIndex === 0 && {
-                  tooltips: {
+                tooltips: {
+                  fee: ajnaRewardsTooltip,
+                  ...(isYieldLoop && {
+                    weeklyNetApy: ajnaRewardsTooltip,
+                  }),
+                  ...(lowestUtilizedPriceIndex === 0 && {
                     maxLtv: {
                       content: {
                         description: {
@@ -158,8 +174,8 @@ async function getAjnaPoolData(
                       icon: 'question_o',
                       iconColor: 'neutral80',
                     },
-                  },
-                }),
+                  }),
+                },
               },
               {
                 label,
@@ -175,6 +191,9 @@ async function getAjnaPoolData(
                 managementType,
                 weeklyNetApy,
                 reverseTokens: true,
+                tooltips: {
+                  weeklyNetApy: ajnaRewardsTooltip,
+                },
               },
             ],
             warnings: [],
