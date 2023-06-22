@@ -1,4 +1,4 @@
-import { normalizeValue } from '@oasisdex/dma-library'
+import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -52,6 +52,8 @@ export function AjnaBorrowOverviewController() {
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
   const changeVariant = getBorrowishChangeVariant(simulation)
 
+  const originationFee = getOriginationFee(position, simulation)
+
   return (
     <Grid gap={2}>
       <DetailsSection
@@ -87,9 +89,7 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               positionDebt={position.debtAmount}
               positionDebtUSD={position.debtAmount.times(quotePrice)}
-              afterPositionDebt={simulation?.debtAmount.plus(
-                getOriginationFee(position, simulation),
-              )}
+              afterPositionDebt={simulation?.debtAmount.plus(originationFee)}
               changeVariant={changeVariant}
             />
           </DetailsSectionContentCardWrapper>
@@ -102,7 +102,9 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               cost={position.pool.interestRate}
               availableToBorrow={position.debtAvailable()}
-              afterAvailableToBorrow={simulation?.debtAvailable()}
+              afterAvailableToBorrow={
+                simulation && negativeToZero(simulation.debtAvailable().minus(originationFee))
+              }
               availableToWithdraw={position.collateralAvailable}
               afterAvailableToWithdraw={simulation?.collateralAvailable}
               changeVariant={changeVariant}
