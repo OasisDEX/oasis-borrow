@@ -103,6 +103,6 @@ export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
     protocol: LendingProtocol.Maker,
     label: 'DSR',
     managementType: 'passive',
-    earnStrategy: 'DSR',
+    earnStrategy: 'DAI Savings Rate',
   },
 ]

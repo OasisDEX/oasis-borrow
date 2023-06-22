@@ -9,7 +9,7 @@ import { amountFromRad, amountFromRay } from 'blockchain/utils'
 import { RAY, SECONDS_PER_YEAR } from 'components/constants'
 import { BigNumberish } from 'ethers'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
-import { ProductHubSupportedNetworks } from 'features/productHub/types'
+import { ProductHubItem, ProductHubSupportedNetworks } from 'features/productHub/types'
 import {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
@@ -107,30 +107,36 @@ async function getMakerData(
     dsrPromise,
   ]).then(([vatIlkData, jugIlkData, spotIlkData, dsrData]) => {
     return {
-      table: makerProductHubProducts.map((product) => {
-        if (product.label === 'DSR') {
+      table: makerProductHubProducts
+        .map((product) => {
+          if (product.label === 'CRVV1ETHSTETH-A' && networkId === NetworkIds.GOERLI) {
+            // CRVV1ETHSTETH-A on goerli has some wonky numbers, skipping that
+            return
+          }
+          if (product.label === 'DSR') {
+            return {
+              ...product,
+              network: networksById[networkId].name as ProductHubSupportedNetworks,
+              weeklyNetApy: getYearlyRate(bigNumberify(dsrData) || zero)
+                .decimalPlaces(5, BigNumber.ROUND_UP)
+                .minus(1)
+                .toString(),
+            }
+          }
+          const ilk = getIlk(product.label)
+          const { liquidityAvailable } = vatIlkData.find((data) => data[ilk])![ilk]
+          const { fee } = jugIlkData.find((data) => data[ilk])![ilk]
+          const { maxMultiple, maxLtv } = spotIlkData.find((data) => data[ilk])![ilk]
           return {
             ...product,
             network: networksById[networkId].name as ProductHubSupportedNetworks,
-            weeklyNetApy: getYearlyRate(bigNumberify(dsrData) || zero)
-              .decimalPlaces(5, BigNumber.ROUND_UP)
-              .minus(1)
-              .toString(),
+            liquidity: liquidityAvailable.toString(),
+            fee: fee.toString(),
+            maxMultiply: maxMultiple.toString(),
+            maxLtv: maxLtv.toString(),
           }
-        }
-        const ilk = getIlk(product.label)
-        const { liquidityAvailable } = vatIlkData.find((data) => data[ilk])![ilk]
-        const { fee } = jugIlkData.find((data) => data[ilk])![ilk]
-        const { maxMultiple, maxLtv } = spotIlkData.find((data) => data[ilk])![ilk]
-        return {
-          ...product,
-          network: networksById[networkId].name as ProductHubSupportedNetworks,
-          liquidity: liquidityAvailable.toString(),
-          fee: fee.toString(),
-          maxMultiply: maxMultiple.toString(),
-          maxLtv: maxLtv.toString(),
-        }
-      }),
+        })
+        .filter(Boolean) as ProductHubItem[],
       warnings: [],
     }
   })
