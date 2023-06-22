@@ -2646,13 +2646,13 @@
       "borrow": {
         "common": {
           "overview": {
+            "dynamic-max-ltv": "Dynamic Max LTV: {{dynamicMaxLtv}}",
             "liquidation-price": "Liquidation Price",
             "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price",
             "above-current-price": "{{priceRatio}} above current price",
             "below-current-price": "{{priceRatio}} below current price",
             "loan-to-value": "Loan to value",
             "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
-            "liquidation-threshold": "Dynamic Max LTV: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
             "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
             "position-debt": "Position debt",
@@ -2767,7 +2767,7 @@
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
-      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
+      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
@@ -2831,6 +2831,10 @@
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
       "what-is-earn-on-ajna": "What is Earn on Ajna?"
+    },
+    "product-hub-tooltips": {
+      "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
+      "no-max-multiple": "There are currently no borrow or multiply positions for this pool. Max multiple will be calculated following the creation of the first position."
     }
   },
   "product-hub": {

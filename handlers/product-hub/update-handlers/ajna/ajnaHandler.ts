@@ -4,6 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
+import { WAD_PRECISION } from 'components/constants'
 import {
   AjnaPoolsTableData,
   getAjnaPoolsTableData,
@@ -64,15 +65,18 @@ async function getAjnaPoolData(
           {
             pair: [collateralToken, quoteToken],
             pool: {
+              buckets,
               dailyPercentageRate30dAverage,
               debt,
               depositSize,
               interestRate,
+              highestThresholdPriceIndex,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
             },
           },
         ) => {
+          const negativeWadPrecision = WAD_PRECISION * -1
           const isShort = isShortPosition({ collateralToken })
           const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const collateralPrice = prices[collateralToken]
@@ -82,7 +86,13 @@ async function getAjnaPoolData(
           const network = networksById[networkId].name as ProductHubSupportedNetworks
           const protocol = LendingProtocol.Ajna
           const maxLtv = lowestUtilizedPrice.div(marketPrice).toString()
-          const liquidity = depositSize.minus(debt).times(prices[quoteToken]).toString()
+          const liquidity = buckets
+            .filter((bucket) => new BigNumber(bucket.index).lte(highestThresholdPriceIndex))
+            .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero)
+            .minus(debt)
+            .times(prices[quoteToken])
+            .shiftedBy(negativeWadPrecision)
+            .toString()
           const fee = interestRate.toString()
           const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
           const multiplyStrategyType = isShort ? 'short' : 'long'
@@ -127,6 +137,28 @@ async function getAjnaPoolData(
                   earnStrategy: earnYieldLoopStrategy,
                   managementType,
                   weeklyNetApy,
+                }),
+                ...(lowestUtilizedPriceIndex === 0 && {
+                  tooltips: {
+                    maxLtv: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-max-ltv',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                    maxMultiply: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-max-multiple',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                  },
                 }),
               },
               {

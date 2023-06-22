@@ -27,14 +27,18 @@ export function parseAjnaBorrowPromoCard(
     },
     protocol,
     pills: [
-      {
-        label: {
-          key: 'ajna.promo-cards.max-ltv',
-          props: {
-            maxLtv: product?.maxLtv ? formatDecimalAsPercent(new BigNumber(product.maxLtv)) : 'n/a',
-          },
-        },
-      },
+      ...(product?.maxLtv
+        ? [
+            {
+              label: {
+                key: 'ajna.promo-cards.max-ltv',
+                props: {
+                  maxLtv: formatDecimalAsPercent(new BigNumber(product.maxLtv)),
+                },
+              },
+            },
+          ]
+        : []),
       getAjnaTokensPill,
     ],
     ...(product && {
@@ -64,16 +68,18 @@ export function parseAjnaMultiplyPromoCard(
     },
     protocol,
     pills: [
-      {
-        label: {
-          key: 'ajna.promo-cards.up-to-multiple',
-          props: {
-            maxMultiple: product?.maxMultiply
-              ? `${parseFloat(product.maxMultiply).toFixed(2)}x`
-              : 'n/a',
-          },
-        },
-      },
+      ...(product?.maxMultiply
+        ? [
+            {
+              label: {
+                key: 'ajna.promo-cards.up-to-multiple',
+                props: {
+                  maxMultiple: `${parseFloat(product.maxMultiply).toFixed(2)}x`,
+                },
+              },
+            },
+          ]
+        : []),
       getAjnaTokensPill,
     ],
     ...(product && {
@@ -104,9 +110,9 @@ export function parseAjnaEarnPromoCard(
             ? 'ajna.promo-cards.get-weekly-apy'
             : 'ajna.promo-cards.lends-to-one-token',
           props: {
-            weeklyNetApy: product?.weeklyNetApy
-              ? formatDecimalAsPercent(new BigNumber(product.weeklyNetApy))
-              : 'n/a',
+            ...(product?.weeklyNetApy && {
+              weeklyNetApy: formatDecimalAsPercent(new BigNumber(product.weeklyNetApy)),
+            }),
           },
         },
       },

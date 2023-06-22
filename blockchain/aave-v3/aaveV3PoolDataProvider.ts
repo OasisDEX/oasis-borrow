@@ -53,22 +53,24 @@ export interface AaveV3ReserveConfigurationData {
   // .... could add more things here.  see https://etherscan.io/address/0x7B4EB56E7CD4b454BA8ff71E4518426369a138a3#readContract
 }
 
-const networkMappings = {
-  [NetworkIds.MAINNET]: getNetworkMapping(
-    AaveV3PoolDataProvider__factory,
-    NetworkIds.MAINNET,
-    'aaveV3PoolDataProvider',
-  ),
-  [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
-    AaveV3PoolDataProvider__factory,
-    NetworkIds.OPTIMISMMAINNET,
-    'aaveV3PoolDataProvider',
-  ),
-  [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
-    AaveV3PoolDataProvider__factory,
-    NetworkIds.ARBITRUMMAINNET,
-    'aaveV3PoolDataProvider',
-  ),
+const networkMappings = () => {
+  return {
+    [NetworkIds.MAINNET]: getNetworkMapping(
+      AaveV3PoolDataProvider__factory,
+      NetworkIds.MAINNET,
+      'aaveV3PoolDataProvider',
+    ),
+    [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
+      AaveV3PoolDataProvider__factory,
+      NetworkIds.OPTIMISMMAINNET,
+      'aaveV3PoolDataProvider',
+    ),
+    [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
+      AaveV3PoolDataProvider__factory,
+      NetworkIds.ARBITRUMMAINNET,
+      'aaveV3PoolDataProvider',
+    ),
+  }
 }
 
 export function getAaveV3UserReserveData({
@@ -76,8 +78,8 @@ export function getAaveV3UserReserveData({
   address,
   networkId,
 }: AaveV3UserReserveDataParameters): Promise<AaveV3UserReserveData> {
-  const { contract, tokenMappings } = networkMappings[networkId]
-  if (!networkMappings[networkId]) {
+  const { contract, tokenMappings } = networkMappings()[networkId]
+  if (!networkMappings()[networkId]) {
     console.warn('No getAaveV3UserReserveData network mapping for', networkId)
   }
   const tokenAddress = wethToEthAddress(tokenMappings, token)
@@ -108,7 +110,7 @@ export function getAaveV3ReserveData({
   token,
   networkId,
 }: AaveV3ReserveDataParameters): Promise<AaveV3ReserveDataReply> {
-  const { contract, tokenMappings } = networkMappings[networkId]
+  const { contract, tokenMappings } = networkMappings()[networkId]
   const tokenAddress = wethToEthAddress(tokenMappings, token)
   warnIfAddressIsZero(tokenAddress, networkId, 'aaveV3PoolDataProvider', 'getReserveData')
   return contract.getReserveData(tokenAddress).then((result) => {
@@ -142,7 +144,7 @@ export function getAaveV3ReserveConfigurationData({
   networkId,
   token,
 }: AaveV3ReserveConfigurationParameters): Promise<AaveV3ReserveConfigurationData> {
-  const { contract, tokenMappings } = networkMappings[networkId]
+  const { contract, tokenMappings } = networkMappings()[networkId]
   warnIfAddressIsZero(
     tokenMappings[token].address,
     networkId,
@@ -167,7 +169,7 @@ export function getAaveV3EModeCategoryForAsset({
   token,
   networkId,
 }: AaveV3EModeForAssetParameters): Promise<BigNumber> {
-  const { contract, tokenMappings } = networkMappings[networkId]
+  const { contract, tokenMappings } = networkMappings()[networkId]
   const address = wethToEthAddress(tokenMappings, token)
   warnIfAddressIsZero(
     address,

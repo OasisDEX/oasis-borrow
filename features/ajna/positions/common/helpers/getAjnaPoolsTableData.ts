@@ -1,3 +1,4 @@
+import { Bucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { WAD_PRECISION } from 'components/constants'
@@ -15,6 +16,7 @@ export interface AjnaPoolsDataResponse {
   lupIndex: string
   htp: string
   htpIndex: string
+  buckets: Bucket[]
 }
 
 export interface AjnaPoolsTableData {
@@ -29,6 +31,7 @@ export interface AjnaPoolsTableData {
   lowestUtilizedPriceIndex: number
   highestThresholdPrice: BigNumber
   highestThresholdPriceIndex: number
+  buckets: Bucket[]
 }
 
 export const getAjnaPoolsTableData = async (
@@ -41,18 +44,20 @@ export const getAjnaPoolsTableData = async (
   if (response && 'pools' in response) {
     return response.pools.map(
       ({
+        buckets,
         collateralAddress,
-        quoteTokenAddress,
-        interestRate,
+        dailyPercentageRate30dAverage,
         debt,
         depositSize,
-        dailyPercentageRate30dAverage,
-        poolMinDebtAmount,
-        lup,
-        lupIndex,
         htp,
         htpIndex,
+        interestRate,
+        lup,
+        lupIndex,
+        poolMinDebtAmount,
+        quoteTokenAddress,
       }) => ({
+        buckets,
         collateralAddress,
         quoteTokenAddress,
         interestRate: new BigNumber(interestRate).shiftedBy(negativeWadPrecision),

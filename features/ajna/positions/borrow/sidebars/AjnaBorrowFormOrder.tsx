@@ -1,4 +1,4 @@
-import { normalizeValue } from '@oasisdex/dma-library'
+import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -10,7 +10,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -30,6 +30,8 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     cachedPosition,
     currentPosition,
   })
+
+  const originationFee = getOriginationFee(positionData, simulationData)
 
   const liquidationPrice = isShort
     ? normalizeValue(one.div(positionData.liquidationPrice))
@@ -59,9 +61,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterDebt:
       simulationData?.debtAmount &&
-      `${formatCryptoBalance(
-        simulationData.debtAmount.plus(getOriginationFee(positionData, simulationData)),
-      )} ${quoteToken}`,
+      `${formatCryptoBalance(simulationData.debtAmount.plus(originationFee))} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralAvailable,
     )} ${collateralToken}`,
@@ -70,7 +70,10 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       `${formatCryptoBalance(simulationData.collateralAvailable)} ${collateralToken}`,
     availableToBorrow: `${formatCryptoBalance(positionData.debtAvailable())} ${quoteToken}`,
     afterAvailableToBorrow:
-      simulationData && `${formatCryptoBalance(simulationData.debtAvailable())} ${quoteToken}`,
+      simulationData &&
+      `${formatCryptoBalance(
+        negativeToZero(simulationData.debtAvailable().minus(originationFee)),
+      )} ${quoteToken}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
@@ -96,12 +99,16 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterLiquidationPrice,
           isLoading,
         },
-        {
-          label: t('system.dynamic-max-ltv'),
-          value: formatted.dynamicMaxLtv,
-          change: formatted.afterDynamicMaxLtv,
-          isLoading,
-        },
+        ...(positionData.pool.lowestUtilizedPriceIndex.gt(zero)
+          ? [
+              {
+                label: t('system.dynamic-max-ltv'),
+                value: formatted.dynamicMaxLtv,
+                change: formatted.afterDynamicMaxLtv,
+                isLoading,
+              },
+            ]
+          : []),
         {
           label: t('system.debt'),
           value: formatted.debt,
