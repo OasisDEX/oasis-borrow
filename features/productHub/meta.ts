@@ -90,6 +90,39 @@ export const productHubOptionsMap: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
       WBTC: productHubTokenOptions.WBTC,
+    },
+  },
+  multiply: {
+    product: productHubProductOptions.multiply,
+    tokens: {
+      all: productHubTokenOptions.all,
+      ETH: productHubTokenOptions.ETH,
+      WBTC: productHubTokenOptions.WBTC,
+      USDC: productHubTokenOptions.USDC,
+    },
+  },
+  earn: {
+    product: productHubProductOptions.earn,
+    tokens: {
+      all: productHubTokenOptions.all,
+      ETH: productHubTokenOptions.ETH,
+      DAI: productHubTokenOptions.DAI,
+    },
+  },
+}
+
+export const productHubTestnetOptionsMap: {
+  [key in ProductHubProductType]: {
+    product: HeaderSelectorOption
+    tokens: { [key: string]: HeaderSelectorOption }
+  }
+} = {
+  borrow: {
+    product: productHubProductOptions.borrow,
+    tokens: {
+      all: productHubTokenOptions.all,
+      ETH: productHubTokenOptions.ETH,
+      WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
     },
   },
