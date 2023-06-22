@@ -33,9 +33,7 @@ export function parseAjnaBorrowPromoCard(
               label: {
                 key: 'ajna.promo-cards.max-ltv',
                 props: {
-                  maxLtv: product.maxLtv
-                    ? formatDecimalAsPercent(new BigNumber(product.maxLtv))
-                    : 'n/a',
+                  maxLtv: formatDecimalAsPercent(new BigNumber(product.maxLtv)),
                 },
               },
             },
@@ -76,9 +74,7 @@ export function parseAjnaMultiplyPromoCard(
               label: {
                 key: 'ajna.promo-cards.up-to-multiple',
                 props: {
-                  maxMultiple: product.maxMultiply
-                    ? `${parseFloat(product.maxMultiply).toFixed(2)}x`
-                    : 'n/a',
+                  maxMultiple: `${parseFloat(product.maxMultiply).toFixed(2)}x`,
                 },
               },
             },
@@ -114,9 +110,9 @@ export function parseAjnaEarnPromoCard(
             ? 'ajna.promo-cards.get-weekly-apy'
             : 'ajna.promo-cards.lends-to-one-token',
           props: {
-            weeklyNetApy: product?.weeklyNetApy
-              ? formatDecimalAsPercent(new BigNumber(product.weeklyNetApy))
-              : 'n/a',
+            ...(product?.weeklyNetApy && {
+              weeklyNetApy: formatDecimalAsPercent(new BigNumber(product.weeklyNetApy)),
+            }),
           },
         },
       },
