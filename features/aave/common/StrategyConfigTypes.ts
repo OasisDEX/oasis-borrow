@@ -1,4 +1,4 @@
-import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { PositionId } from 'features/aave/types'
@@ -72,6 +72,7 @@ export interface IStrategyConfig {
   protocol: AaveLendingProtocol
   featureToggle?: Feature
   defaultSlippage?: BigNumber
+  executeTransactionWith: 'web3' | 'ethers'
 }
 export type AaveHeaderProps = {
   strategyConfig: IStrategyConfig

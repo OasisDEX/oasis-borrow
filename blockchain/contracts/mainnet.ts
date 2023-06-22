@@ -125,7 +125,7 @@ export const mainnetContracts = {
   ),
   aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.PriceOracle),
   chainlinkPriceOracle: {
-    USDCUSD: contractDesc(chainLinkPriceOracle, '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6'), // TODO: We have a wrong value in the library
+    USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
   },
   aaveV2LendingPool: contractDesc(
@@ -133,7 +133,7 @@ export const mainnetContracts = {
     mainnet.aave.v2.LendingPool,
     AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   ),
-  operationExecutor: contractDesc(operationExecutor, '0xc1cd3654ab3b37e0bc26bafb5ae4c096892d0b0c'), // TODO: We will change that soon, as soon as we support a new version of the operation executor.
+  operationExecutor: contractDesc(operationExecutor, mainnet.mpa.core.OperationExecutor),
   swapAddress: mainnet.mpa.core.Swap,
   accountFactory: contractDesc(
     accountFactory,
@@ -155,14 +155,18 @@ export const mainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, mainnet.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'ETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHUSDC),
+    'RETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHUSDC),
+    'USDC-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWBTC),
+    'WBTC-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCDAI),
     'WBTC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCUSDC),
     'WSTETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHDAI),
-    'RETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHDAI),
-    'WBTC-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCDAI),
-    'USDC-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWETH),
-    'USDC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWBTC),
-    'USDC-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCDAI),
+    'WSTETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, mainnet.ajna.AjnaRewardsManager),
   // TODO update address

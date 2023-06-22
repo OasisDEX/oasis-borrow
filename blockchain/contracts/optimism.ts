@@ -165,14 +165,18 @@ export const optimismContracts: MainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'ETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHUSDC),
+    'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHUSDC),
+    'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWBTC),
+    'WBTC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCDAI),
     'WBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCUSDC),
     'WSTETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHDAI),
-    'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
-    'WBTC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCDAI),
-    'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWETH),
-    'USDC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWBTC),
-    'USDC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCDAI),
+    'WSTETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
   // TODO update address
@@ -184,7 +188,7 @@ export const optimismContracts: MainnetContracts = {
   taxProxyRegistries: [],
   etherscan: {
     url: 'https://optimistic.etherscan.io/',
-    apiUrl: 'not-implemented',
+    apiUrl: 'https://api-optimistic.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
   },
   ethtx: {

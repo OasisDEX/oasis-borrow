@@ -1,7 +1,7 @@
-import { AAVETokens } from '@oasisdex/oasis-actions'
+import { AAVETokens } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ProxyType } from 'features/aave/common'
-import { AaveLendingProtocol } from '../../../lendingProtocols'
+import { AaveLendingProtocol } from 'lendingProtocols'
 import { NetworkIds } from '../../../blockchain/networks'
 
 export interface OpenAaveDepositBorrowParameters {

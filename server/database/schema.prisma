@@ -228,7 +228,7 @@ model UsersWhoFollowVaults {
 model ProductHubItems {
   id String @id @default(uuid())
   label String
-  network NetworkNames
+  network NetworkNamesWithTestnets
   primaryToken String
   primaryTokenGroup String?
   product Product[]
@@ -240,14 +240,14 @@ model ProductHubItems {
   earnStrategy String?
   fee String?
   liquidity String?
-  managementType ProductHubManagement?
+  managementType ProductHubManagementSimple?
   maxLtv String?
   maxMultiply String?
   multiplyStrategy String?
   multiplyStrategyType ProductHubStrategy?
   reverseTokens Boolean?
-  with50Tokens String?
   updatedAt DateTime @updatedAt
+  tooltips Json?
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
   @@map("product_hub_items")
@@ -271,6 +271,19 @@ enum NetworkNames {
   @@map("network")
 }
 
+enum NetworkNamesWithTestnets {
+  ethereum
+  ethereum_goerli
+  arbitrum
+  arbitrum_goerli
+  polygon
+  polygon_mumbai
+  optimism
+  optimism_goerli
+
+  @@map("networkWithTestnets")
+}
+
 enum Product {
   borrow
   multiply
@@ -285,6 +298,13 @@ enum ProductHubManagement {
   passive
 
   @@map("managementType")
+}
+
+enum ProductHubManagementSimple {
+  active
+  passive
+
+  @@map("managementTypeSimple")
 }
 
 enum ProductHubStrategy {

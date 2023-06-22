@@ -1,4 +1,5 @@
 import { AppLink } from 'components/Links'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex } from 'theme-ui'
@@ -6,19 +7,19 @@ import { Flex } from 'theme-ui'
 const content = [
   {
     titleTranslationKey: 'ajna.title',
-    link: 'https://www.ajna.finance/',
+    link: EXTERNAL_LINKS.AJNA.HOME,
   },
   {
-    titleTranslationKey: 'seo.default.title',
-    link: 'https://oasis.app',
+    titleTranslationKey: 'nav.app',
+    link: INTERNAL_LINKS.homepage,
   },
   {
     titleTranslationKey: 'nav.terms',
-    link: 'https://oasis.app/ajna',
+    link: INTERNAL_LINKS.terms,
   },
   {
     titleTranslationKey: 'nav.privacy',
-    link: 'https://oasis.app/ajna',
+    link: INTERNAL_LINKS.privacy,
   },
 ]
 
@@ -44,8 +45,8 @@ export function AnjaFooter() {
             key={item.titleTranslationKey}
             sx={{
               fontWeight: 'regular',
-              fontSize: 4,
-              color: 'primary',
+              fontSize: 3,
+              color: 'interactive100',
               '&:hover': { color: 'neutral80' },
             }}
           >

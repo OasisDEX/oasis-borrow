@@ -292,9 +292,13 @@ export const productCardsConfig: {
         { strategy: 'borrow-against-ETH', featureToggle: 'AaveBorrow' },
       ]),
       multiply: getAaveEnabledStrategies([
-        { strategy: 'stETHusdcV2', featureToggle: 'AaveV2ProductCard' },
-        { strategy: 'ethusdcV2', featureToggle: 'AaveV2ProductCard' },
-        { strategy: 'wBTCusdcV2', featureToggle: 'AaveV2ProductCard' },
+        { strategy: 'ethusdcV3', featureToggle: 'AaveV3MultiplyETHusdc' },
+        { strategy: 'cbETHusdcV3', featureToggle: 'AaveV3MultiplycbETHusdc' },
+        { strategy: 'wstethusdcV3', featureToggle: 'AaveV3MultiplywstETHusdc' },
+        { strategy: 'rethusdcV3', featureToggle: 'AaveV3MultiplyrETHusdc' },
+        { strategy: 'rethethV3', featureToggle: 'AaveV3EarnrETHeth' },
+        { strategy: 'cbethethV3', featureToggle: 'AaveV3EarncbETHeth' },
+        { strategy: 'wBTCusdcV3', featureToggle: 'AaveV3MultiplywBTCusdc' },
         { strategy: 'optimism-ethusdc', featureToggle: 'AaveV3Optimism' },
         { strategy: 'optimism-wstethusdc', featureToggle: 'AaveV3Optimism' },
         { strategy: 'optimism-wbtcusdc', featureToggle: 'AaveV3Optimism' },
@@ -404,11 +408,35 @@ export const productCardsConfig: {
     'RETH-A': {
       link: EXTERNAL_LINKS.KB.TOKENS.ETH,
     },
-    wstETHethV2: {
-      link: EXTERNAL_LINKS.KB.STETH_AAVE_V3_EMODE,
+    ethusdcV2: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
+    },
+    wBTCusdcV2: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
     },
     wstETHethV3: {
       link: EXTERNAL_LINKS.KB.STETH_AAVE_V3_EMODE,
+    },
+    rethethV3: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
+    },
+    cbethethV3: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
+    },
+    ethusdcV3: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
+    },
+    cbETHusdcV3: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
+    },
+    wBTCusdcV3: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
+    },
+    wstethusdcV3: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
+    },
+    rethusdcV3: {
+      link: EXTERNAL_LINKS.KB.SUPPORTED_COLLATERALS,
     },
   },
 }

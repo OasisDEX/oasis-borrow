@@ -293,6 +293,7 @@ export function AllowanceView({
         />
       )
     case state.matches('txInProgress'):
+    case state.matches('txInProgressEthers'):
       return <AllowanceInProgressStateView state={state} send={send} steps={steps} />
     case state.matches('txSuccess'):
       return <AllowanceSuccessStateView state={state} send={send} steps={steps} />

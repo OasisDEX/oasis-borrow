@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AaveV2UserReserveData } from 'blockchain/aave'
 import { AaveV3UserReserveData } from 'blockchain/aave-v3'

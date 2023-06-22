@@ -138,7 +138,8 @@ export function getAaveV3Services({
       getAaveV3EModeCategoryForAsset$,
       getEModeCategoryData$,
     ),
-    (args: { token: string }) => args.token,
+    (args: { collateralToken: string; debtToken: string }) =>
+      `${args.collateralToken}-${args.debtToken}`,
   )
 
   return {

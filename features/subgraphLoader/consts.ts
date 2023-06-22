@@ -95,6 +95,13 @@ export const subgraphMethodsRecord: {
         lupIndex
         htp
         htpIndex
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
       }
     }
   `,
@@ -115,6 +122,62 @@ export const subgraphMethodsRecord: {
         endOfGracePeriod
         debtToCover
         collateral
+      }
+    }
+  `,
+  getHistory: gql`
+    query getHistory($dpmProxyAddress: ID!) {
+      oasisEvents(where: { account_: { id: $dpmProxyAddress } }) {
+        blockNumber
+        collateralAddress
+        collateralAfter
+        collateralBefore
+        collateralDelta
+        collateralOraclePrice
+        collateralToken
+        collateralTokenPriceUSD
+        debtAddress
+        debtAfter
+        debtBefore
+        debtDelta
+        debtOraclePrice
+        debtToken
+        debtTokenPriceUSD
+        depositedUSD
+        ethPrice
+        gasFeeUSD
+        gasPrice
+        gasUsed
+        id
+        kind
+        liquidationPriceAfter
+        liquidationPriceBefore
+        ltvAfter
+        ltvBefore
+        marketPrice
+        multipleAfter
+        multipleBefore
+        netValueAfter
+        netValueBefore
+        oasisFee
+        oasisFeeToken
+        oasisFeeUSD
+        originationFee
+        quoteTokensAfter
+        quoteTokensBefore
+        quoteTokensDelta
+        quoteTokensMoved
+        moveQuoteFromIndex
+        moveQuoteToIndex
+        isOpen
+        swapFromAmount
+        swapFromToken
+        swapToAmount
+        swapToToken
+        timestamp
+        totalFee
+        txHash
+        withdrawnUSD
       }
     }
   `,

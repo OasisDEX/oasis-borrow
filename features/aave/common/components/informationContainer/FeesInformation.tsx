@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Swap } from '@oasisdex/oasis-actions'
+import { Swap } from '@oasisdex/dma-library'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
 import {

@@ -98,7 +98,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { NetworkIds, NetworkNames, networksById } from 'blockchain/networks'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -117,6 +117,7 @@ import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
   getUserDpmProxy$,
+  UserDpmAccount,
 } from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
@@ -138,7 +139,6 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
-import { getAjnaPoolsTableContent$ } from 'features/ajna/positions/common/observables/getAjnaPoolsTableContent'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
@@ -289,6 +289,7 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
+  createAaveDpmPosition$,
   createAavePosition$,
   createMakerPositions$,
   createPositions$,
@@ -319,7 +320,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
-import { isEqual, mapValues, memoize } from 'lodash'
+import { isEqual, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
@@ -543,8 +544,7 @@ function initializeUIChanges() {
 
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
-  const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$()
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
@@ -1046,25 +1046,74 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
   )
 
-  const aavePositions$ = memoize(
+  const mainnetDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
+    curry(getUserDpmProxies$)(of({ chainId: NetworkIds.MAINNET })),
+    (walletAddress) => walletAddress,
+  )
+
+  const mainnetReadPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(
+      of({ chainId: NetworkIds.MAINNET }),
+      mainnetDpmProxies$,
+    ),
+  )
+
+  const mainnetAavePositions$ = memoize(
     curry(createAavePosition$)(
       {
         dsProxy$: proxyAddress$,
-        userDpmProxies$,
+        userDpmProxies$: mainnetDpmProxies$,
       },
       {
         tickerPrices$: tokenPriceUSDStatic$,
         context$,
         automationTriggersData$,
-        readPositionCreatedEvents$,
+        readPositionCreatedEvents$: mainnetReadPositionCreatedEvents$,
       },
       aaveV2,
       aaveV3,
     ),
   )
 
+  const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
+    curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
+    (walletAddress) => walletAddress,
+  )
+
+  const optimismReadPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(
+      of({ chainId: NetworkIds.OPTIMISMMAINNET }),
+      optimismDpmProxies$,
+    ),
+  )
+
+  const aaveOptimismPositions$ = memoize(
+    curry(createAaveDpmPosition$)(
+      context$,
+      optimismDpmProxies$,
+      tokenPriceUSDStatic$,
+      optimismReadPositionCreatedEvents$,
+      aaveV3Optimism,
+      NetworkIds.OPTIMISMMAINNET,
+    ),
+    (wallet) => wallet,
+  )
+
+  const aavePositions$ = memoize((walletAddress: string) => {
+    return combineLatest([
+      mainnetAavePositions$(walletAddress),
+      aaveOptimismPositions$(walletAddress),
+    ]).pipe(
+      map(([mainnetAavePositions, optimismAavePositions]) => {
+        return [...mainnetAavePositions, ...optimismAavePositions]
+      }),
+    )
+  })
+
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
-  const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
+  const positions$ = memoize(
+    curry(createPositions$)(makerPositions$, mainnetAavePositions$, aaveOptimismPositions$),
+  )
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -1375,8 +1424,6 @@ export function setupAppContext() {
     ),
     (walletAddress: string) => walletAddress,
   )
-
-  const ajnaPoolsTableData$ = curry(getAjnaPoolsTableContent$)(context$, tokenPriceUSDStatic$)
   const ajnaProductCardsData$ = curry(getAjnaProductCardsData$)(context$, once$)
 
   const ownersPositionsList$ = memoize(
@@ -1422,6 +1469,7 @@ export function setupAppContext() {
   )
 
   const dpmAccountStateMachine = getDPMAccountStateMachine(
+    context$,
     txHelpers$,
     gasEstimation$,
     dpmAccountTransactionMachine,
@@ -1539,7 +1587,6 @@ export function setupAppContext() {
     chainContext$,
     positionIdFromDpmProxy$,
     switchChains,
-    ajnaPoolsTableData$,
     ajnaProductCardsData$,
   }
 }

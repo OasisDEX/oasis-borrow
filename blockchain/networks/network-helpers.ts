@@ -1,4 +1,3 @@
-import { ConnectedChain } from '@web3-onboard/core'
 import { getStorageValue } from 'helpers/useLocalStorage'
 import { keyBy } from 'lodash'
 import { env } from 'process'
@@ -15,14 +14,14 @@ export const isTestnetEnabled = () => {
   return isDev || showTestnetsParam
 }
 
-export const isTestnet = (connectedChain: ConnectedChain | null) => {
+export const isTestnet = (connectedChain: NetworkConfigHexId | undefined) => {
   if (!connectedChain) {
     return false
   }
   return networks
     .filter((network) => network.testnet)
     .map((network) => network.hexId)
-    .includes(connectedChain.id as NetworkConfigHexId)
+    .includes(connectedChain)
 }
 
 export const isTestnetNetworkId = (walletChainId: NetworkIds) => {
@@ -44,11 +43,9 @@ export const isForkSetForNetworkId = (networkId: NetworkIds) => {
   return forkSettings[networkName] !== undefined
 }
 
-const networksWithForksAtTheBeginning: NetworkConfig[] = [
-  ...(forkNetworks as NetworkConfig[]),
-  ...networks,
-]
-export const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
+const networksWithForksAtTheBeginning: NetworkConfig[] = [...forkNetworks, ...networks]
+
+const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
   if (acc.some((n) => n.hexId === network.hexId)) {
     console.log('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
     return acc
@@ -57,19 +54,47 @@ export const networksSet = networksWithForksAtTheBeginning.reduce((acc, network)
 }, [] as NetworkConfig[])
 
 export const enableNetworksSet = networksSet.filter((network) => network.enabled)
-export const networksListWithForksByHexId = keyBy(enableNetworksSet, 'hexId')
-export const networksListWithForksById = keyBy(enableNetworksSet, 'id')
+export const networkSetByHexId = keyBy(enableNetworksSet, 'hexId')
+export const networkSetById = keyBy(enableNetworksSet, 'id')
 
-export const getOppositeNetworkHexIdByHexId = (
-  currentConnectedChainHexId: ConnectedChain['id'],
-) => {
-  const networkConfig = networksListWithForksByHexId[currentConnectedChainHexId]
+export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: NetworkConfigHexId) => {
+  const networkConfig = networkSetByHexId[currentConnectedChainHexId]
   if (!networkConfig)
     console.log('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
   return (
-    (networkConfig && (networkConfig.testnetHexId || networkConfig.mainnetHexId)) ||
+    (networkConfig &&
+      (networkConfig.testnet ? networkConfig.mainnetHexId : networkConfig.testnetHexId)) ||
     networksById['1'].hexId
   )
+}
+
+export const shouldSetRequestedNetworkHexId = (
+  current: NetworkConfigHexId | undefined,
+  requested: NetworkConfigHexId | undefined,
+): boolean => {
+  if (current !== undefined && requested === undefined) {
+    return false
+  }
+  if (current === undefined && requested !== undefined) {
+    return true
+  }
+
+  if (current === undefined && requested === undefined) {
+    return false
+  }
+
+  const currentNetwork = networkSetByHexId[current!]
+  const requestedNetwork = networkSetByHexId[requested!]
+
+  if (requestedNetwork.isCustomFork) {
+    return true
+  }
+
+  if (requestedNetwork.testnet) {
+    return true
+  }
+
+  return currentNetwork.mainnetHexId !== requestedNetwork.mainnetHexId
 }
 
 export const getOppositeNetworkIdById = (networkId: NetworkIds) => {
@@ -97,7 +122,7 @@ export const getContractNetworkByWalletNetwork = (
 }
 
 export const filterNetworksAccordingToWalletNetwork =
-  (connectedChain: ConnectedChain | null) => (network: NetworkConfig) => {
+  (connectedChain: NetworkConfigHexId | undefined) => (network: NetworkConfig) => {
     if (!connectedChain) {
       return !network.testnet
     }
@@ -125,4 +150,17 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
   return isTestnet
     ? networksById[networksById[networkId].testnetId!].rpcUrl
     : networksById[networkId].rpcUrl
+}
+
+export function getNetworkById(networkId: NetworkIds) {
+  const base = networkSetById[networkId]
+  if (!base) {
+    throw new Error('Invalid contract chain id provided or not implemented yet')
+  }
+
+  const parent = base.getParentNetwork()
+  if (parent && base.isCustomFork) {
+    return parent
+  }
+  return base
 }

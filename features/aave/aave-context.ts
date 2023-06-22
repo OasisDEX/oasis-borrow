@@ -1,4 +1,4 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'

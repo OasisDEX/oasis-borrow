@@ -4,7 +4,7 @@ import { PromoCardProps } from 'components/PromoCard'
 import { LendingProtocol } from 'lendingProtocols'
 
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
-export type ProductHubManagementType = 'active' | 'active_with_liq_risk' | 'passive'
+export type ProductHubManagementType = 'active' | 'passive'
 
 export enum ProductHubProductType {
   Borrow = 'borrow',
@@ -14,8 +14,11 @@ export enum ProductHubProductType {
 
 export type ProductHubSupportedNetworks =
   | NetworkNames.ethereumMainnet
+  | NetworkNames.ethereumGoerli
   | NetworkNames.arbitrumMainnet
+  | NetworkNames.arbitrumGoerli
   | NetworkNames.optimismMainnet
+  | NetworkNames.optimismGoerli
 
 export interface ProductHubItemBasics {
   label: string
@@ -40,7 +43,6 @@ export interface ProductHubItemDetails {
   multiplyStrategy?: string
   multiplyStrategyType?: ProductHubMultiplyStrategyType
   reverseTokens?: boolean
-  with50Tokens?: string
 }
 
 export interface ProductHubItemTooltips {
@@ -53,6 +55,10 @@ export interface ProductHubItemTooltips {
 }
 
 export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
+
+export type ProductHubItemWithFlattenTooltip = Omit<ProductHubItem, 'tooltips'> & {
+  tooltips: string
+}
 
 export type ProductHubPromoCards = {
   [key in ProductHubProductType]: {

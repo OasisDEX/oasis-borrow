@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { FIAT_PRECISION } from 'components/constants'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/formatters/format'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
@@ -20,7 +21,6 @@ export type VaultAction =
   | 'Sell'
   | 'Withdraw'
   | TranslateStringType
-const FIAT_PRECISION = 2
 
 export const PlusIcon = () => (
   <Icon

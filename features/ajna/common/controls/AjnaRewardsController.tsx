@@ -6,7 +6,7 @@ import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveS
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
 import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -66,13 +66,13 @@ export function AjnaRewardsController() {
 
   const { isConnected } = useAccount()
 
-  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { connect } = useConnection({ initialConnect: false })
 
   const handleConnect = useCallback(async () => {
     if (!isConnected) {
-      await executeConnection()
+      await connect()
     }
-  }, [isConnected, executeConnection])
+  }, [isConnected, connect])
 
   return (
     <AnimatedWrapper>
@@ -91,19 +91,20 @@ export function AjnaRewardsController() {
       )}
       <ProductCardsWrapper gap={24} desktopWidthOfCard={448} sx={{ mt: 5 }}>
         <AjnaRewardCard
-          {...miningRewardsCard}
-          onBtnClick={userNftsData.handler}
-          txStatus={userNftsData.txDetails?.txStatus}
-          rewards={userNftsData.rewards}
-          isLoading={userNftsData.isLoading}
           key="miningRewards"
+          isLoading={userNftsData.isLoading}
+          notAvailable
+          onBtnClick={userNftsData.handler}
+          rewards={userNftsData.rewards}
+          txStatus={userNftsData.txDetails?.txStatus}
+          {...miningRewardsCard}
         />
         <AjnaRewardCard
-          {...oasisRewardsCard}
           key="oasisRewards"
-          notAvailable
           isLoading={false}
+          notAvailable
           rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
+          {...oasisRewardsCard}
           floatingLabel={
             <FloatingLabel
               text={t('ajna.rewards.cards.token.floatingLabel')}

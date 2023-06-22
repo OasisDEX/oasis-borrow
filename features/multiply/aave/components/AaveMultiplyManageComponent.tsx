@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
@@ -40,7 +40,10 @@ export function AaveMultiplyManageComponent({
     getAaveReserveData$({ token: strategyConfig.tokens.collateral }),
   )
   const [debtTokenReserveConfigurationData, debtTokenReserveConfigurationDataError] = useObservable(
-    aaveReserveConfigurationData$({ token: strategyConfig.tokens.debt }),
+    aaveReserveConfigurationData$({
+      collateralToken: strategyConfig.tokens.debt,
+      debtToken: strategyConfig.tokens.collateral,
+    }),
   )
 
   return (

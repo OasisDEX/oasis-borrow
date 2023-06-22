@@ -1,18 +1,23 @@
 import { Protocol } from '@prisma/client'
+import { networks } from 'blockchain/networks'
+import { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
+import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
+import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-card-collections-parsers'
+import {
+  HandleGetProductHubDataProps,
+  HandleUpdateProductHubDataProps,
+} from 'handlers/product-hub/types'
+import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
 import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
 import { flatten } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
-import { checkIfAllHandlersExist, filterTableData, measureTime } from './helpers'
-import { HandleGetProductHubDataProps, HandleUpdateProductHubDataProps } from './types'
-import { PRODUCT_HUB_HANDLERS } from './update-handlers'
-
 export async function handleGetProductHubData(
   req: HandleGetProductHubDataProps,
   res: NextApiResponse,
 ) {
-  const { protocols, promoCardsCollection } = req.body
+  const { protocols, promoCardsCollection, testnet = false } = req.body
   if (!protocols || !protocols.length || !promoCardsCollection) {
     return res.status(400).json({
       errorMessage:
@@ -24,6 +29,10 @@ export async function handleGetProductHubData(
     })
   }
 
+  const network = networks
+    .filter((network) => network.testnet === testnet)
+    .map((network) => network.name)
+
   await prisma.productHubItems
     .findMany({
       where: {
@@ -31,13 +40,19 @@ export async function handleGetProductHubData(
           protocol: {
             equals: protocol as Protocol,
           },
+          network: {
+            in: network,
+          },
         })),
       },
     })
-    .then((table) => {
+    .then((rawTable) => {
+      const table = rawTable.map(filterTableData) as ProductHubItem[]
+      const promoCards = PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)
+
       return res.status(200).json({
-        promoCards: mockData.promoCards,
-        table: table.map(filterTableData),
+        promoCards,
+        table,
       })
     })
     .catch((error) => {
@@ -52,81 +67,102 @@ export async function updateProductHubData(
   req: HandleUpdateProductHubDataProps,
   res: NextApiResponse,
 ) {
-  const { headers, body } = req
-  if ([undefined, ''].includes(process.env.PRODUCT_HUB_KEY)) {
-    return res.status(400).json({
-      errorMessage: 'Missing env variable',
-    })
-  }
-  if (headers.authorization !== process.env.PRODUCT_HUB_KEY) {
-    return res.status(400).json({
-      errorMessage: 'Missing header parameter',
-    })
-  }
-  const { protocols } = body
-  if (!protocols || !protocols.length) {
-    return res.status(400).json({
-      errorMessage: 'Missing required parameters (protocols), check error object for more details',
-      error: {
-        protocols: JSON.stringify(protocols),
-      },
-    })
-  }
-  const missingHandlers = checkIfAllHandlersExist(protocols)
-  if (missingHandlers.length > 0) {
-    return res.status(501).json({
-      errorMessage: `Handler for protocol "${missingHandlers.join('", "')}" not implemented`,
-    })
-  }
-  const handlersList = protocols.map((protocol) => {
-    return {
-      name: protocol,
-      call: PRODUCT_HUB_HANDLERS[protocol],
+  try {
+    const { headers, body } = req
+    if ([undefined, ''].includes(process.env.PRODUCT_HUB_KEY)) {
+      return res.status(400).json({
+        errorMessage: 'Missing env variable',
+      })
     }
-  })
-  const dataHandlersPromiseList = await Promise.all(
-    handlersList.map(({ name, call }) => {
-      const startTime = Date.now()
-      return call().then((data) => ({
-        name, // protocol name
-        data,
-        processingTime: measureTime ? Date.now() - startTime : undefined,
-      }))
-    }),
-  )
-
-  try {
-    await prisma.productHubItems.deleteMany({
-      where: {
-        protocol: {
-          in: dataHandlersPromiseList.map(({ name }) => name),
+    if (headers.authorization !== process.env.PRODUCT_HUB_KEY) {
+      return res.status(400).json({
+        errorMessage: 'Missing header parameter',
+      })
+    }
+    const { protocols, dryRun = false } = body
+    if (!protocols || !protocols.length) {
+      return res.status(400).json({
+        errorMessage:
+          'Missing required parameters (protocols), check error object for more details',
+        error: {
+          protocols: JSON.stringify(protocols),
         },
-      },
+        dryRun,
+      })
+    }
+    const missingHandlers = checkIfAllHandlersExist(protocols)
+    if (missingHandlers.length > 0) {
+      return res.status(501).json({
+        errorMessage: `Handler for protocol "${missingHandlers.join('", "')}" not implemented`,
+        dryRun,
+      })
+    }
+    const handlersList = protocols.map((protocol) => {
+      return {
+        name: protocol,
+        call: PRODUCT_HUB_HANDLERS[protocol],
+      }
     })
-  } catch (error) {
-    return res.status(502).json({
-      errorMessage: 'Error removing old Product Hub data',
-      // @ts-ignore
-      error: error.toString(),
-      data: dataHandlersPromiseList,
-    })
-  }
+    const dataHandlersPromiseList = await Promise.all(
+      handlersList.map(({ name, call }) => {
+        const startTime = Date.now()
+        return call().then(({ table, warnings }) => ({
+          name, // protocol name
+          warnings,
+          data: table,
+          processingTime: measureTime ? Date.now() - startTime : undefined,
+        }))
+      }),
+    )
 
-  const createData = flatten([...dataHandlersPromiseList.map(({ data }) => data)])
-  try {
-    await prisma.productHubItems.createMany({
-      data: createData,
-    })
+    try {
+      !dryRun &&
+        (await prisma.productHubItems.deleteMany({
+          where: {
+            protocol: {
+              in: dataHandlersPromiseList.map(({ name }) => name),
+            },
+          },
+        }))
+    } catch (error) {
+      return res.status(502).json({
+        errorMessage: 'Error removing old Product Hub data',
+        // @ts-ignore
+        error: error.toString(),
+        data: dataHandlersPromiseList,
+        dryRun,
+      })
+    }
+
+    const createData = flatten([
+      ...dataHandlersPromiseList.map(({ data }) => data),
+    ]) as ProductHubItemWithFlattenTooltip[]
+    try {
+      !dryRun &&
+        (await prisma.productHubItems.createMany({
+          data: createData,
+        }))
+    } catch (error) {
+      return res.status(502).json({
+        errorMessage: 'Error updating Product Hub data',
+        // @ts-ignore
+        error: error.toString(),
+        data: dataHandlersPromiseList,
+        createData,
+        dryRun,
+      })
+    }
+    return res.status(200).json({ data: dataHandlersPromiseList, dryRun })
   } catch (error) {
+    const { body } = req
     return res.status(502).json({
-      errorMessage: 'Error updating Product Hub data',
+      errorMessage: 'Critical Error updating Product Hub data',
       // @ts-ignore
       error: error.toString(),
-      data: dataHandlersPromiseList,
-      createData,
+      body: JSON.stringify(body),
+      dryRun: body.dryRun,
     })
   }
-  return res.status(200).json({ data: dataHandlersPromiseList })
 }
 
 export async function mockProductHubData(req: NextApiRequest, res: NextApiResponse) {

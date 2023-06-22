@@ -91,6 +91,7 @@
   "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "See products",
   "connect-wallet-button": "Connect Wallet",
+  "change-wallet-chain": "Change wallet network",
   "connect-with": "{{ connectionKind }}",
   "connect-install-metamask": "Install Metamask",
   "connected-with": "Connected with {{ connectionKind }}",
@@ -442,6 +443,30 @@
     "dsrwithdrawal": "Withdrew {{daiAmount}} DAI",
     "dsrdeposit": "Deposited {{daiAmount}} DAI"
   },
+  "position-history": {
+    "header": "Position History",
+    "open-position": "Open Position",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "generate": "Generate",
+    "repay": "Repay",
+    "deposit-generate": "Deposit and generate",
+    "repay-withdraw": "Repay and withdraw",
+    "move-lending-price": "Move lending price",
+    "deposit-and-move-lending-price": "Deposit and move lending price",
+    "withdraw-and-move-lending-price": "Withdraw and move lending price",
+    "claim-collateral": "Claim collateral",
+    "deposited": "Deposited",
+    "withdrawn": "Withdrawn",
+    "repaid": "Repaid",
+    "generated": "Generated",
+    "ltv": "LTV",
+    "liquidation-price": "Liquidation price",
+    "total-fees": "Total fees",
+    "origination-fee": "Origination fee",
+    "lending-price": "Lending price",
+    "event": "Event"
+  },
   "triggers": {
     "added": "added",
     "removed": "removed",
@@ -463,8 +488,8 @@
         "subheader": "Borrow, Multiply and Earn on the assets you hold across multiple protocols. Take advantage of powerful automation strategies and simple UX."
       },
       "ajna": {
-        "headline": "Borrow and lend your crypto on Ajna",
-        "subheader": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
+        "headline": "Use the only market-driven lending protocol",
+        "subheader": "On Ajna you can borrow crypto and earn yield. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
       }
     },
     "stats": {
@@ -868,7 +893,8 @@
     "bug-bounty": "Bug Bounty",
     "brand-assets": "Brand assets",
     "security": "Security",
-    "discover": "Discover"
+    "discover": "Discover",
+    "app": "Oasis.app"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -1078,6 +1104,7 @@
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
     "liquidation-threshold": "Liquidation Threshold",
+    "dynamic-max-ltv": "Dynamic Max LTV",
     "buying-power": "Buying Power",
     "net-value": "Net Value",
     "net-value-pnl": "Net Value & P&L",
@@ -1684,23 +1711,7 @@
         "title": "stETH/ETH Aave",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
       },
-      "stETHethV3": {
-        "title": "stETH/ETH Aave",
-        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
-      },
-      "wstETHethV2": {
-        "title": "wstETH/ETH Aave",
-        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
-      },
-      "wstETHethV3": {
-        "title": "wstETH/ETH Aave",
-        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
-      },
       "stETHusdcV2": {
-        "title": "Highest stETH multiple option",
-        "description": "Maximise your stETH exposure with Aave and USDC."
-      },
-      "stETHusdcV3": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
       },
@@ -1708,26 +1719,43 @@
         "title": "Highest ETH multiple option",
         "description": "Maximise your ETH exposure with Aave and USDC."
       },
+      "wBTCusdcV2": {
+        "title": "High wBTC multiple option",
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      },
+      "wstETHethV3": {
+        "title": "wstETH/ETH Aave",
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
+      },
+      "rethethV3": {
+        "title": "rETH/ETH Aave",
+        "description": "The biggest possible Multiple to maximize your exposure to rETH"
+      },
+      "cbethethV3": {
+        "title": "cbETH/ETH Aave",
+        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      },
       "ethusdcV3": {
         "title": "Highest ETH multiple option",
         "description": "Maximise your ETH exposure with Aave and USDC."
       },
-      "wBTCusdcV2": {
-        "title": "High wBTC multiple option",
-        "description": "The biggest possible Multiple to maximize your exposure to WBTC"
+      "cbETHusdcV3": {
+        "title": "High cbETH multiple option",
+        "description": "Maximise your cbETH exposure with Aave and USDC."
       },
       "wBTCusdcV3": {
         "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
       },
-      "cbETHusdcV2": {
-        "title": "High cbETH multiple option",
-        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      "wstethusdcV3": {
+        "title": "High wstETH multiple option",
+        "description": "Maximise your wstETH exposure with Aave and USDC."
       },
-      "cbETHusdcV3": {
-        "title": "High cbETH multiple option",
-        "description": "The biggest possible Multiple to maximize your exposure to cbETH"
+      "rethusdcV3": {
+        "title": "High rETH multiple option",
+        "description": "Maximise your rETH exposure with Aave and USDC."
       },
+
       "borrow-against-ETH": {
         "title": "AAVE ETH",
         "description": "A position to borrow against your ETH in AAVE"
@@ -2459,10 +2487,17 @@
     "errors": {
       "amountBiggerThanBalance": "You cannot deposit more Dai than the amount in your wallet",
       "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
+    },
+    "notification": {
+      "title": " The borrowing rate for Maker positions is increasing!",
+      "message": "<1>Learn more →</1>"
+    },
+    "landing-page-banner": {
+      "title": "NEW DSR RATE! Earn 3.49% on your DAI. <1>Get started</1>"
     }
   },
   "ajna": {
-    "title": "Anja Website",
+    "title": "Ajna Website",
     "navigation": {
       "common": {
         "other-assets": "Other assets you can borrow against"
@@ -2611,13 +2646,13 @@
       "borrow": {
         "common": {
           "overview": {
+            "dynamic-max-ltv": "Dynamic Max LTV: {{dynamicMaxLtv}}",
             "liquidation-price": "Liquidation Price",
             "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price",
             "above-current-price": "{{priceRatio}} above current price",
             "below-current-price": "{{priceRatio}} below current price",
             "loan-to-value": "Loan to value",
             "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
-            "liquidation-threshold": "Liquidation Threshold: {{liquidationThreshold}}",
             "collateral-locked": "Collateral locked",
             "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
             "position-debt": "Position debt",
@@ -2642,12 +2677,15 @@
           },
           "form": {
             "max-ltv-to-lend-at": "Max LTV to lend at",
-            "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price",
+            "token-pair-lending-price": "{{collateralToken}}/{{quoteToken}} lending price",
             "adjust-lending-price-bucket": "Adjust lending price bucket",
             "ajna-fee": "Ajna fee",
             "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit",
             "total-deposited-into-position": "Total deposited into Position",
-            "collateral-available-to-withdraw": "Collateral available to withdraw"
+            "collateral-available-to-withdraw": "Collateral available to withdraw",
+            "input-lending-price": "Input {{quoteToken}} Lending Price",
+            "or-enter-specific-lending-price": "Or enter specific {{priceFormat}} Lending Price",
+            "lending-price": "Lending Price"
           }
         },
         "open": {
@@ -2729,7 +2767,7 @@
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
-      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
+      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
@@ -2775,6 +2813,28 @@
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
         "button": "Claim AJNA tokens"
       }
+    },
+    "promo-cards": {
+      "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
+      "get-ajna-tokens": "Get Ajna Tokens",
+      "get-liquidity-from-your-assets-using-ajna": "Get liquidity from your assets using Ajna",
+      "get-to-know-ajna-multiply": "Get to know Ajna Multiply",
+      "get-weekly-apy": "Get {{weeklyNetApy}} 7 day net APY",
+      "learn-how-can-you-earn-by-lending-your-assets": "Learn how can you earn by lending your assets",
+      "learn-how-to-avoid-getting-your-position-liquidated": "Learn how to avoid getting your position liquidated",
+      "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity",
+      "learn-how-to-use-multiply-to-optimize-your-position": "Learn how to use Multiply to optimize your position",
+      "lend-against-collateral": "Lend {{quoteToken}} against {{collateralToken}} collateral",
+      "lends-to-one-token": "Lends to 1 token",
+      "max-ltv": "Max loan to value: {{maxLtv}}",
+      "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
+      "up-to-multiple": "Up to {{maxMultiple}} multiple",
+      "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
+      "what-is-earn-on-ajna": "What is Earn on Ajna?"
+    },
+    "product-hub-tooltips": {
+      "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
+      "no-max-multiple": "There are currently no borrow or multiply positions for this pool. Max multiple will be calculated following the creation of the first position."
     }
   },
   "product-hub": {
@@ -2798,7 +2858,6 @@
     },
     "table": {
       "active": "Active",
-      "active_with_liq_risk": "Active (liq. risk)",
       "long-short": "Long or short",
       "long": "Long only",
       "passive": "Passive",

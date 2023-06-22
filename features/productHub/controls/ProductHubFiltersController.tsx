@@ -1,3 +1,4 @@
+import { isTestnetNetworkId, NetworkIds, useCustomNetworkParameter } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
@@ -8,6 +9,7 @@ import {
   productHubNetworkFilter,
   productHubProtocolFilter,
   productHubStrategyFilter,
+  productHubTestNetworkFilter,
 } from 'features/productHub/meta'
 import {
   ProductHubFilters,
@@ -26,6 +28,8 @@ import { useMediaQuery } from 'usehooks-ts'
 
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
   selectedToken: string
@@ -34,13 +38,17 @@ interface ProductHubFiltersControllerProps {
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
   data,
+  initialNetwork = [],
+  initialProtocol = [],
   selectedFilters,
   selectedProduct,
   selectedToken,
   onChange,
 }) => {
   const { t } = useTranslation()
+  const [networkParameter] = useCustomNetworkParameter()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
+  const isTestnet = isTestnetNetworkId(networkParameter?.id ?? NetworkIds.MAINNET)
 
   const debtTokens = useMemo(
     () =>
@@ -129,8 +137,9 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         />
       )}
       <GenericMultiselect
+        initialValues={initialNetwork}
         label={t('product-hub.filters.networks')}
-        options={productHubNetworkFilter}
+        options={isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter}
         onChange={(value) => {
           onChange({
             or: selectedFilters.or,
@@ -142,6 +151,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         }}
       />
       <GenericMultiselect
+        initialValues={initialProtocol}
         label={t('product-hub.filters.protocols')}
         options={productHubProtocolFilter}
         onChange={(value) => {

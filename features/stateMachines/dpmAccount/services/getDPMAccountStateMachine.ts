@@ -1,4 +1,5 @@
 import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import { Context } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { TxHelpers } from 'components/AppContext'
 import {
@@ -10,11 +11,12 @@ import { HasGasEstimation } from 'helpers/form'
 import { Observable } from 'rxjs'
 
 export function getDPMAccountStateMachine(
+  context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
   transactionStateMachine: TransactionStateMachine<CreateDPMAccount, UserDpmAccount>,
 ) {
-  const services = getDPMAccountStateMachineServices(txHelpers$, gasEstimation$)
+  const services = getDPMAccountStateMachineServices(context$, txHelpers$, gasEstimation$)
 
   return createDPMAccountStateMachine(transactionStateMachine).withConfig({
     services: {

@@ -1,12 +1,11 @@
-import { PositionTransition } from '@oasisdex/dma-library'
 import {
-  IPositionTransition,
   IRiskRatio,
   ISimplePositionTransition,
   ISimulatedTransition,
-} from '@oasisdex/oasis-actions'
+  IStrategy,
+  PositionTransition,
+} from '@oasisdex/dma-library'
 import { useSelector } from '@xstate/react'
-import { getFee } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
@@ -39,8 +38,8 @@ function mapSimulation(simulation?: Simulation): string[] {
 const defaultYieldFields: FilterYieldFieldsType[] = ['7Days', '30Days', '90Days', '1Year']
 
 function transitionHasSwap(
-  transition?: ISimplePositionTransition | PositionTransition,
-): transition is IPositionTransition {
+  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
+): transition is PositionTransition {
   return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
 }
 
@@ -53,7 +52,7 @@ function SimulationSection({
   defaultRiskRatio,
 }: {
   strategy: IStrategyConfig
-  transition?: ISimplePositionTransition | IPositionTransition | PositionTransition
+  transition?: ISimplePositionTransition | PositionTransition | IStrategy
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
@@ -64,7 +63,7 @@ function SimulationSection({
   const amount = useMemo(() => userInputAmount || new BigNumber(100), [userInputAmount])
 
   const fees = useMemo(() => {
-    const swapFee = (transitionHasSwap(transition) && getFee(transition?.simulation.swap)) || zero
+    const swapFee = (transitionHasSwap(transition) && transition.simulation.swap.tokenFee) || zero
     const gasFee = gasPrice?.gasEstimationEth || zero
     return swapFee.plus(gasFee)
   }, [transition, gasPrice])

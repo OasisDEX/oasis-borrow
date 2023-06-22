@@ -1,4 +1,4 @@
-import { normalizeValue } from '@oasisdex/dma-library'
+import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -11,7 +11,8 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
-import { one } from 'helpers/zero'
+import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -51,6 +52,8 @@ export function AjnaBorrowOverviewController() {
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
   const changeVariant = getBorrowishChangeVariant(simulation)
 
+  const originationFee = getOriginationFee(position, simulation)
+
   return (
     <Grid gap={2}>
       <DetailsSection
@@ -70,7 +73,9 @@ export function AjnaBorrowOverviewController() {
               isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
-              liquidationThreshold={position.maxRiskRatio.loanToValue}
+              {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
+                dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+              })}
               changeVariant={changeVariant}
             />
             <ContentCardCollateralLocked
@@ -86,7 +91,7 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               positionDebt={position.debtAmount}
               positionDebtUSD={position.debtAmount.times(quotePrice)}
-              afterPositionDebt={simulation?.debtAmount}
+              afterPositionDebt={simulation?.debtAmount.plus(originationFee)}
               changeVariant={changeVariant}
             />
           </DetailsSectionContentCardWrapper>
@@ -99,7 +104,9 @@ export function AjnaBorrowOverviewController() {
               quoteToken={quoteToken}
               cost={position.pool.interestRate}
               availableToBorrow={position.debtAvailable()}
-              afterAvailableToBorrow={simulation?.debtAvailable()}
+              afterAvailableToBorrow={
+                simulation && negativeToZero(simulation.debtAvailable().minus(originationFee))
+              }
               availableToWithdraw={position.collateralAvailable}
               afterAvailableToWithdraw={simulation?.collateralAvailable}
               changeVariant={changeVariant}

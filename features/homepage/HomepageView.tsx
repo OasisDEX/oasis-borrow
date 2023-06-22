@@ -14,12 +14,13 @@ import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { productCardsConfig } from 'helpers/productCards'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { debounce } from 'lodash'
@@ -193,7 +194,6 @@ export function HomepageView() {
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const notificationsEnabled = useFeatureToggle('Notifications')
-  const aaveV3EarnWSTETHEnabled = useFeatureToggle('AaveV3EarnWSTETH')
   const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
@@ -201,6 +201,7 @@ export function HomepageView() {
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   const [scrollPercentage, setScrollPercentage] = useState(0)
+  const { walletAddress } = useAccount()
   // Magic number which is the rough height of three HomepagePromoBlocks + margins (search for sub-headers.security)
   // Why: cause the refs + calculations were singnificantly expensive than this
   // If you ever add/subtract a block from there this number needs to change
@@ -255,20 +256,20 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      {aaveV3EarnWSTETHEnabled && (
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            mt: '80px',
-            mb: 0,
-          }}
-        >
-          <HomePageBanner
-            heading={t('ref.banner')}
-            link={EXTERNAL_LINKS.BLOG.EXPANDING_EARN_AAVE_V3}
-          />
-        </Flex>
-      )}
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          mt: '80px',
+          mb: 0,
+          width: 'unset',
+        }}
+      >
+        <HomePageBanner
+          heading={t('dsr.landing-page-banner.title')}
+          icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
+          {...(walletAddress && { link: `earn/dsr/${walletAddress}` })}
+        />
+      </Flex>
 
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
@@ -717,8 +718,8 @@ export function Hero({
 }) {
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
-  const { connecting, connected, executeConnection } = useWeb3OnBoardConnection({
-    walletConnect: true,
+  const { connecting, connect } = useConnection({
+    initialConnect: false,
   })
 
   return (
@@ -734,10 +735,10 @@ export function Hero({
         ...sx,
       }}
     >
-      <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
+      <Heading as="h1" variant="header1" sx={{ mb: '24px' }}>
         {t(heading)}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
+      <Text as="p" variant="paragraph2" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
         {subheading}
       </Text>
       {showButton && (
@@ -753,7 +754,7 @@ export function Hero({
               transform: 'translateX(10px)',
             },
           }}
-          onClick={async () => connected || connecting || (await executeConnection())}
+          onClick={async () => connecting || (await connect())}
         >
           {isConnected ? t('see-products') : t('connect-wallet')}
           <Icon

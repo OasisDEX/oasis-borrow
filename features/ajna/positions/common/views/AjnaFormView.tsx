@@ -15,7 +15,7 @@ import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFl
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
@@ -69,7 +69,7 @@ export function AjnaFormView({
     },
     validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
-  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { connect } = useConnection({ initialConnect: false })
 
   const txHandler = useAjnaTxHandler()
 
@@ -122,7 +122,9 @@ export function AjnaFormView({
     isTransitionInProgress,
     isTxError,
     isTxSuccess,
+    position,
     product,
+    state,
     walletAddress,
   })
   const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
@@ -135,7 +137,7 @@ export function AjnaFormView({
     isTxSuccess,
     onConfirmTransition: transitionHandler,
     onDefault: setNextStep,
-    onDisconnected: executeConnection,
+    onDisconnected: connect,
     onSelectTransition: txHandler,
     onTransition: () => {
       setStep('transition')

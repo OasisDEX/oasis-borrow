@@ -2,8 +2,8 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -13,14 +13,11 @@ export const AjnaBorrowOriginationFee = () => {
     environment: { quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
-    form: {
-      state: { generateAmount },
-    },
     position: {
-      currentPosition: { position },
+      currentPosition: { position, simulation },
     },
   } = useAjnaProductContext('borrow')
-  const originationFee = position.originationFee(generateAmount || zero)
+  const originationFee = getOriginationFee(position, simulation)
   const originationFeeFormatted = `${formatCryptoBalance(
     originationFee,
   )} ${quoteToken} ($${formatAmount(originationFee.times(quotePrice), 'USD')})`

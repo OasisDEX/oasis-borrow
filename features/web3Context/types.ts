@@ -35,14 +35,13 @@ export interface AccountWithBalances {
   daiAmount: BigNumber
 }
 
-export interface Web3ContextConnectedReadonly extends Connectable {
+export interface Web3ContextConnectedReadonly {
   status: 'connectedReadonly'
   connectionKind: ConnectionKind
   web3: Web3
   chainId: NetworkIds
-  deactivate: () => void
-  connectionMethod: 'legacy' | 'web3-onboard'
-  walletLabel?: undefined
+  connectionMethod: 'web3-onboard'
+  walletLabel: string | undefined
 }
 
 export interface Web3ContextConnected {
@@ -51,11 +50,10 @@ export interface Web3ContextConnected {
   web3: Web3
   transactionProvider: ethers.Signer
   chainId: NetworkIds
-  deactivate: () => void
   account: string
   magicLinkEmail?: string
-  connectionMethod: 'legacy' | 'web3-onboard'
-  walletLabel?: string // you can check this value in our MixPanel board.
+  connectionMethod: 'web3-onboard'
+  walletLabel: string
 }
 
 export interface Web3ContextError extends Connectable {

@@ -13,7 +13,7 @@ interface ContentCardLoanToValueProps {
   isLoading?: boolean
   loanToValue: BigNumber
   afterLoanToValue?: BigNumber
-  liquidationThreshold: BigNumber
+  dynamicMaxLtv?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
@@ -21,7 +21,7 @@ export function ContentCardLoanToValue({
   isLoading,
   loanToValue,
   afterLoanToValue,
-  liquidationThreshold,
+  dynamicMaxLtv,
   changeVariant = 'positive',
 }: ContentCardLoanToValueProps) {
   const { t } = useTranslation()
@@ -29,7 +29,7 @@ export function ContentCardLoanToValue({
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
     afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
-    liquidationThreshold: liquidationThreshold && formatDecimalAsPercent(liquidationThreshold),
+    dynamicMaxLtv: dynamicMaxLtv && formatDecimalAsPercent(dynamicMaxLtv),
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -40,9 +40,11 @@ export function ContentCardLoanToValue({
       value: afterLoanToValue && `${formatted.afterLoanToValue} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
-    footnote: t('ajna.position-page.borrow.common.overview.liquidation-threshold', {
-      liquidationThreshold: formatted.liquidationThreshold,
-    }),
+    footnote:
+      dynamicMaxLtv &&
+      t('ajna.position-page.borrow.common.overview.dynamic-max-ltv', {
+        dynamicMaxLtv: formatted.dynamicMaxLtv,
+      }),
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.borrow.common.overview.loan-to-value')}

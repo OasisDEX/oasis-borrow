@@ -78,7 +78,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   )
 
   const earnCollateralsReserveData = {
-    STETH: aaveReserveConfigurationData$({ token: 'STETH' }),
+    STETH: aaveReserveConfigurationData$({ collateralToken: 'STETH', debtToken: 'ETH' }),
   } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
 
   const aaveSupportedTokenBalances$ = memoize(
@@ -104,7 +104,7 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const openMultiplyAaveParameters = getOpenMultiplyAaveParametersMachine(
     txHelpers$,
     gasEstimation$,
-    { networkId: NetworkIds.MAINNET, lendingProtocol: LendingProtocol.AaveV2 },
+    NetworkIds.MAINNET,
   )
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)

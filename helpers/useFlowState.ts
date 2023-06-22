@@ -76,6 +76,7 @@ export function useFlowState({
     token,
     error: undefined,
   }
+
   const spender = availableProxies[0] // probably needs further thoguht
 
   // wallet connection + DPM proxy machine
