@@ -310,7 +310,7 @@ export function getAjnaValidation({
     hasErrors: errors.length > 0,
     isFormFrozen,
     errors,
-    warnings,
+    warnings: errors.length > 0 ? [] : warnings,
     notices,
     successes,
   }

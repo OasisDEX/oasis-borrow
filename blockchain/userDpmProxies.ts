@@ -13,7 +13,7 @@ export interface UserDpmAccount {
 }
 
 export function getUserDpmProxies$(
-  context$: Observable<Context>,
+  context$: Observable<Pick<Context, 'chainId'>>,
   walletAddress: string,
 ): Observable<UserDpmAccount[]> {
   if (!walletAddress) {

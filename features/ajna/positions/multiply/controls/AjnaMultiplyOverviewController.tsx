@@ -11,7 +11,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -73,7 +73,9 @@ export function AjnaMultiplyOverviewController() {
               isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
-              dynamicMaxLtv={position.maxRiskRatio.loanToValue}
+              {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
+                dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+              })}
               changeVariant={changeVariant}
             />
             <ContentCardNetBorrowCost
