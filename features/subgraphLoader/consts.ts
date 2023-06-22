@@ -95,6 +95,13 @@ export const subgraphMethodsRecord: {
         lupIndex
         htp
         htpIndex
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
       }
     }
   `,
