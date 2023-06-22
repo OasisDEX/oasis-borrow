@@ -176,9 +176,6 @@ export function HeaderSelector({
                   bg: 'neutral30',
                   svg: {
                     opacity: 1,
-                    '&.icon-under': {
-                      transform: 'scale(0.95)',
-                    },
                   },
                 },
               }}
@@ -194,11 +191,8 @@ export function HeaderSelector({
                   sx={{
                     flexShrink: 0,
                     mr: 3,
-                    transform: selected.value === option.value ? 'scale(0.95)' : 'none',
                   }}
                   name={Array.isArray(option.icon) ? option.icon[0] : option.icon}
-                  // @ts-ignore
-                  className="icon-under"
                 />
               )}
               {Array.isArray(option.icon) && (
@@ -211,6 +205,7 @@ export function HeaderSelector({
                     m: 'auto',
                     opacity: selected.value === option.value ? 1 : 0,
                     transition: '200ms opacity',
+                    transform: 'scale(1.05)',
                   }}
                   name={option.icon[1]}
                 />
