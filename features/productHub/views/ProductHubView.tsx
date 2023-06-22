@@ -18,12 +18,12 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, Fragment, useMemo, useState } from 'react'
-import { Box, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
-  headerGradient?: [string, string, string]
+  headerGradient?: [string, string, ...string[]]
   product: ProductHubProductType
   promoCardsCollection: PromoCardsCollection
   token?: string
@@ -129,9 +129,9 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               limitRows={limitRows}
             />
             {limitRows && limitRows > 0 && (
-              <Box
+              <Flex
                 sx={{
-                  textAlign: 'center',
+                  justifyContent: 'center',
                   py: 4,
                   borderBottom: '1px solid',
                   borderBottomColor: 'neutral20',
@@ -150,7 +150,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                     {t('view-all')}
                   </WithArrow>
                 </AppLink>
-              </Box>
+              </Flex>
             )}
           </>
         )}
