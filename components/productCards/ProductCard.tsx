@@ -86,7 +86,7 @@ interface ProductCardBannerProps {
 export function ProductCardNetworkRow({ chain }: Pick<ProductCardData, 'chain'>) {
   const network = networksByName[chain]
   if (!network) {
-    console.error('Network not found', chain)
+    console.warn('Network not found', chain)
     return null
   }
   return (
