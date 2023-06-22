@@ -9,7 +9,7 @@ import { LendingProtocol } from 'lendingProtocols'
 
 const protocol = { network: NetworkNames.ethereumMainnet, protocol: LendingProtocol.Ajna }
 const getAjnaTokensPill = {
-  label: { key: 'ajna.promo-cards.get-ajna-tokens' },
+  label: { key: 'product-hub.promo-cards.get-ajna-tokens' },
   variant: 'positive' as PromoCardVariant,
 }
 
@@ -22,7 +22,7 @@ export function parseAjnaBorrowPromoCard(
     tokens: [collateralToken, quoteToken],
     title: `${collateralToken}/${quoteToken}`,
     description: {
-      key: 'ajna.promo-cards.borrow-and-earn-ajna',
+      key: 'product-hub.promo-cards.borrow-and-earn-ajna',
       props: { collateralToken, quoteToken },
     },
     protocol,
@@ -31,7 +31,7 @@ export function parseAjnaBorrowPromoCard(
         ? [
             {
               label: {
-                key: 'ajna.promo-cards.max-ltv',
+                key: 'product-hub.promo-cards.max-ltv',
                 props: {
                   maxLtv: formatDecimalAsPercent(new BigNumber(product.maxLtv)),
                 },
@@ -60,7 +60,7 @@ export function parseAjnaMultiplyPromoCard(
     tokens: [collateralToken, quoteToken],
     title: `${collateralToken}/${quoteToken}`,
     description: {
-      key: 'ajna.promo-cards.multiply-and-earn-ajna',
+      key: 'product-hub.promo-cards.multiply-and-earn-ajna',
       props: {
         token: isShort ? quoteToken : collateralToken,
         strategy: isShort ? 'Short' : 'Long',
@@ -72,7 +72,7 @@ export function parseAjnaMultiplyPromoCard(
         ? [
             {
               label: {
-                key: 'ajna.promo-cards.up-to-multiple',
+                key: 'product-hub.promo-cards.up-to-multiple',
                 props: {
                   maxMultiple: `${parseFloat(product.maxMultiply).toFixed(2)}x`,
                 },
@@ -99,7 +99,7 @@ export function parseAjnaEarnPromoCard(
     tokens: [collateralToken, quoteToken],
     title: `${collateralToken}/${quoteToken}`,
     description: {
-      key: 'ajna.promo-cards.lend-against-collateral',
+      key: 'product-hub.promo-cards.lend-against-collateral',
       props: { collateralToken, quoteToken },
     },
     protocol,
@@ -107,8 +107,8 @@ export function parseAjnaEarnPromoCard(
       {
         label: {
           key: product?.weeklyNetApy
-            ? 'ajna.promo-cards.get-weekly-apy'
-            : 'ajna.promo-cards.lends-to-one-token',
+            ? 'product-hub.promo-cards.get-weekly-apy'
+            : 'product-hub.promo-cards.lends-to-one-token',
           props: {
             ...(product?.weeklyNetApy && {
               weeklyNetApy: formatDecimalAsPercent(new BigNumber(product.weeklyNetApy)),

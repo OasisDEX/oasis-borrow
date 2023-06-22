@@ -143,7 +143,7 @@ export const PromoCard: FC<PromoCardProps> = ({
           mb: '12px',
         }}
       >
-        {icon && <Icon name={icon} size={50} />}
+        {icon && <Icon name={icon} size={44} />}
         {tokens && <TokensGroup tokens={tokens} forceSize={50} />}
         {image && <Image src={image} sx={{ height: '44px' }} />}
       </Flex>
