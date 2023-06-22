@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networks'
+import { getNetworkById, NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import { loadStrategyFromTokens } from 'features/aave'
+import { IStrategyConfig } from 'features/aave/common'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
@@ -20,7 +22,7 @@ import { AaveLendingProtocol, checkIfAave, LendingProtocol } from 'lendingProtoc
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap } from 'rxjs/operators'
+import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
 import { Position } from './positionsOverviewSummary'
 
@@ -85,13 +87,15 @@ export type AavePosition = Position & {
 export function createPositions$(
   makerPositions$: (address: string) => Observable<Position[]>,
   aavePositions$: (address: string) => Observable<Position[]>,
+  optimismPositions$: (address: string) => Observable<Position[]>,
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aavePositions$ = aavePositions$(address)
-  return combineLatest(_makerPositions$, _aavePositions$).pipe(
-    map(([makerPositions, aavePositions]) => {
-      return [...makerPositions, ...aavePositions]
+  const _optimismPositions$ = optimismPositions$(address)
+  return combineLatest(_makerPositions$, _aavePositions$, _optimismPositions$).pipe(
+    map(([makerPositions, aavePositions, optimismPositions]) => {
+      return [...makerPositions, ...aavePositions, ...optimismPositions]
     }),
   )
 }
@@ -218,6 +222,105 @@ function buildAaveViewModel(
   )
 }
 
+function buildAaveV3OnlyViewModel(
+  positionCreatedEvent: PositionCreated,
+  positionId: string,
+  walletAddress: string,
+  isOwner: boolean,
+  services: AaveServices,
+  strategyConfig: IStrategyConfig,
+  tickerPrices$: (tokens: string[]) => Observable<Tickers>,
+): Observable<AavePosition | undefined> {
+  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol } = positionCreatedEvent
+
+  if (!checkIfAave(protocol)) {
+    return of(undefined)
+  }
+
+  return combineLatest(
+    services.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+    services.getAaveAssetsPrices$({
+      tokens: [collateralTokenSymbol, debtTokenSymbol],
+    }),
+    tickerPrices$([debtTokenSymbol]),
+    services.getAaveReserveData$({ token: debtTokenSymbol }),
+    services.aaveAvailableLiquidityInUSDC$({
+      token: debtTokenSymbol,
+    }),
+  ).pipe(
+    map(([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity]) => {
+      const { position } = protocolData
+      const isDebtZero = position.debt.amount.isZero()
+
+      const oracleCollateralTokenPriceInEth = assetPrices[0]
+      const oracleDebtTokenPriceInEth = assetPrices[1]
+
+      const collateralToken = positionCreatedEvent.collateralTokenSymbol
+      const debtToken = positionCreatedEvent.debtTokenSymbol
+
+      const collateralNotWei = amountFromPrecision(
+        position.collateral.amount,
+        new BigNumber(position.collateral.precision),
+      )
+      const debtNotWei = amountFromPrecision(
+        position.debt.amount,
+        new BigNumber(position.debt.precision),
+      )
+
+      const netValueInEthAccordingToOracle = collateralNotWei
+        .times(oracleCollateralTokenPriceInEth)
+        .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
+
+      const liquidationPrice = !isDebtZero
+        ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
+        : zero
+
+      const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+
+      const fundingCost = !isDebtZero
+        ? debtNotWei
+            .times(oracleDebtTokenPriceInEth)
+            .div(netValueInEthAccordingToOracle)
+            .multipliedBy(variableBorrowRate)
+            .times(100)
+        : zero
+
+      // Todo: move to lib
+      const netValueInDebtToken = amountFromPrecision(
+        position.collateral.normalisedAmount
+          .times(position.oraclePriceForCollateralDebtExchangeRate)
+          .minus(position.debt.normalisedAmount),
+        new BigNumber(18),
+      )
+
+      const netValueUsd = netValueInDebtToken.times(tickerPrices[position.debt.symbol])
+
+      const title = `${collateralToken}/${debtToken} Aave ${
+        protocol === LendingProtocol.AaveV2 ? 'V2' : `V3 ${strategyConfig.network}`
+      }`
+
+      return {
+        token: collateralToken,
+        debtToken,
+        title: title,
+        url: `/${strategyConfig.network}/aave/${mapAaveProtocol(protocol)}/${positionId}`,
+        id: positionId,
+        netValue: netValueUsd,
+        multiple: position.riskRatio.multiple,
+        liquidationPrice,
+        fundingCost,
+        contentsUsd: netValueUsd,
+        isOwner,
+        lockedCollateral: collateralNotWei,
+        type: mappymap[positionCreatedEvent.positionType],
+        liquidity: liquidity,
+        stopLossData: undefined,
+        protocol,
+      }
+    }),
+  )
+}
+
 type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCreated & {
   fakePositionCreatedEvtForDsProxyUsers?: boolean
 }
@@ -339,6 +442,78 @@ export function createAavePosition$(
           )
         : of([] as AavePosition[])
     }),
+  )
+}
+
+export function createAaveDpmPosition$(
+  context$: Observable<Pick<Context, 'account'>>,
+  userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
+  tickerPrices$: (tokens: string[]) => Observable<Tickers>,
+  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
+  aaveV3: AaveServices,
+  networkId: NetworkIds,
+  walletAddress: string,
+) {
+  return combineLatest(
+    context$,
+    userDpmProxies$(walletAddress),
+    readPositionCreatedEvents$(walletAddress),
+  ).pipe(
+    switchMap(([{ account }, userDpmProxies, positionCreatedEvents]) => {
+      const subjects$ = positionCreatedEvents
+        .map((pce) => {
+          const network = getNetworkById(networkId)
+          if (!network) {
+            console.warn(
+              `Given network is not supported right now. Can't display Aaave V3 Position on network ${networkId}`,
+            )
+            return null
+          }
+
+          const strategyConfig = loadStrategyFromTokens(
+            pce.collateralTokenSymbol,
+            pce.debtTokenSymbol,
+            network.name,
+            LendingProtocol.AaveV3,
+          )
+          return {
+            event: pce,
+            dpmProxy: userDpmProxies.find((userProxy) => userProxy.proxy === pce.proxyAddress),
+            strategyConfig,
+            isOwner: walletAddress === account,
+          }
+        })
+        .filter(
+          (
+            value,
+          ): value is {
+            event: PositionCreated
+            dpmProxy: UserDpmAccount
+            strategyConfig: IStrategyConfig
+            isOwner: boolean
+          } => {
+            return value !== null && value.dpmProxy !== undefined
+          },
+        )
+        .map(({ event, dpmProxy, strategyConfig, isOwner }) => {
+          return buildAaveV3OnlyViewModel(
+            event,
+            dpmProxy!.vaultId,
+            walletAddress,
+            isOwner,
+            aaveV3,
+            strategyConfig,
+            tickerPrices$,
+          ).pipe(
+            filter((position): position is AavePosition => {
+              debugger
+              return position !== undefined
+            }),
+          )
+        })
+      return combineLatest(subjects$)
+    }),
+    startWith([] as AavePosition[]),
   )
 }
 
