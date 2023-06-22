@@ -17,10 +17,10 @@ export const slideInAnimation = {
 
 export const zoomInBackgroundAnimation = {
   animation: zoomInBackground,
-  animationDuration: '1.8s',
+  animationDuration: '2.5s',
   animationTimingFunction: 'ease-out',
   animationFillMode: 'forwards',
-  animationDelay: '1.4s',
+  animationDelay: '0.2s',
 }
 
 export const fadeInAnimation = {
