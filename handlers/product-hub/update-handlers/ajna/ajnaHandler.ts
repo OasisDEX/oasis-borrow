@@ -156,24 +156,24 @@ async function getAjnaPoolData(
                     weeklyNetApy: ajnaRewardsTooltip,
                   }),
                   ...(lowestUtilizedPriceIndex === 0 && {
-                      maxLtv: {
-                        content: {
-                          description: {
-                            key: 'ajna.product-hub-tooltips.no-max-ltv',
-                          },
+                    maxLtv: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-max-ltv',
                         },
-                        icon: 'question_o',
-                        iconColor: 'neutral80',
                       },
-                      maxMultiply: {
-                        content: {
-                          description: {
-                            key: 'ajna.product-hub-tooltips.no-max-multiple',
-                          },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                    maxMultiply: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-max-multiple',
                         },
-                        icon: 'question_o',
-                        iconColor: 'neutral80',
                       },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
                   }),
                 },
               },
