@@ -29,8 +29,8 @@ export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSl
     <Container sx={{ my: 4, overflow: 'hidden', ...wrapperSx }}>
       <Grid
         gap={2}
-        columns={[1, items.length]}
         sx={{
+          gridTemplateColumns: ['repeat(1, 1fr)', `repeat(${items.length}, auto)`],
           alignItems: 'center',
           alignContent: 'center',
           justifyItems: 'center',
