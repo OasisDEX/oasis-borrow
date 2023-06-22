@@ -10,7 +10,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -99,12 +99,16 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterLiquidationPrice,
           isLoading,
         },
-        {
-          label: t('system.dynamic-max-ltv'),
-          value: formatted.dynamicMaxLtv,
-          change: formatted.afterDynamicMaxLtv,
-          isLoading,
-        },
+        ...(positionData.pool.lowestUtilizedPriceIndex.gt(zero)
+          ? [
+              {
+                label: t('system.dynamic-max-ltv'),
+                value: formatted.dynamicMaxLtv,
+                change: formatted.afterDynamicMaxLtv,
+                isLoading,
+              },
+            ]
+          : []),
         {
           label: t('system.debt'),
           value: formatted.debt,

@@ -161,12 +161,16 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           change: formatted.afterLoanToValue,
           isLoading,
         },
-        {
-          label: t('system.dynamic-max-ltv'),
-          value: formatted.dynamicMaxLtv,
-          change: formatted.afterDynamicMaxLtv,
-          isLoading,
-        },
+        ...(positionData.pool.lowestUtilizedPriceIndex.gt(zero)
+          ? [
+              {
+                label: t('system.dynamic-max-ltv'),
+                value: formatted.dynamicMaxLtv,
+                change: formatted.afterDynamicMaxLtv,
+                isLoading,
+              },
+            ]
+          : []),
         ...(isTxSuccess && cached
           ? [
               {
