@@ -33,7 +33,7 @@ export function parseAjnaBorrowPromoCard(
               label: {
                 key: 'ajna.promo-cards.max-ltv',
                 props: {
-                  maxLtv: product?.maxLtv
+                  maxLtv: product.maxLtv
                     ? formatDecimalAsPercent(new BigNumber(product.maxLtv))
                     : 'n/a',
                 },
@@ -76,7 +76,7 @@ export function parseAjnaMultiplyPromoCard(
               label: {
                 key: 'ajna.promo-cards.up-to-multiple',
                 props: {
-                  maxMultiple: product?.maxMultiply
+                  maxMultiple: product.maxMultiply
                     ? `${parseFloat(product.maxMultiply).toFixed(2)}x`
                     : 'n/a',
                 },
