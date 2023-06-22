@@ -141,7 +141,7 @@ export const optimismContracts: MainnetContracts = {
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
 
   operationExecutor: contractDesc(operationExecutor, optimism.mpa.core.OperationExecutor),
-  swapAddress: '0x4De3CA09e803969408f83F453416b3e2D70C12Fe',
+  swapAddress: optimism.mpa.core.Swap,
   accountFactory: contractDesc(
     accountFactory,
     optimism.mpa.core.AccountFactory,
