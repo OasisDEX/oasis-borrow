@@ -35,11 +35,11 @@ type CreatePositionEnvironmentPropsType = {
 
 function makerPositionName(vault: VaultWithType): string {
   if (isMakerEarnPosition(vault)) {
-    return `${vault.ilk} Oasis Earn`
+    return `${vault.ilk} Summer.fi Earn`
   } else if (vault.type === 'borrow') {
-    return `${vault.ilk} Oasis Borrow`
+    return `${vault.ilk} Summer.fi Borrow`
   } else {
-    return `${vault.ilk} Oasis Multiply`
+    return `${vault.ilk} Summer.fi Multiply`
   }
 }
 

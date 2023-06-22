@@ -6,7 +6,7 @@ try {
     pagesDirectory: `.next/server/pages`,
     targetDirectory: 'public/',
     ignoredPaths: ['/api', '/not-found', '/[address]', '/terms', '/privacy', '/aave/[address]'],
-    // other apps routes from Oasis Suite
+    // other apps routes from Summer.fi Suite
     extraPaths: ['/blog'],
     nextConfigPath: `${__dirname}/next.config.js`,
     ignoreIndexFiles: true,
