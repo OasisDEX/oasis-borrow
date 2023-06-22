@@ -1,14 +1,17 @@
 import { PositionTransition } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
+import { swapCall } from 'actions/aave'
 import BigNumber from 'bignumber.js'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import {
+  ensureGivenTokensExist,
+  ensurePropertiesExist,
+  getNetworkContracts,
+} from 'blockchain/contracts'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
-import { getTokenMetaData } from 'features/exchange/exchange'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { getOneInchCall } from 'helpers/swap'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -20,23 +23,43 @@ interface PriceImpactProps {
     debt: string
   }
   transactionParameters: PositionTransition
+  strategyConfig: IStrategyConfig
 }
 
-export function PriceImpact({ tokens, transactionParameters, slippage }: PriceImpactProps) {
+export function PriceImpact({
+  tokens,
+  transactionParameters,
+  slippage,
+  strategyConfig,
+}: PriceImpactProps) {
   const { t } = useTranslation()
   const [marketPrice, setMarketPrice] = useState<BigNumber>(zero)
   const { toTokenAmount, targetToken, fromTokenAmount, sourceToken } =
     transactionParameters.simulation.swap
 
+  const { swapAddress, sourceTokenAddress, targetTokenAddress, networkId } = useMemo(() => {
+    const contracts = getNetworkContracts(strategyConfig.networkId)
+    ensurePropertiesExist(strategyConfig.networkId, contracts, ['swapAddress'])
+    ensureGivenTokensExist(strategyConfig.networkId, contracts, [
+      sourceToken.symbol,
+      targetToken.symbol,
+    ])
+
+    console.log(`current swap address: ${contracts.swapAddress}`)
+
+    return {
+      swapAddress: contracts.swapAddress,
+      sourceTokenAddress: contracts.tokens[sourceToken.symbol].address,
+      targetTokenAddress: contracts.tokens[targetToken.symbol].address,
+      networkId: strategyConfig.networkId,
+    }
+  }, [strategyConfig, sourceToken, targetToken])
+
   const oneInchCall = useMemo(() => {
-    const contracts = getNetworkContracts(NetworkIds.MAINNET) // for now it's only mainnet.
-    return getOneInchCall(contracts.swapAddress)
-  }, [])
+    return swapCall({ swapAddress }, networkId)
+  }, [swapAddress, networkId])
 
   useEffect(() => {
-    const contracts = getNetworkContracts(NetworkIds.MAINNET) // for now it's only mainnet.
-    const sourceTokenAddress = getTokenMetaData(sourceToken.symbol, contracts.tokens).address
-    const targetTokenAddress = getTokenMetaData(targetToken.symbol, contracts.tokens).address
     void oneInchCall(
       sourceTokenAddress,
       targetTokenAddress,
@@ -49,7 +72,15 @@ export function PriceImpact({ tokens, transactionParameters, slippage }: PriceIm
       const price = sourceToken.symbol === tokens.collateral ? to.div(from) : from.div(to)
       setMarketPrice(price)
     })
-  }, [targetToken, oneInchCall, sourceToken, slippage, tokens.collateral])
+  }, [
+    targetToken,
+    oneInchCall,
+    sourceToken,
+    slippage,
+    tokens.collateral,
+    sourceTokenAddress,
+    targetTokenAddress,
+  ])
 
   if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
     return <></>

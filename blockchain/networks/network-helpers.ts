@@ -151,3 +151,16 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
     ? networksById[networksById[networkId].testnetId!].rpcUrl
     : networksById[networkId].rpcUrl
 }
+
+export function getNetworkById(networkId: NetworkIds) {
+  const base = networkSetById[networkId]
+  if (!base) {
+    throw new Error('Invalid contract chain id provided or not implemented yet')
+  }
+
+  const parent = base.getParentNetwork()
+  if (parent && base.isCustomFork) {
+    return parent
+  }
+  return base
+}

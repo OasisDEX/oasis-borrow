@@ -19,13 +19,13 @@ export type PositionCreated = {
 }
 
 async function getPositionCreatedEventForProxyAddress(
-  context: Context,
+  { chainId }: Pick<Context, 'chainId'>,
   proxyAddress: string,
 ): Promise<CreatePositionEvent[]> {
-  const { mainProvider, forkProvider } = getRpcProvidersForLogs(context.chainId)
+  const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
 
-  const contracts = getNetworkContracts(context.chainId)
-  ensureContractsExist(context.chainId, contracts, ['accountGuard'])
+  const contracts = getNetworkContracts(chainId)
+  ensureContractsExist(chainId, contracts, ['accountGuard'])
   const { accountGuard } = contracts
 
   const contractDesc: ContractDesc & { genesisBlock: number } = {
@@ -121,7 +121,7 @@ export function getLastCreatedPositionForProxy$(
 }
 
 export function createReadPositionCreatedEvents$(
-  context$: Observable<Context>,
+  context$: Observable<Pick<Context, 'chainId'>>,
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
   walletAddress: string,
 ): Observable<Array<PositionCreated>> {

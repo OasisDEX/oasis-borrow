@@ -13,3 +13,4 @@ export { getAdjustPositionParameters } from './adjust/get-adjust-position-parame
 export { getManagePositionParameters } from './manage/get-manage-position-parameters'
 export { getCloseAaveParameters } from './close/get-close-aave-parameters'
 export { getOpenDepositBorrowPositionParameters } from './open'
+export { swapCall } from './helpers'
