@@ -18,13 +18,13 @@ export const config = {
   test: {
     mixpanel: {
       token,
-      config: { debug: false, ip: false, api_host: 'https://mpp.staging.oasis.app' },
+      config: { debug: false, ip: false, api_host: 'https://mpp.staging.summer.fi' },
     },
   },
   prod: {
     mixpanel: {
       token,
-      config: { ip: false, api_host: 'https://mpp.oasis.app', opt_out_tracking_by_default: true },
+      config: { ip: false, api_host: 'https://mpp.summer.fi', opt_out_tracking_by_default: true },
     },
   },
 }[env]

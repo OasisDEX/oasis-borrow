@@ -17,7 +17,7 @@ export function WithWalletAssociatedRisk({ children }: WithWalletAssociatedRiskP
   useEffect(() => {
     if (walletAssociatedRisk?.isRisky && shouldUseTrm) {
       alert(
-        'Your wallet has been flagged by our automated risk tools, and as such your access to oasis.app restricted. If you believe this to be incorrect, please reach out to support@oasis.app',
+        'Your wallet has been flagged by our automated risk tools, and as such your access to summer.fi restricted. If you believe this to be incorrect, please reach out to support@summer.fi',
       )
       void disconnect()
     }

@@ -22,6 +22,7 @@ function TermsPage() {
 
 TermsPage.layout = MarketingLayout
 TermsPage.layoutProps = {
+  topBackground: 'lighter',
   variant: 'termsContainer',
 }
 TermsPage.theme = 'Landing'

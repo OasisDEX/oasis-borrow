@@ -18,12 +18,13 @@ import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
 import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
+import { TopBanner } from 'components/TopBanner'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
 import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
+import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { loadFeatureToggles } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
@@ -85,8 +86,7 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
-  ${FTPolarBold.style.fontFamily}
-  ${FTPolarMedium.style.fontFamily}
+  ${FTPolar.style.fontFamily}
 `
 
 // extending Component with static properties that can be attached to it
@@ -193,6 +193,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                           <GasEstimationContextProvider>
                             <NotificationSocketProvider>
                               <WithFollowVaults>
+                                <TopBanner name="rebranding" />
                                 <Layout {...layoutProps}>
                                   <Component {...pageProps} />
                                   <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />

@@ -1,5 +1,5 @@
 export const tokenList = {
-  name: 'Oasis.app Token List',
+  name: 'Summer.fi Token List',
   timestamp: '2022-03-21T09:49:26.225Z',
   version: {
     major: 1,
@@ -7,8 +7,8 @@ export const tokenList = {
     patch: 0,
   },
   tags: {},
-  logoURI: 'https://oasis.app/static/img/logo_footer_v2.svg',
-  keywords: ['Oasis.app', 'MakerDAO'],
+  logoURI: 'https://summer.fi/static/img/logos/logo_dark.svg',
+  keywords: ['Summer.fi', 'MakerDAO'],
   tokens: [
     {
       name: 'Dai Stablecoin',

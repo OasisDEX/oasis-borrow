@@ -277,7 +277,7 @@ const oasisCreatePromoCards: ProductHubPromoCards = {
 const oasisCreateAjnaYieldTokenTooltip: AssetsTableTooltipProps['content'] = {
   title: 'This position earns AJNA tokens',
   description:
-    'Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
+    'Opening this Ajna position on Summer.fi makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.',
 }
 
 const oasisCreateTable: ProductHubItem[] = [

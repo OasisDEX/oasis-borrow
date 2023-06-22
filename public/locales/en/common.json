@@ -1,18 +1,21 @@
 {
-  "get-started-button": "Get started on Oasis",
+  "get-started-button": "Get started on Summer.fi",
   "404-button": "Go to homepage",
   "404-message": "Sorry, page not found.",
   "about": {
     "heading": "About us",
-    "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital. We are building Oasis.app to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
+    "description": "Summer.fi mission is to provide the best and most trusted entry point to deploy your capital. We are building Summer.fi to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
     "careers-link": "Join Us",
     "pics-title": "Meet the team"
   },
+  "top-banner": {
+    "rebranding": "Oasis.app is now Summer.fi. Read the announcement"
+  },
   "wallet-wrong-network": "Oops, your wallet is not on the right network.",
-  "app-wrong-network": "Oops, your wallet is not supported by the current Oasis.app network.",
-  "wallet-wrong-network-desc": "It seems your wallet is running on a different network from Oasis.app. Please manually change the network in your wallet, or you can click the button below.",
-  "app-wrong-network-desc": "It seems that Oasis.app is currently running on network that is not supported by your wallet. Please click on the button below to change it.",
-  "user-wrong-network-desc": "It seems your wallet is running on a different network from Oasis.app. Please manually change the network in your wallet.",
+  "app-wrong-network": "Oops, your wallet is not supported by the current Summer.fi network.",
+  "wallet-wrong-network-desc": "It seems your wallet is running on a different network from Summer.fi. Please manually change the network in your wallet, or you can click the button below.",
+  "app-wrong-network-desc": "It seems that Summer.fi is currently running on network that is not supported by your wallet. Please click on the button below to change it.",
+  "user-wrong-network-desc": "It seems your wallet is running on a different network from Summer.fi. Please manually change the network in your wallet.",
   "switch-network": "Switch network",
   "switch-to-mainnet": "Switch to Mainnet",
   "acceptance-check-failed": "Acceptance check failed",
@@ -35,6 +38,7 @@
   "adjust-your-position": "Adjust your position",
   "adjust": "Adjust",
   "claim": "Claim",
+  "view-all": "View all",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
   "after-closing": "{{token}} after closing",
@@ -90,6 +94,7 @@
   "connect-wallet": "Connect a wallet",
   "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "See products",
+  "find-your-defi-product": "Find your DeFi product",
   "connect-wallet-button": "Connect Wallet",
   "change-wallet-chain": "Change wallet network",
   "connect-with": "{{ connectionKind }}",
@@ -155,7 +160,7 @@
       "welcome-screen": {
         "header": "Create your Smart DeFi account",
         "create-button": "Create Smart DeFi account",
-        "paragraph": "In order to open a position on Oasis.app, you need a Smart DeFi Account. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>.",
+        "paragraph": "In order to open a position on Summer.fi, you need a Smart DeFi Account. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>.",
         "retry-create-button": "Retry Create Smart DeFi account",
         "create-order-summary-heading": "Creating your Smart DeFi account"
       },
@@ -170,7 +175,7 @@
       },
       "bullet-points": [
         "Multiple positions with the same wallet",
-        "Enables advanced Oasis.app features such as Automation and Stop Loss",
+        "Enables advanced Summer.fi features such as Automation and Stop Loss",
         "Better security with allowances set and removed within transactions"
       ]
     }
@@ -189,8 +194,8 @@
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
   "discover": {
-    "heading": "Discover Oasis.app",
-    "intro": "Discover and find the most interesting Vaults on Oasis.app in real-time.",
+    "heading": "Discover Summer.fi",
+    "intro": "Discover and find the most interesting Vaults on Summer.fi in real-time.",
     "intro-link": "Learn more about Discover",
     "navigation": {
       "highest-risk-positions": "Highest-Risk Positions",
@@ -287,17 +292,17 @@
       "banner": {
         "highest-risk-positions": {
           "title": "Protect your Multiply vault using Stop-Loss",
-          "description": "All Multiply Vaults on Oasis.app allow you to protect your position from liquidation using automated Stop-Loss Protection.",
+          "description": "All Multiply Vaults on Summer.fi allow you to protect your position from liquidation using automated Stop-Loss Protection.",
           "cta": "Get started with Multiply"
         },
         "highest-multiply-pnl": {
           "title": "Multiply your exposure up to 4x with automated buy and sell actions",
-          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "description": "Multiply on Summer.fi allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
           "cta": "Get started with Multiply"
         },
         "most-yield-earned": {
           "title": "Put your crypto to work today and start earning a yield",
-          "description": "Oasis Earn offers a set of curated sustainable yield products allowing you to take advantage of the best strategies that Defi has to offer.",
+          "description": "Summer.fi Earn offers a set of curated sustainable yield products allowing you to take advantage of the best strategies that Defi has to offer.",
           "cta": "Get started with Earn"
         },
         "largest-debt": {
@@ -326,14 +331,14 @@
   "erc20-disapprove-notification": "Locking {{ token }}",
   "erc20-disapprove-notification-past": "Locked {{ token }}",
   "error-header": "Lost connection",
-  "error-message": "It looks like we lost a connection to some data. Hit reload below to reload your page. If this error persists, please get in touch at support@oasis.app",
+  "error-message": "It looks like we lost a connection to some data. Hit reload below to reload your page. If this error persists, please get in touch at support@summer.fi",
   "error-button-reload": "Reload page",
   "error-button": "More info",
   "exchange": {
     "onboarding": {
-      "title": "Oasis Swap & Bridge",
-      "subtitle": "Say Hello to Oasis Swap & Bridge",
-      "body": "Quickly and securely swap and bridge tokens directly on Oasis with our partner LiFi. Visit <0>Oasis Swap FAQ's to read more →</0>",
+      "title": "Summer.fi Swap & Bridge",
+      "subtitle": "Say Hello to Summer.fi Swap & Bridge",
+      "body": "Quickly and securely swap and bridge tokens directly on Summer.fi with our partner LiFi. Visit <0>Summer.fi Swap FAQ's to read more →</0>",
       "button": "Got it"
     }
   },
@@ -483,9 +488,9 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "maker": {
-        "headline": "Simple and Secure DeFi",
-        "subheader": "Borrow, Multiply and Earn on the assets you hold across multiple protocols. Take advantage of powerful automation strategies and simple UX."
+      "main": {
+        "headline": "DeFi made simple and secure",
+        "subheader": "Take advantage of powerful automation strategies and user-friendly UX."
       },
       "ajna": {
         "headline": "Use the only market-driven lending protocol",
@@ -494,7 +499,7 @@
     },
     "stats": {
       "30-day-volume": "30 Day Volume",
-      "managed-on-oasis": "Managed on Oasis",
+      "managed-on-oasis": "Managed on Summer.fi",
       "median-vault": "Median Vault",
       "vaults-automated": "Vaults automated",
       "collateral-automated": "Total Collateral Automated",
@@ -508,25 +513,25 @@
       },
       "faq": {
         "title": "Have a question?",
-        "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+        "description": "Learn more about Summer.fi, Dai and DeFi at our FAQ’s page"
       }
     },
     "tabs": {
       "maker": {
         "borrow": {
-          "tabLabel": "Borrow on Oasis",
+          "tabLabel": "Borrow on Summer.fi",
           "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
           "tabParaLinkContent": "See all Borrow collateral types →"
         },
         "multiply": {
-          "tabLabel": "Multiply on Oasis",
+          "tabLabel": "Multiply on Summer.fi",
           "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
           "tabParaLinkContent": "See all Multiply collateral types →",
           "aaveTabParaContent": "We've launched Multiply for Aave.",
           "aaveTabParaLinkContent": "Read more →"
         },
         "earn": {
-          "tabLabel": "Earn on Oasis",
+          "tabLabel": "Earn on Summer.fi",
           "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
           "tabParaLinkContent": "Learn more about Earn →"
         }
@@ -559,17 +564,17 @@
       }
     },
     "info-cards": {
-      "have-some-questions": "Have some questions?",
+      "have-some-questions": "Get your questions answered",
       "learn": {
         "learn": "Learn",
-        "deep-dive": "Deep dive into oasis.app functionalities and glossary",
+        "deep-dive": "Deep dive into summer.fi functionalities and glossary",
         "get-started": "Get started",
         "tutorials": "Tutorials",
         "key-concepts": "Key concepts"
       },
       "support": {
         "support": "Support",
-        "contact-whenever": "Contact Oasis.app team whenever you need",
+        "contact-whenever": "Contact Summer.fi team whenever you need",
         "faq": "FAQ",
         "discord": "Discord",
         "contact-us": "Contact us",
@@ -584,7 +589,7 @@
       "cookies": {
         "marketing": {
           "title": "Marketing Cookies",
-          "description": "Oasis.app uses anonymised cookies from adRoll to be able to apply retargeting campaigns on advertising platforms."
+          "description": "Summer.fi uses anonymised cookies from adRoll to be able to apply retargeting campaigns on advertising platforms."
         },
         "analytics": {
           "title": "Analytics Cookies",
@@ -593,48 +598,17 @@
       }
     },
     "why-oasis": {
-      "main-header": "Why use Oasis.app",
+      "main-header": "Why use Summer.fi?",
       "sub-headers": {
-        "earn": {
-          "primary": "Earn long term sustainable yields to compound your crypto capital: ",
-          "secondary": "Oasis Earn",
-          "cta": "Open position"
-        },
-        "borrow": {
-          "primary": "Get the most out of your crypto without selling: ",
-          "secondary": "Oasis Borrow",
-          "cta": "Open position"
-        },
-        "multiply": {
-          "primary": "Optimize your risk & reward with one click: ",
-          "secondary": "Oasis Multiply",
-          "cta": "Open position"
-        },
-        "automation": {
-          "primary": "Advanced automation tools can manage your positions for you: ",
-          "secondary": "set and forget with confidence"
-        },
         "security": {
           "primary": "Your funds, your choice: ",
-          "secondary": "park your capital and stay in full control all the time, with no exceptions",
+          "secondary": "put your capital to work while staying in full control, with no exceptions",
           "cta": "Know more about security"
         }
       },
       "image-labels": {
-        "1-earn-on-assets": "Earn on the crypto assets you already own",
-        "2-predictable-payoff": "More predictable payoff with transparancy on fees and net APY’s",
-        "3-simple-management-tools": "Simple to use management tools and analytics",
-        "4-low-borrowing-cost": "Low borrowing costs",
-        "5-ample-liquidity": "Ample liquidity from multiple Protocols",
-        "6-top-tier-collateral": "Available for top tier crypto collateral",
-        "7-market-volatility-advantage": "Take advantage of market volatility",
-        "8-reduce-anxiety": "Reduce the anxiety of liquidation with stop loss automation",
-        "9-profit-and-payoff": "Increase the potential <0>profit</0> and <0>payoff</0> of your <br /> crypto asset position",
-        "10-peace-of-mind": "Get peace of mind with protection against liquidation and capital losses with Stop-Loss and Auto-Sell.",
-        "11-no-hassle": "Make position management less of a hassle with automated Buys, Sells and Take Profit",
-        "12-1-oasis-app": "All assets are self custodied on Oasis.app",
-        "12-2-verifiable-on-chain": "Always verifiable on chain via a block explorer",
-        "12-3-no-black-boxes": "No black boxes, just smart contracts"
+        "peace-of-mind": "Gain peace of mind with automated protection against liquidation using Stop-Loss and Auto-Sell.",
+        "no-hassle": "Take the hassle out of position management with automated Buys, Sells and Take Profit"
       }
     }
   },
@@ -716,7 +690,7 @@
   },
   "manage-multiply-vault": {
     "tooltip": {
-      "vaultId": "The Vault ID is a unique reference for your Maker Vault in Oasis.app.",
+      "vaultId": "The Vault ID is a unique reference for your Maker Vault in Summer.fi.",
       "stabilityFee": "The Maker Protocol collects a Stability Fee on Dai that is generated from Maker Vaults. It is a variable-rate fee that changes when Maker’s governing body votes on proposals put forth by Risk Teams.",
       "liquidationFee": "If your vault is liquidated, a liquidation penalty is added to your vault’s total outstanding debt in Dai, which results in more collateral being sold to cover the outstanding debt. This is done to incentivize vaults owners to avoid liquidation.\nThe size of the liquidation penalty is determined by the Liquidation Fee which is calculated based on the debt in the vault.",
       "min-collateral": "This is also called the Liquidation Ratio. If the Vault reaches below the minimum collateralization level it is considered undercollateralized and is subject to liquidation. Your collateral will then be partially auctioned off to cover outstanding debt and liquidation fee.",
@@ -783,7 +757,7 @@
     "overview-earn-aave": "Overview",
     "earnings-to-date": "Earnings to date",
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
-    "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Oasis fees. The 'After fees' value is accounting for the earnings including the Oasis fee, and the Ethereum Gas fees.",
+    "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Summer.fi fees. The 'After fees' value is accounting for the earnings including the Summer.fi fee, and the Ethereum Gas fees.",
     "net-apy": "Net APY",
     "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
     "net-apy-modal-aave": "The annual percentage yield, accounting for fees. Calculated as the yield on the stETH token over the last 7 days, annualised, and subtracting the variable annual fee paid in Aave for the ETH.",
@@ -882,7 +856,7 @@
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
-    "oasis-borrow": "Oasis Borrow",
+    "oasis-borrow": "Summer.fi Borrow",
     "multiply": "Multiply",
     "more": "More",
     "assets": "Assets",
@@ -913,7 +887,7 @@
   "notification-status-sign": "Sign Tx",
   "of": "of",
   "one-of-some": "{{one}} of {{some}}",
-  "onramp-leave-message": "By clicking buy, you will leave Oasis and be redirected to a third party website where you will complete the buy process.",
+  "onramp-leave-message": "By clicking buy, you will leave Summer.fi and be redirected to a third party website where you will complete the buy process.",
   "open-new-vault": "Open new Vault",
   "open-vault": {
     "title": "Open Vault",
@@ -925,7 +899,7 @@
   "pending-transactions": "Pending Transactions",
   "permissions": "Set permissions",
   "permissions-btn": "Set permissions",
-  "permissions-desc": "This permission allows Oasis to interact with the Dai in your wallet.",
+  "permissions-desc": "This permission allows Summer.fi to interact with the Dai in your wallet.",
   "powered-by": "Powered by",
   "price": "Price",
   "proceed": "Proceed",
@@ -952,75 +926,75 @@
   "sent": "Sent",
   "seo": {
     "owner": {
-      "title": "Owner - Oasis.app",
+      "title": "Owner - Summer.fi",
       "description": "Page not found, sorry."
     },
     "404": {
-      "title": "Page not found 🥹 - Oasis.app",
+      "title": "Page not found 🥹 - Summer.fi",
       "description": "Page not found, sorry."
     },
     "contact": {
-      "title": "Contact - Oasis.app",
+      "title": "Contact - Summer.fi",
       "description": "Send us feedback, questions, or suggestions."
     },
     "default": {
-      "title": "Deploy your crypto into DeFi - Oasis.app",
+      "title": "Deploy your crypto into DeFi - Summer.fi",
       "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
     },
     "dai": {
-      "title": "Dai - Oasis.app",
+      "title": "Dai - Summer.fi",
       "description": "A short introduction to Dai, the smarter digital currency."
     },
     "support": {
-      "title": "FAQs - Oasis.app",
+      "title": "FAQs - Summer.fi",
       "description": "All the answers to the most common questions."
     },
     "careers": {
-      "title": "Careers - Oasis.app",
+      "title": "Careers - Summer.fi",
       "description": "We believe in talent. Join us to build the next generation of DeFi."
     },
     "about": {
-      "title": "About Us - Oasis.app",
-      "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
+      "title": "About Us - Summer.fi",
+      "description": "Summer.fi mission is to provide the best and most trusted entry point to deploy your capital."
     },
     "referrals": {
-      "title": "Refer a friend and earn Dai - Oasis.app",
-      "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
+      "title": "Refer a friend and earn Dai - Summer.fi",
+      "description": "Refer a friend is a way to reward Summer.fi users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
     },
     "brand-assets": {
-      "title": "Brand assets - Oasis.app",
-      "description": "Find here the Oasis.app Logo and graphics."
+      "title": "Brand assets - Summer.fi",
+      "description": "Find here the Summer.fi Logo and graphics."
     },
     "assets": {
-      "title": "Assets - Oasis.app",
+      "title": "Assets - Summer.fi",
       "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
     },
     "security": {
-      "title": "Security - Oasis.app",
-      "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
+      "title": "Security - Summer.fi",
+      "description": "Summer.fi is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     },
     "discover": {
-      "title": "Discover Oasis.app",
-      "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
+      "title": "Discover Summer.fi",
+      "description": "Discover and find the most interesting Vaults on Summer.fi. See in real-time and follow you favorites."
     },
     "ajna": {
-      "title": "Oasis.app × Ajna",
+      "title": "Summer.fi × Ajna",
       "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "ajnaProductPage": {
-      "title": "{{product}} - Oasis.app × Ajna",
+      "title": "{{product}} - Summer.fi × Ajna",
       "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "multiply": {
-      "title": "Multiply - Oasis.app",
+      "title": "Multiply - Summer.fi",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset."
     },
     "earn": {
-      "title": "Earn - Oasis.app",
+      "title": "Earn - Summer.fi",
       "description": "Put your crypto assets to work today. Start generating the best yields."
     },
     "borrow": {
-      "title": "Borrow - Oasis.app",
+      "title": "Borrow - Summer.fi",
       "description": "Borrow Dai against your favorite crypto assets. Use the Dai however you like. Browse the featured, or select an asset to view our products."
     },
     "title-single-token": "{{token}} - {{product}}",
@@ -1213,8 +1187,8 @@
   "tos-accept-message": "Before you can get started, you’ll need to read and accept our terms of service.",
   "tos-accept-message-updated": "We have recently updated our Terms of Service. For security please accept our terms of service to continue.",
   "tos-acceptance-check-in-progress": "Acceptance check in progress...",
-  "tos-desc": "By creating a Savings pot, I accept Oasis",
-  "tos-jwt-signature-message": "It looks like you're new to Oasis.app or are using a new device to connect. For Security please accept our Terms of Service and sign a message with your wallet to continue.",
+  "tos-desc": "By creating a Savings pot, I accept Summer.fi",
+  "tos-jwt-signature-message": "It looks like you're new to Summer.fi or are using a new device to connect. For Security please accept our Terms of Service and sign a message with your wallet to continue.",
   "tos-jwt-signature-expired-title": "Update Your Signature",
   "tos-jwt-signature-expired-message": "Either your signature has expired, or an update to our services requires a new signature. Please sign a new message to continue.",
   "tos-read": "I have read and accept the Terms of Service.",
@@ -1315,7 +1289,7 @@
     "auto-buy-target-close-to-auto-sell-trigger": "Setting a lower Target Ratio would trigger your existing Auto-Sell. If you want to use a lower target ratio, please adjust your Auto-Sell trigger first.",
     "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
-    "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@oasis.app</0>",
+    "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@summer.fi</0>",
     "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first",
     "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -1326,7 +1300,7 @@
     "auto-buy-trigger-greater-than-auto-take-profit": "Setting your trigger ratio at this level may result in your Auto-Buy Trigger not executing. Find out more <0>here</0>.",
     "constant-multiple-buy-trigger-greater-than-auto-take-profit": "Setting your buy trigger ratio at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
     "existing-take-profit-trigger-after-vault-reopen": "You have an existing Take Profit Trigger, it will remain active after you reopen this vault.",
-    "auto-buy-override": "We recently discovered an issue with Auto-Buy which prevents it from executing and affects your current Auto-Buy setup. It only affects execution and no funds are at risk. Please cancel your existing Auto-Buy from the Optimisation Tab and re-enable it. Oasis.app will refund any gas costs associated with cancelling and re-enabling. If you have any questions, you can contact us at support@oasis.app"
+    "auto-buy-override": "We recently discovered an issue with Auto-Buy which prevents it from executing and affects your current Auto-Buy setup. It only affects execution and no funds are at risk. Please cancel your existing Auto-Buy from the Optimisation Tab and re-enable it. Summer.fi will refund any gas costs associated with cancelling and re-enabling. If you have any questions, you can contact us at support@summer.fi"
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -1342,7 +1316,7 @@
     "price-impact": "{{token}} Price (impact)",
     "slippage-limit": "Slippage Limit",
     "third-party-fees": "3rd party protocol fees",
-    "oasis-fee": "Oasis fee",
+    "oasis-fee": "Summer.fi fee",
     "ltv": "LTV",
     "outstanding-debt": "Outstanding debt",
     "loan-to-value": "Loan to Value",
@@ -1382,8 +1356,8 @@
       "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet.",
-      "vault-suggestions": "{{address}}, do more on Oasis.app",
-      "not-connected-suggestions": "Connect your own wallet and do more on Oasis.app"
+      "vault-suggestions": "{{address}}, do more on Summer.fi",
+      "not-connected-suggestions": "Connect your own wallet and do more on Summer.fi"
     },
     "number-of-vaults": "No. of Vaults",
     "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and borrow Dai or buy additional collateral against it.",
@@ -1395,17 +1369,17 @@
     "your-vaults": "Your Vaults",
     "assets-and-positions": "Top {{number}} assets and positions",
     "total-assets": "Total Assets",
-    "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>",
+    "total-assets-subheader": "Calculated using the <0>Summer.fi curated token list →</0>",
     "owner-positions": "Your Positions",
     "non-owner-positions": "{{address}}'s Positions",
     "owner-followed-positions": "Your followed Positions",
     "non-owner-followed-positions": "{{address}}'s followed Positions",
     "no-positions-header-owner": "You don't have any positions",
     "no-positions-header-non-owner": "{{address}} doesn't have any positions",
-    "no-positions-content": "You can open your first position on Oasis.app and <0>Multiply</0>, <1>Earn</1> or <2>Borrow</2> against your assets.",
+    "no-positions-content": "You can open your first position on Summer.fi and <0>Multiply</0>, <1>Earn</1> or <2>Borrow</2> against your assets.",
     "no-follow-header-owner": "You are not following any positions",
     "no-follow-header-non-owner": "{{address}} is not following any vaults",
-    "no-follow-content": "You can find the most interesting Vaults that are worth following in <0>Discover Oasis</0>.",
+    "no-follow-content": "You can find the most interesting Vaults that are worth following in <0>Discover Summer.fi</0>.",
     "no-assets": "There are no assets in your wallet"
   },
   "vault-notices": {
@@ -1489,7 +1463,7 @@
   "my-positions": "My Positions",
   "no-results": "No results",
   "learn-about-wallets": "Learn more about wallets",
-  "learn-more-at-oasis": "Learn more at Oasis.app Knowledge Base",
+  "learn-more-at-oasis": "Learn more at Summer.fi Knowledge Base",
   "learn-more": "Learn more",
   "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
   "enter-an-amount": "Enter an amount",
@@ -1545,10 +1519,10 @@
   "adjusting-vault-multiply": "Multiplying your Vault in progress",
   "closing-vault-multiply": "Closing your Multiply Vault",
   "your-wallet": "Your wallet",
-  "welcome": "Welcome to the new Oasis.app.",
+  "welcome": "Welcome to the new Summer.fi.",
   "wallet": "Wallet",
   "read-blog-post": "Read the blog post",
-  "visit-old-oasis": "Visit the old Oasis",
+  "visit-old-oasis": "Visit the old Summer.fi",
   "oracles": {
     "header": "Oracles",
     "description": "Below the current and next prices of the collateral types that are accepted for Maker vaults can be viewed. Most use the Oracle Stability Module (OSM). This module updates the price just once every hour. Therefore, when a crash is happening, users still have an hour to react to the new price.",
@@ -1608,7 +1582,7 @@
     "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on Stop-Loss trigger",
     "zero-debt-heading": "You need to Generate {{debtToken}} before you can set up Automated Protection",
-    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic {{bannerStrategiesKey}} Strategy on your vault based on the {{ratioParamTranslationKey}}. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
+    "zero-debt-description": "Summer.fi Automated Protection allows you to set up a dynamic {{bannerStrategiesKey}} Strategy on your vault based on the {{ratioParamTranslationKey}}. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
     "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop-Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
@@ -1618,7 +1592,7 @@
     "up-to": "up to",
     "not-guaranteed": "Automation isn't guaranteed to work 100% of the time",
     "guarantee-factors": "Several factor can relate to its success. These include liquidity, volatility and gas.",
-    "learn-more-about-automation": "Learn more about automation and how Oasis is building the best automation product on Ethereum →",
+    "learn-more-about-automation": "Learn more about automation and how Summer.fi is building the best automation product on Ethereum →",
     "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days",
     "modal-description": "You have the Stop-Loss protection enabled. Click on the banner below to see more details.",
     "your-stop-loss-triggered": "Your Stop-Loss was triggered",
@@ -1654,8 +1628,8 @@
     "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell"
   },
   "newsletter": {
-    "title": "Stay up to date with Oasis.app",
-    "subtitle": "Subscribe to the newsletter for Oasis updates",
+    "title": "Stay up to date with Summer.fi",
+    "subtitle": "Subscribe to the newsletter for Summer.fi updates",
     "placeholder": "Email Address",
     "button": "Subscribe",
     "success": "Thank you for subscribing the newsletter!",
@@ -1688,9 +1662,9 @@
     "update-failure": "Something went wrong"
   },
   "modal-trezor-eip1559-title": "Trezor with Metamask does not support EIP-1559",
-  "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
-  "modal-trezor-eip1559-paragraph2": "You can continue to use Metamask with Trezor with legacy transactions on our environment here: <0>legacy.oasis.app</0>.",
-  "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app.",
+  "modal-trezor-eip1559-paragraph1": "Summer.fi has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
+  "modal-trezor-eip1559-paragraph2": "You can continue to use Metamask with Trezor with legacy transactions on our environment here: <0>legacy.summer.fi</0>.",
+  "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Summer.fi.",
   "product-card": {
     "borrow": "A Vault designed for borrowing against {{token}}",
     "multiply": "A Vault designed to multiply your exposure to {{token}}",
@@ -1837,19 +1811,19 @@
   },
   "product-page": {
     "multiply": {
-      "title": "Oasis Multiply",
+      "title": "Summer.fi Multiply",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset.",
       "link": "Learn more about Multiply ->",
       "aaveDescription": "We've launched Multiply for Aave.",
       "aaveLink": "Read more →"
     },
     "borrow": {
-      "title": "Oasis Borrow",
+      "title": "Summer.fi Borrow",
       "description": "Borrow Dai against your favorite crypto assets. Use the Dai however you like. Browse the featured, or select an asset to view our products.",
       "link": "Learn more about Borrow ->"
     },
     "earn": {
-      "title": "Oasis Earn",
+      "title": "Summer.fi Earn",
       "description": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
       "link": "Learn more about Earn ->"
     }
@@ -1877,8 +1851,8 @@
       "link": "https://yearn.finance/"
     },
     "dai": {
-      "description": "Dai is the largest overcollateralized decentralized stablecoin. Dai can be generated on Oasis.app using various collateral types. Here we show the products that will net you returns in DAI.",
-      "link": "https://kb.oasis.app/help/what-is-dai"
+      "description": "Dai is the largest overcollateralized decentralized stablecoin. Dai can be generated on Summer.fi using various collateral types. Here we show the products that will net you returns in DAI.",
+      "link": "https://kb.summer.fi/help/what-is-dai"
     },
     "uni": {
       "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
@@ -1916,7 +1890,7 @@
       },
       "position-id": {
         "label": "Position ID",
-        "tooltip": "The Position ID is used to reference the position across Oasis.app"
+        "tooltip": "The Position ID is used to reference the position across Summer.fi"
       },
       "collateral-ratio": {
         "label": "Collateral Ratio",
@@ -2128,7 +2102,7 @@
       "debt-repaid": "Debt Repaid",
       "col-price-impact": "ETH Price (impact)",
       "total-transaction-cost": "Total transaction cost on trigger",
-      "estimated-oasis-fee": "Estimated Oasis fee",
+      "estimated-oasis-fee": "Estimated Summer.fi fee",
       "estimated-gas-fee": "Estimated gas fee",
       "setup-transaction-cost": "Setup transaction cost"
     },
@@ -2172,7 +2146,7 @@
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
-    "zero-debt-description": "Oasis.app Optimization allows you to set up a dynamic Auto-Buy and Constant Multiple Strategies on your vault based on the collateralization ratio. This will increase or decrease your exposure to the collateral asset as the price changed. Learn more about how it works",
+    "zero-debt-description": "Summer.fi Optimization allows you to set up a dynamic Auto-Buy and Constant Multiple Strategies on your vault based on the collateralization ratio. This will increase or decrease your exposure to the collateral asset as the price changed. Learn more about how it works",
     "adding-new-triggers-disabled": "Creation of the new Optimization triggers is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Optimization triggers",
     "unable-to-access-optimization": "Unable to access Optimization"
@@ -2208,7 +2182,7 @@
       "cost-per-adjustment": "Estimated  transaction cost per adjustment",
       "max-price-buy": "Max price to perform auto buy",
       "max-price-sell": "Min price to perform auto sell",
-      "estimated-oasis-fee": "Estimated Oasis fee",
+      "estimated-oasis-fee": "Estimated Summer.fi fee",
       "estimated-max-gas-fee": "Estimated max gas fee"
     },
     "adding-constant-multiple": "Adding Constant Multiple trigger",
@@ -2222,10 +2196,10 @@
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
-    "banner": "New: Earn up to 9.9x stETH Yield on Oasis Earn. Read more here",
+    "banner": "New: Earn up to 9.9x stETH Yield on Summer.fi Earn. Read more here",
     "ref-a-friend": "Refer a Friend",
-    "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
-    "intro-link": "Oasis Refer a Friend",
+    "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Summer.fi... forever! Read more about ",
+    "intro-link": "Summer.fi Refer a Friend",
     "total": "Total DAI fees earned",
     "not-claimed": "DAI not claimed",
     "claim": "Claim DAI",
@@ -2233,55 +2207,55 @@
     "no-claim": "No claims",
     "claiming": "Claiming",
     "top": "Top earners",
-    "link": "Your Oasis.app referral link",
+    "link": "Your Summer.fi referral link",
     "copy": "Copy",
     "copied": "Copied",
     "explanation": "Once someone clicks your referral link and accepts then you will see them appear in the “Accounts you’ve referred” below. Then you are all set, fee sharing is active! Your link is reusable as many times as you like.",
-    "faq-link": "Read more in Oasis Referral Guide",
+    "faq-link": "Read more in Summer.fi Referral Guide",
     "you-referred": "Accounts you've referred",
     "not-referred-yet": "You haven’t referred anyone yet",
-    "you-were-not-referred": "No account has referred you to Oasis.app",
+    "you-were-not-referred": "No account has referred you to Summer.fi",
     "you-have-been-invited": "You have been invited by ",
     "accept-invite": "Accept Invite",
     "reject-invite": "Reject Invite",
     "referred-you": "Account that referred you",
     "get-started": "Get started",
     "how": "How it works",
-    "how-p1-not-connected": "1. Connect your ETH wallet to Oasis.app",
+    "how-p1-not-connected": "1. Connect your ETH wallet to Summer.fi",
     "how-p1-connected": "1. Click <1>‘Get Started’</1> below",
-    "how-p2": "2. Share your link with potential Oasis.app users",
-    "how-p3": "3. Both receive 5% of the Oasis.app fees generated forever!",
+    "how-p2": "2. Share your link with potential Summer.fi users",
+    "how-p3": "3. Both receive 5% of the Summer.fi fees generated forever!",
     "need-help": "Need help?",
-    "help-link-1": "Oasis Referrals Guide",
-    "help-link-2": "Visit Oasis Knowledge Base",
+    "help-link-1": "Summer.fi Referrals Guide",
+    "help-link-2": "Visit Summer.fi Knowledge Base",
     "etherscan": "Etherscan",
     "modal": {
-      "you-have-been-ref": "You have been invited to the Oasis.app Refer a Friend program by ",
-      "body-text": "Oasis.app is the most trusted place to deploy capital into Defi. By joining our Refer a Friend program you:",
+      "you-have-been-ref": "You have been invited to the Summer.fi Refer a Friend program by ",
+      "body-text": "Summer.fi is the most trusted place to deploy capital into Defi. By joining our Refer a Friend program you:",
       "p1_1": "Receive 5% of all ",
-      "p1_2": "fees you generate on Oasis.app",
+      "p1_2": "fees you generate on Summer.fi",
       "p2": "Completely free, claim anytime",
       "p3": "All fees paid in DAI",
       "dont-earn": "Don't earn with fee sharing",
       "read": "Read More",
       "accept": "Accept invite",
       "later": "Decide later",
-      "joined": "You have successfully joined the Oasis.app Refer a Friend program.",
-      "joined-body": "You will now receive 5% of all fees that you generate on Oasis.app. You can now go directly to the Oasis.app homepage and start exploring products to deploy capital into Defi.",
-      "go-home": "Go to Oasis.app homepage ",
+      "joined": "You have successfully joined the Summer.fi Refer a Friend program.",
+      "joined-body": "You will now receive 5% of all fees that you generate on Summer.fi. You can now go directly to the Summer.fi homepage and start exploring products to deploy capital into Defi.",
+      "go-home": "Go to Summer.fi homepage ",
       "go-dashboard": "Go to referral dashboard ",
-      "link-1": "Oasis.app Referral Blog Post, ",
+      "link-1": "Summer.fi Referral Blog Post, ",
       "link-2": "Referral Guide",
-      "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
-      "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
-      "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."
+      "successful-body": "You will now receive 5% of all fees that they generate on Summer.fi. You can now go directly to the Summer.fi homepage or see your referral dashboard.",
+      "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Summer.fi Refer a Friend program.",
+      "successful-join": "You have successfully joined the Summer.fi Refer a Friend program."
     }
   },
   "notifications": {
     "notifications-center": "Notifications",
     "notifications-preferences": "Notifications preferences",
     "enable-notifications-email-heading": "Enable email notifications",
-    "enable-notifications-email-description": "You are able to receive the email updates on Oasis.app",
+    "enable-notifications-email-description": "You are able to receive the email updates on Summer.fi",
     "enable-notifications-email-placeholder": "Enter email...",
     "confirm-btn": "Confirm",
     "change-btn": "Change",
@@ -2301,9 +2275,9 @@
     "action-notifications-description": "Receive a notification when an action occurs on your Vault.",
     "info-notifications": "Vault info notifications",
     "info-notifications-description": "Receive notifications with important, timely information, so you can adjust your Vault.",
-    "user-communication-notifications": "Oasis.app user communication notifications",
+    "user-communication-notifications": "Summer.fi user communication notifications",
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-    "news-notifications": "Oasis.app news notifications",
+    "news-notifications": "Summer.fi news notifications",
     "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "service-not-available": "Notification service not available, please try again later.",
     "welcome-to-notifications": "Welcome to your Notification Center!",
@@ -2393,16 +2367,16 @@
   "view-position": "View Position",
   "brand-assets": {
     "heading": "Brand Assets",
-    "intro": "Find here the Oasis.app Logo and graphics.",
+    "intro": "Find here the Summer.fi Logo and graphics.",
     "intro-cta": "Download all assets",
     "category": {
       "logo": {
         "heading": "Logo",
         "info": "Please don’t modify, edit, or distort the logo."
       },
-      "palm-leaf": {
-        "heading": "The Palm Leaf",
-        "info": "lease only use the mark-only logo in these situations: The full-version logo is illegible, a limited space to display the full-version logo or Oasis.app brand is already established well."
+      "dot": {
+        "heading": "The S. icon",
+        "info": "Please only use the mark-only logo in these situations: The full-version logo is illegible, a limited space to display the full-version logo or Summer.fi brand is already established well."
       },
       "minimum-size": {
         "heading": "Minimum Size",
@@ -2416,18 +2390,15 @@
       "best-practices": {
         "heading": "Best Practices",
         "info": "Please avoid the examples blow when using the logo.",
-        "no-gradient": "Do not use gradient for the wordmark",
+        "no-color-change": "Do not use the wrong color for the logo",
         "no-shadow": "Do not add shadow",
-        "no-rotate": "Do not rotate the logo",
-        "no-alone": "Do not use the wordmark alone",
-        "no-stack": "Do not stack the logo",
-        "no-ratio": "Do not change the ratio"
+        "no-rotate": "Do not rotate the logo"
       }
     }
   },
   "security": {
     "heading": "Why do users trust us?",
-    "intro": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds.",
+    "intro": "Summer.fi is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds.",
     "category": {
       "people": {
         "header": "Talented people",
@@ -2514,8 +2485,8 @@
       "anja-faq": "Ajna FAQ",
       "ajna-discord": "Anja Discord",
       "ajna-twitter": "Ajna Twitter",
-      "oasis-discord": "Oasis.app Discord",
-      "oasis-twitter": "Oasis.app Twitter"
+      "oasis-discord": "Summer.fi Discord",
+      "oasis-twitter": "Summer.fi Twitter"
     },
     "product-cards": {
       "borrow-against-your": "Borrow against your {{token}}",
@@ -2561,8 +2532,8 @@
         "banners": {
           "tokens": {
             "title": "This position earns AJNA tokens",
-            "description-open": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.",
-            "description-manage": "This Ajna position on Oasis.app makes you eligible for AJNA token rewards. You are earning automatically and you can claim weekly after first month.",
+            "description-open": "Opening this Ajna position on Summer.fi makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.",
+            "description-manage": "This Ajna position on Summer.fi makes you eligible for AJNA token rewards. You are earning automatically and you can claim weekly after first month.",
             "button-open": "Read more about AJNA rewards",
             "button-manage": "Claim your AJNA tokens"
           }
@@ -2597,12 +2568,12 @@
           },
           "nft": {
             "intro": "The Ajna rewards this position is eligible for",
-            "token-rewards": "Oasis.app x AJNA Token Rewards",
+            "token-rewards": "Summer.fi x AJNA Token Rewards",
             "protocol-rewards": "AJNA Protocol Rewards",
             "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
             "bullet-points": {
               "token-rewards": [
-                "Rewards exclusive to Oasis.app users only!",
+                "Rewards exclusive to Summer.fi users only!",
                 "Auto-Earned for lending within the active liquidity range",
                 "Claimable weekly",
                 "Read more about <2><3>Ajna Token Rewards</2></3>"
@@ -2800,15 +2771,15 @@
           }
         },
         "token": {
-          "title": "Oasis.app x Ajna Token Rewards",
-          "list-1": "Rewards exclusive to Oasis.app users!",
+          "title": "Summer.fi x Ajna Token Rewards",
+          "list-1": "Rewards exclusive to Summer.fi users!",
           "list-2": "Rewards for Borrowing, Lending and Multiplying",
           "list-3": "Tokens claimable weekly after first month",
           "link": "Learn more about Ajna Token Rewards",
           "banner": {
             "title": "AJNA Token Rewards"
           },
-          "floatingLabel": "Exclusive to Oasis.app"
+          "floatingLabel": "Exclusive to Summer.fi"
         },
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
         "button": "Claim AJNA tokens"

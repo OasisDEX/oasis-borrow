@@ -5,7 +5,6 @@ import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
-import { Hero } from 'features/homepage/HomepageView'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -14,6 +13,8 @@ import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
+
+import { Hero } from './common/Hero'
 
 export const benefitCardsAnja = [
   {

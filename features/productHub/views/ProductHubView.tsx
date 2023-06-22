@@ -18,26 +18,28 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, Fragment, useMemo, useState } from 'react'
-import { Box, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
-  headerGradient?: [string, string]
+  headerGradient?: [string, string, ...string[]]
   product: ProductHubProductType
   promoCardsCollection: PromoCardsCollection
   token?: string
   url?: string
+  limitRows?: number
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
   initialNetwork,
   initialProtocol,
-  headerGradient = ['#2a30ee', '#a4a6ff'],
+  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
   product,
   promoCardsCollection,
   token,
   url,
+  limitRows,
 }) => {
   const { t } = useTranslation()
   const { data } = useProductHubData({
@@ -103,7 +105,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 fontWeight: 'regular',
               }}
             >
-              Oasis.app {t(`nav.${selectedProduct}`)}
+              Summer.fi {t(`nav.${selectedProduct}`)}
             </WithArrow>
           </AppLink>
         </Text>
@@ -124,7 +126,32 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               selectedToken={selectedToken}
               tableData={_data.table}
               onChange={setSelectedFilters}
+              limitRows={limitRows}
             />
+            {limitRows && limitRows > 0 && (
+              <Flex
+                sx={{
+                  justifyContent: 'center',
+                  py: 4,
+                  borderBottom: '1px solid',
+                  borderBottomColor: 'neutral20',
+                }}
+              >
+                <AppLink
+                  href={
+                    selectedToken === ALL_ASSETS
+                      ? `/${selectedProduct}`
+                      : `/${selectedProduct}/${selectedToken}`
+                  }
+                >
+                  <WithArrow
+                    sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}
+                  >
+                    {t('view-all')}
+                  </WithArrow>
+                </AppLink>
+              </Flex>
+            )}
           </>
         )}
       </WithLoadingIndicator>

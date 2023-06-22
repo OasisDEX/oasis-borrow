@@ -7,7 +7,7 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 interface ProductHubNaturalLanguageSelectorControllerProps {
-  gradient: [string, string]
+  gradient: [string, string, ...string[]]
   product: ProductHubProductType
   token?: string
   url?: string

@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /api
 Disallow: /privacy
 Disallow: /terms
-Sitemap: https://oasis.app/sitemap.xml
+Sitemap: https://summer.fi/sitemap.xml
