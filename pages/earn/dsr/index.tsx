@@ -5,6 +5,7 @@ import { useAccount } from 'helpers/useAccount'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
+import React from 'react'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
