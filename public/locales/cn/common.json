@@ -3,7 +3,7 @@
   "404-message": "抱歉，页面不存在。",
   "about": {
     "heading": "关于我们",
-    "description": "Oasis 的目标是为用户提供最好和最值得信赖的方式来部署资金。我们开发 Summer.fi 让用户能在 DeFi 的领域获得最大的利益，而我们的团队是由一群区块链爱好者所组成。",
+    "description": "Summer.fi 的目标是为用户提供最好和最值得信赖的方式来部署资金。我们开发 Summer.fi 让用户能在 DeFi 的领域获得最大的利益，而我们的团队是由一群区块链爱好者所组成。",
     "careers-link": "加入我们",
     "pics-title": "团队"
   },
@@ -251,27 +251,27 @@
       },
       "faq": {
         "title": "有任何疑问吗？",
-        "description": "您可以在我们的常见问题页面了解更多关于 Oasis、Dai 和 DeFi 的信息"
+        "description": "您可以在我们的常见问题页面了解更多关于 Summer.fi、Dai 和 DeFi 的信息"
       }
     },
     "stats": {
       "30-day-volume": "30天交易量",
-      "managed-on-oasis": "Oasis 上的交易量",
+      "managed-on-oasis": "Summer.fi 上的交易量",
       "median-vault": "金库交易中位数"
     },
     "tabs": {
       "borrow": {
-        "tabLabel": "在 Oasis 借贷",
+        "tabLabel": "在 Summer.fi 借贷",
         "tabParaContent": "以您最爱的加密货币借出 Dai，随心所意使用它。",
         "tabParaLinkContent": "查看所有借贷抵押品 →"
       },
       "multiply": {
-        "tabLabel": "在 Oasis 开启杠杆",
+        "tabLabel": "在 Summer.fi 开启杠杆",
         "tabParaContent": "快来浏览我们的特色产品，接着选择您最爱的加密货币来提高风险敞口吧。",
         "tabParaLinkContent": "查看所有杠杆抵押品 →"
       },
       "earn": {
-        "tabLabel": "在 Oasis 赚取奖励",
+        "tabLabel": "在 Summer.fi 赚取奖励",
         "tabParaContent": "从今天开始创造最佳的流动性挖矿，让加密货币为您赚取奖励。从下方选取您有兴趣的 Earn 产品吧。",
         "tabParaLinkContent": "进一步了解 Earn →"
       }
@@ -468,7 +468,7 @@
     "oracles": "喂价机",
     "dai-wallet": "Dai 钱包",
     "borrow": "抵押借贷",
-    "oasis-borrow": "Oasis Borrow",
+    "oasis-borrow": "Summer.fi Borrow",
     "assets": "加密资产",
     "earn": "赚取奖励",
     "select-an-asset": "选择资产",
@@ -494,7 +494,7 @@
   "notification-status-sign": "签名交易",
   "of": "的",
   "one-of-some": "{{some}} 的 {{one}}  ",
-  "onramp-leave-message": "点击购买将离开 Oasis，并访问第三方网站完成购买过程。",
+  "onramp-leave-message": "点击购买将离开 Summer.fi，并访问第三方网站完成购买过程。",
   "open-new-vault": "开启新金库",
   "open-vault": {
     "title": "开启金库",
@@ -526,7 +526,7 @@
   "pending-transactions": "确认中交易",
   "permissions": "设置许可",
   "permissions-btn": "设置许可",
-  "permissions-desc": "这将授权 Oasis 与你钱包中的 Dai 进行交互。",
+  "permissions-desc": "这将授权 Summer.fi 与你钱包中的 Dai 进行交互。",
   "price": "价格",
   "powered-by": "Powered by",
   "proceed": "继续",
@@ -578,10 +578,10 @@
     },
     "about": {
       "title": "关于我们",
-      "description": "Oasis 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Summer.fi 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。"
+      "description": "Summer.fi 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Summer.fi 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。"
     },
     "referrals": {
-      "title": "推荐好友使用 Oasis 并赚取 Dai",
+      "title": "推荐好友使用 Summer.fi 并赚取 Dai",
       "description": "我们让 Summer.fi 的用户可以经由推荐朋友而得到回报。您可以邀请好友使用我们的产品，您和朋友都可以因此赚取少许的手续费。"
     },
     "brand-assets": {
@@ -713,7 +713,7 @@
   "tos-accept-message": "在开始之前，您必须阅读并接受我们的服务条款。",
   "tos-accept-message-updated": "在继续之前，您必须阅读并接受我们更新后的服务条款。",
   "tos-acceptance-check-in-progress": "许可检查进行中…",
-  "tos-desc": "通过创建一个储蓄金库，我接受 Oasis",
+  "tos-desc": "通过创建一个储蓄金库，我接受 Summer.fi",
   "tos-jwt-signature-message": "您似乎第一次使用 Summer.fi 或正在通过新设备连接。为了安全起见，请用您的钱包签名以继续。",
   "tos-read": "我已阅读并接受服务条款。",
   "tos-view": "查看服务条款",
@@ -782,7 +782,7 @@
     "your-vaults": "你的金库",
     "assets-and-positions": "前 {{number}} 名的资产和仓位",
     "total-assets": "总资产",
-    "total-assets-subheader": "使用 <0>Oasis 精心规划的代币列表计算 →</0>"
+    "total-assets-subheader": "使用 <0>Summer.fi 精心规划的代币列表计算 →</0>"
   },
   "vault-notices": {
     "ownership": {
@@ -870,7 +870,7 @@
   "your-wallet": "你的钱包",
   "welcome": "欢迎来到全新的 Summer.fi",
   "read-blog-post": "阅览博客",
-  "visit-old-oasis": "前往旧版 Oasis",
+  "visit-old-oasis": "前往旧版 Summer.fi",
   "oracles": {
     "header": "喂价机",
     "description": "可以在下方查看被 Maker 金库所接受的抵押品类型的当前及下一个价格。这边的价格大部分是使用喂价安全模块(Oracle Stability Module, OSM)而得到，该模块一小时只会更新一次。因此，当发生价格骤跌时，用户仍有一小时可以做出反应。",
@@ -977,17 +977,17 @@
   },
   "product-page": {
     "multiply": {
-      "title": "Oasis Multiply",
+      "title": "Summer.fi Multiply",
       "description": "快来浏览我们的产品或者选择您最爱的加密资产来提高风险敞口吧。",
       "link": "进一步了解 Multiply ->"
     },
     "borrow": {
-      "title": "Oasis Borrow",
+      "title": "Summer.fi Borrow",
       "description": "现在就从下方选择您想抵押的加密资产来提高风险敞口吧。",
       "link": "进一步了解 Borrow ->"
     },
     "earn": {
-      "title": "Oasis Earn",
+      "title": "Summer.fi Earn",
       "description": "启用最优质的流动性挖矿，让加密资产开始为您赚取奖励。您可以从下方选择合适的 Earn 产品。",
       "link": "进一步了解 Earn ->"
     }
@@ -1017,7 +1017,7 @@
     "learn-more-heading": "想了解更多?",
     "learn-more-body": "你可以前往我的 <0>知识</0> 页面更深入的了解，或是在<1> Discord </1> 上发问。"
   },
-  "get-started-button": "开始使用 Oasis",
+  "get-started-button": "开始使用 Summer.fi",
   "wallet-wrong-network": "你的钱包似乎不在正确的网路里。",
   "app-wrong-network": "现在的 Summer.fi 似乎不支持你的钱包。",
   "wallet-wrong-network-desc": "你的钱包似乎在另一个与 Summer.fi 不同的网路里运行，请手动转换你的钱包网路，或者可以直接按下方的按钮。",
@@ -1086,9 +1086,9 @@
   "error-button-reload": "重新载入",
   "exchange": {
     "onboarding": {
-      "title": "Oasis Swap & Bridge 打招呼",
-      "subtitle": "向 Oasis Swap & Bridge 打招呼",
-      "body": "在 Oasis 上快速安全兑换代币。 前往 <0>Oasis Swap 的常见问题 →</0>",
+      "title": "Summer.fi Swap & Bridge 打招呼",
+      "subtitle": "向 Summer.fi Swap & Bridge 打招呼",
+      "body": "在 Summer.fi 上快速安全兑换代币。 前往 <0>Summer.fi Swap 的常见问题 →</0>",
       "button": "知道了"
     }
   },
@@ -1146,7 +1146,7 @@
     "overview-earn-aave": "概述",
     "earnings-to-date": "迄今为止的收益",
     "earnings-to-date-after-fees": "后手续费 {{ afterFees }} {{ symbol }}",
-    "earnings-to-date-modal": "迄今为止此仓位的收益是由当前的仓位净值减去累积的存款，再加上累积的提款，不包含支付 Oasis 的费用。“后手续费”的价格包含 Oasis 手续费及以太坊的燃料费的收入。",
+    "earnings-to-date-modal": "迄今为止此仓位的收益是由当前的仓位净值减去累积的存款，再加上累积的提款，不包含支付 Summer.fi 的费用。“后手续费”的价格包含 Summer.fi 手续费及以太坊的燃料费的收入。",
     "net-apy": "净值年收益",
     "net-apy-modal": "年收益已算入手续费，其计算方式是 {{ token }} 代币价格过去七天上涨的百分比，按年计算，并且减去变动的年手续费。",
     "exposure-modal": "以所部署的资金杠杆倍数表示这个仓位的总敞口。"
@@ -1296,7 +1296,7 @@
     "price-impact": "{{token}} 价格 (影响)",
     "slippage-limit": "滑点限制",
     "third-party-fees": "第三方协议手续费",
-    "oasis-fee": "Oasis 手续费",
+    "oasis-fee": "Summer.fi 手续费",
     "ltv": "LTV",
     "outstanding-debt": "Outstanding debt",
     "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
@@ -1378,7 +1378,7 @@
     "up-to": "至多",
     "not-guaranteed": "自动化不保证绝对百分之百保护",
     "guarantee-factors": "有许多的因素会影响执行是否成功，这其中包含清算价格、波动性和燃料费。",
-    "learn-more-about-automation": "进一步了解自动化以及 Oasis 如何在以太坊上创建最好的自动化产品 →",
+    "learn-more-about-automation": "进一步了解自动化以及 Summer.fi 如何在以太坊上创建最好的自动化产品 →",
     "automation-fact": "{{total}} 使用自动化的金库的 {{success}} 在过去 90 天已经被成功保存",
     "modal-description": "你已启用 Stop-Loss 保护。点击此横幅以了解更多。",
     "your-stop-loss-triggered": "已触发你的 Stop-Loss ",
@@ -1711,7 +1711,7 @@
       "cost-per-adjustment": "单一调整的预估交易成本",
       "max-price-buy": "执行 Auto-Buy 的最高价格",
       "max-price-sell": "执行 Auto-Sell 的最低价格",
-      "estimated-oasis-fee": "预估的 Oasis 手续费",
+      "estimated-oasis-fee": "预估的 Summer.fi 手续费",
       "estimated-max-gas-fee": "预估的最高燃料费",
       "cancel-summary": "取消摘要"
     },
@@ -1744,7 +1744,7 @@
     "banner": "推荐你的好友，一起来赚取 DAI",
     "ref-a-friend": "推荐好友",
     "intro-1": "只要你推荐好友使用 Summer.fi，你和你的好友就可以永远赚取 5% 共享的手续费奖励。进一步了解",
-    "intro-link": "Oasis 推荐好友",
+    "intro-link": "Summer.fi 推荐好友",
     "total": "已赚取的 DAI 手续费总金额",
     "not-claimed": "尚未领取的 DAI",
     "claim": "领取 DAI",
@@ -1756,7 +1756,7 @@
     "copy": "复制",
     "copied": "已复制",
     "explanation": "只要你的好友点击你的推荐连接并接受邀请，你就会看见他们显示在下方的”你已推荐的账户“。如此一来，手续费奖励立即生效！只要你想要，你可以无限次分享你的推荐链接。",
-    "faq-link": "进一步了解 Oasis 推荐规则",
+    "faq-link": "进一步了解 Summer.fi 推荐规则",
     "you-referred": "你已推荐的账户",
     "not-referred-yet": "你尚未推荐任何人",
     "you-were-not-referred": "还没有人推荐你使用 Summer.fi",
@@ -1771,8 +1771,8 @@
     "how-p2": "2. 分享你的连接给潜在的 Summer.fi 用户",
     "how-p3": "3. 双方皆永远获得来自 Summer.fi 上手续费的 5% 奖励！",
     "need-help": "需要协助？",
-    "help-link-1": "Oasis 推荐规则",
-    "help-link-2": "前往 Oasis 知识中心",
+    "help-link-1": "Summer.fi 推荐规则",
+    "help-link-2": "前往 Summer.fi 知识中心",
     "etherscan": "Etherscan",
     "modal": {
       "you-have-been-ref": "你已经受邀加入 Summer.fi 好友推荐计划，推荐人是",

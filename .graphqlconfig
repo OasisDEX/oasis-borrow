@@ -1,5 +1,5 @@
 {
-  "name": "Oasis Borrow Cache GraphQL API",
+  "name": "Summer.fi Borrow Cache GraphQL API",
   "schemaPath": "schema.graphql",
   "extensions": {
     "endpoints": {
