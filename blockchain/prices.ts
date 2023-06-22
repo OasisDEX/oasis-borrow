@@ -99,13 +99,15 @@ export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
 )
 
 function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
+  const errorsArray = []
   for (const label of tickerServiceLabels) {
     if (label && tickers[label]) {
       return tickers[label]
     }
+    errorsArray.push(label)
   }
 
-  throw new Error(`No price data for given token`)
+  throw new Error(`No price data for given token - ${JSON.stringify(errorsArray)}`)
 }
 
 export function getTokenPrice(token: string, tickers: Tickers) {
