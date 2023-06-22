@@ -1,4 +1,8 @@
-import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
+import {
+  ALL_ASSETS,
+  productHubOptionsMap,
+  productHubTestnetOptionsMap,
+} from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import ProductHubRouteHandler from 'features/productHub/views/ProductHubRouteHandler'
 import { GetStaticPaths } from 'next'
@@ -11,7 +15,10 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     locales?.flatMap((locale) =>
       Object.values(ProductHubProductType)
         .flatMap((product) =>
-          Object.values(productHubOptionsMap[product].tokens).map((token) =>
+          Object.values({
+            ...productHubOptionsMap[product].tokens,
+            ...productHubTestnetOptionsMap[product].tokens,
+          }).map((token) =>
             token.value !== ALL_ASSETS
               ? [product, ...(token.value !== ALL_ASSETS ? [token.value] : [])]
               : undefined,
