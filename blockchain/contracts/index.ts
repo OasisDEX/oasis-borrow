@@ -101,6 +101,17 @@ export function ensureTokensExist(
   }
 }
 
+export function ensureGivenTokensExist(
+  chainId: NetworkIds,
+  contracts: ReturnType<typeof getNetworkContracts>,
+  tokens: ReadonlyArray<string>,
+): asserts contracts is { tokens: { [K in (typeof tokens)[number]]: ContractDesc } } {
+  ensureTokensExist(chainId, contracts)
+  if (tokens.some((p) => !contracts.tokens.hasOwnProperty(p))) {
+    throw new Error(`Can't find tokens definitions: ${JSON.stringify(tokens)} on ${chainId} chain`)
+  }
+}
+
 export function ensureChainlinkTokenPairsExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,

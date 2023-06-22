@@ -28,7 +28,7 @@ export function networkIdToLibraryNetwork(networkId: NetworkIds): Network {
 }
 
 export function swapCall(
-  { swapAddress }: ReturnType<typeof getTokenAddresses>,
+  { swapAddress }: Pick<ReturnType<typeof getTokenAddresses>, 'swapAddress'>,
   network: NetworkIds,
 ) {
   const oneInchVersion = [NetworkIds.OPTIMISMMAINNET, NetworkIds.ARBITRUMMAINNET].includes(network)
