@@ -506,7 +506,6 @@ export function createAaveDpmPosition$(
             tickerPrices$,
           ).pipe(
             filter((position): position is AavePosition => {
-              debugger
               return position !== undefined
             }),
           )

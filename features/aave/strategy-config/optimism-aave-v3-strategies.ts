@@ -7,6 +7,8 @@ import { AaveMultiplyManageComponent } from 'features/multiply/aave/components/A
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/multiply/aave/riskSliderConfig'
 import { LendingProtocol } from 'lendingProtocols'
 
+import { allActionsAvailable } from './all-actions-available'
+
 export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.optimismMainnet,
@@ -35,7 +37,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
-    availableActions: ['close'],
+    availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
   },
   {
@@ -65,7 +67,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
-    availableActions: ['close'],
+    availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
   },
   {
@@ -95,7 +97,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
-    availableActions: ['close'],
+    availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
   },
 ]
