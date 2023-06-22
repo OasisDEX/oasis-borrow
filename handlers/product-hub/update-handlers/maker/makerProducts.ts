@@ -1,13 +1,12 @@
-import { NetworkNames } from 'blockchain/networks'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const makerProductHubProducts: ProductHubItem[] = [
+// network is added in the handler
+export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'ETH-A/DAI',
     multiplyStrategyType: 'long',
@@ -17,7 +16,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'ETH-B/DAI',
     multiplyStrategyType: 'long',
@@ -27,7 +25,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'ETH-C/DAI',
     multiplyStrategyType: 'long',
@@ -38,7 +35,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'WSTETH-A/DAI',
     multiplyStrategyType: 'long',
@@ -49,7 +45,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     primaryToken: 'WSTETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'WSTETH-B/DAI',
     multiplyStrategyType: 'long',
@@ -60,7 +55,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     primaryToken: 'RETH',
     primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'RETH-A/DAI',
     multiplyStrategyType: 'long',
@@ -70,7 +64,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'WBTC-A/DAI',
     multiplyStrategyType: 'long',
@@ -80,7 +73,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'WBTC-B/DAI',
     multiplyStrategyType: 'long',
@@ -90,7 +82,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'WBTC-C/DAI',
     multiplyStrategyType: 'long',
@@ -100,7 +91,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Borrow],
     primaryToken: 'CRVV1ETHSTETH',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'CRVV1ETHSTETH-A',
     multiplyStrategyType: 'long',
@@ -110,7 +100,6 @@ export const makerProductHubProducts: ProductHubItem[] = [
     product: [ProductHubProductType.Earn],
     primaryToken: 'DAI',
     secondaryToken: 'DAI',
-    network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.Maker,
     label: 'DSR',
     managementType: 'passive',
