@@ -292,7 +292,7 @@ export function HomepageView() {
         <TabBar
           variant="large"
           useDropdownOnMobile
-          defaultTab="earn"
+          defaultTab="multiply"
           sections={[
             {
               label: t('landing.tabs.maker.multiply.tabLabel'),
