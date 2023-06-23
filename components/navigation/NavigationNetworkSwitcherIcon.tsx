@@ -9,6 +9,6 @@ export function NavigationNetworkSwitcherIcon(_isOpen: boolean) {
   return isWalletConnecting || !icon ? (
     <AppSpinner />
   ) : (
-    <Image src={icon} sx={{ width: '42px', height: '42px' }} />
+    <Image src={icon} sx={{ width: '32px', height: '32px' }} />
   )
 }

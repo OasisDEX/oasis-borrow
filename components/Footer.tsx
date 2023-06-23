@@ -32,6 +32,7 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.resources',
     links: [
+      { labelKey: 'nav.discover', url: INTERNAL_LINKS.discover, target: '_self' },
       { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG.MAIN, target: '_self' },
       // add link
       { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.KB.HELP, target: '_blank' },

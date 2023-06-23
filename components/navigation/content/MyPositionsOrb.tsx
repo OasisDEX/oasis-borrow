@@ -8,7 +8,7 @@ export function MyPositionsOrb() {
   return (
     <NavigationOrb
       icon="home"
-      iconSize={20}
+      iconSize={16}
       link={`/owner/${walletAddress}`}
       {...(!!amountOfPositions && { beacon: amountOfPositions })}
     />

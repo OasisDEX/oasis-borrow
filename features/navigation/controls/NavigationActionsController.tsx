@@ -26,8 +26,8 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
     <>
       {isConnected ? (
         <>
+          {isViewBelowXl && swapWidgetFeatureToggle && <SwapWidgetOrb />}
           {isViewBelowXl && <MyPositionsOrb />}
-          {swapWidgetFeatureToggle && <SwapWidgetOrb />}
           <NotificationsOrb />
           {useNetworkSwitcher && <NavigationNetworkSwitcherOrb />}
           {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
