@@ -1,14 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
-import { PromoCardProps } from 'components/PromoCard'
+import { PromoCardProps, PromoCardVariant } from 'components/PromoCard'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { getActionUrl } from 'features/productHub/helpers'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
-import { getAjnaTokensPill } from 'handlers/product-hub/helpers'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 
 const protocol = { network: NetworkNames.ethereumMainnet, protocol: LendingProtocol.Ajna }
+export const getAjnaTokensPill = {
+  label: { key: 'product-hub.promo-cards.get-ajna-tokens' },
+  variant: 'positive' as PromoCardVariant,
+}
 
 export function parseAjnaBorrowPromoCard(
   collateralToken: string,

@@ -28,7 +28,7 @@ export function parseMakerBorrowPromoCard(
     ...(product?.fee && {
       data: [
         {
-          label: 'Borrow rate',
+          label: { key: 'product-hub.promo-cards.borrow-rate' },
           value: formatDecimalAsPercent(new BigNumber(product.fee)),
         },
       ],

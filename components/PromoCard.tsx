@@ -160,7 +160,7 @@ export const PromoCard: FC<PromoCardProps> = ({
           <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
         </Box>
       )}
-      <Heading as="h3" variant="boldParagraph2">
+      <Heading as="h3" variant="boldParagraph2" sx={{ fontSize: '15px' }}>
         <Translatable text={title} />
       </Heading>
       {description && (
