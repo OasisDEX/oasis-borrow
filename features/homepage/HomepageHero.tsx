@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { HomePageBanner } from 'components/HomePageBanner'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
@@ -78,7 +76,6 @@ export const HomepageHero = () => {
   const [context] = useObservable(context$)
   const [userReferral] = useObservable(userReferral$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
-  const { t } = useTranslation()
 
   useEffect(() => {
     if (!localReferral && referralsEnabled) {
@@ -94,7 +91,6 @@ export const HomepageHero = () => {
   const notificationsEnabled = useFeatureToggle('Notifications')
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
-  const { walletAddress } = useAccount()
   return (
     <>
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
@@ -107,20 +103,6 @@ export const HomepageHero = () => {
           flexDirection: 'column',
         }}
       >
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            mt: '20px',
-            mb: -3,
-            width: 'unset',
-          }}
-        >
-          <HomePageBanner
-            heading={t('dsr.landing-page-banner.title')}
-            icon={{ name: 'dai_circle_color', background: '#FFEBC4' }}
-            {...(walletAddress && { link: `earn/dsr/${walletAddress}` })}
-          />
-        </Flex>
         <Hero
           isConnected={context?.status === 'connected'}
           heading="landing.hero.main.headline"
