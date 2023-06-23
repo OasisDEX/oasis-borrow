@@ -34,7 +34,7 @@ export function AssetsTableDataCellAction({
         <>
           <AppLink
             href={link}
-            sx={{ flexGrow: [1, null, null, 'initial'] }}
+            sx={{ flexGrow: [1, null, null, 'initial'], pointerEvents: disabled ? 'none' : 'auto' }}
             internalInNewTab={newTab}
           >
             <AssetsTableDataCellAction cta={cta} disabled={disabled} onClick={onClick} />
