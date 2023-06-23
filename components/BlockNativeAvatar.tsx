@@ -4,15 +4,14 @@ import React from 'react'
 import { Box, Image, SxStyleProp } from 'theme-ui'
 
 type BlockNativeAvatarProps = {
-  small?: boolean
   sx?: SxStyleProp
 }
 
-export function BlockNativeAvatar({ small = false, sx }: BlockNativeAvatarProps) {
+export function BlockNativeAvatar({ sx }: BlockNativeAvatarProps) {
   const [{ wallet }] = useConnectWallet()
   const sizes = {
-    box: small ? '32px' : '42px',
-    icon: small ? '18px' : '24px',
+    box: '32px',
+    icon: '20px',
   }
   return (
     <Box

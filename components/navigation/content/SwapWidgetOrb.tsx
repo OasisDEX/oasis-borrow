@@ -19,7 +19,7 @@ export function SwapWidgetOrb() {
       <NavigationOrb
         beacon={!exchangeOnboarded && !exchangeOpened}
         icon="exchange"
-        iconSize={20}
+        iconSize={18}
         onClick={() => {
           setExchangeOpened(true)
           uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
