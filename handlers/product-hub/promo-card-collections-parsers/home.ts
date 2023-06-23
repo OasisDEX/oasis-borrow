@@ -9,11 +9,14 @@ import {
   findByTokenPair,
   getAutomationEnabledPill,
   getEarnStakingRewardsPill,
+  getEnterWithToken,
   getHighestAvailableLtvPill,
   getHighestMultiplePill,
   getLongTokenPill,
   getLowestBorrowingCostPill,
+  getUpToYieldExposurePill,
   parseDsrPromoCard,
+  parseEarnYieldLoopPromoCard,
   parseMakerBorrowPromoCard,
   parseMultiplyPromoCard,
 } from 'handlers/product-hub/helpers'
@@ -22,6 +25,10 @@ import { LendingProtocol } from 'lendingProtocols'
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const makerProducts = table.filter((product) => product.protocol === LendingProtocol.Maker)
+  const aaveV2EthereumProducts = table.filter(
+    ({ network, protocol }) =>
+      protocol === LendingProtocol.AaveV2 && network === NetworkNames.ethereumMainnet,
+  )
   const aaveV3EthereumProducts = table.filter(
     ({ network, protocol }) =>
       protocol === LendingProtocol.AaveV3 && network === NetworkNames.ethereumMainnet,
@@ -31,6 +38,12 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   )
   const aaveV3EthereumMultiplyProducts = aaveV3EthereumProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Multiply),
+  )
+  const aaveV2EthereumEarnProducts = aaveV2EthereumProducts.filter(({ product }) =>
+    product.includes(ProductHubProductType.Earn),
+  )
+  const aaveV3EthereumEarnProducts = aaveV3EthereumProducts.filter(({ product }) =>
+    product.includes(ProductHubProductType.Earn),
   )
 
   const ETHBProduct = findByIlk(makerBorrowishProducts, 'ETH-B')
@@ -59,6 +72,14 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const WBTCUSDCAaveV3EthereumMultiplyProduct = findByTokenPair(aaveV3EthereumMultiplyProducts, [
     'WBTC',
     'USDC',
+  ])
+  const WSTETHETHAaveV2EthereumEarnProduct = findByTokenPair(aaveV2EthereumEarnProducts, [
+    'STETH',
+    'ETH',
+  ])
+  const WSTETHETHAaveV3EthereumEarnProduct = findByTokenPair(aaveV3EthereumEarnProducts, [
+    'WSTETH',
+    'ETH',
   ])
 
   const promoCardLearnAboutBorrow = {
@@ -148,6 +169,20 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     product: WBTCUSDCAaveV3EthereumMultiplyProduct,
     protocol: LendingProtocol.AaveV3,
   })
+  const promoCardWSTETHUSDCAaveV2Earn = parseEarnYieldLoopPromoCard({
+    collateralToken: 'STETH',
+    debtToken: 'ETH',
+    pills: [getUpToYieldExposurePill('4x'), getEnterWithToken('ETH')],
+    product: WSTETHETHAaveV2EthereumEarnProduct,
+    protocol: LendingProtocol.AaveV2,
+  })
+  const promoCardWSTETHUSDCAaveV3Earn = parseEarnYieldLoopPromoCard({
+    collateralToken: 'WSTETH',
+    debtToken: 'ETH',
+    pills: [getUpToYieldExposurePill('10x'), getEnterWithToken('ETH')],
+    product: WSTETHETHAaveV3EthereumEarnProduct,
+    protocol: LendingProtocol.AaveV3,
+  })
 
   return {
     [ProductHubProductType.Borrow]: {
@@ -183,7 +218,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       },
     },
     [ProductHubProductType.Earn]: {
-      default: [promoCardDsr],
+      default: [promoCardDsr, promoCardWSTETHUSDCAaveV3Earn, promoCardWSTETHUSDCAaveV2Earn],
       tokens: {},
     },
   }

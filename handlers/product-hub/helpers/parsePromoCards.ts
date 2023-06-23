@@ -26,6 +26,11 @@ export function getEarnStakingRewardsPill() {
     label: { key: 'product-hub.promo-cards.earn-staking-rewards' },
   }
 }
+export function getEnterWithToken(token: string) {
+  return {
+    label: { key: 'product-hub.promo-cards.enter-with-token', props: { token } },
+  }
+}
 export function getHighestAvailableLtvPill() {
   return {
     label: { key: 'product-hub.promo-cards.highest-available-ltv' },
@@ -46,17 +51,44 @@ export function getLowestBorrowingCostPill() {
     label: { key: 'product-hub.promo-cards.lowest-borrowing-cost' },
   }
 }
+export function getUpToYieldExposurePill(maxMultiple: string) {
+  return {
+    label: { key: 'product-hub.promo-cards.up-to-yield-exposure', props: { maxMultiple } },
+  }
+}
 
-export function parseMultiplyPromoCard({
+function getCommonPayload({
   collateralToken,
   debtToken,
   network = NetworkNames.ethereumMainnet,
   pills,
   product,
   protocol,
-}: parseMultiplyPromoCardParams): PromoCardProps {
+}: parseMultiplyPromoCardParams) {
   return {
-    tokens: [collateralToken, debtToken],
+    tokens: [collateralToken.toUpperCase(), debtToken.toUpperCase()],
+    protocol: {
+      network,
+      protocol,
+    },
+    pills,
+    ...(product && {
+      link: {
+        href: getActionUrl({
+          bypassFeatureFlag: true,
+          ...product,
+          product: [ProductHubProductType.Multiply],
+        }),
+      },
+    }),
+  }
+}
+
+export function parseMultiplyPromoCard(params: parseMultiplyPromoCardParams): PromoCardProps {
+  const { collateralToken, debtToken, product } = params
+
+  return {
+    ...getCommonPayload(params),
     title: {
       key:
         product && product.maxMultiply
@@ -71,25 +103,34 @@ export function parseMultiplyPromoCard({
           }),
       },
     },
-    protocol: {
-      network,
-      protocol,
-    },
-    ...(product && {
-      link: {
-        href: getActionUrl({
-          bypassFeatureFlag: true,
-          ...product,
-          product: [ProductHubProductType.Multiply],
-        }),
-      },
-    }),
-    pills,
     ...(product?.fee && {
       data: [
         {
           label: { key: 'product-hub.promo-cards.borrow-rate' },
           value: formatDecimalAsPercent(new BigNumber(product.fee)),
+        },
+      ],
+    }),
+  }
+}
+
+export function parseEarnYieldLoopPromoCard(params: parseMultiplyPromoCardParams): PromoCardProps {
+  const { collateralToken, debtToken, product } = params
+
+  return {
+    ...getCommonPayload(params),
+    title: {
+      key: 'product-hub.promo-cards.yield-loop-strategy',
+      props: {
+        collateralToken,
+        quoteToken: debtToken,
+      },
+    },
+    ...(product?.weeklyNetApy && {
+      data: [
+        {
+          label: { key: 'product-hub.promo-cards.7-day-avg-apy' },
+          value: formatDecimalAsPercent(new BigNumber(product.weeklyNetApy)),
         },
       ],
     }),

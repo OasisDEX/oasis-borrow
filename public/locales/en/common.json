@@ -2814,6 +2814,9 @@
     "promo-cards": {
       "7-day-avg-apy": "7 day avg APY",
       "lower-risk-strategy": "Lower risk strategy",
+      "yield-loop-strategy": "{{collateralToken}}/{{quoteToken}} Yield Loop Strategy",
+      "enter-with-token": "Enter with {{token}}",
+      "up-to-yield-exposure": "Up to {{maxMultiple}} Yield Exposure",
       "passive-management": "Passive management",
       "automation-enabled": "Automation enabled",
       "earn-on-your-dai": "Earn 3.49% on your Dai",
