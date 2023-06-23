@@ -178,7 +178,7 @@ export function parseRows(
         <AssetsTableDataCellAction
           cta={urlDisabled ? 'Coming soon' : upperFirst(product)}
           link={url}
-          disabled={url === '/'}
+          disabled={urlDisabled}
         />
       ),
     }
