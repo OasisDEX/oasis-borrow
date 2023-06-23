@@ -114,8 +114,8 @@ export const PromoCardLoadingState: FC = () => {
           </Box>
         </Flex>
         <Skeleton width="200px" sx={{ mt: '20px' }} />
-        <Skeleton width="300px" sx={{ mt: 3 }} />
-        <Skeleton width="300px" height="30px" sx={{ mt: '14px' }} />
+        <Skeleton width="280px" height="30px" sx={{ mt: 3 }} />
+        <Skeleton sx={{ mt: '22px' }} />
       </Flex>
     </PromoCardWrapper>
   )
