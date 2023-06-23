@@ -9,7 +9,7 @@ import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Grid, Text } from 'theme-ui'
+import { Box, Container, Flex, Grid, Text } from 'theme-ui'
 
 import { Hero } from './common/Hero'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
@@ -92,7 +92,7 @@ export const HomepageHero = () => {
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   return (
-    <>
+    <Container>
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
@@ -110,6 +110,6 @@ export const HomepageHero = () => {
         />
         <ManagedVolumeStats oasisStatsValue={oasisStatsValue} />
       </Flex>
-    </>
+    </Container>
   )
 }
