@@ -1,7 +1,9 @@
+import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { PromoCardProps } from 'components/PromoCard'
 import { getActionUrl } from 'features/productHub/helpers'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 
 const protocol = { network: NetworkNames.ethereumMainnet, protocol: LendingProtocol.Maker }
@@ -13,8 +15,7 @@ export function parseMakerBorrowPromoCard(
 ): PromoCardProps {
   return {
     tokens: [collateralToken, debtToken],
-    title: product?.label.split('/').at(0) || `${collateralToken}/${debtToken}`,
-    description: {
+    title: {
       key: 'product-hub.promo-cards.borrow-against',
       props: { collateralToken, debtToken },
     },
@@ -23,6 +24,14 @@ export function parseMakerBorrowPromoCard(
       link: {
         href: getActionUrl({ ...product, product: [ProductHubProductType.Borrow] }),
       },
+    }),
+    ...(product?.fee && {
+      data: [
+        {
+          label: 'Borrow rate',
+          value: formatDecimalAsPercent(new BigNumber(product.fee)),
+        },
+      ],
     }),
   }
 }
