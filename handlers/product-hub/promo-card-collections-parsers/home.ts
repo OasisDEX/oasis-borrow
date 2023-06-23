@@ -16,9 +16,9 @@ import {
   getLongTokenPill,
   getLowestBorrowingCostPill,
   getUpToYieldExposurePill,
+  parseBorrowPromoCard,
   parseDsrPromoCard,
   parseEarnYieldLoopPromoCard,
-  parseMakerBorrowPromoCard,
   parseMultiplyPromoCard,
 } from 'handlers/product-hub/helpers'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -113,26 +113,41 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     },
   }
 
-  const promoCardETHCBorrow = {
-    ...parseMakerBorrowPromoCard('ETH', 'DAI', ETHCProduct),
+  const promoCardETHCBorrow = parseBorrowPromoCard({
+    collateralToken: 'ETH',
+    debtToken: 'DAI',
     pills: [getLowestBorrowingCostPill(), getAutomationEnabledPill()],
-  }
-  const promoCardWSTETHBBorrow = {
-    ...parseMakerBorrowPromoCard('WSTETH', 'DAI', WSTETHBProduct),
+    product: ETHCProduct,
+    protocol: LendingProtocol.Maker,
+  })
+  const promoCardWSTETHBBorrow = parseBorrowPromoCard({
+    collateralToken: 'WSTETH',
+    debtToken: 'DAI',
     pills: [getEarnStakingRewardsPill(), getAutomationEnabledPill()],
-  }
-  const promoCardRETHABorrow = {
-    ...parseMakerBorrowPromoCard('RETH', 'DAI', RETHAProduct),
+    product: WSTETHBProduct,
+    protocol: LendingProtocol.Maker,
+  })
+  const promoCardRETHABorrow = parseBorrowPromoCard({
+    collateralToken: 'RETH',
+    debtToken: 'DAI',
     pills: [getEarnStakingRewardsPill(), getAutomationEnabledPill()],
-  }
-  const promoCardWBTCBBorrow = {
-    ...parseMakerBorrowPromoCard('WBTC', 'DAI', WBTCBProduct),
+    product: RETHAProduct,
+    protocol: LendingProtocol.Maker,
+  })
+  const promoCardWBTCBBorrow = parseBorrowPromoCard({
+    collateralToken: 'WBTC',
+    debtToken: 'DAI',
     pills: [getHighestAvailableLtvPill(), getAutomationEnabledPill()],
-  }
-  const promoCardWBTCCBorrow = {
-    ...parseMakerBorrowPromoCard('WBTC', 'DAI', WBTCCProduct),
+    product: WBTCBProduct,
+    protocol: LendingProtocol.Maker,
+  })
+  const promoCardWBTCCBorrow = parseBorrowPromoCard({
+    collateralToken: 'WBTC',
+    debtToken: 'DAI',
     pills: [getLowestBorrowingCostPill(), getAutomationEnabledPill()],
-  }
+    product: WBTCCProduct,
+    protocol: LendingProtocol.Maker,
+  })
   const promoCardDsr = parseDsrPromoCard(DSRProduct)
 
   const promoCardETHBMultiply = parseMultiplyPromoCard({

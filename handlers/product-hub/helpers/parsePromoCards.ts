@@ -85,6 +85,26 @@ function getCommonPayload({
   }
 }
 
+export function parseBorrowPromoCard(params: parseMultiplyPromoCardParams): PromoCardProps {
+  const { collateralToken, debtToken, product } = params
+
+  return {
+    ...getCommonPayload({ ...params, productType: ProductHubProductType.Multiply }),
+    title: {
+      key: 'product-hub.promo-cards.borrow-against',
+      props: { collateralToken, debtToken },
+    },
+    ...(product?.fee && {
+      data: [
+        {
+          label: { key: 'product-hub.promo-cards.borrow-rate' },
+          value: formatDecimalAsPercent(new BigNumber(product.fee)),
+        },
+      ],
+    }),
+  }
+}
+
 export function parseMultiplyPromoCard(params: parseMultiplyPromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 

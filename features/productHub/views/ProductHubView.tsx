@@ -18,7 +18,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, Fragment, useMemo, useState } from 'react'
-import { Box, Button, Flex, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 interface ProductHubViewProps {
   initialNetwork?: ProductHubSupportedNetworks[]
@@ -42,7 +42,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   limitRows,
 }) => {
   const { t } = useTranslation()
-  const { data, refetch } = useProductHubData({
+  const { data } = useProductHubData({
     protocols: [
       LendingProtocol.Ajna,
       LendingProtocol.AaveV2,
@@ -67,7 +67,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
 
   return (
     <Fragment key={product}>
-      <Button onClick={refetch}>Refetch</Button>
       <Box
         sx={{
           position: 'relative',
