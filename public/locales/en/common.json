@@ -2822,6 +2822,9 @@
       "get-to-know-ajna-multiply": "Get to know Ajna Multiply",
       "get-weekly-apy": "Get {{weeklyNetApy}} 7 day net APY",
       "highest-available-ltv": "Highest available LTV",
+      "highest-multiple": "Highest multiple",
+      "long-token": "Long {{token}}",
+      "short-token": "Short {{token}}",
       "learn-how-can-you-earn-by-lending-your-assets": "Learn how can you earn by lending your assets",
       "learn-how-to-avoid-getting-your-position-liquidated": "Learn how to avoid getting your position liquidated",
       "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity",
@@ -2832,6 +2835,7 @@
       "max-ltv": "Max loan to value: {{maxLtv}}",
       "multiply-and-earn-ajna": "{{strategy}} {{token}} and earn Ajna Tokens",
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
+      "up-to-exposure-against": "Up to {{maxMultiple}} exposure to {{collateralToken}} against {{debtToken}}",
       "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
       "what-is-earn-on-ajna": "What is Earn on Ajna?"
     },

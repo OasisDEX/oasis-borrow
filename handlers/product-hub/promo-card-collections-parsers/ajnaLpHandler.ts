@@ -14,7 +14,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
-  const ajnaProducts = table.filter((product) => product.protocol === LendingProtocol.Ajna)
+  const ajnaProducts = table.filter(({ protocol }) => protocol === LendingProtocol.Ajna)
   const borrowishProducts = ajnaProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Borrow),
   )
