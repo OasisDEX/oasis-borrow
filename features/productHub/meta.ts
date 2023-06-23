@@ -99,6 +99,7 @@ export const productHubOptionsMap: {
       ETH: productHubTokenOptions.ETH,
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
+      DAI: productHubTokenOptions.DAI,
     },
   },
   earn: {
@@ -133,6 +134,7 @@ export const productHubTestnetOptionsMap: {
       ETH: productHubTokenOptions.ETH,
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
+      DAI: productHubTokenOptions.DAI,
     },
   },
   earn: {

@@ -4,17 +4,17 @@ import {
   ProductHubPromoCards,
 } from 'features/productHub/types'
 import {
+  findByTokenPair,
   parseAjnaBorrowPromoCard,
   parseAjnaEarnPromoCard,
   parseAjnaMultiplyPromoCard,
 } from 'handlers/product-hub/helpers'
-import { findByTokenPair } from 'handlers/product-hub/helpers/findByTokenPair'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
-  const ajnaProducts = table.filter((product) => product.protocol === LendingProtocol.Ajna)
+  const ajnaProducts = table.filter(({ protocol }) => protocol === LendingProtocol.Ajna)
   const borrowishProducts = ajnaProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Borrow),
   )
@@ -43,26 +43,30 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
 
   const promoCardLearnAboutBorrow = {
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    title: { key: 'ajna.promo-cards.get-liquidity-from-your-assets-using-ajna' },
-    description: { key: 'ajna.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
+    title: { key: 'product-hub.promo-cards.get-liquidity-from-your-assets-using-ajna' },
+    description: { key: 'product-hub.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
   const promoCardLearnAboutMultiply = {
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    title: { key: 'ajna.promo-cards.get-to-know-ajna-multiply' },
-    description: { key: 'ajna.promo-cards.learn-how-to-use-multiply-to-optimize-your-position' },
+    title: { key: 'product-hub.promo-cards.get-to-know-ajna-multiply' },
+    description: {
+      key: 'product-hub.promo-cards.learn-how-to-use-multiply-to-optimize-your-position',
+    },
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
   const promoCardWhatIsEarn = {
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    title: { key: 'ajna.promo-cards.what-is-earn-on-ajna' },
-    description: { key: 'ajna.promo-cards.learn-how-can-you-earn-by-lending-your-assets' },
+    title: { key: 'product-hub.promo-cards.what-is-earn-on-ajna' },
+    description: { key: 'product-hub.promo-cards.learn-how-can-you-earn-by-lending-your-assets' },
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
   const promoCardWhatAreTheRisksOfEarn = {
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    title: { key: 'ajna.promo-cards.what-are-the-rist-of-earn-on-ajna' },
-    description: { key: 'ajna.promo-cards.learn-how-to-avoid-getting-your-position-liquidated' },
+    title: { key: 'product-hub.promo-cards.what-are-the-rist-of-earn-on-ajna' },
+    description: {
+      key: 'product-hub.promo-cards.learn-how-to-avoid-getting-your-position-liquidated',
+    },
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
 

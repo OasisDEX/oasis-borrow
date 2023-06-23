@@ -4,41 +4,43 @@ import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 
 const getAaveStrategyUrl = ({
+  bypassFeatureFlag,
   aaveVersion,
   product,
   protocol,
   primaryToken,
   secondaryToken,
   network,
-}: Partial<ProductHubItem> & { aaveVersion: 'v2' | 'v3' }) => {
-  const search = aaveStrategyList.find((strategy) => {
-    return (
+}: Partial<ProductHubItem> & { aaveVersion: 'v2' | 'v3'; bypassFeatureFlag: boolean }) => {
+  const search = aaveStrategyList.find(
+    (strategy) =>
       product
         ?.map((prod) => prod.toLocaleLowerCase())
         ?.includes(strategy.type.toLocaleLowerCase() as ProductHubProductType) &&
       strategy.protocol === protocol &&
       strategy.tokens.collateral.toLocaleLowerCase() === primaryToken?.toLocaleLowerCase() &&
       strategy.tokens.debt.toLocaleLowerCase() === secondaryToken?.toLocaleLowerCase() &&
-      strategy.network === network
-    )
-  })
-  if (!search?.urlSlug || (search?.featureToggle && !getFeatureToggle(search?.featureToggle))) {
-    return '/'
-  }
-  return `/${network}/aave/${aaveVersion}/${product!.join('') /* should be only one for aave */}/${
-    search!.urlSlug
-  }`
+      strategy.network === network,
+  )
+
+  return !search?.urlSlug ||
+    (!bypassFeatureFlag && search?.featureToggle && !getFeatureToggle(search?.featureToggle))
+    ? '/'
+    : `/${network}/aave/${aaveVersion}/${product!.join('') /* should be only one for aave */}/${
+        search!.urlSlug
+      }`
 }
 
 export function getActionUrl({
+  bypassFeatureFlag = false,
   earnStrategy,
   label,
+  network,
+  primaryToken,
   product,
   protocol,
-  primaryToken,
   secondaryToken,
-  network,
-}: ProductHubItem): string {
+}: ProductHubItem & { bypassFeatureFlag?: boolean }): string {
   switch (protocol) {
     case LendingProtocol.Ajna:
       const productInUrl = earnStrategy?.includes('Yield Loop')
@@ -49,20 +51,22 @@ export function getActionUrl({
     case LendingProtocol.AaveV2:
       return getAaveStrategyUrl({
         aaveVersion: 'v2',
+        bypassFeatureFlag,
+        network,
+        primaryToken,
         product,
         protocol,
-        primaryToken,
         secondaryToken,
-        network,
       })
     case LendingProtocol.AaveV3:
       return getAaveStrategyUrl({
         aaveVersion: 'v3',
+        bypassFeatureFlag,
+        network,
+        primaryToken,
         product,
         protocol,
-        primaryToken,
         secondaryToken,
-        network,
       })
     case LendingProtocol.Maker:
       if (label === 'DSR') {
