@@ -7,6 +7,7 @@ import {
 } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
 import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { getOneInchCall } from 'helpers/swap'
@@ -16,10 +17,18 @@ export const ajnaOpenMultiply = ({
   state,
   commonPayload,
   dependencies,
+  chainId,
+  collateralToken,
+  quoteToken,
+  walletAddress,
 }: {
   state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
+  collateralToken: string
+  quoteToken: string
+  chainId: number
+  walletAddress: string
 }) => {
   const { depositAmount, loanToValue } = state
 
@@ -30,22 +39,24 @@ export const ajnaOpenMultiply = ({
       // TODO mocked riskRatio because slider doesn't work as expected
       riskRatio: new RiskRatio(new BigNumber('0.06'), RiskRatio.TYPE.LTV),
       slippage: new BigNumber(0.01),
-      collateralTokenSymbol: 'ETH',
-      quoteTokenSymbol: 'USDC',
-      user: '0xB3F1A66472b9cF9291258185D1c7Ac4a8dd6ae3e',
+      collateralTokenSymbol: collateralToken,
+      quoteTokenSymbol: quoteToken,
+      user: walletAddress,
     },
     {
       ...dependencies,
-      // getSwapData: getOneInchCall(getNetworkContracts(1).swapAddress),
-      getSwapData: getOneInchCall('0x06a25ee7e0e969935136D4b37003905DB195B6F3'),
-      // getSwapData: getOneInchCall('0x81D149d74C3E78F03614e8b5946913C546fd62E4'),
-      operationExecutor: '0xa898315E79b71B9f3Be7c2Bb356164Db4EfC7a36',
+      getSwapData: getOneInchCall(
+        // TODO: this is temporary, we need to get the swap address from the contract
+        getNetworkContracts(NetworkIds.MAINNET, chainId).swapAddress ||
+          '0x06a25ee7e0e969935136D4b37003905DB195B6F3',
+      ),
+      operationExecutor: getNetworkContracts(NetworkIds.MAINNET, chainId).operationExecutor.address,
       addresses: {
-        DAI: '0x0',
-        ETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-        WSTETH: '0x0',
-        USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        WBTC: '0x0',
+        DAI: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.DAI.address,
+        ETH: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.ETH.address,
+        WSTETH: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.WSTETH.address,
+        USDC: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.USDC.address,
+        WBTC: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.WBTC.address,
       },
     },
   )

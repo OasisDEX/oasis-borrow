@@ -41,6 +41,7 @@ export async function getAjnaParameters({
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const defaultPromise = Promise.resolve(undefined)
   const chainId = context.chainId
+  const walletAddress = context.account
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
 
@@ -69,7 +70,7 @@ export async function getAjnaParameters({
     quotePrice,
   }
 
-  if (!isFormValid) {
+  if (!isFormValid || !walletAddress) {
     return defaultPromise
   }
 
@@ -99,7 +100,15 @@ export async function getAjnaParameters({
       return ajnaClaimEarn({ state, commonPayload, dependencies, position })
     }
     case 'open-multiply': {
-      return ajnaOpenMultiply({ state, commonPayload, dependencies })
+      return ajnaOpenMultiply({
+        state,
+        commonPayload,
+        dependencies,
+        chainId,
+        collateralToken,
+        quoteToken,
+        walletAddress,
+      })
     }
     case 'adjust': {
       return ajnaAdjustMultiply({ state, commonPayload, dependencies, position })
