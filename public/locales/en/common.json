@@ -939,7 +939,7 @@
     },
     "default": {
       "title": "Deploy your crypto into DeFi - Summer.fi",
-      "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+      "description": "Borrow, Multiply and Earn on the assets you hold across multiple protocols. Take advantage of powerful automation strategies and simple UX."
     },
     "dai": {
       "title": "Dai - Summer.fi",
@@ -967,7 +967,7 @@
     },
     "assets": {
       "title": "Assets - Summer.fi",
-      "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+      "description": "Borrow, Multiply and Earn on the assets you hold across multiple protocols. Take advantage of powerful automation strategies and simple UX."
     },
     "security": {
       "title": "Security - Summer.fi",

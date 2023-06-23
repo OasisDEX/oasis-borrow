@@ -71,9 +71,7 @@ export function WithAnnouncementLandingLayout({
       }}
       ref={ref as Ref<HTMLDivElement>}
     >
-      <Background wrapper>
-        <Container>{header}</Container>
-      </Background>
+      <Background wrapper>{header}</Background>
       {showAnnouncement && (
         <Container variant="announcement">
           <Announcement
