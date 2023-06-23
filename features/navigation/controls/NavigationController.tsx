@@ -38,7 +38,6 @@ export function NavigationController() {
                 {
                   label: 'Swap',
                   onClick: () => {
-                    console.log('asd')
                     uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
                       type: 'open',
                     })
