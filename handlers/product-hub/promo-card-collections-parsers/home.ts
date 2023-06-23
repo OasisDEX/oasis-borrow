@@ -1,4 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
+import { PromoCardVariant } from 'components/PromoCard'
 import {
   ProductHubItem,
   ProductHubProductType,
@@ -20,7 +21,7 @@ import {
   parseMakerBorrowPromoCard,
   parseMultiplyPromoCard,
 } from 'handlers/product-hub/helpers'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
@@ -95,6 +96,21 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       key: 'product-hub.promo-cards.learn-how-to-use-multiply-to-optimize-your-position',
     },
     link: { href: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY, label: { key: 'Learn more' } },
+  }
+  const promoCardEarnOnYourAssets = {
+    icon: 'selectEarn',
+    title: { key: 'product-hub.promo-cards.earn-on-your-assets' },
+    description: { key: 'product-hub.promo-cards.lend-and-stake-to-earn' },
+    link: { href: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY, label: { key: 'Learn more' } },
+  }
+  const promoCardFullySelfCustodial = {
+    icon: 'promoCardStar',
+    title: { key: 'product-hub.promo-cards.earn-fully-self-custodial' },
+    description: { key: 'product-hub.promo-cards.you-always-stay-in-control' },
+    link: {
+      href: INTERNAL_LINKS.security,
+      label: { key: 'product-hub.promo-cards.check-out-our-security' },
+    },
   }
 
   const promoCardETHCBorrow = {
@@ -172,14 +188,37 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const promoCardWSTETHUSDCAaveV2Earn = parseEarnYieldLoopPromoCard({
     collateralToken: 'STETH',
     debtToken: 'ETH',
-    pills: [getUpToYieldExposurePill('4x'), getEnterWithToken('ETH')],
+    pills: [
+      ...(WSTETHETHAaveV2EthereumEarnProduct?.maxMultiply
+        ? [
+            {
+              ...getUpToYieldExposurePill(
+                `${parseFloat(WSTETHETHAaveV2EthereumEarnProduct.maxMultiply).toFixed(1)}x`,
+              ),
+            },
+          ]
+        : []),
+      getEnterWithToken('ETH'),
+    ],
     product: WSTETHETHAaveV2EthereumEarnProduct,
     protocol: LendingProtocol.AaveV2,
   })
   const promoCardWSTETHUSDCAaveV3Earn = parseEarnYieldLoopPromoCard({
     collateralToken: 'WSTETH',
     debtToken: 'ETH',
-    pills: [getUpToYieldExposurePill('10x'), getEnterWithToken('ETH')],
+    pills: [
+      ...(WSTETHETHAaveV3EthereumEarnProduct?.maxMultiply
+        ? [
+            {
+              ...getUpToYieldExposurePill(
+                `${parseFloat(WSTETHETHAaveV3EthereumEarnProduct.maxMultiply).toFixed(1)}x`,
+              ),
+              variant: 'positive' as PromoCardVariant,
+            },
+          ]
+        : []),
+      getEnterWithToken('ETH'),
+    ],
     product: WSTETHETHAaveV3EthereumEarnProduct,
     protocol: LendingProtocol.AaveV3,
   })
@@ -219,7 +258,14 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     },
     [ProductHubProductType.Earn]: {
       default: [promoCardDsr, promoCardWSTETHUSDCAaveV3Earn, promoCardWSTETHUSDCAaveV2Earn],
-      tokens: {},
+      tokens: {
+        ETH: [
+          promoCardWSTETHUSDCAaveV3Earn,
+          promoCardWSTETHUSDCAaveV2Earn,
+          promoCardEarnOnYourAssets,
+        ],
+        DAI: [promoCardDsr, promoCardEarnOnYourAssets, promoCardFullySelfCustodial],
+      },
     },
   }
 }

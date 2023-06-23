@@ -63,8 +63,9 @@ function getCommonPayload({
   network = NetworkNames.ethereumMainnet,
   pills,
   product,
+  productType,
   protocol,
-}: parseMultiplyPromoCardParams) {
+}: parseMultiplyPromoCardParams & { productType: ProductHubProductType }) {
   return {
     tokens: [collateralToken.toUpperCase(), debtToken.toUpperCase()],
     protocol: {
@@ -77,7 +78,7 @@ function getCommonPayload({
         href: getActionUrl({
           bypassFeatureFlag: true,
           ...product,
-          product: [ProductHubProductType.Multiply],
+          product: [productType],
         }),
       },
     }),
@@ -88,7 +89,7 @@ export function parseMultiplyPromoCard(params: parseMultiplyPromoCardParams): Pr
   const { collateralToken, debtToken, product } = params
 
   return {
-    ...getCommonPayload(params),
+    ...getCommonPayload({ ...params, productType: ProductHubProductType.Multiply }),
     title: {
       key:
         product && product.maxMultiply
@@ -118,7 +119,7 @@ export function parseEarnYieldLoopPromoCard(params: parseMultiplyPromoCardParams
   const { collateralToken, debtToken, product } = params
 
   return {
-    ...getCommonPayload(params),
+    ...getCommonPayload({ ...params, productType: ProductHubProductType.Earn }),
     title: {
       key: 'product-hub.promo-cards.yield-loop-strategy',
       props: {

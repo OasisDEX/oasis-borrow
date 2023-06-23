@@ -2813,6 +2813,11 @@
     },
     "promo-cards": {
       "7-day-avg-apy": "7 day avg APY",
+      "earn-on-your-assets": "Earn on your assets",
+      "lend-and-stake-to-earn": "Lend & stake to earn the best rates in DeFi",
+      "check-out-our-security": "Check out our security",
+      "earn-fully-self-custodial": "Earn fully self-custodial",
+      "you-always-stay-in-control": "You always stay in control of your assets",
       "lower-risk-strategy": "Lower risk strategy",
       "yield-loop-strategy": "{{collateralToken}}/{{quoteToken}} Yield Loop Strategy",
       "enter-with-token": "Enter with {{token}}",
