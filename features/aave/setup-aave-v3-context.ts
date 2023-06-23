@@ -29,7 +29,7 @@ import { getOpenMultiplyAaveParametersMachine } from './common/services/state-ma
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
-  getManageAaveV2PositionStateMachineServices,
+  getManageAaveV3PositionStateMachineServices,
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
@@ -133,7 +133,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     aaveReserveConfigurationData$,
   )
 
-  const manageAaveStateMachineServices = getManageAaveV2PositionStateMachineServices(
+  const manageAaveStateMachineServices = getManageAaveV3PositionStateMachineServices(
     context$,
     txHelpers$,
     tokenBalances$,

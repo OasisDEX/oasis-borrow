@@ -242,6 +242,10 @@ export function createManageAaveStateMachine(
                     target: 'allowanceCollateralSetting',
                   },
                   {
+                    target: 'txInProgressEthers',
+                    cond: 'isEthersTransaction',
+                  },
+                  {
                     cond: 'validTransactionParameters',
                     target: 'txInProgress',
                     actions: ['closePositionTransactionEvent'],
@@ -270,9 +274,12 @@ export function createManageAaveStateMachine(
                     target: 'allowanceDebtSetting',
                   },
                   {
+                    target: 'txInProgressEthers',
+                    cond: 'isEthersTransaction',
+                  },
+                  {
                     cond: 'validTransactionParameters',
                     target: 'txInProgress',
-                    actions: ['closePositionTransactionEvent'],
                   },
                 ],
                 BACK_TO_EDITING: {
@@ -329,11 +336,16 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   target: 'editing',
                 },
-                NEXT_STEP: {
-                  cond: 'validTransactionParameters',
-                  target: 'txInProgress',
-                  actions: ['riskRatioConfirmTransactionEvent'],
-                },
+                NEXT_STEP: [
+                  {
+                    target: 'txInProgressEthers',
+                    cond: 'isEthersTransaction',
+                  },
+                  {
+                    cond: 'validTransactionParameters',
+                    target: 'txInProgress',
+                  },
+                ],
               },
             },
             reviewingClosing: {
@@ -584,11 +596,11 @@ export function createManageAaveStateMachine(
         riskRatioConfirmEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskConfirmRisk(context.userInput.riskRatio!.loanToValue)
         },
-        riskRatioConfirmTransactionEvent: (context) => {
-          trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
-            context.userInput.riskRatio!.loanToValue,
-          )
-        },
+        // riskRatioConfirmTransactionEvent: (context) => {
+        //   trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
+        //     context.userInput.riskRatio!.loanToValue,
+        //   )
+        // },
         closePositionEvent: trackingEvents.earn.stETHClosePositionConfirm,
         closePositionTransactionEvent: trackingEvents.earn.stETHClosePositionConfirmTransaction,
         requestParameters: send(
@@ -680,18 +692,20 @@ export function createManageAaveStateMachine(
             'transactionParameters',
           ),
         })),
-        spawnCloseParametersMachine: assign((context) => ({
-          refParametersMachine: spawn(
-            closeParametersStateMachine.withContext(() => {
-              return {
-                ...closeParametersStateMachine.context,
-                runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
-                signer: (context.web3Context as ContextConnected)?.transactionProvider,
-              }
-            }),
-            'transactionParameters',
-          ),
-        })),
+        spawnCloseParametersMachine: assign((context) => {
+          return {
+            refParametersMachine: spawn(
+              closeParametersStateMachine.withContext(() => {
+                return {
+                  ...closeParametersStateMachine.context,
+                  runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+                  signer: (context.web3Context as ContextConnected)?.transactionProvider,
+                }
+              }),
+              'transactionParameters',
+            ),
+          }
+        }),
         killCurrentParametersMachine: pure((context) => {
           if (context.refParametersMachine && context.refParametersMachine.stop) {
             context.refParametersMachine.stop()
