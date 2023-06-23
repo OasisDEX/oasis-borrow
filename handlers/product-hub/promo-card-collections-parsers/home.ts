@@ -13,6 +13,7 @@ import {
   getHighestMultiplePill,
   getLongTokenPill,
   getLowestBorrowingCostPill,
+  parseDsrPromoCard,
   parseMakerBorrowPromoCard,
   parseMultiplyPromoCard,
 } from 'handlers/product-hub/helpers'
@@ -39,6 +40,9 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const RETHAProduct = findByIlk(makerBorrowishProducts, 'RETH-A')
   const WBTCBProduct = findByIlk(makerBorrowishProducts, 'WBTC-B')
   const WBTCCProduct = findByIlk(makerBorrowishProducts, 'WBTC-C')
+  const DSRProduct = makerProducts.find(
+    ({ primaryToken, secondaryToken }) => primaryToken === 'DAI' && secondaryToken === 'DAI',
+  )
 
   const ETHUSDCAaveV3EthereumMultiplyProduct = findByTokenPair(aaveV3EthereumMultiplyProducts, [
     'ETH',
@@ -92,6 +96,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     ...parseMakerBorrowPromoCard('WBTC', 'DAI', WBTCCProduct),
     pills: [getLowestBorrowingCostPill(), getAutomationEnabledPill()],
   }
+  const promoCardDsr = parseDsrPromoCard(DSRProduct)
 
   const promoCardETHBMultiply = parseMultiplyPromoCard({
     collateralToken: 'ETH',
@@ -153,7 +158,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       },
     },
     [ProductHubProductType.Multiply]: {
-      default: [],
+      default: [
+        promoCardETHUSDCAaveV3Multiply,
+        promoCardWBTCUSDCAaveV3Multiply,
+        promoCardETHBMultiply,
+      ],
       tokens: {
         ETH: [
           promoCardETHUSDCAaveV3Multiply,
@@ -170,15 +179,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardWSTETHUSDCAaveV3Multiply,
           promoCardWBTCUSDCAaveV3Multiply,
         ],
-        DAI: [
-          promoCardWSTETHAMultiply,
-          promoCardETHBMultiply,
-          promoCardWBTCBMultiply,
-        ]
+        DAI: [promoCardWSTETHAMultiply, promoCardETHBMultiply, promoCardWBTCBMultiply],
       },
     },
     [ProductHubProductType.Earn]: {
-      default: [],
+      default: [promoCardDsr],
       tokens: {},
     },
   }

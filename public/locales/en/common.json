@@ -2812,7 +2812,11 @@
       "earn": "Earn long term yields to compound your crypto capital. Read more about"
     },
     "promo-cards": {
+      "7-day-avg-apy": "7 day avg APY",
+      "lower-risk-strategy": "Lower risk strategy",
+      "passive-management": "Passive management",
       "automation-enabled": "Automation enabled",
+      "earn-on-your-dai": "Earn 3.49% on your Dai",
       "borrow-against": "Borrow {{debtToken}} against {{collateralToken}}",
       "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
       "borrow-rate": "Borrow rate",
