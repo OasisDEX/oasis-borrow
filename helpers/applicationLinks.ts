@@ -94,7 +94,7 @@ export const EXTERNAL_LINKS = {
     HOME: 'https://www.ajna.finance/',
   },
   WORKABLE: 'https://oasisapp.workable.com',
-  TWITTER: 'https://twitter.com/oasisdotapp',
+  TWITTER: 'https://twitter.com/Summerfinance_',
   DISCORD: 'https://discord.gg/oasisapp',
   GITHUB: 'https://github.com/OasisDEX/oasis-borrow',
   BUG_BOUNTY: 'https://immunefi.com/bounty/oasisapp',
