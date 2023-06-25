@@ -19,6 +19,7 @@ export const INTERNAL_LINKS = {
   ajnaEarn: '/ajna/earn',
   ajnaMultiply: '/ajna/multiply',
   ajnaRewards: '/ajna/rewards',
+  findYourDefiProduct: '/earn',
 }
 
 export const EXTERNAL_LINKS = {
@@ -93,8 +94,8 @@ export const EXTERNAL_LINKS = {
     HOME: 'https://www.ajna.finance/',
   },
   WORKABLE: 'https://oasisapp.workable.com',
-  TWITTER: 'https://twitter.com/oasisdotapp',
-  DISCORD: 'https://discord.gg/oasisapp',
+  TWITTER: 'https://twitter.com/Summerfinance_',
+  DISCORD: 'https://discord.gg/summerfi',
   GITHUB: 'https://github.com/OasisDEX/oasis-borrow',
   BUG_BOUNTY: 'https://immunefi.com/bounty/oasisapp',
   ETHERSCAN: 'https://etherscan.io',

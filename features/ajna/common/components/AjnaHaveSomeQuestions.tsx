@@ -65,7 +65,7 @@ export function AjnaHaveSomeQuestions() {
               text: t('ajna.learn.oasis-discord'),
             },
             {
-              href: 'https://twitter.com/oasisdotapp',
+              href: 'https://twitter.com/Summerfinance_',
               text: t('ajna.learn.oasis-twitter'),
             },
           ]}
