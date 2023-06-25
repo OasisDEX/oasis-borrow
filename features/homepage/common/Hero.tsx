@@ -1,7 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnection } from 'features/web3OnBoard'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import React, { ReactNode } from 'react'
 import { Button, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
 
@@ -19,6 +21,7 @@ export function Hero({
   showButton?: boolean
 }) {
   const { t } = useTranslation()
+  const { replace } = useRouter()
   const referralsEnabled = useFeatureToggle('Referrals')
   const { connecting, connect } = useConnection({
     initialConnect: false,
@@ -56,7 +59,11 @@ export function Hero({
               transform: 'translateX(10px)',
             },
           }}
-          onClick={async () => connecting || (await connect())}
+          onClick={
+            isConnected
+              ? async () => replace(INTERNAL_LINKS.findYourDefiProduct)
+              : async () => connecting || (await connect())
+          }
         >
           {isConnected ? t('find-your-defi-product') : t('connect-wallet')}
           <Icon

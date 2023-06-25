@@ -19,6 +19,7 @@ export const INTERNAL_LINKS = {
   ajnaEarn: '/ajna/earn',
   ajnaMultiply: '/ajna/multiply',
   ajnaRewards: '/ajna/rewards',
+  findYourDefiProduct: '/earn',
 }
 
 export const EXTERNAL_LINKS = {
