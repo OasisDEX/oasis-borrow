@@ -95,7 +95,7 @@ export const EXTERNAL_LINKS = {
   },
   WORKABLE: 'https://oasisapp.workable.com',
   TWITTER: 'https://twitter.com/Summerfinance_',
-  DISCORD: 'https://discord.gg/oasisapp',
+  DISCORD: 'https://discord.gg/summerfi',
   GITHUB: 'https://github.com/OasisDEX/oasis-borrow',
   BUG_BOUNTY: 'https://immunefi.com/bounty/oasisapp',
   ETHERSCAN: 'https://etherscan.io',
