@@ -10,11 +10,9 @@ export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider
     return provider
   }
 
-  console.warn('No provider found for network', networkId)
-  return ethers.providers.getDefaultProvider({
-    chainId: Number(networkId),
-    name: 'EVM Network',
-  })
+  throw new Error(
+    `Currently given network id: ${networkId} is not supported by our app. Please contact our developers or add custom fork to enable that network id`,
+  )
 }
 
 export function ensureRpcProvider(

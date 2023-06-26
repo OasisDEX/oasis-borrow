@@ -139,7 +139,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: false,
-  enabled: false,
+  enabled: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
   getReadProvider: memoize(
@@ -167,7 +167,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: true,
-  enabled: false,
+  enabled: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
   getReadProvider: memoize(
