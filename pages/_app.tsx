@@ -169,10 +169,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
   }, [router.events])
 
-  console.log('getConfig()?.publicRuntimeConfig', getConfig()?.publicRuntimeConfig)
-
   const rebrandingUrl = getConfig()?.publicRuntimeConfig.rebrandingUrl
-  console.log('rebrandingUrl', rebrandingUrl)
 
   const topBannerContent = (
     <AppLink
