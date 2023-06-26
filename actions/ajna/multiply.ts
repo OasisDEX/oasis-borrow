@@ -57,11 +57,7 @@ export const ajnaOpenMultiply = ({
     },
     {
       ...dependencies,
-      getSwapData: getOneInchCall(
-        // TODO: this is temporary, we need to get the swap address from the contract
-        getNetworkContracts(NetworkIds.MAINNET, chainId).swapAddress ||
-          '0x06a25ee7e0e969935136D4b37003905DB195B6F3',
-      ),
+      getSwapData: getOneInchCall(getNetworkContracts(NetworkIds.MAINNET, chainId).swapAddress),
       operationExecutor: getNetworkContracts(NetworkIds.MAINNET, chainId).operationExecutor.address,
       addresses: {
         DAI: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.DAI.address,
