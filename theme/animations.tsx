@@ -4,7 +4,13 @@ import { Box, SxStyleProp } from 'theme-ui'
 import addingStopLossAnimation from 'theme/lottie/addingStopLossAnimation.json'
 import openVaultAnimation from 'theme/lottie/openVaultAnimation.json'
 
-import { fadeIn, rollDownTopBanner, slideIn, zoomInBackground } from './keyframes'
+import {
+  fadeIn,
+  rollDownTopBanner,
+  rollDownTopBannerMobile,
+  slideIn,
+  zoomInBackground,
+} from './keyframes'
 
 export const slideInAnimation = {
   opacity: 0,
@@ -32,7 +38,7 @@ export const fadeInAnimation = {
 }
 
 export const rollDownTopBannerAnimation = {
-  animation: rollDownTopBanner,
+  animation: [rollDownTopBannerMobile, rollDownTopBanner],
   animationDuration: '0.6s',
   animationTimingFunction: 'ease-out',
   animationFillMode: 'forwards',

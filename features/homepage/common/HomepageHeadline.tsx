@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { scrollToProductHub } from 'features/homepage/helpers/scrollToProductHub'
 import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { Box, Button, SxStyleProp, Text } from 'theme-ui'
@@ -8,6 +7,7 @@ type HomePageHeadlineProps = {
   primaryText: string
   secondaryText: string
   maxWidth?: string
+  ctaOnClick?: () => void
   ctaLabel?: TranslateStringType
   sx?: SxStyleProp
 }
@@ -15,6 +15,7 @@ type HomePageHeadlineProps = {
 export const HomepageHeadline = ({
   primaryText,
   secondaryText,
+  ctaOnClick,
   ctaLabel,
   maxWidth = '700px',
   sx,
@@ -27,7 +28,7 @@ export const HomepageHeadline = ({
           {secondaryText}
         </Text>
       </Text>
-      {ctaLabel && (
+      {ctaOnClick && ctaLabel && (
         <Button
           variant="primary"
           sx={{
@@ -39,7 +40,7 @@ export const HomepageHeadline = ({
               transform: 'translateX(10px)',
             },
           }}
-          onClick={scrollToProductHub}
+          onClick={ctaOnClick}
         >
           {ctaLabel}{' '}
           <Icon

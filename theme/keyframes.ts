@@ -40,6 +40,17 @@ export const rollDownTopBanner = keyframes({
   },
 })
 
+export const rollDownTopBannerMobile = keyframes({
+  from: {
+    padding: '0 76px',
+    height: 0,
+  },
+  to: {
+    padding: '16px 76px',
+    height: '80px',
+  },
+})
+
 export const fadeOut = keyframes({
   from: {
     opacity: 1,

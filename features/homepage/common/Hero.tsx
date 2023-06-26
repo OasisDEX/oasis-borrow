@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { scrollToProductHub } from 'features/homepage/helpers/scrollToProductHub'
 import { useConnection } from 'features/web3OnBoard'
+import { scrollTo } from 'helpers/scrollTo'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -58,7 +58,7 @@ export function Hero({
             },
           }}
           onClick={
-            isConnected ? () => scrollToProductHub() : async () => connecting || (await connect())
+            isConnected ? scrollTo('homepage-table') : async () => connecting || (await connect())
           }
         >
           {isConnected ? t('find-your-defi-product') : t('connect-wallet')}
