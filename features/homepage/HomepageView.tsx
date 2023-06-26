@@ -4,9 +4,10 @@ import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
-import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -94,7 +95,7 @@ export function HomepageView() {
           primaryText={t('landing.why-oasis.sub-headers.security.primary')}
           secondaryText={t('landing.why-oasis.sub-headers.security.secondary')}
           ctaLabel={t('find-your-defi-product')}
-          ctaURL={INTERNAL_LINKS.findYourDefiProduct}
+          ctaOnClick={scrollTo('homepage-table')}
           sx={{ alignSelf: 'center', mb: [5, 0] }}
         />
         <Image
@@ -165,6 +166,7 @@ export function HomepageView() {
           promoCardsCollection="Home"
           token="ETH"
           limitRows={10}
+          id="homepage-table"
         />
       </Box>
       <Box
