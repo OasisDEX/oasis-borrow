@@ -35,7 +35,7 @@ export const SwapWidgetOnboarding = () => {
             mt: 4,
             mb: 2,
           }}
-          src={staticFilesRuntimeUrl('/static/img/oasis-x-lifi-swap.svg')}
+          src={staticFilesRuntimeUrl('/static/img/summer-x-lifi-swap.svg')}
         />
         <Text variant="boldParagraph2" sx={{ mb: 2 }}>
           {t('exchange.onboarding.subtitle')}

@@ -33,11 +33,11 @@ export function AjnaHaveSomeQuestions() {
               text: t('ajna.learn.ajna-website'),
             },
             {
-              href: 'https://kb.oasis.app/help/tutorials',
+              href: 'https://kb.summer.fi/help/tutorials',
               text: t('landing.info-cards.learn.tutorials'),
             },
             {
-              href: 'https://kb.oasis.app/help/borrow',
+              href: 'https://kb.summer.fi/help/borrow',
               text: t('landing.info-cards.learn.key-concepts'),
             },
           ]}
@@ -49,7 +49,7 @@ export function AjnaHaveSomeQuestions() {
           subtitle={t('landing.info-cards.support.contact-whenever')}
           links={[
             {
-              href: 'https://kb.oasis.app/help/frequently-asked-questions',
+              href: 'https://kb.summer.fi/help/frequently-asked-questions',
               text: t('ajna.learn.anja-faq'),
             },
             {
@@ -65,7 +65,7 @@ export function AjnaHaveSomeQuestions() {
               text: t('ajna.learn.oasis-discord'),
             },
             {
-              href: 'https://twitter.com/oasisdotapp',
+              href: 'https://twitter.com/Summerfinance_',
               text: t('ajna.learn.oasis-twitter'),
             },
           ]}

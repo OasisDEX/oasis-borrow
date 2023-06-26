@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React, { RefObject, useEffect, useRef, useState } from 'react'
+import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
 export interface HeaderSelectorOption {
@@ -15,7 +15,7 @@ export interface HeaderSelectorOption {
 
 interface HeaderSelectorProps {
   defaultOption?: HeaderSelectorOption
-  gradient?: [string, string]
+  gradient: [string, string, ...string[]]
   options: HeaderSelectorOption[]
   overwriteOption?: HeaderSelectorOption
   parentRef: RefObject<HTMLDivElement>
@@ -42,6 +42,7 @@ export function HeaderSelector({
   const ref = useOutsideElementClickHandler(() => setIsOpen(false))
   const selectRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const textRef = useRef<HTMLDivElement>(null)
 
   function setDropdownPosition() {
     if (selectRef.current && dropdownRef.current && parentRef.current) {
@@ -62,6 +63,12 @@ export function HeaderSelector({
     }
   }, [overwriteOption])
 
+  const backgroundImage = useMemo(() => {
+    return `linear-gradient(90deg, ${gradient
+      .map((color, i) => `${color} ${(i / (gradient.length - 1)) * 100}%`)
+      .join(', ')})`
+  }, [gradient])
+
   return (
     <Box sx={{ display: 'inline-flex', zIndex: 2 }} ref={ref}>
       <Flex
@@ -78,7 +85,7 @@ export function HeaderSelector({
           userSelect: 'none',
           '&:hover': {
             '.withGradient': {
-              backgroundPosition: '0 0',
+              backgroundPosition: `${textRef?.current?.offsetWidth}px 0`,
             },
           },
         }}
@@ -88,14 +95,17 @@ export function HeaderSelector({
         }}
       >
         <Text
+          ref={textRef}
           as="span"
           className="withGradient"
           sx={
             gradient && {
-              backgroundImage: `linear-gradient(90deg, ${gradient[0]} 0%, ${gradient[0]} 50%, ${gradient[1]} 100%)`,
-              backgroundSize: '200% 100%',
-              backgroundPosition: isOpen ? '0 0 ' : '100% 0',
-              transition: 'background-position 300ms',
+              backgroundImage,
+              backgroundSize: '100% 100%',
+              backgroundPosition: isOpen ? `${textRef?.current?.offsetWidth}px 0` : '0 0',
+              backgroundRepeat: 'no-repeat',
+              backgroundColor: gradient[0],
+              transition: `background-position ${(textRef?.current?.offsetWidth || 1) * 2}ms`,
               // @ts-ignore
               ...{ WebkitBackgroundClip: 'text' },
             }
@@ -164,7 +174,9 @@ export function HeaderSelector({
                 bg: selected.value === option.value ? 'neutral30' : 'transparent',
                 '&:hover': {
                   bg: 'neutral30',
-                  svg: { opacity: 1 },
+                  svg: {
+                    opacity: 1,
+                  },
                 },
               }}
               onClick={() => {
@@ -176,7 +188,10 @@ export function HeaderSelector({
               {option.icon && (
                 <Icon
                   size={36}
-                  sx={{ flexShrink: 0, mr: 3 }}
+                  sx={{
+                    flexShrink: 0,
+                    mr: 3,
+                  }}
                   name={Array.isArray(option.icon) ? option.icon[0] : option.icon}
                 />
               )}
@@ -190,6 +205,7 @@ export function HeaderSelector({
                     m: 'auto',
                     opacity: selected.value === option.value ? 1 : 0,
                     transition: '200ms opacity',
+                    transform: 'scale(1.05)',
                   }}
                   name={option.icon[1]}
                 />

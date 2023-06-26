@@ -11,12 +11,43 @@ export const slideIn = keyframes({
   },
 })
 
+export const zoomInBackground = keyframes({
+  from: {
+    backgroundPosition: 'center top',
+  },
+  to: {
+    backgroundPosition: 'center bottom',
+  },
+})
+
 export const fadeIn = keyframes({
   from: {
     opacity: 0,
   },
   to: {
     opacity: 1,
+  },
+})
+
+export const rollDownTopBanner = keyframes({
+  from: {
+    padding: 0,
+    height: 0,
+  },
+  to: {
+    padding: '16px',
+    height: '56px',
+  },
+})
+
+export const rollDownTopBannerMobile = keyframes({
+  from: {
+    padding: '0 76px',
+    height: 0,
+  },
+  to: {
+    padding: '16px 76px',
+    height: '80px',
   },
 })
 

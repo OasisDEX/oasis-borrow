@@ -91,7 +91,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   OasisCreate: false,
   SwapWidget: true,
   ProxyReveal: false,
-  '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
+  '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

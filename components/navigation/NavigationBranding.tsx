@@ -40,7 +40,10 @@ export function NavigationBranding({
         columnGap: 2,
       }}
     >
-      <Image src={staticFilesRuntimeUrl(`/static/img/logo${isViewBelowS ? '-dot' : ''}_v2.svg`)} />
+      <Image
+        sx={{ height: '22px' }}
+        src={staticFilesRuntimeUrl(`/static/img/logos/${isViewBelowS ? 'dot' : 'logo'}_dark.svg`)}
+      />
       {pill && (
         <Box
           sx={{

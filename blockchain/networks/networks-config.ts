@@ -120,7 +120,7 @@ const goerliConfig: NetworkConfig = {
       }),
   ),
   getCacheApi: memoize(
-    () => new GraphQLClient('https://oazo-bcache-goerli-staging.new.oasis.app/api/v1'),
+    () => new GraphQLClient('https://oazo-bcache-goerli-staging.new.summer.fi/api/v1'),
   ),
   isCustomFork: false,
   getParentNetwork: () => undefined,
@@ -329,5 +329,5 @@ export const networks = [...mainnetNetworks, ...L2Networks]
 export const networksById = keyBy(networks, 'id')
 export const networksByName = keyBy(networks, 'name')
 export const networksByHexId = keyBy(networks, 'hexId')
-export const dappName = 'Oasis'
+export const dappName = 'Summer.fi'
 export const pollingInterval = 12000

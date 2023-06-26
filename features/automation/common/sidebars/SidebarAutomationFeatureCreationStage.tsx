@@ -66,7 +66,7 @@ export function SidebarAutomationFeatureCreationStage({
                   featureName: t(sidebarAutomationFeatureCopyMap[featureName]),
                 })}{' '}
                 <AppLink
-                  href={`https://kb.oasis.app/help/${linkMap[featureName]}`}
+                  href={`https://kb.summer.fi/help/${linkMap[featureName]}`}
                   sx={{ fontSize: 2 }}
                 >
                   {t('here')}.

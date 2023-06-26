@@ -114,8 +114,8 @@ export const PromoCardLoadingState: FC = () => {
           </Box>
         </Flex>
         <Skeleton width="200px" sx={{ mt: '20px' }} />
-        <Skeleton width="300px" sx={{ mt: 3 }} />
-        <Skeleton width="300px" height="30px" sx={{ mt: '14px' }} />
+        <Skeleton width="280px" height="30px" sx={{ mt: 3 }} />
+        <Skeleton sx={{ mt: '22px' }} />
       </Flex>
     </PromoCardWrapper>
   )
@@ -143,7 +143,7 @@ export const PromoCard: FC<PromoCardProps> = ({
           mb: '12px',
         }}
       >
-        {icon && <Icon name={icon} size={50} />}
+        {icon && <Icon name={icon} size={44} />}
         {tokens && <TokensGroup tokens={tokens} forceSize={50} />}
         {image && <Image src={image} sx={{ height: '44px' }} />}
       </Flex>
@@ -160,7 +160,7 @@ export const PromoCard: FC<PromoCardProps> = ({
           <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
         </Box>
       )}
-      <Heading as="h3" variant="boldParagraph2">
+      <Heading as="h3" variant="boldParagraph2" sx={{ fontSize: '15px' }}>
         <Translatable text={title} />
       </Heading>
       {description && (

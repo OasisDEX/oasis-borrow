@@ -8,15 +8,19 @@ type NavigationMobileMenuLinkProps = NavigationMenuPanelLinkType
 
 export function NavigationMobileMenuLink({ label, link }: NavigationMobileMenuLinkProps) {
   return (
-    <Box key={`link-${label}`} as="li">
-      <AppLink
-        href={link}
-        sx={{
-          ...mobileLinkSx,
-        }}
-      >
-        {label}
-      </AppLink>
-    </Box>
+    <>
+      {link && (
+        <Box key={`link-${label}`} as="li">
+          <AppLink
+            href={link}
+            sx={{
+              ...mobileLinkSx,
+            }}
+          >
+            {label}
+          </AppLink>
+        </Box>
+      )}
+    </>
   )
 }

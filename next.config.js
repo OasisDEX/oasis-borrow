@@ -36,7 +36,7 @@ const baseConfig = {
   publicRuntimeConfig: publicRuntimeConfig,
   webpack: function (config, { isServer }) {
     config.module.rules.push({
-      test: /\.(eot|woff|woff2|ttf|svg|png|jpg|gif)$/,
+      test: /\.(svg|png|jpg|gif)$/,
       use: {
         loader: 'url-loader',
         options: {

@@ -1,18 +1,18 @@
 {
-  "get-started-button": "Comience a usar Oasis",
+  "get-started-button": "Comience a usar Summer.fi",
   "404-button": "Ir a la página principal",
   "404-message": "Lo siento, no se pudo encontrar la página.",
   "about": {
     "heading": "Sobre nosotros",
-    "description": "Nuestra misión en Oasis es proveer el mejor y más confiable punto de entrada para que usted despliegue su capital. Estamos construyendo Oasis.app para permitir que nuestros usuarios se beneficien de todo el potencial de DeFi. Somos un equipo formado por pensadores y desarrolladores apasionados.",
+    "description": "Nuestra misión en Summer.fi es proveer el mejor y más confiable punto de entrada para que usted despliegue su capital. Estamos construyendo Summer.fi para permitir que nuestros usuarios se beneficien de todo el potencial de DeFi. Somos un equipo formado por pensadores y desarrolladores apasionados.",
     "careers-link": "Únase a nosotros",
     "pics-title": "Conozca al equipo"
   },
   "wallet-wrong-network": "Su cartera no está en la red correcta",
-  "app-wrong-network": "La red actual de Oasis.app no está soportada por su cartera",
-  "wallet-wrong-network-desc": "Parece que su cartera está conectada a una red diferente a la de Oasis.app. Por favor, cambie manualmente la red de su cartera, o haga click en el botón inferior.",
-  "app-wrong-network-desc": "Parece que Oasis.app está en una red diferente a la de su cartera. Por favor, haga click en el botón inferior para cambiarla.",
-  "user-wrong-network-desc": "Parece que su cartera está conectada a una red diferente a la de Oasis.app. Por favor, cambie manualmente la red de su cartera.",
+  "app-wrong-network": "La red actual de Summer.fi no está soportada por su cartera",
+  "wallet-wrong-network-desc": "Parece que su cartera está conectada a una red diferente a la de Summer.fi. Por favor, cambie manualmente la red de su cartera, o haga click en el botón inferior.",
+  "app-wrong-network-desc": "Parece que Summer.fi está en una red diferente a la de su cartera. Por favor, haga click en el botón inferior para cambiarla.",
+  "user-wrong-network-desc": "Parece que su cartera está conectada a una red diferente a la de Summer.fi. Por favor, cambie manualmente la red de su cartera.",
   "switch-network": "Cambiar red",
   "switch-to-mainnet": "Cambiar a la red principal de Ethereum",
   "acceptance-check-failed": "La verificación de aceptación falló",
@@ -122,7 +122,7 @@
       },
       "bullet-points": [
         "Multiples posiciones en Aave con la misma cartera",
-        "Habilita funciones avanzadas de Oasis.app como Automatizaciones y Refinanciamiento",
+        "Habilita funciones avanzadas de Summer.fi como Automatizaciones y Refinanciamiento",
         "Seguridad mejorada con limites establecidos y eliminados dentro de las transacciones"
       ]
     }
@@ -155,14 +155,14 @@
   "erc20-disapprove-notification": "Rechazando {{ token }}",
   "erc20-disapprove-notification-past": "Rechazado {{ token }}",
   "error-header": "Se perdió la conexión",
-  "error-message": "Parece que hemos perdido la conexión. Haga click en el botón \"Recargar página\" para intentar nuevamente. Si este error continúa, por favor contáctenos en support@oasis.app",
+  "error-message": "Parece que hemos perdido la conexión. Haga click en el botón \"Recargar página\" para intentar nuevamente. Si este error continúa, por favor contáctenos en support@summer.fi",
   "error-button-reload": "Recargar página",
   "error-button": "Más información",
   "exchange": {
     "onboarding": {
-      "title": "Oasis Swap & Bridge",
-      "subtitle": "Dígale Hola a Oasis Swap & Bridge",
-      "body": "Intercambie sus tokens de forma rápida y segura en Oasis. Visite <0>las preguntas frecuentes de Oasis Swap para más información →</0>",
+      "title": "Summer.fi Swap & Bridge",
+      "subtitle": "Dígale Hola a Summer.fi Swap & Bridge",
+      "body": "Intercambie sus tokens de forma rápida y segura en Summer.fi. Visite <0>las preguntas frecuentes de Summer.fi Swap para más información →</0>",
       "button": "Entendido"
     }
   },
@@ -298,22 +298,22 @@
       },
       "faq": {
         "title": "¿Tiene alguna pregunta?",
-        "description": "Conozca más sobre Oasis, Dai y DeFi en nuestras preguntas frecuentes"
+        "description": "Conozca más sobre Summer.fi, Dai y DeFi en nuestras preguntas frecuentes"
       }
     },
     "tabs": {
       "borrow": {
-        "tabLabel": "Pida un préstamo con Oasis Borrow",
+        "tabLabel": "Pida un préstamo con Summer.fi Borrow",
         "tabParaContent": "Pida prestado Dai, dejando como garantía sus criptoactivos. Utilice el Dai como más le convenga.",
         "tabParaLinkContent": "Ver los tipos de colateral admitidos →"
       },
       "multiply": {
-        "tabLabel": "Multiplique sus activos con Oasis Multiply",
+        "tabLabel": "Multiplique sus activos con Summer.fi Multiply",
         "tabParaContent": "Multiplique la exposición a sus criptoactivos favoritos. Vea nuestros productos destacados aquí.",
         "tabParaLinkContent": "Ver los tipos de colateral de Multiply →"
       },
       "earn": {
-        "tabLabel": "Gane con Oasis Earn",
+        "tabLabel": "Gane con Summer.fi Earn",
         "tabParaContent": "Ponga a trabajar a sus criptoactivos y comience a generar rendimientos. Seleccione su activo base a continuación.",
         "tabParaLinkContent": "Conozca más sobre Earn"
       }
@@ -322,14 +322,14 @@
       "have-some-questions": "¿Tiene alguna pregunta?",
       "learn": {
         "learn": "Aprenda más",
-        "deep-dive": "Conozca más sobre las funcionalidades de Oasis.app y su glosario",
+        "deep-dive": "Conozca más sobre las funcionalidades de Summer.fi y su glosario",
         "get-started": "Primeros pasos",
         "tutorials": "Tutoriales",
         "key-concepts": "Conceptos importantes"
       },
       "support": {
         "support": "Soporte",
-        "contact-whenever": "Contacte al equipo de Oasis.app cuando lo necesite",
+        "contact-whenever": "Contacte al equipo de Summer.fi cuando lo necesite",
         "faq": "Preguntas frecuentes",
         "discord": "Discord",
         "contact-us": "Contáctenos",
@@ -344,7 +344,7 @@
       "cookies": {
         "marketing": {
           "title": "Cookies de marketing",
-          "description": "Oasis.app utiliza cookies anónimas con propósitos de marketing"
+          "description": "Summer.fi utiliza cookies anónimas con propósitos de marketing"
         },
         "analytics": {
           "title": "Cookies de análisis",
@@ -425,7 +425,7 @@
   },
   "manage-multiply-vault": {
     "tooltip": {
-      "vaultId": "El ID del Vault es un identificador único para su Vault de Maker en Oasis.app",
+      "vaultId": "El ID del Vault es un identificador único para su Vault de Maker en Summer.fi",
       "stabilityFee": "El protocolo Maker cobra una tasa de estabilidad en el Dai que se genera en los Vaults de Maker. Es una tasa variable que cambia cuando el gobierno de Maker vota en propuestas presentadas por los Equipos de Riesgo",
       "liquidationFee": "Si su Vault es liquidado, se le agregará una penalidad por liquidación a la deuda de Dai pendiente de su Vault. Esto significa que se subastará más colateral para cubrir la deuda pendiente. La tasa de liquidación es un incentivo para que los dueños de Vaults eviten las liquidaciones. El valor nominal de la penalidad de liquidación se calcula a partir de la tasa de liquidación y la deuda del Vault.",
       "min-collateral": "También llamado ratio de liquidación, si el Vault se encuentra por debajo de este nivel de colateralización, se considera sujeto a liquidación. En ese caso, parte del colateral se liquidará.",
@@ -527,7 +527,7 @@
     "oracles": "Oráculos",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
-    "oasis-borrow": "Oasis Borrow",
+    "oasis-borrow": "Summer.fi Borrow",
     "multiply": "Multiply",
     "more": "Más",
     "assets": "Activos",
@@ -550,7 +550,7 @@
   "notification-status-sign": "Firmar Tx",
   "of": "De",
   "one-of-some": "{{one}} de {{some}}",
-  "onramp-leave-message": "Al hacer clic en comprar, saldrá de Oasis y será redirigido a un sitio web de terceros donde completará el proceso de compra.",
+  "onramp-leave-message": "Al hacer clic en comprar, saldrá de Summer.fi y será redirigido a un sitio web de terceros donde completará el proceso de compra.",
   "open-new-vault": "Abrir un nuevo Vault",
   "open-vault": {
     "title": "Abrir Vault",
@@ -562,7 +562,7 @@
   "pending-transactions": "Transacciones pendientes",
   "permissions": "Conceder permisos",
   "permissions-btn": " Conceder permisos",
-  "permissions-desc": " Esta autorización permite que Oasis interactúe con el Dai de su cartera.",
+  "permissions-desc": " Esta autorización permite que Summer.fi interactúe con el Dai de su cartera.",
   "powered-by": "Impulsado por",
   "price": "Precio",
   "proceed": "Proceder",
@@ -598,7 +598,7 @@
     },
     "default": {
       "description": "Tome un préstamo en Dai, una criptomoneda estable al dólar estadounidense, o multiplique su exposición utilizando sus criptoactivos como garantía",
-      "title": "Oasis Borrow"
+      "title": "Summer.fi Borrow"
     },
     "support": {
       "description": "Todas las respuestas para las preguntas más frecuentes.",
@@ -610,7 +610,7 @@
     },
     "about": {
       "title": "Sobre nosotros",
-      "description": "La misión de Oasis es proveer el mejor y más confiable punto de entrada para desplegar su capital."
+      "description": "La misión de Summer.fi es proveer el mejor y más confiable punto de entrada para desplegar su capital."
     }
   },
   "set-allowance-for": "Establecer permiso para {{token}}",
@@ -692,7 +692,7 @@
   "tos-accept-message": "Antes de comenzar, deberá leer y aceptar nuestras condiciones de servicio.",
   "tos-accept-message-updated": "Antes de poder continuar, deberá leer y aceptar nuestras condiciones de servicio actualizadas.",
   "tos-acceptance-check-in-progress": "Comprobación de aceptación en progreso...",
-  "tos-desc": "Al crear un bote de ahorros, acepto Oasis",
+  "tos-desc": "Al crear un bote de ahorros, acepto Summer.fi",
   "tos-jwt-signature-message": "Por favor firme un mensaje con su dirección de Ethereum para confirmar su aceptación de los términos de servicio.",
   "tos-read": "He leído y acepto las Condiciones de servicio.",
   "tos-view": "Ver condiciones de servicio",
@@ -768,7 +768,7 @@
     "price-impact": "(Impacto en el) Precio del {{token}}",
     "slippage-limit": "Límite de deslizamiento",
     "third-party-fees": "Tasas de protocolos de terceros",
-    "oasis-fee": "Tasa de Oasis",
+    "oasis-fee": "Tasa de Summer.fi",
     "ltv": "LTV",
     "outstanding-debt": "Outstanding debt",
     "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
@@ -806,7 +806,7 @@
       "connected-viewer-withVaults": "Resumen de Vaults de Maker de {{address}}",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecte su cartera y abra un Vault",
       "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera",
-      "vault-suggestions": "{{address}}, hacer más en Oasis.app"
+      "vault-suggestions": "{{address}}, hacer más en Summer.fi"
     },
     "number-of-vaults": "Número de Vaults",
     "subheader-no-vaults": "Abra un Vault de Maker, deposite su colateral, y tome prestado Dai o compre más colateral con su préstamo.",
@@ -853,7 +853,7 @@
   "my-positions": "Mis posiciones",
   "no-results": "Sin resultados",
   "learn-about-wallets": "Aprenda más sobre carteras",
-  "learn-more-at-oasis": "Más información en la Base de Conocimiento de Oasis.app",
+  "learn-more-at-oasis": "Más información en la Base de Conocimiento de Summer.fi",
   "learn-more-link": "https://ethereum.org/es/wallets/find-wallet/",
   "enter-an-amount": "Ingrese un monto",
   "enter-allowance-amount": "Ingrese un monto de autorización",
@@ -906,10 +906,10 @@
   "adjusting-vault-multiply": "El cambio a Vault Multiply está en proceso",
   "closing-vault-multiply": "Cerrando su Vault Multiply",
   "your-wallet": "Su cartera",
-  "welcome": "Bienvenido al nuevo Oasis.app.",
+  "welcome": "Bienvenido al nuevo Summer.fi.",
   "wallet": "Cartera",
   "read-blog-post": "Lea el post en nuestro blog",
-  "visit-old-oasis": "Visitar la versión anterior de Oasis",
+  "visit-old-oasis": "Visitar la versión anterior de Summer.fi",
   "oracles": {
     "header": "Oráculos",
     "description": "En esta página puede ver el precio actual y siguiente de los distintos colaterales admitidos en los Vaults Maker. La mayoría utilizan el Módulo de Seguridad del Oráculo (OSM), que actualiza el precio una vez por hora. Por lo tanto, si hay caídas abruptas de precio, los usuarios disponen de una hora para reaccionar al cambio de precio.",
@@ -962,7 +962,7 @@
     "max-cost": "Costo máximo de la transacción",
     "token-on-stop-loss-trigger": "{{token}} al dispararse la protección",
     "zero-debt-heading": "Necesita generar Dai para poder activar la protección por stop-loss",
-    "zero-debt-description": "La protección por stop-loss de Oasis le permite establecer un límite de pérdidas dinámico para su Vault, basado en el ratio de colateralización. En el caso de una bajada abrupta en el precio de su colateral, esta función de protección avanzada de Oasis.app cerrará su Vault automáticamente para evitar liquidaciones o mayores pérdidas. Podrá elegir si desea cerrar a Dai o a colateral. Más información sobre el funcionamiento de esta característica.",
+    "zero-debt-description": "La protección por stop-loss de Summer.fi le permite establecer un límite de pérdidas dinámico para su Vault, basado en el ratio de colateralización. En el caso de una bajada abrupta en el precio de su colateral, esta función de protección avanzada de Summer.fi cerrará su Vault automáticamente para evitar liquidaciones o mayores pérdidas. Podrá elegir si desea cerrar a Dai o a colateral. Más información sobre el funcionamiento de esta característica.",
     "summary-of-protection": "Resumen de la protección",
     "on-stop-loss-trigger": "Al dispararse el stop-loss",
     "estimated-to-receive": "Recibirá aproximadamente",
@@ -971,7 +971,7 @@
     "up-to": "hasta",
     "not-guaranteed": "El funcionamiento de la protección automática no está garantizado el 100% de las veces.",
     "guarantee-factors": "Múltiples factores pueden afectar el proceso, entre ellos la liquidez, la volatilidad y el gas.",
-    "learn-more-about-automation": "Aprenda más sobre la protección automática y sobre cómo Oasis está construyendo el mejor producto de automatización en Ethereum →",
+    "learn-more-about-automation": "Aprenda más sobre la protección automática y sobre cómo Summer.fi está construyendo el mejor producto de automatización en Ethereum →",
     "automation-fact": "Se protegieron exitosamente {{success}} of {{total}} Vaults que usan automatización en los últimos 90 días",
     "modal-description": "La protección por stop-loss está habilitada. Haga click en el banner para más información.",
     "your-stop-loss-triggered": "Se disparó la protección por stop-loss",
@@ -985,7 +985,7 @@
     "cancel-notice": "Cancelar la protección por stop-loss significa que su Vault no tendrá protección automática y necesitará monitorear manualmente su ratio de colateralización para evitar liquidaciones.",
     "find-more-about-setting-stop-loss": "Aprenda más sobre cómo configurar el stop-loss →",
     "set-stop-loss-again": "Configurar el stop-loss nuevamente",
-    "sl-triggered-gas-estimation": "Estas estimaciones sobre las comisiones están basadas en el precio aproximado tras vender su colateral para pagar su deuda cuando se dispare la protección. La comisión de Oasis está incluída.",
+    "sl-triggered-gas-estimation": "Estas estimaciones sobre las comisiones están basadas en el precio aproximado tras vender su colateral para pagar su deuda cuando se dispare la protección. La comisión de Summer.fi está incluída.",
     "stop-loss-on": "Stop-loss activado"
   },
   "Argentina": "Argentina",
@@ -1007,7 +1007,7 @@
   "dsr-deposit-error-allowance": "Falló la configuración de permisos",
   "dsr-deposit-error-deposit": "Falló el depósito a DSR",
   "dsr-deposit-error-greater-than-balance": "DAI insuficiente",
-  "dsr-deposit-permissions": "Esta autorización le permite a Oasis interactuar con el Dai en su cartera.",
+  "dsr-deposit-permissions": "Esta autorización le permite a Summer.fi interactuar con el Dai en su cartera.",
   "dsr-product": "Bloquee sus Dai con Maker y geners ahorros.",
   "dsr-proxy-create-description-pending": "Creando proxy",
   "dsr-proxy-create-description-recent": "Proxy creado",
@@ -1104,7 +1104,7 @@
   "moonpay-purchase-notification": "Compra con Moonpay",
   "moonpay-purchase-notification-past": "Comprado con Moonpay",
   "no-camera": "La Cámara no está disponible",
-  "notice-app-homescreen": "Añadir Oasis.app a mi pantalla de inicio",
+  "notice-app-homescreen": "Añadir Summer.fi a mi pantalla de inicio",
   "wyre-badge-country": "EEUU. y Europa",
   "wyre-badge-fees": "Comisiones de 2.9%",
   "wyre-desc": "Wyre es un puente seguro entre las monedas fiduciarias y las criptomonedas.",
@@ -1114,8 +1114,8 @@
   "wyre-purchase-notification": "Compra con Wyre",
   "wyre-purchase-notification-past": "Comprado con Wyre",
   "newsletter": {
-    "title": "Manténgase al día con Oasis.app",
-    "subtitle": "Suscríbase a nuestro boletín de actualizaciones de Oasis",
+    "title": "Manténgase al día con Summer.fi",
+    "subtitle": "Suscríbase a nuestro boletín de actualizaciones de Summer.fi",
     "placeholder": "Dirección de email",
     "button": "Suscríbase",
     "success": "Gracias por suscribirse al boletín!",
@@ -1147,9 +1147,9 @@
     "update-failure": "Algo salió mal"
   },
   "modal-trezor-eip1559-title": "Trezor en Metamask no soporta el EIP-1559",
-  "modal-trezor-eip1559-paragraph1": "Oasis.app actualizó las transacciones recientemente para soportar el EIP-1559. Trezor en Metamask no soporta actualmente las transacciones EIP-1559, ver <0>aquí</0>",
-  "modal-trezor-eip1559-paragraph2": "Puede seguir utilizando Metamask y Trezor en nuestro entorno anterior en <0>legacy.oasis.app</0>",
-  "modal-trezor-eip1559-paragraph3": "Como alternativa, si tiene un Trezor Model T, puede <0>conectarse</0> directamente a Oasis.app",
+  "modal-trezor-eip1559-paragraph1": "Summer.fi actualizó las transacciones recientemente para soportar el EIP-1559. Trezor en Metamask no soporta actualmente las transacciones EIP-1559, ver <0>aquí</0>",
+  "modal-trezor-eip1559-paragraph2": "Puede seguir utilizando Metamask y Trezor en nuestro entorno anterior en <0>legacy.summer.fi</0>",
+  "modal-trezor-eip1559-paragraph3": "Como alternativa, si tiene un Trezor Model T, puede <0>conectarse</0> directamente a Summer.fi",
   "product-card": {
     "borrow": "Un Vault diseñado para pedir préstamos contra {{token}}",
     "multiply": "Un Vault diseñado para multiplicar su exposición a {{token}}",
@@ -1217,17 +1217,17 @@
   },
   "product-page": {
     "multiply": {
-      "title": "Oasis Multiply",
+      "title": "Summer.fi Multiply",
       "description": "Multiplique su exposición a sus criptoactivos favoritos. Conozca nuestros productos destacados o seleccione un activo.",
       "link": "Conozca más sobre Multiply ->"
     },
     "borrow": {
-      "title": "Oasis Borrow",
+      "title": "Summer.fi Borrow",
       "description": "Obtenga un préstamo de Dai contra sus criptoactivos favoritos. Utilice el Dai como prefiera. Conozca nuestros productos destacados o seleccione un activo para ver nuestros productos.",
       "link": "Conozca más sobre Borrow ->"
     },
     "earn": {
-      "title": "Oasis Earn",
+      "title": "Summer.fi Earn",
       "description": "Ponga sus criptoactivos a generar los mejores rendimientos. Seleccione su activo base.",
       "link": "Conozca más sobre Earn ->"
     }

@@ -160,6 +160,9 @@ export function parseRows(
 
     if (reverseTokens) icons.reverse()
 
+    const url = getActionUrl({ ...row, product: [product] })
+    const urlDisabled = url === '/'
+
     return {
       [product === ProductHubProductType.Earn ? 'depositToken' : 'collateralDebt']: (
         <AssetsTableDataCellAsset asset={asset} icons={icons} />
@@ -173,8 +176,9 @@ export function parseRows(
       ),
       action: (
         <AssetsTableDataCellAction
-          cta={upperFirst(product)}
-          link={getActionUrl({ ...row, product: [product] })}
+          cta={urlDisabled ? 'Coming soon' : upperFirst(product)}
+          link={url}
+          disabled={urlDisabled}
         />
       ),
     }
