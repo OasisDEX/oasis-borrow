@@ -68,6 +68,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   return (
     <Fragment key={product}>
       <Box
+        id="product-hub"
         sx={{
           position: 'relative',
           my: [3, null, '48px'],

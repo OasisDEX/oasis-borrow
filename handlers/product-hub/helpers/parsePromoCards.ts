@@ -116,10 +116,10 @@ export function parseMultiplyPromoCard(params: parseMultiplyPromoCardParams): Pr
           ? 'product-hub.promo-cards.up-to-exposure-against'
           : 'product-hub.promo-cards.exposure-against',
       props: {
+        collateralToken,
+        debtToken,
         ...(product &&
           product.maxMultiply && {
-            collateralToken,
-            debtToken,
             maxMultiple: `${new BigNumber(product.maxMultiply).toFixed(1)}x`,
           }),
       },

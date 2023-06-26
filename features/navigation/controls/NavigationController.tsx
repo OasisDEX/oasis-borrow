@@ -33,7 +33,7 @@ export function NavigationController() {
             label: 'Earn',
             link: INTERNAL_LINKS.earn,
           },
-          ...(!isViewBelowXl
+          ...(isConnected && !isViewBelowXl
             ? [
                 {
                   label: 'Swap',
@@ -43,14 +43,11 @@ export function NavigationController() {
                     })
                   },
                 },
-                ...(isConnected
-                  ? [
-                      {
-                        label: <MyPositionsLink />,
-                        link: `/owner/${walletAddress}`,
-                      },
-                    ]
-                  : []),
+
+                {
+                  label: <MyPositionsLink />,
+                  link: `/owner/${walletAddress}`,
+                },
               ]
             : []),
         ]}

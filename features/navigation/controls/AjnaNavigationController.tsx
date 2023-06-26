@@ -34,7 +34,7 @@ export function AjnaNavigationController() {
             label: 'Earn',
             link: INTERNAL_LINKS.ajnaEarn,
           },
-          ...(!isViewBelowXl
+          ...(isConnected && !isViewBelowXl
             ? [
                 {
                   label: 'Swap',
@@ -44,14 +44,11 @@ export function AjnaNavigationController() {
                     })
                   },
                 },
-                ...(isConnected
-                  ? [
-                      {
-                        label: <MyPositionsLink />,
-                        link: `/owner/${walletAddress}`,
-                      },
-                    ]
-                  : []),
+
+                {
+                  label: <MyPositionsLink />,
+                  link: `/owner/${walletAddress}`,
+                },
               ]
             : []),
         ]}

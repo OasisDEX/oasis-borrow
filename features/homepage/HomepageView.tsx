@@ -4,7 +4,7 @@ import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
-import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -94,7 +94,6 @@ export function HomepageView() {
           primaryText={t('landing.why-oasis.sub-headers.security.primary')}
           secondaryText={t('landing.why-oasis.sub-headers.security.secondary')}
           ctaLabel={t('find-your-defi-product')}
-          ctaURL={INTERNAL_LINKS.findYourDefiProduct}
           sx={{ alignSelf: 'center', mb: [5, 0] }}
         />
         <Image
