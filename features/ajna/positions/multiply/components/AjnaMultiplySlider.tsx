@@ -22,7 +22,7 @@ interface AjnaMultiplySliderProps {
 export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, isShort },
+    environment: { collateralToken, quoteToken, isShort, collateralPrice },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -62,11 +62,12 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     simulation,
   })
 
-  const tokenPrice = resolveSwapTokenPrice({
-    positionData: position,
-    simulationData: simulation,
-    swapData: swap?.current,
-  })
+  const tokenPrice =
+    resolveSwapTokenPrice({
+      positionData: position,
+      simulationData: simulation,
+      swapData: swap?.current,
+    }) || collateralPrice
 
   const max =
     !generateMax.isZero() && tokenPrice
