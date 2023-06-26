@@ -7,6 +7,7 @@ import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/get
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
+import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -20,7 +21,7 @@ interface AjnaMultiplySliderProps {
 export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, collateralPrice, isShort },
+    environment: { collateralToken, quoteToken, isShort },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -29,6 +30,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     },
     position: {
       currentPosition: { position, simulation },
+      swap,
     },
   } = useAjnaProductContext('multiply')
 
@@ -43,12 +45,19 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     simulation,
   })
 
-  const max = !generateMax.isZero()
-    ? generateMax
-        .plus(position.debtAmount)
-        .div((simulation || position).collateralAmount.times(collateralPrice))
-        .decimalPlaces(2, BigNumber.ROUND_DOWN)
-    : zero
+  const tokenPrice = resolveSwapTokenPrice({
+    positionData: position,
+    simulationData: simulation,
+    swapData: swap?.current,
+  })
+
+  const max =
+    !generateMax.isZero() && tokenPrice
+      ? generateMax
+          .plus(position.debtAmount)
+          .div((simulation || position).collateralAmount.times(tokenPrice))
+          .decimalPlaces(2, BigNumber.ROUND_DOWN)
+      : zero
 
   const resolvedValue =
     loanToValue || simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue || min
