@@ -95,8 +95,8 @@ export const oasisBaseTheme = {
     heroHeader: {
       fontFamily: 'heading',
       fontWeight: 'medium',
-      lineHeight: '80px',
-      fontSize: '76px',
+      lineHeight: ['68px', '80px'],
+      fontSize: ['64px', '76px'],
       letterSpacing: '-0.02em',
       color: 'primary100',
     },
