@@ -38,8 +38,6 @@ export async function getCloseAaveParameters({
     collateralToken,
     positionType,
     shouldCloseToCollateral,
-    // @ts-ignore
-    collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount.minus(1),
   }
 
   const stratDeps: closeParameters[1] = {
