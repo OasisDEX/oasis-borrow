@@ -8,6 +8,7 @@ import {
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
 
@@ -32,9 +33,19 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   limitRows,
 }) => {
+  const ajnaEnabled = useFeatureToggle('Ajna')
+
+  const dataMatchedToFeatureFlags = useMemo(
+    () =>
+      tableData.filter((row) => {
+        if (row.protocol === LendingProtocol.Ajna) return ajnaEnabled
+        else return true
+      }),
+    [ajnaEnabled, tableData],
+  )
   const dataMatchedByNL = useMemo(
-    () => matchRowsByNL(tableData, selectedProduct, selectedToken),
-    [selectedProduct, selectedToken, tableData],
+    () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),
+    [selectedProduct, selectedToken, dataMatchedToFeatureFlags],
   )
   const dataMatchedByFilters = useMemo(
     () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
@@ -44,6 +55,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     () => parseRows(dataMatchedByFilters, selectedProduct),
     [dataMatchedByFilters, selectedProduct],
   )
+
+  console.log(dataMatchedToFeatureFlags)
 
   return (
     <AssetsTableContainer>
