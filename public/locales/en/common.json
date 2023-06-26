@@ -212,6 +212,8 @@
       "inactive": "Inactive",
       "not-available": "Not available yet",
       "no-entries": "There are no entries available for selected filters.",
+      "no-items": "There are no items matching your filters.",
+      "no-items-description": "Find other products by updating your filter. If you are missing a product you would like to see on Summer.Fi, please contact us.",
       "position": "Position",
       "protection-value": "On {{protection}}%",
       "view-position": "View Position",
