@@ -18,7 +18,7 @@ export const TopBanner = ({ name, children }: { name: string } & WithChildren) =
           '&:hover svg.arrow': {
             transform: 'translateX(10px)',
           },
-          height: 0,
+          height: ['auto', 0],
           overflow: 'hidden',
           ...rollDownTopBannerAnimation,
         }}

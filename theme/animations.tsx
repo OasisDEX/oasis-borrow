@@ -43,6 +43,7 @@ export const rollDownTopBannerAnimation = {
   animationTimingFunction: ['ease-out', 'ease-out'],
   animationFillMode: ['forwards', 'forwards'],
   animationDelay: ['2s', '2s'],
+  maxHeight: [0, 'initial'],
 }
 
 export const fadeInAnimationMobile = {
