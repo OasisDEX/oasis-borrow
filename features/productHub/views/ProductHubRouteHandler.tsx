@@ -1,6 +1,5 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
-import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AppLayout } from 'components/Layouts'
 import { getProductHubStaticProps } from 'features/productHub/helpers/getProductHubStaticProps'
 import {
@@ -23,11 +22,9 @@ function ProductHubRouteHandler({
 }) {
   return (
     <WithConnection>
-      <WithFeatureToggleRedirect feature="OasisCreate">
-        <AnimatedWrapper sx={{ mb: 5 }}>
-          <ProductHubView product={product} promoCardsCollection="Home" token={token} url="/" />
-        </AnimatedWrapper>
-      </WithFeatureToggleRedirect>
+      <AnimatedWrapper sx={{ mb: 5 }}>
+        <ProductHubView product={product} promoCardsCollection="Home" token={token} url="/" />
+      </AnimatedWrapper>
     </WithConnection>
   )
 }
