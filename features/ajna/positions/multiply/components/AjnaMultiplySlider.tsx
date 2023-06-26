@@ -12,7 +12,7 @@ import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/re
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Flex, Text } from 'theme-ui'
 
 interface AjnaMultiplySliderProps {
@@ -26,7 +26,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
   } = useAjnaGeneralContext()
   const {
     form: {
-      state: { loanToValue },
+      state: { loanToValue, depositAmount },
       updateState,
     },
     position: {
@@ -35,6 +35,21 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
       isSimulationLoading,
     },
   } = useAjnaProductContext('multiply')
+  const [depositChanged, setDepositChanged] = useState(false)
+
+  useEffect(() => {
+    if (depositChanged && !isSimulationLoading) {
+      setDepositChanged(false)
+    }
+  }, [isSimulationLoading])
+
+  useEffect(() => {
+    setDepositChanged(true)
+
+    if (!depositAmount) {
+      setDepositChanged(false)
+    }
+  }, [depositAmount?.toString()])
 
   const min = (simulation?.minRiskRatio || position.minRiskRatio).loanToValue.decimalPlaces(
     2,
@@ -86,17 +101,23 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
       rightBoundry={resolvedValue}
       rightBoundryFormatter={(val) => (
         <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-          {formatDecimalAsPercent(ltv)}
-          {!ltv.eq(resolvedValue) && (
+          {!depositChanged ? (
             <>
-              <Icon name="arrow_right" size={14} sx={{ mx: 2 }} />
-              <Text
-                as="span"
-                sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
-              >
-                {formatDecimalAsPercent(val)}
-              </Text>
+              {formatDecimalAsPercent(ltv)}
+              {!ltv.eq(resolvedValue) && (
+                <>
+                  <Icon name="arrow_right" size={14} sx={{ mx: 2 }} />
+                  <Text
+                    as="span"
+                    sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
+                  >
+                    {formatDecimalAsPercent(val)}
+                  </Text>
+                </>
+              )}
             </>
+          ) : (
+            <SkeletonLine height="18px" sx={{ my: '5px' }} />
           )}
         </Flex>
       )}
