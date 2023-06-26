@@ -3,6 +3,7 @@ import { normalizeValue } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { SkeletonLine } from 'components/Skeleton'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -31,6 +32,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     position: {
       currentPosition: { position, simulation },
       swap,
+      isSimulationLoading,
     },
   } = useAjnaProductContext('multiply')
 
@@ -72,7 +74,15 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     <SliderValuePicker
       sliderPercentageFill={percentage}
       leftBoundry={isShort ? normalizeValue(one.div(liquidationPrice)) : liquidationPrice}
-      leftBoundryFormatter={(val) => `${formatCryptoBalance(val)} ${collateralToken}/${quoteToken}`}
+      leftBoundryFormatter={(val) =>
+        isSimulationLoading ? (
+          <Flex sx={{ alignItems: 'center', height: '28px' }}>
+            <SkeletonLine height="18px" />
+          </Flex>
+        ) : (
+          `${formatCryptoBalance(val)} ${collateralToken}/${quoteToken}`
+        )
+      }
       rightBoundry={resolvedValue}
       rightBoundryFormatter={(val) => (
         <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
