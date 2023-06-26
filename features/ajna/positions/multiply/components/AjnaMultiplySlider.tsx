@@ -102,7 +102,9 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
       rightBoundry={resolvedValue}
       rightBoundryFormatter={(val) => (
         <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-          {!depositChanged ? (
+          {depositChanged && isSimulationLoading ? (
+            <SkeletonLine height="18px" sx={{ my: '5px' }} />
+          ) : (
             <>
               {formatDecimalAsPercent(ltv)}
               {!ltv.eq(resolvedValue) && (
@@ -117,8 +119,6 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
                 </>
               )}
             </>
-          ) : (
-            <SkeletonLine height="18px" sx={{ my: '5px' }} />
           )}
         </Flex>
       )}
