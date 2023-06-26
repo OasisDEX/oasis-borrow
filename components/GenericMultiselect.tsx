@@ -251,6 +251,7 @@ export function GenericMultiselect({
           opacity: isOpen ? 1 : 0,
           transform: isOpen ? 'translateY(0)' : 'translateY(-5px)',
           pointerEvents: isOpen ? 'auto' : 'none',
+          zIndex: 1,
           transition: 'opacity 200ms, transform 200ms',
         }}
       >
@@ -267,7 +268,6 @@ export function GenericMultiselect({
                 ? 2
                 : 0,
             overflowY: 'auto',
-            zIndex: 1,
             '&::-webkit-scrollbar': {
               width: '6px',
               borderRadius: 'large',
