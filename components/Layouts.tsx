@@ -175,7 +175,7 @@ export function LandingPageLayout({ children }: WithChildren) {
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
-        sx={{ position: 'relative' }}
+        sx={{ position: 'relative', zIndex: 1 }}
       >
         {children}
       </WithAnnouncementLandingLayout>

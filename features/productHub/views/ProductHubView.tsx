@@ -70,13 +70,14 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   return (
     <Fragment key={product}>
       <Box
+        id={id}
         sx={{
           position: 'relative',
           my: [3, null, '48px'],
+          scrollMarginTop: '48px',
           textAlign: 'center',
           zIndex: 3,
         }}
-        id={id}
       >
         <ProductHubNaturalLanguageSelectorController
           gradient={headerGradient}
