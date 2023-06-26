@@ -23,6 +23,7 @@ const publicRuntimeConfig = {
   discoverProxyUrl: process.env.DISCOVER_PROXY_URL,
   ajnaSubgraphUrl: process.env.AJNA_SUBGRAPH_URL,
   ajnaSubgraphUrlGoerli: process.env.AJNA_SUBGRAPH_URL_GOERLI,
+  rebrandingUrl: process.env.REBRANDING_POST_URL,
 }
 
 module.exports = {
