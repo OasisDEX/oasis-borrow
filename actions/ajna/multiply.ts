@@ -1,7 +1,9 @@
 import {
   AjnaCommonDependencies,
   AjnaCommonPayload,
+  AjnaPool,
   AjnaPosition,
+  normalizeValue,
   RiskRatio,
   strategies,
 } from '@oasisdex/dma-library'
@@ -13,6 +15,8 @@ import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/aj
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 
+const DEFAULT_LTV_ON_NEW_POOL = new BigNumber(0.05)
+
 export const ajnaOpenMultiply = ({
   state,
   commonPayload,
@@ -21,6 +25,7 @@ export const ajnaOpenMultiply = ({
   collateralToken,
   quoteToken,
   walletAddress,
+  pool,
 }: {
   state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
@@ -29,15 +34,22 @@ export const ajnaOpenMultiply = ({
   quoteToken: string
   chainId: number
   walletAddress: string
+  pool: AjnaPool
 }) => {
   const { depositAmount, loanToValue } = state
+
+  const minRiskRatio = normalizeValue(
+    pool.poolMinDebtAmount.div(depositAmount!.times(commonPayload.collateralPrice)),
+  )
 
   return strategies.ajna.multiply.open(
     {
       ...commonPayload,
-      collateralAmount: depositAmount!,
-      // TODO mocked riskRatio because slider doesn't work as expected
-      riskRatio: new RiskRatio(new BigNumber('0.06'), RiskRatio.TYPE.LTV),
+      collateralAmount: depositAmount!.shiftedBy(commonPayload.collateralTokenPrecision)!,
+      riskRatio: new RiskRatio(
+        loanToValue || (minRiskRatio.isZero() ? DEFAULT_LTV_ON_NEW_POOL : minRiskRatio),
+        RiskRatio.TYPE.LTV,
+      ),
       slippage: new BigNumber(0.01),
       collateralTokenSymbol: collateralToken,
       quoteTokenSymbol: quoteToken,

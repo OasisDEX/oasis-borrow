@@ -35,7 +35,9 @@ export function useAjnaTxHandler(): () => void {
     form: { dispatch, state },
     position: {
       currentPosition: { position, simulation },
+      swap,
       setCachedPosition,
+      setCachedSwap,
       setIsLoadingSimulation,
       setSimulation,
     },
@@ -82,6 +84,7 @@ export function useAjnaTxHandler(): () => void {
           .then((data) => {
             if (data) {
               setTxData(data.tx)
+              console.log('data', data)
               setSimulation(data.simulation)
               setIsLoadingSimulation(false)
               uiChanges.publish(TX_DATA_CHANGE, {
@@ -118,11 +121,14 @@ export function useAjnaTxHandler(): () => void {
       })
       .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
       .subscribe((txState) => {
-        if (txState.status === TxStatus.WaitingForConfirmation)
+        if (txState.status === TxStatus.WaitingForConfirmation) {
           setCachedPosition({
             position,
             simulation,
           })
+          swap?.current && setCachedSwap(swap.current)
+        }
+
         if (txState.status === TxStatus.Success) dispatch({ type: 'reset' })
         handleTransaction({ txState, ethPrice, setTxDetails })
       })

@@ -1,4 +1,9 @@
-import { AjnaCommonDependencies, AjnaCommonPayload, Network, Strategy } from '@oasisdex/dma-library'
+import {
+  AjnaCommonDependencies,
+  AjnaCommonPayload,
+  AjnaStrategy,
+  Network,
+} from '@oasisdex/dma-library'
 import {
   ajnaDepositGenerateBorrow,
   ajnaOpenBorrow,
@@ -37,7 +42,7 @@ export async function getAjnaParameters({
   rpcProvider,
   state,
   isFormValid,
-}: AjnaTxHandlerInput): Promise<Strategy<AjnaGenericPosition> | undefined> {
+}: AjnaTxHandlerInput): Promise<AjnaStrategy<AjnaGenericPosition> | undefined> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const defaultPromise = Promise.resolve(undefined)
   const chainId = context.chainId
@@ -108,6 +113,7 @@ export async function getAjnaParameters({
         collateralToken,
         quoteToken,
         walletAddress,
+        pool: position.pool,
       })
     }
     case 'adjust': {

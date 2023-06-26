@@ -5,11 +5,15 @@ import { SecondaryVariantType } from 'components/infoSection/Item'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
+import { resolveIfCachedSwap } from 'features/ajna/positions/common/helpers/resolveIfCachedSwap'
+import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
+import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   formatAmount,
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -25,7 +29,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     form: {
       state: { action },
     },
-    position: { cachedPosition, isSimulationLoading, currentPosition },
+    position: { cachedPosition, isSimulationLoading, currentPosition, swap },
   } = useAjnaProductContext('multiply')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
@@ -33,6 +37,14 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     cachedPosition,
     currentPosition,
   })
+
+  const swapData = resolveIfCachedSwap({
+    cached,
+    currentSwap: swap?.current,
+    cachedSwap: swap?.cached,
+  })
+
+  const tokenPrice = resolveSwapTokenPrice({ positionData, simulationData, swapData })
 
   const withSlippage =
     action &&
@@ -50,16 +62,18 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const withOasisFee = withBuying || withSelling
 
   const slippageLimit = new BigNumber(0.005)
-  const buyingCollateral = new BigNumber(1.1645)
-  const sellingCollateral = new BigNumber(11.2)
-  const priceImpact = new BigNumber(0.0064)
-  const oasisFee = new BigNumber(withOasisFee ? 5.48 : zero)
+  const buyingOrSellingCollateral = swapData ? swapData.minToTokenAmount : zero
+  const priceImpact = calculatePriceImpact(tokenPrice || zero, collateralPrice)
+  const oasisFee = withOasisFee
+    ? buyingOrSellingCollateral.times(OAZO_FEE.times(collateralPrice))
+    : zero
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
     totalExposure: `${positionData.collateralAmount} ${collateralToken}`,
     afterTotalExposure:
-      simulationData?.collateralAmount && `${simulationData.collateralAmount} ${collateralToken}`,
+      simulationData?.collateralAmount &&
+      `${formatCryptoBalance(simulationData.collateralAmount)} ${collateralToken}`,
     multiple: `${positionData.riskRatio.multiple.toFixed(2)}x`,
     afterMultiple: simulationData?.riskRatio && `${simulationData.riskRatio.multiple.toFixed(2)}x`,
     slippageLimit: formatDecimalAsPercent(slippageLimit),
@@ -77,10 +91,16 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     afterDynamicMaxLtv:
       simulationData?.maxRiskRatio.loanToValue &&
       formatDecimalAsPercent(simulationData.maxRiskRatio.loanToValue),
-    buyingCollateral: `${formatCryptoBalance(buyingCollateral)} ${collateralToken}`,
-    buyingCollateralUSD: `$${formatAmount(buyingCollateral.times(collateralPrice), 'USD')}`,
-    sellingCollateral: `${formatCryptoBalance(sellingCollateral)} ${collateralToken}`,
-    sellingCollateralUSD: `$${formatAmount(sellingCollateral.times(collateralPrice), 'USD')}`,
+    buyingCollateral: `${formatCryptoBalance(buyingOrSellingCollateral)} ${collateralToken}`,
+    buyingCollateralUSD: `$${formatAmount(
+      buyingOrSellingCollateral.times(collateralPrice),
+      'USD',
+    )}`,
+    sellingCollateral: `${formatCryptoBalance(buyingOrSellingCollateral)} ${collateralToken}`,
+    sellingCollateralUSD: `$${formatAmount(
+      buyingOrSellingCollateral.times(collateralPrice),
+      'USD',
+    )}`,
     collateralPrice: `$${formatAmount(collateralPrice, 'USD')}`,
     collateralPriceImpact: formatDecimalAsPercent(priceImpact),
     oasisFee: `$${formatAmount(oasisFee, 'USD')}`,

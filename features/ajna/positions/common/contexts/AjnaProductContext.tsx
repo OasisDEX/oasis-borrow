@@ -1,5 +1,6 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
@@ -9,6 +10,7 @@ import {
   useAjnaBorrowFormReducto,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
 import { AjnaHistoryEvents } from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import {
@@ -73,11 +75,16 @@ interface AjnaPositionSet<P> {
 interface AjnaProductContextPosition<P, A> {
   cachedPosition?: AjnaPositionSet<P>
   currentPosition: AjnaPositionSet<P>
+  swap?: {
+    current?: SwapData
+    cached?: SwapData
+  }
   isSimulationLoading?: boolean
   resolvedId?: string
   setCachedPosition: (positionSet: AjnaPositionSet<AjnaGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
+  setCachedSwap: (swap: SwapData) => void
   positionAuction: A
   history: AjnaHistoryEvents
 }
@@ -179,6 +186,7 @@ export function AjnaProductContextProvider({
   )
 
   const [cachedPosition, setCachedPosition] = useState<AjnaPositionSet<typeof position>>()
+  const [cachedSwap, setCachedSwap] = useState<SwapData>()
   const [simulation, setSimulation] = useState<AjnaSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
 
@@ -246,6 +254,7 @@ export function AjnaProductContextProvider({
       setCachedPosition: (positionSet) => setCachedPosition(positionSet),
       setIsLoadingSimulation,
       setSimulation,
+      setCachedSwap: (swap) => setCachedSwap(swap),
     },
     validation,
     notifications,
@@ -265,6 +274,14 @@ export function AjnaProductContextProvider({
         isSimulationLoading,
         resolvedId: positionIdFromDpmProxyData,
         positionAuction,
+        swap: {
+          current: formatSwapData({
+            swapData: simulation?.swaps[0],
+            collateralPrecision: getToken(collateralToken).precision,
+            quotePrecision: getToken(quoteToken).precision,
+          }),
+          cached: cachedSwap,
+        },
         history: positionHistory,
       },
       validation,
@@ -287,6 +304,7 @@ export function AjnaProductContextProvider({
     notifications,
     walletAddress,
     positionHistory,
+    cachedSwap,
   ])
 
   switch (product) {
