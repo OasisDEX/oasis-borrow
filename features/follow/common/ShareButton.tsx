@@ -22,7 +22,7 @@ interface ShareButtonPropsWithParts {
 type ShareButtonProps = ShareButtonPropsWithLink | ShareButtonPropsWithParts
 
 export const twitterSharePositionText = 'Check out this position'
-export const twitterSharePositionVia = 'summerfi_'
+export const twitterSharePositionVia = 'summerfinance_'
 
 export function getTwitterShareUrl({
   hashtags,

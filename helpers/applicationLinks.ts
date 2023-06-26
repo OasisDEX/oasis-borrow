@@ -93,7 +93,7 @@ export const EXTERNAL_LINKS = {
     HOME: 'https://www.ajna.finance/',
   },
   WORKABLE: 'https://summerfi.workable.com/',
-  TWITTER: 'https://twitter.com/summerfi_',
+  TWITTER: 'https://twitter.com/summerfinance_',
   DISCORD: 'https://discord.gg/summerfi',
   GITHUB: 'https://github.com/OasisDEX/oasis-borrow',
   BUG_BOUNTY: 'https://immunefi.com/bounty/summerfi',
