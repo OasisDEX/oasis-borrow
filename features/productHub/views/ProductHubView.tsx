@@ -74,6 +74,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         sx={{
           position: 'relative',
           my: [3, null, '48px'],
+          scrollMarginTop: '48px',
           textAlign: 'center',
           zIndex: 3,
         }}
