@@ -97,7 +97,7 @@ export const EXTERNAL_LINKS = {
   TWITTER: 'https://twitter.com/Summerfinance_',
   DISCORD: 'https://discord.gg/summerfi',
   GITHUB: 'https://github.com/OasisDEX/oasis-borrow',
-  BUG_BOUNTY: 'https://immunefi.com/bounty/oasisapp',
+  BUG_BOUNTY: 'https://immunefi.com/bounty/summerfi',
   ETHERSCAN: 'https://etherscan.io',
   ETHTX: 'https://ethtx.info',
   DUNE_ORG_STETHETH_PEG_HISTORY: 'https://dune.com/oasisapp/steth-eth-peg-history',
