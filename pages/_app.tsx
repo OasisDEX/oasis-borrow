@@ -33,6 +33,7 @@ import { useLocalStorage } from 'helpers/useLocalStorage'
 import { appWithTranslation, i18n, useTranslation } from 'next-i18next'
 import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef } from 'react'
@@ -168,9 +169,14 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
   }, [router.events])
 
+  console.log('getConfig()?.publicRuntimeConfig', getConfig()?.publicRuntimeConfig)
+
+  const rebrandingUrl = getConfig()?.publicRuntimeConfig.rebrandingUrl
+  console.log('rebrandingUrl', rebrandingUrl)
+
   const topBannerContent = (
     <AppLink
-      href={EXTERNAL_LINKS.BLOG.REBRANDING}
+      href={rebrandingUrl || EXTERNAL_LINKS.BLOG.REBRANDING}
       onClick={() => {
         trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClicked, 'rebranding')
       }}
