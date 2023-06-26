@@ -50,6 +50,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     action &&
     [
       'open-multiply',
+      'adjust',
       'deposit-collateral-multiply',
       'deposit-quote-multiply',
       'withdraw-multiply',
