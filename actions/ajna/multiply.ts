@@ -45,7 +45,7 @@ export const ajnaOpenMultiply = ({
   return strategies.ajna.multiply.open(
     {
       ...commonPayload,
-      collateralAmount: depositAmount!.shiftedBy(commonPayload.collateralTokenPrecision)!,
+      collateralAmount: depositAmount!,
       riskRatio: new RiskRatio(
         loanToValue || (minRiskRatio.isZero() ? DEFAULT_LTV_ON_NEW_POOL : minRiskRatio),
         RiskRatio.TYPE.LTV,
