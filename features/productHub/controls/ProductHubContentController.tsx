@@ -56,8 +56,6 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [dataMatchedByFilters, selectedProduct],
   )
 
-  console.log(dataMatchedToFeatureFlags)
-
   return (
     <AssetsTableContainer>
       <ProductHubFiltersController
