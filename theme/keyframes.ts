@@ -29,6 +29,17 @@ export const fadeIn = keyframes({
   },
 })
 
+export const rollDownTopBanner = keyframes({
+  from: {
+    padding: 0,
+    height: 0,
+  },
+  to: {
+    padding: '16px',
+    height: '56px',
+  },
+})
+
 export const fadeOut = keyframes({
   from: {
     opacity: 1,
