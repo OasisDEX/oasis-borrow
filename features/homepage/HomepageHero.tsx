@@ -57,10 +57,13 @@ function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats 
           }
         />
         <StatCell
-          label={t('landing.stats.median-vault')}
+          label={t('landing.stats.collateral-automated')}
           value={
             oasisStatsValue
-              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`
+              ? `$${formatAsShorthandNumbers(
+                  new BigNumber(oasisStatsValue.lockedCollateralActiveTrigger),
+                  2,
+                )}`
               : '-'
           }
         />

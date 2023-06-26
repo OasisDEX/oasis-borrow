@@ -4,6 +4,7 @@ import { WithChildren } from 'helpers/types'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box } from 'theme-ui'
+import { rollDownTopBannerAnimation } from 'theme/animations'
 
 export const TopBanner = ({ name, children }: { name: string } & WithChildren) => {
   const [topBannerClosed, setTopBannerClosed] = useLocalStorage(`TopBanner_${name}_closed`, false)
@@ -13,11 +14,13 @@ export const TopBanner = ({ name, children }: { name: string } & WithChildren) =
         sx={{
           position: 'relative',
           textAlign: 'center',
-          padding: 3,
           background: 'linear-gradient(90.6deg, #D3F5FF 0%, #F2FCFF 39.53%, #FFE7D8 99.87%)',
           '&:hover svg.arrow': {
             transform: 'translateX(10px)',
           },
+          height: 0,
+          overflow: 'hidden',
+          ...rollDownTopBannerAnimation,
         }}
       >
         {children}
