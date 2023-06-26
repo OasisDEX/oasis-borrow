@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TranslateStringType } from 'helpers/translateStringType'
-import { useRouter } from 'next/router'
 import React from 'react'
 import { Box, Button, SxStyleProp, Text } from 'theme-ui'
 
@@ -8,7 +7,7 @@ type HomePageHeadlineProps = {
   primaryText: string
   secondaryText: string
   maxWidth?: string
-  ctaURL?: string
+  ctaOnClick?: () => void
   ctaLabel?: TranslateStringType
   sx?: SxStyleProp
 }
@@ -16,12 +15,11 @@ type HomePageHeadlineProps = {
 export const HomepageHeadline = ({
   primaryText,
   secondaryText,
-  ctaURL,
+  ctaOnClick,
   ctaLabel,
   maxWidth = '700px',
   sx,
 }: HomePageHeadlineProps) => {
-  const { replace } = useRouter()
   return (
     <Box sx={{ maxWidth, ...sx }}>
       <Text variant="header3" sx={{ color: 'primary100' }}>
@@ -30,7 +28,7 @@ export const HomepageHeadline = ({
           {secondaryText}
         </Text>
       </Text>
-      {ctaURL && ctaLabel && (
+      {ctaOnClick && ctaLabel && (
         <Button
           variant="primary"
           sx={{
@@ -42,7 +40,7 @@ export const HomepageHeadline = ({
               transform: 'translateX(10px)',
             },
           }}
-          onClick={() => replace(ctaURL)}
+          onClick={ctaOnClick}
         >
           {ctaLabel}{' '}
           <Icon

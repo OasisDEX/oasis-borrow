@@ -29,6 +29,7 @@ interface ProductHubViewProps {
   token?: string
   url?: string
   limitRows?: number
+  id?: string
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
@@ -40,6 +41,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   token,
   url,
   limitRows,
+  id,
 }) => {
   const { t } = useTranslation()
   const { data } = useProductHubData({
@@ -74,6 +76,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           textAlign: 'center',
           zIndex: 3,
         }}
+        id={id}
       >
         <ProductHubNaturalLanguageSelectorController
           gradient={headerGradient}
