@@ -26,6 +26,7 @@ export const ajnaOpenMultiply = ({
   quoteToken,
   walletAddress,
   pool,
+  slippage,
 }: {
   state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
@@ -35,6 +36,7 @@ export const ajnaOpenMultiply = ({
   chainId: number
   walletAddress: string
   pool: AjnaPool
+  slippage: BigNumber
 }) => {
   const { depositAmount, loanToValue } = state
 
@@ -50,7 +52,7 @@ export const ajnaOpenMultiply = ({
         loanToValue || (minRiskRatio.isZero() ? DEFAULT_LTV_ON_NEW_POOL : minRiskRatio),
         RiskRatio.TYPE.LTV,
       ),
-      slippage: new BigNumber(0.01),
+      slippage,
       collateralTokenSymbol: collateralToken,
       quoteTokenSymbol: quoteToken,
       user: walletAddress,

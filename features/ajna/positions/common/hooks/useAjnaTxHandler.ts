@@ -28,7 +28,15 @@ export function useAjnaTxHandler(): () => void {
   const [context] = useObservable(context$)
   const {
     tx: { setTxDetails },
-    environment: { collateralPrice, collateralToken, ethPrice, quotePrice, quoteToken, product },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      ethPrice,
+      quotePrice,
+      quoteToken,
+      product,
+      slippage,
+    },
     steps: { isExternalStep, currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -76,6 +84,7 @@ export function useAjnaTxHandler(): () => void {
             rpcProvider: getRpcProvider(context.chainId),
             state,
             isFormValid,
+            slippage,
           }),
         )
         setCancelablePromise(promise)

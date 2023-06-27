@@ -21,7 +21,7 @@ import React from 'react'
 export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralPrice, collateralToken, quoteToken },
+    environment: { collateralPrice, collateralToken, quoteToken, slippage },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
@@ -68,7 +68,6 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       simulationData?.riskRatio.loanToValue.lt(positionData.riskRatio.loanToValue))
   const withOasisFee = withBuying || withSelling
 
-  const slippageLimit = new BigNumber(0.005)
   const buyingOrSellingCollateral = swapData ? swapData.minToTokenAmount : zero
   const priceImpact = calculatePriceImpact(tokenPrice || zero, collateralPrice)
   const oasisFee = withOasisFee
@@ -83,7 +82,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       `${formatCryptoBalance(simulationData.collateralAmount)} ${collateralToken}`,
     multiple: `${positionData.riskRatio.multiple.toFixed(2)}x`,
     afterMultiple: simulationData?.riskRatio && `${simulationData.riskRatio.multiple.toFixed(2)}x`,
-    slippageLimit: formatDecimalAsPercent(slippageLimit),
+    slippageLimit: formatDecimalAsPercent(slippage),
     positionDebt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterPositionDebt:
       simulationData?.debtAmount &&

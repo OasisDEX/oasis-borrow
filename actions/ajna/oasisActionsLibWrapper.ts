@@ -30,6 +30,7 @@ interface AjnaTxHandlerInput {
   rpcProvider: ethers.providers.Provider
   state: AjnaFormState
   isFormValid: boolean
+  slippage: BigNumber
 }
 
 export async function getAjnaParameters({
@@ -42,6 +43,7 @@ export async function getAjnaParameters({
   rpcProvider,
   state,
   isFormValid,
+  slippage,
 }: AjnaTxHandlerInput): Promise<AjnaStrategy<AjnaGenericPosition> | undefined> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const defaultPromise = Promise.resolve(undefined)
@@ -114,6 +116,7 @@ export async function getAjnaParameters({
         quoteToken,
         walletAddress,
         pool: position.pool,
+        slippage,
       })
     }
     case 'adjust': {
