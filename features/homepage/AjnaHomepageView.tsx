@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
@@ -7,12 +6,14 @@ import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useConnection } from 'features/web3OnBoard'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
 import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Text } from 'theme-ui'
+import { Box, Button, Flex, Text } from 'theme-ui'
 
 import { Hero } from './common/Hero'
 
@@ -49,6 +50,10 @@ export function AjnaHomepageView() {
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
+  const { connecting, connect } = useConnection({
+    initialConnect: false,
+  })
+  const { isConnected } = useAccount()
 
   return (
     <AnimatedWrapper>
@@ -113,37 +118,23 @@ export function AjnaHomepageView() {
           src: '/static/img/setup-banner/anja-landing-banner.png',
         }}
         link={{
-          href: 'link',
-          label: t('ajna.landing-banner.linkLabel'),
+          href: EXTERNAL_LINKS.AJNA.HOME,
+          label: t('ajna.landing-banner.link-label'),
         }}
         button={
-          context?.status !== 'connected' ? (
-            <AppLink
-              variant="primary"
-              href="/connect"
-              sx={{
-                display: 'flex',
-                px: '40px',
-                py: 2,
-                color: 'offWhite',
-                alignItems: 'center',
-                '&:hover svg': {
-                  transform: 'translateX(10px)',
-                },
-              }}
-            >
-              {t('connect-wallet-button')}
-              <Icon
-                name="arrow_right"
-                sx={{
-                  ml: 2,
-                  position: 'relative',
-                  left: 2,
-                  transition: '0.2s',
-                }}
-              />
+          isConnected ? (
+            <AppLink variant="primary" href={INTERNAL_LINKS.ajnaRewards} sx={{ px: '40px' }}>
+              {t('ajna.landing-banner.button-label')}
             </AppLink>
-          ) : null
+          ) : (
+            <Button
+              variant="primary"
+              sx={{ px: '40px' }}
+              onClick={async () => connecting || (await connect())}
+            >
+              {t('connect-wallet')} →
+            </Button>
+          )
         }
       />
       <AjnaHaveSomeQuestions />
