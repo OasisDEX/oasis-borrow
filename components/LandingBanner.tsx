@@ -26,7 +26,7 @@ export function LandingBanner({
   link,
 }: LandingBannerProps) {
   return (
-    <Box sx={{ borderRadius: '32px', background }}>
+    <Box sx={{ borderRadius: 'round', background }}>
       <Grid
         sx={{
           gridTemplateColumns: ['1fr', '1fr 316px'],
@@ -51,10 +51,12 @@ export function LandingBanner({
           />
         </Box>
         <Flex sx={{ p: [4, 5], flexDirection: 'column', justifyContent: 'space-between' }}>
-          <Heading as="h2" sx={{ mb: 2, fontSize: '28px' }}>
+          <Heading as="h2" variant="header4" sx={{ mb: '12px' }}>
             {title}
           </Heading>
-          <Text sx={{ color: 'neutral80', fontSize: 4 }}>{description}</Text>
+          <Text as="p" variant="paragraph1" sx={{ color: 'neutral80' }}>
+            {description}
+          </Text>
           <Flex
             sx={{
               mt: [5, 4],
