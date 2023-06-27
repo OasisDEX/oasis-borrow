@@ -6,7 +6,7 @@ import {
   networkSetById,
 } from 'blockchain/networks'
 import { WithChildren } from 'helpers/types'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useReducer, useState } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
 import { useBridgeConnector } from './useBridgeConnector'
@@ -19,6 +19,7 @@ export type Web3OnBoardConnectorContext = {
   connectedAddress: string | undefined
   connecting: boolean
   networkConfig: NetworkConfig | undefined
+  setPageChainId: React.Dispatch<NetworkConfigHexId | undefined>
 }
 
 const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
@@ -33,6 +34,7 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
   connectedAddress: undefined,
   connecting: false,
   networkConfig: undefined,
+  setPageChainId: () => undefined,
 })
 
 export const useWeb3OnBoardConnectorContext = () => useContext(web3OnBoardConnectorContext)
@@ -45,6 +47,28 @@ function InternalProvider({ children }: WithChildren) {
   } = useBridgeConnector()
   const { networkConnector, networkConfig: networkConnectorNetwork } = useNetworkConnector()
   const [account, setAccount] = useState<string | undefined>(undefined)
+
+  const [pageChainId, dispatchPageChainId] = useReducer(
+    (state: NetworkConfigHexId | undefined, action: NetworkConfigHexId | undefined) => {
+      if (state && action && state !== action) {
+        throw new Error('Page chainId is already set')
+      }
+      return action ?? state
+    },
+    undefined,
+    () => undefined,
+  )
+
+  useEffect(() => {
+    if (
+      pageChainId &&
+      !connecting &&
+      bridgeConnector &&
+      bridgeConnector.hexChainId !== pageChainId
+    ) {
+      void createConnector(pageChainId, true)
+    }
+  }, [pageChainId, bridgeConnector, connecting, createConnector])
 
   useEffect(() => {
     setAccount(bridgeConnector?.connectedAccount)
@@ -60,6 +84,7 @@ function InternalProvider({ children }: WithChildren) {
         networkConfig: bridgeConnector
           ? networkSetByHexId[bridgeConnector.hexChainId]
           : networkConnectorNetwork,
+        setPageChainId: dispatchPageChainId,
       }}
     >
       {children}

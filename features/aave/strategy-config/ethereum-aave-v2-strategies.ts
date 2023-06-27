@@ -1,4 +1,4 @@
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { ethereumMainnetHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { IStrategyConfig, ProductType, ProxyType } from 'features/aave/common'
 import { AaveManageHeader, AaveOpenHeader } from 'features/aave/common/components/AaveHeader'
 import { adjustRiskView } from 'features/aave/common/components/SidebarAdjustRiskView'
@@ -26,6 +26,7 @@ export const ethereumAaveV2BorrowStrategies: Array<IStrategyConfig> = [
     return {
       network: NetworkNames.ethereumMainnet,
       networkId: NetworkIds.MAINNET,
+      networkHexId: ethereumMainnetHexId,
       name: `borrow-against-${collateral}`,
       urlSlug: collateral,
       proxyType: ProxyType.DpmProxy,
@@ -59,6 +60,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'stETHethV2',
     urlSlug: 'stETHeth',
     proxyType: ProxyType.DpmProxy,
@@ -89,6 +91,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'ethusdcV2',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -119,6 +122,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'stETHusdcV2',
     urlSlug: 'stETHusdc',
     proxyType: ProxyType.DpmProxy,
@@ -149,6 +153,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'wBTCusdcV2',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,

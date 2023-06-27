@@ -4,14 +4,19 @@ import React from 'react'
 
 import { Connection } from './Connection'
 
-export const WithConnection = ({ children }: WithChildren) => (
-  <Connection walletConnect={false}>{children}</Connection>
+export const WithConnection = ({
+  children,
+  pageChainId,
+}: WithChildren & { pageChainId?: NetworkConfigHexId }) => (
+  <Connection walletConnect={false} pageChainId={pageChainId}>
+    {children}
+  </Connection>
 )
 export const WithWalletConnection = ({
   children,
   chainId,
 }: WithChildren & { chainId: NetworkConfigHexId }) => (
-  <Connection walletConnect={true} chainId={chainId}>
+  <Connection walletConnect={true} chainId={chainId} pageChainId={chainId}>
     {children}
   </Connection>
 )

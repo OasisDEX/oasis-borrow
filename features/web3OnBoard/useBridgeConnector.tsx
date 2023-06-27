@@ -30,6 +30,7 @@ export function useBridgeConnector(): BridgeConnectorState {
 
   const [customFork, setCustomFrok] = useCustomForkParameter()
   const { reload } = useRouter()
+  const [isReloaded, setIsReloaded] = useState(false)
 
   const addForkToWallet = useCallback(
     async (wallet: WalletState, networkHexId: NetworkConfigHexId) => {
@@ -79,14 +80,24 @@ export function useBridgeConnector(): BridgeConnectorState {
 
             return chainAdded
           })
-          .then((value) => {
-            if (value) {
+          .then(() => {
+            if (!isReloaded) {
+              setIsReloaded(true)
               return reload()
             }
           })
       }
     }
-  }, [wallet, setChain, networkHexId, addForkToWallet, reload, customFork, setCustomNetwork])
+  }, [
+    wallet,
+    setChain,
+    networkHexId,
+    addForkToWallet,
+    reload,
+    customFork,
+    setCustomNetwork,
+    isReloaded,
+  ])
 
   useEffect(() => {
     if (wallet) {

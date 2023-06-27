@@ -1,3 +1,4 @@
+import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
@@ -26,7 +27,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
     <WithFeatureToggleRedirect feature="DaiSavingsRate">
-      <WithConnection>
+      <WithConnection pageChainId={ethereumMainnetHexId}>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags
