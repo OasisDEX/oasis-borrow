@@ -1,9 +1,11 @@
 import { ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters, estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
+import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
+import { getTransactionFee } from 'blockchain/optimism/transaction-fee'
 import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -27,10 +29,21 @@ export interface BaseTransactionParameters {
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
   strategy?: ISimplePositionTransition | PositionTransition | IStrategy
+
+  /**
+   * @deprecated This is old stuff. It uses `web3.js`. We want to move to `ethers.js` and get rid of RxJS.
+   */
+  txHelper?: TxHelpers
+
+  /**
+   * @deprecated Result of txHelper. It won't be supported.
+   */
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
-  txHelper?: TxHelpers
+
+  gasEstimationResult?: EstimatedGasResult
   signer?: ethers.Signer
+
   retries?: number // number of retries for gas estimation
   networkId: NetworkIds
   runWithEthers: boolean
@@ -53,6 +66,7 @@ export type TransactionParametersStateMachineEvent<T> =
     }
   | { type: 'TX_HELPER_CHANGED'; txHelper: TxHelpers }
   | { type: 'GAS_ESTIMATION_CHANGED'; estimatedGas: number }
+  | { type: 'ETHERS_GAS_ESTIMATION_CHANGED'; gasEstimationResult: EstimatedGasResult }
   | { type: 'SIGNER_CHANGED'; signer: ethers.Signer }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
@@ -209,7 +223,10 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               networkId: networkId!,
             }
             return fromPromise(estimateGasOnDpm(dpmParams)).pipe(
-              map((estimatedGas) => ({ type: 'GAS_ESTIMATION_CHANGED', estimatedGas })),
+              map((estimatedGas) => ({
+                type: 'GAS_ESTIMATION_CHANGED',
+                estimatedGas: estimatedGas ? Number(estimatedGas.estimatedGas) : undefined,
+              })),
               distinctUntilChanged<number>(isEqual),
             )
           } else {
@@ -228,7 +245,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               )
           }
         },
-        estimateGasPrice: ({ estimatedGas, networkId, signer }) => {
+        estimateGasPrice: ({ estimatedGas, networkId, signer, gasEstimationResult }) => {
           if (networkId === NetworkIds.MAINNET) {
             return gasEstimation$(estimatedGas!).pipe(
               distinctUntilChanged<HasGasEstimation>(isEqual),
@@ -239,7 +256,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             )
           }
 
-          return fromPromise(signer!.getGasPrice()).pipe(
+          return fromPromise(getTransactionFee(gasEstimationResult)).pipe(
             map((_) => {
               return {
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',
