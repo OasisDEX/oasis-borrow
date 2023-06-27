@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import {
   CreateAccountParameters,
   createCreateAccountTransaction,
@@ -9,6 +10,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { Context, ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
+import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
@@ -21,6 +23,7 @@ import {
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { isEqual } from 'lodash'
 import { Observable, of } from 'rxjs'
+import { fromPromise } from 'rxjs/internal-compatibility'
 import { distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs/operators'
 import { ActorRefFrom, assign, createMachine, interpret, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -233,12 +236,33 @@ export function getDPMAccountStateMachineServices(
             estimateGasCreateAccount({ networkId: chainId, signer: transactionProvider }),
           ),
           switchMap((gas) => {
-            if (context.networkId === NetworkIds.MAINNET) {
-              return gasEstimation$(gas ?? 0)
+            if (!gas) {
+              return of({
+                gasEstimationStatus: GasEstimationStatus.error,
+              })
             }
-            return of({
-              gasEstimationStatus: GasEstimationStatus.unknown,
-            })
+            if (context.networkId === NetworkIds.MAINNET) {
+              return gasEstimation$(Number(gas.estimatedGas))
+            }
+            return fromPromise(getOptimismTransactionFee(gas)).pipe(
+              map((transactionFee) => {
+                if (!transactionFee) {
+                  return {
+                    gasEstimationStatus: GasEstimationStatus.error,
+                  }
+                }
+                const gasInEth = new BigNumber(transactionFee.l2Fee)
+                  .plus(transactionFee.l1Fee)
+                  .div(10 ** 18)
+
+                const gasInUsd = gasInEth.div(transactionFee.ethUsdPrice)
+                return {
+                  gasEstimationStatus: GasEstimationStatus.calculated,
+                  gasEstimationEth: gasInEth,
+                  gasEstimationUsd: gasInUsd,
+                }
+              }),
+            )
           }),
           map((gasData) => ({ type: 'GAS_COST_ESTIMATION', gasData })),
           startWith({

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
+import { ethereumMainnetHexId, isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { AppLayout } from 'components/Layouts'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
@@ -34,7 +34,7 @@ function Vault({ id }: { id: string }) {
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 
   return (
-    <WithConnection>
+    <WithConnection pageChainId={ethereumMainnetHexId}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}

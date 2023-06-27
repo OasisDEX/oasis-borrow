@@ -17,12 +17,13 @@ import { Observable } from 'rxjs'
 export function getCloseAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
+  networkId: NetworkIds,
 ) {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: CloseAaveParameters) => getCloseAaveParameters(parameters),
-    NetworkIds.MAINNET,
+    networkId,
     'close',
   )
 }
@@ -30,12 +31,13 @@ export function getCloseAaveParametersMachine(
 export function getAdjustAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
+  networkId: NetworkIds,
 ) {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: AdjustAaveParameters) => getAdjustPositionParameters(parameters),
-    NetworkIds.MAINNET,
+    networkId,
     'adjust',
   )
 }
@@ -43,12 +45,13 @@ export function getAdjustAaveParametersMachine(
 export function getDepositBorrowAaveMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
+  networkId: NetworkIds,
 ) {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: ManageAaveParameters) => getManagePositionParameters(parameters),
-    NetworkIds.MAINNET,
+    networkId,
     'depositBorrow',
   )
 }
@@ -56,13 +59,14 @@ export function getDepositBorrowAaveMachine(
 export function getOpenDepositBorrowAaveMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
+  networkId: NetworkIds,
 ) {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: OpenAaveDepositBorrowParameters) =>
       getOpenDepositBorrowPositionParameters(parameters),
-    NetworkIds.MAINNET,
+    networkId,
     'openDepositBorrow',
   )
 }
