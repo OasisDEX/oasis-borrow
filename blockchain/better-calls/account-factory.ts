@@ -4,6 +4,8 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
 import { AccountFactory__factory } from 'types/ethers-contracts'
 
+import { EstimatedGasResult } from './utils/types'
+
 export interface CreateAccountParameters {
   networkId: NetworkIds
   signer: ethers.Signer
@@ -37,12 +39,16 @@ async function validateParameters({ signer, networkId }: CreateAccountParameters
 export async function estimateGasCreateAccount({
   networkId,
   signer,
-}: CreateAccountParameters): Promise<number | undefined> {
+}: CreateAccountParameters): Promise<EstimatedGasResult | undefined> {
   const { accountFactory } = await validateParameters({ signer, networkId })
 
   try {
+    const transactionData = accountFactory.interface.encodeFunctionData('createAccount()')
     const result = await accountFactory.estimateGas['createAccount()']()
-    return result.toNumber()
+    return {
+      estimatedGas: result.toString(),
+      transactionData,
+    }
   } catch (e) {
     console.error(
       `Error estimating gas. Action: createAccount on factory: ${accountFactory.address}. Network: ${networkId}`,
