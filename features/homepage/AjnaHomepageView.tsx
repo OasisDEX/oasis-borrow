@@ -52,24 +52,23 @@ export function AjnaHomepageView() {
 
   return (
     <AnimatedWrapper>
-      <Box sx={{ maxWidth: '670px', mt: 5, mx: 'auto' }}>
-        <Hero
-          isConnected={context?.status === 'connected'}
-          heading="landing.hero.ajna.headline"
-          subheading={
-            <Trans
-              i18nKey="landing.hero.ajna.subheader"
-              components={[
-                <AppLink
-                  sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
-                  href={EXTERNAL_LINKS.KB.AJNA}
-                />,
-              ]}
-            />
-          }
-          showButton={false}
-        />
-      </Box>
+      <Hero
+        isConnected={context?.status === 'connected'}
+        heading="landing.hero.ajna.headline"
+        headingWidth="980px"
+        subheading={
+          <Trans
+            i18nKey="landing.hero.ajna.subheader"
+            components={[
+              <AppLink
+                sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
+                href={EXTERNAL_LINKS.KB.AJNA}
+              />,
+            ]}
+          />
+        }
+        subheadingWidth="740px"
+      />
       <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
         <ProductHubView
           headerGradient={['#f154db', '#974eea']}

@@ -8,9 +8,8 @@ import {
   HandleUpdateProductHubDataProps,
 } from 'handlers/product-hub/types'
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
-import { productHubData as mockData } from 'helpers/mocks/productHubData.mock'
 import { flatten } from 'lodash'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
 export async function handleGetProductHubData(
@@ -163,42 +162,4 @@ export async function updateProductHubData(
       dryRun: body.dryRun,
     })
   }
-}
-
-export async function mockProductHubData(req: NextApiRequest, res: NextApiResponse) {
-  const { headers } = req
-  if ([undefined, ''].includes(process.env.PRODUCT_HUB_KEY)) {
-    return res.status(400).json({
-      errorMessage: 'Missing env variable',
-    })
-  }
-  if (headers.authorization !== process.env.PRODUCT_HUB_KEY) {
-    return res.status(400).json({
-      errorMessage: 'Missing query parameter',
-    })
-  }
-  // this mocks the data using a static file mock
-  // and creates necessary rows in the db (careful with this)
-  // add this to the handler
-  // case 'PUT':
-  //   return await mockProductHubData(req, res)
-  // and use postman to send a PUT request to the endpoint
-  await prisma.productHubItems
-    .createMany({
-      data: mockData.table.map(({ tooltips, ...item }) => ({
-        ...item,
-      })),
-      skipDuplicates: true,
-    })
-    .then((_data) => {
-      return res.status(200).json({
-        message: 'Mocked product hub data',
-      })
-    })
-    .catch((error) => {
-      return res.status(500).json({
-        errorMessage: 'Error mocking product hub data',
-        error: error.toString(),
-      })
-    })
 }
