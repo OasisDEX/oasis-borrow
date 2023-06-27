@@ -55,6 +55,11 @@ export function AjnaMultiplyOverviewController() {
       : position.liquidationToMarketPrice,
   )
 
+  const afterBuyingPower =
+    simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
+      ? simulation.buyingPower
+      : undefined
+
   return (
     <Grid gap={2}>
       <DetailsSection
@@ -109,7 +114,7 @@ export function AjnaMultiplyOverviewController() {
               multiple={position.riskRatio.multiple}
               afterMultiple={simulation?.riskRatio.multiple}
               buyingPower={position.buyingPower}
-              afterBuyingPower={simulation && simulation.buyingPower}
+              afterBuyingPower={afterBuyingPower}
               changeVariant={changeVariant}
             />
           </DetailsSectionFooterItemWrapper>
