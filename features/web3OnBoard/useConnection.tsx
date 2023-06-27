@@ -24,13 +24,20 @@ export interface ConnectionState {
 }
 
 export interface ConnectionProps {
+  pageChainId?: NetworkConfigHexId
   initialConnect: boolean
   chainId?: NetworkConfigHexId
 }
 
-export function useConnection({ initialConnect, chainId }: ConnectionProps): ConnectionState {
-  const { connect, networkConnector, connectedAddress, connector, connecting } =
+export function useConnection({
+  initialConnect,
+  chainId,
+  pageChainId,
+}: ConnectionProps): ConnectionState {
+  const { connect, networkConnector, connectedAddress, connector, connecting, setPageChainId } =
     useWeb3OnBoardConnectorContext()
+
+  setPageChainId(pageChainId)
 
   const [onConnectHandler, setOnConnectHandler] = useState<
     ((info: ConnectorInformation) => void) | undefined
