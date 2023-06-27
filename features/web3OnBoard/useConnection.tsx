@@ -37,7 +37,11 @@ export function useConnection({
   const { connect, networkConnector, connectedAddress, connector, connecting, setPageChainId } =
     useWeb3OnBoardConnectorContext()
 
-  setPageChainId(pageChainId)
+  useEffect(() => {
+    if (pageChainId) {
+      setPageChainId(pageChainId)
+    }
+  }, [pageChainId, setPageChainId])
 
   const [onConnectHandler, setOnConnectHandler] = useState<
     ((info: ConnectorInformation) => void) | undefined
