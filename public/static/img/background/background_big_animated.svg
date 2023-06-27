@@ -4,7 +4,7 @@
   <style>
     <![CDATA[
     #eSAlQiFV40f7_to {
-      animation: eSAlQiFV40f7_to__to 2000ms linear 1 normal forwards
+      animation: eSAlQiFV40f7_to__to 4000ms linear 1s 1 normal forwards
     }
 
     @keyframes eSAlQiFV40f7_to__to {
@@ -19,7 +19,7 @@
     }
 
     #eSAlQiFV40f7 {
-      animation: eSAlQiFV40f7_c_o 2000ms linear 1 normal forwards
+      animation: eSAlQiFV40f7_c_o 4000ms linear 1s 1 normal forwards
     }
 
     @keyframes eSAlQiFV40f7_c_o {
@@ -34,7 +34,7 @@
     }
 
     #eSAlQiFV40f8_to {
-      animation: eSAlQiFV40f8_to__to 2000ms linear 1 normal forwards
+      animation: eSAlQiFV40f8_to__to 4000ms linear 1s 1 normal forwards
     }
 
     @keyframes eSAlQiFV40f8_to__to {
@@ -49,7 +49,7 @@
     }
 
     #eSAlQiFV40f8 {
-      animation: eSAlQiFV40f8_c_o 2000ms linear 1 normal forwards
+      animation: eSAlQiFV40f8_c_o 4000ms linear 1s 1 normal forwards
     }
 
     @keyframes eSAlQiFV40f8_c_o {
@@ -64,7 +64,7 @@
     }
 
     #eSAlQiFV40f9_to {
-      animation: eSAlQiFV40f9_to__to 2000ms linear 1 normal forwards
+      animation: eSAlQiFV40f9_to__to 4000ms linear 1s 1 normal forwards
     }
 
     @keyframes eSAlQiFV40f9_to__to {
@@ -79,7 +79,7 @@
     }
 
     #eSAlQiFV40f9 {
-      animation: eSAlQiFV40f9_c_o 2000ms linear 1 normal forwards
+      animation: eSAlQiFV40f9_c_o 4000ms linear 1s 1 normal forwards
     }
 
     @keyframes eSAlQiFV40f9_c_o {
