@@ -14,7 +14,7 @@ import { amountFromWei } from 'blockchain/utils'
 import { ActionPills } from 'components/ActionPills'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { MessageCard } from 'components/MessageCard'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { Skeleton } from 'components/Skeleton'
@@ -22,6 +22,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ManagePositionAvailableActions } from 'features/aave/common'
 import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { ConnectedSidebarSection } from 'features/aave/common/components/connected-sidebar-section'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
@@ -190,7 +191,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
@@ -463,7 +464,7 @@ function ManageAaveReviewingStateView({
     dropdown: dropdownConfig,
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
@@ -480,7 +481,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
     textButton: textButtonReturningToAdjust({ state, send }).textButton,
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveStateProps) {
@@ -509,7 +510,7 @@ function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveSta
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStateProps) {
@@ -543,7 +544,7 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function getDropdownConfig({ state, send }: ManageAaveStateProps) {
@@ -640,7 +641,7 @@ export function SidebarManageAaveVault() {
   switch (true) {
     case state.matches('frontend.editing'):
       return (
-        <SidebarSection
+        <ConnectedSidebarSection
           title={
             state.context.strategyConfig.type === 'Earn'
               ? t('manage-earn.aave.vault-form.manage-title')
@@ -681,6 +682,7 @@ export function SidebarManageAaveVault() {
             },
           }}
           dropdown={dropdownConfig}
+          context={state.context}
         />
       )
     case state.matches('frontend.allowanceSetting'):

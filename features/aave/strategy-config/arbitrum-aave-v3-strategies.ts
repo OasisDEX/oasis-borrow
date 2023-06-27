@@ -1,4 +1,4 @@
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { arbitrumMainnetHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { IStrategyConfig, ProxyType } from 'features/aave/common'
 import { AaveManageHeader, AaveOpenHeader } from 'features/aave/common/components/AaveHeader'
 import { adjustRiskView } from 'features/aave/common/components/SidebarAdjustRiskView'
@@ -11,6 +11,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.arbitrumMainnet,
     networkId: NetworkIds.ARBITRUMMAINNET,
+    networkHexId: arbitrumMainnetHexId,
     name: 'arbitrum-ethusdc',
     urlSlug: 'arbitrum-ethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -41,6 +42,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.arbitrumMainnet,
     networkId: NetworkIds.ARBITRUMMAINNET,
+    networkHexId: arbitrumMainnetHexId,
     name: 'arbitrum-wstethusdc',
     urlSlug: 'arbitrum-wstethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -71,6 +73,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.arbitrumMainnet,
     networkId: NetworkIds.ARBITRUMMAINNET,
+    networkHexId: arbitrumMainnetHexId,
     name: 'arbitrum-wbtcusdc',
     urlSlug: 'arbitrum-wbtcusdc',
     proxyType: ProxyType.DpmProxy,

@@ -1,4 +1,4 @@
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames, optimismMainnetHexId } from 'blockchain/networks'
 import { IStrategyConfig, ProxyType } from 'features/aave/common'
 import { AaveManageHeader, AaveOpenHeader } from 'features/aave/common/components/AaveHeader'
 import { adjustRiskView } from 'features/aave/common/components/SidebarAdjustRiskView'
@@ -13,6 +13,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
+    networkHexId: optimismMainnetHexId,
     name: 'optimism-ethusdc',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -43,6 +44,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
+    networkHexId: optimismMainnetHexId,
     name: 'optimism-wstethusdc',
     urlSlug: 'wstethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -73,6 +75,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,
+    networkHexId: optimismMainnetHexId,
     name: 'optimism-wbtcusdc',
     urlSlug: 'wbtcusdc',
     proxyType: ProxyType.DpmProxy,
