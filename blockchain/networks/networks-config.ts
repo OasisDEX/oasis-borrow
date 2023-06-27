@@ -30,6 +30,8 @@ import { NetworkLabelType, NetworkNames } from './network-names'
 export type NetworkConfigHexId = `0x${number | string}`
 
 export const ethereumMainnetHexId: NetworkConfigHexId = '0x1'
+export const optimismMainnetHexId: NetworkConfigHexId = '0xa'
+export const arbitrumMainnetHexId: NetworkConfigHexId = '0xa4b1'
 
 export type NetworkConfig = {
   id: NetworkIds

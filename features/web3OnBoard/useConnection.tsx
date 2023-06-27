@@ -24,13 +24,24 @@ export interface ConnectionState {
 }
 
 export interface ConnectionProps {
+  pageChainId?: NetworkConfigHexId
   initialConnect: boolean
   chainId?: NetworkConfigHexId
 }
 
-export function useConnection({ initialConnect, chainId }: ConnectionProps): ConnectionState {
-  const { connect, networkConnector, connectedAddress, connector, connecting } =
+export function useConnection({
+  initialConnect,
+  chainId,
+  pageChainId,
+}: ConnectionProps): ConnectionState {
+  const { connect, networkConnector, connectedAddress, connector, connecting, setPageChainId } =
     useWeb3OnBoardConnectorContext()
+
+  useEffect(() => {
+    if (pageChainId) {
+      setPageChainId(pageChainId)
+    }
+  }, [pageChainId, setPageChainId])
 
   const [onConnectHandler, setOnConnectHandler] = useState<
     ((info: ConnectorInformation) => void) | undefined
@@ -72,12 +83,11 @@ export interface Wallet {
 export interface WalletManagementState {
   disconnect: () => Promise<void>
   connecting: boolean
-  chainId: NetworkConfigHexId | undefined
+  chainHexId: NetworkConfigHexId | undefined
   wallet: Wallet | undefined
 }
 export function useWalletManagement(): WalletManagementState {
   const [{ wallet, connecting }, , disconnect] = useConnectWallet()
-
   return {
     disconnect: async () => {
       if (wallet) {
@@ -85,7 +95,7 @@ export function useWalletManagement(): WalletManagementState {
       }
     },
     connecting,
-    chainId: wallet?.chains[0].id as NetworkConfigHexId,
+    chainHexId: wallet?.chains[0].id as NetworkConfigHexId,
     wallet: wallet ? { address: wallet.accounts[0].address } : undefined,
   }
 }

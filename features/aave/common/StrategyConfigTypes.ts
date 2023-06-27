@@ -1,6 +1,6 @@
 import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkConfigHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
@@ -43,6 +43,7 @@ export type ManagePositionAvailableActions =
 export interface IStrategyConfig {
   network: NetworkNames
   networkId: NetworkIds
+  networkHexId: NetworkConfigHexId
   name: string
   urlSlug: string
   proxyType: ProxyType

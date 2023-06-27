@@ -3900,10 +3900,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.0.24.tgz#8d0c89b249c3fea45d024a055504a65198f5e1c7"
-  integrity sha512-DLUc4Y0VbK6ZjQbH2ZZuCmSYKsW78VduVWr0/dg0k0nR3iUt/15X4xLxE8yr6RWy2N3Pdf+yqR6QvwLv97jEIg==
+"@oasisdex/addresses@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.0.25.tgz#c335b56ded1d6bdb96662feb6610765ab23ea70c"
+  integrity sha512-GUU2IedvEQ5mcE6WW3Fe+MSLSbGGlDX8zT8cJLI4mjO0PnItQQkXKQCuh0Y+TqUZUdWxVLKgUV6Ir9JJrQ7V1w==
 
 "@oasisdex/automation@1.4.0":
   version "1.4.0"
@@ -3912,10 +3912,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.3.25-rc-flashloan-aave.6":
-  version "0.3.25-rc-flashloan-aave.6"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.25-rc-flashloan-aave.6.tgz#02e8dd70571a0b836466fbf6917a55fc6eb20500"
-  integrity sha512-bXfrclseEPo0CBqCjKWJosczfoixns8m08R8yVXQpNMondXjdd2FjBYlt4S54brpQJ++89QqU5cS1AdiIXgDlg==
+"@oasisdex/dma-library@0.3.25":
+  version "0.3.25"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.25.tgz#8acb62011e2e4d060ecf21c019b7e071dd357f5b"
+  integrity sha512-1jxV/hhyG1SWEO1BK3qwNVCS4uKGv4ehzG+XeR3kneswrknTrmrthb4vWRESSj9bWcIkBcMKVExspA497vY6HQ==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"

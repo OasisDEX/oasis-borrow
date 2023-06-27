@@ -1,15 +1,14 @@
 import { useActor } from '@xstate/react'
-import { networkSetById } from 'blockchain/networks'
 import { MessageCard } from 'components/MessageCard'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { ConnectedSidebarSection } from 'features/aave/common/components/connected-sidebar-section'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { hasUserInteracted, isConnectedToCorrectNetwork } from 'features/aave/helpers'
-import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { hasUserInteracted } from 'features/aave/helpers'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
@@ -17,13 +16,12 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
-import { useConnection } from 'features/web3OnBoard'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
@@ -86,7 +84,7 @@ function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStatePr
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function StopLossTxStateView({ state, send }: OpenAaveStateProps) {
@@ -117,7 +115,7 @@ function StopLossTxStateView({ state, send }: OpenAaveStateProps) {
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function StopLossTxFailureStateView({ state, send }: OpenAaveStateProps) {
@@ -146,7 +144,7 @@ function StopLossTxFailureStateView({ state, send }: OpenAaveStateProps) {
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
@@ -172,54 +170,7 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
-}
-
-function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
-  const { t } = useTranslation()
-  const { connect, connecting } = useConnection({
-    initialConnect: false,
-  })
-
-  return useMemo(
-    () => ({
-      label: t('connect-wallet'),
-      action: () => {
-        if (!connecting) {
-          void connect()
-        }
-      },
-      steps: undefined,
-      isLoading: connecting,
-      disabled: connecting,
-    }),
-    [t, connecting, connect],
-  )
-}
-
-function useChangeChainButton({
-  strategy,
-}: {
-  strategy: IStrategyConfig
-}): SidebarSectionFooterButtonSettings {
-  const { t } = useTranslation()
-  const { connect } = useConnection({
-    initialConnect: false,
-    chainId: networkSetById[strategy.networkId].hexId,
-  })
-
-  return useMemo(
-    () => ({
-      label: t('change-wallet-chain'),
-      action: async () => {
-        await connect()
-      },
-      steps: undefined,
-      isLoading: false,
-      disabled: false,
-    }),
-    [connect, t],
-  )
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
@@ -227,8 +178,6 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
   const [tomfooleryEnabled, disableTomfoolery] = useTomfoolery()
   const [pumpTheGas, setPumpTheGas] = useState(false)
 
-  const connectWalletPrimaryButton = useConnectWalletPrimaryButton()
-  const changeChainButton = useChangeChainButton({ strategy: state.context.strategyConfig })
   const nextStepButton = {
     steps: [state.context.currentStep, state.context.totalSteps] as [number, number],
     isLoading: isLoading(),
@@ -243,12 +192,6 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
   const resolvedTitle = !withStopLoss
     ? t(state.context.strategyConfig.viewComponents.sidebarTitle)
     : t('open-vault-two-tx-first-step-title', { type: t('position') })
-
-  const primaryButton = isUserWalletConnected(state.context)
-    ? isConnectedToCorrectNetwork(state.context)
-      ? nextStepButton
-      : changeChainButton
-    : connectWalletPrimaryButton
 
   const sidebarSectionProps: SidebarSectionProps = tomfooleryEnabled
     ? {
@@ -285,16 +228,19 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
             />
           </Grid>
         ),
-        primaryButton,
+        primaryButton: nextStepButton,
+        requireConnection: true,
+        requiredChainHexId: state.context.strategyConfig.networkHexId,
       }
 
   return (
-    <SidebarSection
+    <ConnectedSidebarSection
       {...sidebarSectionProps}
       textButton={{
         label: t('open-earn.aave.vault-form.back-to-editing'),
         action: () => send('BACK_TO_EDITING'),
       }}
+      context={state.context}
     />
   )
 }
@@ -323,12 +269,13 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
   }
 
   return (
-    <SidebarSection
+    <ConnectedSidebarSection
       {...sidebarSectionProps}
       textButton={{
         label: t('open-earn.aave.vault-form.back-to-editing'),
         action: () => send('BACK_TO_EDITING'),
       }}
+      context={state.context}
     />
   )
 }
@@ -342,18 +289,8 @@ function EditingStateViewSidebarPrimaryButton({
   'isLoading' | 'disabled' | 'label' | 'action' | 'steps'
 > {
   const { t } = useTranslation()
-  const connectWalletPrimaryButton = useConnectWalletPrimaryButton()
-  const changeChainButton = useChangeChainButton({ strategy: state.context.strategyConfig })
 
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
-
-  if (!isUserWalletConnected(state.context)) {
-    return connectWalletPrimaryButton
-  }
-
-  if (!isConnectedToCorrectNetwork(state.context)) {
-    return changeChainButton
-  }
 
   const hasProxy =
     state.context.strategyConfig.proxyType === ProxyType.DpmProxy
@@ -418,7 +355,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
@@ -443,7 +380,7 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveStateProps) {
@@ -471,12 +408,13 @@ export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveSta
   }
 
   return (
-    <SidebarSection
+    <ConnectedSidebarSection
       {...sidebarSectionProps}
       textButton={{
         label: t('open-earn.aave.vault-form.back-to-editing'),
         action: () => send('BACK_TO_EDITING'),
       }}
+      context={state.context}
     />
   )
 }
