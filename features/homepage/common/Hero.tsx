@@ -10,13 +10,17 @@ export function Hero({
   sx,
   isConnected,
   heading,
+  headingWidth = '700px',
   subheading,
+  subheadingWidth = '450px',
   showButton = true,
 }: {
   sx?: SxStyleProp
   isConnected: boolean
   heading: string
+  headingWidth?: string
   subheading: ReactNode
+  subheadingWidth?: string
   showButton?: boolean
 }) {
   const { t } = useTranslation()
@@ -38,10 +42,18 @@ export function Hero({
         ...sx,
       }}
     >
-      <Heading as="h1" variant="heroHeader" sx={{ mt: [2, 5], mb: 3, maxWidth: ['100%', '700px'] }}>
+      <Heading
+        as="h1"
+        variant="heroHeader"
+        sx={{ mt: [2, 5], mb: 3, maxWidth: ['100%', headingWidth] }}
+      >
         {t(heading)}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: ['100%', '450px'] }}>
+      <Text
+        variant="paragraph1"
+        as="p"
+        sx={{ mb: 4, color: 'neutral80', maxWidth: ['100%', subheadingWidth] }}
+      >
         {subheading}
       </Text>
       {showButton && (
@@ -58,7 +70,7 @@ export function Hero({
             },
           }}
           onClick={
-            isConnected ? scrollTo('homepage-table') : async () => connecting || (await connect())
+            isConnected ? scrollTo('product-hub') : async () => connecting || (await connect())
           }
         >
           {isConnected ? t('find-your-defi-product') : t('connect-wallet')}
