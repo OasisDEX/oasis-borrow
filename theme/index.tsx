@@ -193,6 +193,7 @@ export const oasisBaseTheme = {
       color: 'primary100',
     },
     managedVolumeValue: {
+      fontFamily: 'heading',
       fontWeight: 'medium',
       lineHeight: '64px',
       fontSize: '52px',
