@@ -93,7 +93,6 @@ export function useAjnaTxHandler(): () => void {
           .then((data) => {
             if (data) {
               setTxData(data.tx)
-              console.log('data', data)
               setSimulation(data.simulation)
               setIsLoadingSimulation(false)
               uiChanges.publish(TX_DATA_CHANGE, {
