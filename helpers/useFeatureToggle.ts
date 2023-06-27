@@ -43,7 +43,6 @@ export type Feature =
   | 'AaveV3EarnrETHeth'
   | 'AaveV3EarncbETHeth'
   | 'AaveV2ProductCard'
-  | 'OasisCreate'
   | 'SwapWidget'
   | '🌞'
   | 'ProxyReveal'
@@ -88,7 +87,6 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3MultiplyrETHusdc: true,
   AaveV3EarnrETHeth: false,
   AaveV3MultiplywstETHusdc: true,
-  OasisCreate: false,
   SwapWidget: true,
   ProxyReveal: false,
   '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.

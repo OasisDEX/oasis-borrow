@@ -42,6 +42,7 @@ interface AjnaGeneralContextProviderProps {
   quoteToken: string
   steps: AjnaSidebarStep[]
   gasPrice: GasPriceParams
+  slippage: BigNumber
 }
 
 type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'> & {
@@ -96,8 +97,16 @@ export function AjnaGeneralContextProvider({
 }: PropsWithChildren<AjnaGeneralContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const { flow, collateralBalance, collateralToken, quoteBalance, quoteToken, owner, product } =
-    props
+  const {
+    flow,
+    collateralBalance,
+    collateralToken,
+    quoteBalance,
+    quoteToken,
+    owner,
+    product,
+    slippage,
+  } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
@@ -147,6 +156,7 @@ export function AjnaGeneralContextProvider({
         ? `${quoteToken}/${collateralToken}`
         : `${collateralToken}/${quoteToken}`,
       isOwner: owner === walletAddress || flow === 'open',
+      slippage,
     },
     steps: setupStepManager(),
     tx: setupTxManager(),
@@ -160,11 +170,20 @@ export function AjnaGeneralContextProvider({
         isOwner: owner === walletAddress || flow === 'open',
         collateralBalance,
         quoteBalance,
+        slippage,
       },
       steps: setupStepManager(),
       tx: setupTxManager(),
     }))
-  }, [collateralBalance, currentStep, isFlowStateReady, quoteBalance, txDetails, walletAddress])
+  }, [
+    collateralBalance,
+    currentStep,
+    isFlowStateReady,
+    quoteBalance,
+    txDetails,
+    walletAddress,
+    slippage,
+  ])
 
   return <ajnaGeneralContext.Provider value={context}>{children}</ajnaGeneralContext.Provider>
 }
