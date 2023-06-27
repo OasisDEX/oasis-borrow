@@ -21,6 +21,8 @@ export function SidebarSection({
   secondaryButton,
   textButton,
   status,
+  requiredChainHexId,
+  requireConnection,
 }: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
@@ -49,6 +51,8 @@ export function SidebarSection({
           secondaryButton={secondaryButton}
           textButton={textButton}
           status={status}
+          requireConnection={requireConnection}
+          requiredChainHexId={requiredChainHexId}
         />
       </Card>
     </MobileSidePanel>

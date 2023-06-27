@@ -25,7 +25,6 @@ import {
   RefTransactionMachine,
 } from 'features/aave/common/BaseAaveContext'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { isUserWalletConnected } from 'features/aave/helpers'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
@@ -807,7 +806,7 @@ export function createOpenAaveStateMachine(
           }
         }),
         resetWalletValues: assign((context) => {
-          if (!isUserWalletConnected(context)) {
+          if (context.web3Context === undefined || context.web3Context.account === undefined) {
             return {
               tokenBalance: undefined,
               tokenPrice: undefined,

@@ -139,7 +139,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       onChainPosition?.riskRatio.loanToValue ||
       state.context.defaultRiskRatio?.loanToValue
 
-    const sidebarContent = (
+    return (
       <Grid gap={3}>
         <SliderValuePicker
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
@@ -255,6 +255,5 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         )}
       </Grid>
     )
-    return sidebarContent
   }
 }

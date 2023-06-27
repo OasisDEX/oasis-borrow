@@ -79,12 +79,11 @@ export interface Wallet {
 export interface WalletManagementState {
   disconnect: () => Promise<void>
   connecting: boolean
-  chainId: NetworkConfigHexId | undefined
+  chainHexId: NetworkConfigHexId | undefined
   wallet: Wallet | undefined
 }
 export function useWalletManagement(): WalletManagementState {
   const [{ wallet, connecting }, , disconnect] = useConnectWallet()
-
   return {
     disconnect: async () => {
       if (wallet) {
@@ -92,7 +91,7 @@ export function useWalletManagement(): WalletManagementState {
       }
     },
     connecting,
-    chainId: wallet?.chains[0].id as NetworkConfigHexId,
+    chainHexId: wallet?.chains[0].id as NetworkConfigHexId,
     wallet: wallet ? { address: wallet.accounts[0].address } : undefined,
   }
 }

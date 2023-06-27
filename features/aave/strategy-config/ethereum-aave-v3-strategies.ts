@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { ethereumMainnetHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { IStrategyConfig, ProxyType } from 'features/aave/common'
 import { AaveManageHeader, AaveOpenHeader } from 'features/aave/common/components/AaveHeader'
 import { adjustRiskView } from 'features/aave/common/components/SidebarAdjustRiskView'
@@ -23,6 +23,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'wstETHethV3',
     urlSlug: 'wstetheth',
     proxyType: ProxyType.DpmProxy,
@@ -55,6 +56,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'rethethV3',
     urlSlug: 'retheth',
     proxyType: ProxyType.DpmProxy,
@@ -86,6 +88,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'cbethethV3',
     urlSlug: 'cbetheth',
     proxyType: ProxyType.DpmProxy,
@@ -118,6 +121,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'ethusdcV3',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -148,6 +152,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'cbETHusdcV3',
     urlSlug: 'cbethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -178,6 +183,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'wBTCusdcV3',
     urlSlug: 'wbtcusdc',
     proxyType: ProxyType.DpmProxy,
@@ -208,6 +214,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'wstethusdcV3',
     urlSlug: 'wstethusdc',
     proxyType: ProxyType.DpmProxy,
@@ -238,6 +245,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
+    networkHexId: ethereumMainnetHexId,
     name: 'rethusdcV3',
     urlSlug: 'rethusdc',
     proxyType: ProxyType.DpmProxy,
