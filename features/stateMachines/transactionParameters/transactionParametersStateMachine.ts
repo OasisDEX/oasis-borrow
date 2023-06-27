@@ -5,7 +5,7 @@ import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
-import { getTransactionFee } from 'blockchain/optimism/transaction-fee'
+import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
 import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -165,6 +165,10 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               target: '.gasPrice',
               actions: ['updateContext'],
             },
+            ETHERS_GAS_ESTIMATION_CHANGED: {
+              target: '.gasPrice',
+              actions: ['updateContext'],
+            },
           },
         },
       },
@@ -212,7 +216,6 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
       services: {
         getParameters: async (context) => libraryCall(context.parameters!),
         estimateGas: ({ txHelper, parameters, strategy, signer, networkId, runWithEthers }) => {
-          // right now we don't set signer, but it is a first step to move from Web3 to Ethers
           if (signer && runWithEthers) {
             const dpmParams: DpmExecuteParameters = {
               calls: strategy!.transaction.calls,
@@ -220,12 +223,12 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               signer: signer!,
               proxyAddress: parameters!.proxyAddress,
               value: parameters!.token === 'ETH' ? parameters!.amount! : zero,
-              networkId: networkId!,
+              networkId: networkId,
             }
             return fromPromise(estimateGasOnDpm(dpmParams)).pipe(
               map((estimatedGas) => ({
-                type: 'GAS_ESTIMATION_CHANGED',
-                estimatedGas: estimatedGas ? Number(estimatedGas.estimatedGas) : undefined,
+                type: 'ETHERS_GAS_ESTIMATION_CHANGED',
+                gasEstimationResult: estimatedGas,
               })),
               distinctUntilChanged<number>(isEqual),
             )
@@ -245,7 +248,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               )
           }
         },
-        estimateGasPrice: ({ estimatedGas, networkId, signer, gasEstimationResult }) => {
+        estimateGasPrice: ({ estimatedGas, networkId, gasEstimationResult }) => {
           if (networkId === NetworkIds.MAINNET) {
             return gasEstimation$(estimatedGas!).pipe(
               distinctUntilChanged<HasGasEstimation>(isEqual),
@@ -256,12 +259,27 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             )
           }
 
-          return fromPromise(getTransactionFee(gasEstimationResult)).pipe(
-            map((_) => {
+          return fromPromise(getOptimismTransactionFee(gasEstimationResult)).pipe(
+            map((transactionFee) => {
+              if (!transactionFee) {
+                return {
+                  type: 'GAS_PRICE_ESTIMATION_CHANGED',
+                  estimatedGasPrice: {
+                    gasEstimationStatus: GasEstimationStatus.error,
+                  },
+                }
+              }
+              const gasInEth = new BigNumber(transactionFee.l2Fee)
+                .plus(transactionFee.l1Fee)
+                .div(10 ** 18)
+
+              const gasInUsd = gasInEth.div(transactionFee.ethUsdPrice)
               return {
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',
                 estimatedGasPrice: {
-                  gasEstimationStatus: GasEstimationStatus.unknown,
+                  gasEstimationStatus: GasEstimationStatus.calculated,
+                  gasEstimationEth: gasInEth,
+                  gasEstimationUsd: gasInUsd,
                 },
               }
             }),
