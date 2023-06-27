@@ -21,7 +21,6 @@ interface AssetsTableHeaderCellProps {
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isSortable: boolean
   isSticky: boolean
-  isWithFollow: boolean
   label: string
   last: boolean
   sortingSettings?: AssetsTableSortingSettings
@@ -44,7 +43,6 @@ export function AssetsTable({
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
-  isWithFollow = false,
   rows,
   tooltips = [],
 }: AssetsTableProps) {
@@ -99,7 +97,6 @@ export function AssetsTable({
                 headerTranslationProps={headerTranslationProps}
                 isSortable={(rows[0][label] as AssetsTableSortableCell).sortable !== undefined}
                 isSticky={isSticky}
-                isWithFollow={isWithFollow}
                 label={label}
                 last={i + 1 === rowKeys.length}
                 sortingSettings={sortingSettings}
@@ -140,7 +137,6 @@ export function AssetsTableHeaderCell({
   headerTranslationProps,
   isSortable,
   isSticky,
-  isWithFollow,
   label,
   last,
   sortingSettings,
@@ -158,7 +154,6 @@ export function AssetsTableHeaderCell({
         px: '12px',
         pt: '28px',
         pb: isSticky ? '48px' : '20px',
-        ...(first && isWithFollow && { pl: '80px' }),
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',
