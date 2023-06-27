@@ -248,6 +248,7 @@ export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
     <Box
       as="tr"
       sx={{
+        position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
         '&:hover': {

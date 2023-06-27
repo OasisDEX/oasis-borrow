@@ -7,7 +7,7 @@ import {
 } from 'features/follow/common/ShareButton'
 import getConfig from 'next/config'
 import React from 'react'
-import { Button, Flex } from 'theme-ui'
+import { Box, Button, Flex } from 'theme-ui'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath
 
@@ -73,6 +73,7 @@ export function AssetsTableDataCellAction({
           disabled={disabled}
           onClick={onClick}
         >
+          <Box sx={{ display: ['none', null, null, 'block'], position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }} />
           {cta}
         </Button>
       )}
