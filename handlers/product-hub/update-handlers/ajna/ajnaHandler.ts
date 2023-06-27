@@ -89,9 +89,9 @@ async function getAjnaPoolData(
           const liquidity = buckets
             .filter((bucket) => new BigNumber(bucket.index).lte(highestThresholdPriceIndex))
             .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero)
+            .minus(debt)
             .times(prices[quoteToken])
             .shiftedBy(negativeWadPrecision)
-            .minus(debt)
             .toString()
           const fee = interestRate.toString()
           const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
