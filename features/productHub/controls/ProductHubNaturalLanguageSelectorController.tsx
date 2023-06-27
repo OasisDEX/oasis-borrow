@@ -1,13 +1,18 @@
+import { isTestnetNetworkId, NetworkIds, useCustomNetworkParameter } from 'blockchain/networks'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
-import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
+import {
+  ALL_ASSETS,
+  productHubOptionsMap,
+  productHubTestnetOptionsMap,
+} from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 interface ProductHubNaturalLanguageSelectorControllerProps {
-  gradient: [string, string]
+  gradient: [string, string, ...string[]]
   product: ProductHubProductType
   token?: string
   url?: string
@@ -18,13 +23,20 @@ export const ProductHubNaturalLanguageSelectorController: FC<
   ProductHubNaturalLanguageSelectorControllerProps
 > = ({ gradient, product, token, url, onChange }) => {
   const { t } = useTranslation()
+  const [networkParameter] = useCustomNetworkParameter()
+
+  const productHubOptions = useMemo(() => {
+    return isTestnetNetworkId(networkParameter?.id ?? NetworkIds.MAINNET)
+      ? productHubTestnetOptionsMap
+      : productHubOptionsMap
+  }, [networkParameter?.id])
 
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(
-    productHubOptionsMap[product].product.value as ProductHubProductType,
+    productHubOptions[product].product.value as ProductHubProductType,
   )
   const [selectedToken, setSelectedToken] = useState<string>(
-    (token ? productHubOptionsMap[product].tokens[token] : productHubOptionsMap[product].tokens.all)
+    (token ? productHubOptions[product].tokens[token] : productHubOptions[product].tokens.all)
       .value,
   )
   const ref = useRef<HTMLDivElement>(null)
@@ -39,21 +51,21 @@ export const ProductHubNaturalLanguageSelectorController: FC<
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
         {t('product-hub.header.i-want-to')}
         <HeaderSelector
-          defaultOption={productHubOptionsMap[product].product}
+          defaultOption={productHubOptions[product].product}
           gradient={gradient}
-          options={Object.values(productHubOptionsMap).map((option) => option.product)}
+          options={Object.values(productHubOptions).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
             const typedValue = selected.value as ProductHubProductType
             const tokenInUrl = selectedToken !== ALL_ASSETS ? selectedToken : undefined
             const isSwitchingToAllAssets = !Object.values(
-              productHubOptionsMap[typedValue].tokens,
+              productHubOptions[typedValue].tokens,
             ).some((option) => option.value === selectedToken)
 
             setSelectedProduct(typedValue)
             setOverwriteOption(
-              isSwitchingToAllAssets ? productHubOptionsMap[typedValue].tokens.all : undefined,
+              isSwitchingToAllAssets ? productHubOptions[typedValue].tokens.all : undefined,
             )
             if (url)
               void push(
@@ -66,12 +78,10 @@ export const ProductHubNaturalLanguageSelectorController: FC<
         {t(`product-hub.header.conjunction.${selectedProduct}`)}
         <HeaderSelector
           defaultOption={
-            token
-              ? productHubOptionsMap[product].tokens[token]
-              : productHubOptionsMap[product].tokens.all
+            token ? productHubOptions[product].tokens[token] : productHubOptions[product].tokens.all
           }
           gradient={gradient}
-          options={Object.values(productHubOptionsMap[selectedProduct].tokens)}
+          options={Object.values(productHubOptions[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
           valueAsLabel={true}

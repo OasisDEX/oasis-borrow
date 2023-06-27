@@ -12,7 +12,6 @@ export function NotificationsOrb() {
   return (
     <NavigationOrb
       icon="bell"
-      iconSize={16}
       isDisabled={!notificationsState}
       width={380}
       {...(unreadNotificationCount > 0 && { beacon: unreadNotificationCount })}

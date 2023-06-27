@@ -154,7 +154,7 @@ export function PositionsTableWithoutAjna({
       {borrowPositions.length > 0 && (
         <>
           <AssetsTableHeading>
-            Oasis {t('nav.borrow')} ({borrowPositions.length})
+            Summer.fi {t('nav.borrow')} ({borrowPositions.length})
           </AssetsTableHeading>
           <AssetsResponsiveTable rows={borrowPositions} tooltips={positionsTableTooltips} />
         </>
@@ -162,7 +162,7 @@ export function PositionsTableWithoutAjna({
       {multiplyPositions.length > 0 && (
         <>
           <AssetsTableHeading>
-            Oasis {t('nav.multiply')} ({multiplyPositions.length})
+            Summer.fi {t('nav.multiply')} ({multiplyPositions.length})
           </AssetsTableHeading>
           <AssetsResponsiveTable rows={multiplyPositions} tooltips={positionsTableTooltips} />
         </>
@@ -170,7 +170,7 @@ export function PositionsTableWithoutAjna({
       {earnPositions.length > 0 && (
         <>
           <AssetsTableHeading>
-            Oasis {t('nav.earn')} ({earnPositions.length})
+            Summer.fi {t('nav.earn')} ({earnPositions.length})
           </AssetsTableHeading>
           <AssetsResponsiveTable rows={earnPositions} tooltips={positionsTableTooltips} />
         </>
@@ -265,7 +265,7 @@ export function PositionsTableWithAjna({
       {borrowPositionsRows.length > 0 && (
         <>
           <AssetsTableHeading>
-            Oasis {t('nav.borrow')} ({borrowPositionsRows.length})
+            Summer.fi {t('nav.borrow')} ({borrowPositionsRows.length})
           </AssetsTableHeading>
           <AssetsResponsiveTable rows={borrowPositionsRows} />
         </>
@@ -273,7 +273,7 @@ export function PositionsTableWithAjna({
       {multiplyPositionsRows.length > 0 && (
         <>
           <AssetsTableHeading>
-            Oasis {t('nav.multiply')} ({multiplyPositionsRows.length})
+            Summer.fi {t('nav.multiply')} ({multiplyPositionsRows.length})
           </AssetsTableHeading>
           <AssetsResponsiveTable rows={multiplyPositionsRows} />
         </>
@@ -281,7 +281,7 @@ export function PositionsTableWithAjna({
       {earnPositionsRows.length > 0 && (
         <>
           <AssetsTableHeading>
-            Oasis {t('nav.earn')} ({earnPositionsRows.length})
+            Summer.fi {t('nav.earn')} ({earnPositionsRows.length})
           </AssetsTableHeading>
           <AssetsResponsiveTable rows={earnPositionsRows} />
         </>

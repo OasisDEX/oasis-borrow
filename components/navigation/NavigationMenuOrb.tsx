@@ -32,7 +32,7 @@ export function NavigationOrb({
   children,
   customIcon,
   icon,
-  iconSize = 16,
+  iconSize = 14,
   isDisabled,
   link,
   onClick,
@@ -64,7 +64,8 @@ export function NavigationOrb({
           sx={{
             position: 'relative',
             width: 'auto',
-            minWidth: '50px',
+            minWidth: '40px',
+            height: '40px',
             p: 1,
             color: isOpen ? 'primary100' : 'neutral80',
             boxShadow: 'buttonMenu',
@@ -88,6 +89,8 @@ export function NavigationOrb({
           href={link}
           sx={{
             position: 'relative',
+            width: '40px',
+            height: '40px',
             color: isOpen ? 'primary100' : 'neutral80',
             boxShadow: 'buttonMenu',
             transition: 'background-color 200ms',

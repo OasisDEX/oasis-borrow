@@ -9,7 +9,6 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
-import { FooterBackground } from 'theme/FooterBackground'
 
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
@@ -33,6 +32,7 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.resources',
     links: [
+      { labelKey: 'nav.discover', url: INTERNAL_LINKS.discover, target: '_self' },
       { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG.MAIN, target: '_self' },
       // add link
       { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.KB.HELP, target: '_blank' },
@@ -141,7 +141,7 @@ function SocialWithLogo() {
   return (
     <Grid gap={3}>
       <Image
-        src={staticFilesRuntimeUrl('/static/img/logo_footer_v2.svg')}
+        src={staticFilesRuntimeUrl('/static/img/logos/logo_dark.svg')}
         sx={{ height: '34px', position: 'relative', top: '-2px' }}
       />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
@@ -205,7 +205,6 @@ export function Footer() {
         </Flex>
       </Container>
       <TemporaryFooter />
-      <FooterBackground />
     </Box>
   )
 }

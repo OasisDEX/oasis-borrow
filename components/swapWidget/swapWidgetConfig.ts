@@ -5,7 +5,7 @@ import { theme } from 'theme'
 const { colors, radii } = theme
 
 export const swapWidgetConfig: WidgetConfig = {
-  integrator: 'Oasis.app',
+  integrator: 'Summer.fi',
   containerStyle: {
     border: 'none',
     // @ts-ignore

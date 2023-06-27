@@ -10,7 +10,7 @@ export function MyPositionsLink() {
 
   return (
     <>
-      {t('my-positions')} (
+      {t('portfolio')} (
       {amountOfPositions !== undefined && amountOfPositions >= 0 ? (
         amountOfPositions
       ) : (

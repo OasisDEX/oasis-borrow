@@ -265,7 +265,7 @@ function WalletInfo() {
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        <BlockNativeAvatar small sx={{ mr: 2 }} />
+        <BlockNativeAvatar sx={{ mr: 2 }} />
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
             <Text variant="boldParagraph3" sx={{ letterSpacing: '0.02em' }}>

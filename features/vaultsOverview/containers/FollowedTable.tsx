@@ -65,7 +65,7 @@ export function FollowedTable({ address }: { address: string }) {
               {borrowPositions.length > 0 && (
                 <>
                   <AssetsTableHeading>
-                    Oasis {t('nav.borrow')} ({borrowPositions.length})
+                    Summer.fi {t('nav.borrow')} ({borrowPositions.length})
                   </AssetsTableHeading>
                   <AssetsResponsiveTable
                     rows={borrowPositions}
@@ -77,7 +77,7 @@ export function FollowedTable({ address }: { address: string }) {
               {multiplyPositions.length > 0 && (
                 <>
                   <AssetsTableHeading>
-                    Oasis {t('nav.multiply')} ({multiplyPositions.length})
+                    Summer.fi {t('nav.multiply')} ({multiplyPositions.length})
                   </AssetsTableHeading>
                   <AssetsResponsiveTable
                     rows={multiplyPositions}
@@ -89,7 +89,7 @@ export function FollowedTable({ address }: { address: string }) {
               {earnPositions.length > 0 && (
                 <>
                   <AssetsTableHeading>
-                    Oasis {t('nav.earn')} ({earnPositions.length})
+                    Summer.fi {t('nav.earn')} ({earnPositions.length})
                   </AssetsTableHeading>
                   <AssetsResponsiveTable
                     rows={earnPositions}

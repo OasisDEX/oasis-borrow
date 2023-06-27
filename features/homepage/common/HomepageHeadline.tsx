@@ -1,14 +1,13 @@
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
+import { Icon } from '@makerdao/dai-ui-icons'
 import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
-import { Box, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, SxStyleProp, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {
   primaryText: string
   secondaryText: string
   maxWidth?: string
-  ctaURL?: string
+  ctaOnClick?: () => void
   ctaLabel?: TranslateStringType
   sx?: SxStyleProp
 }
@@ -16,24 +15,41 @@ type HomePageHeadlineProps = {
 export const HomepageHeadline = ({
   primaryText,
   secondaryText,
-  ctaURL,
+  ctaOnClick,
   ctaLabel,
   maxWidth = '700px',
   sx,
-}: HomePageHeadlineProps) => (
-  <Box sx={{ maxWidth, ...sx }}>
-    <Text variant="header3" sx={{ color: 'primary100' }}>
-      {primaryText}
-      <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>
-        {secondaryText}
+}: HomePageHeadlineProps) => {
+  return (
+    <Box sx={{ maxWidth, ...sx }}>
+      <Text variant="header3" sx={{ color: 'primary100' }}>
+        {primaryText}
+        <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>
+          {secondaryText}
+        </Text>
       </Text>
-    </Text>
-    {ctaURL && ctaLabel && (
-      <WithArrow gap={1} sx={{ fontSize: 2, color: 'interactive100', mt: 3 }}>
-        <AppLink href={ctaURL} internalInNewTab sx={{ fontSize: 4 }}>
-          {ctaLabel}
-        </AppLink>
-      </WithArrow>
-    )}
-  </Box>
-)
+      {ctaOnClick && ctaLabel && (
+        <Button
+          variant="primary"
+          sx={{
+            mt: 3,
+            py: 2,
+            px: 4,
+            alignItems: 'center',
+            '&:hover svg': {
+              transform: 'translateX(10px)',
+            },
+          }}
+          onClick={ctaOnClick}
+        >
+          {ctaLabel}{' '}
+          <Icon
+            name="arrow_right"
+            size={14}
+            sx={{ ml: 2, position: 'relative', left: 2, transition: '0.2s' }}
+          />
+        </Button>
+      )}
+    </Box>
+  )
+}

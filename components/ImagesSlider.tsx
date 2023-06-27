@@ -1,0 +1,64 @@
+import { random } from 'lodash'
+import React from 'react'
+import { useEffect, useState } from 'react'
+import { Container, Grid, Image, SxProps } from 'theme-ui'
+import { fadeInAnimationMobile } from 'theme/animations'
+
+export type ImagesSliderProps = {
+  items: {
+    imgSrc: string
+    imgAlt?: string
+    url?: string
+  }[]
+  wrapperSx?: SxProps['sx']
+  gridSx?: SxProps['sx']
+  itemSx?: SxProps['sx']
+}
+
+export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSliderProps) => {
+  const [activeItemIndex, setActiveItemIndex] = useState(random(0, items.length - 1))
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveItemIndex((prev) => (prev + 1) % items.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [items])
+
+  return items.length ? (
+    <Container sx={{ my: 4, overflow: 'hidden', ...wrapperSx }}>
+      <Grid
+        gap={2}
+        sx={{
+          gridTemplateColumns: ['repeat(1, 1fr)', `repeat(${items.length}, auto)`],
+          alignItems: 'center',
+          alignContent: 'center',
+          justifyItems: 'center',
+          height: '150px',
+          ...gridSx,
+        }}
+      >
+        {items.map((item, index) => (
+          <Image
+            sx={{
+              display: [index === activeItemIndex ? 'block' : 'none', 'block'],
+              width: ['60%', 'auto'],
+              cursor: item.url ? 'pointer' : 'default',
+              ...fadeInAnimationMobile,
+              ...itemSx,
+              opacity: [0, 0.5],
+              transition: 'opacity 0.2s ease-in-out',
+              '&:hover': {
+                opacity: [0, 1],
+              },
+            }}
+            key={`${item.imgSrc}${item.imgAlt}`}
+            src={item.imgSrc}
+            alt={item.imgAlt}
+            onClick={() => item.url && window.open(item.url, '_blank')}
+          />
+        ))}
+      </Grid>
+    </Container>
+  ) : null
+}

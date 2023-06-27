@@ -22,6 +22,7 @@ function PrivacyPage() {
 
 PrivacyPage.layout = MarketingLayout
 PrivacyPage.layoutProps = {
+  topBackground: 'lighter',
   variant: 'termsContainer',
 }
 
