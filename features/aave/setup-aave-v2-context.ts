@@ -1,5 +1,4 @@
-import { NetworkIds } from 'blockchain/networks'
-import { NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
@@ -106,10 +105,26 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
     gasEstimation$,
     NetworkIds.MAINNET,
   )
-  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
-  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
-  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
-  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
+  const closeAaveParameters = getCloseAaveParametersMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
+  const adjustAaveParameters = getAdjustAaveParametersMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
+  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
+  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
 
   const openAaveStateMachineServices = getOpenAaveV2PositionStateMachineServices(
     context$,

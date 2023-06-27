@@ -27,6 +27,7 @@ import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropj
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
 import * as exchange from 'blockchain/abi/exchange.json'
+import * as gasPriceOracle from 'blockchain/abi/gas-price-oracle.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
 import * as lidoCrvLiquidityFarmingReward from 'blockchain/abi/lido-crv-liquidity-farming-reward.json'
 import * as otc from 'blockchain/abi/matching-market.json'
@@ -55,12 +56,17 @@ import {
 } from 'blockchain/tokens/optimism'
 import { tokensOptimism } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
+import { ContractDesc } from 'features/web3Context'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
 
 const { optimism } = ADDRESSES
 
-export const optimismContracts: MainnetContracts = {
+type OptimismContracts = MainnetContracts & {
+  gasPriceOracle: ContractDesc
+}
+
+export const optimismContracts: OptimismContracts = {
   otc: contractDesc(otc, optimism.common.Otc),
   collaterals: getCollaterals(optimism.common, supportedIlks),
   tokens: tokensOptimism,
@@ -197,4 +203,5 @@ export const optimismContracts: MainnetContracts = {
   magicLink: {
     apiKey: '',
   },
+  gasPriceOracle: contractDesc(gasPriceOracle, '0x420000000000000000000000000000000000000F'),
 }

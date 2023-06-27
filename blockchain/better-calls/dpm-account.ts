@@ -6,6 +6,7 @@ import { ethers } from 'ethers'
 import { AccountImplementation__factory, OperationExecutor__factory } from 'types/ethers-contracts'
 
 import { isDangerTransactionEnabled } from './is-danger-transaction-enabled'
+import { EstimatedGasResult } from './utils/types'
 
 export interface DpmExecuteParameters {
   networkId: NetworkIds
@@ -56,7 +57,7 @@ export async function estimateGasOnDpm({
   calls,
   operationName,
   value,
-}: DpmExecuteParameters): Promise<number | undefined> {
+}: DpmExecuteParameters): Promise<EstimatedGasResult | undefined> {
   const { dpm, operationExecutor } = await validateParameters({ signer, networkId, proxyAddress })
 
   const encodedCallDAta = operationExecutor.interface.encodeFunctionData('executeOp', [
@@ -65,10 +66,17 @@ export async function estimateGasOnDpm({
   ])
 
   try {
+    const transactionData = dpm.interface.encodeFunctionData('execute', [
+      operationExecutor.address,
+      encodedCallDAta,
+    ])
     const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
     })
-    return result.toNumber()
+    return {
+      estimatedGas: result.toString(),
+      transactionData,
+    }
   } catch (e) {
     const message = `Error estimating gas. Action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`
     console.error(message, e)
