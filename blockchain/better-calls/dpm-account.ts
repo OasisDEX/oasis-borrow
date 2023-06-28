@@ -75,7 +75,7 @@ export async function estimateGasOnDpm({
       value: ethers.utils.parseEther(value.toString()).toHexString(),
     })
     return {
-      estimatedGas: result.mul(GasMultiplier).toString(),
+      estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
       transactionData,
     }
   } catch (e) {
@@ -124,6 +124,6 @@ export async function createExecuteTransaction({
   })
   return await dpm.execute(operationExecutor.address, encodedCallDAta, {
     value: ethers.utils.parseEther(value.toString()).toHexString(),
-    gasLimit: ethers.BigNumber.from(gasLimit?.estimatedGas ?? 0),
+    gasLimit: gasLimit?.estimatedGas ?? undefined,
   })
 }

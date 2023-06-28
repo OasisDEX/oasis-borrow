@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networkSetById } from 'blockchain/networks'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
@@ -47,7 +48,7 @@ export async function estimateGasCreateAccount({
     const transactionData = accountFactory.interface.encodeFunctionData('createAccount()')
     const result = await accountFactory.estimateGas['createAccount()']()
     return {
-      estimatedGas: result.mul(GasMultiplier).toString(),
+      estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
       transactionData,
     }
   } catch (e) {
