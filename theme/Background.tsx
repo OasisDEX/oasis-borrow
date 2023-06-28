@@ -1,8 +1,6 @@
-import backgroundBig from 'public/static/img/background/background_big.svg'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { PropsWithChildren } from 'react'
 import { Box } from 'theme-ui'
-
-import { zoomInBackgroundAnimation } from './animations'
 
 export const backgroundSize = {
   width: 1440,
@@ -25,11 +23,12 @@ export function Background({
         overflow: 'hidden',
         height: wrapper ? 'auto' : `${backgroundSize.height}px`,
         ...(short && { transform: 'scaleY(-1)' }),
-        backgroundImage: `url(${backgroundBig})`,
-        backgroundPosition: 'center top',
+        backgroundImage: `url(${staticFilesRuntimeUrl(
+          '/static/img/background/background_big_animated.svg',
+        )})`,
+        backgroundPosition: 'center bottom',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
-        ...zoomInBackgroundAnimation,
       }}
     >
       {children}
