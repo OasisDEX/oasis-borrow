@@ -13,7 +13,7 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { StatefulTooltip } from 'components/Tooltip'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface AssetsTableHeaderCellProps {
@@ -239,16 +239,41 @@ export function AssetsTableHeaderCell({
 }
 
 export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [hasUndisabledButton, setHasUndisabledButton] = useState<boolean>(false)
+
+  useEffect(() => {
+    setHasUndisabledButton(
+      ref.current?.querySelector('.table-action-button:not(:disabled') !== null,
+    )
+  }, [ref])
+
   return (
     <Box
+      ref={ref}
       as="tr"
       sx={{
         position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
-        '&:hover': {
-          boxShadow: 'buttonMenu',
-        },
+        ...(hasUndisabledButton && {
+          cursor: 'pointer',
+          '&:hover': {
+            boxShadow: 'buttonMenu',
+            '.table-action-button': {
+              bg: 'secondary100',
+            },
+          },
+        }),
+      }}
+      {...{
+        ...(hasUndisabledButton && {
+          role: 'link',
+          onClick: () => {
+            if (ref.current && ref.current.querySelector('.table-action-button'))
+              (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
+          },
+        }),
       }}
     >
       {rowKeys.map((label, i) => (
