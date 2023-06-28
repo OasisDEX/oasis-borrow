@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { tokenAllowance } from 'blockchain/better-calls/erc20'
 import {
   ChainlinkSupportedNetworks,
   getChainlinkOraclePrice,
@@ -27,7 +28,6 @@ export function getCommonPartsFromAppContext(
     gasEstimation$,
     proxyAddress$,
     userDpmProxy$,
-    allowance$,
     txHelpers$,
     proxyConsumed$,
     userDpmProxies$,
@@ -54,7 +54,9 @@ export function getCommonPartsFromAppContext(
 
   const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
     (token: string, spender: string) =>
-      contextForAddress$.pipe(switchMap(({ account }) => allowance$(token, account, spender))),
+      contextForAddress$.pipe(
+        switchMap(({ account }) => tokenAllowance({ token, owner: account, spender, networkId })),
+      ),
     (token, spender) => `${token}-${spender}`,
   )
 

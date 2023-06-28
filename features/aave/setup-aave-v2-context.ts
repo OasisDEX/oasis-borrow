@@ -35,7 +35,6 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const {
     userSettings$,
     txHelpers$,
-    balance$,
     onEveryBlock$,
     context$,
     tokenPriceUSD$,
@@ -82,10 +81,10 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
-      balance$,
       aaveOracleAssetPriceData$,
       chainLinkETHUSDOraclePrice$,
       getSupportedTokens(LendingProtocol.AaveV2, NetworkNames.ethereumMainnet),
+      NetworkIds.MAINNET,
     ),
   )
 
