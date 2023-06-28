@@ -25,10 +25,10 @@ export const fadeInAnimation = {
 
 export const rollDownTopBannerAnimation = {
   animation: [rollDownTopBannerMobile, rollDownTopBanner],
-  animationDuration: ['0.6s', '0.6s'],
+  animationDuration: ['0.4s', '0.4s'],
   animationTimingFunction: ['ease-out', 'ease-out'],
   animationFillMode: ['forwards', 'forwards'],
-  animationDelay: ['2s', '2s'],
+  animationDelay: ['3s', '3s'],
   maxHeight: [0, 'initial'],
 }
 
