@@ -334,7 +334,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         network,
       )
       if (result === undefined) {
-        const response = await makeCall(network, requestBody)
+        const response = await makeCall(rpcEndpoint, requestBody)
         return res.status(200).send(response)
       }
       const mappedResult: CallWithHashAndResponse[] = callsWithHash.map((call, index) => {
