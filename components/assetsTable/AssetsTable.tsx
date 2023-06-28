@@ -11,6 +11,7 @@ import {
 } from 'components/assetsTable/types'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { StatefulTooltip } from 'components/Tooltip'
+import { getRandomString } from 'helpers/getRandomString'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
@@ -116,7 +117,7 @@ export function AssetsTable({
         >
           {sortedRows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <AssetsTableDataRow row={row} rowKeys={rowKeys} />
+              <AssetsTableDataRow key={getRandomString()} row={row} rowKeys={rowKeys} />
               {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
