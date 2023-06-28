@@ -6,6 +6,7 @@ import { ethers } from 'ethers'
 import { AccountImplementation__factory, OperationExecutor__factory } from 'types/ethers-contracts'
 
 import { isDangerTransactionEnabled } from './is-danger-transaction-enabled'
+import { GasMultiplier } from './utils'
 import { EstimatedGasResult } from './utils/types'
 
 export interface DpmExecuteParameters {
@@ -74,7 +75,7 @@ export async function estimateGasOnDpm({
       value: ethers.utils.parseEther(value.toString()).toHexString(),
     })
     return {
-      estimatedGas: result.toString(),
+      estimatedGas: result.mul(GasMultiplier).toString(),
       transactionData,
     }
   } catch (e) {
@@ -102,6 +103,7 @@ export async function createExecuteTransaction({
   ])
 
   const dangerTransactionEnabled = isDangerTransactionEnabled()
+
   if (dangerTransactionEnabled.enabled) {
     console.warn(
       `Danger transaction enabled. Gas limit: ${dangerTransactionEnabled.gasLimit}. Operation name: ${operationName}`,
@@ -112,8 +114,16 @@ export async function createExecuteTransaction({
       gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
     })
   }
-
+  const gasLimit = await estimateGasOnDpm({
+    networkId,
+    proxyAddress,
+    signer,
+    operationName,
+    value,
+    calls,
+  })
   return await dpm.execute(operationExecutor.address, encodedCallDAta, {
     value: ethers.utils.parseEther(value.toString()).toHexString(),
+    gasLimit: ethers.BigNumber.from(gasLimit?.estimatedGas ?? 0),
   })
 }

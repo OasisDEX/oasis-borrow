@@ -8,3 +8,5 @@ export interface BaseCallParameters {
 export interface BaseTransactionParameters extends BaseCallParameters {
   signer: ethers.Signer
 }
+
+export const GasMultiplier = 1.5
