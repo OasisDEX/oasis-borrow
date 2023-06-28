@@ -6,9 +6,10 @@ import {
   networkSetById,
 } from 'blockchain/networks'
 import { WithChildren } from 'helpers/types'
-import React, { createContext, useContext, useEffect, useReducer, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
 import { BridgeConnector } from './BridgeConnector'
+import { useChainSetter } from './use-chain-setter'
 import { useBridgeConnector } from './useBridgeConnector'
 import { useNetworkConnector } from './useNetworkConnector'
 
@@ -48,27 +49,19 @@ function InternalProvider({ children }: WithChildren) {
   const { networkConnector, networkConfig: networkConnectorNetwork } = useNetworkConnector()
   const [account, setAccount] = useState<string | undefined>(undefined)
 
-  const [pageChainId, dispatchPageChainId] = useReducer(
-    (state: NetworkConfigHexId | undefined, action: NetworkConfigHexId | undefined) => {
-      if (state && action && state !== action) {
-        throw new Error('Page chainId is already set')
-      }
-      return action ?? state
-    },
-    undefined,
-    () => undefined,
-  )
+  const { pageChainsId, dispatchPageChainId, setNetworkHexId } = useChainSetter()
 
   useEffect(() => {
     if (
-      pageChainId &&
+      pageChainsId &&
+      pageChainsId.length > 0 &&
       !connecting &&
       bridgeConnector &&
-      bridgeConnector.hexChainId !== pageChainId
+      !pageChainsId.includes(bridgeConnector.hexChainId)
     ) {
-      void createConnector(pageChainId, true)
+      void createConnector(setNetworkHexId, pageChainsId[0], true)
     }
-  }, [pageChainId, bridgeConnector, connecting, createConnector])
+  }, [pageChainsId, bridgeConnector, connecting, createConnector, setNetworkHexId])
 
   useEffect(() => {
     setAccount(bridgeConnector?.connectedAccount)
@@ -76,7 +69,9 @@ function InternalProvider({ children }: WithChildren) {
   return (
     <web3OnBoardConnectorContext.Provider
       value={{
-        connect: createConnector,
+        connect: (networkId?: NetworkConfigHexId, forced?: boolean) => {
+          return createConnector(setNetworkHexId, networkId, forced)
+        },
         networkConnector: networkConnector,
         connector: bridgeConnector,
         connectedAddress: account,
