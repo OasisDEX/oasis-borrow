@@ -28,7 +28,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
 
   return (
     <Box
-      sx={{ position: ['static', null, null, null, 'relative'], flexGrow: 1, zIndex: 2 }}
+      sx={{ position: ['static', null, null, null, 'relative'], zIndex: 2 }}
       onMouseLeave={() => closeDropdown()}
     >
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
@@ -36,10 +36,10 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           as="ul"
           sx={{
             listStyle: 'none',
-            columnGap: ['24px', null, null, null, '40px'],
+            columnGap: '40px',
             justifyContent: 'center',
             px: '20px',
-            py: 2,
+            py: 1,
           }}
         >
           {panels?.map((panel) => (

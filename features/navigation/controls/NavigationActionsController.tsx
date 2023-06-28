@@ -15,9 +15,9 @@ interface NavigationActionsControllerProps {
 }
 
 export function NavigationActionsController({ isConnected }: NavigationActionsControllerProps) {
-  const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
-  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
-  const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1]})`)
+  const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
+  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2] - 1}px)`)
+  const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1] - 1}px)`)
 
   const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
   const swapWidgetFeatureToggle = useFeatureToggle('SwapWidget')
