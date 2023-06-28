@@ -45,7 +45,7 @@ export const isForkSetForNetworkId = (networkId: NetworkIds) => {
 
 const networksWithForksAtTheBeginning: NetworkConfig[] = [...forkNetworks, ...networks]
 
-const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
+export const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
   if (acc.some((n) => n.hexId === network.hexId)) {
     console.log('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
     return acc

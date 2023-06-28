@@ -1,10 +1,17 @@
 import { ethers } from 'ethers'
 
-import { networkSetById } from './network-helpers'
+import { networkSetById, networksSet } from './network-helpers'
 import { NetworkIds } from './network-ids'
 
 export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider {
   const provider = networkSetById[networkId]?.getReadProvider()
+
+  const fork = networksSet.find((network) => network.id === networkId && network.isCustomFork)
+  const forkProvider = fork?.getReadProvider()
+  if (fork && forkProvider) {
+    console.warn(`Using custom fork for the transaction. Network: ${networkId}. Fork: ${fork.id}`)
+    return forkProvider
+  }
 
   if (provider) {
     return provider
