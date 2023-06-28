@@ -3,6 +3,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
@@ -196,7 +197,7 @@ export const productHubTestNetworkFilter = [
   },
 ]
 
-export const productHubProtocolFilter = [
+const productHubProtocolFilter = [
   {
     label: lendingProtocolsByName[LendingProtocol.Maker].label,
     value: lendingProtocolsByName[LendingProtocol.Maker].name,
@@ -212,9 +213,14 @@ export const productHubProtocolFilter = [
     value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
     image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
   },
-  {
+]
+
+if (getFeatureToggle('Ajna')) {
+  productHubProtocolFilter.push({
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
     value: lendingProtocolsByName[LendingProtocol.Ajna].name,
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-  },
-]
+  })
+}
+
+export { productHubProtocolFilter }
