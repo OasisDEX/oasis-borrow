@@ -4,6 +4,7 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
 import { AccountFactory__factory } from 'types/ethers-contracts'
 
+import { GasMultiplier } from './utils'
 import { EstimatedGasResult } from './utils/types'
 
 export interface CreateAccountParameters {
@@ -46,7 +47,7 @@ export async function estimateGasCreateAccount({
     const transactionData = accountFactory.interface.encodeFunctionData('createAccount()')
     const result = await accountFactory.estimateGas['createAccount()']()
     return {
-      estimatedGas: result.toString(),
+      estimatedGas: result.mul(GasMultiplier).toString(),
       transactionData,
     }
   } catch (e) {
@@ -64,7 +65,9 @@ export async function createCreateAccountTransaction({
 }: CreateAccountParameters): Promise<ethers.ContractTransaction> {
   const { accountFactory } = await validateParameters({ signer, networkId })
 
-  return await accountFactory['createAccount()']()
+  const gasLimit = await estimateGasCreateAccount({ networkId, signer })
+
+  return await accountFactory['createAccount()']({ gasLimit: gasLimit?.estimatedGas ?? 0 })
 }
 
 export function extractResultFromContractReceipt(receipt: ethers.ContractReceipt): UserDpmAccount {
