@@ -25,8 +25,13 @@ export interface ApproveTokenTransactionParameters extends BaseTransactionParame
   amount: BigNumber
 }
 
-export function tokenBalance({ token, account, networkId }: TokenBalanceArgs) {
+export function tokenBalance({ token, account, networkId }: TokenBalanceArgs): Promise<BigNumber> {
   const rpcProvider = getRpcProvider(networkId)
+  if (token === 'ETH') {
+    return rpcProvider.getBalance(account).then((result) => {
+      return amountFromWei(new BigNumber(result.toString()), token)
+    })
+  }
   const contracts = getNetworkContracts(networkId)
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
@@ -37,8 +42,16 @@ export function tokenBalance({ token, account, networkId }: TokenBalanceArgs) {
   })
 }
 
-export function tokenAllowance({ owner, spender, token, networkId }: TokenAllowanceArgs) {
+export function tokenAllowance({
+  owner,
+  spender,
+  token,
+  networkId,
+}: TokenAllowanceArgs): Promise<BigNumber> {
   const rpcProvider = getRpcProvider(networkId)
+  if (token === 'ETH') {
+    return Promise.resolve(maxUint256)
+  }
   const contracts = getNetworkContracts(networkId)
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
