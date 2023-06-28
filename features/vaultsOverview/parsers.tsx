@@ -198,14 +198,22 @@ export function parseAjnaBorrowPositionRows(
 export function parseAjnaEarnPositionRows(
   positions: AjnaPositionDetails[],
 ): PositionTableEarnRow[] {
-  return positions.map(({ details: { collateralToken, vaultId, quoteToken } }) => ({
-    asset: `${collateralToken}/${quoteToken}`,
-    icons: [collateralToken, quoteToken],
-    id: vaultId,
-    liquidityToken: quoteToken,
-    protocol: `Ajna`,
-    url: `/ajna/position/${vaultId}`,
-  }))
+  return positions.map(({ details: { collateralToken, vaultId, quoteToken }, position }) => {
+    console.log(position)
+    console.log(position.pool)
+
+    return {
+      asset: `${collateralToken}/${quoteToken}`,
+      icons: [collateralToken, quoteToken],
+      id: vaultId,
+      liquidity: position.pool.buckets
+        .filter((bucket) => bucket.index.lte(position.pool.highestThresholdPriceIndex))
+        .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero),
+      liquidityToken: quoteToken,
+      protocol: `Ajna`,
+      url: `/ajna/position/${vaultId}`,
+    }
+  })
 }
 export function parseDsrEarnPosition({
   address,
