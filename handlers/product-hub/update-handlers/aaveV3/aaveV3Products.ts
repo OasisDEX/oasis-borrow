@@ -19,6 +19,7 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'RETH',
+    primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -29,6 +30,7 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'CBETH',
+    primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -49,6 +51,7 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'CBETH',
+    primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -69,6 +72,7 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',
+    primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
