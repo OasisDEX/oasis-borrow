@@ -76,7 +76,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
-    totalExposure: `${positionData.collateralAmount} ${collateralToken}`,
+    totalExposure: `${formatCryptoBalance(positionData.collateralAmount)} ${collateralToken}`,
     afterTotalExposure:
       simulationData?.collateralAmount &&
       `${formatCryptoBalance(simulationData.collateralAmount)} ${collateralToken}`,
