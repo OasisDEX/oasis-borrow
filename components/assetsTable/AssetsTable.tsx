@@ -11,9 +11,10 @@ import {
 } from 'components/assetsTable/types'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { StatefulTooltip } from 'components/Tooltip'
+import { getRandomString } from 'helpers/getRandomString'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface AssetsTableHeaderCellProps {
@@ -21,7 +22,6 @@ interface AssetsTableHeaderCellProps {
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isSortable: boolean
   isSticky: boolean
-  isWithFollow: boolean
   label: string
   last: boolean
   sortingSettings?: AssetsTableSortingSettings
@@ -44,7 +44,6 @@ export function AssetsTable({
   headerTranslationProps,
   isLoading = false,
   isSticky = false,
-  isWithFollow = false,
   rows,
   tooltips = [],
 }: AssetsTableProps) {
@@ -99,7 +98,6 @@ export function AssetsTable({
                 headerTranslationProps={headerTranslationProps}
                 isSortable={(rows[0][label] as AssetsTableSortableCell).sortable !== undefined}
                 isSticky={isSticky}
-                isWithFollow={isWithFollow}
                 label={label}
                 last={i + 1 === rowKeys.length}
                 sortingSettings={sortingSettings}
@@ -119,7 +117,7 @@ export function AssetsTable({
         >
           {sortedRows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <AssetsTableDataRow row={row} rowKeys={rowKeys} />
+              <AssetsTableDataRow key={getRandomString()} row={row} rowKeys={rowKeys} />
               {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
@@ -140,7 +138,6 @@ export function AssetsTableHeaderCell({
   headerTranslationProps,
   isSortable,
   isSticky,
-  isWithFollow,
   label,
   last,
   sortingSettings,
@@ -158,7 +155,6 @@ export function AssetsTableHeaderCell({
         px: '12px',
         pt: '28px',
         pb: isSticky ? '48px' : '20px',
-        ...(first && isWithFollow && { pl: '80px' }),
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',
@@ -244,15 +240,41 @@ export function AssetsTableHeaderCell({
 }
 
 export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [hasUndisabledButton, setHasUndisabledButton] = useState<boolean>(false)
+
+  useEffect(() => {
+    setHasUndisabledButton(
+      ref.current?.querySelector('.table-action-button:not(:disabled') !== null,
+    )
+  }, [ref])
+
   return (
     <Box
+      ref={ref}
       as="tr"
       sx={{
+        position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
-        '&:hover': {
-          boxShadow: 'buttonMenu',
-        },
+        ...(hasUndisabledButton && {
+          cursor: 'pointer',
+          '&:hover': {
+            boxShadow: 'buttonMenu',
+            '.table-action-button': {
+              bg: 'secondary100',
+            },
+          },
+        }),
+      }}
+      {...{
+        ...(hasUndisabledButton && {
+          role: 'link',
+          onClick: () => {
+            if (ref.current && ref.current.querySelector('.table-action-button'))
+              (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
+          },
+        }),
       }}
     >
       {rowKeys.map((label, i) => (
