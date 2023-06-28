@@ -1,14 +1,12 @@
 import { AjnaPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
-import {
-  AssetsTableDataCellProtocol,
-  AssetsTableDataCellProtocols,
-} from 'components/assetsTable/cellComponents/AssetsTableDataCellProtocol'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
 import { AssetsTableRowData } from 'components/assetsTable/types'
+import { ProtocolLabel } from 'components/ProtocolLabel'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
@@ -26,7 +24,8 @@ interface PositionTableRow {
   asset: string
   icons: string[]
   id: string
-  protocol: AssetsTableDataCellProtocols
+  network: NetworkNames
+  protocol: LendingProtocol
   url: string
 }
 
@@ -78,7 +77,8 @@ export function parseMakerBorrowPositionRows(
       debtToken: 'DAI',
       icons: [token, 'DAI'],
       id: id.toString(),
-      protocol: 'Maker',
+      network: NetworkNames.ethereumMainnet,
+      protocol: LendingProtocol.Maker,
       riskRatio: {
         level: collateralizationRatio.times(100),
         isAtRiskDanger: atRiskLevelDanger,
@@ -102,7 +102,8 @@ export function parseMakerMultiplyPositionRows(
       liquidationPrice,
       multiple: calculateMultiply({ debt, lockedCollateralUSD }),
       netValue: value,
-      protocol: 'Maker',
+      network: NetworkNames.ethereumMainnet,
+      protocol: LendingProtocol.Maker,
       url: `/ethereum/maker/${id}`,
     }),
   )
@@ -119,7 +120,8 @@ export function parseMakerEarnPositionRows(
       liquidityToken: 'DAI',
       netValue: value,
       pnl: calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100),
-      protocol: 'Maker',
+      network: NetworkNames.ethereumMainnet,
+      protocol: LendingProtocol.Maker,
       url: `/ethereum/maker/${id}`,
     }),
   )
@@ -146,7 +148,8 @@ export function parseAaveMultiplyPositionRows(
       liquidationPrice,
       multiple,
       netValue,
-      protocol: `Aave v${protocol === LendingProtocol.AaveV2 ? '2' : '3'}`,
+      network: NetworkNames.ethereumMainnet,
+      protocol,
       url,
     }),
   )
@@ -159,7 +162,8 @@ export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTa
     liquidity,
     liquidityToken: 'USDC',
     netValue,
-    protocol: `Aave v${protocol === LendingProtocol.AaveV2 ? '2' : '3'}`,
+    network: NetworkNames.ethereumMainnet,
+    protocol,
     url,
   }))
 }
@@ -182,7 +186,8 @@ export function parseAjnaBorrowPositionRows(
       debtToken: quoteToken,
       icons: [collateralToken, quoteToken],
       id: vaultId,
-      protocol: 'Ajna',
+      network: NetworkNames.ethereumMainnet,
+      protocol: LendingProtocol.Ajna,
       riskRatio: {
         level: riskRatio.loanToValue.times(100),
         // TODO: get from position/lib when available
@@ -210,7 +215,8 @@ export function parseAjnaEarnPositionRows(
         .filter((bucket) => bucket.index.lte(position.pool.highestThresholdPriceIndex))
         .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero),
       liquidityToken: quoteToken,
-      protocol: `Ajna`,
+      network: NetworkNames.ethereumMainnet,
+      protocol: LendingProtocol.Ajna,
       url: `/ajna/position/${vaultId}`,
     }
   })
@@ -233,7 +239,8 @@ export function parseDsrEarnPosition({
           liquidity: 'Unlimited',
           liquidityToken: 'DAI',
           netValue,
-          protocol: 'Maker',
+          network: NetworkNames.ethereumMainnet,
+          protocol: LendingProtocol.Maker,
           url: `/earn/dsr/${address}`,
         },
       ]
@@ -250,13 +257,13 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       debtToken,
       icons,
       id,
+      network,
       protocol,
       riskRatio: { level, isAtRiskDanger, isAtRiskWarning, type },
       variable,
       url,
     }) => ({
       asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
-      protocol: <AssetsTableDataCellProtocol protocol={protocol} />,
       riskRatio: (
         <>
           <AssetsTableDataCellRiskRatio
@@ -273,29 +280,40 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
       // automation: '',
+      protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
 }
 export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): AssetsTableRowData[] {
   return rows.map(
-    ({ asset, fundingCost, icons, id, liquidationPrice, multiple, netValue, protocol, url }) => ({
+    ({
+      asset,
+      fundingCost,
+      icons,
+      id,
+      liquidationPrice,
+      multiple,
+      netValue,
+      network,
+      protocol,
+      url,
+    }) => ({
       asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
-      protocol: <AssetsTableDataCellProtocol protocol={protocol} />,
       netValue: `$${formatCryptoBalance(netValue)}`,
       multiple: `${multiple.toFixed(2)}x`,
       liquidationPrice: `$${formatCryptoBalance(liquidationPrice)}`,
       fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
       // automation: '',
+      protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
 }
 export function getEarnPositionRows(rows: PositionTableEarnRow[]): AssetsTableRowData[] {
   return rows.map(
-    ({ asset, icons, id, liquidity, liquidityToken, netValue, pnl, protocol, url }) => ({
+    ({ asset, icons, id, liquidity, liquidityToken, netValue, network, pnl, protocol, url }) => ({
       asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
-      protocol: <AssetsTableDataCellProtocol protocol={protocol} />,
       netValue: BigNumber.isBigNumber(netValue) ? (
         `$${formatCryptoBalance(netValue)}`
       ) : (
@@ -312,6 +330,7 @@ export function getEarnPositionRows(rows: PositionTableEarnRow[]): AssetsTableRo
         <AssetsTableDataCellInactive>{liquidity}</AssetsTableDataCellInactive>
       ),
       // automation: '',
+      protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
