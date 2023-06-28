@@ -45,8 +45,6 @@ export function PriceImpact({
       targetToken.symbol,
     ])
 
-    console.log(`current swap address: ${contracts.swapAddress}`)
-
     return {
       swapAddress: contracts.swapAddress,
       sourceTokenAddress: contracts.tokens[sourceToken.symbol].address,

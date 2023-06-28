@@ -112,10 +112,18 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     gasEstimation$,
     networkId,
   )
-  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
-  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
-  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
-  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
+  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$, networkId)
+  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$, networkId)
+  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    networkId,
+  )
+  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    networkId,
+  )
 
   const openAaveStateMachineServices = getOpenAaveV3PositionStateMachineServices(
     context$,
