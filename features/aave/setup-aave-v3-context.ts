@@ -42,7 +42,6 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   const {
     userSettings$,
     txHelpers$,
-    balance$,
     onEveryBlock$,
     context$,
     tokenPriceUSD$,
@@ -89,10 +88,10 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
-      balance$,
       aaveOracleAssetPriceData$,
       of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3, network),
+      networkId,
     ),
   )
 

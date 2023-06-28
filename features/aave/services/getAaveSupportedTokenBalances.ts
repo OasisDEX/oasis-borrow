@@ -1,19 +1,21 @@
 import BigNumber from 'bignumber.js'
+import { tokenBalance } from 'blockchain/better-calls/erc20'
+import { NetworkIds } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export function getAaveSupportedTokenBalances$(
-  balance$: (address: string, token: string) => Observable<BigNumber>,
   aaveOraclePriceData$: (args: { token: string }) => Observable<BigNumber>,
   convertProtocolPriceToUsd: Observable<BigNumber>,
   tokens: string[],
+  networkId: NetworkIds,
   address: string | undefined,
 ): Observable<TokenBalances> {
   const tokensWithUserBalance$ = tokens.map((token) => {
     return combineLatest(
-      address ? balance$(token, address) : of(zero),
+      address ? tokenBalance({ token, account: address, networkId }) : of(zero),
       aaveOraclePriceData$({ token }),
       convertProtocolPriceToUsd,
     ).pipe(
