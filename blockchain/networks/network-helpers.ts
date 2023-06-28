@@ -164,3 +164,20 @@ export function getNetworkById(networkId: NetworkIds) {
   }
   return base
 }
+
+export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): NetworkConfigHexId[] {
+  const base = networkSetByHexId[networkHexId]
+  if (!base) {
+    throw new Error('Invalid contract chain id provided or not implemented yet')
+  }
+
+  const testnet = base.testnetHexId
+  const mainnet = base.mainnetHexId
+
+  const parent = base.getParentNetwork()
+
+  const baseHexs = [mainnet, testnet, base.hexId, parent?.hexId].filter(
+    (id): id is NetworkConfigHexId => id !== undefined,
+  )
+  return Array.from(new Set(baseHexs))
+}
