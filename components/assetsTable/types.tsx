@@ -37,12 +37,6 @@ export interface AssetsTableProps {
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isLoading?: boolean
   isSticky?: boolean
-  isWithFollow?: boolean
   rows: AssetsTableRowData[]
   tooltips?: string[]
-}
-
-export interface AssetsTableFollowButtonProps {
-  followerAddress: string
-  chainId: number
 }

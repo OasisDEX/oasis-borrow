@@ -37,14 +37,7 @@ interface parseDiscoverRowDataParams {
   walletAddress?: string
 }
 
-function ParseDiscoverCellData({
-  chainId,
-  kind,
-  label,
-  lang,
-  row,
-  walletAddress,
-}: ParseDiscoverCellDataParams): ReactNode {
+function ParseDiscoverCellData({ kind, label, lang, row }: ParseDiscoverCellDataParams): ReactNode {
   const stringified = Object.keys(row)
     .filter((item) => typeof row[item] === 'string' || typeof row[item] === 'number')
     .reduce<{ [key: string]: string }>((a, v) => ({ ...a, [v]: row[v] as string }), {})
@@ -55,13 +48,6 @@ function ParseDiscoverCellData({
         <AssetsTableDataCellAsset
           asset={stringified.asset}
           positionId={stringified.cdpId}
-          {...(!!chainId &&
-            !!walletAddress && {
-              followButton: {
-                chainId,
-                followerAddress: walletAddress,
-              },
-            })}
           icons={[stringified.asset]}
         />
       )
@@ -126,7 +112,6 @@ function ParseDiscoverCellData({
         <AssetsTableDataCellAction
           link={`/${stringified.cdpId}`}
           newTab={true}
-          shareButton={true}
           onClick={() => trackingEvents.discover.viewPosition(kind, stringified.cdpId)}
         />
       )
