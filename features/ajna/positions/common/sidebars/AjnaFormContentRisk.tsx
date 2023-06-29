@@ -28,7 +28,7 @@ export function AjnaFormContentRisk() {
         })}
         listStyle={{ mt: 2 }}
         components={{
-          2: <AppLink href={EXTERNAL_LINKS.KB.AJNA} sx={{ display: 'inline-block' }} />,
+          2: <AppLink href={EXTERNAL_LINKS.AJNA.AUDITS} sx={{ display: 'inline-block' }} />,
           3: <AppLink href={EXTERNAL_LINKS.KB.AJNA} sx={{ display: 'inline-block' }} />,
           4: <WithArrow sx={{ fontWeight: 'regular', color: 'interactive100' }} />,
         }}
