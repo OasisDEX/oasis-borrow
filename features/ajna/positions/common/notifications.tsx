@@ -293,48 +293,50 @@ export function getAjnaNotifications({
       }
       break
     case 'earn': {
-      const {
-        price,
-        pool: { highestThresholdPrice, mostOptimisticMatchingPrice },
-        quoteTokenAmount,
-      } = position as AjnaEarnPosition
-      const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
-      const priceAboveMomp = price.gt(mostOptimisticMatchingPrice)
-      const emptyPosition = quoteTokenAmount.isZero()
-      const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
+      if (flow === 'manage') {
+        const {
+          price,
+          pool: { highestThresholdPrice, mostOptimisticMatchingPrice },
+          quoteTokenAmount,
+        } = position as AjnaEarnPosition
+        const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
+        const priceAboveMomp = price.gt(mostOptimisticMatchingPrice)
+        const emptyPosition = quoteTokenAmount.isZero()
+        const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
 
-      const moveToAdjust = () => {
-        dispatch({ type: 'reset' })
-        updateState('uiDropdown', 'adjust')
-        updateState('uiPill', 'deposit-earn')
-      }
+        const moveToAdjust = () => {
+          dispatch({ type: 'reset' })
+          updateState('uiDropdown', 'adjust')
+          updateState('uiPill', 'deposit-earn')
+        }
 
-      if (priceAboveMomp) {
-        notifications.push(
-          ajnaNotifications.priceAboveMomp({
-            message: { collateralToken, quoteToken },
-            action: moveToAdjust,
-          }),
-        )
-      }
-      if (earningNoApy) {
-        notifications.push(
-          ajnaNotifications.earningNoApy({
-            action: !quoteTokenAmount.isZero() ? moveToAdjust : undefined,
-          }),
-        )
-      }
+        if (priceAboveMomp) {
+          notifications.push(
+            ajnaNotifications.priceAboveMomp({
+              message: { collateralToken, quoteToken },
+              action: moveToAdjust,
+            }),
+          )
+        }
+        if (earningNoApy) {
+          notifications.push(
+            ajnaNotifications.earningNoApy({
+              action: !quoteTokenAmount.isZero() ? moveToAdjust : undefined,
+            }),
+          )
+        }
 
-      if (emptyPosition) {
-        notifications.push(ajnaNotifications.emptyPosition({ quoteToken }))
-      }
+        if (emptyPosition) {
+          notifications.push(ajnaNotifications.emptyPosition({ quoteToken }))
+        }
 
-      if (earnPositionAuction.isBucketFrozen) {
-        notifications.push(ajnaNotifications.lendingPriceFrozen({ quoteToken }))
-      }
+        if (earnPositionAuction.isBucketFrozen) {
+          notifications.push(ajnaNotifications.lendingPriceFrozen({ quoteToken }))
+        }
 
-      if (earnPositionAuction.isCollateralToWithdraw) {
-        notifications.push(ajnaNotifications.collateralToWithdraw(null))
+        if (earnPositionAuction.isCollateralToWithdraw) {
+          notifications.push(ajnaNotifications.collateralToWithdraw(null))
+        }
       }
 
       break
@@ -342,6 +344,8 @@ export function getAjnaNotifications({
     default:
       break
   }
+
+  console.log(notifications)
 
   return notifications
 }
