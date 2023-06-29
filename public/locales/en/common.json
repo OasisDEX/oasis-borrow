@@ -2529,8 +2529,8 @@
     "position-page": {
       "common": {
         "headline": {
-          "open": "{{collateralToken}}/{{quoteToken}} {{strategy}} {{product}} Position",
-          "manage": "{{collateralToken}}/{{quoteToken}} {{strategy}} {{product}} #{{id}}",
+          "open": "{{collateralToken}}/{{quoteToken}} {{product}} Position",
+          "manage": "{{collateralToken}}/{{quoteToken}} {{product}} #{{id}}",
           "current-market-price": "Current Market Price"
         },
         "banners": {
@@ -2591,11 +2591,11 @@
             }
           },
           "transaction": {
-            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{strategy}} {{product}} Position.",
-            "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} {{strategy}} Ajna Position",
-            "progress-manage": "Updating your {{collateralToken}}/{{quoteToken}} {{strategy}} Ajna Position",
-            "success-open": "Your {{collateralToken}}/{{quoteToken}} {{strategy}} Ajna Position was created",
-            "success-manage": "Your {{collateralToken}}/{{quoteToken}} {{strategy}} Ajna Position was updated"
+            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position.",
+            "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} Ajna Position",
+            "progress-manage": "Updating your {{collateralToken}}/{{quoteToken}} Ajna Position",
+            "success-open": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was created",
+            "success-manage": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was updated"
           }
         },
         "notifications": {
