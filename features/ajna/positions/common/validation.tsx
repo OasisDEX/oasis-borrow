@@ -268,6 +268,17 @@ export function getAjnaValidation({
         message: { component: <AjnaSafetyOnMessage /> },
       })
     }
+    if (
+      product === 'earn' &&
+      'quoteTokenAmount' in position &&
+      position.quoteTokenAmount?.isZero() &&
+      'depositAmount' in state &&
+      state.depositAmount?.gt(zero)
+    ) {
+      localErrors.push({
+        message: { component: <AjnaSafetyOnMessage /> },
+      })
+    }
   }
 
   const hasPotentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
