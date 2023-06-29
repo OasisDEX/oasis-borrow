@@ -47,7 +47,17 @@ const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ translationKe
   />
 )
 
+const AjnaSafetyOnMessage: FC = () => (
+  <Trans
+    i18nKey={'ajna.validations.safety-switch-on'}
+    components={[
+      <AppLink sx={{ fontSize: 'inherit', color: 'inherit' }} href={EXTERNAL_LINKS.DISCORD} />,
+    ]}
+  />
+)
+
 interface GetAjnaBorrowValidationsParams {
+  ajnaSafetySwitchOn: boolean
   collateralBalance: BigNumber
   collateralToken: string
   quoteToken: string
@@ -195,6 +205,7 @@ function isFormValid({
 }
 
 export function getAjnaValidation({
+  ajnaSafetySwitchOn,
   collateralBalance,
   collateralToken,
   quoteToken,
@@ -242,6 +253,21 @@ export function getAjnaValidation({
   }
   if ('paybackAmount' in state && state.paybackAmount?.gt(quoteBalance)) {
     localErrors.push({ message: { translationKey: 'payback-amount-exceeds-debt-token-balance' } })
+  }
+
+  if (ajnaSafetySwitchOn) {
+    if (
+      product === 'borrow' &&
+      'debtAmount' in position &&
+      position.debtAmount?.isZero() &&
+      (('depositAmount' in state && state.depositAmount?.gt(zero)) ||
+        ('paybackAmount' in state && state.paybackAmount?.gt(zero)) ||
+        ('generateAmount' in state && state.generateAmount?.gt(zero)))
+    ) {
+      localErrors.push({
+        message: { component: <AjnaSafetyOnMessage /> },
+      })
+    }
   }
 
   const hasPotentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({

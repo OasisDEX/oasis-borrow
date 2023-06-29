@@ -188,6 +188,7 @@ export function AjnaProductContextProvider({
   const validation = useMemo(
     () =>
       getAjnaValidation({
+        ajnaSafetySwitchOn,
         collateralBalance,
         collateralToken,
         quoteToken,
