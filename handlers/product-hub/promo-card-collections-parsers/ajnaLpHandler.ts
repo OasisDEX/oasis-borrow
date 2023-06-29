@@ -7,7 +7,6 @@ import {
   findByTokenPair,
   parseAjnaBorrowPromoCard,
   parseAjnaEarnPromoCard,
-  parseAjnaMultiplyPromoCard,
 } from 'handlers/product-hub/helpers'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
@@ -47,14 +46,6 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     description: { key: 'product-hub.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
-  const promoCardLearnAboutMultiply = {
-    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    title: { key: 'product-hub.promo-cards.get-to-know-ajna-multiply' },
-    description: {
-      key: 'product-hub.promo-cards.learn-how-to-use-multiply-to-optimize-your-position',
-    },
-    link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
-  }
   const promoCardWhatIsEarn = {
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
     title: { key: 'product-hub.promo-cards.what-is-earn-on-ajna' },
@@ -81,36 +72,6 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const promoCardWBTCDAICBorrow = parseAjnaBorrowPromoCard('WBTC', 'DAI', WBTCDAIBorrowishProduct)
   const promoCardUSDCETHBorrow = parseAjnaBorrowPromoCard('USDC', 'ETH', USDCETHBorrowishProduct)
   const promoCardUSDCWBTCBorrow = parseAjnaBorrowPromoCard('USDC', 'WBTC', USDCWBTCBorrowishProduct)
-  const promoCardETHUSDCMultiply = parseAjnaMultiplyPromoCard(
-    'ETH',
-    'USDC',
-    ETHUSDCBorrowishProduct,
-  )
-  const promoCardWSTETHUSDCMultiply = parseAjnaMultiplyPromoCard(
-    'WSTETH',
-    'USDC',
-    WSTETHUSDCBorrowishProduct,
-  )
-  const promoCardWBTCUSDCMultiply = parseAjnaMultiplyPromoCard(
-    'WBTC',
-    'USDC',
-    WBTCUSDCBorrowishProduct,
-  )
-  const promoCardWBTCDAIMultiply = parseAjnaMultiplyPromoCard(
-    'WBTC',
-    'DAI',
-    WBTCDAIBorrowishProduct,
-  )
-  const promoCardUSDCETHMultiply = parseAjnaMultiplyPromoCard(
-    'USDC',
-    'ETH',
-    USDCETHBorrowishProduct,
-  )
-  const promoCardUSDCWBTCMultiply = parseAjnaMultiplyPromoCard(
-    'USDC',
-    'WBTC',
-    USDCWBTCBorrowishProduct,
-  )
   const promoCardETHUSDCEarn = parseAjnaEarnPromoCard('ETH', 'USDC', ETHUSDCEarnProduct)
   const promoCardWSTETHUSDCEarn = parseAjnaEarnPromoCard('WSTETH', 'USDC', WSTETHUSDCEarnProduct)
   const promoCardWSTETHDAIEarn = parseAjnaEarnPromoCard('WSTETH', 'DAI', WSTETHDAIEarnProduct)
@@ -133,12 +94,8 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       },
     },
     [ProductHubProductType.Multiply]: {
-      default: [promoCardETHUSDCMultiply, promoCardWBTCUSDCMultiply, promoCardUSDCETHMultiply],
-      tokens: {
-        ETH: [promoCardETHUSDCMultiply, promoCardWSTETHUSDCMultiply, promoCardUSDCETHMultiply],
-        WBTC: [promoCardWBTCUSDCMultiply, promoCardWBTCDAIMultiply, promoCardUSDCWBTCMultiply],
-        USDC: [promoCardUSDCETHMultiply, promoCardUSDCWBTCMultiply, promoCardLearnAboutMultiply],
-      },
+      default: [],
+      tokens: {},
     },
     [ProductHubProductType.Earn]: {
       default: [promoCardETHUSDCEarn, promoCardWBTCUSDCEarn, promoCardETHDAIEarn],
