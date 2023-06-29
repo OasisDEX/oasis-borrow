@@ -189,6 +189,7 @@ export function AjnaProductContextProvider({
     () =>
       getAjnaValidation({
         ajnaSafetySwitchOn,
+        flow,
         collateralBalance,
         collateralToken,
         quoteToken,

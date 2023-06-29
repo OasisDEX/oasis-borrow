@@ -3,6 +3,7 @@ import { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import {
+  AjnaFlow,
   AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
@@ -58,6 +59,7 @@ const AjnaSafetyOnMessage: FC = () => (
 
 interface GetAjnaBorrowValidationsParams {
   ajnaSafetySwitchOn: boolean
+  flow: AjnaFlow
   collateralBalance: BigNumber
   collateralToken: string
   quoteToken: string
@@ -206,6 +208,7 @@ function isFormValid({
 
 export function getAjnaValidation({
   ajnaSafetySwitchOn,
+  flow,
   collateralBalance,
   collateralToken,
   quoteToken,
@@ -255,7 +258,7 @@ export function getAjnaValidation({
     localErrors.push({ message: { translationKey: 'payback-amount-exceeds-debt-token-balance' } })
   }
 
-  if (ajnaSafetySwitchOn) {
+  if (ajnaSafetySwitchOn && flow === 'manage') {
     if (
       product === 'borrow' &&
       'debtAmount' in position &&
