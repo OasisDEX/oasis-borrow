@@ -10,6 +10,7 @@ import {
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import React from 'react'
 
@@ -20,10 +21,17 @@ function ProductHubRouteHandler({
   product: ProductHubProductType
   token?: string
 }) {
+  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+
   return (
     <WithConnection>
       <AnimatedWrapper sx={{ mb: 5 }}>
-        <ProductHubView product={product} promoCardsCollection="Home" token={token} url="/" />
+        <ProductHubView
+          product={product}
+          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
+          token={token}
+          url="/"
+        />
       </AnimatedWrapper>
     </WithConnection>
   )

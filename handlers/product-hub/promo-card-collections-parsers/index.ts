@@ -8,4 +8,6 @@ export const PROMO_CARD_COLLECTIONS_PARSERS: {
 } = {
   AjnaLP: ajnaLpHandler,
   Home: home,
+  // TODO: replace with proper hander when available
+  HomeWithAjna: home,
 }
