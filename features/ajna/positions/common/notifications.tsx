@@ -345,7 +345,5 @@ export function getAjnaNotifications({
       break
   }
 
-  console.log(notifications)
-
   return notifications
 }
