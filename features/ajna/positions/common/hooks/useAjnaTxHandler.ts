@@ -68,7 +68,7 @@ export function useAjnaTxHandler(): () => void {
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [context?.chainId, dpmAddress, state, slippage])
+  }, [context?.chainId, state, isFormEmpty, slippage])
 
   useDebouncedEffect(
     () => {
@@ -112,7 +112,7 @@ export function useAjnaTxHandler(): () => void {
           })
       }
     },
-    [context?.chainId, dpmAddress, state, isExternalStep, slippage],
+    [context?.chainId, state, isExternalStep, slippage],
     250,
   )
 
