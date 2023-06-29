@@ -148,7 +148,6 @@ export function createProxyConsumed$(
   dpmProxyAddress: string,
 ): Observable<boolean> {
   return getLastCreatedPositionForProxy$(context$, dpmProxyAddress).pipe(
-    startWith(undefined),
     map((proxy) => {
       return !!proxy
     }),

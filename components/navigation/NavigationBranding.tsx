@@ -1,5 +1,5 @@
 import { AppLink } from 'components/Links'
-import { navigationBreakpoints } from 'components/navigation/Navigation'
+import { navigationBreakpointsWithPixels } from 'components/navigation/Navigation'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
@@ -26,7 +26,7 @@ export function NavigationBranding({
   link = INTERNAL_LINKS.homepage,
   pill,
 }: NavigationBrandingProps) {
-  const isViewBelowS = useMediaQuery(`(max-width: ${navigationBreakpoints[0]})`)
+  const isViewBelowS = useMediaQuery(`(max-width: ${navigationBreakpointsWithPixels[0]})`)
 
   return (
     <AppLink

@@ -15,7 +15,7 @@ import { useMediaQuery } from 'usehooks-ts'
 export function AjnaNavigationController() {
   const { uiChanges } = useAppContext()
   const { isConnected, walletAddress } = useAccount()
-  const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
+  const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
 
   return (
     <>
