@@ -37,6 +37,8 @@ export function getIsFormEmpty({
         case 'setup':
           return !depositAmount && !withdrawAmount
         case 'nft':
+        case 'dpm':
+        case 'transaction':
           return false
         case 'manage':
           if ((position as AjnaEarnPosition).quoteTokenAmount.isZero()) {
@@ -59,6 +61,9 @@ export function getIsFormEmpty({
       switch (currentStep) {
         case 'setup':
           return !depositAmount
+        case 'dpm':
+        case 'transaction':
+          return false
         case 'manage':
           if (action === 'close-multiply') {
             return false
