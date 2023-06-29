@@ -3,6 +3,7 @@ import { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import {
+  AjnaFlow,
   AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
@@ -47,7 +48,18 @@ const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ translationKe
   />
 )
 
+const AjnaSafetyOnMessage: FC = () => (
+  <Trans
+    i18nKey={'ajna.validations.safety-switch-on'}
+    components={[
+      <AppLink sx={{ fontSize: 'inherit', color: 'inherit' }} href={EXTERNAL_LINKS.DISCORD} />,
+    ]}
+  />
+)
+
 interface GetAjnaBorrowValidationsParams {
+  ajnaSafetySwitchOn: boolean
+  flow: AjnaFlow
   collateralBalance: BigNumber
   collateralToken: string
   quoteToken: string
@@ -195,6 +207,8 @@ function isFormValid({
 }
 
 export function getAjnaValidation({
+  ajnaSafetySwitchOn,
+  flow,
   collateralBalance,
   collateralToken,
   quoteToken,
@@ -242,6 +256,40 @@ export function getAjnaValidation({
   }
   if ('paybackAmount' in state && state.paybackAmount?.gt(quoteBalance)) {
     localErrors.push({ message: { translationKey: 'payback-amount-exceeds-debt-token-balance' } })
+  }
+
+  if (ajnaSafetySwitchOn && flow === 'manage') {
+    switch (product) {
+      case 'borrow':
+      case 'multiply':
+        if (
+          'debtAmount' in position &&
+          position.debtAmount?.isZero() &&
+          (('loanToValue' in state && state.loanToValue?.gt(zero)) ||
+            ('depositAmount' in state && state.depositAmount?.gt(zero)) ||
+            ('paybackAmount' in state && state.paybackAmount?.gt(zero)) ||
+            ('generateAmount' in state && state.generateAmount?.gt(zero)))
+        ) {
+          localErrors.push({
+            message: { component: <AjnaSafetyOnMessage /> },
+          })
+        }
+
+        break
+      case 'earn':
+        if (
+          'quoteTokenAmount' in position &&
+          position.quoteTokenAmount?.isZero() &&
+          'depositAmount' in state &&
+          state.depositAmount?.gt(zero)
+        ) {
+          localErrors.push({
+            message: { component: <AjnaSafetyOnMessage /> },
+          })
+        }
+
+        break
+    }
   }
 
   const hasPotentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({

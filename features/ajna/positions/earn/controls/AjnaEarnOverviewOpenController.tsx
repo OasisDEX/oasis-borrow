@@ -18,6 +18,7 @@ export function AjnaEarnOverviewOpenController() {
     form: {
       state: { depositAmount },
     },
+    notifications,
     position: {
       currentPosition: { simulation, position },
     },
@@ -41,6 +42,7 @@ export function AjnaEarnOverviewOpenController() {
   return (
     <DetailsSection
       title={<SimulateTitle token={quoteToken} depositAmount={depositAmount} />}
+      notifications={notifications}
       content={
         <>
           <DetailsSectionContentTable
