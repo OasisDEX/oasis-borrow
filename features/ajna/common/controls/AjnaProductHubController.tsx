@@ -1,5 +1,6 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
+import { AjnaProductHubIntro } from 'features/ajna/common/components/AjnaProductHubIntro'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { LendingProtocol } from 'lendingProtocols'
@@ -19,6 +20,9 @@ export function AjnaProductHubController({ product, token }: AjnaProductHubContr
           initialProtocol={[LendingProtocol.Ajna]}
           product={product}
           promoCardsCollection="AjnaLP"
+          subtext={(selectedProduct, selectedToken) => (
+            <AjnaProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
+          )}
           token={token}
           url="/ajna/"
         />

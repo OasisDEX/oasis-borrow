@@ -1,13 +1,14 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { ProductHubLoadingState } from 'features/productHub/components'
+import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import {
   ProductHubNaturalLanguageSelectorController,
   ProductHubPromoCardsController,
 } from 'features/productHub/controls'
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
-import { ALL_ASSETS, productHubLinksMap } from 'features/productHub/meta'
+import { ALL_ASSETS } from 'features/productHub/meta'
 import {
   ProductHubFilters,
   ProductHubProductType,
@@ -17,8 +18,8 @@ import { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { FC, Fragment, useMemo, useState } from 'react'
-import { Box, Flex, Text } from 'theme-ui'
+import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
+import { Box, Flex } from 'theme-ui'
 
 interface ProductHubViewProps {
   initialNetwork?: ProductHubSupportedNetworks[]
@@ -26,6 +27,7 @@ interface ProductHubViewProps {
   headerGradient?: [string, string, ...string[]]
   product: ProductHubProductType
   promoCardsCollection: PromoCardsCollection
+  subtext?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
   token?: string
   url?: string
   limitRows?: number
@@ -37,6 +39,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
   product,
   promoCardsCollection,
+  subtext,
   token,
   url,
   limitRows,
@@ -88,29 +91,11 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
             setSelectedFilters(defaultFilters)
           }}
         />
-        <Text
-          as="p"
-          variant="paragraph2"
-          sx={{
-            mx: 'auto',
-            mt: '24px',
-          }}
-        >
-          {t(`product-hub.intro.${selectedProduct}`)}{' '}
-          <AppLink href={productHubLinksMap[selectedProduct]}>
-            <WithArrow
-              variant="paragraph2"
-              sx={{
-                display: 'inline-block',
-                fontSize: 3,
-                color: 'interactive100',
-                fontWeight: 'regular',
-              }}
-            >
-              Summer.fi {t(`nav.${selectedProduct}`)}
-            </WithArrow>
-          </AppLink>
-        </Text>
+        {subtext ? (
+          subtext(selectedProduct, selectedToken)
+        ) : (
+          <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
+        )}
       </Box>
       <WithLoadingIndicator value={[data]} customLoader={<ProductHubLoadingState />}>
         {([_data]) => (
