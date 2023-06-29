@@ -259,28 +259,36 @@ export function getAjnaValidation({
   }
 
   if (ajnaSafetySwitchOn && flow === 'manage') {
-    if (
-      product === 'borrow' &&
-      'debtAmount' in position &&
-      position.debtAmount?.isZero() &&
-      (('depositAmount' in state && state.depositAmount?.gt(zero)) ||
-        ('paybackAmount' in state && state.paybackAmount?.gt(zero)) ||
-        ('generateAmount' in state && state.generateAmount?.gt(zero)))
-    ) {
-      localErrors.push({
-        message: { component: <AjnaSafetyOnMessage /> },
-      })
-    }
-    if (
-      product === 'earn' &&
-      'quoteTokenAmount' in position &&
-      position.quoteTokenAmount?.isZero() &&
-      'depositAmount' in state &&
-      state.depositAmount?.gt(zero)
-    ) {
-      localErrors.push({
-        message: { component: <AjnaSafetyOnMessage /> },
-      })
+    switch (product) {
+      case 'borrow':
+      case 'multiply':
+        if (
+          'debtAmount' in position &&
+          position.debtAmount?.isZero() &&
+          (('loanToValue' in state && state.loanToValue?.gt(zero)) ||
+            ('depositAmount' in state && state.depositAmount?.gt(zero)) ||
+            ('paybackAmount' in state && state.paybackAmount?.gt(zero)) ||
+            ('generateAmount' in state && state.generateAmount?.gt(zero)))
+        ) {
+          localErrors.push({
+            message: { component: <AjnaSafetyOnMessage /> },
+          })
+        }
+
+        break
+      case 'earn':
+        if (
+          'quoteTokenAmount' in position &&
+          position.quoteTokenAmount?.isZero() &&
+          'depositAmount' in state &&
+          state.depositAmount?.gt(zero)
+        ) {
+          localErrors.push({
+            message: { component: <AjnaSafetyOnMessage /> },
+          })
+        }
+
+        break
     }
   }
 
