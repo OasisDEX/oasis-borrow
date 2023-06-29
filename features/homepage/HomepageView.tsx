@@ -9,6 +9,7 @@ import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
@@ -72,6 +73,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
 }
 
 export function HomepageView() {
+  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
   const { getOasisStats$ } = useAppContext()
   const [oasisStatsValue] = useObservable(getOasisStats$())
@@ -163,7 +165,7 @@ export function HomepageView() {
       <Box sx={{ mt: 7 }}>
         <ProductHubView
           product={ProductHubProductType.Multiply}
-          promoCardsCollection="Home"
+          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
           token="ETH"
           limitRows={10}
         />
