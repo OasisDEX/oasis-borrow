@@ -27,8 +27,8 @@ export function AjnaEarnOverviewManageController() {
 
   return (
     <DetailsSection
-      notifications={notifications}
       title={t('system.overview')}
+      notifications={notifications}
       content={
         <DetailsSectionContentCardWrapper>
           <ContentCardCurrentEarnings

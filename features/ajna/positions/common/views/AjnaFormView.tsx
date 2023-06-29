@@ -18,6 +18,7 @@ import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/u
 import { useConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -34,6 +35,7 @@ export function AjnaFormView({
   children,
   txSuccessAction,
 }: PropsWithChildren<AjnaFormViewProps>) {
+  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -98,8 +100,10 @@ export function AjnaFormView({
     isPrimaryButtonLoading,
     isTextButtonHidden,
   } = getAjnaSidebarButtonsStatus({
+    ajnaSafetySwitchOn,
     currentStep,
     editingStep,
+    flow,
     hasErrors,
     isFormFrozen,
     isAllowanceLoading: flowState.isLoading,
