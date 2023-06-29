@@ -20,7 +20,7 @@ export function AjnaProductHubController({ product, token }: AjnaProductHubContr
           initialProtocol={[LendingProtocol.Ajna]}
           product={product}
           promoCardsCollection="AjnaLP"
-          subtext={(selectedProduct, selectedToken) => (
+          intro={(selectedProduct, selectedToken) => (
             <AjnaProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
           )}
           token={token}

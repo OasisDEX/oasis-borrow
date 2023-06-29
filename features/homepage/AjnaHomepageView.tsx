@@ -81,11 +81,8 @@ export function AjnaHomepageView() {
           initialProtocol={[LendingProtocol.Ajna]}
           product={ProductHubProductType.Borrow}
           promoCardsCollection="AjnaLP"
-          subtext={(selectedProduct, selectedToken) => (
-            <AjnaProductHubIntro
-              selectedProduct={selectedProduct}
-              selectedToken={selectedToken}
-            />
+          intro={(selectedProduct, selectedToken) => (
+            <AjnaProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
           )}
         />
       </Box>

@@ -24,10 +24,10 @@ import { Box, Flex } from 'theme-ui'
 interface ProductHubViewProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
+  intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
   headerGradient?: [string, string, ...string[]]
   product: ProductHubProductType
   promoCardsCollection: PromoCardsCollection
-  subtext?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
   token?: string
   url?: string
   limitRows?: number
@@ -39,7 +39,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
   product,
   promoCardsCollection,
-  subtext,
+  intro,
   token,
   url,
   limitRows,
@@ -91,8 +91,8 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
             setSelectedFilters(defaultFilters)
           }}
         />
-        {subtext ? (
-          subtext(selectedProduct, selectedToken)
+        {intro ? (
+          intro(selectedProduct, selectedToken)
         ) : (
           <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
         )}
