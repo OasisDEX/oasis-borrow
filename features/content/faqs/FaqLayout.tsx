@@ -13,7 +13,11 @@ function isHeading(markdownComponent: any) {
   return markdownComponent.props?.mdxType && markdownComponent.props.mdxType === 'h5'
 }
 
-export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } & WithChildren) {
+export function FaqLayout({
+  noTitle = false,
+  learnMoreUrl,
+  children,
+}: { noTitle?: boolean; learnMoreUrl: string } & WithChildren) {
   const { t } = useTranslation()
   const childrenArray = React.Children.toArray(children)
   const anchors = childrenArray.filter(isHeading).map((child: any) => ({
@@ -47,9 +51,11 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
 
   return (
     <Box>
-      <Text variant="header5" sx={{ mb: 4 }}>
-        {t('simulate-faq.contents')}
-      </Text>
+      {!noTitle && (
+        <Text variant="header5" sx={{ mb: 4 }}>
+          {t('system.faq')}
+        </Text>
+      )}
       <Grid sx={{ py: 1 }}>
         {anchors.map((anchor) => (
           <Link

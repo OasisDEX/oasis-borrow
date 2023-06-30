@@ -1,8 +1,10 @@
-import { AjnaSidebarEditingStep, AjnaSidebarStep } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaSidebarEditingStep, AjnaSidebarStep } from 'features/ajna/common/types'
 
 export function getAjnaSidebarButtonsStatus({
+  ajnaSafetySwitchOn,
   currentStep,
   editingStep,
+  flow,
   hasErrors,
   isFormFrozen,
   isAllowanceLoading,
@@ -17,11 +19,13 @@ export function getAjnaSidebarButtonsStatus({
   isTxWaitingForApproval,
   walletAddress,
 }: {
+  ajnaSafetySwitchOn: boolean
   currentStep: AjnaSidebarStep
   editingStep: AjnaSidebarEditingStep
+  flow: AjnaFlow
   hasErrors: boolean
-  isFormFrozen: boolean
   isAllowanceLoading: boolean
+  isFormFrozen: boolean
   isFormValid: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
@@ -52,7 +56,9 @@ export function getAjnaSidebarButtonsStatus({
       isTxWaitingForApproval ||
       isTransitionInProgress)
 
-  const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
+  const isPrimaryButtonHidden =
+    !!(walletAddress && !isOwner && currentStep === editingStep) ||
+    (ajnaSafetySwitchOn && flow === 'open' && currentStep !== 'risk')
   const isTextButtonHidden =
     !(
       (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||

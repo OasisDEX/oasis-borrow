@@ -31,6 +31,7 @@ export function AjnaMultiplyOverviewController() {
   } = useAjnaGeneralContext()
 
   const {
+    notifications,
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
@@ -64,6 +65,7 @@ export function AjnaMultiplyOverviewController() {
     <Grid gap={2}>
       <DetailsSection
         title={t('system.overview')}
+        notifications={notifications}
         content={
           <DetailsSectionContentCardWrapper>
             <ContentCardLiquidationPrice

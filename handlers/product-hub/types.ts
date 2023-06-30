@@ -2,7 +2,7 @@ import { ProductHubItem } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { NextApiRequest } from 'next'
 
-export type PromoCardsCollection = 'Home' | 'AjnaLP'
+export type PromoCardsCollection = 'Home' | 'HomeWithAjna' | 'AjnaLP'
 
 export type ProductHubDataParams = {
   protocols: LendingProtocol[]
