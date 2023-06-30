@@ -19,7 +19,7 @@ export function getFlowStateConfig({
   token: UseFlowStateProps['token']
 } {
   const { action } = state
-
+  console.log(action)
   switch (action) {
     case 'open-earn':
     case 'deposit-earn':
@@ -50,6 +50,7 @@ export function getFlowStateConfig({
         token: collateralToken,
       }
     case 'payback-borrow':
+    case 'withdraw-borrow':
     case 'payback-multiply':
       return {
         amount: state.paybackAmount,
