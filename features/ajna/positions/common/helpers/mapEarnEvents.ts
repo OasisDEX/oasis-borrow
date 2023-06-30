@@ -12,6 +12,7 @@ export const mapAjnaEarnEvents = (events: AjnaHistoryEvents): Partial<AjnaHistor
       totalFee: event.totalFee,
       debtAddress: event.debtAddress,
       collateralAddress: event.collateralAddress,
+      addOrRemovePrice: event.addOrRemovePrice,
       isOpen: event.isOpen,
     }
     switch (event.kind) {
