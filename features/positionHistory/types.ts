@@ -41,6 +41,7 @@ export interface PositionHistoryResponse {
   quoteTokensMoved: string
   moveQuoteFromIndex: string
   moveQuoteToIndex: string
+  addOrRemoveIndex: string
   isOpen: boolean
   swapFromAmount: string
   swapFromToken: string
@@ -93,6 +94,7 @@ export type PositionHistoryEvent = {
   quoteTokensMoved: BigNumber
   moveQuoteFromPrice: BigNumber
   moveQuoteToPrice: BigNumber
+  addOrRemovePrice: BigNumber
   isOpen: boolean
   swapFromAmount: BigNumber
   swapFromToken: string
