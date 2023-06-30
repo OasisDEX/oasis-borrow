@@ -50,6 +50,7 @@ export function getFlowStateConfig({
         token: collateralToken,
       }
     case 'payback-borrow':
+    case 'withdraw-borrow':
     case 'payback-multiply':
       return {
         amount: state.paybackAmount,
