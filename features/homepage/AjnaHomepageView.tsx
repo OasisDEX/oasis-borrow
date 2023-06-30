@@ -11,6 +11,7 @@ import { useConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -48,6 +49,7 @@ export const benefitCardsAnja = [
 ]
 
 export function AjnaHomepageView() {
+  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -80,7 +82,7 @@ export function AjnaHomepageView() {
           headerGradient={['#f154db', '#974eea']}
           initialProtocol={[LendingProtocol.Ajna]}
           product={ProductHubProductType.Borrow}
-          promoCardsCollection="AjnaLP"
+          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'AjnaLP'}
           intro={(selectedProduct, selectedToken) => (
             <AjnaProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
           )}
