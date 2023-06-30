@@ -60,17 +60,18 @@ export function AjnaBorrowFormController() {
                 updateState('action', 'generate-borrow')
               },
             },
-            {
-              label: t('system.actions.borrow.switch-to-multiply'),
-              icon: 'circle_exchange',
-              iconShrink: 2,
-              panel: 'switch',
-              action: () => {
-                dispatch({ type: 'reset' })
-                updateState('uiDropdown', 'switch')
-                updateState('action', 'switch-borrow')
-              },
-            },
+            // TODO: uncomment on multiply release
+            // {
+            //   label: t('system.actions.borrow.switch-to-multiply'),
+            //   icon: 'circle_exchange',
+            //   iconShrink: 2,
+            //   panel: 'switch',
+            //   action: () => {
+            //     dispatch({ type: 'reset' })
+            //     updateState('uiDropdown', 'switch')
+            //     updateState('action', 'switch-borrow')
+            //   },
+            // },
           ],
         },
       })}

@@ -2492,6 +2492,10 @@
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
     },
+    "product-finder": {
+      "multiply-soon-title": "Ajna Multiply coming soon",
+      "multiply-soon-intro": "We're busy building Multiply for Ajna and will be releasing it shortly. For now you can <1>Borrow</1> and <2>Earn</2> on Ajna."
+    },
     "product-cards": {
       "borrow-against-your": "Borrow against your {{token}}",
       "collaterals-you-can-borrow": "Collaterals you can borrow",
