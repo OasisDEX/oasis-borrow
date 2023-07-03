@@ -11,7 +11,7 @@ export function parseBorrowPromoCard(params: ParsePromoCardParams): PromoCardPro
   return {
     ...getPromoCardsCommonPayload({
       ...params,
-      productType: ProductHubProductType.Multiply,
+      productType: ProductHubProductType.Borrow,
     }),
     title: {
       key: 'product-hub.promo-cards.borrow-against',
