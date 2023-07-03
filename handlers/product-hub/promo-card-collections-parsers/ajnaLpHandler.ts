@@ -5,19 +5,26 @@ import {
 } from 'features/productHub/types'
 import {
   findByTokenPair,
+  getActiveManagementPill,
   getAjnaTokensPill,
   parseBorrowPromoCard,
+  parseEarnLiquidityProvisionPromoCard,
 } from 'handlers/product-hub/helpers'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 
 const commonPromoCardPayload = {
-  pills: [getAjnaTokensPill()],
   protocol: LendingProtocol.Ajna,
 }
 const commonBorrowPromoCardPayload = {
   ...commonPromoCardPayload,
+  pills: [getAjnaTokensPill()],
+  withLtvPill: true,
+}
+const commonEarnPromoCardPayload = {
+  ...commonPromoCardPayload,
+  pills: [getActiveManagementPill(), getAjnaTokensPill()],
   withLtvPill: true,
 }
 
@@ -35,6 +42,9 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const WBTCUSDCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WBTC', 'USDC'])
   const USDCETHAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'ETH'])
   const USDCWBTCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'WBTC'])
+  const ETHUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
+  const WSTETHDAIAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['DAI', 'WSTETH'])
+  const USDCETHAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
 
   const promoCardETHUSDCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'ETH',
@@ -65,6 +75,25 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     debtToken: 'WBTC',
     product: USDCWBTCAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
+  })
+
+  const promoCardETHUSDCAjnaEarn = parseEarnLiquidityProvisionPromoCard({
+    collateralToken: 'ETH',
+    debtToken: 'USDC',
+    product: ETHUSDCAjnaEarnProduct,
+    ...commonEarnPromoCardPayload,
+  })
+  const promoCardWSTETHDAIAjnaEarn = parseEarnLiquidityProvisionPromoCard({
+    collateralToken: 'WSTETH',
+    debtToken: 'DAI',
+    product: WSTETHDAIAjnaEarnProduct,
+    ...commonEarnPromoCardPayload,
+  })
+  const promoCardUSDCETHAjnaEarn = parseEarnLiquidityProvisionPromoCard({
+    collateralToken: 'USDC',
+    debtToken: 'ETH',
+    product: USDCETHAjnaEarnProduct,
+    ...commonEarnPromoCardPayload,
   })
 
   const promoCardHowToUseBorrowOnAjna = {
@@ -106,8 +135,10 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       tokens: {},
     },
     [ProductHubProductType.Earn]: {
-      default: [],
-      tokens: {},
+      default: [promoCardETHUSDCAjnaEarn, promoCardWSTETHDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
+      tokens: {
+        ETH: [promoCardUSDCETHAjnaEarn, promoCardsWhatAreAjnaRewards],
+      },
     },
   }
 }

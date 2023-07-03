@@ -2826,6 +2826,7 @@
     },
     "promo-cards": {
       "7-day-avg-apy": "7 day avg APY",
+      "active-management": "Active management",
       "automation-enabled": "Automation enabled",
       "borrow-against": "Borrow {{debtToken}} against {{collateralToken}}",
       "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
