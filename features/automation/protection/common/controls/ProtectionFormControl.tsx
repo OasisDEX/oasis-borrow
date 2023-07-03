@@ -1,5 +1,4 @@
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import {
   getAvailableAutomation,
@@ -13,6 +12,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
+import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
@@ -28,7 +28,6 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
   } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
-  const { uiChanges } = useAppContext()
 
   const shouldRemoveAllowance = getShouldRemoveAllowance(automationTriggersData)
 

@@ -2,7 +2,6 @@ import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { useAppContext } from 'components/AppContextProvider'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -10,6 +9,7 @@ import {
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggersData'
+import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
@@ -40,8 +40,6 @@ export function getConstantMultipleTxHandlers({
   id,
   owner,
 }: GetConstantMultipleTxHandlersParams): ConstantMultipleTxHandlers {
-  const { uiChanges } = useAppContext()
-
   const addTxData = useMemo(
     () =>
       prepareAddConstantMultipleTriggerData({

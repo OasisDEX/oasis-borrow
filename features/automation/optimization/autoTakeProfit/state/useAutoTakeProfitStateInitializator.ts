@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { useAppContext } from 'components/AppContextProvider'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
 
 import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange'
@@ -19,7 +19,6 @@ export function useAutoTakeProfitStateInitializator({
   positionRatio: BigNumber
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
 }) {
-  const { uiChanges } = useAppContext()
   const { executionPrice, isToCollateral, isTriggerEnabled, triggerId } = autoTakeProfitTriggerData
 
   const initialSelectedPrice = isTriggerEnabled

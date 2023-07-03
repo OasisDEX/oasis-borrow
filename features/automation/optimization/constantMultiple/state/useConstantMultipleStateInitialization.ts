@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
@@ -16,6 +15,7 @@ import {
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
 
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
@@ -45,8 +45,6 @@ export function useConstantMultipleStateInitialization({
   autoSellTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
 }) {
-  const { uiChanges } = useAppContext()
-
   const { min, max } = getConstantMutliplyMinMaxValues({
     autoBuyTriggerData,
     stopLossTriggerData,
