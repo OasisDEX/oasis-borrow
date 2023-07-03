@@ -301,8 +301,9 @@ export function getAjnaNotifications({
         } = position as AjnaEarnPosition
         const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
         const priceAboveMomp = price.gt(mostOptimisticMatchingPrice)
-        const emptyPosition = quoteTokenAmount.isZero()
         const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
+        const emptyPosition =
+          quoteTokenAmount.isZero() && !earnPositionAuction.isCollateralToWithdraw
 
         const moveToAdjust = () => {
           dispatch({ type: 'reset' })

@@ -2715,7 +2715,7 @@
             },
             "empty-position": {
               "title": "Your lending position is empty",
-              "message": "To start earning you need to provide liquidity using your quote tokens"
+              "message": "To start earning you need to provide liquidity using your tokens"
             },
             "lending-price-frozen": {
               "title": "This lending price is currently frozen and borrowers are being liquidated",
