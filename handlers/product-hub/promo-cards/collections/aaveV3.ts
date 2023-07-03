@@ -1,14 +1,14 @@
 import { NetworkNames } from 'blockchain/networks'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { findByTokenPair } from 'handlers/product-hub/helpers'
 import {
-  findByTokenPair,
   getEarnStakingRewardsPill,
   getEnterWithToken,
   getHighestMultiplePill,
   getLongTokenPill,
   parseEarnYieldLoopPromoCard,
   parseMultiplyPromoCard,
-} from 'handlers/product-hub/helpers'
+} from 'handlers/product-hub/promo-cards/parsers'
 import { LendingProtocol } from 'lendingProtocols'
 
 export function getAaveV3PromoCards(table: ProductHubItem[]) {

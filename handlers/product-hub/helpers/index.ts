@@ -6,4 +6,3 @@ export { getProtocolProducts } from 'handlers/product-hub/helpers/getProtocolPro
 export { getTokenGroup } from 'handlers/product-hub/helpers/getTokenGroup'
 export * from 'handlers/product-hub/helpers/constants'
 export * from 'handlers/product-hub/helpers/parsePromoCards'
-export * from 'handlers/product-hub/helpers/parseMakerPromoCards'

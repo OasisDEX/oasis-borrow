@@ -1,3 +1,5 @@
+import { NetworkNames } from 'blockchain/networks'
+import { PromoCardProps } from 'components/PromoCard'
 import { ProductHubItem } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { NextApiRequest } from 'next'
@@ -24,3 +26,14 @@ export interface ProductHubHandlerResponseData {
 }
 
 export type ProductHubHandlerResponse = Promise<ProductHubHandlerResponseData>
+
+export interface ParsePromoCardParams {
+  collateralToken: string
+  debtToken: string
+  network?: NetworkNames
+  pills?: PromoCardProps['pills']
+  product?: ProductHubItem
+  protocol: LendingProtocol
+  withMaxLtvPill?: boolean
+  withYieldExposurePillPill?: boolean
+}

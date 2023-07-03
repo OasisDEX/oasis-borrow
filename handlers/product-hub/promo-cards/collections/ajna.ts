@@ -1,11 +1,11 @@
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { findByTokenPair } from 'handlers/product-hub/helpers'
 import {
-  findByTokenPair,
   getActiveManagementPill,
   getAjnaTokensPill,
   parseBorrowPromoCard,
   parseEarnLiquidityProvisionPromoCard,
-} from 'handlers/product-hub/helpers'
+} from 'handlers/product-hub/promo-cards/parsers'
 import { LendingProtocol } from 'lendingProtocols'
 
 const commonPromoCardPayload = {

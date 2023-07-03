@@ -1,6 +1,6 @@
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { findByIlk } from 'handlers/product-hub/helpers'
 import {
-  findByIlk,
   getAutomationEnabledPill,
   getEarnStakingRewardsPill,
   getHighestAvailableLtvPill,
@@ -10,7 +10,7 @@ import {
   parseBorrowPromoCard,
   parseDsrPromoCard,
   parseMultiplyPromoCard,
-} from 'handlers/product-hub/helpers'
+} from 'handlers/product-hub/promo-cards/parsers'
 import { LendingProtocol } from 'lendingProtocols'
 
 export function getMakerPromoCards(table: ProductHubItem[]) {
