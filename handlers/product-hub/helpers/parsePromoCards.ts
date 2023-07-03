@@ -13,8 +13,15 @@ interface parseMultiplyPromoCardParams {
   pills?: PromoCardProps['pills']
   product?: ProductHubItem
   protocol: LendingProtocol
+  withLtvPill?: boolean
 }
 
+export function getAjnaTokensPill() {
+  return {
+    label: { key: 'product-hub.promo-cards.get-ajna-tokens' },
+    variant: 'positive' as PromoCardVariant,
+  }
+}
 export function getAutomationEnabledPill() {
   return {
     label: { key: 'product-hub.promo-cards.automation-enabled' },
@@ -51,6 +58,11 @@ export function getLowestBorrowingCostPill() {
     label: { key: 'product-hub.promo-cards.lowest-borrowing-cost' },
   }
 }
+export function getMaxLtvPill(maxLtv: string) {
+  return {
+    label: { key: 'product-hub.promo-cards.max-ltv', props: { maxLtv } },
+  }
+}
 export function getUpToYieldExposurePill(maxMultiple: string) {
   return {
     label: { key: 'product-hub.promo-cards.up-to-yield-exposure', props: { maxMultiple } },
@@ -65,6 +77,7 @@ function getCommonPayload({
   product,
   productType,
   protocol,
+  withLtvPill,
 }: parseMultiplyPromoCardParams & { productType: ProductHubProductType }) {
   return {
     tokens: [collateralToken.toUpperCase(), debtToken.toUpperCase()],
@@ -72,7 +85,21 @@ function getCommonPayload({
       network,
       protocol,
     },
-    pills,
+    pills: [
+      ...(withLtvPill && product?.maxLtv
+        ? [
+            {
+              label: {
+                key: 'product-hub.promo-cards.max-ltv',
+                props: {
+                  maxLtv: formatDecimalAsPercent(new BigNumber(product.maxLtv)),
+                },
+              },
+            },
+          ]
+        : []),
+      ...(pills || []),
+    ],
     ...(product && {
       link: {
         href: getActionUrl({
@@ -89,7 +116,10 @@ export function parseBorrowPromoCard(params: parseMultiplyPromoCardParams): Prom
   const { collateralToken, debtToken, product } = params
 
   return {
-    ...getCommonPayload({ ...params, productType: ProductHubProductType.Multiply }),
+    ...getCommonPayload({
+      ...params,
+      productType: ProductHubProductType.Multiply,
+    }),
     title: {
       key: 'product-hub.promo-cards.borrow-against',
       props: { collateralToken, debtToken },

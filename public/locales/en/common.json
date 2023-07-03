@@ -2845,6 +2845,7 @@
       "get-weekly-apy": "Get {{weeklyNetApy}} 7 day net APY",
       "highest-available-ltv": "Highest available LTV",
       "highest-multiple": "Highest multiple",
+      "how-to-use-borrow-on-ajna": "How to use Borrow on Ajna?",
       "learn-how-can-you-earn-by-lending-your-assets": "Learn how can you earn by lending your assets",
       "learn-how-to-avoid-getting-your-position-liquidated": "Learn how to avoid getting your position liquidated",
       "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity",
@@ -2862,10 +2863,12 @@
       "up-to-exposure-against": "Up to {{maxMultiple}} exposure to {{collateralToken}} against {{debtToken}}",
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "up-to-yield-exposure": "Up to {{maxMultiple}} Yield Exposure",
+      "what-are-ajna-rewards": "What are Ajna rewards?",
+      "ajna-pools-accumulate-rewards": "Ajna pools supported in Summer.fi accumulate token rewards over time",
       "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
+      "what-is-earn-on-ajna": "What is Earn on Ajna?",
       "yield-loop-strategy": "{{collateralToken}}/{{quoteToken}} Yield Loop Strategy",
-      "you-always-stay-in-control": "You always stay in control of your assets",
-      "what-is-earn-on-ajna": "What is Earn on Ajna?"
+      "you-always-stay-in-control": "You always stay in control of your assets"
     },
     "table": {
       "active": "Active",
