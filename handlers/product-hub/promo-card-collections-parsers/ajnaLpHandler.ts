@@ -44,7 +44,9 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const USDCWBTCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'WBTC'])
   const ETHUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
   const WSTETHDAIAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['DAI', 'WSTETH'])
+  const WBTCUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'WBTC'])
   const USDCETHAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
+  const USDCWBTCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'WBTC'])
 
   const promoCardETHUSDCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'ETH',
@@ -89,10 +91,22 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     product: WSTETHDAIAjnaEarnProduct,
     ...commonEarnPromoCardPayload,
   })
+  const promoCardWBTCUSDCAjnaEarn = parseEarnLiquidityProvisionPromoCard({
+    collateralToken: 'WBTC',
+    debtToken: 'USDC',
+    product: WBTCUSDCAjnaEarnProduct,
+    ...commonEarnPromoCardPayload,
+  })
   const promoCardUSDCETHAjnaEarn = parseEarnLiquidityProvisionPromoCard({
     collateralToken: 'USDC',
     debtToken: 'ETH',
     product: USDCETHAjnaEarnProduct,
+    ...commonEarnPromoCardPayload,
+  })
+  const promoCardUSDCWBTCAjnaEarn = parseEarnLiquidityProvisionPromoCard({
+    collateralToken: 'USDC',
+    debtToken: 'WBTC',
+    product: USDCWBTCAjnaEarnProduct,
     ...commonEarnPromoCardPayload,
   })
 
@@ -100,6 +114,12 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
     title: { key: 'product-hub.promo-cards.how-to-use-borrow-on-ajna' },
     description: { key: 'product-hub.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
+    link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
+  }
+  const promoCardWhatIsEarnOnAjna = {
+    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+    title: { key: 'product-hub.promo-cards.what-is-earn-on-ajna' },
+    description: { key: 'product-hub.promo-cards.learn-how-can-you-earn-by-lending-your-assets' },
     link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
   }
   const promoCardsWhatAreAjnaRewards = {
@@ -137,7 +157,9 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     [ProductHubProductType.Earn]: {
       default: [promoCardETHUSDCAjnaEarn, promoCardWSTETHDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
       tokens: {
-        ETH: [promoCardUSDCETHAjnaEarn, promoCardsWhatAreAjnaRewards],
+        ETH: [promoCardUSDCETHAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
+        WBTC: [promoCardUSDCWBTCAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
+        USDC: [promoCardETHUSDCAjnaEarn, promoCardWBTCUSDCAjnaEarn, promoCardsWhatAreAjnaRewards],
       },
     },
   }
