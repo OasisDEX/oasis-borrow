@@ -26,9 +26,6 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const ajnaBorrowishProducts = ajnaProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Borrow),
   )
-  const ajnaEarnProducts = ajnaProducts.filter(({ product }) =>
-    product.includes(ProductHubProductType.Earn),
-  )
 
   const ETHUSDCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['ETH', 'USDC'])
   const ETHDAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['ETH', 'DAI'])
