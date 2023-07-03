@@ -13,7 +13,8 @@ interface ParsePromoCardParams {
   pills?: PromoCardProps['pills']
   product?: ProductHubItem
   protocol: LendingProtocol
-  withLtvPill?: boolean
+  withMaxLtvPill?: boolean
+  withYieldExposurePillPill?: boolean
 }
 
 export function getActiveManagementPill() {
@@ -65,12 +66,18 @@ export function getLowestBorrowingCostPill() {
 }
 export function getMaxLtvPill(maxLtv: string) {
   return {
-    label: { key: 'product-hub.promo-cards.max-ltv', props: { maxLtv } },
+    label: {
+      key: 'product-hub.promo-cards.max-ltv',
+      props: { maxLtv: formatDecimalAsPercent(new BigNumber(maxLtv)) },
+    },
   }
 }
 export function getUpToYieldExposurePill(maxMultiple: string) {
   return {
-    label: { key: 'product-hub.promo-cards.up-to-yield-exposure', props: { maxMultiple } },
+    label: {
+      key: 'product-hub.promo-cards.up-to-yield-exposure',
+      props: { maxMultiple: `${parseFloat(maxMultiple).toFixed(2)}x` },
+    },
   }
 }
 
@@ -82,7 +89,8 @@ function getCommonPayload({
   product,
   productType,
   protocol,
-  withLtvPill,
+  withMaxLtvPill,
+  withYieldExposurePillPill,
 }: ParsePromoCardParams & { productType: ProductHubProductType }) {
   return {
     tokens: [collateralToken.toUpperCase(), debtToken.toUpperCase()],
@@ -91,15 +99,17 @@ function getCommonPayload({
       protocol,
     },
     pills: [
-      ...(withLtvPill && product?.maxLtv
+      ...(withMaxLtvPill && product?.maxLtv
         ? [
             {
-              label: {
-                key: 'product-hub.promo-cards.max-ltv',
-                props: {
-                  maxLtv: formatDecimalAsPercent(new BigNumber(product.maxLtv)),
-                },
-              },
+              ...getMaxLtvPill(product.maxLtv),
+            },
+          ]
+        : []),
+      ...(withYieldExposurePillPill && product?.maxMultiply
+        ? [
+            {
+              ...getUpToYieldExposurePill(product.maxMultiply),
             },
           ]
         : []),
