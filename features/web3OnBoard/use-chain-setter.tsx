@@ -1,15 +1,7 @@
 import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import {
-  getNetworksHexIdsByHexId,
-  NetworkConfigHexId,
-  networkSetByHexId,
-  useCustomForkParameter,
-  useCustomNetworkParameter,
-} from 'blockchain/networks'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useRouter } from 'next/router'
-import { Dispatch, useCallback, useEffect, useReducer, useState } from 'react'
+import { NetworkConfigHexId, networkSetByHexId, useCustomForkParameter } from 'blockchain/networks'
+import { Dispatch, useCallback, useEffect } from 'react'
 
 import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
@@ -22,36 +14,8 @@ export interface ChainSetterState {
 
 export function useChainSetter(): ChainSetterState {
   const [{ wallet }] = useConnectWallet()
-  const [customNetwork, setCustomNetwork] = useCustomNetworkParameter()
-  const [networkHexId, setNetworkHexId] = useReducer(
-    (_state: NetworkConfigHexId | undefined, action: NetworkConfigHexId | undefined) => {
-      return action
-    },
-    customNetwork?.hexId,
-  )
-
   const [, setChain] = useSetChain()
   const [customFork, setCustomFork] = useCustomForkParameter()
-
-  const { reload, replace } = useRouter()
-  const [routerAction, setRouterAction] = useState(false)
-
-  const [pageChainsId, dispatchPageChainId] = useReducer(
-    (state: NetworkConfigHexId[] | undefined, action: NetworkConfigHexId | undefined) => {
-      if (state && action && !state.includes(action)) {
-        throw new Error('Page chainId is already set')
-      }
-
-      const idsToSet = action ? getNetworksHexIdsByHexId(action) : []
-
-      if (idsToSet.length === 0) {
-        return state
-      }
-
-      return [...idsToSet]
-    },
-    undefined,
-  )
 
   const addForkToWallet = useCallback(
     async (wallet: WalletState, networkHexId: NetworkConfigHexId) => {
@@ -81,7 +45,7 @@ export function useChainSetter(): ChainSetterState {
   )
 
   useEffect(() => {
-    if (wallet && networkHexId && !routerAction) {
+    if (wallet) {
       const walletNetwork = networkSetByHexId[wallet.chains[0].id]
       const currentNetwork = networkSetByHexId[networkHexId]
       if (walletNetwork.hexId !== networkHexId) {
@@ -101,37 +65,27 @@ export function useChainSetter(): ChainSetterState {
             return chainAdded
           })
           .then(async (chainAdded) => {
-            if (chainAdded) {
-              setRouterAction(true)
-              reload()
-            }
-
-            if (!chainAdded && (pageChainsId === undefined || pageChainsId.length === 0)) {
-              setNetworkHexId(walletNetwork.hexId)
-              setRouterAction(false)
-            }
-
-            if (!chainAdded) {
-              setRouterAction(true)
-              await replace(INTERNAL_LINKS.homepage).then(() => {
-                reload()
-              })
-            }
+            console.log(`Chain added: ${chainAdded}`)
+            // if (chainAdded) {
+            //   setRouterAction(true)
+            //   reload()
+            // }
+            //
+            // if (!chainAdded && (pageChainsId === undefined || pageChainsId.length === 0)) {
+            //   setNetworkHexId(walletNetwork.hexId)
+            //   setRouterAction(false)
+            // }
+            //
+            // if (!chainAdded) {
+            //   setRouterAction(true)
+            //   await replace(INTERNAL_LINKS.homepage).then(() => {
+            //     reload()
+            //   })
+            // }
           })
       }
     }
-  }, [
-    wallet,
-    setChain,
-    networkHexId,
-    addForkToWallet,
-    reload,
-    customFork,
-    setCustomNetwork,
-    routerAction,
-    pageChainsId,
-    replace,
-  ])
+  }, [wallet, setChain, networkHexId, addForkToWallet, customFork, setCustomNetwork, pageChainsId])
 
   useEffect(() => {
     if (wallet) {

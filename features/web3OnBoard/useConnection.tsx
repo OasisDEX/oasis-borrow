@@ -3,8 +3,8 @@ import { NetworkConnector } from '@web3-react/network-connector'
 import { NetworkConfigHexId } from 'blockchain/networks'
 import { useEffect, useState } from 'react'
 
-import { BridgeConnector, ConnectorInformation } from './BridgeConnector'
-import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
+import { BridgeConnector, ConnectorInformation } from './bridge-connector'
+import { useWeb3OnBoardConnectorContext } from './web3-on-board-connector-provider'
 
 export interface ConnectionState {
   connect: (
@@ -21,6 +21,7 @@ export interface ConnectionState {
     network: NetworkConnector
     bridgeConnector: BridgeConnector | undefined
   }
+  setChain: (chainId: NetworkConfigHexId) => void
 }
 
 export interface ConnectionProps {
@@ -34,8 +35,15 @@ export function useConnection({
   chainId,
   pageChainId,
 }: ConnectionProps): ConnectionState {
-  const { connect, networkConnector, connectedAddress, connector, connecting, setPageChainId } =
-    useWeb3OnBoardConnectorContext()
+  const {
+    connect,
+    networkConnector,
+    connectedAddress,
+    connector,
+    connecting,
+    setPageChainId,
+    setChain,
+  } = useWeb3OnBoardConnectorContext()
 
   useEffect(() => {
     if (pageChainId) {
@@ -73,6 +81,7 @@ export function useConnection({
       network: networkConnector,
       bridgeConnector: connector,
     },
+    setChain,
   }
 }
 

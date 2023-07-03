@@ -36,7 +36,7 @@ const renderSeparator = () => {
 }
 
 export function NavigationNetworkSwitcherOrb() {
-  const { connectedChain, connect, connecting } = useConnection({
+  const { connectedChain, connect, connecting, setChain } = useConnection({
     initialConnect: false,
   })
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
@@ -57,7 +57,7 @@ export function NavigationNetworkSwitcherOrb() {
 
   return (
     <NavigationOrb customIcon={NavigationNetworkSwitcherIcon}>
-      {(_isOpen) => (
+      {() => (
         <>
           <Box
             sx={{
