@@ -138,7 +138,6 @@ import {
 } from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
-import { createTransactionManager } from 'features/account/transactionManager'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
@@ -164,7 +163,6 @@ import {
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
-import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
@@ -200,7 +198,6 @@ import {
   getUserFromApi$,
   getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
-import { redirectState$ } from 'features/router/redirectState'
 import {
   BalanceInfo,
   createBalanceInfo$,
@@ -393,7 +390,7 @@ export function setupAppContext() {
     shareReplay(1),
   ) as Observable<ContextConnected>
 
-  const [send, transactions$] = createSend<TxData>(
+  const [send] = createSend<TxData>(
     initializedAccount$,
     onEveryBlock$,
     // @ts-ignore
@@ -403,7 +400,6 @@ export function setupAppContext() {
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
-  const transactionManager$ = createTransactionManager(transactions$)
 
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(every10Seconds$, tokenPrices$),
@@ -1065,8 +1061,6 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceDataLean$)
-
   const vaultsHistoryAndValue$ = memoize(
     curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, refreshInterval),
   )
@@ -1290,11 +1284,9 @@ export function setupAppContext() {
     web3Context$,
     web3ContextConnected$,
     setupWeb3Context$,
-    initializedAccount$,
     context$,
     onEveryBlock$,
     txHelpers$,
-    transactionManager$,
     proxyAddress$,
     proxyOwner$,
     vaults$,
@@ -1310,12 +1302,10 @@ export function setupAppContext() {
     manageGuniVault$,
     vaultsOverview$,
     vaultBanners$,
-    redirectState$,
     gasPrice$,
     automationTriggersData$,
     accountData$,
     vaultHistory$,
-    collateralPrices$,
     termsAcceptance$,
     walletAssociatedRisk$,
     reclaimCollateral$,
