@@ -6,7 +6,7 @@ import { ProductHubItem, ProductHubProductType } from 'features/productHub/types
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 
-interface parseMultiplyPromoCardParams {
+interface ParsePromoCardParams {
   collateralToken: string
   debtToken: string
   network?: NetworkNames
@@ -16,6 +16,11 @@ interface parseMultiplyPromoCardParams {
   withLtvPill?: boolean
 }
 
+export function getActiveManagementPill() {
+  return {
+    label: { key: 'product-hub.promo-cards.active-management' },
+  }
+}
 export function getAjnaTokensPill() {
   return {
     label: { key: 'product-hub.promo-cards.get-ajna-tokens' },
@@ -78,7 +83,7 @@ function getCommonPayload({
   productType,
   protocol,
   withLtvPill,
-}: parseMultiplyPromoCardParams & { productType: ProductHubProductType }) {
+}: ParsePromoCardParams & { productType: ProductHubProductType }) {
   return {
     tokens: [collateralToken.toUpperCase(), debtToken.toUpperCase()],
     protocol: {
@@ -112,7 +117,7 @@ function getCommonPayload({
   }
 }
 
-export function parseBorrowPromoCard(params: parseMultiplyPromoCardParams): PromoCardProps {
+export function parseBorrowPromoCard(params: ParsePromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 
   return {
@@ -135,7 +140,7 @@ export function parseBorrowPromoCard(params: parseMultiplyPromoCardParams): Prom
   }
 }
 
-export function parseMultiplyPromoCard(params: parseMultiplyPromoCardParams): PromoCardProps {
+export function parseMultiplyPromoCard(params: ParsePromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 
   return {
@@ -165,7 +170,30 @@ export function parseMultiplyPromoCard(params: parseMultiplyPromoCardParams): Pr
   }
 }
 
-export function parseEarnYieldLoopPromoCard(params: parseMultiplyPromoCardParams): PromoCardProps {
+export function parseEarnLiquidityProvisionPromoCard(params: ParsePromoCardParams): PromoCardProps {
+  const { collateralToken, debtToken, product } = params
+
+  return {
+    ...getCommonPayload({ ...params, productType: ProductHubProductType.Earn }),
+    title: {
+      key: 'product-hub.promo-cards.lend-against-collateral',
+      props: {
+        collateralToken,
+        quoteToken: debtToken,
+      },
+    },
+    ...(product?.weeklyNetApy && {
+      data: [
+        {
+          label: { key: 'product-hub.promo-cards.7-day-avg-apy' },
+          value: formatDecimalAsPercent(new BigNumber(product.weeklyNetApy)),
+        },
+      ],
+    }),
+  }
+}
+
+export function parseEarnYieldLoopPromoCard(params: ParsePromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 
   return {

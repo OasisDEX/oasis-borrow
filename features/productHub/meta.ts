@@ -6,7 +6,7 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
-import { clone } from 'lodash'
+import { clone } from 'ramda'
 
 export const ALL_ASSETS = 'all assets'
 
