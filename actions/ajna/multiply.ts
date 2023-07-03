@@ -44,6 +44,19 @@ export const ajnaOpenMultiply = ({
     pool.poolMinDebtAmount.div(depositAmount!.times(commonPayload.collateralPrice)),
   )
 
+  console.log(JSON.stringify({
+    ...commonPayload,
+    collateralAmount: depositAmount!,
+    riskRatio: new RiskRatio(
+      loanToValue || (minRiskRatio.isZero() ? DEFAULT_LTV_ON_NEW_POOL : minRiskRatio),
+      RiskRatio.TYPE.LTV,
+    ),
+    slippage,
+    collateralTokenSymbol: collateralToken,
+    quoteTokenSymbol: quoteToken,
+    user: walletAddress,
+  }, null, 4), "ARGS")
+
   return strategies.ajna.multiply.open(
     {
       ...commonPayload,
@@ -95,7 +108,18 @@ export const ajnaAdjustMultiply = ({
       ),
       position: position as AjnaPosition,
     },
-    dependencies,
+    {
+      ...dependencies,
+      getSwapData: getOneInchCall(getNetworkContracts(NetworkIds.MAINNET, 1).swapAddress),
+      operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
+      addresses: {
+        DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
+        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH.address,
+        WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
+        USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
+        WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
+      },
+    },
   )
 }
 
@@ -108,13 +132,44 @@ export const ajnaCloseMultiply = ({
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
 }) => {
+  console.log(`
+  
+  
+  CLOSING 
+
+  commonPayload ${commonPayload}
+  
+  ...${JSON.stringify(commonPayload, null,4)},
+      collateralAmount: zero,
+      position: position as AjnaPosition,
+      quoteTokenSymbol: '',
+      collateralTokenSymbol: '',
+      slippage: new BigNumber(0.02),
+      user: commonPayload.dpmProxyAddress,
+      shouldCloseToCollateral: true
+  
+  `)
   return strategies.ajna.multiply.close(
     {
       ...commonPayload,
-      collateralAmount: zero,
       position: position as AjnaPosition,
-      riskRatio: new RiskRatio(zero, RiskRatio.TYPE.LTV),
+      quoteTokenSymbol: 'USDC',
+      collateralTokenSymbol: 'ETH',
+      slippage: new BigNumber(0.02),
+      user: commonPayload.dpmProxyAddress,
+      shouldCloseToCollateral: true
     },
-    dependencies,
+    {
+      ...dependencies,
+      getSwapData: getOneInchCall(getNetworkContracts(NetworkIds.MAINNET, 1).swapAddress),
+      operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
+      addresses: {
+        DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
+        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH.address,
+        WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
+        USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
+        WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
+      },
+    },
   )
 }
