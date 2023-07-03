@@ -24,8 +24,10 @@ export const ProductHubNaturalLanguageSelectorController: FC<
     productHubOptionsMapFiltered[product].product.value as ProductHubProductType,
   )
   const [selectedToken, setSelectedToken] = useState<string>(
-    (token ? productHubOptionsMapFiltered[product].tokens[token] : productHubOptionsMapFiltered[product].tokens.all)
-      .value,
+    (token
+      ? productHubOptionsMapFiltered[product].tokens[token]
+      : productHubOptionsMapFiltered[product].tokens.all
+    ).value,
   )
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
@@ -53,7 +55,9 @@ export const ProductHubNaturalLanguageSelectorController: FC<
 
             setSelectedProduct(typedValue)
             setOverwriteOption(
-              isSwitchingToAllAssets ? productHubOptionsMapFiltered[typedValue].tokens.all : undefined,
+              isSwitchingToAllAssets
+                ? productHubOptionsMapFiltered[typedValue].tokens.all
+                : undefined,
             )
             if (url)
               void push(
