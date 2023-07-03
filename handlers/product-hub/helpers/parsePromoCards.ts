@@ -6,7 +6,7 @@ import { ProductHubItem, ProductHubProductType } from 'features/productHub/types
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 
-interface parsePromoCardParams {
+interface ParsePromoCardParams {
   collateralToken: string
   debtToken: string
   network?: NetworkNames
@@ -83,7 +83,7 @@ function getCommonPayload({
   productType,
   protocol,
   withLtvPill,
-}: parsePromoCardParams & { productType: ProductHubProductType }) {
+}: ParsePromoCardParams & { productType: ProductHubProductType }) {
   return {
     tokens: [collateralToken.toUpperCase(), debtToken.toUpperCase()],
     protocol: {
@@ -117,7 +117,7 @@ function getCommonPayload({
   }
 }
 
-export function parseBorrowPromoCard(params: parsePromoCardParams): PromoCardProps {
+export function parseBorrowPromoCard(params: ParsePromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 
   return {
@@ -140,7 +140,7 @@ export function parseBorrowPromoCard(params: parsePromoCardParams): PromoCardPro
   }
 }
 
-export function parseMultiplyPromoCard(params: parsePromoCardParams): PromoCardProps {
+export function parseMultiplyPromoCard(params: ParsePromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 
   return {
@@ -170,7 +170,7 @@ export function parseMultiplyPromoCard(params: parsePromoCardParams): PromoCardP
   }
 }
 
-export function parseEarnLiquidityProvisionPromoCard(params: parsePromoCardParams): PromoCardProps {
+export function parseEarnLiquidityProvisionPromoCard(params: ParsePromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 
   return {
@@ -193,7 +193,7 @@ export function parseEarnLiquidityProvisionPromoCard(params: parsePromoCardParam
   }
 }
 
-export function parseEarnYieldLoopPromoCard(params: parsePromoCardParams): PromoCardProps {
+export function parseEarnYieldLoopPromoCard(params: ParsePromoCardParams): PromoCardProps {
   const { collateralToken, debtToken, product } = params
 
   return {
