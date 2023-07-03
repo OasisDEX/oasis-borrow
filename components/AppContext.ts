@@ -143,7 +143,6 @@ import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
 } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import { getAjnaProductCardsData$ } from 'features/ajna/positions/common/observables/getAjnaProductCardsData'
 import {
   DpmPositionData,
   getDpmPositionData$,
@@ -308,13 +307,7 @@ import {
   TxPayloadChangeAction,
 } from 'helpers/gasEstimate'
 import { getGasMultiplier } from 'helpers/getGasMultiplier'
-import {
-  createProductCardsData$,
-  createProductCardsWithBalance$,
-  supportedBorrowIlks,
-  supportedEarnIlks,
-  supportedMultiplyIlks,
-} from 'helpers/productCards'
+import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
@@ -1268,18 +1261,6 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceDataLean$)
 
-  const productCardsData$ = memoize(
-    curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkDataLean$, oraclePriceDataLean$),
-    (ilks: string[]) => {
-      return ilks.join(',')
-    },
-  )
-
-  const productCardsWithBalance$ = createProductCardsWithBalance$(
-    ilksWithBalance$,
-    oraclePriceDataLean$,
-  )
-
   const vaultsHistoryAndValue$ = memoize(
     curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, refreshInterval),
   )
@@ -1424,7 +1405,6 @@ export function setupAppContext() {
     ),
     (walletAddress: string) => walletAddress,
   )
-  const ajnaProductCardsData$ = curry(getAjnaProductCardsData$)(context$, once$)
 
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(positionsList$, aavePositions$, ajnaPositions$, dsr$),
@@ -1540,9 +1520,7 @@ export function setupAppContext() {
     ilkDataList$,
     uiChanges,
     connectedContext$,
-    productCardsData$,
     getOasisStats$: memoize(getOasisStats$),
-    productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
     ilkToToken$,
@@ -1587,7 +1565,6 @@ export function setupAppContext() {
     chainContext$,
     positionIdFromDpmProxy$,
     switchChains,
-    ajnaProductCardsData$,
   }
 }
 
