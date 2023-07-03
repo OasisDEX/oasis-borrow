@@ -44,9 +44,10 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const USDCWBTCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'WBTC'])
   const ETHUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
   const WSTETHDAIAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['DAI', 'WSTETH'])
+  const WBTCDAICAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['DAI', 'WBTC'])
   const WBTCUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'WBTC'])
-  const USDCETHAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
-  const USDCWBTCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'WBTC'])
+  const USDCETHAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['ETH', 'USDC'])
+  const USDCWBTCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['WBTC', 'USDC'])
 
   const promoCardETHUSDCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'ETH',
@@ -95,6 +96,12 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     collateralToken: 'WBTC',
     debtToken: 'USDC',
     product: WBTCUSDCAjnaEarnProduct,
+    ...commonEarnPromoCardPayload,
+  })
+  const promoCardWBTCDAIAjnaEarn = parseEarnLiquidityProvisionPromoCard({
+    collateralToken: 'WBTC',
+    debtToken: 'DAI',
+    product: WBTCDAICAjnaEarnProduct,
     ...commonEarnPromoCardPayload,
   })
   const promoCardUSDCETHAjnaEarn = parseEarnLiquidityProvisionPromoCard({
@@ -160,6 +167,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         ETH: [promoCardUSDCETHAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
         WBTC: [promoCardUSDCWBTCAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
         USDC: [promoCardETHUSDCAjnaEarn, promoCardWBTCUSDCAjnaEarn, promoCardsWhatAreAjnaRewards],
+        DAI: [promoCardWSTETHDAIAjnaEarn, promoCardWBTCDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
       },
     },
   }
