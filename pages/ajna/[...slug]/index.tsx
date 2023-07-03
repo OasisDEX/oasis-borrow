@@ -4,10 +4,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AjnaProductHubController } from 'features/ajna/common/controls/AjnaProductHubController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
-import {
-  ALL_ASSETS,
-  productHubOptionsMap,
-} from 'features/productHub/meta'
+import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { uniq, upperFirst } from 'lodash'
 import { GetStaticPaths, GetStaticProps } from 'next'
