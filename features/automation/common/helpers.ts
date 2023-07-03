@@ -9,7 +9,6 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
-import { UIChanges } from 'components/AppContext'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   aaveTokenPairsAllowedAutomation,
@@ -36,6 +35,7 @@ import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { getNetworkId } from 'features/web3Context'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { UIChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 

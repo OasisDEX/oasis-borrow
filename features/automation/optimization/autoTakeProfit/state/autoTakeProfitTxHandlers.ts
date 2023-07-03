@@ -1,7 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { useAppContext } from 'components/AppContextProvider'
 import { maxUint32 } from 'features/automation/common/consts'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
@@ -11,6 +10,7 @@ import {
   AutoTakeProfitTriggerData,
   prepareAddAutoTakeProfitTriggerData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
@@ -35,8 +35,6 @@ export function getAutoTakeProfitTxHandlers({
   isAddForm,
   autoTakeProfitState,
 }: GetAutoTakeProfitTxHandlersParams): AutoTakeProfitTxHandlers {
-  const { uiChanges } = useAppContext()
-
   const addTxData = useMemo(
     () =>
       prepareAddAutoTakeProfitTriggerData({

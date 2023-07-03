@@ -1,10 +1,10 @@
 import { BigNumber } from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { AfterPillProps } from 'components/vault/VaultDetails'
 import { StopLossBannerLayout } from 'features/automation/protection/stopLoss/controls/StopLossBannerLayout'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { uiChanges } from 'helpers/uiChanges'
 import React from 'react'
 
 interface StopLossBannerControlProps {
@@ -23,7 +23,6 @@ export function StopLossBannerControl({
   compact = false,
   onClick,
 }: StopLossBannerControlProps & AfterPillProps) {
-  const { uiChanges } = useAppContext()
   const {
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()

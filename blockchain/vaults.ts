@@ -8,9 +8,8 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { cdpManagerOwner } from './calls/cdpManager'
 import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
@@ -203,14 +202,6 @@ export interface Vault {
   atRiskLevelDangerAtNextPrice: boolean
   underCollateralizedAtNextPrice: boolean
   chainId: number
-}
-
-export function createController$(
-  proxyOwner$: (proxyAddress: string) => Observable<string | undefined>,
-  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
-  id: BigNumber,
-) {
-  return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
 
 export function createVault$(
