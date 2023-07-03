@@ -17,6 +17,7 @@ function ProductHubRouteHandler({
   product: ProductHubProductType
   token?: string
 }) {
+  const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
 
   return (
@@ -24,7 +25,7 @@ function ProductHubRouteHandler({
       <AnimatedWrapper sx={{ mb: 5 }}>
         <ProductHubView
           product={product}
-          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
+          promoCardsCollection={!ajnaEnabled || ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
           token={token}
           url="/"
         />

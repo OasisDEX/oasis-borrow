@@ -73,6 +73,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
 }
 
 export function HomepageView() {
+  const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
   const { getOasisStats$ } = useAppContext()
@@ -165,7 +166,7 @@ export function HomepageView() {
       <Box sx={{ mt: 7 }}>
         <ProductHubView
           product={ProductHubProductType.Multiply}
-          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
+          promoCardsCollection={!ajnaEnabled || ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
           token="ETH"
           limitRows={10}
         />
