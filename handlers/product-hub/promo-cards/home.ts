@@ -10,7 +10,6 @@ import {
   promoCardEarnOnYourAssets,
   promoCardFullySelfCustodial,
   promoCardLearnAboutBorrow,
-  promoCardLearnAboutMultiply,
 } from 'handlers/product-hub/promo-cards/collections'
 
 export default function (table: ProductHubItem[]): ProductHubPromoCards {
@@ -27,11 +26,12 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   } = getMakerPromoCards(table)
   const { promoCardSTETHUSDCAaveV2Earn } = getAaveV2PromoCards(table)
   const {
-    promoCardETHUSDCAaveV3Multiply,
-    promoCardRETHUSDCAaveV3Multiply,
-    promoCardWBTCUSDCAaveV3Multiply,
-    promoCardWSTETHUSDCAaveV3Multiply,
-    promoCardWSTETHUSDCAaveV3Earn,
+    promoCardETHUSDCAaveV3EthereumMultiply,
+    promoCardWBTCUSDCAaveV3EthereumMultiply,
+    promoCardWSTETHUSDCAaveV3EthereumMultiply,
+    promoCardETHUSDCAaveV3OptimismMultiply,
+    promoCardWBTCUSDCAaveV3OptimismMultiply,
+    promoCardWSTETHUSDCAaveV3EthereumEarn,
   } = getAaveV3PromoCards(table)
 
   return {
@@ -44,25 +44,25 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     },
     [ProductHubProductType.Multiply]: {
       default: [
-        promoCardETHUSDCAaveV3Multiply,
-        promoCardWBTCUSDCAaveV3Multiply,
+        promoCardETHUSDCAaveV3EthereumMultiply,
+        promoCardWBTCUSDCAaveV3OptimismMultiply,
         promoCardETHBMakerMultiply,
       ],
       tokens: {
         ETH: [
-          promoCardETHUSDCAaveV3Multiply,
+          promoCardETHUSDCAaveV3EthereumMultiply,
           promoCardWSTETHAMakerMultiply,
-          promoCardRETHUSDCAaveV3Multiply,
+          promoCardETHUSDCAaveV3OptimismMultiply,
         ],
         WBTC: [
           promoCardWBTCBMakerMultiply,
-          promoCardWBTCUSDCAaveV3Multiply,
-          promoCardLearnAboutMultiply,
+          promoCardWBTCUSDCAaveV3EthereumMultiply,
+          promoCardWBTCUSDCAaveV3OptimismMultiply,
         ],
         USDC: [
-          promoCardETHUSDCAaveV3Multiply,
-          promoCardWSTETHUSDCAaveV3Multiply,
-          promoCardWBTCUSDCAaveV3Multiply,
+          promoCardETHUSDCAaveV3EthereumMultiply,
+          promoCardWSTETHUSDCAaveV3EthereumMultiply,
+          promoCardWBTCUSDCAaveV3EthereumMultiply,
         ],
         DAI: [
           promoCardWSTETHAMakerMultiply,
@@ -72,10 +72,14 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       },
     },
     [ProductHubProductType.Earn]: {
-      default: [promoCardDsrMakerEarn, promoCardWSTETHUSDCAaveV3Earn, promoCardSTETHUSDCAaveV2Earn],
+      default: [
+        promoCardDsrMakerEarn,
+        promoCardWSTETHUSDCAaveV3EthereumEarn,
+        promoCardSTETHUSDCAaveV2Earn,
+      ],
       tokens: {
         ETH: [
-          promoCardWSTETHUSDCAaveV3Earn,
+          promoCardWSTETHUSDCAaveV3EthereumEarn,
           promoCardSTETHUSDCAaveV2Earn,
           promoCardEarnOnYourAssets,
         ],
