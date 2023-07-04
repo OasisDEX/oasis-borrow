@@ -2,7 +2,10 @@ import BigNumber from 'bignumber.js'
 import { FIAT_PRECISION } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
+import {
+  mappedAjnaBuckets,
+  snapToPredefinedValues,
+} from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatBigNumber } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -104,13 +107,12 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
   const [manualAmount, setManualAmount] = useState<BigNumber>(price || zero)
 
   const clickHandler = (variant: AjnaEarnInputButtonVariant) => {
-    const snappedValue = snapToPredefinedValues(manualAmount, range)
-    let index = range.indexOf(snappedValue)
+    const snappedValue = snapToPredefinedValues(manualAmount)
+    let index = mappedAjnaBuckets.indexOf(snappedValue)
+    if (variant === '+') index = Math.max(0, index - 1)
+    if (variant === '-') index = Math.max(range.length - 1, index + 1)
 
-    if (variant === '-') index = Math.max(0, index - 1)
-    if (variant === '+') index = Math.min(range.length - 1, index + 1)
-
-    const selectedValue = range.at(index) || zero
+    const selectedValue = mappedAjnaBuckets.at(index) || zero
 
     setManualAmount(selectedValue)
     updateState('price', selectedValue)
@@ -118,9 +120,9 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
 
   const enterPressedHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const snappedValue = snapToPredefinedValues(manualAmount, range)
-      const index = range.indexOf(snappedValue)
-      const selectedValue = range.at(index) || zero
+      const snappedValue = snapToPredefinedValues(manualAmount)
+      const index = mappedAjnaBuckets.indexOf(snappedValue)
+      const selectedValue = mappedAjnaBuckets.at(index) || zero
 
       setManualAmount(selectedValue)
       updateState('price', selectedValue)
@@ -155,7 +157,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
         }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node) && manualAmount !== price) {
-            const snappedValue = snapToPredefinedValues(manualAmount, range)
+            const snappedValue = snapToPredefinedValues(manualAmount)
 
             setManualAmount(snappedValue)
             updateState('price', snappedValue)
