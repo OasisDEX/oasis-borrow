@@ -2,10 +2,10 @@
 CREATE TABLE "ajna_rewards_weekly_claim" (
     "id" SERIAL NOT NULL,
     "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "week_number" INTEGER NOT NULL,
     "user_address" TEXT NOT NULL,
-    "proof" TEXT[],
     "amount" TEXT NOT NULL,
+    "week_number" INTEGER NOT NULL,
+    "proof" TEXT[],
 
     CONSTRAINT "ajna_rewards_weekly_claim_pkey" PRIMARY KEY ("id")
 );
@@ -14,10 +14,10 @@ CREATE TABLE "ajna_rewards_weekly_claim" (
 CREATE TABLE "ajna_rewards_daily_claim" (
     "id" SERIAL NOT NULL,
     "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "day_number" INTEGER NOT NULL,
     "user_address" TEXT NOT NULL,
     "amount" TEXT NOT NULL,
     "week_number" INTEGER NOT NULL,
+    "day_number" INTEGER NOT NULL,
 
     CONSTRAINT "ajna_rewards_daily_claim_pkey" PRIMARY KEY ("id")
 );
