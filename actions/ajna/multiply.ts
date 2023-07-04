@@ -44,19 +44,6 @@ export const ajnaOpenMultiply = ({
     pool.poolMinDebtAmount.div(depositAmount!.times(commonPayload.collateralPrice)),
   )
 
-  console.log(JSON.stringify({
-    ...commonPayload,
-    collateralAmount: depositAmount!,
-    riskRatio: new RiskRatio(
-      loanToValue || (minRiskRatio.isZero() ? DEFAULT_LTV_ON_NEW_POOL : minRiskRatio),
-      RiskRatio.TYPE.LTV,
-    ),
-    slippage,
-    collateralTokenSymbol: collateralToken,
-    quoteTokenSymbol: quoteToken,
-    user: walletAddress,
-  }, null, 4), "ARGS")
-
   return strategies.ajna.multiply.open(
     {
       ...commonPayload,
@@ -124,40 +111,31 @@ export const ajnaAdjustMultiply = ({
 }
 
 export const ajnaCloseMultiply = ({
+  state,
   commonPayload,
   dependencies,
   position,
+  slippage,
+  collateralToken,
+  quoteToken,
 }: {
+  state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
+  slippage: BigNumber
+  collateralToken: string
+  quoteToken: string
 }) => {
-  console.log(`
-  
-  
-  CLOSING 
-
-  commonPayload ${commonPayload}
-  
-  ...${JSON.stringify(commonPayload, null,4)},
-      collateralAmount: zero,
-      position: position as AjnaPosition,
-      quoteTokenSymbol: '',
-      collateralTokenSymbol: '',
-      slippage: new BigNumber(0.02),
-      user: commonPayload.dpmProxyAddress,
-      shouldCloseToCollateral: true
-  
-  `)
   return strategies.ajna.multiply.close(
     {
       ...commonPayload,
       position: position as AjnaPosition,
-      quoteTokenSymbol: 'USDC',
-      collateralTokenSymbol: 'ETH',
-      slippage: new BigNumber(0.02),
+      quoteTokenSymbol: quoteToken,
+      collateralTokenSymbol: collateralToken,
+      slippage,
       user: commonPayload.dpmProxyAddress,
-      shouldCloseToCollateral: true
+      shouldCloseToCollateral: state.closeTo === 'collateral',
     },
     {
       ...dependencies,

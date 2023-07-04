@@ -154,7 +154,7 @@ export async function getAjnaParameters({
       return defaultPromise
     }
     case 'close-multiply': {
-      return ajnaCloseMultiply({ commonPayload, dependencies, position })
+      return ajnaCloseMultiply({ state, commonPayload, dependencies, position, collateralToken, quoteToken, slippage })
     }
     default:
       return defaultPromise
