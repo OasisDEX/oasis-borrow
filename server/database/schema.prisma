@@ -317,6 +317,7 @@ enum ProductHubStrategy {
 model AjnaRewardsWeeklyClaim {
   id           Int      @id @default(autoincrement())
   timestamp    DateTime @default(now())
+  chain_id     Int
   user_address String
   amount       String
 
@@ -324,29 +325,33 @@ model AjnaRewardsWeeklyClaim {
 
   proof String[]
 
-  @@unique([week_number, user_address], name: "week_number_userAddress_unique_id")
+  @@unique([week_number, user_address, chain_id], name: "week_number_userAddress_chain_id_unique_id")
   @@map("ajna_rewards_weekly_claim")
 }
 
 model AjnaRewardsDailyClaim {
   id           Int      @id @default(autoincrement())
   timestamp    DateTime @default(now())
+  chain_id     Int
   user_address String
   amount       String
 
   week_number Int
   day_number  Int
 
-  @@unique([day_number, user_address], name: "day_number_userAddress_unique_id")
+  @@unique([day_number, user_address, chain_id], name: "day_number_userAddress_chain_id_unique_id")
   @@map("ajna_rewards_daily_claim")
 }
 
 model AjnaRewardsMerkleTree {
-  week_number Int      @unique
-  timestamp   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  chain_id  Int
 
+  week_number  Int
   tree_root    String
   tx_processed Boolean @default(false)
 
+  @@unique([week_number, chain_id], name: "week_number_chain_id_unique_id")
   @@map("ajna_rewards_merkle_tree")
 }
