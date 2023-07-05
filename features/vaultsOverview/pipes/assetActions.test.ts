@@ -1,7 +1,7 @@
 import { AssertionError } from 'assert'
-import { UIChanges } from 'components/AppContext'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
+import { UIChanges } from 'helpers/uiChanges'
 import { of } from 'rxjs'
 
 import { createAssetActions$, isOnClickAction, isUrlAction } from './assetActions'

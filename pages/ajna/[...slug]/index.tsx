@@ -4,11 +4,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AjnaProductHubController } from 'features/ajna/common/controls/AjnaProductHubController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
-import {
-  ALL_ASSETS,
-  productHubOptionsMap,
-  productHubTestnetOptionsMap,
-} from 'features/productHub/meta'
+import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { uniq, upperFirst } from 'lodash'
 import { GetStaticPaths, GetStaticProps } from 'next'
@@ -58,10 +54,10 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     locales?.flatMap((locale) =>
       Object.values(ProductHubProductType)
         .flatMap((product) => [
-          ...Object.values({
-            ...productHubOptionsMap[product].tokens,
-            ...productHubTestnetOptionsMap[product].tokens,
-          }).map((token) => [product, ...(token.value !== ALL_ASSETS ? [token.value] : [])]),
+          ...Object.values(productHubOptionsMap[product].tokens).map((token) => [
+            product,
+            ...(token.value !== ALL_ASSETS ? [token.value] : []),
+          ]),
           ...uniq(
             Object.keys({
               ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,

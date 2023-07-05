@@ -23,10 +23,14 @@ export const ProductHubPromoCardsController: FC<ProductHubPromoCardsControllerPr
   )
 
   return (
-    <Grid columns={[1, null, 2, 3]} gap={3} sx={{ mb: 4 }}>
-      {promoCards.map((promoCard, i) => (
-        <PromoCard key={`${selectedProduct}-${i}`} {...promoCard} />
-      ))}
-    </Grid>
+    <>
+      {promoCards.length > 0 && (
+        <Grid columns={[1, null, 2, 3]} gap={3} sx={{ mb: 4 }}>
+          {promoCards.map((promoCard, i) => (
+            <PromoCard key={`${selectedProduct}-${i}`} {...promoCard} />
+          ))}
+        </Grid>
+      )}
+    </>
   )
 }

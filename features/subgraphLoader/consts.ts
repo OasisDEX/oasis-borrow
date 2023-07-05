@@ -169,6 +169,7 @@ export const subgraphMethodsRecord: {
         quoteTokensMoved
         moveQuoteFromIndex
         moveQuoteToIndex
+        addOrRemoveIndex
         isOpen
         swapFromAmount
         swapFromToken

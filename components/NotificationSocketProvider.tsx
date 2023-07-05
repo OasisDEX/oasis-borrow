@@ -14,6 +14,7 @@ import { jwtAuthGetToken } from 'features/shared/jwt'
 import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import getConfig from 'next/config'
 import React, { createContext, useContext, useEffect, useState } from 'react'
@@ -34,7 +35,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
   }
 
   const notificationsToggle = useFeatureToggle('Notifications')
-  const { context$, uiChanges } = useAppContext()
+  const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [socket, setSocket] = useState<Socket | undefined>(undefined)
   const [token, setToken] = useState('')

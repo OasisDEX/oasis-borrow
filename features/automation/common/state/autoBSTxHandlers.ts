@@ -2,11 +2,11 @@ import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { useAppContext } from 'components/AppContextProvider'
 import { maxUint256 } from 'features/automation/common/consts'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutoBSTriggerTypes, AutomationBSPublishType } from 'features/automation/common/types'
+import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
@@ -35,8 +35,6 @@ export function getAutoBSTxHandlers({
   id,
   owner,
 }: GetAutoBSTxHandlersParams): AutoBSTxHandlers {
-  const { uiChanges } = useAppContext()
-
   const unlimitedMaxMinPrice = triggerType === TriggerType.BasicSell ? zero : maxUint256
 
   const addTxData = useMemo(

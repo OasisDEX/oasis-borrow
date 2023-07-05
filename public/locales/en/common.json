@@ -2492,6 +2492,10 @@
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
     },
+    "product-finder": {
+      "multiply-soon-title": "Ajna Multiply coming soon",
+      "multiply-soon-intro": "We're busy building Multiply for Ajna and will be releasing it shortly. For now you can <1>Borrow</1> and <2>Earn</2> on Ajna."
+    },
     "product-cards": {
       "borrow-against-your": "Borrow against your {{token}}",
       "collaterals-you-can-borrow": "Collaterals you can borrow",
@@ -2711,7 +2715,7 @@
             },
             "empty-position": {
               "title": "Your lending position is empty",
-              "message": "To start earning you need to provide liquidity using your quote tokens"
+              "message": "To start earning you need to provide liquidity using your tokens"
             },
             "lending-price-frozen": {
               "title": "This lending price is currently frozen and borrowers are being liquidated",
@@ -2749,7 +2753,7 @@
       "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
-      "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
+      "after-lup-index-bigger-than-htp-index": "You cannot adjust this position as there is not enough available liquidity in the pool. Please wait for more available liquidity.",
       "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the minimum required by the pool. Please enter an amount at least equal to the minimum borrow amount.",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
@@ -2822,6 +2826,7 @@
     },
     "promo-cards": {
       "7-day-avg-apy": "7 day avg APY",
+      "active-management": "Active management",
       "automation-enabled": "Automation enabled",
       "borrow-against": "Borrow {{debtToken}} against {{collateralToken}}",
       "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
@@ -2841,6 +2846,7 @@
       "get-weekly-apy": "Get {{weeklyNetApy}} 7 day net APY",
       "highest-available-ltv": "Highest available LTV",
       "highest-multiple": "Highest multiple",
+      "how-to-use-borrow-on-ajna": "How to use Borrow on Ajna?",
       "learn-how-can-you-earn-by-lending-your-assets": "Learn how can you earn by lending your assets",
       "learn-how-to-avoid-getting-your-position-liquidated": "Learn how to avoid getting your position liquidated",
       "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity",
@@ -2858,10 +2864,12 @@
       "up-to-exposure-against": "Up to {{maxMultiple}} exposure to {{collateralToken}} against {{debtToken}}",
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "up-to-yield-exposure": "Up to {{maxMultiple}} Yield Exposure",
+      "what-are-ajna-rewards": "What are Ajna rewards?",
+      "ajna-pools-accumulate-rewards": "Ajna pools supported in Summer.fi accumulate token rewards over time",
       "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
+      "what-is-earn-on-ajna": "What is Earn on Ajna?",
       "yield-loop-strategy": "{{collateralToken}}/{{quoteToken}} Yield Loop Strategy",
-      "you-always-stay-in-control": "You always stay in control of your assets",
-      "what-is-earn-on-ajna": "What is Earn on Ajna?"
+      "you-always-stay-in-control": "You always stay in control of your assets"
     },
     "table": {
       "active": "Active",

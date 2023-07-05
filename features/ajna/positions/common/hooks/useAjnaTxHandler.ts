@@ -13,6 +13,7 @@ import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
+import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
@@ -23,7 +24,7 @@ export interface OasisActionCallData extends AjnaTxData {
 }
 
 export function useAjnaTxHandler(): () => void {
-  const { txHelpers$, context$, uiChanges } = useAppContext()
+  const { txHelpers$, context$ } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {

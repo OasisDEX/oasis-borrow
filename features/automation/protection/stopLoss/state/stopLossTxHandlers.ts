@@ -1,10 +1,10 @@
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
@@ -22,7 +22,6 @@ export function getStopLossTxHandlers({
   stopLossState,
   isAddForm,
 }: GetStopLossTxHandlersParams): StopLossTxHandlers {
-  const { uiChanges } = useAppContext()
   const {
     metadata: {
       stopLossMetadata: {
