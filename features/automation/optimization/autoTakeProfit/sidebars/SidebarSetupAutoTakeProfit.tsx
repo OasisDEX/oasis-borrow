@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
@@ -34,6 +33,7 @@ import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
+import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -71,7 +71,6 @@ export function SidebarSetupAutoTakeProfit({
   textButtonHandler,
   txHandler,
 }: SidebarSetupAutoTakeProfitProps) {
-  const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
   const { t } = useTranslation()
 

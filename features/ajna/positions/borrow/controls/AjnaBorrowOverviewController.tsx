@@ -31,11 +31,11 @@ export function AjnaBorrowOverviewController() {
     },
   } = useAjnaGeneralContext()
   const {
+    notifications,
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
     },
-    notifications,
   } = useAjnaProductContext('borrow')
 
   const liquidationPrice = isShort

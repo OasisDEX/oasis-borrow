@@ -58,7 +58,6 @@ export function AjnaPositionView({
           id,
           product,
           quoteToken,
-          strategy: t(isShort ? 'short' : 'long'),
         })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[

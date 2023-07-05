@@ -62,7 +62,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
   )
 
   function handleChange(v: BigNumber) {
-    const newValue = snapToPredefinedValues(v, range)
+    const newValue = snapToPredefinedValues(v)
     updateState('price', newValue)
   }
 
@@ -97,7 +97,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         lastValue={resolvedValue}
         minBoundry={min}
         maxBoundry={max}
-        step={range[1].minus(range[0]).toNumber()}
+        step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
         leftBoundry={leftBoundry}
         rightBoundry={maxLtv}
         leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}

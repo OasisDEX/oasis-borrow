@@ -3,8 +3,10 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
+import { clone } from 'ramda'
 
 export const ALL_ASSETS = 'all assets'
 
@@ -90,6 +92,7 @@ export const productHubOptionsMap: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
       WBTC: productHubTokenOptions.WBTC,
+      USDC: productHubTokenOptions.USDC,
     },
   },
   multiply: {
@@ -107,46 +110,19 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
+      WBTC: productHubTokenOptions.WBTC,
+      USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
     },
   },
 }
 
-export const productHubTestnetOptionsMap: {
-  [key in ProductHubProductType]: {
-    product: HeaderSelectorOption
-    tokens: { [key: string]: HeaderSelectorOption }
-  }
-} = {
-  borrow: {
-    product: productHubProductOptions.borrow,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
-      USDC: productHubTokenOptions.USDC,
-    },
-  },
-  multiply: {
-    product: productHubProductOptions.multiply,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
-      USDC: productHubTokenOptions.USDC,
-      DAI: productHubTokenOptions.DAI,
-    },
-  },
-  earn: {
-    product: productHubProductOptions.earn,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
-      USDC: productHubTokenOptions.USDC,
-      DAI: productHubTokenOptions.DAI,
-    },
-  },
+const productHubOptionsMapFiltered = clone(productHubOptionsMap)
+
+if (!getFeatureToggle('Ajna')) {
+  delete productHubOptionsMapFiltered.borrow.tokens.USDC
+  delete productHubOptionsMapFiltered.earn.tokens.USDC
+  delete productHubOptionsMapFiltered.earn.tokens.WBTC
 }
 
 export const productHubStrategyFilter = [
@@ -196,7 +172,7 @@ export const productHubTestNetworkFilter = [
   },
 ]
 
-export const productHubProtocolFilter = [
+const productHubProtocolFilter = [
   {
     label: lendingProtocolsByName[LendingProtocol.Maker].label,
     value: lendingProtocolsByName[LendingProtocol.Maker].name,
@@ -212,9 +188,14 @@ export const productHubProtocolFilter = [
     value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
     image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
   },
-  {
+]
+
+if (getFeatureToggle('Ajna')) {
+  productHubProtocolFilter.push({
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
     value: lendingProtocolsByName[LendingProtocol.Ajna].name,
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-  },
-]
+  })
+}
+
+export { productHubProtocolFilter, productHubOptionsMapFiltered }

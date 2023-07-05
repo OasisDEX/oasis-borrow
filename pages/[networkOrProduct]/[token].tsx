@@ -1,12 +1,8 @@
-import {
-  ALL_ASSETS,
-  productHubOptionsMap,
-  productHubTestnetOptionsMap,
-} from 'features/productHub/meta'
+import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import ProductHubRouteHandler from 'features/productHub/views/ProductHubRouteHandler'
-import { GetStaticPaths } from 'next'
-import { getStaticProps as indexGetStaticProps } from 'pages/[networkOrProduct]/index'
+import { GetStaticPaths, GetStaticProps } from 'next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default ProductHubRouteHandler
 
@@ -15,10 +11,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     locales?.flatMap((locale) =>
       Object.values(ProductHubProductType)
         .flatMap((product) =>
-          Object.values({
-            ...productHubOptionsMap[product].tokens,
-            ...productHubTestnetOptionsMap[product].tokens,
-          }).map((token) =>
+          Object.values(productHubOptionsMap[product].tokens).map((token) =>
             token.value !== ALL_ASSETS
               ? [product, ...(token.value !== ALL_ASSETS ? [token.value] : [])]
               : undefined,
@@ -40,5 +33,14 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   }
 }
 
-// actual logic is in index.tsx
-export const getStaticProps = indexGetStaticProps
+export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+  const product = params?.networkOrProduct as ProductHubProductType
+  const token = params?.token
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || 'en', ['common'])),
+      ...(product && { product }),
+      ...(token && { token }),
+    },
+  }
+}

@@ -33,7 +33,7 @@ export function useChainSetter(): ChainSetterState {
   const [, setChain] = useSetChain()
   const [customFork, setCustomFork] = useCustomForkParameter()
 
-  const { reload, push, replace } = useRouter()
+  const { reload, replace } = useRouter()
   const [routerAction, setRouterAction] = useState(false)
 
   const [pageChainsId, dispatchPageChainId] = useReducer(
@@ -126,11 +126,11 @@ export function useChainSetter(): ChainSetterState {
     networkHexId,
     addForkToWallet,
     reload,
-    push,
     customFork,
     setCustomNetwork,
     routerAction,
     pageChainsId,
+    replace,
   ])
 
   useEffect(() => {

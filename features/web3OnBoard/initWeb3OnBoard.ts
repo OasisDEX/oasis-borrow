@@ -15,7 +15,10 @@ const injected = injectedModule({
 
 const walletLink = coinbaseModule()
 
-const walletConnect = walletConnectModule()
+const walletConnect = walletConnectModule({
+  projectId: '832580820193ff6bae62a15dc0feff03',
+  version: 2,
+})
 
 const ledger = ledgerModule()
 const gnosis = gnosisModule()

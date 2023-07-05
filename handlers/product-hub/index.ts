@@ -2,7 +2,7 @@ import { Protocol } from '@prisma/client'
 import { networks } from 'blockchain/networks'
 import { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
-import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-card-collections-parsers'
+import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import {
   HandleGetProductHubDataProps,
   HandleUpdateProductHubDataProps,

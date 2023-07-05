@@ -43,11 +43,12 @@ export function getActionUrl({
 }: ProductHubItem & { bypassFeatureFlag?: boolean }): string {
   switch (protocol) {
     case LendingProtocol.Ajna:
-      const productInUrl = earnStrategy?.includes('Yield Loop')
-        ? ProductHubProductType.Multiply
-        : product
+      const productInUrl =
+        product[0] === ProductHubProductType.Earn && earnStrategy?.includes('Yield Loop')
+          ? ProductHubProductType.Multiply
+          : product
 
-      return `/ajna/${productInUrl}/${label.replace('/', '-')}`
+      return `/ethereum/ajna/${productInUrl}/${label.replace('/', '-')}`
     case LendingProtocol.AaveV2:
       return getAaveStrategyUrl({
         aaveVersion: 'v2',

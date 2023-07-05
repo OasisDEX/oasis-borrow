@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, networkSetById } from 'blockchain/networks'
-import { amountFromWei } from 'blockchain/utils'
+import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
 import { Erc20__factory } from 'types/ethers-contracts'
 
@@ -25,8 +25,13 @@ export interface ApproveTokenTransactionParameters extends BaseTransactionParame
   amount: BigNumber
 }
 
-export function tokenBalance({ token, account, networkId }: TokenBalanceArgs) {
+export function tokenBalance({ token, account, networkId }: TokenBalanceArgs): Promise<BigNumber> {
   const rpcProvider = getRpcProvider(networkId)
+  if (token === 'ETH') {
+    return rpcProvider.getBalance(account).then((result) => {
+      return amountFromWei(new BigNumber(result.toString()), token)
+    })
+  }
   const contracts = getNetworkContracts(networkId)
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
@@ -37,8 +42,16 @@ export function tokenBalance({ token, account, networkId }: TokenBalanceArgs) {
   })
 }
 
-export function tokenAllowance({ owner, spender, token, networkId }: TokenAllowanceArgs) {
+export function tokenAllowance({
+  owner,
+  spender,
+  token,
+  networkId,
+}: TokenAllowanceArgs): Promise<BigNumber> {
   const rpcProvider = getRpcProvider(networkId)
+  if (token === 'ETH') {
+    return Promise.resolve(maxUint256)
+  }
   const contracts = getNetworkContracts(networkId)
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
@@ -78,7 +91,7 @@ export async function createApproveTransaction({
 
   const ethersAmount = amount.eq(maxUint256)
     ? ethers.constants.MaxUint256
-    : ethers.BigNumber.from(amount.toString())
+    : ethers.BigNumber.from(amountToWei(amount, token).toString())
 
   return await contract.approve(spender, ethersAmount)
 }

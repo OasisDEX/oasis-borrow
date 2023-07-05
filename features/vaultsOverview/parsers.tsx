@@ -195,7 +195,7 @@ export function parseAjnaBorrowPositionRows(
         isAtRiskWarning: false,
         type: 'LTV',
       },
-      url: `/ajna/position/${vaultId}`,
+      url: `/ethereum/ajna/${vaultId}`,
       variable: interestRate.times(100),
     }
   })
@@ -217,7 +217,7 @@ export function parseAjnaEarnPositionRows(
       liquidityToken: quoteToken,
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Ajna,
-      url: `/ajna/position/${vaultId}`,
+      url: `/ethereum/ajna/${vaultId}`,
     }
   })
 }

@@ -93,11 +93,15 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.originationFee)} USD
         </PositionHistoryRow>
       )}
-
       {event.moveQuoteFromPrice && event.moveQuoteToPrice && (
         <PositionHistoryRow label={t('position-history.lending-price')}>
           {formatFiatBalance(event.moveQuoteFromPrice)} USD <VaultChangesInformationArrow />
           {formatFiatBalance(event.moveQuoteToPrice)} USD
+        </PositionHistoryRow>
+      )}
+      {event.addOrRemovePrice && !event.moveQuoteFromPrice && !event.moveQuoteToPrice && (
+        <PositionHistoryRow label={t('position-history.lending-price')}>
+          {formatFiatBalance(event.addOrRemovePrice)} USD
         </PositionHistoryRow>
       )}
       {event.quoteTokensBefore && event.quoteTokensAfter && (

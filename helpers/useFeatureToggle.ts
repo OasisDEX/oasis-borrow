@@ -26,12 +26,15 @@ export type Feature =
   | 'AaveProtection'
   | 'AaveProtectionWrite'
   | 'Ajna'
+  | 'AjnaSafetySwitch'
   | 'DaiSavingsRate'
   | 'FollowAAVEVaults'
   | 'Sillyness'
   | 'UseNetworkSwitcher'
   | 'UseNetworkSwitcherForks'
   | 'UseNetworkSwitcherTestnets'
+  | 'UseNetworkSwitcherArbitrum'
+  | 'UseNetworkSwitcherOptimism'
   | 'UseNetworkRowProductCard'
   | 'AaveV3Optimism'
   | 'AaveV3Arbitrum'
@@ -70,12 +73,15 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveProtection: false,
   AaveProtectionWrite: false,
   Ajna: false,
+  AjnaSafetySwitch: false,
   DaiSavingsRate: true,
   FollowAAVEVaults: false,
   Sillyness: false,
   UseNetworkSwitcher: true,
   UseNetworkSwitcherForks: false,
   UseNetworkSwitcherTestnets: false,
+  UseNetworkSwitcherArbitrum: false,
+  UseNetworkSwitcherOptimism: true,
   UseNetworkRowProductCard: false,
   AaveV3Optimism: true,
   AaveV3Arbitrum: false,

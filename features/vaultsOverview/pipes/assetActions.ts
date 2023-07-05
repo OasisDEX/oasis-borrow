@@ -1,6 +1,5 @@
 import { ContextConnected } from 'blockchain/network'
 import { ilksNotSupportedOnGoerli } from 'blockchain/tokens/mainnet'
-import { UIChanges } from 'components/AppContext'
 import { getProductCategoryUrl, ProductCategory } from 'config/product-categories'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
@@ -8,6 +7,7 @@ import {
 } from 'features/swapWidget/SwapWidgetChange'
 import { Web3Context } from 'features/web3Context'
 import { mapTokenToFilter, supportedEarnIlks } from 'helpers/productCards'
+import { UIChanges } from 'helpers/uiChanges'
 import { map as mapLodash, omit, reduce } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { flatMap, map, startWith, switchMap } from 'rxjs/operators'

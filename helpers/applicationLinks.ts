@@ -91,6 +91,7 @@ export const EXTERNAL_LINKS = {
   LEGACY_APP: 'https://legacy.summer.fi',
   AJNA: {
     HOME: 'https://www.ajna.finance/',
+    AUDITS: 'https://github.com/ajna-finance/audits',
   },
   WORKABLE: 'https://summerfi.workable.com/',
   TWITTER: 'https://twitter.com/summerfinance_',
