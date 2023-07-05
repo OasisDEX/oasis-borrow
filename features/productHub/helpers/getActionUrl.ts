@@ -48,7 +48,7 @@ export function getActionUrl({
           ? ProductHubProductType.Multiply
           : product
 
-      return `/ajna/${productInUrl}/${label.replace('/', '-')}`
+      return `/ethereum/ajna/${productInUrl}/${label.replace('/', '-')}`
     case LendingProtocol.AaveV2:
       return getAaveStrategyUrl({
         aaveVersion: 'v2',
