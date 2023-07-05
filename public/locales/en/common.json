@@ -559,7 +559,7 @@
     "benefits": {
       "ajna": {
         "header": "Benefits of Ajna protocol",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin mollis fringilla. Nunc bibendum ultricies mi. Donec vitae elementum turpis.",
+        "description": "Ajna is a permissionless, non-custodial, peer to peer lending and borrowing protocol. It requires no governance and no oracle price feeds in order to function.",
         "card-header-1": "Borrow and lend against your entire crypto portfolio",
         "card-header-2": "Immutable and governance free system",
         "card-header-3": "Competitive, market-driven parameters"
