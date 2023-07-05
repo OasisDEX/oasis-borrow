@@ -72,8 +72,8 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
 
   useEffect(() => {
     // triggered only once to initialize price on state when lup index is zero
-    if (lowestUtilizedPriceIndex.isZero()) {
-      handleChange(max)
+    if (lowestUtilizedPriceIndex.isZero() && !price) {
+      handleChange(min)
     }
   }, [])
 
