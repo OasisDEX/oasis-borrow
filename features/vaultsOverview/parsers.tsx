@@ -204,8 +204,8 @@ export function parseAjnaEarnPositionRows(
   positions: AjnaPositionDetails[],
 ): PositionTableEarnRow[] {
   return positions.map(({ details: { collateralToken, vaultId, quoteToken }, position }) => {
+    console.log(`${collateralToken}/${quoteToken}`)
     console.log(position)
-    console.log(position.pool)
 
     return {
       asset: `${collateralToken}/${quoteToken}`,
