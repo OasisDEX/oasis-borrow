@@ -856,7 +856,7 @@ export function createOpenAaveStateMachine(
             stopLossTxData: {
               ...prepareStopLossTriggerDataV2(
                 proxyAddress!,
-                TriggerType.AaveStopLossToDebt,
+                TriggerType.AaveStopLossToDebtV2,
                 false,
                 stopLossLevel,
                 debtTokenAddress!,

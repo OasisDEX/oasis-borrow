@@ -157,7 +157,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       prepareAddStopLossTriggerData: ({ stopLossLevel, collateralActive }) => {
         const baseTriggerData = prepareStopLossTriggerDataV2(
           owner,
-          TriggerType.AaveStopLossToDebt,
+          TriggerType.AaveStopLossToDebtV2,
           collateralActive,
           stopLossLevel,
           debtTokenAddress!,

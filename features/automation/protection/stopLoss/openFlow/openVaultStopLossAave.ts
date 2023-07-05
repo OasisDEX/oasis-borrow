@@ -54,7 +54,7 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
     return {
       ...prepareStopLossTriggerDataV2(
         proxyAddress!,
-        TriggerType.AaveStopLossToDebt,
+        TriggerType.AaveStopLossToDebtV2,
         collateralActive,
         stopLossValue,
         debtTokenAddress!,
