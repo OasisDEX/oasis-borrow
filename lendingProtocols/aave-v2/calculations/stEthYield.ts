@@ -1,12 +1,12 @@
 import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import dayjs from 'dayjs'
 import { gql, GraphQLClient } from 'graphql-request'
 import {
   AaveYieldsResponse,
   FilterYieldFieldsType,
   yieldsDateFormat,
 } from 'lendingProtocols/aaveCommon/yields'
-import moment from 'moment/moment'
 import { isObservable, Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
 
@@ -124,7 +124,7 @@ const aaveStEthYield = gql`
 
 export async function getAaveStEthYield(
   client: Observable<GraphQLClient> | GraphQLClient,
-  currentDate: moment.Moment,
+  currentDate: dayjs.Dayjs,
   riskRatio: IRiskRatio,
   fields: FilterYieldFieldsType[],
 ): Promise<AaveYieldsResponse> {
@@ -134,27 +134,18 @@ export async function getAaveStEthYield(
   const response = await getClient.request(aaveStEthYield, {
     reserveAddress,
     multiply: riskRatio.multiple.toString(),
-    currentDate: currentDateGuarded.utc().clone().format(yieldsDateFormat),
-    currentDateOffset: currentDateGuarded
-      .utc()
-      .clone()
-      .subtract(1, 'days')
-      .format(yieldsDateFormat),
-    date7daysAgo: currentDateGuarded.utc().clone().subtract(7, 'days').format(yieldsDateFormat),
+    currentDate: currentDateGuarded.clone().format(yieldsDateFormat),
+    currentDateOffset: currentDateGuarded.clone().subtract(1, 'days').format(yieldsDateFormat),
+    date7daysAgo: currentDateGuarded.clone().subtract(7, 'days').format(yieldsDateFormat),
     date7daysAgoOffset: currentDateGuarded
-      .utc()
       .clone()
       .subtract(1, 'days')
       .subtract(7, 'days')
       .format(yieldsDateFormat),
-    date30daysAgo: currentDateGuarded.utc().clone().subtract(30, 'days').format(yieldsDateFormat),
-    date90daysAgo: currentDateGuarded.utc().clone().subtract(90, 'days').format(yieldsDateFormat),
-    date90daysAgoOffset: currentDateGuarded
-      .utc()
-      .clone()
-      .subtract(90, 'days')
-      .format(yieldsDateFormat),
-    date1yearAgo: currentDateGuarded.utc().clone().subtract(1, 'year').format(yieldsDateFormat),
+    date30daysAgo: currentDateGuarded.clone().subtract(30, 'days').format(yieldsDateFormat),
+    date90daysAgo: currentDateGuarded.clone().subtract(90, 'days').format(yieldsDateFormat),
+    date90daysAgoOffset: currentDateGuarded.clone().subtract(90, 'days').format(yieldsDateFormat),
+    date1yearAgo: currentDateGuarded.clone().subtract(1, 'year').format(yieldsDateFormat),
     include7Days: fields.length ? fields.includes('7Days') : true,
     include7DaysOffset: fields.length ? fields.includes('7DaysOffset') : true,
     include30Days: fields.length ? fields.includes('30Days') : true,

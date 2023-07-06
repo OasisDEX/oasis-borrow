@@ -1,10 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import dayjs from 'dayjs'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { zero } from 'helpers/zero'
-import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
@@ -71,7 +71,7 @@ function onlyAuctionStartedEvents(event: VaultHistoryEvent) {
 }
 
 function eventsFromLastWeek(event: VaultHistoryEvent) {
-  return moment(event.timestamp).isAfter(moment().subtract(1, 'weeks'))
+  return dayjs(event.timestamp).isAfter(dayjs().subtract(1, 'weeks'))
 }
 
 export function createVaultsNotices$(
