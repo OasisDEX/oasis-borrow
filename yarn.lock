@@ -3937,10 +3937,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.3.27":
-  version "0.3.27"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.27.tgz#a9c192a229e33e7cc78ee69052b4e6125779e05f"
-  integrity sha512-mxDFm4Igxtg+mPpCqohS/NagkDp4qhwwfx6stBQ6s4UqqvcaKFj70iRxgXFEdZS6wal45oaN3A/e2UVumF6PEA==
+"@oasisdex/dma-library@0.3.28":
+  version "0.3.28"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.28.tgz#8533f2fe743c78e945dd8ec5d2bb8f696fc2231d"
+  integrity sha512-ZKlfGlYBXlC/JR1ufC3Lt4iRPBnk4vfIkckTyaKnlS5NbGYcfTOccR//Al2DJAeU8AG8jaA5HH3jXQMe9a8RQw==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"
@@ -9340,6 +9340,11 @@ date-fns@^2.9.0:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.16.1.tgz#05775792c3f3331da812af253e1a935851d3834b"
   integrity sha512-sAJVKx/FqrLYHAQeN7VpJrPhagZc9R4ImZIWYRFZaaohR3KzmuK88touwsSwSVT8Qcbd4zoDsnGfX4GFB4imyQ==
 
+dayjs@^1.11.9:
+  version "1.11.9"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.9.tgz#9ca491933fadd0a60a2c19f6c237c03517d71d1a"
+  integrity sha512-QvzAURSbQ0pKdIye2txOzNaHmxtUBXerpY0FJsFXUMKbIZeFm5ht1LS/jFsrncjnmtv8HsG0W2g6c0zUjZWmpA==
+
 debug@2.6.9, debug@^2.2.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -14586,11 +14591,6 @@ moment-timezone@^0.5.15:
   version "2.29.3"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
   integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==
-
-moment@^2.26.0:
-  version "2.26.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.26.0.tgz#5e1f82c6bafca6e83e808b30c8705eed0dcbd39a"
-  integrity sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
 
 moo-color@^1.0.2:
   version "1.0.3"

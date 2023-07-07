@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import dayjs from 'dayjs'
 import { billion, million, one, oneThousandth, ten, thousand, zero } from 'helpers/zero'
-import moment from 'moment'
 
 BigNumber.config({
   FORMAT: {
@@ -121,7 +121,7 @@ export function formatDecimalAsPercent(number: BigNumber) {
 }
 
 export function formatDateTime(time: Date, showMs?: boolean): string {
-  return moment(time).format(showMs ? 'DD.MM HH:mm:ss' : 'DD.MM HH:mm')
+  return dayjs(time).format(showMs ? 'DD.MM HH:mm:ss' : 'DD.MM HH:mm')
 }
 
 export function formatAddress(address: string, first: number = 4, last: number = 5) {

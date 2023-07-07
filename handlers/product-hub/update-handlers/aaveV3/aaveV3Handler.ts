@@ -6,6 +6,7 @@ import {
 } from 'blockchain/aave-v3'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/common/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
@@ -13,7 +14,6 @@ import { GraphQLClient } from 'graphql-request'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { flatten } from 'lodash'
-import moment from 'moment'
 import { curry } from 'ramda'
 
 import { aaveV3ProductHubProducts } from './aaveV3Products'
@@ -96,7 +96,7 @@ export default async function (): ProductHubHandlerResponse {
   )
   const yieldsPromisesMap = {
     // a crude map, but it works for now since we only have one earn product
-    'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, moment()),
+    'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
   }
   // getting the APYs
   const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
