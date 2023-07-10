@@ -332,9 +332,15 @@ export function createOpenAaveStateMachine(
                 CREATED_MACHINE: {
                   actions: ['updateContext'],
                 },
-                TRANSACTION_COMPLETED: {
-                  target: 'txSuccess',
-                },
+                TRANSACTION_COMPLETED: [
+                  {
+                    cond: 'isStopLossSet',
+                    target: 'txStopLoss',
+                  },
+                  {
+                    target: 'txSuccess',
+                  },
+                ],
                 TRANSACTION_FAILED: {
                   target: 'txFailure',
                   actions: ['updateContext'],
@@ -508,7 +514,11 @@ export function createOpenAaveStateMachine(
             transition,
           }),
         isAllowanceNeeded,
-        isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => !stopLossSkipped && !!stopLossLevel,
+        isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => {
+          console.log('!stopLossSkipped', !stopLossSkipped)
+          console.log('!!stopLossLevel', !!stopLossLevel)
+          return !stopLossSkipped && !!stopLossLevel
+        },
         isEthersTransaction: ({ strategyConfig }) =>
           strategyConfig.executeTransactionWith === 'ethers',
       },
