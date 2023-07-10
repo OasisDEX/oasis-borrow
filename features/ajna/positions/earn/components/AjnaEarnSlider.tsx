@@ -125,11 +125,23 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
             priceFormat,
           })}
         >
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+          <AjnaEarnInput
+            disabled={isDisabled || isFormFrozen}
+            min={min}
+            max={max}
+            range={range}
+            fallbackValue={resolvedLup}
+          />
         </PillAccordion>
       ) : (
         <Box sx={{ mt: 3 }}>
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+          <AjnaEarnInput
+            disabled={isDisabled || isFormFrozen}
+            min={min}
+            max={max}
+            range={range}
+            fallbackValue={resolvedLup}
+          />
         </Box>
       )}
     </>
