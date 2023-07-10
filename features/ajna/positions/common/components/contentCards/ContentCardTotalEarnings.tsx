@@ -45,6 +45,9 @@ export function ContentCardTotalEarnings({
         afterTotalEarnings && `${formatted.afterTotalEarnings} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
+    footnote: t('ajna.position-page.earn.manage.overview.net-pnl', {
+      netPnL: formatted.netPnL,
+    }),
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.earn.manage.overview.total-earnings')}
@@ -55,12 +58,6 @@ export function ContentCardTotalEarnings({
       />
     ),
   }
-
-  // if (!netPnL.isZero()) {
-  contentCardSettings.footnote = t('ajna.position-page.earn.manage.overview.net-pnl', {
-    netPnL: formatted.netPnL,
-  })
-  // }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
