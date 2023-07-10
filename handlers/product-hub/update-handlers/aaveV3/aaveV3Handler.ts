@@ -1,4 +1,5 @@
 import { RiskRatio } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import {
   AaveV3SupportedNetwork,
   getAaveV3ReserveConfigurationData,
@@ -6,6 +7,7 @@ import {
 } from 'blockchain/aave-v3'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { getTokenPrice, Tickers } from 'blockchain/prices'
 import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/common/constants'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -29,11 +31,12 @@ const networkNameToIdMap = {
   [NetworkNames.optimismMainnet]: NetworkIds.OPTIMISMMAINNET,
 }
 
-const getAaveV3TokensData = async ({ networkName }: { networkName: AaveV3Networks }) => {
+const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers) => {
   const currentNetworkProducts = aaveV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
   const networkId = networkNameToIdMap[networkName] as AaveV3SupportedNetwork
+  const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
   const primaryTokensList = [
     ...new Set(
       flatten(
@@ -55,7 +58,8 @@ const getAaveV3TokensData = async ({ networkName }: { networkName: AaveV3Network
       [token]: {
         liquidity: reserveData.totalAToken
           .minus(reserveData.totalStableDebt)
-          .minus(reserveData.totalVariableDebt),
+          .minus(reserveData.totalVariableDebt)
+          .times(usdcPrice),
         fee: reserveData.variableBorrowRate,
       },
     }
@@ -83,13 +87,13 @@ const getAaveV3TokensData = async ({ networkName }: { networkName: AaveV3Network
   }
 }
 
-export default async function (): ProductHubHandlerResponse {
+export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // mainnet
   const aaveV3NetworksList = [
     ...new Set(aaveV3ProductHubProducts.map((product) => product.network)),
   ]
   const getAaveV3TokensDataPromises = aaveV3NetworksList.map((networkName) =>
-    getAaveV3TokensData({ networkName: networkName as AaveV3Networks }),
+    getAaveV3TokensData(networkName as AaveV3Networks, tickers),
   )
   const graphQlProvider = new GraphQLClient(
     getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
@@ -103,9 +107,7 @@ export default async function (): ProductHubHandlerResponse {
     product.includes(ProductHubProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await getAaveV3TokensData({
-      networkName: product.network as AaveV3Networks,
-    })
+    const tokensReserveData = await getAaveV3TokensData(product.network as AaveV3Networks, tickers)
 
     const riskRatio =
       product.label === 'WSTETH/ETH'

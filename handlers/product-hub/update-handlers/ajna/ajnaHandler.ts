@@ -20,17 +20,14 @@ import {
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
-import getConfig from 'next/config'
 
 async function getAjnaPoolData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
+  tickers: Tickers
 ): Promise<ProductHubHandlerResponseData> {
   const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
   const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))
-  const tickers = (await (
-    await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/tokensPrices`)
-  ).json()) as Tickers
-  const prices = tokens.reduce<{ [key: string]: BigNumber }>(
+  const prices = tokens.reduce<Tickers>(
     (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
     {},
   )
@@ -213,10 +210,10 @@ async function getAjnaPoolData(
   }
 }
 
-export default async function (): ProductHubHandlerResponse {
+export default async function (tickers: Tickers): ProductHubHandlerResponse {
   return Promise.all([
-    getAjnaPoolData(NetworkIds.MAINNET),
-    getAjnaPoolData(NetworkIds.GOERLI),
+    getAjnaPoolData(NetworkIds.MAINNET, tickers),
+    getAjnaPoolData(NetworkIds.GOERLI, tickers),
   ]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {
