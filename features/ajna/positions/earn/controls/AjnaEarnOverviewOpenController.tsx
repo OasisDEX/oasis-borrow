@@ -57,7 +57,7 @@ export function AjnaEarnOverviewOpenController() {
         </>
       }
       footer={
-        <DetailsSectionFooterItemWrapper columns={2}>
+        <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnOpen
             totalValueLocked={position.pool.depositSize.times(quotePrice)}
             apy={simulation?.apy.per30d}
