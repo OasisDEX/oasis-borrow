@@ -14,7 +14,7 @@ import React from 'react'
 import { Trans } from 'react-i18next'
 
 function parseProductNumbers(stringNumbers: (string | undefined)[]): (BigNumber | undefined)[] {
-  return stringNumbers.map((number) => (number ? negativeToZero(new BigNumber(number)) : undefined))
+  return stringNumbers.map((number) => (number ? new BigNumber(number) : undefined))
 }
 
 function parseProduct(
@@ -38,6 +38,15 @@ function parseProduct(
     maxLtvString,
     maxMultiplyString,
   ])
+
+  const resolved = {
+    liquidity: liquidity ? (
+      formatFiatBalance(negativeToZero(liquidity))
+    ) : (
+      <AssetsTableDataCellInactive />
+    ),
+  }
+
   switch (product) {
     case ProductHubProductType.Borrow:
       return {
@@ -54,7 +63,7 @@ function parseProduct(
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
-              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
+              {resolved.liquidity}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
           ),
@@ -90,7 +99,7 @@ function parseProduct(
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
-              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
+              {resolved.liquidity}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
           ),
@@ -140,7 +149,7 @@ function parseProduct(
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
-              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
+              {resolved.liquidity}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
           ),
