@@ -1,7 +1,9 @@
 import { RiskRatio } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
+import { getTokenPrice, Tickers } from 'blockchain/prices'
 import dayjs from 'dayjs'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
@@ -12,9 +14,10 @@ import { curry } from 'ramda'
 
 import { aaveV2ProductHubProducts } from './aaveV2Products'
 
-export default async function (): ProductHubHandlerResponse {
+export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // Multiply: max multiple, liq available, variable fee
   // Earn: 7 day net APY, liq available
+  const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
   const primaryTokensList = [
     ...new Set(
       flatten(
@@ -43,7 +46,7 @@ export default async function (): ProductHubHandlerResponse {
     const reserveData = await getAaveV2ReserveData({ token })
     return {
       [token]: {
-        liquidity: reserveData.availableLiquidity,
+        liquidity: reserveData.availableLiquidity.times(usdcPrice),
         fee: reserveData.variableBorrowRate,
       },
     }
