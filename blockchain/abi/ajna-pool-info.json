@@ -180,6 +180,25 @@
         "type": "address"
       }
     ],
+    "name": "availableQuoteTokenAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount_",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ajnaPool_",
+        "type": "address"
+      }
+    ],
     "name": "borrowFeeRate",
     "outputs": [
       {
