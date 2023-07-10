@@ -1,4 +1,4 @@
-import { calculateAjnaMaxLiquidityWithdraw } from '@oasisdex/dma-library'
+import { calculateAjnaMaxLiquidityWithdraw, normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -16,7 +16,7 @@ import React from 'react'
 export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, quotePrice },
+    environment: { collateralToken, isShort, priceFormat, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -25,6 +25,11 @@ export function AjnaEarnOverviewManageController() {
     },
     notifications,
   } = useAjnaProductContext('earn')
+
+  const liquidationToMarketPrice = position.price.div(position.marketPrice)
+  const relationToMarketPrice = one.minus(
+    isShort ? normalizeValue(one.div(liquidationToMarketPrice)) : liquidationToMarketPrice,
+  )
 
   return (
     <DetailsSection
@@ -54,12 +59,13 @@ export function AjnaEarnOverviewManageController() {
           />
           <ContentCardPositionLendingPrice
             isLoading={isSimulationLoading}
-            collateralToken={collateralToken}
             quoteToken={quoteToken}
+            priceFormat={priceFormat}
+            isShort={isShort}
             positionLendingPrice={position.price}
             highestThresholdPrice={position.pool.highestThresholdPrice}
             afterPositionLendingPrice={simulation?.price}
-            relationToMarketPrice={position.maxRiskRatio.loanToValue.minus(one)}
+            relationToMarketPrice={relationToMarketPrice}
           />
         </DetailsSectionContentCardWrapper>
       }
