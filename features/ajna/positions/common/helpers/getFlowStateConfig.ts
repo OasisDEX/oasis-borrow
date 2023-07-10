@@ -52,6 +52,12 @@ export function getFlowStateConfig({
     case 'payback-borrow':
     case 'withdraw-borrow':
     case 'payback-multiply':
+      if (!state.paybackAmount) {
+        return {
+          amount: zero,
+          token: 'ETH',
+        }
+      }
       return {
         amount: state.paybackAmount,
         token: quoteToken,
