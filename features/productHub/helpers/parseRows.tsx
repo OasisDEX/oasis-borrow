@@ -1,3 +1,4 @@
+import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
@@ -13,7 +14,7 @@ import React from 'react'
 import { Trans } from 'react-i18next'
 
 function parseProductNumbers(stringNumbers: (string | undefined)[]): (BigNumber | undefined)[] {
-  return stringNumbers.map((number) => (number ? new BigNumber(number) : undefined))
+  return stringNumbers.map((number) => (number ? negativeToZero(new BigNumber(number)) : undefined))
 }
 
 function parseProduct(
@@ -49,7 +50,7 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvaliable: {
+        liquidityAvailable: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
@@ -85,7 +86,7 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvaliable: {
+        liquidityAvailable: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
@@ -135,7 +136,7 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvaliable: {
+        liquidityAvailable: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
