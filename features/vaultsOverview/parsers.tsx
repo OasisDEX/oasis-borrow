@@ -1,4 +1,4 @@
-import { AjnaPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, AjnaPosition, getLiquidityInLupBucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
@@ -13,7 +13,12 @@ import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiply
 import { getDsrValue, getFundingCost } from 'features/vaultsOverview/helpers'
 import { AavePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
-import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -204,13 +209,24 @@ export function parseAjnaEarnPositionRows(
   positions: AjnaPositionDetails[],
 ): PositionTableEarnRow[] {
   return positions.map(({ details: { collateralToken, vaultId, quoteToken }, position }) => {
+    const earnPosition = position as AjnaEarnPosition
     console.log(`${collateralToken}/${quoteToken}`)
-    console.log(position)
+
+    const liq = getLiquidityInLupBucket(position.pool)
+
+    console.log(liq)
+    console.log(
+      position.pool.buckets
+        .filter((bucket) => bucket.index.lte(position.pool.highestThresholdPriceIndex))
+        .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero),
+    )
 
     return {
       asset: `${collateralToken}/${quoteToken}`,
       icons: [collateralToken, quoteToken],
       id: vaultId,
+      netValue: earnPosition.netValue,
+      pnl: earnPosition.pnl,
       liquidity: position.pool.buckets
         .filter((bucket) => bucket.index.lte(position.pool.highestThresholdPriceIndex))
         .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero),
@@ -320,7 +336,7 @@ export function getEarnPositionRows(rows: PositionTableEarnRow[]): AssetsTableRo
         <AssetsTableDataCellInactive>{netValue}</AssetsTableDataCellInactive>
       ),
       pnl: BigNumber.isBigNumber(pnl) ? (
-        `$${formatCryptoBalance(pnl)}`
+        formatDecimalAsPercent(pnl)
       ) : (
         <AssetsTableDataCellInactive>{pnl}</AssetsTableDataCellInactive>
       ),
