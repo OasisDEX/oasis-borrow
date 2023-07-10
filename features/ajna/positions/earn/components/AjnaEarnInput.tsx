@@ -9,7 +9,7 @@ import {
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatBigNumber } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { FC, KeyboardEvent, useEffect, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -26,6 +26,7 @@ interface AjnaEarnInputProps {
   disabled?: boolean
   max: BigNumber
   min: BigNumber
+  fallbackValue: BigNumber
   range: BigNumber[]
 }
 
@@ -92,10 +93,16 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, range }) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
+  disabled,
+  max,
+  min,
+  range,
+  fallbackValue,
+}) => {
   const { t } = useTranslation()
   const {
-    environment: { priceFormat, quoteToken },
+    environment: { priceFormat, quoteToken, isShort },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -123,6 +130,12 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
       const snappedValue = snapToPredefinedValues(manualAmount)
       const index = mappedAjnaBuckets.indexOf(snappedValue)
       const selectedValue = mappedAjnaBuckets.at(index) || zero
+
+      if (selectedValue.gt(max) || selectedValue.lt(min)) {
+        setManualAmount(fallbackValue)
+        updateState('price', fallbackValue)
+        return
+      }
 
       setManualAmount(selectedValue)
       updateState('price', selectedValue)
@@ -178,10 +191,14 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
             setIsFocus(false)
           }}
           onChange={handleNumericInput((n = zero) => {
-            setManualAmount(n)
+            setManualAmount(isShort ? one.div(n) : n)
           })}
           onKeyPress={enterPressedHandler}
-          value={manualAmount ? formatBigNumber(manualAmount, FIAT_PRECISION) : ''}
+          value={
+            manualAmount
+              ? formatBigNumber(isShort ? one.div(manualAmount) : manualAmount, FIAT_PRECISION)
+              : ''
+          }
           sx={{
             px: 5,
             pt: 3,
