@@ -7,6 +7,7 @@ import { ProtocolsServices } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
+import dayjs from 'dayjs'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
@@ -21,7 +22,6 @@ import { TranslateStringType } from 'helpers/translateStringType'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
@@ -361,7 +361,7 @@ export function VaultNextPriceUpdateCounter({
   useEffect(() => {
     const nextUpdateTimestamp = nextPriceUpdateDate?.getTime()
     const nextUpdateInSeconds = nextUpdateTimestamp ? nextUpdateTimestamp / 1000 : 0
-    const now = moment().unix()
+    const now = dayjs().unix()
     const left = nextUpdateInSeconds - now
 
     setConfig({

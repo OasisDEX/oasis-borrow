@@ -1,10 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
+import dayjs from 'dayjs'
 import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
@@ -114,7 +114,7 @@ const LangSelectComponents: Partial<
 
 export function TemporaryFooter() {
   const commit = buildHash.substring(0, 10)
-  const date = moment(buildDate).format('DD.MM.YYYY HH:MM')
+  const date = dayjs(buildDate).format('DD.MM.YYYY HH:MM')
   console.debug(`Build commit: ${commit} Build date: ${date}`)
   return (
     showBuildInfo && (

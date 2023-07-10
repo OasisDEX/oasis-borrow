@@ -128,6 +128,7 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
@@ -249,7 +250,6 @@ import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { isEqual, memoize } from 'lodash'
-import moment from 'moment'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of } from 'rxjs'
 import {
@@ -1135,28 +1135,28 @@ export function setupAppContext() {
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(chainContext$),
-    (token: string, timestamp: moment.Moment) => {
+    (token: string, timestamp: dayjs.Dayjs) => {
       return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
     },
   )
 
   const makerOracleTokenPricesForDates$ = memoize(
     curry(createMakerOracleTokenPricesForDates$)(chainContext$),
-    (token: string, timestamps: moment.Moment[]) => {
+    (token: string, timestamps: dayjs.Dayjs[]) => {
       return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
     },
   )
 
   const yields$ = memoize(
-    (ilk: string, date?: moment.Moment) => {
+    (ilk: string, date?: dayjs.Dayjs) => {
       return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
     },
-    (ilk: string, date: moment.Moment = moment()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
+    (ilk: string, date: dayjs.Dayjs = dayjs()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
   )
 
   const yieldsChange$ = memoize(
     curry(getYieldChange$)(yields$),
-    (currentDate: moment.Moment, previousDate: moment.Moment, ilk: string) =>
+    (currentDate: dayjs.Dayjs, previousDate: dayjs.Dayjs, ilk: string) =>
       `${ilk}_${currentDate.format('YYYY-MM-DD')}_${previousDate.format('YYYY-MM-DD')}`,
   )
 

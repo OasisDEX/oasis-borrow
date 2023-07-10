@@ -1,3 +1,4 @@
+import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
@@ -37,6 +38,15 @@ function parseProduct(
     maxLtvString,
     maxMultiplyString,
   ])
+
+  const resolved = {
+    liquidity: liquidity ? (
+      formatFiatBalance(negativeToZero(liquidity))
+    ) : (
+      <AssetsTableDataCellInactive />
+    ),
+  }
+
   switch (product) {
     case ProductHubProductType.Borrow:
       return {
@@ -49,11 +59,11 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvaliable: {
+        liquidityAvailable: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
-              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
+              {resolved.liquidity}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
           ),
@@ -85,11 +95,11 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvaliable: {
+        liquidityAvailable: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
-              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
+              {resolved.liquidity}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
           ),
@@ -135,11 +145,11 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvaliable: {
+        liquidityAvailable: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
-              {liquidity ? `$${formatFiatBalance(liquidity)}` : <AssetsTableDataCellInactive />}
+              {resolved.liquidity}
               {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
             </>
           ),

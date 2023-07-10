@@ -1,3 +1,4 @@
+import { calculateAjnaMaxLiquidityWithdraw } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -67,7 +68,11 @@ export function AjnaEarnOverviewManageController() {
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
             quoteToken={quoteToken}
-            availableToWithdraw={position.quoteTokenAmount}
+            availableToWithdraw={calculateAjnaMaxLiquidityWithdraw({
+              pool: position.pool,
+              position,
+              simulation,
+            })}
             // TODO adjust once data available in subgraph
             projectedAnnualReward={zero}
             totalAjnaRewards={position.rewards}

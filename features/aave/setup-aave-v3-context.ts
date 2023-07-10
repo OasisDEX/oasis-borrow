@@ -3,6 +3,7 @@ import { NetworkNames } from 'blockchain/networks'
 import { networksByName } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
+import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { one } from 'helpers/zero'
@@ -11,7 +12,6 @@ import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEth
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { memoize } from 'lodash'
-import moment from 'moment/moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -78,7 +78,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   } = protocols[LendingProtocol.AaveV3][networkId]
 
   const aaveEarnYieldsQuery = memoize(
-    curry(getAaveWstEthYield)(disconnectedGraphQLClient$, moment()),
+    curry(getAaveWstEthYield)(disconnectedGraphQLClient$, dayjs()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 

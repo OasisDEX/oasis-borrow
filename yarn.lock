@@ -3925,22 +3925,22 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.0.25.tgz#c335b56ded1d6bdb96662feb6610765ab23ea70c"
-  integrity sha512-GUU2IedvEQ5mcE6WW3Fe+MSLSbGGlDX8zT8cJLI4mjO0PnItQQkXKQCuh0Y+TqUZUdWxVLKgUV6Ir9JJrQ7V1w==
+"@oasisdex/addresses@0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.0.28.tgz#4efc857879ed352e1140de9bda6e6d13aff1698a"
+  integrity sha512-+j7ECr1ePxKyc1mBQ5s7Eg8/Av2vU5fSxtnNgzrhtj0+v7KcDE1p3LE7hrVxmc/Rzpl2223xnCauPtbSFspOBg==
 
-"@oasisdex/automation@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.4.0.tgz#dadb25ff4ff26230aad696c79d5f612e7085976d"
-  integrity sha512-COp8UANS8CvlWJhbyIQSPvVJP1Uq/DNjWImlAEnlxuvM2LdMDWd7q1oKmoyBxfKMTyT6fv1Yg6e162monp2n8w==
+"@oasisdex/automation@1.5.0-alpha.8":
+  version "1.5.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.5.0-alpha.8.tgz#0660f0bb27cfbfcd18f1d5e959a84855059690c6"
+  integrity sha512-Q9aHj65/L9yl9c+roctxPsn1SI5g8zFMRwdibgwzsqOOSe6PdBHIxhbXtsfreygLhI8+qd8SWdZd7nx4CISpvg==
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.3.26":
-  version "0.3.26"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.26.tgz#9b0200d673e92f968d4d6164dfccf79630814cd3"
-  integrity sha512-7/h+6sO2eJhcfMK1ENsM/Hgg2jmTpqe07xLOj5QhXDIvmlS6tpgCi+kYUD4WfWE2npTt7D4T1DWUMskxRXtSpA==
+"@oasisdex/dma-library@0.3.29":
+  version "0.3.29"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.3.29.tgz#f788ec04eb0f977d3f66f96897acc915ecfbba8d"
+  integrity sha512-OG8IIR1q9YbvS2UBqK2Z4AIgsgYTBDnTEMdihGwrGFgSAukJPTmTPiRFmJQOdOJ6tfWVtfYq1+5vXu2tWFov2A==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"
@@ -9340,6 +9340,11 @@ date-fns@^2.9.0:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.16.1.tgz#05775792c3f3331da812af253e1a935851d3834b"
   integrity sha512-sAJVKx/FqrLYHAQeN7VpJrPhagZc9R4ImZIWYRFZaaohR3KzmuK88touwsSwSVT8Qcbd4zoDsnGfX4GFB4imyQ==
 
+dayjs@^1.11.9:
+  version "1.11.9"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.9.tgz#9ca491933fadd0a60a2c19f6c237c03517d71d1a"
+  integrity sha512-QvzAURSbQ0pKdIye2txOzNaHmxtUBXerpY0FJsFXUMKbIZeFm5ht1LS/jFsrncjnmtv8HsG0W2g6c0zUjZWmpA==
+
 debug@2.6.9, debug@^2.2.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -14586,11 +14591,6 @@ moment-timezone@^0.5.15:
   version "2.29.3"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
   integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==
-
-moment@^2.26.0:
-  version "2.26.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.26.0.tgz#5e1f82c6bafca6e83e808b30c8705eed0dcbd39a"
-  integrity sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
 
 moo-color@^1.0.2:
   version "1.0.3"

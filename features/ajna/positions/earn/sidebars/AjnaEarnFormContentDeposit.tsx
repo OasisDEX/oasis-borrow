@@ -14,7 +14,10 @@ export function AjnaEarnFormContentDeposit() {
     environment: { quotePrice, quoteToken, quoteBalance },
   } = useAjnaGeneralContext()
   const {
-    form: { dispatch },
+    form: {
+      dispatch,
+      state: { depositAmount },
+    },
     validation: { isFormValid },
   } = useAjnaProductContext('earn')
 
@@ -28,7 +31,7 @@ export function AjnaEarnFormContentDeposit() {
         maxAmount={quoteBalance}
       />
       <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>
-        <AjnaEarnSlider />
+        <AjnaEarnSlider isDisabled={!depositAmount} />
       </PillAccordion>
       {isFormValid && (
         <AjnaFormContentSummary>
