@@ -23,7 +23,7 @@ import { uniq } from 'lodash'
 
 async function getAjnaPoolData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
-  tickers: Tickers
+  tickers: Tickers,
 ): Promise<ProductHubHandlerResponseData> {
   const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
   const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))

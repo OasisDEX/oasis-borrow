@@ -30,8 +30,7 @@ export function ContentCardEarnNetValue({
 
   const formatted = {
     netValue: formatCryptoBalance(netValue),
-    afterNetValue:
-      afterNetValue && `${formatCryptoBalance(afterNetValue)} ${quoteToken}`,
+    afterNetValue: afterNetValue && `${formatCryptoBalance(afterNetValue)} ${quoteToken}`,
     netValueUSD: `$${formatAmount(netValueUSD, 'USD')}`,
   }
 
@@ -41,9 +40,7 @@ export function ContentCardEarnNetValue({
     unit: quoteToken,
     change: {
       isLoading,
-      value:
-        afterNetValue &&
-        `${formatted.afterNetValue} ${t('system.cards.common.after')}`,
+      value: afterNetValue && `${formatted.afterNetValue} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
     modal: (
