@@ -2698,7 +2698,9 @@
             "position-lending-price": "Position lending price",
             "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
             "minimum-yield-price-modal": "Minimum Yield Price",
+            "maximum-yield-price-modal": "Maximum Yield Price",
             "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
+            "maximum-yield-price-modal-desc": "Above this lending price you will not earn any yield. Select a lending price below this level to earn.",
             "net-value": "Net value",
             "net-value-modal-desc": "The total amount of tokens available in position, this includes the earned amount:"
           },
