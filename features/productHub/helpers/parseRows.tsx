@@ -41,7 +41,7 @@ function parseProduct(
 
   const resolved = {
     liquidity: liquidity ? (
-      formatFiatBalance(negativeToZero(liquidity))
+      `$${formatFiatBalance(negativeToZero(liquidity))}`
     ) : (
       <AssetsTableDataCellInactive />
     ),

@@ -42,6 +42,11 @@ export const subgraphMethodsRecord: {
           nft {
             id
           }
+          account {
+            cumulativeDeposit
+            cumulativeFees
+            cumulativeWithdraw
+          }
         }
       }
     }

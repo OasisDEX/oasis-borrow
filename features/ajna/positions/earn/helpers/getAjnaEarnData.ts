@@ -16,6 +16,9 @@ export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
         lps: new BigNumber(earnPosition.lps),
         priceIndex: new BigNumber(earnPosition.index),
         nftID: earnPosition.nft?.id || null,
+        cumulativeDeposit: new BigNumber(earnPosition.account.cumulativeDeposit),
+        cumulativeFees: new BigNumber(earnPosition.account.cumulativeFees),
+        cumulativeWithdraw: new BigNumber(earnPosition.account.cumulativeWithdraw),
       }
   }
 
@@ -23,5 +26,8 @@ export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
     lps: zero,
     priceIndex: null,
     nftID: null,
+    cumulativeDeposit: zero,
+    cumulativeFees: zero,
+    cumulativeWithdraw: zero,
   }
 }

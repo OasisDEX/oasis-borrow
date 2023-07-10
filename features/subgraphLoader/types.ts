@@ -29,7 +29,16 @@ export type SubgraphsResponses = {
   Ajna: {
     getEarnData: SubgraphBaseResponse<{
       account: {
-        earnPositions: { lps: number; index: number; nft: { id: string } | null }[]
+        earnPositions: {
+          lps: number
+          index: number
+          nft: { id: string } | null
+          account: {
+            cumulativeDeposit: number
+            cumulativeFees: number
+            cumulativeWithdraw: number
+          }
+        }[]
       }
     }>
     getPoolData: SubgraphBaseResponse<{
