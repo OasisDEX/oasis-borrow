@@ -514,11 +514,7 @@ export function createOpenAaveStateMachine(
             transition,
           }),
         isAllowanceNeeded,
-        isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => {
-          console.log('!stopLossSkipped', !stopLossSkipped)
-          console.log('!!stopLossLevel', !!stopLossLevel)
-          return !stopLossSkipped && !!stopLossLevel
-        },
+        isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => !stopLossSkipped && !!stopLossLevel,
         isEthersTransaction: ({ strategyConfig }) =>
           strategyConfig.executeTransactionWith === 'ethers',
       },
