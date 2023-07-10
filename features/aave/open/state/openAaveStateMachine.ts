@@ -332,9 +332,15 @@ export function createOpenAaveStateMachine(
                 CREATED_MACHINE: {
                   actions: ['updateContext'],
                 },
-                TRANSACTION_COMPLETED: {
-                  target: 'txSuccess',
-                },
+                TRANSACTION_COMPLETED: [
+                  {
+                    cond: 'isStopLossSet',
+                    target: 'txStopLoss',
+                  },
+                  {
+                    target: 'txSuccess',
+                  },
+                ],
                 TRANSACTION_FAILED: {
                   target: 'txFailure',
                   actions: ['updateContext'],
