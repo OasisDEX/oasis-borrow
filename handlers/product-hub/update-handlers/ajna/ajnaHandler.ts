@@ -1,4 +1,4 @@
-import { calculateAjnaApyPerDays } from '@oasisdex/dma-library'
+import { calculateAjnaApyPerDays, getPoolLiquidity } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
@@ -86,11 +86,16 @@ async function getAjnaPoolData(
           const network = networksById[networkId].name as ProductHubSupportedNetworks
           const protocol = LendingProtocol.Ajna
           const maxLtv = lowestUtilizedPrice.div(marketPrice).toString()
-          const liquidity = buckets
-            .filter((bucket) => new BigNumber(bucket.index).lte(highestThresholdPriceIndex))
-            .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero)
+          const liquidity = getPoolLiquidity({
+            buckets: buckets.map((bucket) => ({
+              ...bucket,
+              index: new BigNumber(bucket.index),
+              quoteTokens: new BigNumber(bucket.quoteTokens),
+            })),
+            debt: debt.shiftedBy(WAD_PRECISION),
+            highestThresholdPriceIndex: new BigNumber(highestThresholdPriceIndex),
+          })
             .shiftedBy(negativeWadPrecision)
-            .minus(debt)
             .times(prices[quoteToken])
             .toString()
           const fee = interestRate.toString()

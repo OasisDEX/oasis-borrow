@@ -1,4 +1,9 @@
-import { AjnaEarnPosition, AjnaPosition, getLiquidityInLupBucket } from '@oasisdex/dma-library'
+import {
+  AjnaEarnPosition,
+  AjnaPosition,
+  getPoolLiquidity,
+  negativeToZero,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
@@ -210,15 +215,12 @@ export function parseAjnaEarnPositionRows(
 ): PositionTableEarnRow[] {
   return positions.map(({ details: { collateralToken, vaultId, quoteToken }, position }) => {
     const earnPosition = position as AjnaEarnPosition
-    console.log(`${collateralToken}/${quoteToken}`)
-
-    const liq = getLiquidityInLupBucket(position.pool)
-
-    console.log(liq)
-    console.log(
-      position.pool.buckets
-        .filter((bucket) => bucket.index.lte(position.pool.highestThresholdPriceIndex))
-        .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero),
+    const liquidity = negativeToZero(
+      getPoolLiquidity({
+        buckets: position.pool.buckets,
+        debt: position.pool.debt,
+        highestThresholdPriceIndex: position.pool.highestThresholdPriceIndex,
+      }),
     )
 
     return {
@@ -227,9 +229,7 @@ export function parseAjnaEarnPositionRows(
       id: vaultId,
       netValue: earnPosition.netValue,
       pnl: earnPosition.pnl,
-      liquidity: position.pool.buckets
-        .filter((bucket) => bucket.index.lte(position.pool.highestThresholdPriceIndex))
-        .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero),
+      liquidity,
       liquidityToken: quoteToken,
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Ajna,
