@@ -2,10 +2,10 @@ import { calculateAjnaMaxLiquidityWithdraw } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { ContentCardCurrentEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardCurrentEarnings'
+import { ContentCardEarnNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardEarnNetValue'
 import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
 import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
-import { ContentCardTokensDeposited } from 'features/ajna/positions/common/components/contentCards/ContentCardTokensDeposited'
+import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
@@ -32,18 +32,17 @@ export function AjnaEarnOverviewManageController() {
       notifications={notifications}
       content={
         <DetailsSectionContentCardWrapper>
-          <ContentCardCurrentEarnings
+          <ContentCardTotalEarnings
             quoteToken={quoteToken}
-            // TODO adjust once data available in subgraph
-            currentEarnings={zero}
-            netPnL={zero}
+            totalEarnings={position.totalEarnings}
+            netPnL={position.pnl}
           />
-          <ContentCardTokensDeposited
+          <ContentCardEarnNetValue
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
-            tokensDeposited={position.quoteTokenAmount}
-            tokensDepositedUSD={position.quoteTokenAmount.times(quotePrice)}
-            afterTokensDeposited={simulation?.quoteTokenAmount}
+            netValue={position.quoteTokenAmount}
+            netValueUSD={position.quoteTokenAmount.times(quotePrice)}
+            afterNetValue={simulation?.quoteTokenAmount}
           />
           <ContentCardMaxLendingLTV
             isLoading={isSimulationLoading}

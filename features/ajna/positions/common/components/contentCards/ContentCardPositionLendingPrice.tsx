@@ -98,7 +98,6 @@ export function ContentCardPositionLendingPrice({
         `${formatted.afterPositionLendingPrice} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
-    footnote: formatted.relationToMarketPrice,
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.earn.manage.overview.position-lending-price')}
@@ -111,6 +110,10 @@ export function ContentCardPositionLendingPrice({
         />
       </AjnaDetailsSectionContentSimpleModal>
     ),
+  }
+
+  if (!positionLendingPrice.isZero()) {
+    contentCardSettings.footnote = formatted.relationToMarketPrice
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
