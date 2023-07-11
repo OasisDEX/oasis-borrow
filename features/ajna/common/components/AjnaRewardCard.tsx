@@ -9,7 +9,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React, { FC, ReactNode } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
@@ -75,46 +75,6 @@ const AjnaRewardCardListBox: FC<AjnaRewardCardListBoxProps> = ({ title, list, li
   )
 }
 
-interface EarningOnPositionsLinkProps {
-  numberOfPositions: number
-  ownerPageLink: Link
-  walletAddress: string
-}
-
-const EarningOnPositionsLink: FC<EarningOnPositionsLinkProps> = ({
-  numberOfPositions,
-  ownerPageLink,
-  walletAddress,
-}) => {
-  return (
-    <Box
-      sx={{
-        mt: 3,
-        fontSize: [1, 2],
-        color: 'neutral80',
-        transform: 'translateX(-8px)',
-      }}
-    >
-      <Trans
-        i18nKey={ownerPageLink.title}
-        values={{ value: numberOfPositions || 0 }}
-        components={{
-          1: (
-            <AppLink
-              href={`${ownerPageLink.href}/${walletAddress}`}
-              sx={{
-                mt: [0, 3],
-              }}
-              key="card-link"
-            />
-          ),
-          2: <WithArrow as="span" gap={1} sx={{ color: 'inherit', fontWeight: 'regular' }} />,
-        }}
-      />
-    </Box>
-  )
-}
-
 interface BannerProps {
   title: string
   button: { title: string }
@@ -124,7 +84,6 @@ interface BannerProps {
 interface Rewards {
   tokens: BigNumber
   usd: BigNumber
-  numberOfPositions: number
 }
 
 interface AjnaRewardCardBannerPropsAvailable {
@@ -158,10 +117,8 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
   gradient,
   notAvailable,
   onBtnClick,
-  ownerPageLink,
   rewards,
   txStatus,
-  walletAddress,
 }) => {
   const { t } = useTranslation()
 
@@ -249,11 +206,6 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
                 </Flex>
               </Button>
             )}
-            <EarningOnPositionsLink
-              ownerPageLink={ownerPageLink}
-              numberOfPositions={rewards.numberOfPositions}
-              walletAddress={walletAddress}
-            />
           </>
         )}
       </Flex>

@@ -102,8 +102,8 @@ export function AjnaRewardsController() {
         <AjnaRewardCard
           key="oasisRewards"
           isLoading={false}
-          notAvailable
-          rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
+          // notAvailable
+          rewards={{ tokens: zero, usd: zero, }}
           {...oasisRewardsCard}
           floatingLabel={
             <FloatingLabel
