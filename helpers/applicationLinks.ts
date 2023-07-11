@@ -75,7 +75,6 @@ export const EXTERNAL_LINKS = {
       CRVV1ETHSTETH:
         'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
     },
-    AJNA: 'https://kb.summer.fi/help/ajna',
     SWAP_FAQ: 'https://kb.summer.fi/help/how-to-swap-and-bridge-using-the-lifi-widget',
   },
   BLOG: {
@@ -87,6 +86,20 @@ export const EXTERNAL_LINKS = {
     DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
     REBRANDING: 'https://blog.summer.fi/oasis-app-rebrands-to-summer-fi/',
+  },
+  DOCS: {
+    AJNA: {
+      HUB: 'https://docs.summer.fi/protocols/ajna',
+      HOW_TO_BORROW:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-borrow-using-ajna',
+      HOW_TO_EARN:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-earn-using-ajna',
+      LIQUIDATIONS:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-ajna-liquidations-work',
+      RISKS:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/what-are-the-risks-of-lending-in-ajna',
+      TOKEN_REWARDS: 'https://docs.summer.fi/protocols/ajna/ajna-token-rewards',
+    },
   },
   LEGACY_APP: 'https://legacy.summer.fi',
   AJNA: {

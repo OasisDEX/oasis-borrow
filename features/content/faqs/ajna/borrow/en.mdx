@@ -2,7 +2,7 @@ import { FaqLayout } from 'features/content/faqs/FaqLayout'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 
 export default ({ children }) => (
-  <FaqLayout learnMoreUrl={EXTERNAL_LINKS.KB.AJNA} noTitle={true}>
+  <FaqLayout learnMoreUrl={EXTERNAL_LINKS.DOCS.AJNA.HUB} noTitle={true}>
     {children}
   </FaqLayout>
 )
@@ -18,7 +18,7 @@ liquidation price. Without oracles, liquidators are forced to post a bond to ens
 only happen on bad loans. Rates are variable set by the pool utilization, there is no repayment
 schedule and listing of tokens happens permissionless.
 
-[Read more about borrowing on Ajna →](https://kb.summer.fi/help/how-to-borrow-on-ajna)
+[Read more about borrowing on Ajna →](https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-borrow-using-ajna)
 
 ##### What are the risks?
 
@@ -42,7 +42,7 @@ There are 4 main risks when borrowing in Ajna:
    from smart contract bugs and design flaws, as the protocol gets used, and its design is battle
    tested confidence in the system will grow.
 
-[Read more about Ajna Risks →](https://kb.summer.fi/help/what-are-the-risks-of-lending-in-ajna)
+[Read more about Ajna Risks →](https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-ajna-liquidations-work)
 
 ##### What are the liquidation penalties?
 
@@ -78,7 +78,7 @@ Selected pools receive Summer.fi x Ajna rewards weekly. These rewards incentiviz
 Ajna who use Summer.fi Smart DeFi Account. It accrues automatically with no staking needed and can
 be claimed weekly after tokens are released.
 
-[Read more about token rewards →](https://kb.summer.fi/help/what-are-the-ajna-rewards)
+[Read more about token rewards →](https://docs.summer.fi/protocols/ajna/ajna-token-rewards)
 
 ##### How much does it cost?
 
@@ -103,9 +103,3 @@ The minimum borrow size is 10% of the average loan size. The maximum loan is det
 liquidity in the pool. When you simulate a new loan, you will be able to see how much you need to
 borrow to open a new position and how much you can borrow with your collateral or if you are limited
 by the pool liquidity.
-
-##### How can I learn more?
-
-You can visit our knowledge base on Ajna to learn all about borrowing.
-
-[Or ask more questions to our community on Discord →](https://discord.gg/summerfi)

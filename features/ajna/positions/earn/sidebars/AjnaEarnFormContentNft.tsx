@@ -76,7 +76,7 @@ export const AjnaEarnFormContentNft = () => {
           returnObjects: true,
         })}
         // TODO update one article will be available
-        link={EXTERNAL_LINKS.KB.AJNA}
+        link={EXTERNAL_LINKS.DOCS.AJNA.HUB}
       />
       <RewardsHeader
         heading={t('ajna.position-page.common.form.nft.protocol-rewards')}
@@ -88,7 +88,7 @@ export const AjnaEarnFormContentNft = () => {
           returnObjects: true,
         })}
         // TODO update one article will be available
-        link={EXTERNAL_LINKS.KB.AJNA}
+        link={EXTERNAL_LINKS.DOCS.AJNA.HUB}
       />
       <Card sx={{ padding: '12px' }}>
         <Flex sx={{ gap: 3 }}>
