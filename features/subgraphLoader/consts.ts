@@ -187,5 +187,12 @@ export const subgraphMethodsRecord: {
       }
     }
   `,
+  getClaimedRewards: gql`
+    query getClaimed($walletAddress: ID!) {
+      claimeds(where: { user: $walletAddress }) {
+        amount
+      }
+    }
+  `,
   tempMethod: '',
 }

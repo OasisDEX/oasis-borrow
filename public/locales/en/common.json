@@ -2576,7 +2576,7 @@
           },
           "nft": {
             "intro": "The Ajna rewards this position is eligible for",
-            "token-rewards": "Summer.fi x AJNA Token Rewards",
+            "token-rewards": "Summer.fi × AJNA Token Rewards",
             "protocol-rewards": "AJNA Protocol Rewards",
             "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
             "bullet-points": {
@@ -2787,7 +2787,7 @@
           }
         },
         "token": {
-          "title": "Summer.fi x Ajna Token Rewards",
+          "title": "Summer.fi × Ajna Token Rewards",
           "list-1": "Rewards exclusive to Summer.fi users!",
           "list-2": "Rewards for Borrowing, Lending and Multiplying",
           "list-3": "Tokens will be claimable weekly in the near future",

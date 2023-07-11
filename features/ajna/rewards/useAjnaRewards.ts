@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useCustomNetworkParameter } from 'blockchain/networks'
 import { Rewards } from 'features/ajna/common/components/AjnaRewardCard'
+import { getAjnaRewards } from 'features/ajna/positions/common/helpers/getAjnaRewards'
 import { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
@@ -42,18 +43,19 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
     if (walletAddress && networkParameter) {
       Promise.all([
         fetch(`/api/ajna-rewards?address=${walletAddress}&networkId=${networkParameter.id}`),
-        // getAjnaPoolData(NetworkIds.GOERLI, tickers),
+        getAjnaRewards(walletAddress),
       ])
-        .then(async ([apiResponse]) => {
+        .then(async ([apiResponse, subgraphResponse]) => {
           const parseApiResponse = (await apiResponse.json()) as Awaited<
             ReturnType<typeof getAjnaRewardsData>
           >
+          const claimed = subgraphResponse.reduce((total, current) => total + current.amount, 0)
 
           if (parseApiResponse.amount) {
             setState({
               ...state,
               rewards: {
-                tokens: new BigNumber(parseApiResponse.amount),
+                tokens: new BigNumber(parseApiResponse.amount).minus(claimed),
                 usd: zero,
               },
               isError: false,

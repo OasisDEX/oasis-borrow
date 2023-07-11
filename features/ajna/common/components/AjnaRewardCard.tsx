@@ -163,7 +163,7 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
           <>
             {rewards.tokens.gt(zero) && (
               <Button
-                sx={{ mb: [0, banner.footer ? 3 : 0], mt: [4, 4], fontSize: 1, p: 0 }}
+                sx={{ mb: [0, banner.footer ? 3 : 0], mt: [4, 4], fontSize: 1, py: 0 }}
                 disabled={claimingDisabled || (txStatus && progressStatuses.includes(txStatus))}
                 onClick={onBtnClick}
               >
@@ -290,7 +290,7 @@ export function AjnaRewardCard({
                 walletAddress={walletAddress}
               />
             )}
-            {isConnected && isLoading && <Skeleton sx={{ mt: 4, height: '202px' }} />}
+            {isConnected && isLoading && <Skeleton sx={{ mt: 4, height: '220px' }} />}
           </>
         )}
       </Flex>
