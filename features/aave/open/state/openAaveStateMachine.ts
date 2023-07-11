@@ -25,6 +25,7 @@ import {
   RefTransactionMachine,
 } from 'features/aave/common/BaseAaveContext'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
@@ -504,7 +505,8 @@ export function createOpenAaveStateMachine(
           hasOpenedPosition,
           transition,
         }) =>
-          useFeatureToggle('AaveProtectionWrite') &&
+          useFeatureToggle('AaveV3ProtectionWrite') &&
+          supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === 'Multiply' &&
           canOpenPosition({
             userInput,
@@ -547,7 +549,12 @@ export function createOpenAaveStateMachine(
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
           const optionalStopLoss =
-            useFeatureToggle('AaveProtectionWrite') && context.strategyConfig.type === 'Multiply'
+            useFeatureToggle('AaveV3ProtectionWrite') &&
+            supportsAaveStopLoss(
+              context.strategyConfig.protocol,
+              context.strategyConfig.networkId,
+            ) &&
+            context.strategyConfig.type === 'Multiply'
               ? 1
               : 0
 

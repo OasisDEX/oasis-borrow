@@ -6,7 +6,9 @@ import {
   removeAutomationBotTriggerV2,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { NetworkIds } from 'blockchain/networks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE } from 'features/automation/common/consts'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
 import {
@@ -31,188 +33,200 @@ import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/sto
 import { formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 
 export const aaveOffsetFromMinAndMax = new BigNumber(0.05)
 export const aaveOffsetFromMaxDuringOpenFLow = new BigNumber(0.1)
 
-export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
-  const {
-    automationTriggersData,
-    triggerData: {
-      stopLossTriggerData: { isStopLossEnabled, stopLossLevel, triggerId, executionParams },
-    },
-    positionData: {
-      positionRatio,
-      liquidationRatio,
-      liquidationPrice,
-      liquidationPenalty,
+export function createGetAaveStopLossMetadata(
+  lendingProtocol: LendingProtocol,
+  networkId: NetworkIds,
+) {
+  return function (context: ContextWithoutMetadata): StopLossMetadata {
+    const {
+      automationTriggersData,
+      triggerData: {
+        stopLossTriggerData: { isStopLossEnabled, stopLossLevel, triggerId, executionParams },
+      },
+      positionData: {
+        positionRatio,
+        liquidationRatio,
+        liquidationPrice,
+        liquidationPenalty,
+        lockedCollateral,
+        debt,
+        owner,
+        debtTokenAddress,
+        collateralTokenAddress,
+        debtToken,
+      },
+    } = context
+
+    const collateralDuringLiquidation = getCollateralDuringLiquidation({
       lockedCollateral,
       debt,
-      owner,
-      debtTokenAddress,
-      collateralTokenAddress,
-      debtToken,
-    },
-  } = context
+      liquidationPrice,
+      liquidationPenalty,
+    })
 
-  const collateralDuringLiquidation = getCollateralDuringLiquidation({
-    lockedCollateral,
-    debt,
-    liquidationPrice,
-    liquidationPenalty,
-  })
+    const sliderMin = new BigNumber(
+      positionRatio.plus(aaveOffsetFromMinAndMax).times(100).toFixed(0, BigNumber.ROUND_UP),
+    )
+    const sliderMax = liquidationRatio.minus(aaveOffsetFromMinAndMax).times(100)
 
-  const sliderMin = new BigNumber(
-    positionRatio.plus(aaveOffsetFromMinAndMax).times(100).toFixed(0, BigNumber.ROUND_UP),
-  )
-  const sliderMax = liquidationRatio.minus(aaveOffsetFromMinAndMax).times(100)
+    const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
+      stopLossLevel: stopLossLevel,
+      isStopLossEnabled: isStopLossEnabled,
+      initialStopLossSelected: sliderMax
+        .minus(new BigNumber(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100))
+        .div(100),
+    })
+      .times(100)
+      .decimalPlaces(0, BigNumber.ROUND_DOWN)
 
-  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
-    stopLossLevel: stopLossLevel,
-    isStopLossEnabled: isStopLossEnabled,
-    initialStopLossSelected: sliderMax
-      .minus(new BigNumber(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100))
-      .div(100),
-  })
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+    const resetData: StopLossResetData = {
+      stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
+      collateralActive: false,
+      txDetails: {},
+    }
 
-  const resetData: StopLossResetData = {
-    stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
-    collateralActive: false,
-    txDetails: {},
-  }
+    const triggerMaxToken = getMaxToken({
+      stopLossLevel: one.div(stopLossLevel).times(100),
+      lockedCollateral,
+      liquidationRatio: one.div(liquidationRatio),
+      liquidationPrice,
+      debt,
+    })
 
-  const triggerMaxToken = getMaxToken({
-    stopLossLevel: one.div(stopLossLevel).times(100),
-    lockedCollateral,
-    liquidationRatio: one.div(liquidationRatio),
-    liquidationPrice,
-    debt,
-  })
+    const dynamicStopLossPrice = getDynamicStopLossPrice({
+      liquidationPrice,
+      liquidationRatio: one.div(liquidationRatio),
+      stopLossLevel: one.div(stopLossLevel).times(100),
+    })
 
-  const dynamicStopLossPrice = getDynamicStopLossPrice({
-    liquidationPrice,
-    liquidationRatio: one.div(liquidationRatio),
-    stopLossLevel: one.div(stopLossLevel).times(100),
-  })
+    const removeTxData: AutomationBotV2RemoveTriggerData = {
+      kind: TxMetaKind.removeTriggers,
+      proxyAddress: owner,
+      triggersIds: [triggerId.toNumber()],
+      triggersData: [executionParams],
+      removeAllowance: getShouldRemoveAllowance(automationTriggersData),
+    }
 
-  const removeTxData: AutomationBotV2RemoveTriggerData = {
-    kind: TxMetaKind.removeTriggers,
-    proxyAddress: owner,
-    triggersIds: [triggerId.toNumber()],
-    triggersData: [executionParams],
-    removeAllowance: getShouldRemoveAllowance(automationTriggersData),
-  }
+    const aaveProtectionWriteEnabled =
+      useFeatureToggle('AaveV3ProtectionWrite') && supportsAaveStopLoss(lendingProtocol, networkId)
 
-  const aaveProtectionWriteEnabled = useFeatureToggle('AaveProtectionWrite')
-
-  return {
-    callbacks: {},
-    detailCards: {
-      cardsSet: [
-        StopLossDetailCards.STOP_LOSS_LEVEL,
-        StopLossDetailCards.LOAN_TO_VALUE,
-        StopLossDetailCards.DYNAMIC_STOP_PRICE,
-        StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER,
-      ],
-      cardsConfig: {
-        // most likely it won't be needed when we switch to LTV in maker
-        stopLossLevelCard: {
-          // TODO copy to be udpated
-          modalDescription: 'manage-multiply-vault.card.stop-loss-ltv-desc',
-          belowCurrentPositionRatio: formatPercent(stopLossLevel.minus(positionRatio).times(100), {
-            precision: 2,
-          }),
+    return {
+      callbacks: {},
+      detailCards: {
+        cardsSet: [
+          StopLossDetailCards.STOP_LOSS_LEVEL,
+          StopLossDetailCards.LOAN_TO_VALUE,
+          StopLossDetailCards.DYNAMIC_STOP_PRICE,
+          StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER,
+        ],
+        cardsConfig: {
+          // most likely it won't be needed when we switch to LTV in maker
+          stopLossLevelCard: {
+            // TODO copy to be udpated
+            modalDescription: 'manage-multiply-vault.card.stop-loss-ltv-desc',
+            belowCurrentPositionRatio: formatPercent(
+              stopLossLevel.minus(positionRatio).times(100),
+              {
+                precision: 2,
+              },
+            ),
+          },
         },
       },
-    },
-    methods: {
-      getExecutionPrice: ({ stopLossLevel }) =>
-        collateralPriceAtRatio({
-          colRatio: stopLossLevel.isZero() ? zero : one.div(stopLossLevel.div(100)),
-          collateral: lockedCollateral,
-          vaultDebt: debt,
-        }),
-      getMaxToken: ({ stopLossLevel }) =>
-        getMaxToken({
-          stopLossLevel: stopLossLevel.isZero() ? zero : one.div(stopLossLevel.div(100)).times(100),
-          lockedCollateral,
-          liquidationRatio: one.div(liquidationRatio),
-          liquidationPrice,
-          debt,
-        }),
-      getSliderPercentageFill: ({ stopLossLevel }) =>
-        getSliderPercentageFill({
-          value: stopLossLevel,
-          max: sliderMax,
-          min: sliderMin,
-        }),
-      getRightBoundary: ({ stopLossLevel }) =>
-        getDynamicStopLossPrice({
-          liquidationPrice,
-          liquidationRatio: one.div(liquidationRatio),
-          stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
-        }),
-      prepareAddStopLossTriggerData: ({ stopLossLevel, collateralActive }) => {
-        const baseTriggerData = prepareStopLossTriggerDataV2(
-          owner,
-          TriggerType.AaveStopLossToDebtV2,
-          collateralActive,
-          stopLossLevel,
-          debtTokenAddress!,
-          collateralTokenAddress!,
-        )
+      methods: {
+        getExecutionPrice: ({ stopLossLevel }) =>
+          collateralPriceAtRatio({
+            colRatio: stopLossLevel.isZero() ? zero : one.div(stopLossLevel.div(100)),
+            collateral: lockedCollateral,
+            vaultDebt: debt,
+          }),
+        getMaxToken: ({ stopLossLevel }) =>
+          getMaxToken({
+            stopLossLevel: stopLossLevel.isZero()
+              ? zero
+              : one.div(stopLossLevel.div(100)).times(100),
+            lockedCollateral,
+            liquidationRatio: one.div(liquidationRatio),
+            liquidationPrice,
+            debt,
+          }),
+        getSliderPercentageFill: ({ stopLossLevel }) =>
+          getSliderPercentageFill({
+            value: stopLossLevel,
+            max: sliderMax,
+            min: sliderMin,
+          }),
+        getRightBoundary: ({ stopLossLevel }) =>
+          getDynamicStopLossPrice({
+            liquidationPrice,
+            liquidationRatio: one.div(liquidationRatio),
+            stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
+          }),
+        prepareAddStopLossTriggerData: ({ stopLossLevel, collateralActive }) => {
+          const baseTriggerData = prepareStopLossTriggerDataV2(
+            owner,
+            TriggerType.AaveStopLossToDebtV2,
+            collateralActive,
+            stopLossLevel,
+            debtTokenAddress!,
+            collateralTokenAddress!,
+          )
 
-        return {
-          ...baseTriggerData,
-          replacedTriggerIds: [triggerId],
-          replacedTriggersData: [executionParams],
-          kind: TxMetaKind.addTrigger,
-        }
+          return {
+            ...baseTriggerData,
+            replacedTriggerIds: [triggerId],
+            replacedTriggersData: [executionParams],
+            kind: TxMetaKind.addTrigger,
+          }
+        },
       },
-    },
-    settings: {
-      fixedCloseToToken: debtToken,
-      sliderDirection: 'ltr',
-      sliderStep: 1,
-    },
-    translations: {
-      ratioParamTranslationKey: 'vault-changes.loan-to-value',
-      stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-above',
-      bannerStrategiesKey: 'protection.stop-loss',
-    },
-    validation: {
-      getAddErrors: ({ state: { txDetails } }) => ({
-        hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
-          context,
-          txError: txDetails?.txError,
+      settings: {
+        fixedCloseToToken: debtToken,
+        sliderDirection: 'ltr',
+        sliderStep: 1,
+      },
+      translations: {
+        ratioParamTranslationKey: 'vault-changes.loan-to-value',
+        stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-above',
+        bannerStrategiesKey: 'protection.stop-loss',
+      },
+      validation: {
+        getAddErrors: ({ state: { txDetails } }) => ({
+          hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
+            context,
+            txError: txDetails?.txError,
+          }),
+          hasMoreDebtThanMaxForStopLoss: hasMoreDebtThanMaxForStopLoss({ context }),
         }),
-        hasMoreDebtThanMaxForStopLoss: hasMoreDebtThanMaxForStopLoss({ context }),
-      }),
-      getAddWarnings: ({ gasEstimationUsd }) => ({
-        hasPotentialInsufficientEthFundsForTx: hasPotentialInsufficientEthFundsForTx({
-          context,
-          gasEstimationUsd,
+        getAddWarnings: ({ gasEstimationUsd }) => ({
+          hasPotentialInsufficientEthFundsForTx: hasPotentialInsufficientEthFundsForTx({
+            context,
+            gasEstimationUsd,
+          }),
         }),
-      }),
-      cancelErrors: ['hasInsufficientEthFundsForTx'],
-      cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
-    },
-    values: {
-      collateralDuringLiquidation,
-      initialSlRatioWhenTriggerDoesntExist,
-      resetData,
-      sliderMax,
-      sliderMin,
-      triggerMaxToken,
-      dynamicStopLossPrice,
-      removeTxData,
-    },
-    contracts: {
-      addTrigger: addAutomationBotTriggerV2,
-      removeTrigger: removeAutomationBotTriggerV2,
-    },
-    stopLossWriteEnabled: aaveProtectionWriteEnabled,
+        cancelErrors: ['hasInsufficientEthFundsForTx'],
+        cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
+      },
+      values: {
+        collateralDuringLiquidation,
+        initialSlRatioWhenTriggerDoesntExist,
+        resetData,
+        sliderMax,
+        sliderMin,
+        triggerMaxToken,
+        dynamicStopLossPrice,
+        removeTxData,
+      },
+      contracts: {
+        addTrigger: addAutomationBotTriggerV2,
+        removeTrigger: removeAutomationBotTriggerV2,
+      },
+      stopLossWriteEnabled: aaveProtectionWriteEnabled,
+    }
   }
 }
