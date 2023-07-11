@@ -11,7 +11,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const PROXY_API_ENDPOINT_SWAP = `/api/1inch/v4.0/1/swap`;
+const PROXY_API_ENDPOINT_SWAP = `/api/exchange/v4.0/1/swap`;
 
 interface Response {
   fromToken: TokenDescriptor
