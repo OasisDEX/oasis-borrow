@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { FIAT_PRECISION } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
 import {
   mappedAjnaBuckets,
   snapToPredefinedValues,
@@ -127,18 +128,10 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
 
   const enterPressedHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const snappedValue = snapToPredefinedValues(manualAmount)
-      const index = mappedAjnaBuckets.indexOf(snappedValue)
-      const selectedValue = mappedAjnaBuckets.at(index) || zero
+      const value = resolveLendingPriceIfOutsideRange({ manualAmount, min, max, fallbackValue })
 
-      if (selectedValue.gt(max) || selectedValue.lt(min)) {
-        setManualAmount(fallbackValue)
-        updateState('price', fallbackValue)
-        return
-      }
-
-      setManualAmount(selectedValue)
-      updateState('price', selectedValue)
+      setManualAmount(value)
+      updateState('price', value)
     }
   }
 
@@ -170,10 +163,15 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
         }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node) && manualAmount !== price) {
-            const snappedValue = snapToPredefinedValues(manualAmount)
+            const value = resolveLendingPriceIfOutsideRange({
+              manualAmount,
+              min,
+              max,
+              fallbackValue,
+            })
 
-            setManualAmount(snappedValue)
-            updateState('price', snappedValue)
+            setManualAmount(value)
+            updateState('price', value)
           }
         }}
       >
