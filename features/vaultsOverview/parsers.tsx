@@ -9,7 +9,7 @@ import { NetworkNames, networksById } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
-import { AssetsTableDataCellProtection } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskProtection'
+import { AssetsTableDataCellRiskProtectionIcon } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskProtectionIcon'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
@@ -375,8 +375,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
       protection: (
-        <AssetsTableDataCellProtection
-          plain
+        <AssetsTableDataCellRiskProtectionIcon
           isOwner={isOwner}
           level={getProtection({ stopLossData, autoSellData })}
           link={url}
@@ -418,8 +417,7 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
         protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
         action: <AssetsTableDataCellAction cta="View" link={url} />,
         protection: (
-          <AssetsTableDataCellProtection
-            plain
+          <AssetsTableDataCellRiskProtectionIcon
             isOwner={isOwner}
             level={getProtection({ stopLossData, autoSellData })}
             link={url}
