@@ -28,7 +28,7 @@ async function swapOneInchTokens(
   return exchangeTokens(url)
 }
 
-const PROXY_API_ENDPOINT = `/api/exchange`;
+const PROXY_API_ENDPOINT = `/api/exchange`
 
 function formatOneInchSwapUrl(
   fromToken: string,
