@@ -241,7 +241,6 @@ interface AjnaRewardCardProps {
 
 export function AjnaRewardCard({
   banner,
-  claimingDisabled,
   floatingLabel,
   gradient,
   image,
