@@ -70,7 +70,7 @@ export function AjnaHomepageView() {
             components={[
               <AppLink
                 sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
-                href={EXTERNAL_LINKS.KB.AJNA}
+                href={EXTERNAL_LINKS.DOCS.AJNA.HUB}
               />,
             ]}
           />

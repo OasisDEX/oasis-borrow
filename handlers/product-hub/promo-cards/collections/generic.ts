@@ -23,7 +23,7 @@ export const promoCardHowToUseBorrowOnAjna = {
   image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
   title: { key: 'product-hub.promo-cards.how-to-use-borrow-on-ajna' },
   description: { key: 'product-hub.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
-  link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
+  link: { href: EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_BORROW, label: { key: 'Learn more' } },
 }
 
 export const promoCardLearnAboutBorrow = {
@@ -46,12 +46,12 @@ export const promoCardsWhatAreAjnaRewards = {
   image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
   title: { key: 'product-hub.promo-cards.what-are-ajna-rewards' },
   description: { key: 'product-hub.promo-cards.ajna-pools-accumulate-rewards' },
-  link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
+  link: { href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS, label: { key: 'Learn more' } },
 }
 
 export const promoCardWhatIsEarnOnAjna = {
   image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
   title: { key: 'product-hub.promo-cards.what-is-earn-on-ajna' },
   description: { key: 'product-hub.promo-cards.learn-how-can-you-earn-by-lending-your-assets' },
-  link: { href: EXTERNAL_LINKS.KB.AJNA, label: { key: 'Learn more' } },
+  link: { href: EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_EARN, label: { key: 'Learn more' } },
 }
