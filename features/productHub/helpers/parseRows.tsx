@@ -59,7 +59,7 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvailable: {
+        liquidity: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
@@ -95,7 +95,7 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvailable: {
+        liquidity: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
@@ -145,7 +145,7 @@ function parseProduct(
             </>
           ),
         },
-        liquidityAvailable: {
+        liquidity: {
           sortable: liquidity?.toNumber() || 0,
           value: (
             <>
