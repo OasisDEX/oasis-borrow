@@ -8,7 +8,7 @@ import {
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { NetworkIds } from 'blockchain/networks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { supportsAaveStopLoss } from 'features/aave/helpers/supportsStopLoss'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE } from 'features/automation/common/consts'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
 import {
