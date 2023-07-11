@@ -90,12 +90,16 @@ export const EXTERNAL_LINKS = {
   DOCS: {
     AJNA: {
       HUB: 'https://docs.summer.fi/protocols/ajna',
-      HOW_TO_BORROW: 'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-borrow-using-ajna',
-      HOW_TO_EARN: 'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-earn-using-ajna',
-      LIQUIDATIONS: 'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-ajna-liquidations-work',
-      RISKS: 'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/what-are-the-risks-of-lending-in-ajna',
+      HOW_TO_BORROW:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-borrow-using-ajna',
+      HOW_TO_EARN:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-earn-using-ajna',
+      LIQUIDATIONS:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-ajna-liquidations-work',
+      RISKS:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/what-are-the-risks-of-lending-in-ajna',
       TOKEN_REWARDS: 'https://docs.summer.fi/protocols/ajna/ajna-token-rewards',
-    }
+    },
   },
   LEGACY_APP: 'https://legacy.summer.fi',
   AJNA: {
