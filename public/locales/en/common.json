@@ -2798,7 +2798,8 @@
           "floatingLabel": "Exclusive to Summer.fi"
         },
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
-        "button": "Claim AJNA tokens"
+        "button": "Claim AJNA tokens",
+        "button-disabled": "Claiming available soon"
       }
     },
     "product-hub-tooltips": {

@@ -5,10 +5,10 @@ import { WithArrow } from 'components/WithArrow'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
+import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
 import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
 import { useConnection } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Button, Flex } from 'theme-ui'
@@ -63,9 +63,9 @@ const oasisRewardsCard = {
 export function AjnaRewardsController() {
   const { t } = useTranslation()
   const userNftsData = useAjnaUserNfts()
+  const userAjnaRewards = useAjnaRewards()
 
   const { isConnected } = useAccount()
-
   const { connect } = useConnection({ initialConnect: false })
 
   const handleConnect = useCallback(async () => {
@@ -101,9 +101,8 @@ export function AjnaRewardsController() {
         />
         <AjnaRewardCard
           key="oasisRewards"
-          isLoading={false}
-          // notAvailable
-          rewards={{ tokens: zero, usd: zero, }}
+          isLoading={userAjnaRewards.isLoading}
+          rewards={userAjnaRewards.rewards}
           {...oasisRewardsCard}
           floatingLabel={
             <FloatingLabel
