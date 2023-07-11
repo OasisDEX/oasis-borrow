@@ -45,10 +45,13 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
     afterAmountToLend:
       simulationData?.quoteTokenAmount &&
       `${formatCryptoBalance(simulationData.quoteTokenAmount)} ${quoteToken}`,
-    netApy: apyCurrentPosition.per365d
-      ? formatDecimalAsPercent(apyCurrentPosition.per365d)
-      : formatDecimalAsPercent(zero),
-    afterNetApy: apySimulation?.per365d && formatDecimalAsPercent(apySimulation.per365d),
+    netApy:
+      positionData.isEarningFees && apyCurrentPosition.per365d
+        ? formatDecimalAsPercent(apyCurrentPosition.per365d)
+        : formatDecimalAsPercent(zero),
+    afterNetApy: apySimulation?.per365d
+      ? formatDecimalAsPercent(simulationData?.isEarningFees ? apySimulation.per365d : zero)
+      : undefined,
     lendingPrice: `${formatCryptoBalance(
       normalizeValue(isShort ? one.div(positionData.price) : positionData.price),
     )} ${priceFormat}`,
