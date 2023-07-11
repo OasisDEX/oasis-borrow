@@ -49,7 +49,10 @@ export function AaveAutomationContext({
       commonData={commonData}
       protocol={VaultProtocol.Aave}
       metadata={{
-        stopLoss: getAaveStopLossMetadata,
+        stopLoss: getAaveStopLossMetadata(
+          aaveManageVault.strategyConfig.protocol,
+          aaveManageVault.strategyConfig.networkId,
+        ),
       }}
       overwriteTriggersDefaults={{
         stopLossTriggerData: defaultStopLossTriggerData,
