@@ -72,6 +72,7 @@ export function AjnaFormView({
     validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
   const { connect } = useConnection({ initialConnect: false })
+  const ajnaSuppressValidationEnabled = useFeatureToggle('AjnaSuppressValidation')
 
   const txHandler = useAjnaTxHandler()
 
@@ -180,7 +181,7 @@ export function AjnaFormView({
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
       label: t(primaryButtonLabel, { token: flowState.token }),
-      disabled: isPrimaryButtonDisabled,
+      disabled: ajnaSuppressValidationEnabled ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
       ...primaryButtonActions,
