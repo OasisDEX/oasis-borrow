@@ -23,24 +23,29 @@ export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
     response.account &&
     response.account.earnPositions.length
   ) {
-    const earnPosition = response.account.earnPositions[0]
+    const earnPosition = response.account.earnPositions.find((position) => position.lps > 0)
+
+    const anyPositionForCumulatives = response.account.earnPositions[0]
+
     const cumulativeValues = {
-      cumulativeDeposit: new BigNumber(earnPosition.account.cumulativeDeposit),
-      cumulativeFees: new BigNumber(earnPosition.account.cumulativeFees),
-      cumulativeWithdraw: new BigNumber(earnPosition.account.cumulativeWithdraw),
+      cumulativeDeposit: new BigNumber(anyPositionForCumulatives.account.cumulativeDeposit),
+      cumulativeFees: new BigNumber(anyPositionForCumulatives.account.cumulativeFees),
+      cumulativeWithdraw: new BigNumber(anyPositionForCumulatives.account.cumulativeWithdraw),
     }
 
-    return earnPosition.lps > 0
-      ? {
-          lps: new BigNumber(earnPosition.lps),
-          priceIndex: new BigNumber(earnPosition.index),
-          nftID: earnPosition.nft?.id || null,
-          ...cumulativeValues,
-        }
-      : {
-          ...defaultResponse,
-          ...cumulativeValues,
-        }
+    if (!earnPosition) {
+      return {
+        ...defaultResponse,
+        ...cumulativeValues,
+      }
+    }
+
+    return {
+      lps: new BigNumber(earnPosition.lps),
+      priceIndex: new BigNumber(earnPosition.index),
+      nftID: earnPosition.nft?.id || null,
+      ...cumulativeValues,
+    }
   }
 
   return defaultResponse
