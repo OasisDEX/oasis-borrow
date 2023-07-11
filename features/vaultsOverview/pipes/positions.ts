@@ -10,6 +10,7 @@ import { IStrategyConfig } from 'features/aave/common'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   extractStopLossData,
   StopLossTriggerData,
@@ -79,6 +80,7 @@ export type AavePosition = Position & {
   type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
   stopLossData?: StopLossTriggerData
+  autoSellData?: AutoBSTriggerData // this is just for type safety in positioins table, its not happening right now
   fakePositionCreatedEvtForDsProxyUsers?: boolean
   debtToken: string
   protocol: AaveLendingProtocol

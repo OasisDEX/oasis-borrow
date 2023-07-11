@@ -58,20 +58,21 @@ export function getFundingCost({
   return value.gt(zero) ? debt.div(value).multipliedBy(stabilityFee).times(100) : zero
 }
 
-function getProtection({
+export function getProtection({
   stopLossData,
   autoSellData,
 }: {
-  stopLossData: StopLossTriggerData
+  stopLossData?: StopLossTriggerData
   autoSellData?: AutoBSTriggerData
 }): number {
-  return (
-    stopLossData.stopLossLevel.gt(zero)
-      ? stopLossData.stopLossLevel.times(100)
-      : autoSellData?.execCollRatio.gt(zero)
-      ? autoSellData.execCollRatio
-      : zero
-  ).toNumber()
+  return stopLossData
+    ? (stopLossData.stopLossLevel.gt(zero)
+        ? stopLossData.stopLossLevel.times(100)
+        : autoSellData?.execCollRatio.gt(zero)
+        ? autoSellData.execCollRatio
+        : zero
+      ).toNumber()
+    : zero.toNumber()
 }
 
 export function getMakerPositionOfType(positions: MakerPositionDetails[]) {

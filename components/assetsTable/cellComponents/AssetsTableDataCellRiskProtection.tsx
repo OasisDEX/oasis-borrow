@@ -8,26 +8,39 @@ interface AssetsTableDataRiskProtectionProps {
   isOwner?: boolean
   level: number
   link: string
+  plain?: boolean
 }
 
 export function AssetsTableDataCellProtection({
   isOwner,
   level,
   link,
+  plain = false,
 }: AssetsTableDataRiskProtectionProps) {
   const { t } = useTranslation()
 
-  return (
-    <>
-      <AppLink href={link} hash={VaultViewMode.Protection}>
-        <Button variant={level > 0 ? 'actionActiveGreen' : 'action'}>
-          {level > 0
-            ? t('discover.table.protection-value', { protection: level })
-            : isOwner
-            ? t('discover.table.activate')
-            : t('discover.table.inactive')}
-        </Button>
-      </AppLink>
-    </>
+  return plain ? (
+    <Button
+      variant={level > 0 ? 'actionActiveGreen' : 'action'}
+      sx={{
+        pointerEvents: plain ? 'none' : 'auto',
+      }}
+    >
+      {level > 0
+        ? t('discover.table.protection-value', { protection: level })
+        : isOwner
+        ? t('discover.table.activate')
+        : t('discover.table.inactive')}
+    </Button>
+  ) : (
+    <AppLink href={link} hash={VaultViewMode.Protection}>
+      <Button variant={level > 0 ? 'actionActiveGreen' : 'action'}>
+        {level > 0
+          ? t('discover.table.protection-value', { protection: level })
+          : isOwner
+          ? t('discover.table.activate')
+          : t('discover.table.inactive')}
+      </Button>
+    </AppLink>
   )
 }
