@@ -38,7 +38,10 @@ import { LendingProtocol } from 'lendingProtocols'
 export const aaveOffsetFromMinAndMax = new BigNumber(0.05)
 export const aaveOffsetFromMaxDuringOpenFLow = new BigNumber(0.1)
 
-export function getAaveStopLossMetadata(lendingProtocol: LendingProtocol, networkId: NetworkIds) {
+export function createGetAaveStopLossMetadata(
+  lendingProtocol: LendingProtocol,
+  networkId: NetworkIds,
+) {
   return function (context: ContextWithoutMetadata): StopLossMetadata {
     const {
       automationTriggersData,
