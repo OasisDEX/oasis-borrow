@@ -28,6 +28,8 @@ async function swapOneInchTokens(
   return exchangeTokens(url)
 }
 
+const PROXY_API_ENDPOINT = `/api/exchange`;
+
 function formatOneInchSwapUrl(
   fromToken: string,
   toToken: string,
@@ -39,7 +41,7 @@ function formatOneInchSwapUrl(
   protocols: string[] = [],
 ) {
   const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
-  return `https://oasis.api.enterprise.1inch.exchange/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
+  return `${PROXY_API_ENDPOINT}/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
 }
 
 async function exchangeTokens(url: string): Promise<any> {
