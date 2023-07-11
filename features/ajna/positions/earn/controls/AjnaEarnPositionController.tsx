@@ -23,7 +23,7 @@ export function AjnaEarnPositionController() {
       headlineDetails={[
         {
           label: t('ajna.position-page.earn.common.headline.current-yield'),
-          value: position.poolApy.per7d ? formatDecimalAsPercent(position.poolApy.per7d) : '-',
+          value: position.poolApy.per365 ? formatDecimalAsPercent(position.poolApy.per365) : '-',
         },
         {
           label: t('ajna.position-page.earn.common.headline.90-day-avg'),
