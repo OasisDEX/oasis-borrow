@@ -20,7 +20,6 @@ const miningRewardsCard = {
     'ajna.rewards.cards.mining.list-1',
     'ajna.rewards.cards.mining.list-2',
     'ajna.rewards.cards.mining.list-3',
-    'ajna.rewards.cards.mining.list-4',
   ],
   // TODO update link once available
   link: { title: 'ajna.rewards.cards.mining.link', href: '/' },
