@@ -76,6 +76,7 @@ export const getMinMaxAndRange = ({
   const range = [
     ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
   ]
+    .filter((item) => item.lt(marketPrice))
     .sort((a, b) => a.toNumber() - b.toNumber())
     .map((item) => item.decimalPlaces(18))
 
