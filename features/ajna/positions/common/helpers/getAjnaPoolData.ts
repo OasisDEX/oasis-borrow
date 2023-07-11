@@ -96,12 +96,12 @@ export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
       debt: new BigNumber(debt).shiftedBy(NEGATIVE_WAD_PRECISION),
       depositSize: new BigNumber(depositSize).shiftedBy(NEGATIVE_WAD_PRECISION),
       apr30dAverage: new BigNumber(apr30dAverage).shiftedBy(NEGATIVE_WAD_PRECISION),
-      dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage)
-        .shiftedBy(NEGATIVE_WAD_PRECISION)
-        .shiftedBy(2),
-      monthlyPercentageRate30dAverage: new BigNumber(monthlyPercentageRate30dAverage)
-        .shiftedBy(NEGATIVE_WAD_PRECISION)
-        .shiftedBy(2),
+      dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage).shiftedBy(
+        NEGATIVE_WAD_PRECISION,
+      ),
+      monthlyPercentageRate30dAverage: new BigNumber(monthlyPercentageRate30dAverage).shiftedBy(
+        NEGATIVE_WAD_PRECISION,
+      ),
       currentBurnEpoch: new BigNumber(currentBurnEpoch),
       pendingInflator: new BigNumber(pendingInflator).shiftedBy(NEGATIVE_WAD_PRECISION),
       buckets: buckets.map((bucket) => ({
