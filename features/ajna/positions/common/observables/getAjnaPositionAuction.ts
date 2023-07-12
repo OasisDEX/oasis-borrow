@@ -54,12 +54,12 @@ export const getAjnaPositionAuction$ = ({
             auction.collateral.gt(zero) &&
             auction.debtToCover.gt(zero) &&
             !auction.inLiquidation &&
-            !!auction.endOfGracePeriod
+            !isDuringGraceTime
 
           const isLiquidated =
             auction.debtToCover.isZero() &&
             !auction.inLiquidation &&
-            !!auction.endOfGracePeriod &&
+            !isDuringGraceTime &&
             !isPartiallyLiquidated
 
           const graceTimeRemaining = timeAgo({
