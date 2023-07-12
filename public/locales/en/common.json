@@ -2576,7 +2576,7 @@
           },
           "nft": {
             "intro": "The Ajna rewards this position is eligible for",
-            "token-rewards": "Summer.fi x AJNA Token Rewards",
+            "token-rewards": "Summer.fi × AJNA Token Rewards",
             "protocol-rewards": "AJNA Protocol Rewards",
             "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
             "bullet-points": {
@@ -2778,16 +2778,15 @@
         "mining": {
           "title": "AJNA Protocol Rewards",
           "list-1": "Rewards Earn Positions only",
-          "list-2": "Fortnightly Claim period",
-          "list-3": "Earn proportionally to % of pool interest generated",
-          "list-4": "You need to opt-in to stake your positions",
+          "list-2": "Earn proportionally to % of pool interest generated",
+          "list-3": "You need to opt-in to stake your positions",
           "link": "Learn more about Ajna Liquidity Mining Rewards",
           "banner": {
             "title": "AJNA Liquidity Mining Rewards "
           }
         },
         "token": {
-          "title": "Summer.fi x Ajna Token Rewards",
+          "title": "Summer.fi × Ajna Token Rewards",
           "list-1": "Rewards exclusive to Summer.fi users!",
           "list-2": "Rewards for Borrowing, Lending and Multiplying",
           "list-3": "Tokens will be claimable weekly in the near future",
@@ -2798,7 +2797,8 @@
           "floatingLabel": "Exclusive to Summer.fi"
         },
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
-        "button": "Claim AJNA tokens"
+        "button": "Claim AJNA tokens",
+        "button-disabled": "Claiming available soon"
       }
     },
     "product-hub-tooltips": {
