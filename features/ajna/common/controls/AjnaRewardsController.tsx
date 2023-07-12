@@ -75,7 +75,6 @@ export function AjnaRewardsController() {
 
   return (
     <AnimatedWrapper>
-      <Button onClick={userAjnaRewards.refetch}>userAjnaRewards</Button>
       <AjnaHeader title={t('ajna.rewards.title')} intro={t('ajna.rewards.intro')} />
       {!isConnected && (
         <Flex sx={{ justifyContent: 'center', mb: 5 }}>
