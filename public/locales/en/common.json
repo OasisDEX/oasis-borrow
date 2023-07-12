@@ -2605,7 +2605,7 @@
         "notifications": {
           "time-to-liquidation": {
             "title": "Your position will be moved to liquidation {{time}}",
-            "message": "Your position is at risk of liquidation, a penalty of 90 days of interest has been applied. <1>Deposit collateral</1> or <1>Repay your Debt</1> to save it."
+            "message": "Your position is at risk of liquidation, a penalty of 90 days of interest has been applied. <1>Deposit collateral</1> or <1>Repay your Debt</1> to save it"
           },
           "being-liquidated": {
             "title": "This position is currently being liquidated",
