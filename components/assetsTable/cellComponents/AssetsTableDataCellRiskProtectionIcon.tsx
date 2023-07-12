@@ -21,7 +21,7 @@ export function AssetsTableDataCellRiskProtectionIcon({
         justifyContent: 'flex-end',
       }}
     >
-      <Icon name="stop_loss_active" size={38} />
+      <Icon name="stop_loss_active" size={36} />
     </Flex>
   ) : (
     <Button
