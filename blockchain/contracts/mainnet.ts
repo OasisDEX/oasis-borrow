@@ -155,7 +155,7 @@ export const mainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, mainnet.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
-    'CBETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CBETHETH),
     'ETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHUSDC),
     'RETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHDAI),
