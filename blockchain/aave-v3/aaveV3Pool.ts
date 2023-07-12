@@ -33,24 +33,19 @@ export interface AaveV3UserConfigurationsParameters extends BaseParameters {
 export type AaveV3ConfigurationData = string[]
 
 const networkMappings = {
-  [NetworkIds.MAINNET]: getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET, 'aaveV3Pool'),
-  [NetworkIds.OPTIMISMMAINNET]: getNetworkMapping(
-    AaveV3Pool__factory,
-    NetworkIds.OPTIMISMMAINNET,
-    'aaveV3Pool',
-  ),
-  [NetworkIds.ARBITRUMMAINNET]: getNetworkMapping(
-    AaveV3Pool__factory,
-    NetworkIds.ARBITRUMMAINNET,
-    'aaveV3Pool',
-  ),
+  [NetworkIds.MAINNET]: () =>
+    getNetworkMapping(AaveV3Pool__factory, NetworkIds.MAINNET, 'aaveV3Pool'),
+  [NetworkIds.OPTIMISMMAINNET]: () =>
+    getNetworkMapping(AaveV3Pool__factory, NetworkIds.OPTIMISMMAINNET, 'aaveV3Pool'),
+  [NetworkIds.ARBITRUMMAINNET]: () =>
+    getNetworkMapping(AaveV3Pool__factory, NetworkIds.ARBITRUMMAINNET, 'aaveV3Pool'),
 }
 
 export function getAaveV3UserAccountData({
   networkId,
   address,
 }: AaveV3UserAccountDataParameters): Promise<AaveV3UserAccountData> {
-  const { contract, baseCurrencyUnit } = networkMappings[networkId]
+  const { contract, baseCurrencyUnit } = networkMappings[networkId]()
 
   return contract.getUserAccountData(address).then((result) => {
     return {
@@ -72,7 +67,7 @@ export function getAaveV3UserConfigurations({
   networkId,
   address,
 }: AaveV3UserConfigurationsParameters): Promise<AaveV3ConfigurationData> {
-  const { contract } = networkMappings[networkId]
+  const { contract } = networkMappings[networkId]()
   return contract.getUserConfiguration(address).then((result) => {
     return result.map((value) => value.toString())
   })
@@ -81,7 +76,7 @@ export function getAaveV3UserConfigurations({
 export function getAaveV3ReservesList({
   networkId,
 }: BaseParameters): Promise<AaveV3ConfigurationData> {
-  const { contract } = networkMappings[networkId]
+  const { contract } = networkMappings[networkId]()
   return contract.getReservesList().then((result) => {
     return result.map((value) => value.toString())
   })
@@ -91,7 +86,7 @@ export function getEModeCategoryData({
   networkId,
   categoryId,
 }: GetEModeCategoryDataParameters): Promise<GetEModeCategoryDataResult> {
-  const { contract } = networkMappings[networkId]
+  const { contract } = networkMappings[networkId]()
   return contract.getEModeCategoryData(categoryId.toString(16)).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000),

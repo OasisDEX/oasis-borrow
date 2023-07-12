@@ -3,6 +3,7 @@ import { NetworkNames } from 'blockchain/networks'
 import { networksByName } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
+import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { one } from 'helpers/zero'
@@ -11,7 +12,6 @@ import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEth
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { memoize } from 'lodash'
-import moment from 'moment/moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -29,7 +29,7 @@ import { getOpenMultiplyAaveParametersMachine } from './common/services/state-ma
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
-  getManageAaveV2PositionStateMachineServices,
+  getManageAaveV3PositionStateMachineServices,
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
@@ -42,7 +42,6 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   const {
     userSettings$,
     txHelpers$,
-    balance$,
     onEveryBlock$,
     context$,
     tokenPriceUSD$,
@@ -79,20 +78,20 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   } = protocols[LendingProtocol.AaveV3][networkId]
 
   const aaveEarnYieldsQuery = memoize(
-    curry(getAaveWstEthYield)(disconnectedGraphQLClient$, moment()),
+    curry(getAaveWstEthYield)(disconnectedGraphQLClient$, dayjs()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
   const earnCollateralsReserveData = {
-    WSTETH: aaveReserveConfigurationData$({ token: 'WSTETH' }),
+    WSTETH: aaveReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
   } as Record<string, Observable<ReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
-      balance$,
       aaveOracleAssetPriceData$,
       of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3, network),
+      networkId,
     ),
   )
 
@@ -107,14 +106,23 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
-  const openAaveParameters = getOpenMultiplyAaveParametersMachine(txHelpers$, gasEstimation$, {
-    lendingProtocol: LendingProtocol.AaveV3,
+  const openAaveParameters = getOpenMultiplyAaveParametersMachine(
+    txHelpers$,
+    gasEstimation$,
     networkId,
-  })
-  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
-  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
-  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
-  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
+  )
+  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$, networkId)
+  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$, networkId)
+  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    networkId,
+  )
+  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    networkId,
+  )
 
   const openAaveStateMachineServices = getOpenAaveV3PositionStateMachineServices(
     context$,
@@ -132,7 +140,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     aaveReserveConfigurationData$,
   )
 
-  const manageAaveStateMachineServices = getManageAaveV2PositionStateMachineServices(
+  const manageAaveStateMachineServices = getManageAaveV3PositionStateMachineServices(
     context$,
     txHelpers$,
     tokenBalances$,

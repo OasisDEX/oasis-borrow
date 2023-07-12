@@ -1,11 +1,11 @@
-import { PositionTransition } from '@oasisdex/dma-library'
 import {
-  IPositionTransition,
   IRiskRatio,
   ISimplePositionTransition,
   ISimulatedTransition,
+  IStrategy,
+  PositionTransition,
   RiskRatio,
-} from '@oasisdex/oasis-actions'
+} from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
@@ -62,8 +62,8 @@ export type AdjustRiskViewConfig = {
 }
 
 function transitionHasMinConfigurableRiskRatio(
-  transition?: ISimplePositionTransition | PositionTransition,
-): transition is IPositionTransition {
+  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
+): transition is PositionTransition {
   return (
     !!transition &&
     (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
@@ -139,7 +139,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       onChainPosition?.riskRatio.loanToValue ||
       state.context.defaultRiskRatio?.loanToValue
 
-    const sidebarContent = (
+    return (
       <Grid gap={3}>
         <SliderValuePicker
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
@@ -255,6 +255,5 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         )}
       </Grid>
     )
-    return sidebarContent
   }
 }

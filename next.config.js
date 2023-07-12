@@ -10,9 +10,9 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
-const { withSentryConfig } = require('@sentry/nextjs')
 const { publicRuntimeConfig } = require('./runtime.config.js')
 const path = require('path')
+const { withSentryConfig } = require('@sentry/nextjs')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
@@ -36,7 +36,7 @@ const baseConfig = {
   publicRuntimeConfig: publicRuntimeConfig,
   webpack: function (config, { isServer }) {
     config.module.rules.push({
-      test: /\.(eot|woff|woff2|ttf|svg|png|jpg|gif)$/,
+      test: /\.(svg|png|jpg|gif)$/,
       use: {
         loader: 'url-loader',
         options: {
@@ -182,10 +182,39 @@ const baseConfig = {
     ]
   },
   transpilePackages: ['@lifi/widget', '@lifi/wallet-management'],
+  experimental: {
+    largePageDataBytes: 256 * 1024, // 256 KB. The default one is 128 KB, but we have a lot of that kind of errors, so we increase it.
+  },
 }
 
-module.exports = withSentryConfig(withBundleAnalyzer(withMDX(baseConfig)), {
-  org: 'oazo-apps',
-  project: 'oazo-apps',
-  url: 'https://sentry.io/',
-})
+module.exports = withBundleAnalyzer(withMDX(baseConfig))
+
+if (process.env.SENTRY_AUTH_TOKEN !== undefined) {
+  module.exports = withSentryConfig(
+    module.exports,
+    {
+      org: 'oazo-apps',
+      project: 'oazo-apps',
+      url: 'https://sentry.io/',
+    },
+    {
+      // For all available options, see:
+      // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+
+      // Upload a larger set of source maps for prettier stack traces (increases build time)
+      widenClientFileUpload: true,
+
+      // Transpiles SDK to be compatible with IE11 (increases bundle size)
+      transpileClientSDK: true,
+
+      // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
+      tunnelRoute: '/monitoring',
+
+      // Hides source maps from generated client bundles
+      hideSourceMaps: true,
+
+      // Automatically tree-shake Sentry logger statements to reduce bundle size
+      disableLogger: true,
+    },
+  )
+}

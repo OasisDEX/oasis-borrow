@@ -4,12 +4,12 @@ import {
   Pages,
   trackingEvents,
 } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
+import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -45,7 +45,6 @@ export function GeneralManageTabBar({
     ? (hash as VaultViewMode)
     : VaultViewMode.Overview
   const [mode, setMode] = useState<VaultViewMode>(initialMode)
-  const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 
   const {

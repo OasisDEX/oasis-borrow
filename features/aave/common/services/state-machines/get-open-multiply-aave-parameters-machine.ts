@@ -1,28 +1,30 @@
-import { OpenMultiplyAaveParameters } from 'actions/aave'
+import { getOpenPositionParameters, OpenMultiplyAaveParameters } from 'actions/aave'
+import { NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
-import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import {
+  createTransactionParametersStateMachine,
+  TransactionParametersStateMachine,
+} from 'features/stateMachines/transactionParameters'
 import { HasGasEstimation } from 'helpers/form'
 import { Observable } from 'rxjs'
-
-import { AaveNetworkProtocolParameters, getProperAction } from './common'
 
 export function getOpenMultiplyAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
-  netwrokProtocolParameters: AaveNetworkProtocolParameters,
-) {
+  networkId: NetworkIds,
+): TransactionParametersStateMachine<OpenMultiplyAaveParameters> {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
     async (parameters: OpenMultiplyAaveParameters) => {
       try {
-        const operation = getProperAction(netwrokProtocolParameters, 'getOpenTransaction')
-        return await operation(parameters)
+        return await getOpenPositionParameters(parameters)
       } catch (e) {
         console.error(e)
         throw e
       }
     },
+    networkId,
     'open',
   )
 }

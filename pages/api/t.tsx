@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import { enableMixpanelDevelopmentMode, MixpanelDevelopmentType } from 'analytics/analytics'
 import { config } from 'analytics/mixpanel'
 import { snakeCase } from 'lodash'
@@ -28,4 +27,4 @@ const handler = async function (
   }
 }
 
-export default withSentry(handler)
+export default handler

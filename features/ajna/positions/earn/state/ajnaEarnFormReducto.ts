@@ -35,7 +35,7 @@ export const ajnaEarnReset = {
   depositAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
-  isStakingNft: undefined,
+  isStakingNft: false,
 }
 
 export const ajnaEarnDefault: AjnaEarnFormState = {

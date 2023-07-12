@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 

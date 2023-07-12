@@ -8,7 +8,6 @@ const tokenKeys = [
   'name',
   'icon',
   'iconCircle',
-  'iconColor',
   'color',
   'background',
   'bannerIcon',

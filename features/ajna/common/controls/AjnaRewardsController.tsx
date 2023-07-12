@@ -5,10 +5,11 @@ import { WithArrow } from 'components/WithArrow'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
+import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
 import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Button, Flex } from 'theme-ui'
@@ -20,10 +21,9 @@ const miningRewardsCard = {
     'ajna.rewards.cards.mining.list-1',
     'ajna.rewards.cards.mining.list-2',
     'ajna.rewards.cards.mining.list-3',
-    'ajna.rewards.cards.mining.list-4',
   ],
   // TODO update link once available
-  link: { title: 'ajna.rewards.cards.mining.link', href: '/' },
+  link: { title: 'ajna.rewards.cards.mining.link', href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS },
   banner: {
     title: 'ajna.rewards.cards.mining.banner.title',
     button: {
@@ -46,7 +46,7 @@ const oasisRewardsCard = {
     'ajna.rewards.cards.token.list-3',
   ],
   // TODO update link once available
-  link: { title: 'ajna.rewards.cards.token.link', href: '/' },
+  link: { title: 'ajna.rewards.cards.token.link', href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS },
   banner: {
     title: 'ajna.rewards.cards.token.banner.title',
     button: {
@@ -63,16 +63,16 @@ const oasisRewardsCard = {
 export function AjnaRewardsController() {
   const { t } = useTranslation()
   const userNftsData = useAjnaUserNfts()
+  const userAjnaRewards = useAjnaRewards()
 
   const { isConnected } = useAccount()
-
-  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { connect } = useConnection({ initialConnect: false })
 
   const handleConnect = useCallback(async () => {
     if (!isConnected) {
-      await executeConnection()
+      await connect()
     }
-  }, [isConnected, executeConnection])
+  }, [isConnected, connect])
 
   return (
     <AnimatedWrapper>
@@ -91,19 +91,19 @@ export function AjnaRewardsController() {
       )}
       <ProductCardsWrapper gap={24} desktopWidthOfCard={448} sx={{ mt: 5 }}>
         <AjnaRewardCard
-          {...miningRewardsCard}
-          onBtnClick={userNftsData.handler}
-          txStatus={userNftsData.txDetails?.txStatus}
-          rewards={userNftsData.rewards}
-          isLoading={userNftsData.isLoading}
           key="miningRewards"
+          isLoading={userNftsData.isLoading}
+          notAvailable
+          onBtnClick={userNftsData.handler}
+          rewards={userNftsData.rewards}
+          txStatus={userNftsData.txDetails?.txStatus}
+          {...miningRewardsCard}
         />
         <AjnaRewardCard
-          {...oasisRewardsCard}
           key="oasisRewards"
-          notAvailable
-          isLoading={false}
-          rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
+          isLoading={userAjnaRewards.isLoading}
+          rewards={userAjnaRewards.rewards}
+          {...oasisRewardsCard}
           floatingLabel={
             <FloatingLabel
               text={t('ajna.rewards.cards.token.floatingLabel')}
@@ -117,7 +117,7 @@ export function AjnaRewardsController() {
               textSx={{
                 fontWeight: 'semiBold',
               }}
-              imageUrl="/static/img/logo_monolithic.svg"
+              imageUrl="/static/img/logos/dot_light.svg"
             />
           }
         />

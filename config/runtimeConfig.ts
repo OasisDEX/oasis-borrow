@@ -7,4 +7,4 @@ export const etherscanAPIKey =
 export const mainnetCacheUrl =
   process.env.MAINNET_CACHE_URL ||
   getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
-  'https://oazo-bcache.new.oasis.app/api/v1'
+  'https://oazo-bcache.new.summer.fi/api/v1'

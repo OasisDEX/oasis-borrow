@@ -35,7 +35,7 @@ export const steps: {
     manage: ['manage', 'dpm', 'transaction', 'transition'],
   },
   earn: {
-    open: ['risk', 'setup', 'dpm', 'nft', 'transaction'],
+    open: ['risk', 'setup', 'dpm', 'transaction'],
     manage: ['manage', 'dpm', 'transaction', 'transition'],
   },
   multiply: {
@@ -48,3 +48,9 @@ export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
 export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']
 
 export const LTVWarningThreshold = new BigNumber(0.05)
+
+export const ajnaLastIndexBucketPrice = new BigNumber(99836282890)
+
+// safe defaults which should ensure reasonable slider range for newly created pools
+export const ajnaDefaultPoolRangeMarketPriceOffset = 0.9 // 90%
+export const ajnaDefaultMarketPriceOffset = 0.25 // 25%

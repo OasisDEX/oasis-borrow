@@ -1,7 +1,7 @@
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
-import { AppHeader, ConnectPageHeader } from 'components/Header'
-import { AppLinkProps } from 'components/Links'
+import { HomepageHero } from 'features/homepage/HomepageHero'
+import { NavigationController } from 'features/navigation/controls/NavigationController'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useCoolMode } from 'helpers/sweet/useCoolMode'
 import { WithChildren } from 'helpers/types'
@@ -9,8 +9,6 @@ import React, { Ref } from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
 import { BackgroundLight } from 'theme/BackgroundLight'
-import { BackgroundLighter } from 'theme/BackgroundLighter'
-import { ProductBackground } from 'theme/ProductBackground'
 
 import { Announcement } from './Announcement'
 import { ModalTrezorMetamaskEIP1559 } from './Modal'
@@ -53,6 +51,45 @@ export function BasicLayout({ header, footer, children, sx, variant, bg }: Basic
   )
 }
 
+export function WithAnnouncementLandingLayout({
+  header,
+  footer,
+  children,
+  showAnnouncement,
+  sx,
+  variant,
+}: Omit<WithAnnouncementLayoutProps, 'bg'>) {
+  const ref = useCoolMode()
+
+  return (
+    <Flex
+      sx={{
+        bg: 'none',
+        flexDirection: 'column',
+        minHeight: '100%',
+        ...sx,
+      }}
+      ref={ref as Ref<HTMLDivElement>}
+    >
+      <Background wrapper>{header}</Background>
+      {showAnnouncement && (
+        <Container variant="announcement">
+          <Announcement
+            text="Welcome to the new Summer.fi. We are thrilled to have you here."
+            discordLink={EXTERNAL_LINKS.DISCORD}
+            link={EXTERNAL_LINKS.ETHEREUM_ORG_MERKLING}
+            linkText="Check blog post"
+          />
+        </Container>
+      )}
+      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+        <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
+      </Container>
+      {footer}
+    </Flex>
+  )
+}
+
 export function WithAnnouncementLayout({
   header,
   footer,
@@ -79,7 +116,7 @@ export function WithAnnouncementLayout({
       {showAnnouncement && (
         <Container variant="announcement">
           <Announcement
-            text="Welcome to the new Oasis.app. We are thrilled to have you here."
+            text="Welcome to the new Summer.fi. We are thrilled to have you here."
             discordLink={EXTERNAL_LINKS.DISCORD}
             link={EXTERNAL_LINKS.ETHEREUM_ORG_MERKLING}
             linkText="Check blog post"
@@ -94,10 +131,7 @@ export function WithAnnouncementLayout({
   )
 }
 
-export function AppLayout({
-  children,
-  shortBackground = false,
-}: { shortBackground?: boolean } & WithChildren) {
+export function AppLayout({ children }: WithChildren) {
   if (!isAppContextAvailable()) {
     return null
   }
@@ -108,8 +142,8 @@ export function AppLayout({
         sx={{ zIndex: 2, position: 'relative' }}
         showAnnouncement={false}
         footer={<Footer />}
-        header={<AppHeader />}
-        bg={shortBackground ? <Background short /> : <BackgroundLight />}
+        header={<NavigationController />}
+        bg={<BackgroundLight />}
       >
         {children}
         <ModalTrezorMetamaskEIP1559 />
@@ -121,7 +155,7 @@ export function AppLayout({
 const marketingBackgrounds = {
   default: <Background />,
   light: <BackgroundLight />,
-  lighter: <BackgroundLighter />,
+  lighter: <BackgroundLight />,
   none: null,
 }
 
@@ -132,16 +166,19 @@ export function LandingPageLayout({ children }: WithChildren) {
 
   return (
     <>
-      <WithAnnouncementLayout
-        header={<AppHeader />}
+      <WithAnnouncementLandingLayout
+        header={
+          <>
+            <NavigationController /> <HomepageHero />
+          </>
+        }
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
-        sx={{ position: 'relative' }}
-        bg={marketingBackgrounds['default']}
+        sx={{ position: 'relative', zIndex: 1 }}
       >
         {children}
-      </WithAnnouncementLayout>
+      </WithAnnouncementLandingLayout>
     </>
   )
 }
@@ -154,12 +191,12 @@ export function ProductPagesLayout({ children }: WithChildren) {
   return (
     <>
       <WithAnnouncementLayout
-        header={<AppHeader />}
+        header={<NavigationController />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
         sx={{ position: 'relative' }}
-        bg={<ProductBackground />}
+        bg={<BackgroundLight />}
       >
         {children}
       </WithAnnouncementLayout>
@@ -184,7 +221,7 @@ export function MarketingLayout({
   return (
     <>
       <BasicLayout
-        header={<AppHeader />}
+        header={<NavigationController />}
         footer={<Footer />}
         variant={variant || 'marketingContainer'}
         sx={{ position: 'relative' }}
@@ -193,16 +230,5 @@ export function MarketingLayout({
         {children}
       </BasicLayout>
     </>
-  )
-}
-
-export function ConnectPageLayout({ children }: WithChildren & { backLink: AppLinkProps }) {
-  if (!isAppContextAvailable()) {
-    return null
-  }
-  return (
-    <BasicLayout header={<ConnectPageHeader />} bg={null}>
-      {children}
-    </BasicLayout>
   )
 }

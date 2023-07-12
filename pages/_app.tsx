@@ -1,11 +1,12 @@
 import { CacheProvider, Global } from '@emotion/core'
+import { Icon } from '@makerdao/dai-ui-icons'
 // @ts-ignore
 import { MDXProvider } from '@mdx-js/react'
 import { Web3OnboardProvider } from '@web3-onboard/react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { adRollPixelScript } from 'analytics/adroll'
-import { trackingEvents } from 'analytics/analytics'
+import { TopBannerEvents, trackingEvents } from 'analytics/analytics'
 import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
@@ -15,21 +16,24 @@ import { CookieBanner, SavedSettings } from 'components/CookieBanner'
 import { GasEstimationContextProvider } from 'components/GasEstimationContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
-import { CustomMDXLink } from 'components/Links'
+import { AppLink, CustomMDXLink } from 'components/Links'
 import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
+import { TopBanner } from 'components/TopBanner'
+import { WithArrow } from 'components/WithArrow'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
 import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { FTPolarBold, FTPolarMedium } from 'helpers/fonts'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { loadFeatureToggles } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-import { appWithTranslation, i18n } from 'next-i18next'
+import { appWithTranslation, i18n, useTranslation } from 'next-i18next'
 import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef } from 'react'
@@ -85,8 +89,7 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
-  ${FTPolarBold.style.fontFamily}
-  ${FTPolarMedium.style.fontFamily}
+  ${FTPolar.style.fontFamily}
 `
 
 // extending Component with static properties that can be attached to it
@@ -121,6 +124,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
 
   const layoutProps = Component.layoutProps
   const router = useRouter()
+  const { t } = useTranslation()
 
   const seoTags = Component.seoTags || (
     <PageSEOTags
@@ -165,6 +169,26 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
   }, [router.events])
 
+  const rebrandingUrl = getConfig()?.publicRuntimeConfig.rebrandingUrl
+
+  const topBannerContent = (
+    <AppLink
+      href={rebrandingUrl || EXTERNAL_LINKS.BLOG.REBRANDING}
+      onClick={() => {
+        trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClicked, 'rebranding')
+      }}
+      sx={{ display: 'inline', padding: 3 }}
+    >
+      <WithArrow variant="boldParagraph2" sx={{ fontSize: '16px', display: 'inline' }}>
+        <Icon
+          name="loudspeaker"
+          sx={{ mr: 2, position: 'relative', top: '2px', transition: '0.2s transform' }}
+        />
+        {t('top-banner.rebranding')}
+      </WithArrow>
+    </AppLink>
+  )
+
   return (
     <>
       <Head>
@@ -181,18 +205,19 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         <CacheProvider value={cache}>
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
-            <Web3ReactProvider {...{ getLibrary }}>
-              <AppContextProvider>
-                <ModalProvider>
-                  <HeadTags />
-                  {seoTags}
-                  <SetupWeb3Context>
-                    <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-                      <Web3OnBoardConnectorProvider>
+            <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+              <Web3OnBoardConnectorProvider>
+                <Web3ReactProvider {...{ getLibrary }}>
+                  <AppContextProvider>
+                    <ModalProvider>
+                      <HeadTags />
+                      {seoTags}
+                      <SetupWeb3Context>
                         <SharedUIProvider>
                           <GasEstimationContextProvider>
                             <NotificationSocketProvider>
                               <WithFollowVaults>
+                                <TopBanner name="rebranding">{topBannerContent}</TopBanner>
                                 <Layout {...layoutProps}>
                                   <Component {...pageProps} />
                                   <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
@@ -201,12 +226,12 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                             </NotificationSocketProvider>
                           </GasEstimationContextProvider>
                         </SharedUIProvider>
-                      </Web3OnBoardConnectorProvider>
-                    </Web3OnboardProvider>
-                  </SetupWeb3Context>
-                </ModalProvider>
-              </AppContextProvider>
-            </Web3ReactProvider>
+                      </SetupWeb3Context>
+                    </ModalProvider>
+                  </AppContextProvider>
+                </Web3ReactProvider>
+              </Web3OnBoardConnectorProvider>
+            </Web3OnboardProvider>
           </MDXProvider>
         </CacheProvider>
       </ThemeProvider>

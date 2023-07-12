@@ -1,13 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useConnectWallet } from '@web3-onboard/react'
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
-import { disconnect } from 'components/connectWallet'
 import { AppLink } from 'components/Links'
 import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { AccountDetails } from 'features/account/AccountData'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -266,7 +265,7 @@ function WalletInfo() {
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        <BlockNativeAvatar small sx={{ mr: 2 }} />
+        <BlockNativeAvatar sx={{ mr: 2 }} />
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
             <Text variant="boldParagraph3" sx={{ letterSpacing: '0.02em' }}>
@@ -315,18 +314,13 @@ function WalletInfo() {
 
 export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   const { t } = useTranslation()
-  const { web3Context$ } = useAppContext()
-  const [web3Context] = useObservable(web3Context$)
   const { socket } = useNotificationSocket()
-  const [{ wallet }, , disconnectWallet] = useConnectWallet()
+  const { disconnect } = useWalletManagement()
 
   const disconnectCallback = useCallback(async () => {
     socket?.disconnect()
-    if (wallet) {
-      await disconnectWallet(wallet)
-    }
-    disconnect(web3Context)
-  }, [disconnectWallet, socket, wallet, web3Context])
+    await disconnect()
+  }, [socket, disconnect])
 
   return (
     <Box sx={sx}>

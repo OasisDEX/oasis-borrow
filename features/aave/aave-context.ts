@@ -1,5 +1,6 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { NetworkNames } from 'blockchain/networks'
 import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {
@@ -28,7 +29,10 @@ export type AaveContext = AaveServices & {
     riskRatio: IRiskRatio,
     fields: FilterYieldFieldsType[],
   ) => Promise<AaveYieldsResponse>
-  strategyConfig$: (positionId: PositionId) => Observable<IStrategyConfig>
+  strategyConfig$: (
+    positionId: PositionId,
+    networkName: NetworkNames,
+  ) => Observable<IStrategyConfig>
   proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>
   chainlinkUSDCUSDOraclePrice$: Observable<BigNumber>
   chainLinkETHUSDOraclePrice$: Observable<BigNumber>

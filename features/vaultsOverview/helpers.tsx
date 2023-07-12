@@ -4,7 +4,7 @@ import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableDataCellProtection } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskProtection'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
-import { AssetsTableFollowButtonProps, AssetsTableRowData } from 'components/assetsTable/types'
+import { AssetsTableRowData } from 'components/assetsTable/types'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -30,26 +30,14 @@ export const positionsTableTooltips = [
   'variable',
   'vaultDebt',
 ]
-export const followTableSkippedHeaders = [
-  'icon',
-  'ilk',
-  'liquidityToken',
-  'protection',
-  'sameTab',
-  'url',
-]
 
-interface GetPositionParams {
-  followButton?: AssetsTableFollowButtonProps
-  shareButton?: boolean
-}
-interface GetMakerPositionParams extends GetPositionParams {
+interface GetMakerPositionParams {
   positions: MakerPositionDetails[]
 }
-interface GetAavePositionParams extends GetPositionParams {
+interface GetAavePositionParams {
   positions: AavePosition[]
 }
-interface GetDsrPositionParams extends GetPositionParams {
+interface GetDsrPositionParams {
   address: string
   dsr?: Dsr
 }
@@ -138,8 +126,6 @@ export function getAjnaPositionOfType(positions: AjnaPositionDetails[]) {
 
 export function getMakerBorrowPositions({
   positions,
-  followButton,
-  shareButton,
 }: GetMakerPositionParams): AssetsTableRowData[] {
   return getMakerPositionOfType(positions).borrow.map(
     ({
@@ -156,14 +142,7 @@ export function getMakerBorrowPositions({
       stopLossData,
       token,
     }) => ({
-      asset: (
-        <AssetsTableDataCellAsset
-          asset={ilk}
-          icons={[token]}
-          positionId={id.toString()}
-          followButton={followButton}
-        />
-      ),
+      asset: <AssetsTableDataCellAsset asset={ilk} icons={[token]} positionId={id.toString()} />,
       colRatio: (
         <AssetsTableDataCellRiskRatio
           level={collateralizationRatio.times(100).toNumber()}
@@ -181,20 +160,13 @@ export function getMakerBorrowPositions({
           link={`/ethereum/maker/${id.toString()}`}
         />
       ),
-      action: (
-        <AssetsTableDataCellAction
-          link={`/ethereum/maker/${id.toString()}`}
-          shareButton={shareButton}
-        />
-      ),
+      action: <AssetsTableDataCellAction link={`/ethereum/maker/${id.toString()}`} />,
     }),
   )
 }
 
 export function getMakerMultiplyPositions({
   positions,
-  followButton,
-  shareButton,
 }: GetMakerPositionParams): AssetsTableRowData[] {
   return getMakerPositionOfType(positions).multiply.map(
     ({
@@ -210,14 +182,7 @@ export function getMakerMultiplyPositions({
       token,
       value,
     }) => ({
-      asset: (
-        <AssetsTableDataCellAsset
-          asset={ilk}
-          icons={[token]}
-          positionId={id.toString()}
-          followButton={followButton}
-        />
-      ),
+      asset: <AssetsTableDataCellAsset asset={ilk} icons={[token]} positionId={id.toString()} />,
       netUSDValue: `$${formatFiatBalance(value)}`,
       currentMultiple: `${calculateMultiply({ debt, lockedCollateralUSD }).toFixed(2)}x`,
       liquidationPrice: `$${formatFiatBalance(liquidationPrice)}`,
@@ -229,44 +194,23 @@ export function getMakerMultiplyPositions({
           link={`/ethereum/maker/${id.toString()}`}
         />
       ),
-      action: (
-        <AssetsTableDataCellAction
-          link={`/ethereum/maker/${id.toString()}`}
-          shareButton={shareButton}
-        />
-      ),
+      action: <AssetsTableDataCellAction link={`/ethereum/maker/${id.toString()}`} />,
     }),
   )
 }
 
-export function getMakerEarnPositions({
-  positions,
-  followButton,
-  shareButton,
-}: GetMakerPositionParams): AssetsTableRowData[] {
+export function getMakerEarnPositions({ positions }: GetMakerPositionParams): AssetsTableRowData[] {
   return getMakerPositionOfType(positions).earn.map(
     ({ debt, history, id, ilk, ilkDebtAvailable, lockedCollateralUSD, token, value }) => {
       return {
-        asset: (
-          <AssetsTableDataCellAsset
-            asset={ilk}
-            icons={[token]}
-            positionId={id.toString()}
-            followButton={followButton}
-          />
-        ),
+        asset: <AssetsTableDataCellAsset asset={ilk} icons={[token]} positionId={id.toString()} />,
         netUSDValue: `$${formatFiatBalance(value)}`,
         pnl: `${formatPercent(calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100), {
           precision: 2,
         })}`,
         liquidity: `${formatCryptoBalance(ilkDebtAvailable)} DAI`,
         protection: <AssetsTableDataCellInactive />,
-        action: (
-          <AssetsTableDataCellAction
-            link={`/ethereum/maker/${id.toString()}`}
-            shareButton={shareButton}
-          />
-        ),
+        action: <AssetsTableDataCellAction link={`/ethereum/maker/${id.toString()}`} />,
       }
     },
   )
@@ -274,7 +218,6 @@ export function getMakerEarnPositions({
 
 export function getAaveMultiplyPositions({
   positions,
-  shareButton,
 }: GetAavePositionParams): AssetsTableRowData[] {
   return getAavePositionOfType(positions).multiply.map(
     ({ fundingCost, id, liquidationPrice, multiple, netValue, title, token, url }) => {
@@ -285,16 +228,13 @@ export function getAaveMultiplyPositions({
         liquidationPrice: `$${formatFiatBalance(liquidationPrice)}`,
         fundingCost: `${fundingCost.toFixed(2)}%`,
         protection: <AssetsTableDataCellInactive />,
-        action: <AssetsTableDataCellAction link={url} shareButton={shareButton} />,
+        action: <AssetsTableDataCellAction link={url} />,
       }
     },
   )
 }
 
-export function getAaveEarnPositions({
-  positions,
-  shareButton,
-}: GetAavePositionParams): AssetsTableRowData[] {
+export function getAaveEarnPositions({ positions }: GetAavePositionParams): AssetsTableRowData[] {
   return getAavePositionOfType(positions).earn.map(
     ({ id, liquidity, netValue, title, token, url }) => {
       return {
@@ -303,17 +243,13 @@ export function getAaveEarnPositions({
         pnl: <AssetsTableDataCellInactive />,
         liquidity: `${formatCryptoBalance(liquidity)} USDC`,
         protection: <AssetsTableDataCellInactive />,
-        action: <AssetsTableDataCellAction link={url} shareButton={shareButton} />,
+        action: <AssetsTableDataCellAction link={url} />,
       }
     },
   )
 }
 
-export function getDsrPosition({
-  address,
-  dsr,
-  shareButton,
-}: GetDsrPositionParams): AssetsTableRowData[] {
+export function getDsrPosition({ address, dsr }: GetDsrPositionParams): AssetsTableRowData[] {
   const netValue = getDsrValue(dsr)
 
   const dsrPosition = [
@@ -323,7 +259,7 @@ export function getDsrPosition({
       pnl: <AssetsTableDataCellInactive />,
       liquidity: 'Unlimited',
       protection: <AssetsTableDataCellInactive />,
-      action: <AssetsTableDataCellAction link={`/earn/dsr/${address}`} shareButton={shareButton} />,
+      action: <AssetsTableDataCellAction link={`/earn/dsr/${address}`} />,
     },
   ]
 

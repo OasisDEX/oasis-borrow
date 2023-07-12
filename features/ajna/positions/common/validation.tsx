@@ -3,6 +3,7 @@ import { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import {
+  AjnaFlow,
   AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
@@ -26,28 +27,52 @@ import { Trans } from 'next-i18next'
 import React, { FC } from 'react'
 
 interface AjnaValidationWithLinkProps {
-  translationKey: string
+  name: string
   values?: { [key: string]: string }
 }
 
-const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ translationKey, values }) => (
+const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ name, values }) => {
+  const translationKey = `ajna.validations.${name}`
+
+  const linkMap: { [key: string]: string } = {
+    'price-below-htp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'price-between-htp-and-lup': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'price-between-lup-and-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'price-above-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'collateral-to-claim': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_EARN,
+    'is-during-grace-time': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
+    'is-being-liquidated': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
+  }
+
+  return (
+    <Trans
+      i18nKey={translationKey}
+      values={values}
+      components={{
+        1: <strong />,
+        2: (
+          <AppLink
+            sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
+            href={linkMap[name] || EXTERNAL_LINKS.DOCS.AJNA.HUB}
+          />
+        ),
+      }}
+    />
+  )
+}
+
+const AjnaSafetyOnMessage: FC = () => (
   <Trans
-    i18nKey={translationKey}
-    values={values}
-    components={{
-      1: <strong />,
-      2: (
-        <AppLink
-          sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
-          // TODO update link to ajna liquidations once available
-          href={EXTERNAL_LINKS.KB.HELP}
-        />
-      ),
-    }}
+    i18nKey={'ajna.validations.safety-switch-on'}
+    components={[
+      <AppLink sx={{ fontSize: 'inherit', color: 'inherit' }} href={EXTERNAL_LINKS.DISCORD} />,
+    ]}
   />
 )
 
 interface GetAjnaBorrowValidationsParams {
+  ajnaSafetySwitchOn: boolean
+  flow: AjnaFlow
   collateralBalance: BigNumber
   collateralToken: string
   quoteToken: string
@@ -59,14 +84,37 @@ interface GetAjnaBorrowValidationsParams {
   quoteBalance: BigNumber
   simulationErrors?: AjnaSimulationValidationItem[]
   simulationWarnings?: AjnaSimulationValidationItem[]
+  simulationNotices?: AjnaSimulationValidationItem[]
+  simulationSuccesses?: AjnaSimulationValidationItem[]
   state: AjnaFormState
   position: AjnaGenericPosition
   positionAuction: AjnaPositionAuction
   txError?: TxError
 }
 
-const mapSimulationValidation = (items: AjnaSimulationValidationItem[]): AjnaValidationItem[] =>
-  items.map((item) => ({ message: { translationKey: item.name, params: item.data } }))
+interface MapSimulationValidationParams {
+  items: AjnaSimulationValidationItem[]
+  collateralToken: string
+  quoteToken: string
+  token: string
+}
+
+const mapSimulationValidation = ({
+  items,
+  collateralToken,
+  quoteToken,
+  token,
+}: MapSimulationValidationParams): AjnaValidationItem[] =>
+  items.map((item) => ({
+    message: {
+      component: (
+        <AjnaValidationWithLink
+          name={item.name}
+          values={{ ...item.data, collateralToken, quoteToken, token }}
+        />
+      ),
+    },
+  }))
 
 function isFormValid({
   currentStep,
@@ -172,6 +220,8 @@ function isFormValid({
 }
 
 export function getAjnaValidation({
+  ajnaSafetySwitchOn,
+  flow,
   collateralBalance,
   collateralToken,
   quoteToken,
@@ -183,6 +233,8 @@ export function getAjnaValidation({
   quoteBalance,
   simulationErrors = [],
   simulationWarnings = [],
+  simulationNotices = [],
+  simulationSuccesses = [],
   state,
   txError,
   position,
@@ -193,11 +245,16 @@ export function getAjnaValidation({
   hasErrors: boolean
   errors: AjnaValidationItem[]
   warnings: AjnaValidationItem[]
+  notices: AjnaValidationItem[]
+  successes: AjnaValidationItem[]
 } {
   const localErrors: AjnaValidationItem[] = []
   const localWarnings: AjnaValidationItem[] = []
+  const localNotices: AjnaValidationItem[] = []
+  const localSuccesses: AjnaValidationItem[] = []
   const isEarnProduct = product === 'earn'
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
+  const token = product === 'earn' ? quoteToken : collateralToken
 
   if (ethFundsForTxValidator({ txError })) {
     localErrors.push({
@@ -212,6 +269,40 @@ export function getAjnaValidation({
   }
   if ('paybackAmount' in state && state.paybackAmount?.gt(quoteBalance)) {
     localErrors.push({ message: { translationKey: 'payback-amount-exceeds-debt-token-balance' } })
+  }
+
+  if (ajnaSafetySwitchOn && flow === 'manage') {
+    switch (product) {
+      case 'borrow':
+      case 'multiply':
+        if (
+          'debtAmount' in position &&
+          position.debtAmount?.isZero() &&
+          (('loanToValue' in state && state.loanToValue?.gt(zero)) ||
+            ('depositAmount' in state && state.depositAmount?.gt(zero)) ||
+            ('paybackAmount' in state && state.paybackAmount?.gt(zero)) ||
+            ('generateAmount' in state && state.generateAmount?.gt(zero)))
+        ) {
+          localErrors.push({
+            message: { component: <AjnaSafetyOnMessage /> },
+          })
+        }
+
+        break
+      case 'earn':
+        if (
+          'quoteTokenAmount' in position &&
+          position.quoteTokenAmount?.isZero() &&
+          'depositAmount' in state &&
+          state.depositAmount?.gt(zero)
+        ) {
+          localErrors.push({
+            message: { component: <AjnaSafetyOnMessage /> },
+          })
+        }
+
+        break
+    }
   }
 
   const hasPotentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -237,9 +328,7 @@ export function getAjnaValidation({
     if (borrowishAuction.isDuringGraceTime) {
       localWarnings.push({
         message: {
-          component: (
-            <AjnaValidationWithLink translationKey="ajna.validations.is-during-grace-time" />
-          ),
+          component: <AjnaValidationWithLink name="is-during-grace-time" />,
         },
       })
     }
@@ -247,16 +336,28 @@ export function getAjnaValidation({
     if (borrowishAuction.isBeingLiquidated) {
       localWarnings.push({
         message: {
-          component: (
-            <AjnaValidationWithLink translationKey="ajna.validations.is-being-liquidated" />
-          ),
+          component: <AjnaValidationWithLink name="is-being-liquidated" />,
         },
       })
     }
   }
 
-  const errors = [...localErrors, ...mapSimulationValidation(simulationErrors)]
-  const warnings = [...localWarnings, ...mapSimulationValidation(simulationWarnings)]
+  const errors = [
+    ...localErrors,
+    ...mapSimulationValidation({ items: simulationErrors, collateralToken, quoteToken, token }),
+  ]
+  const warnings = [
+    ...localWarnings,
+    ...mapSimulationValidation({ items: simulationWarnings, collateralToken, quoteToken, token }),
+  ]
+  const notices = [
+    ...localNotices,
+    ...mapSimulationValidation({ items: simulationNotices, collateralToken, quoteToken, token }),
+  ]
+  const successes = [
+    ...localSuccesses,
+    ...mapSimulationValidation({ items: simulationSuccesses, collateralToken, quoteToken, token }),
+  ]
 
   const isFormFrozen =
     product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
@@ -266,6 +367,8 @@ export function getAjnaValidation({
     hasErrors: errors.length > 0,
     isFormFrozen,
     errors,
-    warnings,
+    warnings: errors.length > 0 ? [] : warnings,
+    notices,
+    successes,
   }
 }

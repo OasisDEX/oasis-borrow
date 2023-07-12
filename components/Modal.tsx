@@ -1,9 +1,9 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useSharedUI } from 'components/SharedUIProvider'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { ModalProps } from 'helpers/modalHook'
-import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
@@ -24,8 +24,6 @@ import {
 } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
-import { useAppContext } from './AppContextProvider'
-import { disconnect } from './connectWallet'
 import { AppLink } from './Links'
 import curry from 'ramda/src/curry'
 
@@ -236,7 +234,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
 export function MobileSidePanelPortal({ children }: WithChildren) {
   const onMobile = useOnMobile()
 
-  return onMobile ? ReactDOM.createPortal(children, document.body) : children
+  return onMobile && document.body ? ReactDOM.createPortal(children, document.body) : children
 }
 
 export function MobileSidePanel({
@@ -317,8 +315,7 @@ export function MobileSidePanelClose({
 export const MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 = 'trezor-metamask-eip1559'
 
 export function ModalTrezorMetamaskEIP1559() {
-  const { web3Context$ } = useAppContext()
-  const [web3Context] = useObservable(web3Context$)
+  const { disconnect } = useWalletManagement()
 
   function close() {
     const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)
@@ -329,8 +326,8 @@ export function ModalTrezorMetamaskEIP1559() {
     }
   }
 
-  function disconnectHandler() {
-    disconnect(web3Context)
+  const disconnectHandler = async () => {
+    await disconnect()
     close()
   }
 

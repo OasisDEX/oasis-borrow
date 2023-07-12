@@ -1,7 +1,7 @@
 import { Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { networksListWithForksById } from 'blockchain/networks'
+import { networkSetById } from 'blockchain/networks'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
@@ -193,7 +193,7 @@ export function createManageMultiplyVaultAnalytics$(
     switchMap((context) =>
       merge(merge(manageMultiplyConfirm, manageMultiplyConfirmTransaction)).pipe(
         tap((event) => {
-          const network = networksListWithForksById[context.id].name
+          const network = networkSetById[context.id].name
           const walletType = context.connectionKind
 
           switch (event.kind) {

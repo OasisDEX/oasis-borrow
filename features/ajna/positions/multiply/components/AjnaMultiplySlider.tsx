@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { normalizeValue } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -7,7 +8,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
@@ -19,7 +20,7 @@ interface AjnaMultiplySliderProps {
 export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, collateralPrice },
+    environment: { collateralToken, quoteToken, collateralPrice, isShort },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -61,7 +62,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
   return (
     <SliderValuePicker
       sliderPercentageFill={percentage}
-      leftBoundry={liquidationPrice}
+      leftBoundry={isShort ? normalizeValue(one.div(liquidationPrice)) : liquidationPrice}
       leftBoundryFormatter={(val) => `${formatCryptoBalance(val)} ${collateralToken}/${quoteToken}`}
       rightBoundry={resolvedValue}
       rightBoundryFormatter={(val) => (

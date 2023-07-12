@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
+import dayjs from 'dayjs'
 import { gql, GraphQLClient } from 'graphql-request'
-import moment from 'moment'
 import { Observable } from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
 
@@ -36,14 +36,14 @@ const makerOraclePriceInMultipleDates = gql`
 export interface MakerOracleTokenPrice {
   token: string
   price: BigNumber
-  timestamp: moment.Moment
-  requestedTimestamp: moment.Moment
+  timestamp: dayjs.Dayjs
+  requestedTimestamp: dayjs.Dayjs
 }
 
 export function createMakerOracleTokenPrices$(
   context$: Observable<Context>,
   token: string,
-  timestamp: moment.Moment,
+  timestamp: dayjs.Dayjs,
 ): Observable<MakerOracleTokenPrice> {
   return context$.pipe(
     first(),
@@ -59,8 +59,8 @@ export function createMakerOracleTokenPrices$(
       return {
         token: respRaw.token,
         price: new BigNumber(respRaw.price),
-        timestamp: moment(respRaw.timestamp),
-        requestedTimestamp: moment(respRaw.requestedTimestamp),
+        timestamp: dayjs(respRaw.timestamp),
+        requestedTimestamp: dayjs(respRaw.requestedTimestamp),
       }
     }),
   )
@@ -69,7 +69,7 @@ export function createMakerOracleTokenPrices$(
 export function createMakerOracleTokenPricesForDates$(
   context$: Observable<Context>,
   token: string,
-  timestamps: moment.Moment[],
+  timestamps: dayjs.Dayjs[],
 ): Observable<MakerOracleTokenPrice> {
   return context$.pipe(
     first(),
@@ -84,8 +84,8 @@ export function createMakerOracleTokenPricesForDates$(
       return apiResponse.makerOracleTokenPricesInDates.tokenPrices.map((resp: any) => ({
         token: resp.token,
         price: new BigNumber(resp.price),
-        timestamp: moment(resp.timestamp),
-        requestedTimestamp: moment(resp.requestedTimestamp),
+        timestamp: dayjs(resp.timestamp),
+        requestedTimestamp: dayjs(resp.requestedTimestamp),
       }))
     }),
   )

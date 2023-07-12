@@ -23,7 +23,10 @@ interface NavigationProps {
   pill?: NavigationBrandingPill
 }
 
-export const navigationBreakpoints = ['531px', '744px', '1025px', '1279px']
+export const navigationBreakpoints = [531, 744, 1025, 1279]
+export const navigationBreakpointsWithPixels = navigationBreakpoints.map(
+  (breakpoint) => `${breakpoint}px`,
+)
 
 export function Navigation({
   actions,
@@ -34,18 +37,19 @@ export function Navigation({
 }: NavigationProps) {
   const [isMobileMenuOpen, toggleIsMobileMenuOpen, setIsMobileMenuOpen] = useToggle(false)
   const ref = useOutsideElementClickHandler(() => setIsMobileMenuOpen(false))
-  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
+  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2] - 1}px)`)
 
   return (
-    <ThemeProvider theme={{ breakpoints: navigationBreakpoints }}>
+    <ThemeProvider theme={{ breakpoints: navigationBreakpointsWithPixels }}>
       <Container
         as="header"
         variant="navigation"
         sx={{
           position: 'relative',
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: ['auto auto', null, null, 'auto auto auto', '30% 40% 30%'],
           alignItems: 'center',
-          justifyContent: 'space-between',
+          // justifyContent: 'space-between',
           mt: '24px',
           mb: '64px',
           zIndex: 3,

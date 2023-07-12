@@ -3,10 +3,9 @@ import BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { contractDesc } from 'blockchain/networks'
-import { NetworkIds } from 'blockchain/networks'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { AccountImplementation, DsProxy, OperationExecutor } from 'types/web3-v1-contracts'
@@ -29,10 +28,10 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
     ]
   },
   prepareArgs: (data, context) => {
-    return [
-      getNetworkContracts(NetworkIds.MAINNET, context.chainId).operationExecutor.address,
-      getCallData(data, context),
-    ]
+    const contracts = getNetworkContracts(context.chainId)
+    ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
+    const { operationExecutor } = contracts
+    return [operationExecutor.address, getCallData(data, context)]
   },
   options: ({ token, amount = zero }) =>
     token === 'ETH' && amount.gt(zero) ? { value: amountToWei(amount, 'ETH').toFixed(0) } : {},
@@ -44,20 +43,21 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
       .methods['execute']
   },
   prepareArgs: (data, context) => {
-    return [
-      getNetworkContracts(NetworkIds.MAINNET, context.chainId).operationExecutor.address,
-      getCallData(data, context),
-    ]
+    const contracts = getNetworkContracts(context.chainId)
+    ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
+    const { operationExecutor } = contracts
+    return [operationExecutor.address, getCallData(data, context)]
   },
   options: ({ token, amount = zero }) =>
     token === 'ETH' && amount.gt(zero) ? { value: amountToWei(amount, 'ETH').toFixed(0) } : {},
 }
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
+  const contracts = getNetworkContracts(context.chainId)
+  ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
+  const { operationExecutor } = contracts
   return context
-    .contract<OperationExecutor>(
-      getNetworkContracts(NetworkIds.MAINNET, context.chainId).operationExecutor,
-    )
+    .contract<OperationExecutor>(operationExecutor)
     .methods.executeOp(data.calls, data.operationName)
     .encodeABI()
 }

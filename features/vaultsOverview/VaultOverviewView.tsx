@@ -8,7 +8,6 @@ import { Grid } from 'theme-ui'
 
 import { PositionsList } from './containers/PositionsList'
 import { VaultOwnershipNotice } from './containers/VaultOwnershipNotice'
-import { VaultSuggestions } from './containers/VaultSuggestions'
 
 export function VaultsOverviewView({ address }: { address: string }) {
   const followVaultsEnabled = useFeatureToggle('FollowVaults')
@@ -26,7 +25,6 @@ export function VaultsOverviewView({ address }: { address: string }) {
         </>
       )}
       <ConnectWalletPrompt />
-      <VaultSuggestions address={address} />
     </Grid>
   )
 }

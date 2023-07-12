@@ -10,6 +10,7 @@ import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
+import { LendingProtocol } from 'lendingProtocols'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
@@ -31,7 +32,7 @@ export function getAjnaPosition$(
     iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined)),
   ).pipe(
     switchMap(async ([context]) => {
-      if (protocol !== 'Ajna') return null
+      if (protocol.toLowerCase() !== LendingProtocol.Ajna) return null
       const { ajnaPoolPairs, ajnaPoolInfo, ajnaRewardsManager } = getNetworkContracts(
         NetworkIds.MAINNET,
         context.chainId,
@@ -113,7 +114,7 @@ export function getAjnaPositionsWithDetails$(
           return combineLatest(
             positionCreatedEvents
               // @ts-ignore
-              .filter(({ protocol }) => protocol === 'Ajna')
+              .filter(({ protocol }) => protocol.toLowerCase() === LendingProtocol.Ajna)
               .map(
                 ({
                   collateralTokenSymbol,

@@ -1,3 +1,4 @@
+import { normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { AjnaIsCachedPosition } from 'features/ajna/common/types'
@@ -9,7 +10,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 
@@ -17,7 +18,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const { t } = useTranslation()
 
   const {
-    environment: { collateralToken, quoteToken, collateralPrice, quotePrice },
+    environment: { quoteToken, collateralPrice, quotePrice, isShort, priceFormat },
     steps: { isFlowStateReady },
     tx: { txDetails, isTxSuccess },
   } = useAjnaGeneralContext()
@@ -35,7 +36,8 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const apySimulation = simulationData?.apy
 
   const feeWhenActionBelowLup = simulationData?.getFeeWhenBelowLup || zero
-  const withAjnaFee = feeWhenActionBelowLup.gt(zero)
+  const withAjnaFee =
+    feeWhenActionBelowLup.gt(zero) && !positionData.pool.lowestUtilizedPriceIndex.isZero()
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
@@ -43,14 +45,22 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
     afterAmountToLend:
       simulationData?.quoteTokenAmount &&
       `${formatCryptoBalance(simulationData.quoteTokenAmount)} ${quoteToken}`,
-    netApy: apyCurrentPosition.per365d
-      ? formatDecimalAsPercent(apyCurrentPosition.per365d)
-      : formatDecimalAsPercent(zero),
-    afterNetApy: apySimulation?.per365d && formatDecimalAsPercent(apySimulation.per365d),
-    lendingPrice: `${formatCryptoBalance(positionData.price)} ${collateralToken}/${quoteToken}`,
+    netApy:
+      positionData.isEarningFees && apyCurrentPosition.per365d
+        ? formatDecimalAsPercent(apyCurrentPosition.per365d)
+        : formatDecimalAsPercent(zero),
+    afterNetApy: apySimulation?.per365d
+      ? formatDecimalAsPercent(simulationData?.isEarningFees ? apySimulation.per365d : zero)
+      : undefined,
+    lendingPrice: `${formatCryptoBalance(
+      normalizeValue(isShort ? one.div(positionData.price) : positionData.price),
+    )} ${priceFormat}`,
     afterLendingPrice: `${
-      simulationData?.price && formatCryptoBalance(simulationData.price)
-    } ${collateralToken}/${quoteToken}`,
+      simulationData?.price &&
+      formatCryptoBalance(
+        normalizeValue(isShort ? one.div(simulationData.price) : simulationData.price),
+      )
+    } ${priceFormat}`,
     maxLtv: formatDecimalAsPercent(positionData.price.div(collateralPrice.div(quotePrice))),
     afterMaxLtv:
       simulationData?.price &&

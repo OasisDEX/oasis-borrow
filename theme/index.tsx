@@ -1,4 +1,4 @@
-import { FTPolarMedium } from 'helpers/fonts'
+import { FTPolar } from 'helpers/fonts'
 
 import { fadeInAnimation } from './animations'
 import { icons } from './icons'
@@ -15,7 +15,7 @@ export const GRADIENTS = {
 
 // Used to share design system colours with theme-ui default color fields
 const COLORS = {
-  primary100: '#25273D',
+  primary100: '#17344F',
   secondary100: '#E6E9EB',
   neutral10: '#FFFFFF',
 }
@@ -26,13 +26,13 @@ export const oasisBaseTheme = {
   breakpoints: ['48em', '60em', '68em'],
   colors: {
     // new design system colors
-    interactive100: '#575CFE',
-    interactive50: '#878BFC',
-    interactive30: '#D8D9FE',
-    interactive10: '#EDEDFF',
+    interactive100: '#FF5845',
+    interactive50: '#FD8072',
+    interactive30: '#FEBFB8',
+    interactive10: '#FED9D5',
     primary100: COLORS.primary100,
-    primary60: '#626472',
-    primary30: '#80818A',
+    primary60: '#6D7B85',
+    primary30: '#B6BDC2',
     secondary100: COLORS.secondary100,
     secondary60: '#F1F3F4',
     neutral10: COLORS.neutral10,
@@ -40,7 +40,7 @@ export const oasisBaseTheme = {
     neutral30: '#F3F7F9',
     neutral60: '#BEC9D0',
     neutral70: '#A8A9B1',
-    neutral80: '#787A9B',
+    neutral80: '#596F78',
     success100: '#1AAB9B',
     success10: '#E7FCFA',
     warning100: '#D8762D',
@@ -70,7 +70,7 @@ export const oasisBaseTheme = {
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
-    heading: `${FTPolarMedium.style.fontFamily}, "Helvetica Neue", sans-serif`,
+    heading: `${FTPolar.style.fontFamily}, "Helvetica Neue", sans-serif`,
     monospace: 'monospace',
   },
   //           0   1   2   3   4   5   6   7   8   9  10
@@ -92,6 +92,14 @@ export const oasisBaseTheme = {
     smallButton: 1.9,
   },
   text: {
+    heroHeader: {
+      fontFamily: 'heading',
+      fontWeight: 'medium',
+      lineHeight: ['68px', '80px'],
+      fontSize: ['64px', '76px'],
+      letterSpacing: '-0.02em',
+      color: 'primary100',
+    },
     header1: {
       fontFamily: 'heading',
       fontWeight: 'medium',
@@ -182,6 +190,13 @@ export const oasisBaseTheme = {
       fontWeight: 'bold',
       lineHeight: '29px',
       fontSize: '24px',
+      color: 'primary100',
+    },
+    managedVolumeValue: {
+      fontFamily: 'heading',
+      fontWeight: 'medium',
+      lineHeight: '64px',
+      fontSize: '52px',
       color: 'primary100',
     },
   },
@@ -349,6 +364,11 @@ export const oasisBaseTheme = {
       variant: 'cards.primary',
       borderColor: 'success100',
       bg: 'success10',
+    },
+    notice: {
+      variant: 'cards.primary',
+      borderColor: 'secondary60',
+      bg: 'secondary60',
     },
     vaultFormContainer: {
       variant: 'cards.primary',

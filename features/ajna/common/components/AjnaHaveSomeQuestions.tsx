@@ -1,4 +1,5 @@
 import { InfoCard } from 'components/InfoCard'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -28,15 +29,15 @@ export function AjnaHaveSomeQuestions() {
           subtitle={t('landing.info-cards.learn.deep-dive')}
           links={[
             {
-              href: 'https://www.ajna.finance/',
+              href: EXTERNAL_LINKS.AJNA.HOME,
               text: t('ajna.learn.ajna-website'),
             },
             {
-              href: 'https://kb.oasis.app/help/tutorials',
+              href: 'https://kb.summer.fi/help/tutorials',
               text: t('landing.info-cards.learn.tutorials'),
             },
             {
-              href: 'https://kb.oasis.app/help/borrow',
+              href: 'https://kb.summer.fi/help/borrow',
               text: t('landing.info-cards.learn.key-concepts'),
             },
           ]}
@@ -48,7 +49,7 @@ export function AjnaHaveSomeQuestions() {
           subtitle={t('landing.info-cards.support.contact-whenever')}
           links={[
             {
-              href: 'https://kb.oasis.app/help/frequently-asked-questions',
+              href: 'https://kb.summer.fi/help/frequently-asked-questions',
               text: t('ajna.learn.anja-faq'),
             },
             {
@@ -64,7 +65,7 @@ export function AjnaHaveSomeQuestions() {
               text: t('ajna.learn.oasis-discord'),
             },
             {
-              href: 'https://twitter.com/oasisdotapp',
+              href: 'https://twitter.com/summerfinance_',
               text: t('ajna.learn.oasis-twitter'),
             },
           ]}

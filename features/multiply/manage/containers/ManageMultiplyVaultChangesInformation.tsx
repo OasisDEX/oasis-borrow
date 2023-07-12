@@ -177,7 +177,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             />
           )}
           <VaultChangesInformationItem
-            label={'Oasis fee'}
+            label={'Summer.fi fee'}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
           <VaultChangesInformationEstimatedGasFee {...props} />

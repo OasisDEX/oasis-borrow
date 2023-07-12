@@ -1,5 +1,4 @@
 import { useConnectWallet } from '@web3-onboard/react'
-import { useAppContext } from 'components/AppContextProvider'
 import { DrawerMenu } from 'components/DrawerMenu'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
@@ -7,6 +6,7 @@ import {
   SwapWidgetState,
 } from 'features/swapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
+import { uiChanges } from 'helpers/uiChanges'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useCallback, useEffect } from 'react'
 import { Box } from 'theme-ui'
@@ -15,7 +15,6 @@ import { swapWidgetConfig } from './swapWidgetConfig'
 import { SwapWidgetNoSsr } from './SwapWidgetNoSsr'
 
 export function SwapWidgetShowHide() {
-  const { uiChanges } = useAppContext()
   const [wallet] = useConnectWallet()
 
   const [swapWidgetChange] = useObservable(

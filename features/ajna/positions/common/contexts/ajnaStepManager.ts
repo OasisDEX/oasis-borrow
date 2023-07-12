@@ -22,13 +22,15 @@ export function isStepWithTransaction({ currentStep }: GeneralStepManager) {
 }
 
 export const getAjnaEditingStep = ({
-  flow,
   currentStep,
+  flow,
   product,
+  steps,
 }: {
-  flow: AjnaFlow
   currentStep: AjnaSidebarStep
+  flow: AjnaFlow
   product: AjnaProduct
+  steps: AjnaSidebarStep[]
 }) => {
   const defaultEditingStep = flow === 'open' ? 'setup' : 'manage'
 
@@ -38,7 +40,7 @@ export const getAjnaEditingStep = ({
       return defaultEditingStep
     case 'earn':
       if (flow === 'open') {
-        return currentStep === 'transaction' ? 'nft' : 'setup'
+        return currentStep === 'transaction' && steps.includes('nft') ? 'nft' : 'setup'
       }
 
       return defaultEditingStep

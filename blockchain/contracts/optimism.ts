@@ -27,6 +27,7 @@ import * as dssProxyActionsCropjoin from 'blockchain/abi/dss-proxy-actions-cropj
 import * as dssProxyActionsDsr from 'blockchain/abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from 'blockchain/abi/dss-proxy-actions.json'
 import * as exchange from 'blockchain/abi/exchange.json'
+import * as gasPriceOracle from 'blockchain/abi/gas-price-oracle.json'
 import * as getCdps from 'blockchain/abi/get-cdps.json'
 import * as lidoCrvLiquidityFarmingReward from 'blockchain/abi/lido-crv-liquidity-farming-reward.json'
 import * as otc from 'blockchain/abi/matching-market.json'
@@ -48,15 +49,24 @@ import {
 } from 'blockchain/addresses/addressesUtils'
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
-import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/optimism'
+import {
+  AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
+  ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
+  ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET,
+} from 'blockchain/tokens/optimism'
 import { tokensOptimism } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
+import { ContractDesc } from 'features/web3Context'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
 
 const { optimism } = ADDRESSES
 
-export const optimismContracts: MainnetContracts = {
+type OptimismContracts = MainnetContracts & {
+  gasPriceOracle: ContractDesc
+}
+
+export const optimismContracts: OptimismContracts = {
   otc: contractDesc(otc, optimism.common.Otc),
   collaterals: getCollaterals(optimism.common, supportedIlks),
   tokens: tokensOptimism,
@@ -138,9 +148,21 @@ export const optimismContracts: MainnetContracts = {
 
   operationExecutor: contractDesc(operationExecutor, optimism.mpa.core.OperationExecutor),
   swapAddress: optimism.mpa.core.Swap,
-  accountFactory: contractDesc(accountFactory, optimism.mpa.core.AccountFactory),
-  accountGuard: contractDesc(accountGuard, optimism.mpa.core.AccountGuard),
-  aaveV3Pool: contractDesc(aaveV3Pool, optimism.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
+  accountFactory: contractDesc(
+    accountFactory,
+    optimism.mpa.core.AccountFactory,
+    ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
+  ),
+  accountGuard: contractDesc(
+    accountGuard,
+    optimism.mpa.core.AccountGuard,
+    ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET,
+  ),
+  aaveV3Pool: contractDesc(
+    aaveV3Pool,
+    optimism.aave.v3.Pool,
+    AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
+  ),
   aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.AaveOracle),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
@@ -149,8 +171,18 @@ export const optimismContracts: MainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'ETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHUSDC),
+    'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHUSDC),
+    'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWBTC),
+    'WBTC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCDAI),
     'WBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WSTETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHDAI),
+    'WSTETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
   // TODO update address
@@ -162,7 +194,7 @@ export const optimismContracts: MainnetContracts = {
   taxProxyRegistries: [],
   etherscan: {
     url: 'https://optimistic.etherscan.io/',
-    apiUrl: 'not-implemented',
+    apiUrl: 'https://api-optimistic.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
   },
   ethtx: {
@@ -171,4 +203,5 @@ export const optimismContracts: MainnetContracts = {
   magicLink: {
     apiKey: '',
   },
+  gasPriceOracle: contractDesc(gasPriceOracle, '0x420000000000000000000000000000000000000F'),
 }

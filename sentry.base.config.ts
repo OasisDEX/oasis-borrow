@@ -1,21 +1,28 @@
+import {
+  CaptureConsole as CaptureConsoleIntegration,
+  HttpClient as HttpClientIntegration,
+} from '@sentry/integrations'
+import * as Sentry from '@sentry/nextjs'
 import getConfig from 'next/config'
 
 const SENTRY_DSN: string =
   'https://2fdf00b007464e2784ef445e16a6039f@o1143494.ingest.sentry.io/6204127'
 
-const SENTRY_URL = new URL(SENTRY_DSN)
-const SENTRY_PROJECT_ID = SENTRY_URL.pathname.replace('/', '')
-const SENTRY_HOST = SENTRY_URL.hostname
+type BaseConfig = Parameters<typeof Sentry.init>[0]
 
-export const sentryBaseConfig = {
+export const sentryBaseConfig: BaseConfig = {
   dsn: SENTRY_DSN,
-  projectId: SENTRY_PROJECT_ID,
-  host: SENTRY_HOST,
-  tracesSampleRate: 1.0,
-  tunnel: '/api/sentry',
   environment: process.env.NEXT_PUBLIC_SENTRY_ENV,
   // release is also used for source map uploads at build time,
   // so ensure that SENTRY_RELEASE is the same at build time.
   release: process.env.SENTRY_RELEASE || getConfig()?.publicRuntimeConfig?.sentryRelease,
   enabled: process.env.NEXT_PUBLIC_SENTRY_ENV !== 'development',
+  tracesSampleRate: 0.2,
+  sampleRate: 0.3,
+  profilesSampleRate: 0.1,
+  integrations: [
+    new CaptureConsoleIntegration({ levels: ['error', 'warn', 'info', 'assets'] }),
+    new HttpClientIntegration(),
+  ],
+  debug: false,
 }

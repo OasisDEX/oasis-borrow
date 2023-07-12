@@ -2,7 +2,7 @@ import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { allDefined } from 'helpers/allDefined'
 import { callBackIfDefined } from 'helpers/callBackIfDefined'
 import { useFlowState, UseFlowStateCBParamsType, UseFlowStateCBType } from 'helpers/useFlowState'
@@ -19,23 +19,23 @@ export type CreateDPMAccountViewProps = {
 
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const { executeConnection, connected, connecting } = useWeb3OnBoardConnection({
-    walletConnect: true,
+  const { connect, connecting } = useConnection({
+    initialConnect: false,
   })
 
   return useMemo(
     () => ({
       label: t('connect-wallet'),
       action: () => {
-        if (!connected && !connecting) {
-          void executeConnection()
+        if (!connecting) {
+          void connect()
         }
       },
       steps: undefined,
       isLoading: connecting,
       disabled: connecting,
     }),
-    [t, connected, connecting, executeConnection],
+    [t, connecting, connect],
   )
 }
 

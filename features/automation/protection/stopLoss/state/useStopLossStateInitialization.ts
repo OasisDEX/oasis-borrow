@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { StopLossMetadata } from 'features/automation/metadata/types'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
 
 export function useStopLossStateInitialization({
@@ -14,7 +14,6 @@ export function useStopLossStateInitialization({
   stopLossTriggerData: StopLossTriggerData
   metadata: StopLossMetadata
 }) {
-  const { uiChanges } = useAppContext()
   const { isStopLossEnabled, isToCollateral, triggerId } = stopLossTriggerData
   const {
     values: { initialSlRatioWhenTriggerDoesntExist },

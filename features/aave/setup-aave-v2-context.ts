@@ -1,14 +1,13 @@
-import { NetworkIds } from 'blockchain/networks'
-import { NetworkNames } from 'blockchain/networks'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
+import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
 import { memoize } from 'lodash'
-import moment from 'moment/moment'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -36,7 +35,6 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const {
     userSettings$,
     txHelpers$,
-    balance$,
     onEveryBlock$,
     context$,
     tokenPriceUSD$,
@@ -73,20 +71,20 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   } = protocols[LendingProtocol.AaveV2]
 
   const aaveEarnYieldsQuery = memoize(
-    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+    curry(getAaveStEthYield)(disconnectedGraphQLClient$, dayjs()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
   const earnCollateralsReserveData = {
-    STETH: aaveReserveConfigurationData$({ token: 'STETH' }),
+    STETH: aaveReserveConfigurationData$({ collateralToken: 'STETH', debtToken: 'ETH' }),
   } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
-      balance$,
       aaveOracleAssetPriceData$,
       chainLinkETHUSDOraclePrice$,
       getSupportedTokens(LendingProtocol.AaveV2, NetworkNames.ethereumMainnet),
+      NetworkIds.MAINNET,
     ),
   )
 
@@ -104,12 +102,28 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const openMultiplyAaveParameters = getOpenMultiplyAaveParametersMachine(
     txHelpers$,
     gasEstimation$,
-    { networkId: NetworkIds.MAINNET, lendingProtocol: LendingProtocol.AaveV2 },
+    NetworkIds.MAINNET,
   )
-  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
-  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
-  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
-  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
+  const closeAaveParameters = getCloseAaveParametersMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
+  const adjustAaveParameters = getAdjustAaveParametersMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
+  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
+  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(
+    txHelpers$,
+    gasEstimation$,
+    NetworkIds.MAINNET,
+  )
 
   const openAaveStateMachineServices = getOpenAaveV2PositionStateMachineServices(
     context$,

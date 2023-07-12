@@ -1,5 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
-import { RiskRatio } from '@oasisdex/oasis-actions'
+import { RiskRatio } from '@oasisdex/dma-library'
 import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
@@ -22,9 +22,10 @@ import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  RefTransactionMachine,
 } from 'features/aave/common/BaseAaveContext'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { isUserWalletConnected } from 'features/aave/helpers'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
@@ -49,7 +50,7 @@ import { canOpenPosition } from 'helpers/canOpenPosition'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
+import { ActorRefFrom, assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
@@ -62,7 +63,7 @@ export const totalStepsMap = {
 export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
-  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
+  refTransactionMachine?: RefTransactionMachine
   refParametersMachine?:
     | ActorRefFrom<TransactionParametersStateMachine<OpenMultiplyAaveParameters>>
     | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
@@ -303,13 +304,47 @@ export function createOpenAaveStateMachine(
             reviewing: {
               entry: 'eventConfirmRiskRatio',
               on: {
-                NEXT_STEP: {
-                  target: 'txInProgress',
-                  cond: 'validTransactionParameters',
-                },
+                NEXT_STEP: [
+                  {
+                    target: 'txInProgressEthers',
+                    cond: 'isEthersTransaction',
+                  },
+                  {
+                    target: 'txInProgress',
+                    cond: 'validTransactionParameters',
+                  },
+                ],
                 BACK_TO_EDITING: {
                   target: 'editing',
                   actions: 'decrementCurrentStep',
+                },
+              },
+            },
+            txInProgressEthers: {
+              entry: [],
+              invoke: {
+                src: 'runEthersTransaction',
+                id: 'runEthersTransaction',
+                onError: {
+                  target: 'txFailure',
+                },
+              },
+              on: {
+                CREATED_MACHINE: {
+                  actions: ['updateContext'],
+                },
+                TRANSACTION_COMPLETED: [
+                  {
+                    cond: 'isStopLossSet',
+                    target: 'txStopLoss',
+                  },
+                  {
+                    target: 'txSuccess',
+                  },
+                ],
+                TRANSACTION_FAILED: {
+                  target: 'txFailure',
+                  actions: ['updateContext'],
                 },
               },
             },
@@ -349,9 +384,16 @@ export function createOpenAaveStateMachine(
             stopLossTxFailure: {
               entry: ['killTransactionMachine'],
               on: {
-                RETRY: {
-                  target: 'txStopLossInProgress',
-                },
+                RETRY: [
+                  {
+                    target: 'txInProgressEthers',
+                    cond: 'isEthersTransaction',
+                  },
+                  {
+                    target: 'txInProgress',
+                    cond: 'validTransactionParameters',
+                  },
+                ],
                 BACK_TO_EDITING: {
                   target: 'editing',
                 },
@@ -397,7 +439,12 @@ export function createOpenAaveStateMachine(
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: ['resetWalletValues', 'updateContext', 'calculateEffectiveProxyAddress'],
+          actions: [
+            'resetWalletValues',
+            'updateContext',
+            'calculateEffectiveProxyAddress',
+            'sendSigner',
+          ],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
@@ -458,7 +505,8 @@ export function createOpenAaveStateMachine(
           hasOpenedPosition,
           transition,
         }) =>
-          useFeatureToggle('AaveProtectionWrite') &&
+          useFeatureToggle('AaveV3ProtectionWrite') &&
+          supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === 'Multiply' &&
           canOpenPosition({
             userInput,
@@ -469,6 +517,8 @@ export function createOpenAaveStateMachine(
           }),
         isAllowanceNeeded,
         isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => !stopLossSkipped && !!stopLossLevel,
+        isEthersTransaction: ({ strategyConfig }) =>
+          strategyConfig.executeTransactionWith === 'ethers',
       },
       actions: {
         setRiskRatio: assign((context, event) => {
@@ -499,7 +549,12 @@ export function createOpenAaveStateMachine(
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
           const optionalStopLoss =
-            useFeatureToggle('AaveProtectionWrite') && context.strategyConfig.type === 'Multiply'
+            useFeatureToggle('AaveV3ProtectionWrite') &&
+            supportsAaveStopLoss(
+              context.strategyConfig.protocol,
+              context.strategyConfig.networkId,
+            ) &&
+            context.strategyConfig.type === 'Multiply'
               ? 1
               : 0
 
@@ -569,8 +624,16 @@ export function createOpenAaveStateMachine(
           }
           return undefined
         }),
-        spawnDpmProxyMachine: assign((_) => ({
-          refDpmAccountMachine: spawn(dmpAccountStateMachine, 'dmpAccountStateMachine'),
+        spawnDpmProxyMachine: assign((context) => ({
+          refDpmAccountMachine: spawn(
+            dmpAccountStateMachine.withContext({
+              ...dmpAccountStateMachine.context,
+              runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+              networkId: context.strategyConfig.networkId,
+              signer: (context.web3Context as ContextConnected).transactionProvider,
+            }),
+            'dmpAccountStateMachine',
+          ),
         })),
         killDpmProxyMachine: pure((context) => {
           if (context.refDpmAccountMachine && context.refDpmAccountMachine.stop) {
@@ -582,13 +645,24 @@ export function createOpenAaveStateMachine(
           if (context.strategyConfig.type === 'Borrow') {
             return {
               refParametersMachine: spawn(
-                openDepositBorrowTransactionParametersMachine,
+                openDepositBorrowTransactionParametersMachine.withContext({
+                  ...openDepositBorrowTransactionParametersMachine.context,
+                  runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+                  signer: (context.web3Context as ContextConnected)?.transactionProvider,
+                }),
                 'transactionParameters',
               ),
             }
           } else {
             return {
-              refParametersMachine: spawn(openMultiplyParametersMachine, 'transactionParameters'),
+              refParametersMachine: spawn(
+                openMultiplyParametersMachine.withContext({
+                  ...openMultiplyParametersMachine.context,
+                  runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+                  signer: (context.web3Context as ContextConnected)?.transactionProvider,
+                }),
+                'transactionParameters',
+              ),
             }
           }
         }),
@@ -679,6 +753,9 @@ export function createOpenAaveStateMachine(
               spender: context.effectiveProxyAddress!,
               allowanceType: 'unlimited',
               minimumAmount: context.userInput.amount!,
+              runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+              networkId: context.strategyConfig.networkId,
             }),
             'allowanceMachine',
           ),
@@ -742,7 +819,7 @@ export function createOpenAaveStateMachine(
           }
         }),
         resetWalletValues: assign((context) => {
-          if (!isUserWalletConnected(context)) {
+          if (context.web3Context === undefined || context.web3Context.account === undefined) {
             return {
               tokenBalance: undefined,
               tokenPrice: undefined,
@@ -792,7 +869,7 @@ export function createOpenAaveStateMachine(
             stopLossTxData: {
               ...prepareStopLossTriggerDataV2(
                 proxyAddress!,
-                TriggerType.AaveStopLossToDebt,
+                TriggerType.AaveStopLossToDebtV2,
                 false,
                 stopLossLevel,
                 debtTokenAddress!,
@@ -804,6 +881,15 @@ export function createOpenAaveStateMachine(
             } as AutomationAddTriggerData,
           }
         }),
+        sendSigner: sendTo(
+          (context) => context.refParametersMachine!,
+          (context) => {
+            return {
+              type: 'SIGNER_CHANGED',
+              signer: (context.web3Context as ContextConnected)?.transactionProvider,
+            }
+          },
+        ),
       },
     },
   )

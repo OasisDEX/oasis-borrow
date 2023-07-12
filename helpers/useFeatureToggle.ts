@@ -23,24 +23,33 @@ export type Feature =
   | 'AaveBorrow'
   | 'AaveV3EarnWSTETH'
   | 'FollowVaults'
-  | 'AaveProtection'
-  | 'AaveProtectionWrite'
+  | 'AaveV3Protection'
+  | 'AaveV3ProtectionWrite'
   | 'Ajna'
+  | 'AjnaSafetySwitch'
+  | 'AjnaSuppressValidation'
   | 'DaiSavingsRate'
   | 'FollowAAVEVaults'
   | 'Sillyness'
   | 'UseNetworkSwitcher'
+  | 'UseNetworkSwitcherForks'
+  | 'UseNetworkSwitcherTestnets'
+  | 'UseNetworkSwitcherArbitrum'
+  | 'UseNetworkSwitcherOptimism'
   | 'UseNetworkRowProductCard'
   | 'AaveV3Optimism'
   | 'AaveV3Arbitrum'
   | 'AaveV3MultiplycbETHusdc'
   | 'AaveV3MultiplywBTCusdc'
-  | 'AaveV3MultiplywstETHeth'
+  | 'AaveV3MultiplywstETHusdc'
   | 'AaveV3MultiplyETHusdc'
+  | 'AaveV3MultiplyrETHusdc'
+  | 'AaveV3EarnrETHeth'
+  | 'AaveV3EarncbETHeth'
   | 'AaveV2ProductCard'
-  | 'OasisCreate'
   | 'SwapWidget'
   | '🌞'
+  | 'ProxyReveal'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -62,24 +71,33 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveBorrow: false,
   AaveV3EarnWSTETH: true,
   FollowVaults: true,
-  AaveProtection: false,
-  AaveProtectionWrite: false,
+  AaveV3Protection: false,
+  AaveV3ProtectionWrite: false,
   Ajna: false,
+  AjnaSafetySwitch: false,
+  AjnaSuppressValidation: false,
   DaiSavingsRate: true,
   FollowAAVEVaults: false,
   Sillyness: false,
-  UseNetworkSwitcher: false,
+  UseNetworkSwitcher: true,
+  UseNetworkSwitcherForks: false,
+  UseNetworkSwitcherTestnets: false,
+  UseNetworkSwitcherArbitrum: false,
+  UseNetworkSwitcherOptimism: true,
   UseNetworkRowProductCard: false,
-  AaveV3Optimism: false,
+  AaveV3Optimism: true,
   AaveV3Arbitrum: false,
   AaveV2ProductCard: true,
-  AaveV3MultiplycbETHusdc: false,
-  AaveV3MultiplywBTCusdc: false,
-  AaveV3MultiplywstETHeth: false,
-  AaveV3MultiplyETHusdc: false,
-  OasisCreate: false,
+  AaveV3MultiplycbETHusdc: true,
+  AaveV3MultiplywBTCusdc: true,
+  AaveV3MultiplyETHusdc: true,
+  AaveV3EarncbETHeth: false,
+  AaveV3MultiplyrETHusdc: true,
+  AaveV3EarnrETHeth: false,
+  AaveV3MultiplywstETHusdc: true,
   SwapWidget: true,
-  '🌞': false, // or https://oasis.app/harheeharheeharhee to enable.  https://oasis.app/<any vault ID> to disable.
+  ProxyReveal: false,
+  '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

@@ -3,7 +3,6 @@ import { AssetsTableBannerProps, AssetsTableRowData } from 'components/assetsTab
 import { DiscoverDataResponseError } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
-import { useAccount } from 'helpers/useAccount'
 import React from 'react'
 import { Box } from 'theme-ui'
 
@@ -16,8 +15,6 @@ interface DiscoverDataProps {
 }
 
 export function DiscoverData({ banner, error, isLoading, isSticky, rows }: DiscoverDataProps) {
-  const { chainId, walletAddress } = useAccount()
-
   return (
     <Box sx={{ position: 'relative' }}>
       {rows ? (
@@ -28,10 +25,6 @@ export function DiscoverData({ banner, error, isLoading, isSticky, rows }: Disco
             isLoading={isLoading}
             isSticky={isSticky}
             rows={rows}
-            {...(!!chainId &&
-              !!walletAddress && {
-                isWithFollow: true,
-              })}
           />
         </>
       ) : isLoading ? (

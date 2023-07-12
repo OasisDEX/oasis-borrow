@@ -1,11 +1,10 @@
-import {
-  AjnaPositionViewHistoryPlaceholder,
-  AjnaPositionViewInfoPlaceholder,
-} from 'features/ajna/positions/common/components/AjnaPositionViewPlaceholders'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { AjnaFaqController } from 'features/ajna/positions/common/controls/AjnaFaqController'
+import { AjnaPositionHistoryController } from 'features/ajna/positions/common/controls/AjnaPositionHistoryController'
 import { AjnaPositionView } from 'features/ajna/positions/common/views/AjnaPositionView'
 import { AjnaEarnFormController } from 'features/ajna/positions/earn/controls/AjnaEarnFormController'
 import { AjnaEarnOverviewController } from 'features/ajna/positions/earn/controls/AjnaEarnOverviewController'
+import en from 'features/content/faqs/ajna/earn/en.mdx'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -24,7 +23,7 @@ export function AjnaEarnPositionController() {
       headlineDetails={[
         {
           label: t('ajna.position-page.earn.common.headline.current-yield'),
-          value: position.poolApy.per7d ? formatDecimalAsPercent(position.poolApy.per7d) : '-',
+          value: position.poolApy.per365 ? formatDecimalAsPercent(position.poolApy.per365) : '-',
         },
         {
           label: t('ajna.position-page.earn.common.headline.90-day-avg'),
@@ -38,8 +37,8 @@ export function AjnaEarnPositionController() {
             <AjnaEarnFormController />
           </Grid>
         ),
-        info: <AjnaPositionViewInfoPlaceholder />,
-        history: <AjnaPositionViewHistoryPlaceholder />,
+        info: <AjnaFaqController content={{ en }} />,
+        history: <AjnaPositionHistoryController />,
       }}
     />
   )

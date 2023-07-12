@@ -1,4 +1,5 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
+import * as Sentry from '@sentry/react'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
@@ -97,7 +98,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
-import { NetworkIds, networksById } from 'blockchain/networks'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -116,6 +117,7 @@ import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
   getUserDpmProxy$,
+  UserDpmAccount,
 } from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
@@ -126,6 +128,7 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
@@ -136,55 +139,19 @@ import {
 } from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
-import { createTransactionManager } from 'features/account/transactionManager'
-import { getAjnaPoolsTableContent$ } from 'features/ajna/positions/common/observables/getAjnaPoolsTableContent'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
 } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import { getAjnaProductCardsData$ } from 'features/ajna/positions/common/observables/getAjnaProductCardsData'
 import {
   DpmPositionData,
   getDpmPositionData$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-  AutoBSChangeAction,
-  AutoBSFormChange,
-  autoBSFormChangeReducer,
-} from 'features/automation/common/state/autoBSFormChange'
-import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
-  AutomationChangeFeatureAction,
-  automationChangeFeatureReducer,
-} from 'features/automation/common/state/automationFeatureChange'
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-  AutoTakeProfitFormChangeAction,
-  autoTakeProfitFormChangeReducer,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleChangeAction,
-  ConstantMultipleFormChange,
-  constantMultipleFormChangeReducer,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
-  MultiplyPillChangeAction,
-  multiplyPillChangeReducer,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
-import {
-  formChangeReducer,
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-  StopLossFormChangeAction,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
 import {
@@ -197,7 +164,6 @@ import {
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
-import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
@@ -218,31 +184,13 @@ import {
 } from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
-import {
-  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
-  FollowedVaultsLimitReachedChange,
-  FollowedVaultsLimitReachedChangeAction,
-  followedVaultsLimitReachedChangeReducer,
-} from 'features/follow/common/followedVaultsLimitReached'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import {
-  TAB_CHANGE_SUBJECT,
-  TabChange,
-  TabChangeAction,
-  tabChangeReducer,
-} from 'features/generalManageVault/TabChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
-import {
-  NOTIFICATION_CHANGE,
-  NotificationChange,
-  NotificationChangeAction,
-  notificationReducer,
-} from 'features/notifications/notificationChange'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$ } from 'features/referralOverview/user'
@@ -251,7 +199,6 @@ import {
   getUserFromApi$,
   getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
-import { redirectState$ } from 'features/router/redirectState'
 import {
   BalanceInfo,
   createBalanceInfo$,
@@ -268,12 +215,6 @@ import {
 } from 'features/stateMachines/dpmAccount'
 import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
 import { transactionContextService } from 'features/stateMachines/transaction'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-  swapWidgetChangeReducer,
-  SwapWidgetState,
-} from 'features/swapWidget/SwapWidgetChange'
 import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
@@ -288,6 +229,7 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
+  createAaveDpmPosition$,
   createAavePosition$,
   createMakerPositions$,
   createPositions$,
@@ -299,29 +241,17 @@ import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walle
 import { createWeb3Context$ } from 'features/web3Context'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
-import {
-  gasEstimationReducer,
-  TX_DATA_CHANGE,
-  TxPayloadChange,
-  TxPayloadChangeAction,
-} from 'helpers/gasEstimate'
 import { getGasMultiplier } from 'helpers/getGasMultiplier'
-import {
-  createProductCardsData$,
-  createProductCardsWithBalance$,
-  supportedBorrowIlks,
-  supportedEarnIlks,
-  supportedMultiplyIlks,
-} from 'helpers/productCards'
+import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
+import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
-import { isEqual, mapValues, memoize } from 'lodash'
-import moment from 'moment'
+import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
-import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
+import { combineLatest, defer, Observable, of } from 'rxjs'
 import {
   distinctUntilChanged,
   distinctUntilKeyChanged,
@@ -408,142 +338,11 @@ function createTxHelpers$(
   )
 }
 
-export type SupportedUIChangeType =
-  | StopLossFormChange
-  | AutoBSFormChange
-  | ConstantMultipleFormChange
-  | TabChange
-  | MultiplyPillChange
-  | SwapWidgetState
-  | AutomationChangeFeature
-  | NotificationChange
-  | TxPayloadChange
-  | AutoTakeProfitFormChange
-  | FollowedVaultsLimitReachedChange
-
-export type LegalUiChanges = {
-  StopLossFormChange: StopLossFormChangeAction
-  AutoBSChange: AutoBSChangeAction
-  TabChange: TabChangeAction
-  MultiplyPillChange: MultiplyPillChangeAction
-  SwapWidgetChange: SwapWidgetChangeAction
-  AutomationChangeFeature: AutomationChangeFeatureAction
-  ConstantMultipleChangeAction: ConstantMultipleChangeAction
-  NotificationChange: NotificationChangeAction
-  TxPayloadChange: TxPayloadChangeAction
-  AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
-  FollowedVaultsLimitReachedChangeAction: FollowedVaultsLimitReachedChangeAction
-}
-
-export type UIChanges = {
-  subscribe: <T extends SupportedUIChangeType>(sub: string) => Observable<T>
-  publish: <K extends LegalUiChanges[keyof LegalUiChanges]>(sub: string, event: K) => void
-  lastPayload: <T extends SupportedUIChangeType>(sub: string) => T
-  clear: (sub: string) => void
-  configureSubject: <
-    T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges],
-  >(
-    subject: string,
-    reducer: (prev: T, event: K) => T,
-    initialState?: T,
-  ) => void
-}
-
-export type UIReducer = (prev: any, event: any) => any
-
-export type ReducersMap = {
-  [key: string]: UIReducer
-}
-
 const refreshInterval = 1000 * 60
-
-function createUIChangesSubject(): UIChanges {
-  const latest: any = {}
-
-  const reducers: ReducersMap = {} //TODO: Is there a way to strongly type this ?
-
-  interface PublisherRecord {
-    subjectName: string
-    payload: SupportedUIChangeType
-  }
-
-  const commonSubject = new Subject<PublisherRecord>()
-
-  function subscribe<T extends SupportedUIChangeType>(subjectName: string): Observable<T> {
-    return commonSubject.pipe(
-      filter((x) => x.subjectName === subjectName),
-      map((x) => x.payload as T),
-      shareReplay(1),
-    )
-  }
-
-  function publish<K extends LegalUiChanges[keyof LegalUiChanges]>(subjectName: string, event: K) {
-    const accumulatedEvent = reducers.hasOwnProperty(subjectName)
-      ? reducers[subjectName](lastPayload(subjectName) || {}, event)
-      : lastPayload(subjectName)
-    latest[subjectName] = accumulatedEvent
-    commonSubject.next({
-      subjectName,
-      payload: accumulatedEvent,
-    })
-  }
-
-  function lastPayload<T>(subject: string): T {
-    return latest[subject]
-  }
-
-  function clear(subject: string): any {
-    delete latest[subject]
-  }
-
-  function configureSubject<
-    T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges],
-  >(subject: string, reducer: (prev: T, event: K) => T, initialState?: T): void {
-    reducers[subject] = reducer
-    if (initialState) {
-      latest[subject] = initialState
-    }
-  }
-
-  return {
-    subscribe,
-    publish,
-    lastPayload,
-    clear,
-    configureSubject,
-  }
-}
-
-function initializeUIChanges() {
-  const uiChangesSubject = createUIChangesSubject()
-
-  uiChangesSubject.configureSubject(STOP_LOSS_FORM_CHANGE, formChangeReducer)
-  uiChangesSubject.configureSubject(AUTO_SELL_FORM_CHANGE, autoBSFormChangeReducer)
-  uiChangesSubject.configureSubject(AUTO_BUY_FORM_CHANGE, autoBSFormChangeReducer)
-  uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
-  uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
-  uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
-  uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
-  uiChangesSubject.configureSubject(
-    CONSTANT_MULTIPLE_FORM_CHANGE,
-    constantMultipleFormChangeReducer,
-  )
-  uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
-  uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
-  uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
-  uiChangesSubject.configureSubject(
-    FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
-    followedVaultsLimitReachedChangeReducer,
-  )
-  return uiChangesSubject
-}
 
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
-  const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$(chainIdToRpcUrl)
+  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$()
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
@@ -578,6 +377,7 @@ export function setupAppContext() {
     )
     .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
       if (account) {
+        Sentry.setUser({ id: account, walletLabel: walletLabel })
         mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
         trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }
@@ -590,7 +390,7 @@ export function setupAppContext() {
     shareReplay(1),
   ) as Observable<ContextConnected>
 
-  const [send, transactions$] = createSend<TxData>(
+  const [send] = createSend<TxData>(
     initializedAccount$,
     onEveryBlock$,
     // @ts-ignore
@@ -600,7 +400,6 @@ export function setupAppContext() {
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
-  const transactionManager$ = createTransactionManager(transactions$)
 
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(every10Seconds$, tokenPrices$),
@@ -1036,32 +835,82 @@ export function setupAppContext() {
       aaveV2.aaveProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
-    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+    (positionId: PositionId, networkName: NetworkNames) =>
+      `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
   )
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
   )
 
-  const aavePositions$ = memoize(
+  const mainnetDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
+    curry(getUserDpmProxies$)(of({ chainId: NetworkIds.MAINNET })),
+    (walletAddress) => walletAddress,
+  )
+
+  const mainnetReadPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(
+      of({ chainId: NetworkIds.MAINNET }),
+      mainnetDpmProxies$,
+    ),
+  )
+
+  const mainnetAavePositions$ = memoize(
     curry(createAavePosition$)(
       {
         dsProxy$: proxyAddress$,
-        userDpmProxies$,
+        userDpmProxies$: mainnetDpmProxies$,
       },
       {
         tickerPrices$: tokenPriceUSDStatic$,
         context$,
         automationTriggersData$,
-        readPositionCreatedEvents$,
+        readPositionCreatedEvents$: mainnetReadPositionCreatedEvents$,
       },
       aaveV2,
       aaveV3,
     ),
   )
 
+  const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
+    curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
+    (walletAddress) => walletAddress,
+  )
+
+  const optimismReadPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(
+      of({ chainId: NetworkIds.OPTIMISMMAINNET }),
+      optimismDpmProxies$,
+    ),
+  )
+
+  const aaveOptimismPositions$ = memoize(
+    curry(createAaveDpmPosition$)(
+      context$,
+      optimismDpmProxies$,
+      tokenPriceUSDStatic$,
+      optimismReadPositionCreatedEvents$,
+      aaveV3Optimism,
+      NetworkIds.OPTIMISMMAINNET,
+    ),
+    (wallet) => wallet,
+  )
+
+  const aavePositions$ = memoize((walletAddress: string) => {
+    return combineLatest([
+      mainnetAavePositions$(walletAddress),
+      aaveOptimismPositions$(walletAddress),
+    ]).pipe(
+      map(([mainnetAavePositions, optimismAavePositions]) => {
+        return [...mainnetAavePositions, ...optimismAavePositions]
+      }),
+    )
+  })
+
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
-  const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
+  const positions$ = memoize(
+    curry(createPositions$)(makerPositions$, mainnetAavePositions$, aaveOptimismPositions$),
+  )
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -1185,8 +1034,6 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const uiChanges = initializeUIChanges()
-
   const checkOasisCDPType$: ({
     id,
     protocol,
@@ -1212,20 +1059,6 @@ export function setupAppContext() {
       vault$,
     ),
     bigNumberTostring,
-  )
-
-  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceDataLean$)
-
-  const productCardsData$ = memoize(
-    curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkDataLean$, oraclePriceDataLean$),
-    (ilks: string[]) => {
-      return ilks.join(',')
-    },
-  )
-
-  const productCardsWithBalance$ = createProductCardsWithBalance$(
-    ilksWithBalance$,
-    oraclePriceDataLean$,
   )
 
   const vaultsHistoryAndValue$ = memoize(
@@ -1302,28 +1135,28 @@ export function setupAppContext() {
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(chainContext$),
-    (token: string, timestamp: moment.Moment) => {
+    (token: string, timestamp: dayjs.Dayjs) => {
       return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
     },
   )
 
   const makerOracleTokenPricesForDates$ = memoize(
     curry(createMakerOracleTokenPricesForDates$)(chainContext$),
-    (token: string, timestamps: moment.Moment[]) => {
+    (token: string, timestamps: dayjs.Dayjs[]) => {
       return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
     },
   )
 
   const yields$ = memoize(
-    (ilk: string, date?: moment.Moment) => {
+    (ilk: string, date?: dayjs.Dayjs) => {
       return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
     },
-    (ilk: string, date: moment.Moment = moment()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
+    (ilk: string, date: dayjs.Dayjs = dayjs()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
   )
 
   const yieldsChange$ = memoize(
     curry(getYieldChange$)(yields$),
-    (currentDate: moment.Moment, previousDate: moment.Moment, ilk: string) =>
+    (currentDate: dayjs.Dayjs, previousDate: dayjs.Dayjs, ilk: string) =>
       `${ilk}_${currentDate.format('YYYY-MM-DD')}_${previousDate.format('YYYY-MM-DD')}`,
   )
 
@@ -1373,9 +1206,6 @@ export function setupAppContext() {
     (walletAddress: string) => walletAddress,
   )
 
-  const ajnaPoolsTableData$ = curry(getAjnaPoolsTableContent$)(context$, tokenPriceUSDStatic$)
-  const ajnaProductCardsData$ = curry(getAjnaProductCardsData$)(context$, once$)
-
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(positionsList$, aavePositions$, ajnaPositions$, dsr$),
   )
@@ -1419,6 +1249,7 @@ export function setupAppContext() {
   )
 
   const dpmAccountStateMachine = getDPMAccountStateMachine(
+    context$,
     txHelpers$,
     gasEstimation$,
     dpmAccountTransactionMachine,
@@ -1453,11 +1284,9 @@ export function setupAppContext() {
     web3Context$,
     web3ContextConnected$,
     setupWeb3Context$,
-    initializedAccount$,
     context$,
     onEveryBlock$,
     txHelpers$,
-    transactionManager$,
     proxyAddress$,
     proxyOwner$,
     vaults$,
@@ -1473,12 +1302,10 @@ export function setupAppContext() {
     manageGuniVault$,
     vaultsOverview$,
     vaultBanners$,
-    redirectState$,
     gasPrice$,
     automationTriggersData$,
     accountData$,
     vaultHistory$,
-    collateralPrices$,
     termsAcceptance$,
     walletAssociatedRisk$,
     reclaimCollateral$,
@@ -1487,11 +1314,8 @@ export function setupAppContext() {
     userSettings$,
     openGuniVault$,
     ilkDataList$,
-    uiChanges,
     connectedContext$,
-    productCardsData$,
     getOasisStats$: memoize(getOasisStats$),
-    productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
     ilkToToken$,
@@ -1536,8 +1360,6 @@ export function setupAppContext() {
     chainContext$,
     positionIdFromDpmProxy$,
     switchChains,
-    ajnaPoolsTableData$,
-    ajnaProductCardsData$,
   }
 }
 

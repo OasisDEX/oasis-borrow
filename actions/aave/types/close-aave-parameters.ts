@@ -1,8 +1,8 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition, PositionType } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ProxyType } from 'features/aave/common'
 import { AaveLendingProtocol } from 'lendingProtocols'
-import { NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from '../../../blockchain/networks'
 
 export interface CloseAaveParameters {
   currentPosition: IPosition
@@ -15,4 +15,5 @@ export interface CloseAaveParameters {
   shouldCloseToCollateral: boolean
   protocol: AaveLendingProtocol
   networkId: NetworkIds
+  positionType: PositionType
 }

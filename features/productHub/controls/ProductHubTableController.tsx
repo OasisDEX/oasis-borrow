@@ -1,32 +1,23 @@
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
 import { AssetsTableRowData } from 'components/assetsTable/types'
-import { ALL_ASSETS } from 'features/productHub/meta'
+import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 
 interface ProductHubTableControllerProps {
   rows: AssetsTableRowData[]
-  selectedToken: string
 }
 
-export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({
-  selectedToken,
-  rows,
-}) => {
+export const ProductHubTableController: FC<ProductHubTableControllerProps> = ({ rows }) => {
+  const { t } = useTranslation()
   return (
     <>
       {rows.length > 0 ? (
-        <AssetsResponsiveTable
-          rows={rows}
-          headerTranslationProps={{
-            ...(selectedToken && { token: selectedToken === ALL_ASSETS ? 'ETH' : selectedToken }),
-          }}
-        />
+        <AssetsResponsiveTable rows={rows} />
       ) : (
         <AssetsTableNoResults
-          // TODO replace with translations when copy is available
-          header="There are no items matching your filters"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean iaculis lorem in feugiat mattis."
+          header={t('discover.table.no-items')}
+          content={t('discover.table.no-items-description')}
         />
       )}
     </>

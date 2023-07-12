@@ -6,6 +6,7 @@ import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/get
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Container } from 'theme-ui'
@@ -25,16 +26,20 @@ export function AjnaPositionView({
 }: AjnaPositionViewProps) {
   const { t } = useTranslation()
   const { contextIsLoaded, walletAddress } = useAccount()
+  const proxyReveal = useFeatureToggle('ProxyReveal')
   const {
     environment: {
       collateralPrice,
       collateralToken,
       flow,
       id,
+      isShort,
       owner,
+      priceFormat,
       product,
       quotePrice,
       quoteToken,
+      dpmProxy,
     },
   } = useAjnaGeneralContext()
 
@@ -47,7 +52,13 @@ export function AjnaPositionView({
       )}
       <VaultHeadline
         header=""
-        {...getAjnaHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
+        {...getAjnaHeadlineProps({
+          collateralToken,
+          flow,
+          id,
+          product,
+          quoteToken,
+        })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[
           ...(headlineDetails || []),
@@ -56,10 +67,13 @@ export function AjnaPositionView({
               collateralToken,
             }),
             value: `${formatCryptoBalance(
-              collateralPrice.dividedBy(quotePrice),
-            )} ${collateralToken}/${quoteToken}`,
+              isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
+            )} ${priceFormat}`,
           },
         ]}
+        handleClick={
+          proxyReveal ? () => console.log(`DPM proxy: ${dpmProxy?.toLowerCase()}`) : undefined
+        }
       />
       <TabBar
         variant="underline"

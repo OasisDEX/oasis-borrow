@@ -1,101 +1,28 @@
 import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnInput'
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
+import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
+import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
+import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { FC, useEffect, useMemo } from 'react'
+import { Box } from 'theme-ui'
 
-function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) {
-  return predefinedSteps.reduce((prev, curr) => {
-    return curr.minus(value).abs().lt(prev.minus(value).abs()) ? curr : prev
-  })
+interface AjnaEarnSliderProps {
+  isDisabled?: boolean
+  nestedManualInput?: boolean
 }
 
-function getMinMaxAndRange({
-  highestThresholdPrice,
-  lowestUtilizedPrice,
-  mostOptimisticMatchingPrice,
-  offset, // 0 - 1, percentage value
-}: {
-  highestThresholdPrice: BigNumber
-  lowestUtilizedPrice: BigNumber
-  mostOptimisticMatchingPrice: BigNumber
-  offset: number
-}) {
-  // Generate ranges from min to lup
-  const lupNearHtpRange = [lowestUtilizedPrice]
-
-  while (lupNearHtpRange[lupNearHtpRange.length - 1].gt(highestThresholdPrice)) {
-    lupNearHtpRange.push(lupNearHtpRange[lupNearHtpRange.length - 1].div(1.005))
-  }
-
-  const nearHtpMinRange = [lupNearHtpRange[lupNearHtpRange.length - 1]]
-
-  while (
-    nearHtpMinRange[nearHtpMinRange.length - 1].gt(nearHtpMinRange[0].times(one.minus(offset)))
-  ) {
-    nearHtpMinRange.push(nearHtpMinRange[nearHtpMinRange.length - 1].div(1.005))
-  }
-
-  // Generate ranges from lup to max
-  const lupNearMompRange = [lowestUtilizedPrice]
-
-  while (lupNearMompRange[lupNearMompRange.length - 1].lt(mostOptimisticMatchingPrice)) {
-    lupNearMompRange.push(lupNearMompRange[lupNearMompRange.length - 1].times(1.005))
-  }
-
-  const nearMompMaxRange = [lupNearMompRange[lupNearMompRange.length - 1]]
-
-  while (
-    nearMompMaxRange[nearMompMaxRange.length - 1].lt(nearMompMaxRange[0].times(one.plus(offset)))
-  ) {
-    nearMompMaxRange.push(nearMompMaxRange[nearMompMaxRange.length - 1].times(1.005))
-  }
-
-  const range = [
-    ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
-  ]
-    .sort((a, b) => a.toNumber() - b.toNumber())
-    .map((item) => item.decimalPlaces(18))
-
-  return {
-    min: range[0],
-    max: range[range.length - 1],
-    range,
-  }
-}
-
-function convertSliderValuesToPercents(value: BigNumber, min: BigNumber, max: BigNumber) {
-  return value.minus(min).div(max.minus(min)).times(100).toNumber()
-}
-
-function convertSliderThresholds({
-  min,
-  max,
-  highestThresholdPrice,
-  lowestUtilizedPrice,
-  mostOptimisticMatchingPrice,
-}: {
-  min: BigNumber
-  max: BigNumber
-  highestThresholdPrice: BigNumber
-  lowestUtilizedPrice: BigNumber
-  mostOptimisticMatchingPrice: BigNumber
-}) {
-  return {
-    htpPercentage: convertSliderValuesToPercents(highestThresholdPrice, min, max),
-    lupPercentage: convertSliderValuesToPercents(lowestUtilizedPrice, min, max),
-    mompPercentage: convertSliderValuesToPercents(mostOptimisticMatchingPrice, min, max),
-  }
-}
-
-export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
+export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManualInput }) => {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralToken, priceFormat, quoteToken, isShort },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -108,11 +35,12 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
     validation: { isFormFrozen },
   } = useAjnaProductContext('earn')
 
-  const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
-
-  const resolvedValue = price || lowestUtilizedPrice
-
-  const maxLtv = position.getMaxLtv(price)
+  const {
+    highestThresholdPrice,
+    lowestUtilizedPrice,
+    mostOptimisticMatchingPrice,
+    lowestUtilizedPriceIndex,
+  } = position.pool
 
   const { min, max, range } = useMemo(
     () =>
@@ -120,14 +48,34 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
         highestThresholdPrice,
         mostOptimisticMatchingPrice,
         lowestUtilizedPrice,
+        lowestUtilizedPriceIndex,
+        marketPrice: position.marketPrice,
         offset: AJNA_LUP_MOMP_OFFSET,
       }),
     [
       highestThresholdPrice.toString(),
       mostOptimisticMatchingPrice.toString(),
       lowestUtilizedPrice.toString(),
+      lowestUtilizedPriceIndex.toString(),
+      position.marketPrice.toString(),
     ],
   )
+
+  function handleChange(v: BigNumber) {
+    const newValue = snapToPredefinedValues(v)
+    updateState('price', newValue)
+  }
+
+  const resolvedLup = lowestUtilizedPriceIndex.isZero() ? max : lowestUtilizedPrice
+  const resolvedValue = price || resolvedLup
+  const maxLtv = position.getMaxLtv(resolvedValue)
+
+  useEffect(() => {
+    // triggered only once to initialize price on state when lup index is zero
+    if (lowestUtilizedPriceIndex.isZero() && !price) {
+      handleChange(min)
+    }
+  }, [])
 
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
     () =>
@@ -141,37 +89,59 @@ export function AjnaEarnSlider({ isDisabled }: { isDisabled?: boolean }) {
     [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
   )
 
-  function handleChange(v: BigNumber) {
-    const newValue = snapToPredefinedValues(v, range)
-    updateState('price', newValue)
-  }
+  const leftBoundry = isShort ? one.div(resolvedValue) : resolvedValue
 
   return (
-    <SliderValuePicker
-      lastValue={resolvedValue}
-      minBoundry={min}
-      maxBoundry={max}
-      step={1}
-      leftBoundry={resolvedValue}
-      rightBoundry={maxLtv}
-      leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
-      rightBoundryFormatter={(v) =>
-        !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
-      }
-      disabled={isDisabled || isFormFrozen}
-      onChange={handleChange}
-      leftLabel={t('ajna.position-page.earn.common.form.max-lending-price', {
-        quoteToken,
-        collateralToken,
-      })}
-      rightLabel={t('ajna.position-page.earn.common.form.max-ltv-to-lend-at')}
-      leftBottomLabel={t('safer')}
-      rightBottomLabel={t('riskier')}
-      colorfulRanges={`linear-gradient(to right,
+    <>
+      <SliderValuePicker
+        lastValue={resolvedValue}
+        minBoundry={min}
+        maxBoundry={max}
+        step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
+        leftBoundry={leftBoundry}
+        rightBoundry={maxLtv}
+        leftBoundryFormatter={(v) => `$${formatAmount(v, 'USD')}`}
+        rightBoundryFormatter={(v) => (!v.isZero() ? formatDecimalAsPercent(v) : '-')}
+        disabled={isDisabled || isFormFrozen}
+        onChange={handleChange}
+        leftLabel={t('ajna.position-page.earn.common.form.token-pair-lending-price', {
+          quoteToken: isShort ? collateralToken : quoteToken,
+          collateralToken: isShort ? quoteToken : collateralToken,
+        })}
+        rightLabel={t('ajna.position-page.earn.common.form.max-ltv-to-lend-at')}
+        leftBottomLabel={t('safer')}
+        rightBottomLabel={t('riskier')}
+        colorfulRanges={`linear-gradient(to right,
         #D3D4D8 0 ${htpPercentage}%,
         #1ECBAE ${htpPercentage}% ${lupPercentage}%,
         #EABE4C ${lupPercentage}% ${mompPercentage}%,
         #EE5728 ${mompPercentage}% 100%)`}
-    />
+      />
+      {nestedManualInput ? (
+        <PillAccordion
+          title={t('ajna.position-page.earn.common.form.or-enter-specific-lending-price', {
+            priceFormat,
+          })}
+        >
+          <AjnaEarnInput
+            disabled={isDisabled || isFormFrozen}
+            min={min}
+            max={max}
+            range={range}
+            fallbackValue={resolvedLup}
+          />
+        </PillAccordion>
+      ) : (
+        <Box sx={{ mt: 3 }}>
+          <AjnaEarnInput
+            disabled={isDisabled || isFormFrozen}
+            min={min}
+            max={max}
+            range={range}
+            fallbackValue={resolvedLup}
+          />
+        </Box>
+      )}
+    </>
   )
 }

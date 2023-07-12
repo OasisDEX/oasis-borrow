@@ -75,7 +75,10 @@ export function AaveManagePositionView({
     getAaveReserveData$({ token: strategyConfig.tokens.debt }),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(
-    aaveReserveConfigurationData$({ token: strategyConfig.tokens.collateral }),
+    aaveReserveConfigurationData$({
+      collateralToken: strategyConfig.tokens.collateral,
+      debtToken: strategyConfig.tokens.debt,
+    }),
   )
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>

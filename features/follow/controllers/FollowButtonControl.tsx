@@ -1,6 +1,5 @@
 import { Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import {
   FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
@@ -14,6 +13,7 @@ import {
   unfollowVaultUsingApi,
 } from 'features/shared/followApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
+import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect, useState } from 'react'
 import { SxStyleProp } from 'theme-ui'
@@ -35,7 +35,6 @@ export function FollowButtonControl({
   vaultId,
   protocol,
 }: FollowButtonControlProps) {
-  const { uiChanges } = useAppContext()
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
   const [isLimitReachedState] = useUIChanges<FollowedVaultsLimitReachedChange>(

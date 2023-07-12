@@ -225,6 +225,34 @@ model UsersWhoFollowVaults {
   @@map("users_who_follow_vaults")
 }
 
+model ProductHubItems {
+  id String @id @default(uuid())
+  label String
+  network NetworkNamesWithTestnets
+  primaryToken String
+  primaryTokenGroup String?
+  product Product[]
+  protocol Protocol
+  secondaryToken String
+  secondaryTokenGroup String?
+  weeklyNetApy String?
+  depositToken String?
+  earnStrategy String?
+  fee String?
+  liquidity String?
+  managementType ProductHubManagementSimple?
+  maxLtv String?
+  maxMultiply String?
+  multiplyStrategy String?
+  multiplyStrategyType ProductHubStrategy?
+  reverseTokens Boolean?
+  updatedAt DateTime @updatedAt
+  tooltips Json?
+
+  @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
+  @@map("product_hub_items")
+}
+
 enum Protocol {
   maker
   aavev2
@@ -232,4 +260,98 @@ enum Protocol {
   ajna
 
   @@map("protocol")
+}
+
+enum NetworkNames {
+  ethereum
+  arbitrum
+  polygon
+  optimism
+
+  @@map("network")
+}
+
+enum NetworkNamesWithTestnets {
+  ethereum
+  ethereum_goerli
+  arbitrum
+  arbitrum_goerli
+  polygon
+  polygon_mumbai
+  optimism
+  optimism_goerli
+
+  @@map("networkWithTestnets")
+}
+
+enum Product {
+  borrow
+  multiply
+  earn
+
+  @@map("product")
+}
+
+enum ProductHubManagement {
+  active
+  active_with_liq_risk
+  passive
+
+  @@map("managementType")
+}
+
+enum ProductHubManagementSimple {
+  active
+  passive
+
+  @@map("managementTypeSimple")
+}
+
+enum ProductHubStrategy {
+  long
+  short
+
+  @@map("multiplyStrategyType")
+}
+
+model AjnaRewardsWeeklyClaim {
+  id           Int      @id @default(autoincrement())
+  timestamp    DateTime @default(now())
+  chain_id     Int
+  user_address String
+  amount       String
+
+  week_number Int
+
+  proof String[]
+
+  @@unique([week_number, user_address, chain_id], name: "week_number_userAddress_chain_id_unique_id")
+  @@map("ajna_rewards_weekly_claim")
+}
+
+model AjnaRewardsDailyClaim {
+  id           Int      @id @default(autoincrement())
+  timestamp    DateTime @default(now())
+  chain_id     Int
+  user_address String
+  amount       String
+
+  week_number Int
+  day_number  Int
+
+  @@unique([day_number, user_address, chain_id], name: "day_number_userAddress_chain_id_unique_id")
+  @@map("ajna_rewards_daily_claim")
+}
+
+model AjnaRewardsMerkleTree {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  chain_id  Int
+
+  week_number  Int
+  tree_root    String
+  tx_processed Boolean @default(false)
+
+  @@unique([week_number, chain_id], name: "week_number_chain_id_unique_id")
+  @@map("ajna_rewards_merkle_tree")
 }

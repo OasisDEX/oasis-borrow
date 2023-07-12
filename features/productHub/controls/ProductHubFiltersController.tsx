@@ -1,4 +1,4 @@
-import { BaseNetworkNames } from 'blockchain/networks'
+import { isTestnetNetworkId, NetworkIds, useCustomNetworkParameter } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
@@ -9,12 +9,14 @@ import {
   productHubNetworkFilter,
   productHubProtocolFilter,
   productHubStrategyFilter,
+  productHubTestNetworkFilter,
 } from 'features/productHub/meta'
 import {
   ProductHubFilters,
   ProductHubItem,
   ProductHubMultiplyStrategyType,
-  ProductType,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -26,21 +28,27 @@ import { useMediaQuery } from 'usehooks-ts'
 
 interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
   selectedFilters: ProductHubFilters
-  selectedProduct: ProductType
+  selectedProduct: ProductHubProductType
   selectedToken: string
   onChange: (selectedFilters: ProductHubFilters) => void
 }
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
   data,
+  initialNetwork = [],
+  initialProtocol = [],
   selectedFilters,
   selectedProduct,
   selectedToken,
   onChange,
 }) => {
   const { t } = useTranslation()
+  const [networkParameter] = useCustomNetworkParameter()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
+  const isTestnet = isTestnetNetworkId(networkParameter?.id ?? NetworkIds.MAINNET)
 
   const debtTokens = useMemo(
     () =>
@@ -80,7 +88,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         productHubGridTemplateColumns[selectedProduct],
       ]}
     >
-      {selectedProduct === ProductType.Borrow && (
+      {selectedProduct === ProductHubProductType.Borrow && (
         <GenericMultiselect
           label={t('product-hub.filters.debt-tokens')}
           options={debtTokens}
@@ -92,7 +100,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
           }}
         />
       )}
-      {selectedProduct === ProductType.Multiply && (
+      {selectedProduct === ProductHubProductType.Multiply && (
         <GenericMultiselect
           label={t('product-hub.filters.secondary-tokens')}
           options={secondaryTokens}
@@ -113,7 +121,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         />
       )}
       {!isSmallerScreen && <Box />}
-      {selectedProduct === ProductType.Multiply && (
+      {selectedProduct === ProductHubProductType.Multiply && (
         <GenericMultiselect
           label={t('product-hub.filters.strategies')}
           options={productHubStrategyFilter}
@@ -129,16 +137,21 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
         />
       )}
       <GenericMultiselect
+        initialValues={initialNetwork}
         label={t('product-hub.filters.networks')}
-        options={productHubNetworkFilter}
+        options={isTestnet ? productHubTestNetworkFilter : productHubNetworkFilter}
         onChange={(value) => {
           onChange({
             or: selectedFilters.or,
-            and: { ...selectedFilters.and, network: value as unknown as BaseNetworkNames[] },
+            and: {
+              ...selectedFilters.and,
+              network: value as unknown as ProductHubSupportedNetworks[],
+            },
           })
         }}
       />
       <GenericMultiselect
+        initialValues={initialProtocol}
         label={t('product-hub.filters.protocols')}
         options={productHubProtocolFilter}
         onChange={(value) => {

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/OasisDEX/oasis-borrow/dev/public/static/img/logo_footer_v2.svg" width="500" height="500" />
+  <img src="https://raw.githubusercontent.com/OasisDEX/oasis-borrow/dev/public/static/img/logos/logo_dark.svg" width="500" height="500" />
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/main/graph/badge.svg?token=KMXTAUFL48)](https://app.codecov.io/gh/OasisDEX/oasis-borrow/branch/main)
@@ -11,14 +11,14 @@
 
 | Environment | URL                                            | Branch |                                     Build Status                                     |
 | ----------- | ---------------------------------------------- | :----: | :----------------------------------------------------------------------------------: |
-| Production  | [oasis.app](https://oasis.app)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
-| Staging     | [staging.oasis.app](https://staging.oasis.app) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
+| Production  | [summer.fi](https://summer.fi)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
+| Staging     | [staging.summer.fi](https://staging.summer.fi) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
 
 <br>
 
-# Oasis.app
+# Summer.fi
 
-[Oasis.app](https://oasis.app) is the most popular user-interface to interact with the
+[Summer.fi](https://summer.fi) is the most popular user-interface to interact with the
 [Maker protocol](https://docs.makerdao.com/). It enables users to generate Dai, the most used and
 decentralized stablecoin, using a variety of crypto assets as collateral.
 
@@ -68,7 +68,7 @@ The application will be viewable on <http://localhost:3000> or <https://localhos
 
 ### Run staging site locally
 
-You can run the current staging site, (found at <https://staging.oasis.app>) alongside the database,
+You can run the current staging site, (found at <https://staging.summer.fi>) alongside the database,
 by running:
 
 ```sh
@@ -249,11 +249,13 @@ yarn test:fix
 <br>
 
 ## Unit tests :construction_worker:
-We are currently in the process of moving our tests from Mocha (with Chai, Enzyme, and Sinon) to Jest (with React Testing Library).
-We are also in the process of adding more tests to increase our coverage.
-We have some tests skipped for now, but we are working on fixing them.
-**We needed to disable caching in the `build` action. Testing with collecting coverage was failing with caching enabled.**
-Skipped tests (Marked with `TODO: [Mocha -> Jest] Rewrite in Jest compatible format.`):
+
+We are currently in the process of moving our tests from Mocha (with Chai, Enzyme, and Sinon) to
+Jest (with React Testing Library). We are also in the process of adding more tests to increase our
+coverage. We have some tests skipped for now, but we are working on fixing them. **We needed to
+disable caching in the `build` action. Testing with collecting coverage was failing with caching
+enabled.** Skipped tests (Marked with `TODO: [Mocha -> Jest] Rewrite in Jest compatible format.`):
+
 - [Batch Manager](helpers/api/BatchManager.test.ts)
 - [Manage Vault Validations](features/borrow/manage/tests/manageVaultValidations.test.ts)
 - [Earn Calculations](features/earn/calculations.test.ts)

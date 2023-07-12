@@ -1,3 +1,4 @@
+import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
@@ -26,14 +27,14 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
     <WithFeatureToggleRedirect feature="DaiSavingsRate">
-      <WithConnection>
+      <WithConnection pageChainId={ethereumMainnetHexId}>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags
               title="seo.title-dsr"
               titleParams={{
                 product: t('seo.earn.title'),
-                protocol: LendingProtocolLabel.Maker,
+                protocol: LendingProtocolLabel.maker,
               }}
               description="seo.multiply.description"
               url="/earn/dsr"

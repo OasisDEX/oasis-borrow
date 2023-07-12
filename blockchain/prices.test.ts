@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
+import dayjs from 'dayjs'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import moment from 'moment'
 import { Observable, of, throwError } from 'rxjs'
 
 import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from './prices'
@@ -100,11 +100,11 @@ describe('createOraclePriceData$', () => {
     )
     const result = getStateUnpacker(oraclePriceData$)()
 
-    expect(result.currentPrice?.toString()).toBe('0.000000000000001')
-    expect(result.nextPrice?.toString()).toBe('0.0000000001')
-    expect(moment(result.currentPriceUpdate).unix()).toBe(1657811932)
-    expect(moment(result.nextPriceUpdate).unix()).toBe(1657815532)
-    expect(result.priceUpdateInterval?.toString()).toBe('3600000')
+    expect(result.currentPrice?.toString(10)).toBe('0.000000000000001')
+    expect(result.nextPrice?.toString(10)).toBe('0.0000000001')
+    expect(dayjs(result.currentPriceUpdate).unix()).toBe(1657811932)
+    expect(dayjs(result.nextPriceUpdate).unix()).toBe(1657815532)
+    expect(result.priceUpdateInterval?.toString(10)).toBe('3600000')
     expect(result.isStaticPrice).toBe(false)
     expect(result.percentageChange?.toString()).toBe('99999')
   })
@@ -162,7 +162,8 @@ describe('createOraclePriceData$', () => {
     it('only calls peek$ for currentPrice', () => {
       runTest({
         requestedValue: 'currentPrice',
-        runAssertion: (result) => expect(result.currentPrice?.toString()).toBe('0.000000000000001'),
+        runAssertion: (result) =>
+          expect(result.currentPrice?.toString(10)).toBe('0.000000000000001'),
         streamsCalled: ['peek$'],
         streamsNotCalled: ['peep$', 'zzz$', 'hop$'],
       })
@@ -171,7 +172,7 @@ describe('createOraclePriceData$', () => {
     it('calls peek$ and peep$ for nextPrice', () => {
       runTest({
         requestedValue: 'nextPrice',
-        runAssertion: (result) => expect(result.nextPrice?.toString()).toBe('0.0000000001'),
+        runAssertion: (result) => expect(result.nextPrice?.toString(10)).toBe('0.0000000001'),
         streamsCalled: ['peek$', 'peep$'],
         streamsNotCalled: ['zzz$', 'hop$'],
       })
@@ -180,7 +181,7 @@ describe('createOraclePriceData$', () => {
     it('calls zzz for currentPriceUpdate', () => {
       runTest({
         requestedValue: 'currentPriceUpdate',
-        runAssertion: (result) => expect(moment(result.currentPriceUpdate).unix()).toBe(1657811932),
+        runAssertion: (result) => expect(dayjs(result.currentPriceUpdate).unix()).toBe(1657811932),
         streamsCalled: ['zzz$'],
         streamsNotCalled: ['hop$', 'peek$', 'peep$'],
       })
@@ -189,7 +190,7 @@ describe('createOraclePriceData$', () => {
     it('calls zzz$ and hop$ for currentPriceUpdate', () => {
       runTest({
         requestedValue: 'nextPriceUpdate',
-        runAssertion: (result) => expect(moment(result.nextPriceUpdate).unix()).toBe(1657815532),
+        runAssertion: (result) => expect(dayjs(result.nextPriceUpdate).unix()).toBe(1657815532),
         streamsCalled: ['zzz$', 'hop$'],
         streamsNotCalled: ['peek$', 'peep$'],
       })

@@ -9,7 +9,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React, { FC, ReactNode } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
@@ -28,7 +28,7 @@ const AjnaRewardCardListBox: FC<AjnaRewardCardListBoxProps> = ({ title, list, li
   const { t } = useTranslation()
 
   return (
-    <>
+    <Box sx={{ mb: [2, 4] }}>
       <Heading
         sx={{
           mb: [0, 3],
@@ -66,54 +66,11 @@ const AjnaRewardCardListBox: FC<AjnaRewardCardListBoxProps> = ({ title, list, li
           </Text>
         ))}
       </Box>
-      <AppLink href={link.href} sx={{ display: ['none', 'block'] }}>
+      <AppLink href={link.href} sx={{ display: ['none', 'block'], textAlign: 'center' }}>
         <WithArrow gap={1} sx={{ ...getAjnaWithArrowColorScheme() }}>
           {t(link.title)}
         </WithArrow>
       </AppLink>
-    </>
-  )
-}
-
-interface EarningOnPositionsLinkProps {
-  ownerPageLink: Link
-  numberOfPositions: number
-  walletAddress: string
-  mobileOnly?: boolean
-}
-
-const EarningOnPositionsLink: FC<EarningOnPositionsLinkProps> = ({
-  ownerPageLink,
-  numberOfPositions,
-  walletAddress,
-  mobileOnly,
-}) => {
-  return (
-    <Box
-      sx={{
-        display: mobileOnly ? ['block', 'none'] : ['none', 'block'],
-        mt: [0, 3],
-        fontSize: [1, 2],
-        color: 'neutral80',
-        transform: 'translateX(-8px)',
-      }}
-    >
-      <Trans
-        i18nKey={ownerPageLink.title}
-        values={{ value: numberOfPositions || 0 }}
-        components={{
-          1: (
-            <AppLink
-              href={`${ownerPageLink.href}/${walletAddress}`}
-              sx={{
-                mt: [0, 3],
-              }}
-              key="card-link"
-            />
-          ),
-          2: <WithArrow as="span" gap={1} sx={{ color: 'inherit', fontWeight: 'regular' }} />,
-        }}
-      />
     </Box>
   )
 }
@@ -124,29 +81,45 @@ interface BannerProps {
   footer?: string
 }
 
-interface Rewards {
+export interface Rewards {
   tokens: BigNumber
   usd: BigNumber
-  numberOfPositions: number
 }
 
-interface AjnaRewardCardBannerProps {
-  banner: BannerProps
-  rewards: Rewards
-  gradient: string
+interface AjnaRewardCardBannerPropsAvailable {
+  notAvailable?: never
   ownerPageLink: Link
+  rewards: Rewards
+  txStatus?: TxStatus
   walletAddress: string
   onBtnClick?: () => void
-  txStatus?: TxStatus
+}
+
+interface AjnaRewardCardBannerPropsUnavailable {
+  notAvailable: true
+  ownerPageLink?: never
+  rewards?: never
+  txStatus?: never
+  walletAddress?: never
+  onBtnClick?: never
+}
+
+type AjnaRewardCardBannerProps = (
+  | AjnaRewardCardBannerPropsAvailable
+  | AjnaRewardCardBannerPropsUnavailable
+) & {
+  banner: BannerProps
+  claimingDisabled: boolean
+  gradient: string
 }
 
 const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
   banner,
-  rewards,
+  claimingDisabled,
   gradient,
-  ownerPageLink,
-  walletAddress,
+  notAvailable,
   onBtnClick,
+  rewards,
   txStatus,
 }) => {
   const { t } = useTranslation()
@@ -155,10 +128,10 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
     <Card
       sx={{
         width: '100%',
-        mt: [0, 4],
-        p: 4,
-        pb: 4,
-        pt: [0, 4],
+        minHeight: '220px',
+        mt: 'auto',
+        px: 4,
+        py: [0, 4],
         border: 'none',
         borderRadius: 'large',
         background: ['none', gradient],
@@ -168,111 +141,125 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
         <Heading variant="boldParagraph3" sx={{ display: ['none', 'block'] }}>
           {t(banner.title)}
         </Heading>
-        <Text as="p" sx={{ color: 'primary100', fontSize: '36px', fontWeight: 'regular' }}>
-          {formatCryptoBalance(rewards.tokens)}
-          <Text as="span" sx={{ fontSize: '28px', pl: 2 }}>
-            AJNA
-          </Text>
+        <Text as="p" sx={{ color: 'primary100', fontSize: '36px', fontWeight: 'semiBold' }}>
+          {notAvailable ? (
+            <Text as="span" sx={{ fontSize: '28px', pl: 2 }}>
+              {t('coming-soon')}
+            </Text>
+          ) : (
+            <>
+              {formatCryptoBalance(rewards.tokens)}
+              <Text as="span" sx={{ fontSize: '28px', pl: 2 }}>
+                AJNA
+              </Text>
+            </>
+          )}
         </Text>
         {/* TODO uncomment once ajna token usdc price will be available*/}
         {/*<Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>*/}
         {/*  ${(rewards.usd)}*/}
         {/*</Text>*/}
-        {rewards.tokens.gt(zero) && (
-          <Button
-            sx={{ mb: [0, banner.footer ? 3 : 0], mt: [4, 4], fontSize: 1, p: 0 }}
-            disabled={txStatus && progressStatuses.includes(txStatus)}
-            onClick={onBtnClick}
-          >
-            <Flex
-              sx={{
-                p: 2,
-              }}
-            >
-              {txStatus && progressStatuses.includes(txStatus) ? (
-                <Flex sx={{ px: 3, alignItems: 'center', gap: 2 }}>
-                  <Text
-                    as="span"
-                    variant="paragraph3"
-                    sx={{ color: 'inherit', fontSize: 'inherit' }}
-                  >
-                    {t('system.in-progress')}
-                  </Text>
-                  <Spinner
-                    variant="styles.spinner.medium"
-                    size={14}
-                    sx={{
-                      color: 'white',
-                      boxSizing: 'content-box',
-                    }}
-                  />
-                </Flex>
-              ) : (
-                <WithArrow
-                  gap={1}
+        {!notAvailable && (
+          <>
+            {rewards.tokens.gt(zero) && (
+              <Button
+                sx={{ mb: [0, banner.footer ? 3 : 0], mt: [4, 4], fontSize: 1, py: 0 }}
+                disabled={claimingDisabled || (txStatus && progressStatuses.includes(txStatus))}
+                onClick={onBtnClick}
+              >
+                <Flex
                   sx={{
-                    color: 'inherit',
-                    fontSize: 'inherit',
-                    pl: 3,
-                    pr: '24px',
-                    alignItems: 'center',
+                    p: 2,
                   }}
                 >
-                  {txStatus && failedStatuses.includes(txStatus)
-                    ? t('retry')
-                    : t(banner.button.title)}
-                </WithArrow>
-              )}
-            </Flex>
-          </Button>
+                  {claimingDisabled ? (
+                    t('ajna.rewards.cards.button-disabled')
+                  ) : (
+                    <>
+                      {txStatus && progressStatuses.includes(txStatus) ? (
+                        <Flex sx={{ px: 3, alignItems: 'center', gap: 2 }}>
+                          <Text
+                            as="span"
+                            variant="paragraph3"
+                            sx={{ color: 'inherit', fontSize: 'inherit' }}
+                          >
+                            {t('system.in-progress')}
+                          </Text>
+                          <Spinner
+                            variant="styles.spinner.medium"
+                            size={14}
+                            sx={{
+                              color: 'white',
+                              boxSizing: 'content-box',
+                            }}
+                          />
+                        </Flex>
+                      ) : (
+                        <WithArrow
+                          gap={1}
+                          sx={{
+                            color: 'inherit',
+                            fontSize: 'inherit',
+                            pl: 3,
+                            pr: '24px',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {txStatus && failedStatuses.includes(txStatus)
+                            ? t('retry')
+                            : t(banner.button.title)}
+                        </WithArrow>
+                      )}
+                    </>
+                  )}
+                </Flex>
+              </Button>
+            )}
+          </>
         )}
-        <EarningOnPositionsLink
-          ownerPageLink={ownerPageLink}
-          numberOfPositions={rewards.numberOfPositions}
-          walletAddress={walletAddress}
-        />
       </Flex>
     </Card>
   )
 }
 
 interface AjnaRewardCardProps {
-  title: string
-  image: string
-  list: string[]
-  link: Link
-  ownerPageLink: Link
   banner: BannerProps
-  gradient: string
-  isLoading: boolean
-  rewards: Rewards
-  onBtnClick?: () => void
-  txStatus?: TxStatus
-  notAvailable?: boolean
+  claimingDisabled?: boolean
   floatingLabel?: ReactNode
+  gradient: string
+  image: string
+  isLoading: boolean
+  link: Link
+  list: string[]
+  notAvailable?: boolean
+  onBtnClick?: () => void
+  ownerPageLink: Link
+  rewards: Rewards
+  title: string
+  txStatus?: TxStatus
 }
 
 export function AjnaRewardCard({
-  title,
-  image,
-  list,
-  link,
-  ownerPageLink,
   banner,
-  gradient,
-  onBtnClick,
-  txStatus,
-  isLoading,
-  rewards,
-  notAvailable,
   floatingLabel,
+  gradient,
+  image,
+  isLoading,
+  link,
+  list,
+  notAvailable,
+  onBtnClick,
+  ownerPageLink,
+  rewards,
+  title,
+  txStatus,
 }: AjnaRewardCardProps) {
   const { isConnected, walletAddress } = useAccount()
 
   return (
     <Card p={4} sx={{ height: '100%', borderRadius: 'large', position: 'relative' }}>
       {floatingLabel}
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center', height: '100%' }}>
         <Flex
           sx={{
             width: '100px',
@@ -287,25 +274,26 @@ export function AjnaRewardCard({
           <Image src={staticFilesRuntimeUrl(image)} />
         </Flex>
         <AjnaRewardCardListBox title={title} list={list} link={link} />
-        {walletAddress && !isLoading && !notAvailable && (
-          <AjnaRewardCardBanner
-            rewards={rewards}
-            banner={banner}
-            gradient={gradient}
-            onBtnClick={onBtnClick}
-            txStatus={txStatus}
-            ownerPageLink={ownerPageLink}
-            walletAddress={walletAddress}
-          />
-        )}
-        {isConnected && isLoading && !notAvailable && <Skeleton sx={{ mt: 4, height: '202px' }} />}
-        {rewards && walletAddress && (
-          <EarningOnPositionsLink
-            ownerPageLink={ownerPageLink}
-            numberOfPositions={rewards.numberOfPositions}
-            walletAddress={walletAddress}
-            mobileOnly
-          />
+        {notAvailable ? (
+          <AjnaRewardCardBanner banner={banner} gradient={gradient} notAvailable claimingDisabled />
+        ) : (
+          <>
+            {walletAddress && !isLoading && (
+              <AjnaRewardCardBanner
+                banner={banner}
+                claimingDisabled
+                gradient={gradient}
+                onBtnClick={onBtnClick}
+                ownerPageLink={ownerPageLink}
+                rewards={rewards}
+                txStatus={txStatus}
+                walletAddress={walletAddress}
+              />
+            )}
+            {isConnected && isLoading && (
+              <Skeleton sx={{ height: '220px', borderRadius: 'large' }} />
+            )}
+          </>
         )}
       </Flex>
     </Card>

@@ -1,3 +1,4 @@
+import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
@@ -31,14 +32,14 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <WithWalletConnection>
+    <WithWalletConnection chainId={ethereumMainnetHexId}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <PageSEOTags
             title="seo.title-product-w-tokens"
             titleParams={{
               product: t('seo.borrow.title'),
-              protocol: LendingProtocolLabel.Maker,
+              protocol: LendingProtocolLabel.maker,
               token1: ilk,
               token2: 'DAI',
             }}

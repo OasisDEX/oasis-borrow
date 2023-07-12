@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
+import dayjs from 'dayjs'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { mockVault$ } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one } from 'helpers/zero'
-import moment from 'moment'
 import { of } from 'rxjs/internal/observable/of'
 
 import { createVaultsNotices$ } from './vaultsNotices'
@@ -82,7 +82,7 @@ describe('createVaultNotices$', () => {
               daiAmount: new BigNumber(1),
               hash: '0x00',
               id: '1',
-              timestamp: moment().toISOString(),
+              timestamp: dayjs().toISOString(),
               token: 'ETH',
               liquidationRatio: new BigNumber(1),
               ethPrice: new BigNumber(200),
@@ -110,7 +110,7 @@ describe('createVaultNotices$', () => {
               liqPenalty: new BigNumber(1),
               hash: '0x00',
               id: '1',
-              timestamp: moment().toISOString(),
+              timestamp: dayjs().toISOString(),
               token: 'ETH',
               liquidationRatio: new BigNumber(1),
               ethPrice: new BigNumber(200),
@@ -137,7 +137,7 @@ describe('createVaultNotices$', () => {
               daiAmount: new BigNumber(1),
               hash: '0x00',
               id: '1',
-              timestamp: moment().subtract(1.5, 'weeks').toISOString(),
+              timestamp: dayjs().subtract(1.5, 'weeks').toISOString(),
               token: 'ETH',
               liquidationRatio: new BigNumber(1),
               ethPrice: new BigNumber(200),
@@ -169,7 +169,7 @@ describe('createVaultNotices$', () => {
               daiAmount: new BigNumber(1),
               hash: '0x00',
               id: '1',
-              timestamp: moment().subtract(3, 'days').toISOString(),
+              timestamp: dayjs().subtract(3, 'days').toISOString(),
               token: 'ETH',
               liquidationRatio: new BigNumber(1),
               ethPrice: new BigNumber(200),
@@ -208,7 +208,7 @@ describe('createVaultNotices$', () => {
               daiAmount: new BigNumber(1),
               hash: '0x00',
               id: '1',
-              timestamp: moment().subtract(3, 'days').toISOString(),
+              timestamp: dayjs().subtract(3, 'days').toISOString(),
               token: 'ETH',
               liquidationRatio: new BigNumber(1),
               ethPrice: new BigNumber(200),

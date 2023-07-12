@@ -8,11 +8,12 @@ import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { isFormEmpty } from 'features/ajna/positions/common/helpers/isFormEmpty'
+import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
+import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
@@ -23,7 +24,7 @@ export interface OasisActionCallData extends AjnaTxData {
 }
 
 export function useAjnaTxHandler(): () => void {
-  const { txHelpers$, context$, uiChanges } = useAppContext()
+  const { txHelpers$, context$ } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
@@ -47,20 +48,22 @@ export function useAjnaTxHandler(): () => void {
     useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
+  const isFormEmpty = getIsFormEmpty({ product, state, position, currentStep })
 
   useEffect(() => {
     cancelablePromise?.cancel()
-    if (isFormEmpty({ product, state, position, currentStep })) {
+
+    if (isFormEmpty) {
       setSimulation(undefined)
       setIsLoadingSimulation(false)
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [context?.chainId, dpmAddress, state])
+  }, [context?.chainId, state, isFormEmpty])
 
   useDebouncedEffect(
     () => {
-      if (context && !isExternalStep && currentStep !== 'risk') {
+      if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
         const promise = cancelable(
           getAjnaParameters({
             collateralPrice,
@@ -99,7 +102,7 @@ export function useAjnaTxHandler(): () => void {
           })
       }
     },
-    [context?.chainId, dpmAddress, state, isExternalStep],
+    [context?.chainId, state, isExternalStep],
     250,
   )
 

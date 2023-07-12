@@ -1,30 +1,38 @@
-import { BaseNetworkNames } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { PromoCardProps } from 'components/PromoCard'
 import { LendingProtocol } from 'lendingProtocols'
 
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
-export type ProductHubManagementType = 'active' | 'active-with-liq-risk' | 'passive'
+export type ProductHubManagementType = 'active' | 'passive'
 
-export enum ProductType {
+export enum ProductHubProductType {
   Borrow = 'borrow',
   Multiply = 'multiply',
   Earn = 'earn',
 }
 
+export type ProductHubSupportedNetworks =
+  | NetworkNames.ethereumMainnet
+  | NetworkNames.ethereumGoerli
+  | NetworkNames.arbitrumMainnet
+  | NetworkNames.arbitrumGoerli
+  | NetworkNames.optimismMainnet
+  | NetworkNames.optimismGoerli
+
 export interface ProductHubItemBasics {
   label: string
-  network: BaseNetworkNames
+  network: ProductHubSupportedNetworks
   primaryToken: string
   primaryTokenGroup?: string
-  product: ProductType | ProductType[]
+  product: ProductHubProductType[]
   protocol: LendingProtocol
   secondaryToken: string
   secondaryTokenGroup?: string
 }
 
 export interface ProductHubItemDetails {
-  '7DayNetApy'?: string
+  weeklyNetApy?: string
   depositToken?: string
   earnStrategy?: string
   fee?: string
@@ -35,7 +43,6 @@ export interface ProductHubItemDetails {
   multiplyStrategy?: string
   multiplyStrategyType?: ProductHubMultiplyStrategyType
   reverseTokens?: boolean
-  with50Tokens?: string
 }
 
 export interface ProductHubItemTooltips {
@@ -49,8 +56,12 @@ export interface ProductHubItemTooltips {
 
 export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
 
+export type ProductHubItemWithFlattenTooltip = Omit<ProductHubItem, 'tooltips'> & {
+  tooltips: string
+}
+
 export type ProductHubPromoCards = {
-  [key in ProductType]: {
+  [key in ProductHubProductType]: {
     default: PromoCardProps[]
     tokens: {
       [key: string]: PromoCardProps[]

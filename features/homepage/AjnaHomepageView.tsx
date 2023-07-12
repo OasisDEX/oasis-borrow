@@ -1,22 +1,23 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { getToken } from 'blockchain/tokensMetadata'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
-import { AssetPill } from 'components/AssetPill'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
-import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
-import { TabBar } from 'components/TabBar'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
-import { otherAssets } from 'features/ajna/common/controls/AjnaNavigationController'
-import { AjnaProductCardBorrowController } from 'features/ajna/common/controls/AjnaProductCardBorrowController'
-import { AjnaProductCardEarnController } from 'features/ajna/common/controls/AjnaProductCardEarnController'
-import { Hero } from 'features/homepage/HomepageView'
+import { AjnaProductHubIntro } from 'features/ajna/common/components/AjnaProductHubIntro'
+import { ProductHubProductType } from 'features/productHub/types'
+import { ProductHubView } from 'features/productHub/views'
+import { useConnection } from 'features/web3OnBoard'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Heading, Text } from 'theme-ui'
+import { Box, Button, Flex, Text } from 'theme-ui'
+
+import { Hero } from './common/Hero'
 
 export const benefitCardsAnja = [
   {
@@ -48,104 +49,45 @@ export const benefitCardsAnja = [
 ]
 
 export function AjnaHomepageView() {
+  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
+  const { connecting, connect } = useConnection({
+    initialConnect: false,
+  })
+  const { isConnected } = useAccount()
 
   return (
     <AnimatedWrapper>
       <Hero
         isConnected={context?.status === 'connected'}
-        sx={{
-          mt: '117px ',
-        }}
         heading="landing.hero.ajna.headline"
+        headingWidth="980px"
         subheading={
           <Trans
             i18nKey="landing.hero.ajna.subheader"
             components={[
               <AppLink
                 sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
-                href="https://oasis.app/anja"
+                href={EXTERNAL_LINKS.DOCS.AJNA.HUB}
               />,
             ]}
           />
         }
-        showButton={false}
+        subheadingWidth="740px"
       />
-      <Box
-        sx={{
-          width: '100%',
-          mt: '84px',
-        }}
-        id="product-cards-wrapper"
-      >
-        <TabBar
-          variant="large"
-          useDropdownOnMobile
-          defaultTab="borrow"
-          sections={[
-            {
-              label: t('landing.tabs.ajna.borrow.tabLabel'),
-              value: 'borrow',
-              content: <HomepageTabLayout cards={<AjnaProductCardBorrowController />} />,
-            },
-            // // TODO uncomment and configure once multiply available
-            // {
-            //   label: t('landing.tabs.ajna.multiply.tabLabel'),
-            //   value: 'multiply',
-            //   content: <HomepageTabLayout cards={<AjnaProductCardBorrowController />} />,
-            // },
-            {
-              label: t('landing.tabs.ajna.earn.tabLabel'),
-              value: 'earn',
-              content: <HomepageTabLayout cards={<AjnaProductCardEarnController />} />,
-            },
-          ]}
+      <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
+        <ProductHubView
+          headerGradient={['#f154db', '#974eea']}
+          initialProtocol={[LendingProtocol.Ajna]}
+          product={ProductHubProductType.Borrow}
+          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'AjnaLP'}
+          intro={(selectedProduct, selectedToken) => (
+            <AjnaProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
+          )}
         />
       </Box>
-      {otherAssets && otherAssets?.length > 0 && (
-        <Flex
-          sx={{
-            mt: '56px',
-            pt: 5,
-            flexDirection: 'column',
-            alignItems: 'center',
-            borderTop: '1px solid',
-            borderColor: 'neutral20',
-          }}
-        >
-          <Heading
-            as="h2"
-            sx={{
-              fontSize: '28px',
-              fontWeight: 'semiBold',
-              mb: '40px',
-              color: 'primary100',
-              textAlign: 'center',
-            }}
-          >
-            {t('ajna.other-assets')}
-          </Heading>
-          <Flex
-            as="ul"
-            sx={{
-              flexWrap: 'wrap',
-              columnGap: 3,
-              rowGap: 2,
-              listStyle: 'none',
-              p: 0,
-              justifyContent: 'center',
-            }}
-          >
-            {otherAssets.map(({ link, token }, i) => (
-              <Box key={i} as="li">
-                <AssetPill icon={getToken(token).iconCircle} label={token} link={link} />
-              </Box>
-            ))}
-          </Flex>
-        </Flex>
-      )}
       <Flex
         sx={{
           flexDirection: 'column',
@@ -182,37 +124,23 @@ export function AjnaHomepageView() {
           src: '/static/img/setup-banner/anja-landing-banner.png',
         }}
         link={{
-          href: 'link',
-          label: t('ajna.landing-banner.linkLabel'),
+          href: EXTERNAL_LINKS.AJNA.HOME,
+          label: t('ajna.landing-banner.link-label'),
         }}
         button={
-          context?.status !== 'connected' ? (
-            <AppLink
-              variant="primary"
-              href="/connect"
-              sx={{
-                display: 'flex',
-                px: '40px',
-                py: 2,
-                color: 'offWhite',
-                alignItems: 'center',
-                '&:hover svg': {
-                  transform: 'translateX(10px)',
-                },
-              }}
-            >
-              {t('connect-wallet-button')}
-              <Icon
-                name="arrow_right"
-                sx={{
-                  ml: 2,
-                  position: 'relative',
-                  left: 2,
-                  transition: '0.2s',
-                }}
-              />
+          isConnected ? (
+            <AppLink variant="primary" href={INTERNAL_LINKS.ajnaRewards} sx={{ px: '40px' }}>
+              {t('ajna.landing-banner.button-label')}
             </AppLink>
-          ) : null
+          ) : (
+            <Button
+              variant="primary"
+              sx={{ px: '40px' }}
+              onClick={async () => connecting || (await connect())}
+            >
+              {t('connect-wallet')} →
+            </Button>
+          )
         }
       />
       <AjnaHaveSomeQuestions />

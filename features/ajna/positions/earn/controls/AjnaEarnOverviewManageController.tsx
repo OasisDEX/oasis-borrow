@@ -1,10 +1,11 @@
+import { calculateAjnaMaxLiquidityWithdraw, normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { ContentCardCurrentEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardCurrentEarnings'
+import { ContentCardEarnNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardEarnNetValue'
 import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
 import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
-import { ContentCardTokensDeposited } from 'features/ajna/positions/common/components/contentCards/ContentCardTokensDeposited'
+import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
@@ -15,7 +16,7 @@ import React from 'react'
 export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, quotePrice },
+    environment: { collateralToken, isShort, priceFormat, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -25,25 +26,28 @@ export function AjnaEarnOverviewManageController() {
     notifications,
   } = useAjnaProductContext('earn')
 
+  const liquidationToMarketPrice = position.price.div(position.marketPrice)
+  const relationToMarketPrice = one.minus(
+    isShort ? normalizeValue(one.div(liquidationToMarketPrice)) : liquidationToMarketPrice,
+  )
+
   return (
     <DetailsSection
-      notifications={notifications}
       title={t('system.overview')}
+      notifications={notifications}
       content={
         <DetailsSectionContentCardWrapper>
-          <ContentCardCurrentEarnings
-            isLoading={isSimulationLoading}
+          <ContentCardTotalEarnings
             quoteToken={quoteToken}
-            // TODO adjust once data available in subgraph
-            currentEarnings={zero}
-            netPnL={zero}
+            totalEarnings={position.totalEarnings}
+            netPnL={position.pnl}
           />
-          <ContentCardTokensDeposited
+          <ContentCardEarnNetValue
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
-            tokensDeposited={position.quoteTokenAmount}
-            tokensDepositedUSD={position.quoteTokenAmount.times(quotePrice)}
-            afterTokensDeposited={simulation?.quoteTokenAmount}
+            netValue={position.quoteTokenAmount}
+            netValueUSD={position.quoteTokenAmount.times(quotePrice)}
+            afterNetValue={simulation?.quoteTokenAmount}
           />
           <ContentCardMaxLendingLTV
             isLoading={isSimulationLoading}
@@ -55,12 +59,13 @@ export function AjnaEarnOverviewManageController() {
           />
           <ContentCardPositionLendingPrice
             isLoading={isSimulationLoading}
-            collateralToken={collateralToken}
             quoteToken={quoteToken}
+            priceFormat={priceFormat}
+            isShort={isShort}
             positionLendingPrice={position.price}
             highestThresholdPrice={position.pool.highestThresholdPrice}
             afterPositionLendingPrice={simulation?.price}
-            relationToMarketPrice={position.maxRiskRatio.loanToValue.minus(one)}
+            relationToMarketPrice={relationToMarketPrice}
           />
         </DetailsSectionContentCardWrapper>
       }
@@ -68,7 +73,11 @@ export function AjnaEarnOverviewManageController() {
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
             quoteToken={quoteToken}
-            availableToWithdraw={position.quoteTokenAmount}
+            availableToWithdraw={calculateAjnaMaxLiquidityWithdraw({
+              pool: position.pool,
+              position,
+              simulation,
+            })}
             // TODO adjust once data available in subgraph
             projectedAnnualReward={zero}
             totalAjnaRewards={position.rewards}

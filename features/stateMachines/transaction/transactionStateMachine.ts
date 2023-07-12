@@ -143,12 +143,14 @@ export function startTransactionService<T extends TxMeta, TResult = unknown>(
   return (context) => {
     return combineLatest(context$, txHelpers$).pipe(
       first(),
-      switchMap(([connectedContext, { sendWithGasEstimation }]) => {
+      switchMap(([connectedContext, { send, sendWithGasEstimation }]) => {
         if (context.transactionParameters === undefined) {
           throw new Error('transactionParameters not set')
         }
+        const properFunction =
+          connectedContext.chainId === NetworkIds.MAINNET ? sendWithGasEstimation : send
 
-        return sendWithGasEstimation(context.transactionDef, context.transactionParameters).pipe(
+        return properFunction(context.transactionDef, context.transactionParameters).pipe(
           transactionToX<TransactionStateMachineEvents<T, TResult>, T>(
             {
               type: 'WAITING_FOR_APPROVAL',

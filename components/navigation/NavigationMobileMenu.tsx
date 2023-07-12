@@ -15,7 +15,7 @@ interface NavigationMobileMenuProps {
 
 export function NavigationMobileMenu({ close, isOpen, links, panels }: NavigationMobileMenuProps) {
   return (
-    <DrawerMenu isOpen={isOpen} onClose={close}>
+    <DrawerMenu isOpen={isOpen} onClose={close} mobileCloseOnTop={false}>
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
         <Box
           as="ul"

@@ -125,10 +125,10 @@ export function PageSEOTags({
         )}
       />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content="@oasisdotapp" />
+      <meta name="twitter:creator" content="@Summerfi_" />
 
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Oasis" />
+      <meta property="og:site_name" content="Summer.fi" />
       <meta
         name="keywords"
         content="dapp, dao, maker, protocol, vaults, ethereum, wallet, staking, yield, farming, apy, arbitrage, liquidity, L2, L3, lending, trade, buy, protection, safe, blockchain, best, earn, passive, income, profit, bear, bull, winter, 2023"
@@ -137,7 +137,7 @@ export function PageSEOTags({
   )
 }
 
-const APP_NAME = 'Oasis'
+const APP_NAME = 'Summer.fi'
 
 export function PWATags() {
   return (

@@ -15,9 +15,10 @@ import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFl
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
-import { useWeb3OnBoardConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -34,6 +35,7 @@ export function AjnaFormView({
   children,
   txSuccessAction,
 }: PropsWithChildren<AjnaFormViewProps>) {
+  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -69,7 +71,8 @@ export function AjnaFormView({
     },
     validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
-  const { executeConnection } = useWeb3OnBoardConnection({ walletConnect: true })
+  const { connect } = useConnection({ initialConnect: false })
+  const ajnaSuppressValidationEnabled = useFeatureToggle('AjnaSuppressValidation')
 
   const txHandler = useAjnaTxHandler()
 
@@ -98,8 +101,10 @@ export function AjnaFormView({
     isPrimaryButtonLoading,
     isTextButtonHidden,
   } = getAjnaSidebarButtonsStatus({
+    ajnaSafetySwitchOn,
     currentStep,
     editingStep,
+    flow,
     hasErrors,
     isFormFrozen,
     isAllowanceLoading: flowState.isLoading,
@@ -122,7 +127,9 @@ export function AjnaFormView({
     isTransitionInProgress,
     isTxError,
     isTxSuccess,
+    position,
     product,
+    state,
     walletAddress,
   })
   const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
@@ -135,7 +142,7 @@ export function AjnaFormView({
     isTxSuccess,
     onConfirmTransition: transitionHandler,
     onDefault: setNextStep,
-    onDisconnected: executeConnection,
+    onDisconnected: connect,
     onSelectTransition: txHandler,
     onTransition: () => {
       setStep('transition')
@@ -174,7 +181,7 @@ export function AjnaFormView({
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
       label: t(primaryButtonLabel, { token: flowState.token }),
-      disabled: isPrimaryButtonDisabled,
+      disabled: ajnaSuppressValidationEnabled ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
       ...primaryButtonActions,

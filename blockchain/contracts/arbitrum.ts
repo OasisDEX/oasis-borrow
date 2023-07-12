@@ -48,8 +48,8 @@ import {
 } from 'blockchain/addresses/addressesUtils'
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import { tokensArbitrum } from 'blockchain/tokens/'
+import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
-import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
@@ -149,8 +149,18 @@ export const arbitrumContracts: MainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'ETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHUSDC),
+    'RETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHUSDC),
+    'USDC-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_USDCWBTC),
+    'WBTC-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WBTCDAI),
     'WBTC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WSTETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHDAI),
+    'WSTETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHUSDC),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, arbitrum.ajna.AjnaRewardsManager),
   // TODO update address

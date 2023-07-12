@@ -1,30 +1,33 @@
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
-import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
-import { ProductType } from 'features/productHub/types'
+import { ALL_ASSETS, productHubOptionsMapFiltered } from 'features/productHub/meta'
+import { ProductHubProductType } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 interface ProductHubNaturalLanguageSelectorControllerProps {
-  product: ProductType
+  gradient: [string, string, ...string[]]
+  product: ProductHubProductType
   token?: string
   url?: string
-  onChange?: (product: ProductType, token: string) => void
+  onChange?: (product: ProductHubProductType, token: string) => void
 }
 
 export const ProductHubNaturalLanguageSelectorController: FC<
   ProductHubNaturalLanguageSelectorControllerProps
-> = ({ product, token, url, onChange }) => {
+> = ({ gradient, product, token, url, onChange }) => {
   const { t } = useTranslation()
 
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
-  const [selectedProduct, setSelectedProduct] = useState<ProductType>(
-    productHubOptionsMap[product].product.value as ProductType,
+  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(
+    productHubOptionsMapFiltered[product].product.value as ProductHubProductType,
   )
   const [selectedToken, setSelectedToken] = useState<string>(
-    (token ? productHubOptionsMap[product].tokens[token] : productHubOptionsMap[product].tokens.all)
-      .value,
+    (token
+      ? productHubOptionsMapFiltered[product].tokens[token]
+      : productHubOptionsMapFiltered[product].tokens.all
+    ).value,
   )
   const ref = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
@@ -38,21 +41,23 @@ export const ProductHubNaturalLanguageSelectorController: FC<
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
         {t('product-hub.header.i-want-to')}
         <HeaderSelector
-          defaultOption={productHubOptionsMap[product].product}
-          gradient={['#2a30ee', '#a4a6ff']}
-          options={Object.values(productHubOptionsMap).map((option) => option.product)}
+          defaultOption={productHubOptionsMapFiltered[product].product}
+          gradient={gradient}
+          options={Object.values(productHubOptionsMapFiltered).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
-            const typedValue = selected.value as ProductType
+            const typedValue = selected.value as ProductHubProductType
             const tokenInUrl = selectedToken !== ALL_ASSETS ? selectedToken : undefined
             const isSwitchingToAllAssets = !Object.values(
-              productHubOptionsMap[typedValue].tokens,
+              productHubOptionsMapFiltered[typedValue].tokens,
             ).some((option) => option.value === selectedToken)
 
             setSelectedProduct(typedValue)
             setOverwriteOption(
-              isSwitchingToAllAssets ? productHubOptionsMap[typedValue].tokens.all : undefined,
+              isSwitchingToAllAssets
+                ? productHubOptionsMapFiltered[typedValue].tokens.all
+                : undefined,
             )
             if (url)
               void push(
@@ -66,11 +71,11 @@ export const ProductHubNaturalLanguageSelectorController: FC<
         <HeaderSelector
           defaultOption={
             token
-              ? productHubOptionsMap[product].tokens[token]
-              : productHubOptionsMap[product].tokens.all
+              ? productHubOptionsMapFiltered[product].tokens[token]
+              : productHubOptionsMapFiltered[product].tokens.all
           }
-          gradient={['#2a30ee', '#a4a6ff']}
-          options={Object.values(productHubOptionsMap[selectedProduct].tokens)}
+          gradient={gradient}
+          options={Object.values(productHubOptionsMapFiltered[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
           valueAsLabel={true}

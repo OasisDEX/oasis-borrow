@@ -17,10 +17,6 @@ export interface NavigationMenuOrbProps {
   onClose?: () => void
   onOpen?: () => void
   width?: number
-  outline?: {
-    outline: string
-    outlineColor: string
-  }
 }
 
 interface NavigationMenuOrbIconProps {
@@ -36,14 +32,13 @@ export function NavigationOrb({
   children,
   customIcon,
   icon,
-  iconSize = 16,
+  iconSize = 14,
   isDisabled,
   link,
   onClick,
   onClose,
   onOpen,
   width,
-  outline,
 }: NavigationMenuOrbProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const didMountRef = useRef(false)
@@ -69,15 +64,14 @@ export function NavigationOrb({
           sx={{
             position: 'relative',
             width: 'auto',
-            minWidth: '50px',
+            minWidth: '40px',
+            height: '40px',
             p: 1,
             color: isOpen ? 'primary100' : 'neutral80',
             boxShadow: 'buttonMenu',
             transition: 'background-color 200ms',
             '&:hover': { boxShadow: 'buttonMenu' },
             ':hover': { color: 'primary100' },
-            ...(isOpen && outline),
-            ':focus': isOpen ? outline : null,
           }}
         >
           <NavigationOrbIcon
@@ -95,6 +89,8 @@ export function NavigationOrb({
           href={link}
           sx={{
             position: 'relative',
+            width: '40px',
+            height: '40px',
             color: isOpen ? 'primary100' : 'neutral80',
             boxShadow: 'buttonMenu',
             transition: 'background-color 200ms',
@@ -151,7 +147,7 @@ export function NavigationOrbIcon({
         <>{customIcon(isOpen)}</>
       ) : (
         <>
-          {typeof beacon === 'boolean' && (
+          {typeof beacon === 'boolean' && beacon && (
             <Box
               sx={{
                 position: 'absolute',

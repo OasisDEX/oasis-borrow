@@ -1,0 +1,164 @@
+<svg id="eSAlQiFV40f1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  viewBox="0 0 1440 845" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" width="1440"
+  height="845">
+  <style>
+    <![CDATA[
+    #eSAlQiFV40f7_to {
+      animation: eSAlQiFV40f7_to__to 4000ms linear 1s 1 normal forwards
+    }
+
+    @keyframes eSAlQiFV40f7_to__to {
+      0% {
+        transform: translate(46px, 811px);
+        animation-timing-function: cubic-bezier(0, 1.145, 0.675, 0.99)
+      }
+
+      100% {
+        transform: translate(46px, 323px)
+      }
+    }
+
+    #eSAlQiFV40f7 {
+      animation: eSAlQiFV40f7_c_o 4000ms linear 1s 1 normal forwards
+    }
+
+    @keyframes eSAlQiFV40f7_c_o {
+      0% {
+        opacity: 0;
+        animation-timing-function: cubic-bezier(0, 1.145, 0.675, 0.99)
+      }
+
+      100% {
+        opacity: 0.1
+      }
+    }
+
+    #eSAlQiFV40f8_to {
+      animation: eSAlQiFV40f8_to__to 4000ms linear 1s 1 normal forwards
+    }
+
+    @keyframes eSAlQiFV40f8_to__to {
+      0% {
+        transform: translate(227px, 814px);
+        animation-timing-function: cubic-bezier(0, 1.145, 0.675, 0.99)
+      }
+
+      100% {
+        transform: translate(227px, 504px)
+      }
+    }
+
+    #eSAlQiFV40f8 {
+      animation: eSAlQiFV40f8_c_o 4000ms linear 1s 1 normal forwards
+    }
+
+    @keyframes eSAlQiFV40f8_c_o {
+      0% {
+        opacity: 0;
+        animation-timing-function: cubic-bezier(0, 1.145, 0.675, 0.99)
+      }
+
+      100% {
+        opacity: 0.3
+      }
+    }
+
+    #eSAlQiFV40f9_to {
+      animation: eSAlQiFV40f9_to__to 4000ms linear 1s 1 normal forwards
+    }
+
+    @keyframes eSAlQiFV40f9_to__to {
+      0% {
+        transform: translate(428px, 815px);
+        animation-timing-function: cubic-bezier(0, 1.145, 0.675, 0.99)
+      }
+
+      100% {
+        transform: translate(428px, 705px)
+      }
+    }
+
+    #eSAlQiFV40f9 {
+      animation: eSAlQiFV40f9_c_o 4000ms linear 1s 1 normal forwards
+    }
+
+    @keyframes eSAlQiFV40f9_c_o {
+      0% {
+        opacity: 0;
+        animation-timing-function: cubic-bezier(0, 1.145, 0.675, 0.99)
+      }
+
+      100% {
+        opacity: 1
+      }
+    }
+    ]]>
+  </style>
+  <defs>
+    <linearGradient id="eSAlQiFV40f5-fill" x1="249.817" y1="741.96" x2="-1003.152" y2="-471.0322" spreadMethod="pad"
+      gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0)">
+      <stop id="eSAlQiFV40f5-fill-0" offset="0%" stop-color="#fa935c" />
+      <stop id="eSAlQiFV40f5-fill-1" offset="34.8958%" stop-color="#ffeee2" />
+      <stop id="eSAlQiFV40f5-fill-2" offset="68.2292%" stop-color="#abe7fb" />
+      <stop id="eSAlQiFV40f5-fill-3" offset="100%" stop-color="#087fa2" />
+    </linearGradient>
+    <linearGradient id="eSAlQiFV40f7-fill" x1="-156.959" y1="-674.000258" x2="-166.192" y2="674" spreadMethod="pad"
+      gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0)">
+      <stop id="eSAlQiFV40f7-fill-0" offset="0%" stop-color="#007da3" />
+      <stop id="eSAlQiFV40f7-fill-1" offset="30.2083%" stop-color="#19b3d2" />
+      <stop id="eSAlQiFV40f7-fill-2" offset="68.6655%" stop-color="#ffdcc6" />
+      <stop id="eSAlQiFV40f7-fill-3" offset="100%" stop-color="#e97047" />
+    </linearGradient>
+    <linearGradient id="eSAlQiFV40f8-fill" x1="-114.808" y1="-493.000189" x2="-121.562" y2="493" spreadMethod="pad"
+      gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0)">
+      <stop id="eSAlQiFV40f8-fill-0" offset="0%" stop-color="#007da3" />
+      <stop id="eSAlQiFV40f8-fill-1" offset="30.2083%" stop-color="#19b3d2" />
+      <stop id="eSAlQiFV40f8-fill-2" offset="68.6655%" stop-color="#ffdcc6" />
+      <stop id="eSAlQiFV40f8-fill-3" offset="100%" stop-color="#e97047" />
+    </linearGradient>
+    <linearGradient id="eSAlQiFV40f9-fill" x1="-68" y1="-292.000112" x2="-72" y2="292" spreadMethod="pad"
+      gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0)">
+      <stop id="eSAlQiFV40f9-fill-0" offset="0%" stop-color="#007da3" />
+      <stop id="eSAlQiFV40f9-fill-1" offset="30.2083%" stop-color="#19b3d2" />
+      <stop id="eSAlQiFV40f9-fill-2" offset="68.6655%" stop-color="#ffdcc6" />
+      <stop id="eSAlQiFV40f9-fill-3" offset="100%" stop-color="#e97047" />
+    </linearGradient>
+    <filter id="filter0_f_1370_18987" x="-320" y="-508" width="2008" height="2008" filterUnits="userSpaceOnUse"
+      color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_1370_18987" />
+    </filter>
+    <linearGradient id="paint0_linear_1370_18987" x1="933.817" y1="1237.96" x2="-319.152" y2="24.9678"
+      gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FA935C" />
+      <stop offset="0.348958" stop-color="#FFEEE2" />
+      <stop offset="0.682292" stop-color="#ABE7FB" />
+      <stop offset="1" stop-color="#087FA2" />
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#eSAlQiFV40f10)">
+    <g>
+    <g opacity="0.5" filter="url(#filter0_f_1370_18987)">
+      <circle cx="684" cy="496" r="804" fill="url(#paint0_linear_1370_18987)" />
+    </g>
+      <g>
+        <g id="eSAlQiFV40f7_to" transform="translate(46,811)">
+          <circle id="eSAlQiFV40f7" r="673.5" transform="rotate(-90) scale(-1,1) translate(674,674)" opacity="0"
+            fill="url(#eSAlQiFV40f7-fill)" stroke="#fff" />
+        </g>
+        <g id="eSAlQiFV40f8_to" transform="translate(227,814)">
+          <circle id="eSAlQiFV40f8" r="492.5" transform="rotate(-90) scale(-1,1) translate(493,493)" opacity="0"
+            fill="url(#eSAlQiFV40f8-fill)" stroke="#fff" />
+        </g>
+        <g id="eSAlQiFV40f9_to" transform="translate(428,815)">
+          <circle id="eSAlQiFV40f9" r="291.5" transform="rotate(-90) scale(-1,1) translate(292,292)" opacity="0"
+            fill="url(#eSAlQiFV40f9-fill)" stroke="#fff" />
+        </g>
+      </g>
+    </g>
+    <clipPath id="eSAlQiFV40f10">
+      <rect width="1444" height="845" rx="0" ry="0" transform="translate(-2 0)" fill="#fff" />
+    </clipPath>
+  </g>
+</svg>
