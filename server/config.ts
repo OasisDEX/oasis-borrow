@@ -7,8 +7,6 @@ export const configSchema = z.object({
   snowflakeUser: z.string().optional(),
   snowflakePassword: z.string().optional(),
   enableSnowflake: z.boolean().optional(),
-  oneInchApiKey: z.string(),
-  oneInchApiUrl: z.string(),
 })
 
 export const config = configSchema.parse({
@@ -18,8 +16,6 @@ export const config = configSchema.parse({
   snowflakeUser: process.env.SNOWFLAKE_USER,
   snowflakePassword: process.env.SNOWFLAKE_PASSWORD,
   enableSnowflake: JSON.parse(process.env.ENABLE_SNOWFLAKE || 'false'),
-  oneInchApiKey: process.env.ONE_INCH_API_KEY,
-  oneInchApiUrl: process.env.ONE_INCH_API_URL,
 })
 
 export type Config = z.infer<typeof configSchema>
