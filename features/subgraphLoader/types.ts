@@ -2,6 +2,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { AjnaHistoryResponse } from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
 import { AjnaPositionAuctionResponse } from 'features/ajna/rewards/helpers/getAjnaPositionAuction'
 import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
 
@@ -13,6 +14,7 @@ export type Subgraphs = {
     getNftIds: { walletAddress: string }
     getPositionAuction: { dpmProxyAddress: string }
     getHistory: { dpmProxyAddress: string }
+    getClaimedRewards: { walletAddress: string }
   }
   TempGraph: {
     tempMethod: undefined
@@ -29,7 +31,16 @@ export type SubgraphsResponses = {
   Ajna: {
     getEarnData: SubgraphBaseResponse<{
       account: {
-        earnPositions: { lps: number; index: number; nft: { id: string } | null }[]
+        earnPositions: {
+          lps: number
+          index: number
+          nft: { id: string } | null
+          account: {
+            cumulativeDeposit: number
+            cumulativeFees: number
+            cumulativeWithdraw: number
+          }
+        }[]
       }
     }>
     getPoolData: SubgraphBaseResponse<{
@@ -41,6 +52,7 @@ export type SubgraphsResponses = {
     getNftIds: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
     getPositionAuction: SubgraphBaseResponse<{ auctions: AjnaPositionAuctionResponse[] }>
     getAjnaHistory: SubgraphBaseResponse<{ oasisEvents: AjnaHistoryResponse[] }>
+    getClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
   }
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>

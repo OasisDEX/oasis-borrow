@@ -5,7 +5,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
@@ -22,6 +21,7 @@ import {
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -55,7 +55,6 @@ export function AutoBuyDetailsLayout({
   isconstantMultipleEnabled,
 }: AutoBuyDetailsLayoutProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
   const {
     triggerData: {
       autoBuyTriggerData: { isTriggerEnabled, maxBuyOrMinSellPrice },

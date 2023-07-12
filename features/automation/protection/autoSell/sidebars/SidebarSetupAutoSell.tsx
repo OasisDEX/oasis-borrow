@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -29,6 +28,7 @@ import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
+import { uiChanges } from 'helpers/uiChanges'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -73,7 +73,6 @@ export function SidebarSetupAutoSell({
   executionPrice,
 }: SidebarSetupAutoSellProps) {
   const gasEstimation = useGasEstimationContext()
-  const { uiChanges } = useAppContext()
   const {
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { nextPositionRatio, debt, debtFloor, liquidationRatio, token, vaultType },

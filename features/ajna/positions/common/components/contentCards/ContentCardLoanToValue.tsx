@@ -8,6 +8,12 @@ import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/compo
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Card, Heading, Text } from 'theme-ui'
+
+interface ContentCardLoanToValueModalProps {
+  loanToValue: string
+  dynamicMaxLtv?: string
+}
 
 interface ContentCardLoanToValueProps {
   isLoading?: boolean
@@ -15,6 +21,37 @@ interface ContentCardLoanToValueProps {
   afterLoanToValue?: BigNumber
   dynamicMaxLtv?: BigNumber
   changeVariant?: ChangeVariantType
+}
+
+function ContentCardLoanToValueModal({
+  loanToValue,
+  dynamicMaxLtv,
+}: ContentCardLoanToValueModalProps) {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
+        {t('ajna.position-page.borrow.common.overview.loan-to-value-modal-desc')}
+      </Text>
+      <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
+        {loanToValue}
+      </Card>
+      {dynamicMaxLtv && (
+        <>
+          <Heading variant="header5" sx={{ fontWeight: 'bold' }}>
+            {t('ajna.position-page.borrow.common.overview.dynamic-max-ltv')}
+          </Heading>
+          <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
+            {t('ajna.position-page.borrow.common.overview.dynamic-max-ltv-modal-desc')}
+          </Text>
+          <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
+            {dynamicMaxLtv}
+          </Card>
+        </>
+      )}
+    </>
+  )
 }
 
 export function ContentCardLoanToValue({
@@ -42,15 +79,18 @@ export function ContentCardLoanToValue({
     },
     footnote:
       dynamicMaxLtv &&
-      t('ajna.position-page.borrow.common.overview.dynamic-max-ltv', {
-        dynamicMaxLtv: formatted.dynamicMaxLtv,
-      }),
+      `${t('ajna.position-page.borrow.common.overview.dynamic-max-ltv')}: ${
+        formatted.dynamicMaxLtv
+      }`,
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.borrow.common.overview.loan-to-value')}
-        description={t('ajna.position-page.borrow.common.overview.loan-to-value-modal-desc')}
-        value={formatted.loanToValue}
-      />
+      >
+        <ContentCardLoanToValueModal
+          loanToValue={formatted.loanToValue}
+          dynamicMaxLtv={formatted.dynamicMaxLtv}
+        />
+      </AjnaDetailsSectionContentSimpleModal>
     ),
   }
 

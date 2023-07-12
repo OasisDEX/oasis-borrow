@@ -48,6 +48,9 @@ export const mapPositionHistoryResponse = (event: PositionHistoryResponse) => ({
   moveQuoteToPrice: new BigNumber(ajnaBuckets[Number(event.moveQuoteToIndex)]).shiftedBy(
     NEGATIVE_WAD_PRECISION,
   ),
+  addOrRemovePrice: new BigNumber(ajnaBuckets[Number(event.addOrRemoveIndex)]).shiftedBy(
+    NEGATIVE_WAD_PRECISION,
+  ),
   isOpen: event.isOpen,
   swapFromAmount: new BigNumber(event.swapFromAmount),
   swapFromToken: event.swapFromToken,

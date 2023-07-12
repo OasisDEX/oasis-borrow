@@ -1,5 +1,4 @@
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import {
   getAvailableAutomation,
@@ -14,6 +13,7 @@ import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/con
 import { AutoTakeProfitFormControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
+import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
@@ -27,8 +27,6 @@ export function OptimizationFormControl({ txHelpers }: OptimizationFormControlPr
     protocol,
     triggerData: { autoBuyTriggerData, constantMultipleTriggerData, autoTakeProfitTriggerData },
   } = useAutomationContext()
-
-  const { uiChanges } = useAppContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 

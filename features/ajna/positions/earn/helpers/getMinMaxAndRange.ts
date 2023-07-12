@@ -4,6 +4,7 @@ import {
   ajnaDefaultMarketPriceOffset,
   ajnaDefaultPoolRangeMarketPriceOffset,
 } from 'features/ajna/common/consts'
+import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { one, zero } from 'helpers/zero'
 
 export const getMinMaxAndRange = ({
@@ -36,8 +37,8 @@ export const getMinMaxAndRange = ({
     }
 
     return {
-      min: defaultRange[0],
-      max: defaultRange[defaultRange.length - 1],
+      min: snapToPredefinedValues(defaultRange[0]),
+      max: snapToPredefinedValues(defaultRange[defaultRange.length - 1]),
       range: defaultRange,
     }
   }
@@ -75,12 +76,13 @@ export const getMinMaxAndRange = ({
   const range = [
     ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
   ]
+    .filter((item) => item.lt(marketPrice))
     .sort((a, b) => a.toNumber() - b.toNumber())
     .map((item) => item.decimalPlaces(18))
 
   return {
-    min: range[0],
-    max: range[range.length - 1],
+    min: snapToPredefinedValues(range[0]),
+    max: snapToPredefinedValues(range[range.length - 1]),
     range,
   }
 }

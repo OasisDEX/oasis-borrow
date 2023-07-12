@@ -37,7 +37,7 @@ export function getAjnaSidebarPrimaryButtonActions({
     case !walletAddress && currentStep === editingStep:
       return { action: onDisconnected }
     case isTxSuccess && flow === 'open':
-      return { url: `/ajna/position/${resolvedId}` }
+      return { url: `/ethereum/ajna/${resolvedId}` }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }
     case isTransitionWaitingForApproval:

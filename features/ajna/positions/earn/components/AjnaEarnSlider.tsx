@@ -62,7 +62,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
   )
 
   function handleChange(v: BigNumber) {
-    const newValue = snapToPredefinedValues(v, range)
+    const newValue = snapToPredefinedValues(v)
     updateState('price', newValue)
   }
 
@@ -72,8 +72,8 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
 
   useEffect(() => {
     // triggered only once to initialize price on state when lup index is zero
-    if (lowestUtilizedPriceIndex.isZero()) {
-      handleChange(max)
+    if (lowestUtilizedPriceIndex.isZero() && !price) {
+      handleChange(min)
     }
   }, [])
 
@@ -97,13 +97,11 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         lastValue={resolvedValue}
         minBoundry={min}
         maxBoundry={max}
-        step={range[1].minus(range[0]).toNumber()}
+        step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
         leftBoundry={leftBoundry}
         rightBoundry={maxLtv}
-        leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
-        rightBoundryFormatter={(v) =>
-          !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
-        }
+        leftBoundryFormatter={(v) => `$${formatAmount(v, 'USD')}`}
+        rightBoundryFormatter={(v) => (!v.isZero() ? formatDecimalAsPercent(v) : '-')}
         disabled={isDisabled || isFormFrozen}
         onChange={handleChange}
         leftLabel={t('ajna.position-page.earn.common.form.token-pair-lending-price', {
@@ -125,11 +123,23 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
             priceFormat,
           })}
         >
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+          <AjnaEarnInput
+            disabled={isDisabled || isFormFrozen}
+            min={min}
+            max={max}
+            range={range}
+            fallbackValue={resolvedLup}
+          />
         </PillAccordion>
       ) : (
         <Box sx={{ mt: 3 }}>
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+          <AjnaEarnInput
+            disabled={isDisabled || isFormFrozen}
+            min={min}
+            max={max}
+            range={range}
+            fallbackValue={resolvedLup}
+          />
         </Box>
       )}
     </>

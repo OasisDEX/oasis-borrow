@@ -1,4 +1,3 @@
-import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { getAvailableAutomation } from 'features/automation/common/helpers'
@@ -11,6 +10,7 @@ import {
 import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
@@ -40,7 +40,6 @@ function getAutoFeaturesSidebarDropdownItem({
   isFeatureEnabled,
 }: GetAutoFeaturesSidebarDropdownItemProps): SidebarSectionHeaderSelectItem {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
 
   return {
     label: `${t(isFeatureEnabled ? 'manage' : 'setup')} ${t(translationKey)}`,

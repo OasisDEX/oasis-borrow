@@ -149,6 +149,7 @@ export const arbitrumContracts: MainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'CBETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_CBETHETH),
     'ETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHUSDC),
     'RETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHDAI),

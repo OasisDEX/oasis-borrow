@@ -36,8 +36,8 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
   },
   {
     product: [ProductHubProductType.Earn],
-    primaryTokenGroup: 'ETH',
     primaryToken: 'STETH',
+    primaryTokenGroup: 'ETH',
     secondaryToken: 'ETH',
     depositToken: 'ETH',
     network: NetworkNames.ethereumMainnet,

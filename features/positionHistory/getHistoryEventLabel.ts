@@ -29,6 +29,7 @@ export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?:
     case 'AjnaWithdrawAndMoveQuoteNft':
       return t('position-history.withdraw-and-move-lending-price')
     case 'AjnaSupplyQuote':
+      return isOpen ? t('position-history.open-position') : t('position-history.deposit')
     case 'AjnaSupplyQuoteNft':
       return t('position-history.deposit')
     case 'AjnaWithdrawQuote':

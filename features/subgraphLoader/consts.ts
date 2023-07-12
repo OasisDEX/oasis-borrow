@@ -42,6 +42,11 @@ export const subgraphMethodsRecord: {
           nft {
             id
           }
+          account {
+            cumulativeDeposit
+            cumulativeFees
+            cumulativeWithdraw
+          }
         }
       }
     }
@@ -169,6 +174,7 @@ export const subgraphMethodsRecord: {
         quoteTokensMoved
         moveQuoteFromIndex
         moveQuoteToIndex
+        addOrRemoveIndex
         isOpen
         swapFromAmount
         swapFromToken
@@ -178,6 +184,13 @@ export const subgraphMethodsRecord: {
         totalFee
         txHash
         withdrawnUSD
+      }
+    }
+  `,
+  getClaimedRewards: gql`
+    query getClaimed($walletAddress: ID!) {
+      claimeds(where: { user: $walletAddress }) {
+        amount
       }
     }
   `,

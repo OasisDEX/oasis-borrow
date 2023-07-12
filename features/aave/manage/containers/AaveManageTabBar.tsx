@@ -3,6 +3,7 @@ import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
@@ -24,7 +25,7 @@ export function AaveManageTabBar({
   aaveReserveDataDebtToken,
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
-  const aaveProtection = useFeatureToggle('AaveProtection')
+  const aaveProtection = useFeatureToggle('AaveV3Protection')
   const {
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
@@ -47,6 +48,7 @@ export function AaveManageTabBar({
   const adjustingTouched = state.matches('frontend.editing') && state.context.userInput.riskRatio
   const manageTouched =
     (state.matches('frontend.manageCollateral') || state.matches('frontend.manageDebt')) &&
+    supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
     state.context.manageTokenInput?.manageTokenActionValue
   const nextPosition =
     adjustingTouched || manageTouched || (isClosingPosition && hasCloseTokenSet)

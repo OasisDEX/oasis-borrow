@@ -2,11 +2,15 @@ import BigNumber from 'bignumber.js'
 import { FIAT_PRECISION } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
+import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
+import {
+  mappedAjnaBuckets,
+  snapToPredefinedValues,
+} from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatBigNumber } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { FC, KeyboardEvent, useEffect, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -23,6 +27,7 @@ interface AjnaEarnInputProps {
   disabled?: boolean
   max: BigNumber
   min: BigNumber
+  fallbackValue: BigNumber
   range: BigNumber[]
 }
 
@@ -89,10 +94,16 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, range }) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
+  disabled,
+  max,
+  min,
+  range,
+  fallbackValue,
+}) => {
   const { t } = useTranslation()
   const {
-    environment: { priceFormat, quoteToken },
+    environment: { priceFormat, quoteToken, isShort },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -104,13 +115,12 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
   const [manualAmount, setManualAmount] = useState<BigNumber>(price || zero)
 
   const clickHandler = (variant: AjnaEarnInputButtonVariant) => {
-    const snappedValue = snapToPredefinedValues(manualAmount, range)
-    let index = range.indexOf(snappedValue)
+    const snappedValue = snapToPredefinedValues(manualAmount)
+    let index = mappedAjnaBuckets.indexOf(snappedValue)
+    if (variant === '+') index = Math.max(0, index - 1)
+    if (variant === '-') index = Math.max(range.length - 1, index + 1)
 
-    if (variant === '-') index = Math.max(0, index - 1)
-    if (variant === '+') index = Math.min(range.length - 1, index + 1)
-
-    const selectedValue = range.at(index) || zero
+    const selectedValue = mappedAjnaBuckets.at(index) || zero
 
     setManualAmount(selectedValue)
     updateState('price', selectedValue)
@@ -118,12 +128,10 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
 
   const enterPressedHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const snappedValue = snapToPredefinedValues(manualAmount, range)
-      const index = range.indexOf(snappedValue)
-      const selectedValue = range.at(index) || zero
+      const value = resolveLendingPriceIfOutsideRange({ manualAmount, min, max, fallbackValue })
 
-      setManualAmount(selectedValue)
-      updateState('price', selectedValue)
+      setManualAmount(value)
+      updateState('price', value)
     }
   }
 
@@ -155,10 +163,15 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
         }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node) && manualAmount !== price) {
-            const snappedValue = snapToPredefinedValues(manualAmount, range)
+            const value = resolveLendingPriceIfOutsideRange({
+              manualAmount,
+              min,
+              max,
+              fallbackValue,
+            })
 
-            setManualAmount(snappedValue)
-            updateState('price', snappedValue)
+            setManualAmount(value)
+            updateState('price', value)
           }
         }}
       >
@@ -176,10 +189,14 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, max, min, rang
             setIsFocus(false)
           }}
           onChange={handleNumericInput((n = zero) => {
-            setManualAmount(n)
+            setManualAmount(isShort ? one.div(n) : n)
           })}
           onKeyPress={enterPressedHandler}
-          value={manualAmount ? formatBigNumber(manualAmount, FIAT_PRECISION) : ''}
+          value={
+            manualAmount
+              ? formatBigNumber(isShort ? one.div(manualAmount) : manualAmount, FIAT_PRECISION)
+              : ''
+          }
           sx={{
             px: 5,
             pt: 3,

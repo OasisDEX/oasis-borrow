@@ -5,6 +5,7 @@ import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
 import { AppLink } from 'components/Links'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { WithArrow } from 'components/WithArrow'
+import dayjs from 'dayjs'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -21,7 +22,6 @@ import {
 import { interpolate } from 'helpers/interpolate'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
@@ -601,7 +601,7 @@ export function VaultHistoryEntry({
   const { t } = useTranslation()
   const [opened, setOpened] = useState(false)
   const translation = getHistoryEventTranslation(t, item)
-  const date = moment(item.timestamp)
+  const date = dayjs(item.timestamp)
 
   const isMultiplyEvent =
     item.kind === 'OPEN_MULTIPLY_VAULT' ||

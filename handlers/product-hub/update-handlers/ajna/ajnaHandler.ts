@@ -1,4 +1,4 @@
-import { calculateAjnaApyPerDays } from '@oasisdex/dma-library'
+import { calculateAjnaApyPerDays, getPoolLiquidity } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
@@ -9,6 +9,7 @@ import {
   AjnaPoolsTableData,
   getAjnaPoolsTableData,
 } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { isYieldLoopPool } from 'features/ajna/positions/common/helpers/isYieldLoopPool'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
@@ -20,17 +21,14 @@ import {
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
-import getConfig from 'next/config'
 
 async function getAjnaPoolData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
+  tickers: Tickers,
 ): Promise<ProductHubHandlerResponseData> {
   const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
   const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))
-  const tickers = (await (
-    await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/tokensPrices`)
-  ).json()) as Tickers
-  const prices = tokens.reduce<{ [key: string]: BigNumber }>(
+  const prices = tokens.reduce<Tickers>(
     (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
     {},
   )
@@ -86,11 +84,16 @@ async function getAjnaPoolData(
           const network = networksById[networkId].name as ProductHubSupportedNetworks
           const protocol = LendingProtocol.Ajna
           const maxLtv = lowestUtilizedPrice.div(marketPrice).toString()
-          const liquidity = buckets
-            .filter((bucket) => new BigNumber(bucket.index).lte(highestThresholdPriceIndex))
-            .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero)
+          const liquidity = getPoolLiquidity({
+            buckets: buckets.map((bucket) => ({
+              ...bucket,
+              index: new BigNumber(bucket.index),
+              quoteTokens: new BigNumber(bucket.quoteTokens),
+            })),
+            debt: debt.shiftedBy(WAD_PRECISION),
+            highestThresholdPriceIndex: new BigNumber(highestThresholdPriceIndex),
+          })
             .shiftedBy(negativeWadPrecision)
-            .minus(debt)
             .times(prices[quoteToken])
             .toString()
           const fee = interestRate.toString()
@@ -131,8 +134,9 @@ async function getAjnaPoolData(
                 ...getTokenGroup(collateralToken, 'primary'),
                 product: [
                   ProductHubProductType.Borrow,
-                  ProductHubProductType.Multiply,
-                  ...(isYieldLoop ? [ProductHubProductType.Earn] : []),
+                  // TODO: uncomment on multiply release
+                  // ProductHubProductType.Multiply,
+                  // ...(isYieldLoop ? [ProductHubProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,
@@ -151,7 +155,9 @@ async function getAjnaPoolData(
                   weeklyNetApy,
                 }),
                 tooltips: {
-                  fee: ajnaRewardsTooltip,
+                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    fee: ajnaRewardsTooltip,
+                  }),
                   ...(isYieldLoop && {
                     weeklyNetApy: ajnaRewardsTooltip,
                   }),
@@ -192,7 +198,9 @@ async function getAjnaPoolData(
                 weeklyNetApy,
                 reverseTokens: true,
                 tooltips: {
-                  weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    weeklyNetApy: ajnaRewardsTooltip,
+                  }),
                 },
               },
             ],
@@ -207,10 +215,10 @@ async function getAjnaPoolData(
   }
 }
 
-export default async function (): ProductHubHandlerResponse {
+export default async function (tickers: Tickers): ProductHubHandlerResponse {
   return Promise.all([
-    getAjnaPoolData(NetworkIds.MAINNET),
-    getAjnaPoolData(NetworkIds.GOERLI),
+    getAjnaPoolData(NetworkIds.MAINNET, tickers),
+    getAjnaPoolData(NetworkIds.GOERLI, tickers),
   ]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {

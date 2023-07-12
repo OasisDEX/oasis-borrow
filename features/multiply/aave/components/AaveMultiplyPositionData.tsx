@@ -268,25 +268,7 @@ export function AaveMultiplyPositionData({
           </DetailsSectionContentCardWrapper>
         }
         footer={
-          <DetailsSectionFooterItemWrapper>
-            <DetailsSectionFooterItem
-              sx={{ pr: 3 }}
-              title={t('system.position-debt')}
-              value={`${formatPrecision(currentPositionThings.debt, 4)} ${
-                currentPosition.debt.symbol
-              }`}
-              change={
-                nextPositionThings && {
-                  variant: nextPositionThings.debt.gt(currentPositionThings.debt)
-                    ? 'positive'
-                    : 'negative',
-                  value: `${formatPrecision(
-                    nextPositionThings.debt.lt(zero) ? zero : nextPositionThings.debt,
-                    4,
-                  )} ${nextPosition.debt.symbol} ${t('after')}`,
-                }
-              }
-            />
+          <DetailsSectionFooterItemWrapper columns={2}>
             <DetailsSectionFooterItem
               sx={{ pr: 3 }}
               title={t('system.total-exposure', { token: currentPosition.collateral.symbol })}
@@ -303,6 +285,24 @@ export function AaveMultiplyPositionData({
                     nextPositionThings.totalExposure,
                     currentPosition.collateral.symbol,
                   )} ${currentPosition.collateral.symbol} ${t('after')}`,
+                }
+              }
+            />
+            <DetailsSectionFooterItem
+              sx={{ pr: 3 }}
+              title={t('system.position-debt')}
+              value={`${formatPrecision(currentPositionThings.debt, 4)} ${
+                currentPosition.debt.symbol
+              }`}
+              change={
+                nextPositionThings && {
+                  variant: nextPositionThings.debt.gt(currentPositionThings.debt)
+                    ? 'positive'
+                    : 'negative',
+                  value: `${formatPrecision(
+                    nextPositionThings.debt.lt(zero) ? zero : nextPositionThings.debt,
+                    4,
+                  )} ${nextPosition.debt.symbol} ${t('after')}`,
                 }
               }
             />
