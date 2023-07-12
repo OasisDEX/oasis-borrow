@@ -12,6 +12,7 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -114,7 +115,9 @@ export function AjnaBorrowOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      <AjnaTokensBannerController flow={flow} />
+      {isPoolWithRewards({ collateralToken, quoteToken }) && (
+        <AjnaTokensBannerController flow={flow} />
+      )}
     </Grid>
   )
 }
