@@ -99,6 +99,8 @@ export const EXTERNAL_LINKS = {
       RISKS:
         'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/what-are-the-risks-of-lending-in-ajna',
       TOKEN_REWARDS: 'https://docs.summer.fi/protocols/ajna/ajna-token-rewards',
+      HOW_TO_PICK_LENDING_PRICE:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-to-pick-the-right-level-for-lending',
     },
   },
   LEGACY_APP: 'https://legacy.summer.fi',
