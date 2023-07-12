@@ -80,7 +80,6 @@ export function AjnaEarnOverviewManageController() {
             })}
             // TODO adjust once data available in subgraph
             projectedAnnualReward={zero}
-            totalAjnaRewards={position.rewards}
             afterAvailableToWithdraw={simulation?.quoteTokenAmount}
           />
         </DetailsSectionFooterItemWrapper>
