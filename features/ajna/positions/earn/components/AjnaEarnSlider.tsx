@@ -100,10 +100,8 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
         leftBoundry={leftBoundry}
         rightBoundry={maxLtv}
-        leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
-        rightBoundryFormatter={(v) =>
-          !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
-        }
+        leftBoundryFormatter={(v) => `$${formatAmount(v, 'USD')}`}
+        rightBoundryFormatter={(v) => (!v.isZero() ? formatDecimalAsPercent(v) : '-')}
         disabled={isDisabled || isFormFrozen}
         onChange={handleChange}
         leftLabel={t('ajna.position-page.earn.common.form.token-pair-lending-price', {
