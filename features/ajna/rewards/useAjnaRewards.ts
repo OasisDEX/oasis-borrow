@@ -42,7 +42,11 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
 
     if (walletAddress && networkParameter) {
       Promise.all([
-        fetch(`/api/ajna-rewards?address=${walletAddress}&networkId=${networkParameter.id}`),
+        fetch(
+          `/api/ajna-rewards?address=${walletAddress.toLocaleLowerCase()}&networkId=${
+            networkParameter.id
+          }`,
+        ),
         getAjnaRewards(walletAddress),
       ])
         .then(async ([apiResponse, subgraphResponse]) => {
@@ -56,6 +60,7 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
               ...state,
               rewards: {
                 tokens: new BigNumber(parseApiResponse.amount).minus(claimed),
+                // TODO: recalculate when Ajna Token value is available
                 usd: zero,
               },
               isError: false,
@@ -82,6 +87,6 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
 
   return {
     ...state,
-    refetch: useCallback(() => fetchData(), [fetchData]),
+    refetch: fetchData,
   }
 }

@@ -290,7 +290,9 @@ export function AjnaRewardCard({
                 walletAddress={walletAddress}
               />
             )}
-            {isConnected && isLoading && <Skeleton sx={{ mt: 4, height: '220px' }} />}
+            {isConnected && isLoading && (
+              <Skeleton sx={{ height: '220px', borderRadius: 'large' }} />
+            )}
           </>
         )}
       </Flex>
