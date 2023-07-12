@@ -374,6 +374,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       debt: `${formatCryptoBalance(debt)} ${debtToken}`,
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
+      protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
       protection: (
         <AssetsTableDataCellRiskProtectionIcon
           isOwner={isOwner}
@@ -381,7 +382,6 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
           link={url}
         />
       ),
-      protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
