@@ -315,6 +315,7 @@
       }
     }
   },
+  "earned": "earned",
   "earning": "Earning",
   "edit-token-allowance": "Edit {{token}} allowance",
   "edit-vault-details": "Edit Vault details",
@@ -2631,24 +2632,29 @@
           "overview": {
             "above-current-price": "{{priceRatio}} above current price",
             "below-current-price": "{{priceRatio}} below current price",
-            "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
             "collateral-locked": "Collateral locked",
-            "dynamic-max-ltv-modal-desc": "Ajna Max LTV changes with lenders and borrowers activities. Pay attention to not go over the max and risk being liquidated.",
+            "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
             "dynamic-max-ltv": "Dynamic Max LTV",
-            "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price.",
+            "dynamic-max-ltv-modal-desc": "Ajna Max LTV changes with lenders and borrowers activities. Pay attention to not go over the max and risk being liquidated.",
             "liquidation-price": "Liquidation Price",
-            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+            "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price.",
             "loan-to-value": "Loan to value",
-            "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests.",
-            "position-debt": "Position debt"
+            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+            "position-debt": "Position debt",
+            "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
           "form": {
             "origination-fee": "{{quoteToken}} Origination Fee"
           },
           "footer": {
-            "borrow-rate": "Borrow Rate",
             "available-to-borrow": "Available to borrow",
-            "available-to-withdraw": "Available to withdraw"
+            "available-to-borrow-modal-desc": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt.",
+            "available-to-withdraw": "Available to withdraw",
+            "available-to-withdraw-modal-desc": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
+            "borrow-rate": "Borrow Rate",
+            "borrow-rate-modal-desc": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
+            "earned-ajna-tokens": "Earned Ajna tokens",
+            "earned-ajna-tokens-tooltip-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released."
           }
         }
       },
@@ -2686,29 +2692,29 @@
         "manage": {
           "overview": {
             "above-market-price": "{{amount}} above market price",
-            "available-to-withdraw-modal-desc": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out.",
             "available-to-withdraw": "Available to withdraw",
+            "available-to-withdraw-modal-desc": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out.",
             "below-market-price": "{{amount}} below market price",
             "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
             "early-withdrawal-period": "Early withdrawal period",
             "max-lending-ltv-modal-desc": "The max lending LTV represents the terms you are offering to borrowers. Your selected price divided the market price represents the maximum LTV you are allowing others to borrow against their collateral for your lent asset.",
             "max-lending-ltv": "Max lending LTV",
-            "maximum-yield-price-modal-desc": "Above this lending price you will not earn any yield. Select a lending price below this level to earn.",
             "maximum-yield-price-modal": "Maximum Yield Price",
-            "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
+            "maximum-yield-price-modal-desc": "Above this lending price you will not earn any yield. Select a lending price below this level to earn.",
             "minimum-yield-price-modal": "Minimum Yield Price",
+            "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
             "net-pnl": "Net PnL: {{netPnL}}",
             "net-value-modal-desc": "The total amount of tokens available in position, this includes the earned amount.",
             "net-value": "Net value",
-            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
             "position-lending-price": "Position lending price",
+            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
             "projected-annual-reward": "Projected annual reward",
             "projected-annual-rewards-modal-desc": "At the current weekly distribution and AJNA token price the implied annual rewards rate is.",
             "projected-annual-rewards": "Projected annual rewards",
-            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
             "total-ajna-rewards": "Total AJNA rewards",
-            "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. This takes into account the gas fees spent in ETH, calculated in {{quoteToken}} for each transaction.",
-            "total-earnings": "Total earnings"
+            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+            "total-earnings": "Total earnings",
+            "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. This takes into account the gas fees spent in ETH, calculated in {{quoteToken}} for each transaction."
           },
           "notifications": {
             "deposit-is-not-withdrawable": {

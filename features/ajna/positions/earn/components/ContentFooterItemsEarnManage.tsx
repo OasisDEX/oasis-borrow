@@ -71,7 +71,7 @@ export function ContentFooterItemsEarnManage({
           <AjnaDetailsSectionContentSimpleModal
             title={t('ajna.position-page.earn.manage.overview.total-ajna-rewards')}
             description={t('ajna.position-page.earn.manage.overview.total-ajna-rewards-modal-desc')}
-            value={formatted.totalAjnaRewards}
+            value={`${formatted.totalAjnaRewards} ${t('earned')}`}
           />
         }
       />
