@@ -198,7 +198,9 @@ async function getAjnaPoolData(
                 weeklyNetApy,
                 reverseTokens: true,
                 tooltips: {
-                  weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    weeklyNetApy: ajnaRewardsTooltip,
+                  }),
                 },
               },
             ],
