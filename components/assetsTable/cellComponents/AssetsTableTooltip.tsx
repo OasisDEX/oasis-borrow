@@ -32,7 +32,8 @@ export function AssetsTableTooltip({
       }
       containerSx={{ position: 'relative', top: '2px', display: 'inline-flex', ml: 1 }}
       tooltipSx={{
-        width: '240px',
+        top: '24px',
+        width: '250px',
         fontSize: 1,
         whiteSpace: 'initial',
         textAlign: 'left',
