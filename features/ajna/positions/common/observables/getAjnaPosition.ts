@@ -100,6 +100,9 @@ export function getAjnaPositionsWithDetails$(
         (a, v) => ({ ...a, [v.proxy]: v.vaultId }),
         {},
       )
+
+      if (positionCreatedEvents.length === 0) return of([])
+
       const tokens: string[] = uniq(
         positionCreatedEvents
           .map(({ collateralTokenSymbol, debtTokenSymbol }) => [
