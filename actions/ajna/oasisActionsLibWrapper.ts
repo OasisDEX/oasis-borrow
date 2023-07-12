@@ -120,7 +120,7 @@ export async function getAjnaParameters({
       })
     }
     case 'adjust': {
-      return ajnaAdjustMultiply({ state, commonPayload, dependencies, position })
+      return ajnaAdjustMultiply({ state, commonPayload, dependencies, position, slippage, collateralToken, quoteToken })
     }
     case 'generate-multiply':
     case 'deposit-collateral-multiply': {

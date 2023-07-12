@@ -77,11 +77,17 @@ export const ajnaAdjustMultiply = ({
   commonPayload,
   dependencies,
   position,
+  slippage,
+  collateralToken,
+  quoteToken,
 }: {
   state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
+  slippage: BigNumber
+  collateralToken: string
+  quoteToken: string
 }) => {
   const { loanToValue, depositAmount, withdrawAmount } = state
 
@@ -93,6 +99,10 @@ export const ajnaAdjustMultiply = ({
         loanToValue || (position as AjnaPosition).riskRatio.loanToValue,
         RiskRatio.TYPE.LTV,
       ),
+      quoteTokenSymbol: quoteToken,
+      collateralTokenSymbol: collateralToken,
+      user: commonPayload.dpmProxyAddress,
+      slippage,
       position: position as AjnaPosition,
     },
     {
@@ -118,6 +128,7 @@ export const ajnaCloseMultiply = ({
   slippage,
   collateralToken,
   quoteToken,
+  
 }: {
   state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
