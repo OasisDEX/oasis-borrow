@@ -163,6 +163,7 @@ export const goerliContracts: MainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'CBETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CBETHETH),
     'ETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHUSDC),
     'RETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHDAI),

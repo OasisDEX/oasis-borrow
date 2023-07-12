@@ -9,6 +9,7 @@ import {
   AjnaPoolsTableData,
   getAjnaPoolsTableData,
 } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { isYieldLoopPool } from 'features/ajna/positions/common/helpers/isYieldLoopPool'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
@@ -154,7 +155,9 @@ async function getAjnaPoolData(
                   weeklyNetApy,
                 }),
                 tooltips: {
-                  fee: ajnaRewardsTooltip,
+                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    fee: ajnaRewardsTooltip,
+                  }),
                   ...(isYieldLoop && {
                     weeklyNetApy: ajnaRewardsTooltip,
                   }),
@@ -195,7 +198,9 @@ async function getAjnaPoolData(
                 weeklyNetApy,
                 reverseTokens: true,
                 tooltips: {
-                  weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    weeklyNetApy: ajnaRewardsTooltip,
+                  }),
                 },
               },
             ],

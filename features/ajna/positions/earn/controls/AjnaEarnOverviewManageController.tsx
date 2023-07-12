@@ -72,6 +72,7 @@ export function AjnaEarnOverviewManageController() {
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
+            collateralToken={collateralToken}
             quoteToken={quoteToken}
             availableToWithdraw={calculateAjnaMaxLiquidityWithdraw({
               pool: position.pool,
