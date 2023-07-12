@@ -2479,8 +2479,8 @@
     },
     "other-assets": "Other assets you can borrow against",
     "landing-banner": {
-      "title": "Get Ajna token when you use Ajna protocol",
-      "description": "summer.fi users are eligible for exclusive Ajna token rewards! Open and Ajna position through summer.fi and automatically earn Ajna tokens.",
+      "title": "Get exclusive Ajna tokens when you use Summer.fi",
+      "description": "Summer.fi users are eligible for exclusive Ajna token rewards! Open Ajna position through Summer.fi and automatically earn Ajna tokens.",
       "button-label": "See my rewards →",
       "link-label": "Visit Ajna website →"
     },
@@ -2693,7 +2693,7 @@
             "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
             "early-withdrawal-period": "Early withdrawal period",
             "max-lending-ltv": "Max lending LTV",
-            "max-lending-ltv-modal-desc": "The max lending LTV represents the % of {{quoteToken}} you are willing to lend for each unit of {{collateralToken}}. This value moves as the price of {{collateralToken}}/{{quoteToken}} changes. You should adjust your position as the price changes to earn yield in a safe way:",
+            "max-lending-ltv-modal-desc": "The max lending LTV represents the terms you are offering to borrowers. Your selected price divided the market price represents the maximum LTV you are allowing others to borrow against their collateral for your lent asset.",
             "net-pnl": "Net PnL: {{netPnL}}",
             "position-lending-price": "Position lending price",
             "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",

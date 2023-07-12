@@ -7,6 +7,7 @@ import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
 import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
 import { useConnection } from 'features/web3OnBoard'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -23,7 +24,7 @@ const miningRewardsCard = {
     'ajna.rewards.cards.mining.list-4',
   ],
   // TODO update link once available
-  link: { title: 'ajna.rewards.cards.mining.link', href: '/' },
+  link: { title: 'ajna.rewards.cards.mining.link', href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS },
   banner: {
     title: 'ajna.rewards.cards.mining.banner.title',
     button: {
@@ -46,7 +47,7 @@ const oasisRewardsCard = {
     'ajna.rewards.cards.token.list-3',
   ],
   // TODO update link once available
-  link: { title: 'ajna.rewards.cards.token.link', href: '/' },
+  link: { title: 'ajna.rewards.cards.token.link', href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS },
   banner: {
     title: 'ajna.rewards.cards.token.banner.title',
     button: {
