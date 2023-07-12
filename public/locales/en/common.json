@@ -2687,9 +2687,10 @@
             "above-market-price": "{{amount}} above market price",
             "below-market-price": "{{amount}} below market price",
             "total-earnings": "Total earnings",
-            "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earn since this position was opened:",
+            "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. This takes into account the gas fees spent in ETH, calculated in {{quoteToken}} for each transaction:",
             "projected-annual-reward": "Projected annual reward",
             "total-ajna-rewards": "Total AJNA rewards",
+            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released. ",
             "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
             "early-withdrawal-period": "Early withdrawal period",
             "max-lending-ltv": "Max lending LTV",
@@ -2702,7 +2703,11 @@
             "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
             "maximum-yield-price-modal-desc": "Above this lending price you will not earn any yield. Select a lending price below this level to earn.",
             "net-value": "Net value",
-            "net-value-modal-desc": "The total amount of tokens available in position, this includes the earned amount:"
+            "net-value-modal-desc": "The total amount of tokens available in position, this includes the earned amount:",
+            "projected-annual-rewards": "Projected annual rewards",
+            "projected-annual-rewards-modal-desc": "At the current weekly distribution and AJNA token price the implied annual rewards rate is:",
+            "available-to-withdraw": "Available to withdraw",
+            "available-to-withdraw-modal-desc": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out:"
           },
           "notifications": {
             "deposit-is-not-withdrawable": {

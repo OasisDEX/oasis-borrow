@@ -17,7 +17,7 @@ interface DetailsSectionFooterItemWrapperProps {
 }
 interface DetailsSectionFooterItemProps {
   title: string
-  value: string
+  value: ReactNode
   change?: DetailsSectionContentCardChangePillProps
   modal?: TranslateStringType | JSX.Element
 }
