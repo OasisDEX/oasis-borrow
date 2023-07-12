@@ -138,7 +138,14 @@ const ajnaNotifications: {
       params: { time },
     },
     message: {
-      translationKey: 'ajna.position-page.common.notifications.time-to-liquidation.message',
+      component: (
+        <Trans
+          i18nKey="ajna.position-page.common.notifications.time-to-liquidation.message"
+          components={{
+            1: <strong />,
+          }}
+        />
+      ),
     },
     icon: 'coins_cross',
     type: 'warning',

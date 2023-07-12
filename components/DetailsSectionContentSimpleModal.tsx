@@ -1,10 +1,10 @@
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 export interface DetailsSectionContentSimpleModalProps {
   title: string
   description?: string
-  value?: string
+  value?: ReactNode
 }
 
 export const DetailsSectionContentSimpleModal: FC<DetailsSectionContentSimpleModalProps> = ({
