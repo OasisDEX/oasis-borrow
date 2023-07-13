@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
-import {
-  ajnaDefaultMarketPriceOffset,
-  ajnaDefaultPoolRangeMarketPriceOffset,
-} from 'features/ajna/common/consts'
+import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
 import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { one, zero } from 'helpers/zero'
 
@@ -26,11 +23,7 @@ export const getMinMaxAndRange = ({
   if (lowestUtilizedPriceIndex.eq(zero)) {
     const defaultRange = [marketPrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
 
-    while (
-      defaultRange[defaultRange.length - 1].lt(
-        marketPrice.times(one.minus(ajnaDefaultMarketPriceOffset)),
-      )
-    ) {
+    while (defaultRange[defaultRange.length - 1].lt(marketPrice)) {
       defaultRange.push(
         defaultRange[defaultRange.length - 1].times(1.005).decimalPlaces(WAD_PRECISION),
       )
