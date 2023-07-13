@@ -16,6 +16,7 @@ interface ContentFooterItemsBorrowProps {
   isLoading?: boolean
   collateralToken: string
   quoteToken: string
+  owner: string
   cost: BigNumber
   availableToBorrow: BigNumber
   afterAvailableToBorrow?: BigNumber
@@ -28,6 +29,7 @@ export function ContentFooterItemsBorrow({
   isLoading,
   collateralToken,
   quoteToken,
+  owner,
   cost,
   availableToBorrow,
   afterAvailableToBorrow,
@@ -36,7 +38,7 @@ export function ContentFooterItemsBorrow({
   changeVariant = 'positive',
 }: ContentFooterItemsBorrowProps) {
   const { t } = useTranslation()
-  const userAjnaRewards = useAjnaRewards()
+  const userAjnaRewards = useAjnaRewards(owner)
 
   const formatted = {
     cost: formatDecimalAsPercent(cost),
