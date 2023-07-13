@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { useCustomNetworkParameter } from 'blockchain/networks'
 import { Rewards } from 'features/ajna/common/components/AjnaRewardCard'
 import { getAjnaRewards } from 'features/ajna/positions/common/helpers/getAjnaRewards'
+import { getNetworkId } from 'features/web3Context'
 import { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
@@ -26,7 +26,6 @@ const errorState = {
 
 export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
   const { walletAddress } = useAccount()
-  const [networkParameter] = useCustomNetworkParameter()
   const resolvedAddress = useMemo(() => address || walletAddress, [address, walletAddress])
   const [state, setState] = useState<AjnaRewardsParamsState>({
     rewards: defaultRewards,
@@ -34,6 +33,7 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
     isLoading: true,
     refetch: () => {},
   })
+  const networkId = getNetworkId()
 
   const fetchData = useCallback(async (): Promise<void> => {
     setState({
@@ -41,12 +41,10 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
       isLoading: true,
     })
 
-    if (resolvedAddress && networkParameter) {
+    if (resolvedAddress) {
       Promise.all([
         fetch(
-          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${
-            networkParameter.id
-          }`,
+          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${networkId}`,
         ),
         getAjnaRewards(resolvedAddress),
       ])
@@ -82,7 +80,7 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
           })
         })
     }
-  }, [resolvedAddress, networkParameter?.id])
+  }, [resolvedAddress])
 
   useEffect(() => void fetchData(), [fetchData])
 
