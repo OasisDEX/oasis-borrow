@@ -1857,7 +1857,7 @@
     },
     "dai": {
       "description": "Dai is the largest overcollateralized decentralized stablecoin. Dai can be generated on Summer.fi using various collateral types. Here we show the products that will net you returns in DAI.",
-      "link": "https://kb.summer.fi/help/what-is-dai"
+      "link": "https://docs.summer.fi/protocols/maker"
     },
     "uni": {
       "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
@@ -2489,7 +2489,7 @@
     "learn": {
       "ajna-website": "Ajna website",
       "anja-faq": "Ajna FAQ",
-      "ajna-discord": "Anja Discord",
+      "ajna-discord": "Ajna Discord",
       "ajna-twitter": "Ajna Twitter",
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"

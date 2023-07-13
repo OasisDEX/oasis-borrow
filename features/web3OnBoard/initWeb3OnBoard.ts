@@ -87,7 +87,7 @@ export const initWeb3OnBoard = init({
     </svg>
     `,
     description: 'The safest place for your funds',
-    gettingStartedGuide: 'https://kb.summer.fi/help',
+    gettingStartedGuide: 'https://docs.summer.fi/',
     explore: 'https://blog.summer.fi/',
     recommendedInjectedWallets: [
       { name: 'MetaMask', url: 'https://metamask.io' },
