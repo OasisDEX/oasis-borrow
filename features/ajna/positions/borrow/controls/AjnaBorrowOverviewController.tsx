@@ -24,11 +24,12 @@ export function AjnaBorrowOverviewController() {
     environment: {
       collateralPrice,
       collateralToken,
+      flow,
       isShort,
+      owner,
       priceFormat,
       quotePrice,
       quoteToken,
-      flow,
     },
   } = useAjnaGeneralContext()
   const {
@@ -103,6 +104,7 @@ export function AjnaBorrowOverviewController() {
               isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
+              owner={owner}
               cost={position.pool.interestRate}
               availableToBorrow={position.debtAvailable()}
               afterAvailableToBorrow={

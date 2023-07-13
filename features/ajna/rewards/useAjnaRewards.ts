@@ -5,7 +5,7 @@ import { getAjnaRewards } from 'features/ajna/positions/common/helpers/getAjnaRe
 import { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface AjnaRewardsParamsState {
   rewards: Rewards
@@ -24,9 +24,10 @@ const errorState = {
   isLoading: false,
 }
 
-export const useAjnaRewards = (): AjnaRewardsParamsState => {
+export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
   const { walletAddress } = useAccount()
   const [networkParameter] = useCustomNetworkParameter()
+  const resolvedAddress = useMemo(() => address || walletAddress, [address, walletAddress])
   const [state, setState] = useState<AjnaRewardsParamsState>({
     rewards: defaultRewards,
     isError: false,
@@ -40,14 +41,14 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
       isLoading: true,
     })
 
-    if (walletAddress && networkParameter) {
+    if (resolvedAddress && networkParameter) {
       Promise.all([
         fetch(
-          `/api/ajna-rewards?address=${walletAddress.toLocaleLowerCase()}&networkId=${
+          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${
             networkParameter.id
           }`,
         ),
-        getAjnaRewards(walletAddress),
+        getAjnaRewards(resolvedAddress),
       ])
         .then(async ([apiResponse, subgraphResponse]) => {
           const parseApiResponse = (await apiResponse.json()) as Awaited<
@@ -81,7 +82,7 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
           })
         })
     }
-  }, [walletAddress, networkParameter?.id])
+  }, [resolvedAddress, networkParameter?.id])
 
   useEffect(() => void fetchData(), [fetchData])
 
