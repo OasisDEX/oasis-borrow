@@ -73,7 +73,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   FollowVaults: true,
   AaveV3Protection: false,
   AaveV3ProtectionWrite: false,
-  Ajna: false,
+  Ajna: true,
   AjnaSafetySwitch: false,
   AjnaSuppressValidation: false,
   DaiSavingsRate: true,
