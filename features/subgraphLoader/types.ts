@@ -1,5 +1,8 @@
 import { NetworkIds } from 'blockchain/networks'
-import { AjnaHistoryResponse } from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import {
+  AjnaBorrowerEventsResponse,
+  AjnaHistoryResponse,
+} from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
 import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
@@ -51,7 +54,10 @@ export type SubgraphsResponses = {
     }>
     getNftIds: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
     getPositionAuction: SubgraphBaseResponse<{ auctions: AjnaPositionAuctionResponse[] }>
-    getAjnaHistory: SubgraphBaseResponse<{ oasisEvents: AjnaHistoryResponse[] }>
+    getAjnaHistory: SubgraphBaseResponse<{
+      oasisEvents: AjnaHistoryResponse[]
+      borrowerEvents: AjnaBorrowerEventsResponse[]
+    }>
     getClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
   }
   TempGraph: {
