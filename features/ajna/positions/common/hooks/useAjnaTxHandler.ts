@@ -112,7 +112,7 @@ export function useAjnaTxHandler(): () => void {
 
   return () =>
     txHelpers
-      .send(callOasisActionsWithDpmProxy, {
+      .sendWithGasEstimation(callOasisActionsWithDpmProxy, {
         kind: TxMetaKind.libraryCall,
         proxyAddress: dpmAddress,
         ...txData,
