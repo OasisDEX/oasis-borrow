@@ -52,4 +52,4 @@ export const LTVWarningThreshold = new BigNumber(0.05)
 export const ajnaLastIndexBucketPrice = new BigNumber(99836282890)
 
 // safe defaults which should ensure reasonable slider range for newly created pools
-export const ajnaDefaultPoolRangeMarketPriceOffset = 0.99 // 90%
+export const ajnaDefaultPoolRangeMarketPriceOffset = 0.99 // 99%
