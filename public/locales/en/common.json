@@ -473,7 +473,13 @@
     "total-fees": "Total fees",
     "origination-fee": "Origination fee",
     "lending-price": "Lending price",
-    "event": "Event"
+    "event": "Event",
+    "auction-started": "Auction started",
+    "auction-settled": "Auction settled",
+    "debt-to-cover": "Debt to cover",
+    "collateral-for-liquidation": "Collateral for liquidation",
+    "settled-debt": "Settled debt",
+    "remaining-collateral": "Remaining collateral"
   },
   "triggers": {
     "added": "added",

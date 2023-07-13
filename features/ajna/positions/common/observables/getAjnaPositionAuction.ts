@@ -1,9 +1,11 @@
 import { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
+import { getAjnaHistory } from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { mapAjnaBorrowishEvents } from 'features/ajna/positions/common/helpers/mapBorrowishEvents'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaPositionAuction } from 'features/ajna/rewards/helpers/getAjnaPositionAuction'
 import { zero } from 'helpers/zero'
-import { from, Observable } from 'rxjs'
+import { combineLatest, from, Observable } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { timeAgo } from 'utils'
 
@@ -37,8 +39,8 @@ export const getAjnaPositionAuction$ = ({
   dpmPositionData: DpmPositionData
   ajnaPositionData: AjnaGenericPosition
 }): Observable<AjnaPositionAuction> => {
-  return from(getAjnaPositionAuction(proxy)).pipe(
-    map((auctions) => {
+  return combineLatest(from(getAjnaPositionAuction(proxy)), from(getAjnaHistory(proxy))).pipe(
+    map(([auctions, history]) => {
       switch (product) {
         case 'borrow':
         case 'multiply': {
@@ -47,6 +49,12 @@ export const getAjnaPositionAuction$ = ({
           }
 
           const auction = auctions[0]
+          const borrowishEvents = mapAjnaBorrowishEvents(history)
+          const mostRecentHistoryEvent = borrowishEvents[0]
+
+          const isEventAfterAuction = !['AuctionSettle', 'Kick'].includes(
+            mostRecentHistoryEvent.kind as string,
+          )
 
           const isDuringGraceTime = auction.endOfGracePeriod - new Date().getTime() > 0
 
@@ -54,13 +62,15 @@ export const getAjnaPositionAuction$ = ({
             auction.collateral.gt(zero) &&
             auction.debtToCover.gt(zero) &&
             !auction.inLiquidation &&
-            !isDuringGraceTime
+            !isDuringGraceTime &&
+            !isEventAfterAuction
 
           const isLiquidated =
             auction.debtToCover.isZero() &&
             !auction.inLiquidation &&
             !isDuringGraceTime &&
-            !isPartiallyLiquidated
+            !isPartiallyLiquidated &&
+            !isEventAfterAuction
 
           const graceTimeRemaining = timeAgo({
             to: new Date(auction.endOfGracePeriod),

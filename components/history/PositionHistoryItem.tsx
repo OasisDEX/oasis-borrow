@@ -4,6 +4,7 @@ import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import {
   AaveHistoryEvent,
+  AjnaBorrowerEvent,
   AjnaHistoryEvent,
 } from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import { getHistoryEventLabel } from 'features/positionHistory/getHistoryEventLabel'
@@ -14,7 +15,7 @@ import { Box, Flex, Text } from 'theme-ui'
 import { PositionHistoryItemDetails } from './PositionHistoryItemDetails'
 
 interface PositionHistoryItemProps {
-  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent>
+  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<AjnaBorrowerEvent>
   ethtxUrl: string
   etherscanUrl: string
   collateralToken: string
@@ -60,7 +61,7 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
         onClick={() => setOpened(!opened)}
       >
         <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary100' }}>
-          {getHistoryEventLabel({ kind: item.kind, isOpen: item.isOpen })}
+          {getHistoryEventLabel({ kind: item.kind, isOpen: 'isOpen' in item && item.isOpen })}
         </Text>
         <Text as="time" sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}>
           {humanDate}

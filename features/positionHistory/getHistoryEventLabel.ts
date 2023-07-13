@@ -17,6 +17,10 @@ export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?:
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'AjnaRepayWithdraw':
       return t('position-history.repay-withdraw')
+    case 'Kick':
+      return t('position-history.auction-started')
+    case 'AuctionSettle':
+      return t('position-history.auction-settled')
 
     // Earn
     case 'AjnaMoveQuote':
