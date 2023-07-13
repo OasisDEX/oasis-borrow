@@ -7,8 +7,11 @@ import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnI
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
-import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
-import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  mappedRawAjnaBuckets,
+  snapToPredefinedValues,
+} from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useEffect, useMemo } from 'react'
@@ -100,7 +103,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
         leftBoundry={leftBoundry}
         rightBoundry={maxLtv}
-        leftBoundryFormatter={(v) => `$${formatAmount(v, 'USD')}`}
+        leftBoundryFormatter={(v) => `${formatCryptoBalance(v)}`}
         rightBoundryFormatter={(v) => (!v.isZero() ? formatDecimalAsPercent(v) : '-')}
         disabled={isDisabled || isFormFrozen}
         onChange={handleChange}
@@ -123,23 +126,11 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
             priceFormat,
           })}
         >
-          <AjnaEarnInput
-            disabled={isDisabled || isFormFrozen}
-            min={min}
-            max={max}
-            range={range}
-            fallbackValue={resolvedLup}
-          />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} range={range} />
         </PillAccordion>
       ) : (
         <Box sx={{ mt: 3 }}>
-          <AjnaEarnInput
-            disabled={isDisabled || isFormFrozen}
-            min={min}
-            max={max}
-            range={range}
-            fallbackValue={resolvedLup}
-          />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} range={mappedRawAjnaBuckets} />
         </Box>
       )}
     </>

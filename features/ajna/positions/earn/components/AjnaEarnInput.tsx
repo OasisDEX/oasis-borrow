@@ -25,9 +25,6 @@ interface AjnaEarnInputButtonProps {
 }
 interface AjnaEarnInputProps {
   disabled?: boolean
-  max: BigNumber
-  min: BigNumber
-  fallbackValue: BigNumber
   range: BigNumber[]
 }
 
@@ -94,13 +91,7 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
-  disabled,
-  max,
-  min,
-  range,
-  fallbackValue,
-}) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
   const { t } = useTranslation()
   const {
     environment: { priceFormat, quoteToken, isShort },
@@ -128,7 +119,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
 
   const enterPressedHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const value = resolveLendingPriceIfOutsideRange({ manualAmount, min, max, fallbackValue })
+      const value = resolveLendingPriceIfOutsideRange({ manualAmount })
 
       setManualAmount(value)
       updateState('price', value)
@@ -165,9 +156,6 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
           if (!e.currentTarget.contains(e.relatedTarget as Node) && manualAmount !== price) {
             const value = resolveLendingPriceIfOutsideRange({
               manualAmount,
-              min,
-              max,
-              fallbackValue,
             })
 
             setManualAmount(value)
@@ -226,16 +214,8 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
         >
           {priceFormat} {t('ajna.position-page.earn.common.form.lending-price')}
         </Text>
-        <AjnaEarnInputButton
-          disabled={disabled || manualAmount.lte(min)}
-          variant="-"
-          onClick={clickHandler}
-        />
-        <AjnaEarnInputButton
-          disabled={disabled || manualAmount.gte(max)}
-          variant="+"
-          onClick={clickHandler}
-        />
+        <AjnaEarnInputButton disabled={disabled} variant="-" onClick={clickHandler} />
+        <AjnaEarnInputButton disabled={disabled} variant="+" onClick={clickHandler} />
       </Box>
     </>
   )
