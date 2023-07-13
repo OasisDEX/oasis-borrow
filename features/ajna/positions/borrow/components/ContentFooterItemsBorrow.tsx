@@ -26,7 +26,7 @@ interface ContentFooterItemsBorrowProps {
 }
 
 export function ContentFooterItemsBorrow({
-  isLoading,
+  // isLoading,
   collateralToken,
   quoteToken,
   owner,
@@ -35,8 +35,8 @@ export function ContentFooterItemsBorrow({
   afterAvailableToBorrow,
   availableToWithdraw,
   afterAvailableToWithdraw,
-  changeVariant = 'positive',
-}: ContentFooterItemsBorrowProps) {
+}: // changeVariant = 'positive',
+ContentFooterItemsBorrowProps) {
   const { t } = useTranslation()
   const userAjnaRewards = useAjnaRewards(owner)
 
@@ -104,46 +104,46 @@ export function ContentFooterItemsBorrow({
           />
         }
       />
-      <DetailsSectionFooterItem
-        title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
-        value={formatted.availableToWithdraw}
-        change={{
-          isLoading,
-          value:
-            afterAvailableToWithdraw &&
-            `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,
-          variant: changeVariant,
-        }}
-        modal={
-          <AjnaDetailsSectionContentSimpleModal
-            title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
-            description={t(
-              'ajna.position-page.borrow.common.footer.available-to-withdraw-modal-desc',
-            )}
-            value={formatted.availableToWithdraw}
-          />
-        }
-      />
-      <DetailsSectionFooterItem
-        title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
-        value={formatted.availableToBorrow}
-        change={{
-          isLoading,
-          value:
-            afterAvailableToBorrow &&
-            `${formatted.afterAvailableToBorrow} ${t('system.cards.common.after')}`,
-          variant: changeVariant,
-        }}
-        modal={
-          <AjnaDetailsSectionContentSimpleModal
-            title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
-            description={t(
-              'ajna.position-page.borrow.common.footer.available-to-borrow-modal-desc',
-            )}
-            value={formatted.availableToBorrow}
-          />
-        }
-      />
+      {/*<DetailsSectionFooterItem*/}
+      {/*  title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}*/}
+      {/*  value={formatted.availableToWithdraw}*/}
+      {/*  change={{*/}
+      {/*    isLoading,*/}
+      {/*    value:*/}
+      {/*      afterAvailableToWithdraw &&*/}
+      {/*      `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,*/}
+      {/*    variant: changeVariant,*/}
+      {/*  }}*/}
+      {/*  modal={*/}
+      {/*    <AjnaDetailsSectionContentSimpleModal*/}
+      {/*      title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}*/}
+      {/*      description={t(*/}
+      {/*        'ajna.position-page.borrow.common.footer.available-to-withdraw-modal-desc',*/}
+      {/*      )}*/}
+      {/*      value={formatted.availableToWithdraw}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*/>*/}
+      {/*<DetailsSectionFooterItem*/}
+      {/*  title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}*/}
+      {/*  value={formatted.availableToBorrow}*/}
+      {/*  change={{*/}
+      {/*    isLoading,*/}
+      {/*    value:*/}
+      {/*      afterAvailableToBorrow &&*/}
+      {/*      `${formatted.afterAvailableToBorrow} ${t('system.cards.common.after')}`,*/}
+      {/*    variant: changeVariant,*/}
+      {/*  }}*/}
+      {/*  modal={*/}
+      {/*    <AjnaDetailsSectionContentSimpleModal*/}
+      {/*      title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}*/}
+      {/*      description={t(*/}
+      {/*        'ajna.position-page.borrow.common.footer.available-to-borrow-modal-desc',*/}
+      {/*      )}*/}
+      {/*      value={formatted.availableToBorrow}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*/>*/}
     </>
   )
 }

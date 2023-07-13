@@ -219,7 +219,6 @@ export function parseAjnaEarnPositionRows(
       getPoolLiquidity({
         buckets: position.pool.buckets,
         debt: position.pool.debt,
-        highestThresholdPriceIndex: position.pool.highestThresholdPriceIndex,
       }),
     )
 
