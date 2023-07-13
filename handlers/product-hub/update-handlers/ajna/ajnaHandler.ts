@@ -68,7 +68,6 @@ async function getAjnaPoolData(
               debt,
               depositSize,
               interestRate,
-              highestThresholdPriceIndex,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
             },
@@ -91,7 +90,6 @@ async function getAjnaPoolData(
               quoteTokens: new BigNumber(bucket.quoteTokens),
             })),
             debt: debt.shiftedBy(WAD_PRECISION),
-            highestThresholdPriceIndex: new BigNumber(highestThresholdPriceIndex),
           })
             .shiftedBy(NEGATIVE_WAD_PRECISION)
             .times(prices[quoteToken])
