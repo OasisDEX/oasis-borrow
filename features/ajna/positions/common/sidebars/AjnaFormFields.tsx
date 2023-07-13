@@ -129,7 +129,9 @@ export function AjnaFormFieldGenerate({
       minAmount={minAmount}
       minAmountLabel={t(minAmountLabel)}
       minAuxiliaryAmount={minAmount?.times(quotePrice)}
-      showMax={maxAmount?.gt(zero)}
+      // TODO uncomment once max amount calculated properly
+      // showMax={maxAmount?.gt(zero)}
+      showMax={false}
       maxAmount={maxAmount}
       maxAmountLabel={t(maxAmountLabel)}
       maxAuxiliaryAmount={maxAmount?.times(quotePrice)}
@@ -256,7 +258,7 @@ export function AjnaFormFieldWithdraw({
       hasAuxiliary={true}
       hasError={false}
       disabled={isDisabled || isFormFrozen}
-      showMax={maxAmount?.gt(zero)}
+      showMax={false}
       maxAmount={maxAmount}
       maxAmountLabel={t(maxAmountLabel)}
       maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
