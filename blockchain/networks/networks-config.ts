@@ -53,6 +53,7 @@ export type NetworkConfig = {
   getParentNetwork: () => NetworkConfig | undefined
   getCacheApi: () => GraphQLClient | undefined
   isCustomFork?: boolean
+  links?: { label: string; url: string }[]
 }
 
 export function contractDesc(
@@ -96,6 +97,7 @@ const mainnetConfig: NetworkConfig = {
   getCacheApi: memoize(() => new GraphQLClient(mainnetCacheUrl)),
   isCustomFork: false,
   getParentNetwork: () => undefined,
+  links: [{ label: 'Etherscan', url: 'https://etherscan.io/' }],
 }
 
 const goerliConfig: NetworkConfig = {
@@ -154,6 +156,11 @@ const arbitrumMainnetConfig: NetworkConfig = {
   getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
+  links: [
+    { label: 'Bridge', url: 'bridge-widget' },
+    { label: 'Arbiscan', url: 'https://arbiscan.io/' },
+    { label: 'Official Site', url: 'https://arbitrum.foundation/' },
+  ],
 }
 
 const arbitrumGoerliConfig: NetworkConfig = {
@@ -254,6 +261,11 @@ const optimismMainnetConfig: NetworkConfig = {
   getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
+  links: [
+    { label: 'Bridge', url: 'bridge-widget' },
+    { label: 'Optimistic Etherscan', url: 'https://optimistic.etherscan.io/' },
+    { label: 'Official Site', url: 'https://www.optimism.io/' },
+  ],
 }
 
 const optimismGoerliConfig: NetworkConfig = {
