@@ -1,4 +1,4 @@
-import { calculateAjnaApyPerDays, getPoolLiquidity } from '@oasisdex/dma-library'
+import { getPoolLiquidity } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
@@ -64,12 +64,11 @@ async function getAjnaPoolData(
             pair: [collateralToken, quoteToken],
             pool: {
               buckets,
-              dailyPercentageRate30dAverage,
               debt,
-              depositSize,
               interestRate,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
+              lendApr,
             },
           },
         ) => {
@@ -104,11 +103,7 @@ async function getAjnaPoolData(
           const earnLPStrategy = `${collateralToken}/${quoteToken} LP`
           const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
-          const weeklyNetApy = calculateAjnaApyPerDays(
-            depositSize,
-            dailyPercentageRate30dAverage,
-            365,
-          ).toString()
+          const weeklyNetApy = lendApr.toString()
 
           const ajnaRewardsTooltip = {
             content: {
