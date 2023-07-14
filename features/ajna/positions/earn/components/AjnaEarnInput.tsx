@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { FIAT_PRECISION } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
@@ -8,7 +7,7 @@ import {
   snapToPredefinedValues,
 } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatBigNumber } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -167,7 +166,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
           type="text"
           mask={createNumberMask({
             allowDecimal: true,
-            decimalLimit: FIAT_PRECISION,
+            decimalLimit: formatCryptoBalance(manualAmount).split('.')[1]?.length || 0,
             prefix: '',
           })}
           onFocus={() => {
@@ -181,9 +180,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
           })}
           onKeyPress={enterPressedHandler}
           value={
-            manualAmount
-              ? formatBigNumber(isShort ? one.div(manualAmount) : manualAmount, FIAT_PRECISION)
-              : ''
+            manualAmount ? formatCryptoBalance(isShort ? one.div(manualAmount) : manualAmount) : ''
           }
           sx={{
             px: 5,
