@@ -26,8 +26,8 @@ export function AjnaEarnPositionController() {
           value: position.poolApy.per365 ? formatDecimalAsPercent(position.poolApy.per365) : '-',
         },
         {
-          label: t('ajna.position-page.earn.common.headline.90-day-avg'),
-          value: position.poolApy.per90d ? formatDecimalAsPercent(position.poolApy.per90d) : '-',
+          label: t('ajna.position-page.earn.common.headline.30-day-avg'),
+          value: position.poolApy.per30d ? formatDecimalAsPercent(position.poolApy.per30d) : '-',
         },
       ]}
       tabs={{
