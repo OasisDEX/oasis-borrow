@@ -70,15 +70,6 @@ const AjnaSafetyOnMessage: FC = () => (
   />
 )
 
-const AjnaSafetyOnMessage: FC = () => (
-  <Trans
-    i18nKey={'ajna.validations.safety-switch-on'}
-    components={[
-      <AppLink sx={{ fontSize: 'inherit', color: 'inherit' }} href={EXTERNAL_LINKS.DISCORD} />,
-    ]}
-  />
-)
-
 interface GetAjnaBorrowValidationsParams {
   ajnaSafetySwitchOn: boolean
   flow: AjnaFlow
