@@ -107,7 +107,7 @@ async function getAjnaPoolData(
           const weeklyNetApy = calculateAjnaApyPerDays(
             depositSize,
             dailyPercentageRate30dAverage,
-            7,
+            365,
           ).toString()
 
           const ajnaRewardsTooltip = {

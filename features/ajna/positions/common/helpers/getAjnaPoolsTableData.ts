@@ -63,9 +63,9 @@ export const getAjnaPoolsTableData = async (
         interestRate: new BigNumber(interestRate).shiftedBy(negativeWadPrecision),
         debt: new BigNumber(debt).shiftedBy(negativeWadPrecision),
         depositSize: new BigNumber(depositSize).shiftedBy(negativeWadPrecision),
-        dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage)
-          .shiftedBy(negativeWadPrecision)
-          .shiftedBy(2),
+        dailyPercentageRate30dAverage: new BigNumber(dailyPercentageRate30dAverage).shiftedBy(
+          negativeWadPrecision,
+        ),
         poolMinDebtAmount: new BigNumber(poolMinDebtAmount).shiftedBy(negativeWadPrecision),
         lowestUtilizedPrice: new BigNumber(lup).shiftedBy(negativeWadPrecision),
         lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
