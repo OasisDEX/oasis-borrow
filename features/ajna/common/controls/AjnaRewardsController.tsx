@@ -5,10 +5,11 @@ import { WithArrow } from 'components/WithArrow'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
+import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
 import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
 import { useConnection } from 'features/web3OnBoard'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Button, Flex } from 'theme-ui'
@@ -20,10 +21,9 @@ const miningRewardsCard = {
     'ajna.rewards.cards.mining.list-1',
     'ajna.rewards.cards.mining.list-2',
     'ajna.rewards.cards.mining.list-3',
-    'ajna.rewards.cards.mining.list-4',
   ],
   // TODO update link once available
-  link: { title: 'ajna.rewards.cards.mining.link', href: '/' },
+  link: { title: 'ajna.rewards.cards.mining.link', href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS },
   banner: {
     title: 'ajna.rewards.cards.mining.banner.title',
     button: {
@@ -46,7 +46,7 @@ const oasisRewardsCard = {
     'ajna.rewards.cards.token.list-3',
   ],
   // TODO update link once available
-  link: { title: 'ajna.rewards.cards.token.link', href: '/' },
+  link: { title: 'ajna.rewards.cards.token.link', href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS },
   banner: {
     title: 'ajna.rewards.cards.token.banner.title',
     button: {
@@ -63,9 +63,9 @@ const oasisRewardsCard = {
 export function AjnaRewardsController() {
   const { t } = useTranslation()
   const userNftsData = useAjnaUserNfts()
+  const userAjnaRewards = useAjnaRewards()
 
   const { isConnected } = useAccount()
-
   const { connect } = useConnection({ initialConnect: false })
 
   const handleConnect = useCallback(async () => {
@@ -101,9 +101,8 @@ export function AjnaRewardsController() {
         />
         <AjnaRewardCard
           key="oasisRewards"
-          isLoading={false}
-          notAvailable
-          rewards={{ tokens: zero, usd: zero, numberOfPositions: 0 }}
+          isLoading={userAjnaRewards.isLoading}
+          rewards={userAjnaRewards.rewards}
           {...oasisRewardsCard}
           floatingLabel={
             <FloatingLabel

@@ -42,6 +42,11 @@ export const subgraphMethodsRecord: {
           nft {
             id
           }
+          account {
+            cumulativeDeposit
+            cumulativeFees
+            cumulativeWithdraw
+          }
         }
       }
     }
@@ -179,6 +184,26 @@ export const subgraphMethodsRecord: {
         totalFee
         txHash
         withdrawnUSD
+      }
+      borrowerEvents(where: { account_: { id: $dpmProxyAddress } }) {
+        id
+        kind
+        timestamp
+        txHash
+        settledDebt
+        debtToCover
+        collateralForLiquidation
+        remainingCollateral
+        auction {
+          id
+        }
+      }
+    }
+  `,
+  getClaimedRewards: gql`
+    query getClaimed($walletAddress: ID!) {
+      claimeds(where: { user: $walletAddress }) {
+        amount
       }
     }
   `,

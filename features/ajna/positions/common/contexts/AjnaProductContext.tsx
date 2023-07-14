@@ -4,6 +4,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
 import { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
 import {
   AjnaBorrowFormState,
@@ -11,7 +12,6 @@ import {
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
-import { AjnaHistoryEvents } from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import {
   AjnaBorrowishPositionAuction,
@@ -45,7 +45,7 @@ interface AjnaProductContextProviderPropsWithBorrow {
   position: AjnaPosition
   product: 'borrow'
   positionAuction: AjnaBorrowishPositionAuction
-  positionHistory: AjnaHistoryEvents
+  positionHistory: AjnaUnifiedHistoryEvent[]
 }
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
@@ -53,7 +53,7 @@ interface AjnaProductContextProviderPropsWithEarn {
   position: AjnaEarnPosition
   product: 'earn'
   positionAuction: AjnaEarnPositionAuction
-  positionHistory: AjnaHistoryEvents
+  positionHistory: AjnaUnifiedHistoryEvent[]
 }
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
@@ -61,7 +61,7 @@ interface AjnaProductContextProviderPropsWithMultiply {
   position: AjnaPosition
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
-  positionHistory: AjnaHistoryEvents
+  positionHistory: AjnaUnifiedHistoryEvent[]
 }
 type AjnaProductDetailsContextProviderProps =
   | AjnaProductContextProviderPropsWithBorrow
@@ -87,7 +87,7 @@ interface AjnaProductContextPosition<P, A> {
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
   setCachedSwap: (swap: SwapData) => void
   positionAuction: A
-  history: AjnaHistoryEvents
+  history: AjnaUnifiedHistoryEvent[]
 }
 
 interface AjnaProductContext<P, F, A> {

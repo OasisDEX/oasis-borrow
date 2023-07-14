@@ -250,7 +250,10 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         },
         estimateGasPrice: ({ estimatedGas, networkId, gasEstimationResult }) => {
           if (networkId === NetworkIds.MAINNET) {
-            return gasEstimation$(estimatedGas!).pipe(
+            if (!estimatedGas && !gasEstimationResult?.estimatedGas) {
+              throw new Error('Error estimating gas price: no gas amount.')
+            }
+            return gasEstimation$(estimatedGas || Number(gasEstimationResult!.estimatedGas)).pipe(
               distinctUntilChanged<HasGasEstimation>(isEqual),
               map((gasPriceEstimation) => ({
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',

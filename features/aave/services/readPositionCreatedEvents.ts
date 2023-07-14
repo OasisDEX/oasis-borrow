@@ -96,7 +96,10 @@ export function getLastCreatedPositionForProxy$(
 ): Observable<PositionCreated> {
   return context$.pipe(
     switchMap(async (context) => {
-      const events = await getPositionCreatedEventForProxyAddress(context, proxyAddress)
+      const events = await getPositionCreatedEventForProxyAddress(
+        { chainId: context.chainId },
+        proxyAddress,
+      )
       return { context, events }
     }),
     map(({ context, events }) => ({ context, event: events.pop() })),
@@ -147,9 +150,15 @@ export function createProxyConsumed$(
   context$: Observable<Context>,
   dpmProxyAddress: string,
 ): Observable<boolean> {
-  return getLastCreatedPositionForProxy$(context$, dpmProxyAddress).pipe(
-    map((proxy) => {
-      return !!proxy
+  return context$.pipe(
+    switchMap(async (context) => {
+      return await getPositionCreatedEventForProxyAddress(
+        { chainId: context.chainId },
+        dpmProxyAddress,
+      )
+    }),
+    map((events) => {
+      return events.length > 0
     }),
   )
 }

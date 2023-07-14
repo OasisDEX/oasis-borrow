@@ -24,59 +24,53 @@ export const INTERNAL_LINKS = {
 export const EXTERNAL_LINKS = {
   // NO ENDING SLASH thank you
   KB: {
-    HELP: 'https://kb.summer.fi/help',
-    CONTACT: 'https://kb.summer.fi/help/contact-us',
-    GETTING_STARTED: 'https://kb.summer.fi/help/getting-started',
-    TUTORIALS: 'https://kb.summer.fi/help/tutorials',
-    BORROW: 'https://kb.summer.fi/help/borrow',
-    DISCOVER: 'https://kb.summer.fi/help/learn-more-about-discover',
-    WHAT_IS_MULTIPLY: 'https://kb.summer.fi/help/what-is-multiply',
-    WHAT_IS_BORROW: 'https://kb.summer.fi/help/what-is-oasis-borrow',
-    WHAT_IS_DPM: 'https://kb.summer.fi/help/what-is-a-smart-defi-account',
-    WHAT_IS_PROXY: 'https://kb.summer.fi/help/what-is-a-proxy-contract',
-    WHAT_IS_CONSTANT_MULTIPLE: 'https://kb.summer.fi/help/what-is-constant-multiple',
-    REFER_A_FRIEND: 'https://kb.summer.fi/help/a-step-by-step-guide-to-refer-a-friend',
-    STOP_LOSS: 'https://kb.summer.fi/help/what-is-automated-stop-loss',
-    AUTOMATION: 'https://kb.summer.fi/help/automation',
-    MINIMUM_VAULT_DEBT_DUST: 'https://kb.summer.fi/help/minimum-vault-debt-dust',
+    HELP: 'https://docs.summer.fi',
+    CONTACT: 'https://docs.summer.fi/get-in-touch/social-media',
+    GETTING_STARTED: 'https://docs.summer.fi',
+    TUTORIALS: 'https://docs.summer.fi/protocols/maker/tutorials-and-guides',
+    BORROW:
+      'https://docs.summer.fi/protocols/maker/tutorials-and-guides/how-to-open-a-borrow-vault-with-maker',
+    DISCOVER: 'https://docs.summer.fi/products/discover',
+    WHAT_IS_MULTIPLY: 'https://docs.summer.fi/products/multiply',
+    WHAT_IS_BORROW: 'https://docs.summer.fi/products/borrow',
+    WHAT_IS_DPM: 'https://docs.summer.fi/general/what-is-a-smart-defi-account',
+    WHAT_IS_PROXY:
+      'https://docs.summer.fi/protocols/maker/tutorials-and-guides/how-to-open-a-borrow-vault-with-maker',
+    WHAT_IS_CONSTANT_MULTIPLE: 'https://docs.summer.fi/automation/constant-multiple',
+    REFER_A_FRIEND: 'https://docs.summer.fi/general/referrals-program/how-to-refer-a-friend',
+    STOP_LOSS: 'https://docs.summer.fi/automation/stop-loss',
+    AUTOMATION: 'https://docs.summer.fi/automation/general',
+    MINIMUM_VAULT_DEBT_DUST: 'https://docs.summer.fi/protocols/maker/key-concepts',
     CONSTANT_MULTIPLE_RISKS:
-      'https://kb.summer.fi/help/what-are-the-risks-associated-with-constant-multiple',
-    TAKE_PROFIT: 'https://kb.summer.fi/help/what-is-take-profit',
-    ORACLE_SECURITY: 'https://kb.summer.fi/help/the-oracle-security-module',
-    AUTO_BUY_SELL: 'https://kb.summer.fi/help/what-is-auto-buy-and-auto-sell',
-    SETTING_AUTO_BUY: 'https://kb.summer.fi/help/setting-up-auto-buy-for-your-vault',
-    SETTING_AUTO_SELL: 'https://kb.summer.fi/help/setting-up-auto-sell-for-your-vault',
-    HOW_STOP_LOSS_WORKS: 'https://kb.summer.fi/help/how-does-automated-stop-loss-work',
-    WHAT_YOU_SHOULD_KNOW_ABOUT_STETH: 'https://kb.summer.fi/help/what-you-should-know-about-steth',
-    STETH_AAVE_V3_EMODE: 'https://kb.summer.fi/help/earn-with-steth-aave-v3-e-mode',
-    EARN_DAI_GUNI_MULTIPLY: 'https://kb.summer.fi/help/earn-with-dai-and-g-uni-multiply',
-    OPEN_MANAGE_MULTIPLY:
-      'https://kb.summer.fi/help/how-to-open-and-manage-your-aave-multiply-position',
+      'https://docs.summer.fi/automation/constant-multiple#what-are-the-risks-associated-with-constant-multiple',
+    TAKE_PROFIT: 'https://docs.summer.fi/automation/take-profit',
+    ORACLE_SECURITY: 'https://docs.summer.fi/protocols/maker/key-concepts',
+    AUTO_BUY_SELL: 'https://docs.summer.fi/automation/auto-buy-and-auto-sell',
+    SETTING_AUTO_BUY: 'https://docs.summer.fi/automation/auto-buy-and-auto-sell/auto-buy',
+    SETTING_AUTO_SELL: 'https://docs.summer.fi/automation/auto-buy-and-auto-sell/auto-sell',
+    HOW_STOP_LOSS_WORKS: 'https://docs.summer.fi/automation/stop-loss',
+    WHAT_YOU_SHOULD_KNOW_ABOUT_STETH: 'https://docs.summer.fi/products/earn/aave-v2-steth',
+    STETH_AAVE_V3_EMODE: 'https://docs.summer.fi/products/earn/aave-v3-steth',
+    EARN_DAI_GUNI_MULTIPLY: 'https://docs.summer.fi/products/earn',
+    OPEN_MANAGE_MULTIPLY: 'https://docs.summer.fi/protocols/aave/tutorials-and-guides',
     WHAT_IS_SLIPPAGE:
-      'https://kb.summer.fi/help/frequently-asked-questions#h_8073651997861662481520644',
-    CURATED_TOKEN_LIST: 'https://kb.summer.fi/help/curated-token-list',
-    SUPPORTED_COLLATERALS:
-      'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      'https://docs.summer.fi/products/multiply/frequently-asked-questions#h_8073651997861662481520644',
+    CURATED_TOKEN_LIST: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+    SUPPORTED_COLLATERALS: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
     TOKENS: {
-      ETH: 'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
-      WSTETH:
-        'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
-      WBTC: 'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
-      RENBTC:
-        'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
-      LINK: 'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
-      MANA: 'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
-      MATIC:
-        'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
-      GUSD: 'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
-      YFI: 'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
-      UNIV2:
-        'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
-      CRVV1ETHSTETH:
-        'https://kb.summer.fi/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
+      ETH: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      WSTETH: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      WBTC: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      RENBTC: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      LINK: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      MANA: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      MATIC: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      GUSD: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      YFI: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      UNIV2: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
+      CRVV1ETHSTETH: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
     },
-    AJNA: 'https://kb.summer.fi/help/ajna',
-    SWAP_FAQ: 'https://kb.summer.fi/help/how-to-swap-and-bridge-using-the-lifi-widget',
+    SWAP_FAQ: 'https://docs.summer.fi/general/how-to-swap-and-bridge-using-the-lifi-widget',
   },
   BLOG: {
     MAIN: 'https://blog.summer.fi',
@@ -87,6 +81,22 @@ export const EXTERNAL_LINKS = {
     DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
     REBRANDING: 'https://blog.summer.fi/oasis-app-rebrands-to-summer-fi/',
+  },
+  DOCS: {
+    AJNA: {
+      HUB: 'https://docs.summer.fi/protocols/ajna',
+      HOW_TO_BORROW:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-borrow-using-ajna',
+      HOW_TO_EARN:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides#how-to-earn-using-ajna',
+      LIQUIDATIONS:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-ajna-liquidations-work',
+      RISKS:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/what-are-the-risks-of-lending-in-ajna',
+      TOKEN_REWARDS: 'https://docs.summer.fi/protocols/ajna/ajna-token-rewards',
+      HOW_TO_PICK_LENDING_PRICE:
+        'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-to-pick-the-right-level-for-lending',
+    },
   },
   LEGACY_APP: 'https://legacy.summer.fi',
   AJNA: {

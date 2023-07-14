@@ -1481,7 +1481,7 @@
     },
     "dai": {
       "description": "Dai 是最大的超额抵押去中心稳定币。你可以在 Summer.fi 使用多种抵押资产来生成 Dai。在这里我们展示了让你的 Dai 产生回报的产品。",
-      "link": "https://kb.summer.fi/help/what-is-dai"
+      "link": "https://docs.summer.fi/protocols/maker"
     },
     "uni": {
       "description": "UNI 是 Uniswap 协议的治理代币，它由去中心化社群所治理，可以提案和投票升级协议。Uniswap 是一个去中心化的交易协议，提供 ERC20 代币的兑换。",

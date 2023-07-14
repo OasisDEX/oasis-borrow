@@ -165,9 +165,8 @@ export function HomepageView() {
       <WhyOasisStats oasisStatsValue={oasisStatsValue} />
       <Box sx={{ mt: 7 }}>
         <ProductHubView
-          product={ProductHubProductType.Multiply}
+          product={ProductHubProductType.Earn}
           promoCardsCollection={!ajnaEnabled || ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
-          token="ETH"
           limitRows={10}
         />
       </Box>

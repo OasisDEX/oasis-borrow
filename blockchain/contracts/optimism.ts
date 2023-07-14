@@ -171,6 +171,7 @@ export const optimismContracts: OptimismContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'CBETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CBETHETH),
     'ETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHDAI),
     'ETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHUSDC),
     'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),

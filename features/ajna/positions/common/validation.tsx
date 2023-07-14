@@ -27,26 +27,39 @@ import { Trans } from 'next-i18next'
 import React, { FC } from 'react'
 
 interface AjnaValidationWithLinkProps {
-  translationKey: string
+  name: string
   values?: { [key: string]: string }
 }
 
-const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ translationKey, values }) => (
-  <Trans
-    i18nKey={translationKey}
-    values={values}
-    components={{
-      1: <strong />,
-      2: (
-        <AppLink
-          sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
-          // TODO update link to ajna liquidations once available
-          href={EXTERNAL_LINKS.KB.HELP}
-        />
-      ),
-    }}
-  />
-)
+const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ name, values }) => {
+  const translationKey = `ajna.validations.${name}`
+
+  const linkMap: { [key: string]: string } = {
+    'price-below-htp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'price-between-htp-and-lup': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'price-between-lup-and-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'price-above-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'collateral-to-claim': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_EARN,
+    'is-during-grace-time': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
+    'is-being-liquidated': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
+  }
+
+  return (
+    <Trans
+      i18nKey={translationKey}
+      values={values}
+      components={{
+        1: <strong />,
+        2: (
+          <AppLink
+            sx={{ fontSize: 'inherit', color: 'inherit', fontWeight: 'regular' }}
+            href={linkMap[name] || EXTERNAL_LINKS.DOCS.AJNA.HUB}
+          />
+        ),
+      }}
+    />
+  )
+}
 
 const AjnaSafetyOnMessage: FC = () => (
   <Trans
@@ -96,7 +109,7 @@ const mapSimulationValidation = ({
     message: {
       component: (
         <AjnaValidationWithLink
-          translationKey={`ajna.validations.${item.name}`}
+          name={item.name}
           values={{ ...item.data, collateralToken, quoteToken, token }}
         />
       ),
@@ -315,9 +328,7 @@ export function getAjnaValidation({
     if (borrowishAuction.isDuringGraceTime) {
       localWarnings.push({
         message: {
-          component: (
-            <AjnaValidationWithLink translationKey="ajna.validations.is-during-grace-time" />
-          ),
+          component: <AjnaValidationWithLink name="is-during-grace-time" />,
         },
       })
     }
@@ -325,9 +336,7 @@ export function getAjnaValidation({
     if (borrowishAuction.isBeingLiquidated) {
       localWarnings.push({
         message: {
-          component: (
-            <AjnaValidationWithLink translationKey="ajna.validations.is-being-liquidated" />
-          ),
+          component: <AjnaValidationWithLink name="is-being-liquidated" />,
         },
       })
     }
@@ -337,6 +346,7 @@ export function getAjnaValidation({
     ...localErrors,
     ...mapSimulationValidation({ items: simulationErrors, collateralToken, quoteToken, token }),
   ]
+
   const warnings = [
     ...localWarnings,
     ...mapSimulationValidation({ items: simulationWarnings, collateralToken, quoteToken, token }),

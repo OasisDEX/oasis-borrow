@@ -7,8 +7,11 @@ import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnI
 import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
-import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
-import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  mappedRawAjnaBuckets,
+  snapToPredefinedValues,
+} from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useEffect, useMemo } from 'react'
@@ -72,8 +75,8 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
 
   useEffect(() => {
     // triggered only once to initialize price on state when lup index is zero
-    if (lowestUtilizedPriceIndex.isZero()) {
-      handleChange(max)
+    if (lowestUtilizedPriceIndex.isZero() && !price) {
+      handleChange(min)
     }
   }, [])
 
@@ -100,10 +103,8 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
         leftBoundry={leftBoundry}
         rightBoundry={maxLtv}
-        leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
-        rightBoundryFormatter={(v) =>
-          !v.isZero() ? `${t('max-ltv')} ${formatDecimalAsPercent(v)}` : '-'
-        }
+        leftBoundryFormatter={(v) => `${formatCryptoBalance(v)}`}
+        rightBoundryFormatter={(v) => (!v.isZero() ? formatDecimalAsPercent(v) : '-')}
         disabled={isDisabled || isFormFrozen}
         onChange={handleChange}
         leftLabel={t('ajna.position-page.earn.common.form.token-pair-lending-price', {
@@ -125,11 +126,11 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
             priceFormat,
           })}
         >
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} range={range} />
         </PillAccordion>
       ) : (
         <Box sx={{ mt: 3 }}>
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} min={min} max={max} range={range} />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} range={mappedRawAjnaBuckets} />
         </Box>
       )}
     </>

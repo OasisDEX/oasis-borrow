@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
@@ -13,11 +12,10 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { getNetworkId } from 'features/web3Context'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
-import { combineLatest, iif, Observable, of } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { AavePosition } from './pipes/positions'
@@ -44,12 +42,7 @@ export function createPositionsList$(
   return combineLatest(
     makerPositions$(address),
     aavePositions$(address),
-    // TODO: temporary until Ajna contracts are on mainnet
-    iif(
-      () => getNetworkId() === NetworkIds.GOERLI,
-      ajnaPositions$(address),
-      of([] as AjnaPositionDetails[]),
-    ),
+    ajnaPositions$(address),
     dsr$(address),
   ).pipe(
     map(([makerPositions, aavePositions, ajnaPositions, dsrPosition]) => ({

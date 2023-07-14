@@ -234,7 +234,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
 export function MobileSidePanelPortal({ children }: WithChildren) {
   const onMobile = useOnMobile()
 
-  return onMobile ? ReactDOM.createPortal(children, document.body) : children
+  return onMobile && document.body ? ReactDOM.createPortal(children, document.body) : children
 }
 
 export function MobileSidePanel({

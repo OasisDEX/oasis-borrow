@@ -5,9 +5,9 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import dayjs from 'dayjs'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex } from 'theme-ui'
@@ -91,7 +91,7 @@ export function StopLossSummaryInformation({
     <VaultChangesInformationContainer title={t('automation.summary', { feature })}>
       <VaultChangesInformationItem
         label={`${t('system.date')}`}
-        value={<Flex>{moment(date).format('MMM D YYYY, h:mm A')}</Flex>}
+        value={<Flex>{dayjs(date).format('MMM D YYYY, h:mm A')}</Flex>}
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-sold', {
