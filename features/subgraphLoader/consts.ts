@@ -185,6 +185,19 @@ export const subgraphMethodsRecord: {
         txHash
         withdrawnUSD
       }
+      borrowerEvents(where: { account_: { id: $dpmProxyAddress } }) {
+        id
+        kind
+        timestamp
+        txHash
+        settledDebt
+        debtToCover
+        collateralForLiquidation
+        remainingCollateral
+        auction {
+          id
+        }
+      }
     }
   `,
   getClaimedRewards: gql`

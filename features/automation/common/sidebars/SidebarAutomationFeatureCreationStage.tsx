@@ -66,7 +66,7 @@ export function SidebarAutomationFeatureCreationStage({
                   featureName: t(sidebarAutomationFeatureCopyMap[featureName]),
                 })}{' '}
                 <AppLink
-                  href={`https://kb.summer.fi/help/${linkMap[featureName]}`}
+                  href={`https://docs.summer.fi/products/${linkMap[featureName]}`}
                   sx={{ fontSize: 2 }}
                 >
                   {t('here')}.

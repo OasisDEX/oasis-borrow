@@ -1,9 +1,8 @@
-import {
-  AjnaHistoryEvent,
-  AjnaHistoryEvents,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
 
-export const mapAjnaEarnEvents = (events: AjnaHistoryEvents): Partial<AjnaHistoryEvent>[] => {
+export const mapAjnaEarnEvents = (
+  events: AjnaUnifiedHistoryEvent[],
+): Partial<AjnaUnifiedHistoryEvent>[] => {
   const mappedEvents = events.map((event) => {
     const basicData = {
       kind: event.kind,

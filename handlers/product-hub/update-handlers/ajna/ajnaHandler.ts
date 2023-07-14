@@ -4,7 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
-import { WAD_PRECISION } from 'components/constants'
+import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import {
   AjnaPoolsTableData,
   getAjnaPoolsTableData,
@@ -68,13 +68,12 @@ async function getAjnaPoolData(
               debt,
               depositSize,
               interestRate,
-              highestThresholdPriceIndex,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
             },
           },
         ) => {
-          const negativeWadPrecision = WAD_PRECISION * -1
+          const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
           const isShort = isShortPosition({ collateralToken })
           const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const collateralPrice = prices[collateralToken]
@@ -91,9 +90,8 @@ async function getAjnaPoolData(
               quoteTokens: new BigNumber(bucket.quoteTokens),
             })),
             debt: debt.shiftedBy(WAD_PRECISION),
-            highestThresholdPriceIndex: new BigNumber(highestThresholdPriceIndex),
           })
-            .shiftedBy(negativeWadPrecision)
+            .shiftedBy(NEGATIVE_WAD_PRECISION)
             .times(prices[quoteToken])
             .toString()
           const fee = interestRate.toString()
@@ -142,7 +140,7 @@ async function getAjnaPoolData(
                 ...getTokenGroup(quoteToken, 'secondary'),
                 fee,
                 liquidity,
-                ...(lowestUtilizedPriceIndex > 0 && {
+                ...(isPoolNotEmpty && {
                   maxLtv,
                   maxMultiply,
                 }),
@@ -151,16 +149,18 @@ async function getAjnaPoolData(
                 ...(isYieldLoop && {
                   earnStrategy: earnYieldLoopStrategy,
                   managementType,
-                  weeklyNetApy,
+                  ...(isPoolNotEmpty && {
+                    weeklyNetApy,
+                  }),
                 }),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
                     fee: ajnaRewardsTooltip,
+                    ...(isPoolNotEmpty && {
+                      weeklyNetApy: ajnaRewardsTooltip,
+                    }),
                   }),
-                  ...(isYieldLoop && {
-                    weeklyNetApy: ajnaRewardsTooltip,
-                  }),
-                  ...(lowestUtilizedPriceIndex === 0 && {
+                  ...(!isPoolNotEmpty && {
                     maxLtv: {
                       content: {
                         description: {
@@ -174,6 +174,15 @@ async function getAjnaPoolData(
                       content: {
                         description: {
                           key: 'ajna.product-hub-tooltips.no-max-multiple',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                    weeklyNetApy: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-weekly-apy',
                         },
                       },
                       icon: 'question_o',
@@ -194,11 +203,25 @@ async function getAjnaPoolData(
                 earnStrategy: earnLPStrategy,
                 liquidity,
                 managementType,
-                weeklyNetApy,
+                ...(isPoolNotEmpty && {
+                  weeklyNetApy,
+                }),
                 reverseTokens: true,
                 tooltips: {
-                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
-                    weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolNotEmpty &&
+                    isPoolWithRewards({ collateralToken, quoteToken }) && {
+                      weeklyNetApy: ajnaRewardsTooltip,
+                    }),
+                  ...(!isPoolNotEmpty && {
+                    weeklyNetApy: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-weekly-apy',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
                   }),
                 },
               },

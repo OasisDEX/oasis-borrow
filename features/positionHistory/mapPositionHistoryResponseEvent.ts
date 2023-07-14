@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { PositionHistoryResponse } from 'features/positionHistory/types'
 
-export const mapPositionHistoryResponse = (event: PositionHistoryResponse) => ({
+export const mapPositionHistoryResponseEvent = (event: PositionHistoryResponse) => ({
   blockNumber: new BigNumber(event.blockNumber),
   collateralAddress: event.collateralAddress,
   collateralAfter: new BigNumber(event.collateralAfter),

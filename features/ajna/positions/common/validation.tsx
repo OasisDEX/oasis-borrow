@@ -346,6 +346,7 @@ export function getAjnaValidation({
     ...localErrors,
     ...mapSimulationValidation({ items: simulationErrors, collateralToken, quoteToken, token }),
   ]
+
   const warnings = [
     ...localWarnings,
     ...mapSimulationValidation({ items: simulationWarnings, collateralToken, quoteToken, token }),

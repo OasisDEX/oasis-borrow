@@ -1,10 +1,8 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
-import {
-  AaveHistoryEvent,
-  AjnaHistoryEvent,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
+import { AaveHistoryEvent } from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -17,7 +15,7 @@ import React, { FC } from 'react'
 import { PositionHistoryRow } from './PositionHistoryRow'
 
 interface PositionHistoryItemDetailsProps {
-  event: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent>
+  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>
   collateralToken: string
   quoteToken: string
   isShort?: boolean
@@ -127,6 +125,22 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       {event.totalFee && (
         <PositionHistoryRow label={t('position-history.total-fees')}>
           {formatFiatBalance(event.totalFee)} USD
+        </PositionHistoryRow>
+      )}
+      {/* AUCTION events */}
+      {'remainingCollateral' in event && event.remainingCollateral && (
+        <PositionHistoryRow label={t('position-history.remaining-collateral')}>
+          {formatFiatBalance(event.remainingCollateral)} {collateralToken}
+        </PositionHistoryRow>
+      )}
+      {'debtToCover' in event && event.debtToCover && (
+        <PositionHistoryRow label={t('position-history.debt-to-cover')}>
+          {formatFiatBalance(event.debtToCover)} {quoteToken}
+        </PositionHistoryRow>
+      )}
+      {'collateralForLiquidation' in event && event.collateralForLiquidation && (
+        <PositionHistoryRow label={t('position-history.collateral-for-liquidation')}>
+          {formatFiatBalance(event.collateralForLiquidation)} {collateralToken}
         </PositionHistoryRow>
       )}
     </DefinitionList>

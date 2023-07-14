@@ -11,6 +11,7 @@ import React from 'react'
 interface ContentFooterItemsEarnOpenProps {
   collateralToken: string
   quoteToken: string
+  owner: string
   availableToWithdraw: BigNumber
   projectedAnnualReward: BigNumber
   afterAvailableToWithdraw?: BigNumber
@@ -19,11 +20,12 @@ interface ContentFooterItemsEarnOpenProps {
 export function ContentFooterItemsEarnManage({
   collateralToken,
   quoteToken,
+  owner,
   availableToWithdraw,
   afterAvailableToWithdraw,
 }: ContentFooterItemsEarnOpenProps) {
   const { t } = useTranslation()
-  const userAjnaRewards = useAjnaRewards()
+  const userAjnaRewards = useAjnaRewards(owner)
 
   const formatted = {
     availableToWithdraw: `${formatCryptoBalance(availableToWithdraw)} ${quoteToken}`,

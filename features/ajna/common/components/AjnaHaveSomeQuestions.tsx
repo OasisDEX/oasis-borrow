@@ -33,11 +33,11 @@ export function AjnaHaveSomeQuestions() {
               text: t('ajna.learn.ajna-website'),
             },
             {
-              href: 'https://kb.summer.fi/help/tutorials',
+              href: 'https://docs.summer.fi/protocols/ajna/tutorials-and-guides',
               text: t('landing.info-cards.learn.tutorials'),
             },
             {
-              href: 'https://kb.summer.fi/help/borrow',
+              href: 'https://docs.summer.fi/protocols/ajna/key-concepts',
               text: t('landing.info-cards.learn.key-concepts'),
             },
           ]}
@@ -49,7 +49,7 @@ export function AjnaHaveSomeQuestions() {
           subtitle={t('landing.info-cards.support.contact-whenever')}
           links={[
             {
-              href: 'https://kb.summer.fi/help/frequently-asked-questions',
+              href: 'https://docs.summer.fi/protocols/ajna/key-concepts',
               text: t('ajna.learn.anja-faq'),
             },
             {
@@ -61,7 +61,7 @@ export function AjnaHaveSomeQuestions() {
               text: t('ajna.learn.ajna-twitter'),
             },
             {
-              href: 'https://discord.gg/oasisapp',
+              href: 'https://discord.gg/summerfi',
               text: t('ajna.learn.oasis-discord'),
             },
             {
