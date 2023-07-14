@@ -157,7 +157,7 @@ export const ajnaCloseMultiply = ({
         WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
         USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
         WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
-      }
-    }
+      },
+    },
   )
 }
