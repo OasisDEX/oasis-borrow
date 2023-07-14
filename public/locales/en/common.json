@@ -2669,7 +2669,7 @@
         "common": {
           "headline": {
             "current-yield": "Current yield",
-            "90-day-avg": "90 Day Avg",
+            "30-day-avg": "30 Day Avg",
             "current-market-price": "Current Market Price"
           },
           "form": {
