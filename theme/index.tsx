@@ -26,7 +26,7 @@ export const oasisBaseTheme = {
   breakpoints: ['48em', '60em', '68em'],
   colors: {
     // new design system colors
-    interactive100: '#575CFE',
+    interactive100: '#FF5845',
     interactive50: '#FD8072',
     interactive30: '#FEBFB8',
     interactive10: '#FED9D5',
