@@ -121,12 +121,12 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
         //   change: formatted.afterAvailableToWithdraw,
         //   isLoading,
         // },
-        // {
-        //   label: t('system.available-to-borrow'),
-        //   value: formatted.availableToBorrow,
-        //   change: formatted.afterAvailableToBorrow,
-        //   isLoading,
-        // },
+        {
+          label: t('system.available-to-borrow'),
+          value: formatted.availableToBorrow,
+          change: formatted.afterAvailableToBorrow,
+          isLoading,
+        },
         ...(isTxSuccess && cached
           ? [
               {
