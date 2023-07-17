@@ -1,0 +1,73 @@
+import { Icon } from '@makerdao/dai-ui-icons'
+import l2beatLogo from 'public/static/img/l2beat-logo.svg'
+import React, { useState } from 'react'
+import { Box, Image, Link } from 'theme-ui'
+
+export const L2BeatSection = () => {
+  const [hover, setHover] = useState<boolean>(false)
+
+  return (
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '8px 12px',
+      gap: '8px',
+    }}>
+      <Link
+        as={'a'}
+        href="https://l2beat.com/scaling/summary"
+        target="_blank"
+        variant="networkPicker"
+        sx={{
+          fontWeight: '400',
+          whiteSpace: 'pre',
+          ':hover': {
+            fontWeight: '600',
+          },
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+        onMouseOver={() => {
+          setHover(true)
+        }}
+        onMouseLeave={() => {
+          setHover(false)
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <Image
+            src={l2beatLogo}
+            sx={{
+              mr: 3,
+              minWidth: 4,
+              minHeight: 4,
+              position: 'relative',
+              zIndex: '2',
+            }}
+          />
+          {'L2Beat'}
+        </Box>
+        {hover && <Icon name="arrow_right_light" />}
+      </Link>
+      {hover && (
+        <Box sx={{
+          fontSize: '12px',
+          color: 'neutral80',
+          fontWeight: '600',
+          lineHeight: '20px',
+        }}>
+          L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling.
+        </Box>
+      )}
+    </Box>
+  )
+}
