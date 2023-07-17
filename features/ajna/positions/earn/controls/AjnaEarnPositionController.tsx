@@ -23,11 +23,13 @@ export function AjnaEarnPositionController() {
       headlineDetails={[
         {
           label: t('ajna.position-page.earn.common.headline.current-yield'),
-          value: position.poolApy.per365 ? formatDecimalAsPercent(position.poolApy.per365) : '-',
+          value: position.pool.lendApr ? formatDecimalAsPercent(position.pool.lendApr) : '-',
         },
         {
-          label: t('ajna.position-page.earn.common.headline.90-day-avg'),
-          value: position.poolApy.per90d ? formatDecimalAsPercent(position.poolApy.per90d) : '-',
+          label: t('ajna.position-page.earn.common.headline.30-day-avg'),
+          value: position.poolApy.per30d
+            ? formatDecimalAsPercent(position.pool.apr30dAverage)
+            : '-',
         },
       ]}
       tabs={{

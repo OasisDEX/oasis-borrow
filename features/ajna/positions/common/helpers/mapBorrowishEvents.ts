@@ -1,9 +1,8 @@
-import {
-  AjnaHistoryEvent,
-  AjnaHistoryEvents,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
 
-export const mapAjnaBorrowishEvents = (events: AjnaHistoryEvents): Partial<AjnaHistoryEvent>[] => {
+export const mapAjnaBorrowishEvents = (
+  events: AjnaUnifiedHistoryEvent[],
+): Partial<AjnaUnifiedHistoryEvent>[] => {
   const mappedEvents = events.map((event) => {
     const basicData = {
       kind: event.kind,
@@ -43,6 +42,24 @@ export const mapAjnaBorrowishEvents = (events: AjnaHistoryEvents): Partial<AjnaH
           debtAfter: event.debtAfter,
           ...basicData,
         }
+      case 'AuctionSettle': {
+        return {
+          settledDebt: event.settledDebt,
+          remainingCollateral: event.remainingCollateral,
+          kind: event.kind,
+          timestamp: event.timestamp,
+          txHash: event.txHash,
+        }
+      }
+      case 'Kick': {
+        return {
+          kind: event.kind,
+          debtToCover: event.debtToCover,
+          collateralForLiquidation: event.collateralForLiquidation,
+          timestamp: event.timestamp,
+          txHash: event.txHash,
+        }
+      }
       default: {
         console.warn('No ajna event kind found')
         return {}

@@ -473,7 +473,13 @@
     "total-fees": "Total fees",
     "origination-fee": "Origination fee",
     "lending-price": "Lending price",
-    "event": "Event"
+    "event": "Event",
+    "auction-started": "Auction started",
+    "auction-settled": "Auction settled",
+    "debt-to-cover": "Debt to cover",
+    "collateral-for-liquidation": "Collateral for liquidation",
+    "settled-debt": "Settled debt",
+    "remaining-collateral": "Remaining collateral"
   },
   "triggers": {
     "added": "added",
@@ -871,7 +877,8 @@
     "brand-assets": "Brand assets",
     "security": "Security",
     "discover": "Discover",
-    "app": "Summer.fi"
+    "app": "Summer.fi",
+    "ajna-rewards": "Ajna Rewards"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -1856,7 +1863,7 @@
     },
     "dai": {
       "description": "Dai is the largest overcollateralized decentralized stablecoin. Dai can be generated on Summer.fi using various collateral types. Here we show the products that will net you returns in DAI.",
-      "link": "https://kb.summer.fi/help/what-is-dai"
+      "link": "https://docs.summer.fi/protocols/maker"
     },
     "uni": {
       "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
@@ -2481,14 +2488,14 @@
     "other-assets": "Other assets you can borrow against",
     "landing-banner": {
       "title": "Get exclusive Ajna tokens when you use Summer.fi",
-      "description": "Summer.fi users are eligible for exclusive Ajna token rewards! Open Ajna position through Summer.fi and automatically earn Ajna tokens.",
+      "description": "Summer.fi users are eligible for exclusive Ajna token rewards! Open an Ajna position through Summer.fi and automatically earn Ajna tokens.",
       "button-label": "See my rewards →",
       "link-label": "Visit Ajna website →"
     },
     "learn": {
       "ajna-website": "Ajna website",
       "anja-faq": "Ajna FAQ",
-      "ajna-discord": "Anja Discord",
+      "ajna-discord": "Ajna Discord",
       "ajna-twitter": "Ajna Twitter",
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
@@ -2559,7 +2566,7 @@
             "nft": "This Position is eligible for Ajna token rewards"
           },
           "risk": {
-            "intro": "Anja is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
+            "intro": "Ajna is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
             "bullet-points": {
               "borrow": [
                 "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
@@ -2662,7 +2669,7 @@
         "common": {
           "headline": {
             "current-yield": "Current yield",
-            "90-day-avg": "90 Day Avg",
+            "30-day-avg": "30 Day Avg",
             "current-market-price": "Current Market Price"
           },
           "form": {
@@ -2712,7 +2719,7 @@
             "projected-annual-rewards-modal-desc": "At the current weekly distribution and AJNA token price the implied annual rewards rate is.",
             "projected-annual-rewards": "Projected annual rewards",
             "total-ajna-rewards": "Total AJNA rewards",
-            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. This is the total amount across all your portfolio positions. These are claimable weekly after tokens are released.",
             "total-earnings": "Total earnings",
             "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. This takes into account the gas fees spent in ETH, calculated in {{quoteToken}} for each transaction."
           },
@@ -2816,8 +2823,9 @@
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
       "no-max-multiple": "There are currently no borrow or multiply positions for this pool. Max multiple will be calculated following the creation of the first position.",
+      "no-weekly-apy": "There are currently no borrow or multiply positions for this pool. 7 day net APY will be calculated following the creation of the first position.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
-      "this-pool-is-earning-ajna-tokens": "This pool is earning summer.fi × Ajna token Rewards"
+      "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
     }
   },
   "product-hub": {

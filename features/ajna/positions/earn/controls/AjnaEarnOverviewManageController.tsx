@@ -16,7 +16,7 @@ import React from 'react'
 export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, isShort, priceFormat, quoteToken, quotePrice },
+    environment: { collateralToken, isShort, owner, priceFormat, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -72,7 +72,9 @@ export function AjnaEarnOverviewManageController() {
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
+            collateralToken={collateralToken}
             quoteToken={quoteToken}
+            owner={owner}
             availableToWithdraw={calculateAjnaMaxLiquidityWithdraw({
               pool: position.pool,
               position,

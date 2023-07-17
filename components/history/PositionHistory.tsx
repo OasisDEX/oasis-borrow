@@ -4,10 +4,8 @@ import { useAppContext } from 'components/AppContextProvider'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
 import { Skeleton } from 'components/Skeleton'
-import {
-  AaveHistoryEvent,
-  AjnaHistoryEvent,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
+import { AaveHistoryEvent } from 'features/ajna/positions/common/helpers/getAjnaHistory'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
@@ -15,7 +13,7 @@ import React, { FC } from 'react'
 import { PositionHistoryItem } from './PositionHistoryItem'
 
 interface PositionHistoryProps {
-  historyEvents: Partial<AjnaHistoryEvent>[] | Partial<AaveHistoryEvent>[]
+  historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]
   collateralToken: string
   quoteToken: string
   isShort?: boolean

@@ -76,6 +76,8 @@ export const subgraphMethodsRecord: {
         poolTargetUtilization
         currentBurnEpoch
         pendingInflator
+        lendApr
+        borrowApr
         buckets {
           price
           index
@@ -100,6 +102,8 @@ export const subgraphMethodsRecord: {
         lupIndex
         htp
         htpIndex
+        lendApr
+        borrowApr
         buckets {
           price
           index
@@ -184,6 +188,19 @@ export const subgraphMethodsRecord: {
         totalFee
         txHash
         withdrawnUSD
+      }
+      borrowerEvents(where: { account_: { id: $dpmProxyAddress } }) {
+        id
+        kind
+        timestamp
+        txHash
+        settledDebt
+        debtToCover
+        collateralForLiquidation
+        remainingCollateral
+        auction {
+          id
+        }
       }
     }
   `,

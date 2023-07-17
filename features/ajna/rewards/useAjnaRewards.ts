@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { useCustomNetworkParameter } from 'blockchain/networks'
 import { Rewards } from 'features/ajna/common/components/AjnaRewardCard'
 import { getAjnaRewards } from 'features/ajna/positions/common/helpers/getAjnaRewards'
+import { getNetworkId } from 'features/web3Context'
 import { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface AjnaRewardsParamsState {
   rewards: Rewards
@@ -24,15 +24,16 @@ const errorState = {
   isLoading: false,
 }
 
-export const useAjnaRewards = (): AjnaRewardsParamsState => {
+export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
   const { walletAddress } = useAccount()
-  const [networkParameter] = useCustomNetworkParameter()
+  const resolvedAddress = useMemo(() => address || walletAddress, [address, walletAddress])
   const [state, setState] = useState<AjnaRewardsParamsState>({
     rewards: defaultRewards,
     isError: false,
     isLoading: true,
     refetch: () => {},
   })
+  const networkId = getNetworkId()
 
   const fetchData = useCallback(async (): Promise<void> => {
     setState({
@@ -40,14 +41,12 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
       isLoading: true,
     })
 
-    if (walletAddress && networkParameter) {
+    if (resolvedAddress) {
       Promise.all([
         fetch(
-          `/api/ajna-rewards?address=${walletAddress.toLocaleLowerCase()}&networkId=${
-            networkParameter.id
-          }`,
+          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${networkId}`,
         ),
-        getAjnaRewards(walletAddress),
+        getAjnaRewards(resolvedAddress),
       ])
         .then(async ([apiResponse, subgraphResponse]) => {
           const parseApiResponse = (await apiResponse.json()) as Awaited<
@@ -81,7 +80,7 @@ export const useAjnaRewards = (): AjnaRewardsParamsState => {
           })
         })
     }
-  }, [walletAddress, networkParameter?.id])
+  }, [resolvedAddress])
 
   useEffect(() => void fetchData(), [fetchData])
 

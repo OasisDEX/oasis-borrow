@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { FIAT_PRECISION } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
@@ -8,7 +7,7 @@ import {
   snapToPredefinedValues,
 } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatBigNumber } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -25,9 +24,6 @@ interface AjnaEarnInputButtonProps {
 }
 interface AjnaEarnInputProps {
   disabled?: boolean
-  max: BigNumber
-  min: BigNumber
-  fallbackValue: BigNumber
   range: BigNumber[]
 }
 
@@ -94,13 +90,7 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
-  disabled,
-  max,
-  min,
-  range,
-  fallbackValue,
-}) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
   const { t } = useTranslation()
   const {
     environment: { priceFormat, quoteToken, isShort },
@@ -128,7 +118,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
 
   const enterPressedHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const value = resolveLendingPriceIfOutsideRange({ manualAmount, min, max, fallbackValue })
+      const value = resolveLendingPriceIfOutsideRange({ manualAmount })
 
       setManualAmount(value)
       updateState('price', value)
@@ -165,9 +155,6 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
           if (!e.currentTarget.contains(e.relatedTarget as Node) && manualAmount !== price) {
             const value = resolveLendingPriceIfOutsideRange({
               manualAmount,
-              min,
-              max,
-              fallbackValue,
             })
 
             setManualAmount(value)
@@ -179,7 +166,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
           type="text"
           mask={createNumberMask({
             allowDecimal: true,
-            decimalLimit: FIAT_PRECISION,
+            decimalLimit: formatCryptoBalance(manualAmount).split('.')[1]?.length || 0,
             prefix: '',
           })}
           onFocus={() => {
@@ -193,9 +180,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
           })}
           onKeyPress={enterPressedHandler}
           value={
-            manualAmount
-              ? formatBigNumber(isShort ? one.div(manualAmount) : manualAmount, FIAT_PRECISION)
-              : ''
+            manualAmount ? formatCryptoBalance(isShort ? one.div(manualAmount) : manualAmount) : ''
           }
           sx={{
             px: 5,
@@ -226,16 +211,8 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({
         >
           {priceFormat} {t('ajna.position-page.earn.common.form.lending-price')}
         </Text>
-        <AjnaEarnInputButton
-          disabled={disabled || manualAmount.lte(min)}
-          variant="-"
-          onClick={clickHandler}
-        />
-        <AjnaEarnInputButton
-          disabled={disabled || manualAmount.gte(max)}
-          variant="+"
-          onClick={clickHandler}
-        />
+        <AjnaEarnInputButton disabled={disabled} variant="-" onClick={clickHandler} />
+        <AjnaEarnInputButton disabled={disabled} variant="+" onClick={clickHandler} />
       </Box>
     </>
   )

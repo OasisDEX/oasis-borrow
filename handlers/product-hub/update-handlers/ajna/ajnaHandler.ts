@@ -1,14 +1,15 @@
-import { calculateAjnaApyPerDays, getPoolLiquidity } from '@oasisdex/dma-library'
+import { getPoolLiquidity } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
 import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
-import { WAD_PRECISION } from 'components/constants'
+import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import {
   AjnaPoolsTableData,
   getAjnaPoolsTableData,
 } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { isYieldLoopPool } from 'features/ajna/positions/common/helpers/isYieldLoopPool'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
@@ -63,17 +64,15 @@ async function getAjnaPoolData(
             pair: [collateralToken, quoteToken],
             pool: {
               buckets,
-              dailyPercentageRate30dAverage,
               debt,
-              depositSize,
               interestRate,
-              highestThresholdPriceIndex,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
+              lendApr,
             },
           },
         ) => {
-          const negativeWadPrecision = WAD_PRECISION * -1
+          const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
           const isShort = isShortPosition({ collateralToken })
           const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const collateralPrice = prices[collateralToken]
@@ -90,9 +89,8 @@ async function getAjnaPoolData(
               quoteTokens: new BigNumber(bucket.quoteTokens),
             })),
             debt: debt.shiftedBy(WAD_PRECISION),
-            highestThresholdPriceIndex: new BigNumber(highestThresholdPriceIndex),
           })
-            .shiftedBy(negativeWadPrecision)
+            .shiftedBy(NEGATIVE_WAD_PRECISION)
             .times(prices[quoteToken])
             .toString()
           const fee = interestRate.toString()
@@ -105,11 +103,7 @@ async function getAjnaPoolData(
           const earnLPStrategy = `${collateralToken}/${quoteToken} LP`
           const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
-          const weeklyNetApy = calculateAjnaApyPerDays(
-            depositSize,
-            dailyPercentageRate30dAverage,
-            7,
-          ).toString()
+          const weeklyNetApy = lendApr.toString()
 
           const ajnaRewardsTooltip = {
             content: {
@@ -142,7 +136,7 @@ async function getAjnaPoolData(
                 ...getTokenGroup(quoteToken, 'secondary'),
                 fee,
                 liquidity,
-                ...(lowestUtilizedPriceIndex > 0 && {
+                ...(isPoolNotEmpty && {
                   maxLtv,
                   maxMultiply,
                 }),
@@ -151,14 +145,18 @@ async function getAjnaPoolData(
                 ...(isYieldLoop && {
                   earnStrategy: earnYieldLoopStrategy,
                   managementType,
-                  weeklyNetApy,
+                  ...(isPoolNotEmpty && {
+                    weeklyNetApy,
+                  }),
                 }),
                 tooltips: {
-                  fee: ajnaRewardsTooltip,
-                  ...(isYieldLoop && {
-                    weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    fee: ajnaRewardsTooltip,
+                    ...(isPoolNotEmpty && {
+                      weeklyNetApy: ajnaRewardsTooltip,
+                    }),
                   }),
-                  ...(lowestUtilizedPriceIndex === 0 && {
+                  ...(!isPoolNotEmpty && {
                     maxLtv: {
                       content: {
                         description: {
@@ -172,6 +170,15 @@ async function getAjnaPoolData(
                       content: {
                         description: {
                           key: 'ajna.product-hub-tooltips.no-max-multiple',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                    weeklyNetApy: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-weekly-apy',
                         },
                       },
                       icon: 'question_o',
@@ -192,10 +199,26 @@ async function getAjnaPoolData(
                 earnStrategy: earnLPStrategy,
                 liquidity,
                 managementType,
-                weeklyNetApy,
+                ...(isPoolNotEmpty && {
+                  weeklyNetApy,
+                }),
                 reverseTokens: true,
                 tooltips: {
-                  weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolNotEmpty &&
+                    isPoolWithRewards({ collateralToken, quoteToken }) && {
+                      weeklyNetApy: ajnaRewardsTooltip,
+                    }),
+                  ...(!isPoolNotEmpty && {
+                    weeklyNetApy: {
+                      content: {
+                        description: {
+                          key: 'ajna.product-hub-tooltips.no-weekly-apy',
+                        },
+                      },
+                      icon: 'question_o',
+                      iconColor: 'neutral80',
+                    },
+                  }),
                 },
               },
             ],
