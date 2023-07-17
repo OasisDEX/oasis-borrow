@@ -53,7 +53,7 @@ export type NetworkConfig = {
   getParentNetwork: () => NetworkConfig | undefined
   getCacheApi: () => GraphQLClient | undefined
   isCustomFork?: boolean
-  links?: { label: string; url: string }[]
+  links?: { label: string; url?: string; openBridgeWidget?: boolean }[]
 }
 
 export function contractDesc(
@@ -157,7 +157,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   getParentNetwork: () => undefined,
   isCustomFork: false,
   links: [
-    { label: 'Bridge', url: 'bridge-widget' },
+    { label: 'Bridge', openBridgeWidget: true },
     { label: 'Arbiscan', url: 'https://arbiscan.io/' },
     { label: 'Official Site', url: 'https://arbitrum.foundation/' },
   ],
@@ -262,7 +262,7 @@ const optimismMainnetConfig: NetworkConfig = {
   getParentNetwork: () => undefined,
   isCustomFork: false,
   links: [
-    { label: 'Bridge', url: 'bridge-widget' },
+    { label: 'Bridge', openBridgeWidget: true },
     { label: 'Optimistic Etherscan', url: 'https://optimistic.etherscan.io/' },
     { label: 'Official Site', url: 'https://www.optimism.io/' },
   ],

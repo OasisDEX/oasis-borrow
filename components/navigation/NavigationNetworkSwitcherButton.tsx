@@ -1,8 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { NetworkConfigHexId, NetworkNames } from 'blockchain/networks'
 import { NetworkConfig } from 'blockchain/networks'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  SwapWidgetState,
+} from 'features/swapWidget/SwapWidgetChange'
 import { ConnectorInformation } from 'features/web3OnBoard'
-import React from 'react'
+import { useObservable } from 'helpers/observableHook'
+import { uiChanges } from 'helpers/uiChanges'
+import React, { useCallback } from 'react'
 import { Box, Button, Image, Link } from 'theme-ui'
 
 export const NetworkButton = ({
@@ -26,6 +33,14 @@ export const NetworkButton = ({
   currentHoverNetworkName: NetworkNames | undefined
   setCurrentHoverNetworkName: React.Dispatch<React.SetStateAction<NetworkNames | undefined>>
 }) => {
+  const [swapWidgetChange] = useObservable(
+    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
+  )
+  const swapWidgetClose = useCallback(() => {
+    !swapWidgetChange?.isOpen &&
+      uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, { type: 'open' })
+  }, [swapWidgetChange?.isOpen])
+
   const isCurrentNetwork = network.name === currentNetworkName
   return (
     <Box
@@ -131,6 +146,12 @@ export const NetworkButton = ({
             {network.links.map((link) => (
               <Link
                 href={link.url}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (link.openBridgeWidget) {
+                    swapWidgetClose()
+                  }
+                }}
                 target="_blank"
                 sx={{
                   // cursor: 'pointer',
