@@ -43,10 +43,20 @@ export function NavigationNetworkSwitcherOrb() {
   const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
     return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
   }
-  const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(currentNetworkName)
+  const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
+    currentNetworkName,
+  )
   const { hexId: customNetworkHexId } = mainnetNetworkParameter
 
-  const NetworkButton = ({ network, currentHoverNetworkName, setCurrentHoverNetworkName }: { network: NetworkConfig, currentHoverNetworkName: NetworkNames | undefined, setCurrentHoverNetworkName: React.Dispatch<React.SetStateAction<NetworkNames | undefined>>}) => {
+  const NetworkButton = ({
+    network,
+    currentHoverNetworkName,
+    setCurrentHoverNetworkName,
+  }: {
+    network: NetworkConfig
+    currentHoverNetworkName: NetworkNames | undefined
+    setCurrentHoverNetworkName: React.Dispatch<React.SetStateAction<NetworkNames | undefined>>
+  }) => {
     const isCurrentNetwork = network.name === currentNetworkName
     return (
       <Box
@@ -136,38 +146,39 @@ export function NavigationNetworkSwitcherOrb() {
             </Box>
           </Box>
         </Button>
-        {currentHoverNetworkName === network.name && network.links && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              borderRadius: 8,
-              backgroundColor: 'neutral30',
-              color: 'interactive100',
-              gap: '8px',
-              padding: '12px',
-            }}
-          >
-            {network.links.map((link) => (
-              <Link
-                href={link.url}
-                target='_blank'
-                sx={{
-                  // cursor: 'pointer',
-                  height: 22,
-                  lineHeight: '22px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  alignSelf: 'stretch',
-                }}
-              >
-                {link.label}
-                <Icon name="arrow_right_light" />
-              </Link>
-            ))}
-          </Box>
-        )}
+        {(currentHoverNetworkName === network.name || currentNetworkName === network.name) &&
+          network.links && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                borderRadius: 8,
+                backgroundColor: 'neutral30',
+                color: 'interactive100',
+                gap: '8px',
+                padding: '12px',
+              }}
+            >
+              {network.links.map((link) => (
+                <Link
+                  href={link.url}
+                  target="_blank"
+                  sx={{
+                    // cursor: 'pointer',
+                    height: 22,
+                    lineHeight: '22px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    alignSelf: 'stretch',
+                  }}
+                >
+                  {link.label}
+                  <Icon name="arrow_right_light" />
+                </Link>
+              ))}
+            </Box>
+          )}
       </Box>
     )
   }
@@ -194,7 +205,7 @@ export function NavigationNetworkSwitcherOrb() {
         <Link
           as={'a'}
           href="https://l2beat.com/scaling/summary"
-          target='_blank'
+          target="_blank"
           variant="networkPicker"
           sx={{
             fontWeight: '400',
@@ -275,7 +286,11 @@ export function NavigationNetworkSwitcherOrb() {
                 return true
               })
               .map((network) => (
-                <NetworkButton network={network} currentHoverNetworkName={currentHoverNetworkName} setCurrentHoverNetworkName={setCurrentHoverNetworkName} />
+                <NetworkButton
+                  network={network}
+                  currentHoverNetworkName={currentHoverNetworkName}
+                  setCurrentHoverNetworkName={setCurrentHoverNetworkName}
+                />
               ))}
             {renderSeparator()}
             <L2BeatSection />
