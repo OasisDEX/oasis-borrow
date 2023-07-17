@@ -115,12 +115,12 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterDebt,
           isLoading,
         },
-        // {
-        //   label: t('system.available-to-withdraw'),
-        //   value: formatted.availableToWithdraw,
-        //   change: formatted.afterAvailableToWithdraw,
-        //   isLoading,
-        // },
+        {
+          label: t('system.available-to-withdraw'),
+          value: formatted.availableToWithdraw,
+          change: formatted.afterAvailableToWithdraw,
+          isLoading,
+        },
         {
           label: t('system.available-to-borrow'),
           value: formatted.availableToBorrow,
