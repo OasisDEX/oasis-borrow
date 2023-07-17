@@ -104,26 +104,26 @@ export function ContentFooterItemsBorrow({
           />
         }
       />
-      {/*<DetailsSectionFooterItem*/}
-      {/*  title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}*/}
-      {/*  value={formatted.availableToWithdraw}*/}
-      {/*  change={{*/}
-      {/*    isLoading,*/}
-      {/*    value:*/}
-      {/*      afterAvailableToWithdraw &&*/}
-      {/*      `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,*/}
-      {/*    variant: changeVariant,*/}
-      {/*  }}*/}
-      {/*  modal={*/}
-      {/*    <AjnaDetailsSectionContentSimpleModal*/}
-      {/*      title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}*/}
-      {/*      description={t(*/}
-      {/*        'ajna.position-page.borrow.common.footer.available-to-withdraw-modal-desc',*/}
-      {/*      )}*/}
-      {/*      value={formatted.availableToWithdraw}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*/>*/}
+      <DetailsSectionFooterItem
+        title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
+        value={formatted.availableToWithdraw}
+        change={{
+          isLoading,
+          value:
+            afterAvailableToWithdraw &&
+            `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,
+          variant: changeVariant,
+        }}
+        modal={
+          <AjnaDetailsSectionContentSimpleModal
+            title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
+            description={t(
+              'ajna.position-page.borrow.common.footer.available-to-withdraw-modal-desc',
+            )}
+            value={formatted.availableToWithdraw}
+          />
+        }
+      />
       <DetailsSectionFooterItem
         title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
         value={formatted.availableToBorrow}
