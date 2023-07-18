@@ -2355,7 +2355,7 @@
           "increase-risk": "Increase risk",
           "decrease-risk": "Decrease risk",
           "vault-message-ok": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{priceMovement}} with respect to {{debtToken}} for this position to be available for liquidation. Aave's liquidations penalty is at least {{liquidationPenalty}}.",
-          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. Aave's liquidations penalty is at least {{liquidationPenalty}}."
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this {{positionType}} position could be liquidated. Aave's liquidations penalty is at least {{liquidationPenalty}}."
         }
       },
       "af-title": "Fill the gas tank",
