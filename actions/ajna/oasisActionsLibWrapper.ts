@@ -120,7 +120,15 @@ export async function getAjnaParameters({
       })
     }
     case 'adjust': {
-      return ajnaAdjustMultiply({ state, commonPayload, dependencies, position })
+      return ajnaAdjustMultiply({
+        state,
+        commonPayload,
+        dependencies,
+        position,
+        slippage,
+        collateralToken,
+        quoteToken,
+      })
     }
     case 'generate-multiply':
     case 'deposit-collateral-multiply': {
@@ -154,7 +162,15 @@ export async function getAjnaParameters({
       return defaultPromise
     }
     case 'close-multiply': {
-      return ajnaCloseMultiply({ commonPayload, dependencies, position })
+      return ajnaCloseMultiply({
+        state,
+        commonPayload,
+        dependencies,
+        position,
+        collateralToken,
+        quoteToken,
+        slippage,
+      })
     }
     default:
       return defaultPromise

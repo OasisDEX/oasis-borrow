@@ -77,11 +77,17 @@ export const ajnaAdjustMultiply = ({
   commonPayload,
   dependencies,
   position,
+  slippage,
+  collateralToken,
+  quoteToken,
 }: {
   state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
+  slippage: BigNumber
+  collateralToken: string
+  quoteToken: string
 }) => {
   const { loanToValue, depositAmount, withdrawAmount } = state
 
@@ -93,28 +99,65 @@ export const ajnaAdjustMultiply = ({
         loanToValue || (position as AjnaPosition).riskRatio.loanToValue,
         RiskRatio.TYPE.LTV,
       ),
+      quoteTokenSymbol: quoteToken,
+      collateralTokenSymbol: collateralToken,
+      user: commonPayload.dpmProxyAddress,
+      slippage,
       position: position as AjnaPosition,
     },
-    dependencies,
+    {
+      ...dependencies,
+      getSwapData: getOneInchCall(getNetworkContracts(NetworkIds.MAINNET, 1).swapAddress),
+      operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
+      addresses: {
+        DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
+        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH.address,
+        WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
+        USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
+        WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
+      },
+    },
   )
 }
 
 export const ajnaCloseMultiply = ({
+  state,
   commonPayload,
   dependencies,
   position,
+  slippage,
+  collateralToken,
+  quoteToken,
 }: {
+  state: AjnaMultiplyFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
+  slippage: BigNumber
+  collateralToken: string
+  quoteToken: string
 }) => {
   return strategies.ajna.multiply.close(
     {
       ...commonPayload,
-      collateralAmount: zero,
       position: position as AjnaPosition,
-      riskRatio: new RiskRatio(zero, RiskRatio.TYPE.LTV),
+      quoteTokenSymbol: quoteToken,
+      collateralTokenSymbol: collateralToken,
+      slippage,
+      user: commonPayload.dpmProxyAddress,
+      shouldCloseToCollateral: state.closeTo === 'collateral',
     },
-    dependencies,
+    {
+      ...dependencies,
+      getSwapData: getOneInchCall(getNetworkContracts(NetworkIds.MAINNET, 1).swapAddress),
+      operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
+      addresses: {
+        DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
+        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH.address,
+        WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
+        USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
+        WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
+      },
+    },
   )
 }
