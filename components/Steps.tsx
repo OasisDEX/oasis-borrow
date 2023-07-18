@@ -17,7 +17,7 @@ export const Steps: FC<StepsProps> = ({ active, color, count }) => {
           sx={{
             width: i === active ? '40px' : 2,
             height: 1,
-            bg: i === active && color ? color : 'neutral30',
+            bg: i === active && color ? color : 'secondary60',
             borderRadius: 'mediumLarge',
             transition: 'width 200ms, background-color 200ms',
           }}
