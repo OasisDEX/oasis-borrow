@@ -1,5 +1,6 @@
 import {
   calculateAjnaMaxLiquidityWithdraw,
+  getPoolLiquidity,
   negativeToZero,
   normalizeValue,
 } from '@oasisdex/dma-library'
@@ -40,6 +41,7 @@ export function AjnaEarnOverviewManageController() {
 
   const availableToWithdraw = calculateAjnaMaxLiquidityWithdraw({
     pool: position.pool,
+    poolCurrentLiquidity: getPoolLiquidity(position.pool),
     position,
     simulation,
   })
