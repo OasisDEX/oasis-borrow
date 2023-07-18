@@ -1,10 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useTranslation } from 'next-i18next'
 import l2beatLogo from 'public/static/img/l2beat-logo.svg'
 import React, { useState } from 'react'
 import { Box, Image, Link } from 'theme-ui'
 
 export const L2BeatSection = () => {
   const [hover, setHover] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   return (
     <Box
@@ -69,7 +71,7 @@ export const L2BeatSection = () => {
             lineHeight: '20px',
           }}
         >
-          L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling.
+          {t('navigation-network.l2beat-description')}
         </Box>
       )}
     </Box>

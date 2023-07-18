@@ -2908,5 +2908,8 @@
       "networks": "Networks",
       "protocols": "Protocols"
     }
+  },
+  "navigation-network": {
+    "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
   }
 }
