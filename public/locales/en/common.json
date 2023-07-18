@@ -454,6 +454,7 @@
   "position-history": {
     "header": "Position History",
     "open-position": "Open Position",
+    "close-position": "Close Position",
     "deposit": "Deposit",
     "withdraw": "Withdraw",
     "generate": "Generate",
@@ -479,7 +480,14 @@
     "debt-to-cover": "Debt to cover",
     "collateral-for-liquidation": "Collateral for liquidation",
     "settled-debt": "Settled debt",
-    "remaining-collateral": "Remaining collateral"
+    "remaining-collateral": "Remaining collateral",
+    "multiple": "Multiple",
+    "bought": "Bought",
+    "sold": "Sold",
+    "market-price": "Market price",
+    "net-value": "Net value",
+    "increase-multiple": "Increase multiple",
+    "decrease-multiple": "Decrease multiple"
   },
   "triggers": {
     "added": "added",
