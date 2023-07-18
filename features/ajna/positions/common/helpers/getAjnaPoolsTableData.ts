@@ -1,7 +1,7 @@
 import { Bucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
-import { WAD_PRECISION } from 'components/constants'
+import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaPoolsDataResponse {
@@ -16,6 +16,8 @@ export interface AjnaPoolsDataResponse {
   lupIndex: string
   htp: string
   htpIndex: string
+  lendApr: string
+  borrowApr: string
   buckets: Bucket[]
 }
 
@@ -31,6 +33,8 @@ export interface AjnaPoolsTableData {
   lowestUtilizedPriceIndex: number
   highestThresholdPrice: BigNumber
   highestThresholdPriceIndex: number
+  lendApr: BigNumber
+  borrowApr: BigNumber
   buckets: Bucket[]
 }
 
@@ -56,6 +60,8 @@ export const getAjnaPoolsTableData = async (
         lupIndex,
         poolMinDebtAmount,
         quoteTokenAddress,
+        lendApr,
+        borrowApr,
       }) => ({
         buckets,
         collateralAddress,
@@ -71,6 +77,8 @@ export const getAjnaPoolsTableData = async (
         lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
         highestThresholdPrice: new BigNumber(htp).shiftedBy(negativeWadPrecision),
         highestThresholdPriceIndex: parseInt(htpIndex, 10),
+        lendApr: new BigNumber(lendApr).shiftedBy(NEGATIVE_WAD_PRECISION),
+        borrowApr: new BigNumber(borrowApr).shiftedBy(NEGATIVE_WAD_PRECISION),
       }),
     )
   }

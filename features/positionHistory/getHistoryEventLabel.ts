@@ -17,6 +17,15 @@ export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?:
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'AjnaRepayWithdraw':
       return t('position-history.repay-withdraw')
+    case 'AjnaOpenMultiplyPosition':
+      return t('position-history.open-position')
+    case 'AjnaAdjustRiskUp':
+      return t('position-history.increase-multiple')
+    case 'AjnaAdjustRiskDown':
+      return t('position-history.decrease-multiple')
+    case 'AjnaCloseToQuotePosition':
+    case 'AjnaCloseToCollateralPosition':
+      return t('position-history.close-position')
     case 'Kick':
       return t('position-history.auction-started')
     case 'AuctionSettle':

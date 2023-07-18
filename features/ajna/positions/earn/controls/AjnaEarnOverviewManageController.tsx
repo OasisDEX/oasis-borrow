@@ -1,4 +1,9 @@
-import { calculateAjnaMaxLiquidityWithdraw, normalizeValue } from '@oasisdex/dma-library'
+import {
+  calculateAjnaMaxLiquidityWithdraw,
+  getPoolLiquidity,
+  negativeToZero,
+  normalizeValue,
+} from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -23,6 +28,9 @@ export function AjnaEarnOverviewManageController() {
       isSimulationLoading,
       currentPosition: { position, simulation },
     },
+    form: {
+      state: { withdrawAmount },
+    },
     notifications,
   } = useAjnaProductContext('earn')
 
@@ -30,6 +38,13 @@ export function AjnaEarnOverviewManageController() {
   const relationToMarketPrice = one.minus(
     isShort ? normalizeValue(one.div(liquidationToMarketPrice)) : liquidationToMarketPrice,
   )
+
+  const availableToWithdraw = calculateAjnaMaxLiquidityWithdraw({
+    pool: position.pool,
+    poolCurrentLiquidity: getPoolLiquidity(position.pool),
+    position,
+    simulation,
+  })
 
   return (
     <DetailsSection
@@ -72,17 +87,16 @@ export function AjnaEarnOverviewManageController() {
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
+            isLoading={isSimulationLoading}
             collateralToken={collateralToken}
             quoteToken={quoteToken}
             owner={owner}
-            availableToWithdraw={calculateAjnaMaxLiquidityWithdraw({
-              pool: position.pool,
-              position,
-              simulation,
-            })}
+            availableToWithdraw={availableToWithdraw}
             // TODO adjust once data available in subgraph
             projectedAnnualReward={zero}
-            afterAvailableToWithdraw={simulation?.quoteTokenAmount}
+            afterAvailableToWithdraw={
+              simulation ? negativeToZero(availableToWithdraw.minus(withdrawAmount)) : undefined
+            }
           />
         </DetailsSectionFooterItemWrapper>
       }

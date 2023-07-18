@@ -11,7 +11,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v4.0/1/swap`
+const PROXY_API_ENDPOINT_SWAP = `/api/exchange/v4.0/1/swap`
 
 interface Response {
   fromToken: TokenDescriptor
@@ -131,7 +131,7 @@ export function getQuote$(
     } as QuoteResult)
   }
 
-  return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
+  return ajax(`${PROXY_API_ENDPOINT_SWAP}?${searchParams.toString()}`).pipe(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
     }),
