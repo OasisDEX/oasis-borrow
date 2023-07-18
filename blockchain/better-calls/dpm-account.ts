@@ -76,7 +76,7 @@ export async function estimateGasOnDpm({
       type: 1,
       accessList: [
         {
-          address: '0x0DA96062099823ae487aeb33DA6331B8B5001c48', // gnosis safe master address
+          address: '0xB694119b6dAa4fAc888A3FdbD1A8Da0398A8a438',
           storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
         },
         {
@@ -126,7 +126,7 @@ export async function createExecuteTransaction({
       type: 1,
       accessList: [
         {
-          address: '0x0DA96062099823ae487aeb33DA6331B8B5001c48', // gnosis safe master address
+          address: '0xB694119b6dAa4fAc888A3FdbD1A8Da0398A8a438',
           storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
         },
         {
