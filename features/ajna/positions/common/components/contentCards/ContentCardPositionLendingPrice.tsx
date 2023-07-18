@@ -1,3 +1,4 @@
+import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import {
   ChangeVariantType,
@@ -89,7 +90,7 @@ export function ContentCardPositionLendingPrice({
 
   const formatted = {
     positionLendingPrice: formatCryptoBalance(
-      isShort ? one.div(positionLendingPrice) : positionLendingPrice,
+      isShort ? normalizeValue(one.div(positionLendingPrice)) : positionLendingPrice,
     ),
     afterPositionLendingPrice:
       afterPositionLendingPrice &&

@@ -1,4 +1,4 @@
-import { calculateAjnaMaxLiquidityWithdraw } from '@oasisdex/dma-library'
+import { calculateAjnaMaxLiquidityWithdraw, getPoolLiquidity } from '@oasisdex/dma-library'
 import { getToken } from 'blockchain/tokensMetadata'
 import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -30,6 +30,7 @@ export function AjnaEarnFormContentWithdraw() {
   const withdrawMax = getAjnaEarnWithdrawMax({
     quoteTokenAmount: calculateAjnaMaxLiquidityWithdraw({
       pool: position.pool,
+      poolCurrentLiquidity: getPoolLiquidity(position.pool),
       position,
       simulation,
     }),

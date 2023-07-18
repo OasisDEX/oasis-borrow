@@ -18,6 +18,19 @@ export const mapAjnaBorrowishEvents = (
       originationFee: event.originationFee,
       isOpen: event.isOpen,
     }
+
+    const basicMultiplyData = {
+      collateralTokenPriceUSD: event.collateralTokenPriceUSD,
+      collateralBefore: event.collateralBefore,
+      collateralAfter: event.collateralAfter,
+      debtBefore: event.debtBefore,
+      debtAfter: event.debtAfter,
+      multipleBefore: event.multipleBefore,
+      multipleAfter: event.multipleAfter,
+      netValueBefore: event.netValueBefore,
+      netValueAfter: event.netValueAfter,
+    }
+
     switch (event.kind) {
       case 'AjnaDeposit':
       case 'AjnaWithdraw':
@@ -42,6 +55,23 @@ export const mapAjnaBorrowishEvents = (
           debtAfter: event.debtAfter,
           ...basicData,
         }
+      case 'AjnaOpenMultiplyPosition':
+      case 'AjnaAdjustRiskUp': {
+        return {
+          ...basicData,
+          ...basicMultiplyData,
+          swapToAmount: event.swapToAmount,
+        }
+      }
+      case 'AjnaAdjustRiskDown':
+      case 'AjnaCloseToCollateralPosition':
+      case 'AjnaCloseToQuotePosition': {
+        return {
+          ...basicData,
+          ...basicMultiplyData,
+          swapFromAmount: event.swapFromAmount,
+        }
+      }
       case 'AuctionSettle': {
         return {
           settledDebt: event.settledDebt,
