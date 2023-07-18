@@ -122,6 +122,34 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatCryptoBalance(event.quoteTokensAfter)} {quoteToken}
         </PositionHistoryRow>
       )}
+      {event.multipleBefore && event.multipleAfter && (
+        <PositionHistoryRow label={t('position-history.multiple')}>
+          {event.multipleBefore.toFixed(2)}x <VaultChangesInformationArrow />
+          {event.multipleAfter.toFixed(2)}x
+        </PositionHistoryRow>
+      )}
+      {event.netValueBefore && event.netValueAfter && (
+        <PositionHistoryRow label={t('position-history.net-value')}>
+          {formatFiatBalance(event.netValueBefore)} USD
+          <VaultChangesInformationArrow />
+          {formatFiatBalance(event.netValueAfter)} USD
+        </PositionHistoryRow>
+      )}
+      {event.swapToAmount && (
+        <PositionHistoryRow label={t('position-history.bought')}>
+          {formatCryptoBalance(event.swapToAmount)} {collateralToken}
+        </PositionHistoryRow>
+      )}
+      {event.swapFromAmount && (
+        <PositionHistoryRow label={t('position-history.sold')}>
+          {formatCryptoBalance(event.swapFromAmount)} {collateralToken}
+        </PositionHistoryRow>
+      )}
+      {event.collateralTokenPriceUSD && (
+        <PositionHistoryRow label={t('position-history.market-price')}>
+          {formatFiatBalance(event.collateralTokenPriceUSD)} USD
+        </PositionHistoryRow>
+      )}
       {event.totalFee && (
         <PositionHistoryRow label={t('position-history.total-fees')}>
           {formatFiatBalance(event.totalFee)} USD
