@@ -29,13 +29,7 @@ import { NavigationNetworkSwitcherModal } from './NavigationNetworkSwitcherModal
 
 const renderSeparator = () => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="216"
-      height="1"
-      viewBox="0 0 216 1"
-      fill="none"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="216" height="1" viewBox="0 0 216 1" fill="none">
       <rect width="216" height="1" fill="#EAEAEA" />
     </svg>
   )

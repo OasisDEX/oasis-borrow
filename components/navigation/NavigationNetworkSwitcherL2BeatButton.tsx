@@ -7,12 +7,14 @@ export const L2BeatSection = () => {
   const [hover, setHover] = useState<boolean>(false)
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '8px 12px',
-      gap: '8px',
-    }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '8px 12px',
+        gap: '8px',
+      }}
+    >
       <Link
         as={'a'}
         href="https://l2beat.com/scaling/summary"
@@ -59,12 +61,14 @@ export const L2BeatSection = () => {
         {hover && <Icon name="arrow_right_light" />}
       </Link>
       {hover && (
-        <Box sx={{
-          fontSize: '12px',
-          color: 'neutral80',
-          fontWeight: '600',
-          lineHeight: '20px',
-        }}>
+        <Box
+          sx={{
+            fontSize: '12px',
+            color: 'neutral80',
+            fontWeight: '600',
+            lineHeight: '20px',
+          }}
+        >
           L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling.
         </Box>
       )}
