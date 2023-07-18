@@ -238,6 +238,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
                       }),
                       debtToken,
                       liquidationPenalty,
+                      positionType: state.context.strategyConfig.type,
                     })
                   : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
                       collateralToken,
