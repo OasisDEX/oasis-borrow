@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import { Skeleton } from 'components/Skeleton'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
@@ -15,6 +16,8 @@ interface ContentFooterItemsEarnOpenProps {
   availableToWithdraw: BigNumber
   projectedAnnualReward: BigNumber
   afterAvailableToWithdraw?: BigNumber
+  isLoading?: boolean
+  changeVariant?: ChangeVariantType
 }
 
 export function ContentFooterItemsEarnManage({
@@ -23,6 +26,8 @@ export function ContentFooterItemsEarnManage({
   owner,
   availableToWithdraw,
   afterAvailableToWithdraw,
+  isLoading,
+  changeVariant = 'positive',
 }: ContentFooterItemsEarnOpenProps) {
   const { t } = useTranslation()
   const userAjnaRewards = useAjnaRewards(owner)
@@ -46,6 +51,11 @@ export function ContentFooterItemsEarnManage({
       <DetailsSectionFooterItem
         title={t('system.available-to-withdraw')}
         value={formatted.availableToWithdraw}
+        change={{
+          isLoading,
+          value: formatted.afterAvailableToWithdraw,
+          variant: changeVariant,
+        }}
         modal={
           <AjnaDetailsSectionContentSimpleModal
             title={t('ajna.position-page.earn.manage.overview.available-to-withdraw')}

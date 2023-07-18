@@ -2669,7 +2669,7 @@
         "common": {
           "headline": {
             "current-yield": "Current yield",
-            "90-day-avg": "90 Day Avg",
+            "30-day-avg": "30 Day Avg",
             "current-market-price": "Current Market Price"
           },
           "form": {
@@ -2719,7 +2719,7 @@
             "projected-annual-rewards-modal-desc": "At the current weekly distribution and AJNA token price the implied annual rewards rate is.",
             "projected-annual-rewards": "Projected annual rewards",
             "total-ajna-rewards": "Total AJNA rewards",
-            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. This is the total amount across all your portfolio positions. These are claimable weekly after tokens are released.",
             "total-earnings": "Total earnings",
             "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. This takes into account the gas fees spent in ETH, calculated in {{quoteToken}} for each transaction."
           },
@@ -2908,5 +2908,8 @@
       "networks": "Networks",
       "protocols": "Protocols"
     }
+  },
+  "navigation-network": {
+    "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
   }
 }
