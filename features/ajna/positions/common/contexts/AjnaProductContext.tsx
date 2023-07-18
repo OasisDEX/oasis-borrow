@@ -11,6 +11,7 @@ import {
   useAjnaBorrowFormReducto,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import {
   AjnaBorrowishPositionAuction,
@@ -46,6 +47,7 @@ interface AjnaProductContextProviderPropsWithBorrow {
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
+
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
   formDefaults: Partial<AjnaEarnFormState>
@@ -54,6 +56,7 @@ interface AjnaProductContextProviderPropsWithEarn {
   positionAuction: AjnaEarnPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
+
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
   formDefaults: Partial<AjnaMultiplyFormState>
@@ -62,6 +65,7 @@ interface AjnaProductContextProviderPropsWithMultiply {
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
+
 type AjnaProductDetailsContextProviderProps =
   | AjnaProductContextProviderPropsWithBorrow
   | AjnaProductContextProviderPropsWithEarn
