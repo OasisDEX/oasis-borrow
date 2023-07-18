@@ -15,7 +15,9 @@ const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 export type JWToken = string
 // return 'invalid' if we have forced the removal of the token again
 export function jwtAuthGetToken(address: string): JWToken | undefined | 'invalid' {
-  const token = localStorage.getItem(`token-b/${address}`)
+  const token = Object.entries(localStorage).find(
+    ([key]) => key.toLowerCase() === `token-b/${address}`.toLowerCase(),
+  )?.[1]
   if (token && token !== 'xxx') {
     const parsedToken = JSON.parse(atob(token.split('.')[1]))
 
