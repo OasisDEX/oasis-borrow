@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import {
   ShareButton,
@@ -27,6 +28,7 @@ export type VaultHeadlineProps = {
   shareButton?: boolean
   token?: string[]
   handleClick?: () => void
+  protocol?: ProtocolLabelProps
 }
 
 export function VaultHeadline({
@@ -38,6 +40,7 @@ export function VaultHeadline({
   shareButton,
   token = [],
   handleClick,
+  protocol,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
@@ -67,6 +70,7 @@ export function VaultHeadline({
           wordBreak: 'break-word',
         }}
       >
+        {/* ICON */}
         {tokenData instanceof Array && tokenData.length > 0 && (
           <Box sx={{ mr: 2, flexShrink: 0 }}>
             {tokenData.map(({ iconCircle }, iconIndex) => (
@@ -84,33 +88,49 @@ export function VaultHeadline({
             ))}
           </Box>
         )}
+        {/* VAULT TYPE/PAIR */}
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
-        {followVaultEnabled && (
-          <Flex
-            sx={{
-              flexWrap: 'wrap',
-              flexShrink: 0,
-              alignItems: 'center',
-              columnGap: 2,
-              ml: 3,
-              '&:hover': {
-                '.tooltip': {
-                  whiteSpace: 'nowrap',
+        <Flex
+          sx={{
+            flexDirection: ['column', 'row', 'row', 'row'],
+            flexWrap: 'wrap',
+            flexShrink: 0,
+            alignItems: 'center',
+            columnGap: 2,
+            rowGap: 1,
+            ml: [0, 2],
+          }}
+        >
+          {/* PROTOCOL LABEL **/}
+          {protocol && <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />}
+
+          {followVaultEnabled && (
+            <Flex
+              sx={{
+                flexWrap: 'wrap',
+                flexShrink: 0,
+                alignItems: 'center',
+                columnGap: 2,
+                ml: [0, 2],
+                '&:hover': {
+                  '.tooltip': {
+                    whiteSpace: 'nowrap',
+                  },
                 },
-              },
-            }}
-          >
-            {followButton && <FollowButtonControl {...followButton} />}
-            {shareButton && (
-              <ShareButton
-                text={twitterSharePositionText}
-                url={document.location.href.replace(document.location.hash, '')}
-                via={twitterSharePositionVia}
-              />
-            )}
-          </Flex>
-        )}
+              }}
+            >
+              {followButton && <FollowButtonControl {...followButton} />}
+              {shareButton && (
+                <ShareButton
+                  text={twitterSharePositionText}
+                  url={document.location.href.replace(document.location.hash, '')}
+                  via={twitterSharePositionVia}
+                />
+              )}
+            </Flex>
+          )}
+        </Flex>
       </Heading>
       <Flex
         sx={{
