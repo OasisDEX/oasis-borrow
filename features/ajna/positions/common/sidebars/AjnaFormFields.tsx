@@ -256,7 +256,7 @@ export function AjnaFormFieldWithdraw({
       hasAuxiliary={true}
       hasError={false}
       disabled={isDisabled || isFormFrozen}
-      showMax={maxAmount?.gt(zero) && product === 'earn'}
+      showMax={maxAmount?.gt(zero)}
       maxAmount={maxAmount}
       maxAmountLabel={t(maxAmountLabel)}
       maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
