@@ -40,16 +40,27 @@ export const ajnaOpenMultiply = ({
 }) => {
   const { depositAmount, loanToValue } = state
 
-  const minRiskRatio = normalizeValue(
+  /**
+   * Works when deposit amount is high, and pool min debt amount is low
+   * However, when deposit amount is low and pool min debt amount is high it easily
+   * results in LTVs > 100%
+   * Suggested 0.5 LTV which frequently will be in breach of the pool min debt amount
+   * However, multiply pool validation should point the user in the correct direction
+   */
+  const initialLTV = normalizeValue(
     pool.poolMinDebtAmount.div(depositAmount!.times(commonPayload.collateralPrice)),
-  )
+  ).gt(1)
+    ? new BigNumber(0.5)
+    : normalizeValue(
+        pool.poolMinDebtAmount.div(depositAmount!.times(commonPayload.collateralPrice)),
+      )
 
   return strategies.ajna.multiply.open(
     {
       ...commonPayload,
       collateralAmount: depositAmount!,
       riskRatio: new RiskRatio(
-        loanToValue || (minRiskRatio.isZero() ? DEFAULT_LTV_ON_NEW_POOL : minRiskRatio),
+        loanToValue || (initialLTV.isZero() ? DEFAULT_LTV_ON_NEW_POOL : initialLTV),
         RiskRatio.TYPE.LTV,
       ),
       slippage,
