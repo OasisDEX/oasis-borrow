@@ -1,6 +1,12 @@
 import BigNumber from 'bignumber.js'
 
 export interface PositionHistoryResponse {
+  depositTransfers: {
+    amount: string
+  }[]
+  withdrawTransfers: {
+    amount: string
+  }[]
   blockNumber: string
   collateralAddress: string
   collateralAfter: string
@@ -54,6 +60,8 @@ export interface PositionHistoryResponse {
 }
 
 export type PositionHistoryEvent = {
+  depositAmount: BigNumber
+  withdrawAmount: BigNumber
   blockNumber: BigNumber
   collateralAddress: string
   collateralAfter: BigNumber
