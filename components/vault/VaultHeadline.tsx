@@ -53,8 +53,7 @@ export function VaultHeadline({
         flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'center'],
-        mb: 4,
-        rowGap: 3,
+        gap: 3,
       }}
       onClick={handleClick}
     >
@@ -63,63 +62,61 @@ export function VaultHeadline({
         variant="heading1"
         sx={{
           display: 'flex',
+          flexWrap: 'wrap',
+          gap: 2,
+          alignItems: 'center',
           fontWeight: 'semiBold',
           fontSize: '28px',
           color: 'primary100',
-          alignItems: 'center',
           wordBreak: 'break-word',
         }}
       >
-        {/* ICON */}
-        {tokenData instanceof Array && tokenData.length > 0 && (
-          <Box sx={{ mr: 2, flexShrink: 0 }}>
-            {tokenData.map(({ iconCircle }, iconIndex) => (
-              <Icon
-                key={`VaultHeadlineIcon_${iconCircle}`}
-                name={iconCircle}
-                size="32px"
-                sx={{
-                  verticalAlign: 'text-bottom',
-                  position: 'relative',
-                  zIndex: tokenData.length - iconIndex,
-                  mr: tokenData.length - 1 === iconIndex ? 0 : '-16px',
-                }}
-              />
-            ))}
-          </Box>
-        )}
-        {/* VAULT TYPE/PAIR */}
-        {header}
-        {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
+        {/* tokens & title */}
         <Flex
           sx={{
-            flexDirection: ['column', 'row', 'row', 'row'],
-            flexWrap: 'wrap',
+            flexDirection: 'row',
             flexShrink: 0,
             alignItems: 'center',
             columnGap: 2,
-            rowGap: 1,
-            ml: [0, 2],
           }}
         >
-          {/* PROTOCOL LABEL **/}
+          {tokenData instanceof Array && tokenData.length > 0 && (
+            <Box sx={{ mr: 2, flexShrink: 0 }}>
+              {tokenData.map(({ iconCircle }, iconIndex) => (
+                <Icon
+                  key={`VaultHeadlineIcon_${iconCircle}`}
+                  name={iconCircle}
+                  size="32px"
+                  sx={{
+                    verticalAlign: 'text-bottom',
+                    position: 'relative',
+                    zIndex: tokenData.length - iconIndex,
+                    mr: tokenData.length - 1 === iconIndex ? 0 : '-16px',
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+          {header}
+          {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
+        </Flex>
+        {/* protocol label & icon buttons */}
+        <Flex
+          sx={{
+            flexDirection: 'row',
+            flexShrink: 0,
+            alignItems: 'center',
+            columnGap: 2,
+            '&:hover': {
+              '.tooltip': {
+                whiteSpace: 'nowrap',
+              },
+            },
+          }}
+        >
           {protocol && <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />}
-
           {followVaultEnabled && (
-            <Flex
-              sx={{
-                flexWrap: 'wrap',
-                flexShrink: 0,
-                alignItems: 'center',
-                columnGap: 2,
-                ml: [0, 2],
-                '&:hover': {
-                  '.tooltip': {
-                    whiteSpace: 'nowrap',
-                  },
-                },
-              }}
-            >
+            <>
               {followButton && <FollowButtonControl {...followButton} />}
               {shareButton && (
                 <ShareButton
@@ -128,13 +125,12 @@ export function VaultHeadline({
                   via={twitterSharePositionVia}
                 />
               )}
-            </Flex>
+            </>
           )}
         </Flex>
       </Heading>
       <Flex
         sx={{
-          mt: ['24px', null, null, 0],
           flexDirection: ['column', 'row'],
         }}
       >
