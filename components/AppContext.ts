@@ -1126,14 +1126,15 @@ export function setupAppContext() {
 
   // Here we're aggregating events from all networks to show all open positions
   // Should add new networks here in the future to count all positions
-  const allNetworkReadPositionCreatedEvents$ = (wallet: string) => combineLatest([
-    mainnetReadPositionCreatedEvents$(wallet),
-    optimismReadPositionCreatedEvents$(wallet),
-  ]).pipe(
-    map(([mainnetEvents, optimismEvents]) => {
-      return [...mainnetEvents, ...optimismEvents]
-    })
-  )
+  const allNetworkReadPositionCreatedEvents$ = (wallet: string) =>
+    combineLatest([
+      mainnetReadPositionCreatedEvents$(wallet),
+      optimismReadPositionCreatedEvents$(wallet),
+    ]).pipe(
+      map(([mainnetEvents, optimismEvents]) => {
+        return [...mainnetEvents, ...optimismEvents]
+      }),
+    )
 
   const accountData$ = createAccountData(
     web3Context$,
