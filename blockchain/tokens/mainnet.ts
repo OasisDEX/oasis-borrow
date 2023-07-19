@@ -60,21 +60,22 @@ export const supportedIlks = [
 
 export const tokensMainnet = {
   ...getCollateralTokens({ ...mainnet.maker.pips, ...mainnet.common }, supportedIlks),
-  GUNIV3DAIUSDC1: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC1),
-  GUNIV3DAIUSDC2: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC2),
+  CBETH: contractDesc(erc20, mainnet.common.CBETH),
   CRVV1ETHSTETH: contractDesc(guniToken, mainnet.common.CRVV1ETHSTETH),
   DAI: contractDesc(erc20, mainnet.common.DAI),
+  ETH: contractDesc(erc20, mainnet.common.WETH),
+  GUNIV3DAIUSDC1: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC1),
+  GUNIV3DAIUSDC2: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC2),
   LDO: contractDesc(erc20, mainnet.common.LDO),
   MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
-  STETH: contractDesc(erc20, mainnet.common.STETH),
-  USDP: contractDesc(erc20, mainnet.common.PAXUSD),
-  WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
-  WETH: contractDesc(erc20, mainnet.common.WETH),
-  USDC: contractDesc(erc20, mainnet.common.USDC),
-  WBTC: contractDesc(erc20, mainnet.common.WBTC),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
-  CBETH: contractDesc(erc20, mainnet.common.CBETH),
-  ETH: contractDesc(erc20, mainnet.common.WETH),
+  STETH: contractDesc(erc20, mainnet.common.STETH),
+  TBTC: contractDesc(erc20, mainnet.common.TBTC),
+  USDC: contractDesc(erc20, mainnet.common.USDC),
+  USDP: contractDesc(erc20, mainnet.common.PAXUSD),
+  WBTC: contractDesc(erc20, mainnet.common.WBTC),
+  WETH: contractDesc(erc20, mainnet.common.WETH),
+  WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = [
