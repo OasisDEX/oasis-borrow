@@ -2,7 +2,6 @@ import {
   calculateAjnaMaxLiquidityWithdraw,
   getPoolLiquidity,
   negativeToZero,
-  normalizeValue,
 } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
@@ -17,7 +16,8 @@ import { ContentCardTotalEarnings } from 'features/ajna/positions/common/compone
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
-import { one, zero } from 'helpers/zero'
+import { getLendingPriceColor } from 'features/ajna/positions/earn/helpers/getLendingPriceColor'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -73,10 +73,7 @@ export function AjnaEarnOverviewManageController() {
     notifications,
   } = useAjnaProductContext('earn')
 
-  const liquidationToMarketPrice = position.price.div(position.marketPrice)
-  const relationToMarketPrice = one.minus(
-    isShort ? normalizeValue(one.div(liquidationToMarketPrice)) : liquidationToMarketPrice,
-  )
+  const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
 
   const availableToWithdraw = calculateAjnaMaxLiquidityWithdraw({
     pool: position.pool,
@@ -86,6 +83,13 @@ export function AjnaEarnOverviewManageController() {
   })
 
   const { totalEarnings, pnl } = calculateTotalEarningsAndPnl(position.quoteTokenAmount, history)
+  
+  const lendingPriceColor = getLendingPriceColor({
+    highestThresholdPrice,
+    lowestUtilizedPrice,
+    mostOptimisticMatchingPrice,
+    price: position.price,
+  })
 
   return (
     <DetailsSection
@@ -121,7 +125,8 @@ export function AjnaEarnOverviewManageController() {
             positionLendingPrice={position.price}
             highestThresholdPrice={position.pool.highestThresholdPrice}
             afterPositionLendingPrice={simulation?.price}
-            relationToMarketPrice={relationToMarketPrice}
+            priceColor={lendingPriceColor.color}
+            priceColorIndex={lendingPriceColor.index}
           />
         </DetailsSectionContentCardWrapper>
       }
