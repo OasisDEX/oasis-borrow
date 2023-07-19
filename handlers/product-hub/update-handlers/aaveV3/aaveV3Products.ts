@@ -62,7 +62,6 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
     secondaryToken: 'USDC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -117,7 +116,6 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
     secondaryToken: 'USDC',
     network: NetworkNames.arbitrumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -161,7 +159,6 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
     secondaryToken: 'USDC',
     network: NetworkNames.optimismMainnet,
     protocol: LendingProtocol.AaveV3,
