@@ -73,17 +73,6 @@ export async function estimateGasOnDpm({
     ])
     const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
-      type: 1,
-      accessList: [
-        {
-          address: '0x0DA96062099823ae487aeb33DA6331B8B5001c48', // gnosis safe master address
-          storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
-        },
-        {
-          address: '0xd9db270c1b5e3bd161e8c8503c55ceabee709552',
-          storageKeys: [],
-        },
-      ],
     })
     return {
       estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
@@ -123,17 +112,6 @@ export async function createExecuteTransaction({
     return await dpm.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
       gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
-      type: 1,
-      accessList: [
-        {
-          address: '0x0DA96062099823ae487aeb33DA6331B8B5001c48', // gnosis safe master address
-          storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
-        },
-        {
-          address: '0xd9db270c1b5e3bd161e8c8503c55ceabee709552',
-          storageKeys: [],
-        },
-      ],
     })
   }
   const gasLimit = await estimateGasOnDpm({
