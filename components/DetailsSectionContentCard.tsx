@@ -25,17 +25,15 @@ interface DetailsSectionContentCardLinkProps {
 }
 
 export interface ContentCardProps {
+  title: string
+  value?: string
+  unit?: TranslateStringType
   change?: DetailsSectionContentCardChangePillProps
-  customBackground?: string
-  customUnitStyle?: SystemStyleObject
-  customValueColor?: string
-  extra?: ReactNode
   footnote?: TranslateStringType
   link?: DetailsSectionContentCardLinkProps
   modal?: TranslateStringType | JSX.Element
-  title: string
-  unit?: TranslateStringType
-  value?: string
+  customBackground?: string
+  customUnitStyle?: SystemStyleObject
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
@@ -127,17 +125,15 @@ export function DetailsSectionContentCardWrapper({ children }: { children: React
 }
 
 export function DetailsSectionContentCard({
+  title,
+  value,
+  unit,
   change,
-  customBackground = '',
-  customUnitStyle = {},
-  customValueColor,
-  extra,
   footnote,
   link,
   modal,
-  title,
-  unit,
-  value,
+  customBackground = '',
+  customUnitStyle = {},
 }: ContentCardProps) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
@@ -189,14 +185,7 @@ export function DetailsSectionContentCard({
       <Text
         as="p"
         variant="header3"
-        sx={{
-          maxWidth: '100%',
-          lineHeight: 'loose',
-          ...cursorStyle,
-          ...(customValueColor && {
-            color: customValueColor,
-          }),
-        }}
+        sx={{ maxWidth: '100%', lineHeight: 'loose', ...cursorStyle }}
         {...hightlightableItemEvents}
       >
         {value || '-'}
@@ -209,11 +198,6 @@ export function DetailsSectionContentCard({
       {(change?.value || change?.isLoading) && (
         <Box sx={{ maxWidth: '100%', pt: 2, ...cursorStyle }} {...hightlightableItemEvents}>
           <DetailsSectionContentCardChangePill {...change} />
-        </Box>
-      )}
-      {extra && (
-        <Box sx={{ pt: '12px', ...cursorStyle }} {...hightlightableItemEvents}>
-          {extra}
         </Box>
       )}
       {footnote && (
