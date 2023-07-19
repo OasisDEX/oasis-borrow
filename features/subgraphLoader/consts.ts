@@ -137,6 +137,12 @@ export const subgraphMethodsRecord: {
   getHistory: gql`
     query getHistory($dpmProxyAddress: ID!) {
       oasisEvents(where: { account_: { id: $dpmProxyAddress } }) {
+        depositTransfers {
+          amount
+        }
+        withdrawTransfers {
+          amount
+        }
         blockNumber
         collateralAddress
         collateralAfter
