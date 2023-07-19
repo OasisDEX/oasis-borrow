@@ -83,7 +83,7 @@ export function AjnaEarnOverviewManageController() {
   })
 
   const { totalEarnings, pnl } = calculateTotalEarningsAndPnl(position.quoteTokenAmount, history)
-  
+
   const lendingPriceColor = getLendingPriceColor({
     highestThresholdPrice,
     lowestUtilizedPrice,
