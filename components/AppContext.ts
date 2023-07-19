@@ -1124,6 +1124,8 @@ export function setupAppContext() {
     proxyConsumed$,
   )
 
+  // Here we're aggregating events from all networks to show all open positions
+  // Should add new networks here in the future to count all positions
   const allNetworkReadPositionCreatedEvents$ = (wallet: string) => combineLatest([
     mainnetReadPositionCreatedEvents$(wallet),
     optimismReadPositionCreatedEvents$(wallet),
