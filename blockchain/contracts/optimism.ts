@@ -177,6 +177,7 @@ export const optimismContracts: OptimismContracts = {
     'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
     'RETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHETH),
     'RETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHUSDC),
+    'TBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_TBTCWBTC),
     'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCETH),
     'USDC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWBTC),
     'WBTC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCDAI),
