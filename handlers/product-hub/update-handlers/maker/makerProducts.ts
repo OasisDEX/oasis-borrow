@@ -63,7 +63,6 @@ export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
     protocol: LendingProtocol.Maker,
     label: 'WBTC-A/DAI',
@@ -73,7 +72,6 @@ export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
     protocol: LendingProtocol.Maker,
     label: 'WBTC-B/DAI',
@@ -83,7 +81,6 @@ export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
     protocol: LendingProtocol.Maker,
     label: 'WBTC-C/DAI',

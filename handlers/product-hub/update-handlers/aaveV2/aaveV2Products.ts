@@ -27,7 +27,6 @@ export const aaveV2ProductHubProducts: ProductHubItem[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
     secondaryToken: 'USDC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
