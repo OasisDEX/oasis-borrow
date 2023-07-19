@@ -1124,12 +1124,21 @@ export function setupAppContext() {
     proxyConsumed$,
   )
 
+  const allNetworkReadPositionCreatedEvents$ = (wallet: string) => combineLatest([
+    mainnetReadPositionCreatedEvents$(wallet),
+    optimismReadPositionCreatedEvents$(wallet),
+  ]).pipe(
+    map(([mainnetEvents, optimismEvents]) => {
+      return [...mainnetEvents, ...optimismEvents]
+    })
+  )
+
   const accountData$ = createAccountData(
     web3Context$,
     balance$,
     vaults$,
     hasActiveDsProxyAavePosition$,
-    readPositionCreatedEvents$,
+    allNetworkReadPositionCreatedEvents$,
     ensName$,
   )
 
