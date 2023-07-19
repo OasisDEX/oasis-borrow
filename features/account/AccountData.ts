@@ -35,6 +35,8 @@ export function createAccountData(
           const numberOfDpmVaults = dpmPositionCreatedEvents.length
             ? dpmPositionCreatedEvents.length
             : 0
+          // FIX: we can have more than one aave position, potentially a bug?
+          // Investigate a new solution for this
           const numberOfAavePositions = hasAavePosition ? 1 : 0
 
           return {
