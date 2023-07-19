@@ -2,8 +2,15 @@ import { ajnaBuckets } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { PositionHistoryResponse } from 'features/positionHistory/types'
+import { zero } from 'helpers/zero'
 
 export const mapPositionHistoryResponseEvent = (event: PositionHistoryResponse) => ({
+  depositAmount: event.depositTransfers.length
+    ? new BigNumber(event.depositTransfers[0].amount)
+    : zero,
+  withdrawAmount: event.withdrawTransfers.length
+    ? new BigNumber(event.withdrawTransfers[0].amount)
+    : zero,
   blockNumber: new BigNumber(event.blockNumber),
   collateralAddress: event.collateralAddress,
   collateralAfter: new BigNumber(event.collateralAfter),

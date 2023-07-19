@@ -4,9 +4,12 @@ import {
   negativeToZero,
   normalizeValue,
 } from '@oasisdex/dma-library'
+import { BigNumber } from 'bignumber.js'
+import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
 import { ContentCardEarnNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardEarnNetValue'
 import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
 import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
@@ -18,6 +21,41 @@ import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+// TODO potentially temporary method until we have better handling in subgraph
+const calculateTotalEarningsAndPnl = (
+  quoteTokenAmount: BigNumber,
+  history: AjnaUnifiedHistoryEvent[],
+) => {
+  const cumulativeFees = history
+    .map((event) =>
+      event.gasPrice
+        .times(event.gasUsed)
+        .times(event.ethPrice)
+        .shiftedBy(NEGATIVE_WAD_PRECISION)
+        .div(event.debtOraclePrice),
+    )
+    .reduce((acc, curr) => acc.plus(curr), zero)
+
+  const cumulativeDeposit = history
+    .map((event) => event.depositAmount)
+    .reduce((acc, curr) => acc.plus(curr), zero)
+
+  const cumulativeWithdraw = history
+    .map((event) => event.withdrawAmount)
+    .reduce((acc, curr) => acc.plus(curr), zero)
+
+  return {
+    pnl: cumulativeWithdraw
+      .plus(quoteTokenAmount)
+      .minus(cumulativeFees)
+      .minus(cumulativeDeposit)
+      .div(cumulativeDeposit),
+    totalEarnings: quoteTokenAmount.minus(
+      cumulativeDeposit.minus(cumulativeWithdraw).plus(cumulativeFees),
+    ),
+  }
+}
+
 export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()
   const {
@@ -27,6 +65,7 @@ export function AjnaEarnOverviewManageController() {
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
+      history,
     },
     form: {
       state: { withdrawAmount },
@@ -46,6 +85,8 @@ export function AjnaEarnOverviewManageController() {
     simulation,
   })
 
+  const { totalEarnings, pnl } = calculateTotalEarningsAndPnl(position.quoteTokenAmount, history)
+
   return (
     <DetailsSection
       title={t('system.overview')}
@@ -54,8 +95,8 @@ export function AjnaEarnOverviewManageController() {
         <DetailsSectionContentCardWrapper>
           <ContentCardTotalEarnings
             quoteToken={quoteToken}
-            totalEarnings={position.totalEarnings}
-            netPnL={position.pnl}
+            totalEarnings={totalEarnings}
+            netPnL={pnl}
           />
           <ContentCardEarnNetValue
             isLoading={isSimulationLoading}
