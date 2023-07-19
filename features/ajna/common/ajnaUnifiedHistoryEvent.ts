@@ -5,6 +5,8 @@ import {
 import { zero } from 'helpers/zero'
 
 export const ajnaUnifiedHistoryItem = {
+  depositAmount: zero,
+  withdrawAmount: zero,
   blockNumber: zero,
   collateralAddress: '',
   collateralAfter: zero,

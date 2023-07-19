@@ -1,5 +1,6 @@
 import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave'
@@ -55,6 +56,11 @@ function AaveHeader({
     )
   }
 
+  const protocol: ProtocolLabelProps = {
+    network: strategyConfig.network,
+    protocol: strategyConfig.protocol,
+  }
+
   return (
     <WithErrorHandler error={[positionTokenPricesError, chainlinkUSDCUSDPriceError]}>
       <VaultHeadline
@@ -64,6 +70,7 @@ function AaveHeader({
         details={detailsList}
         followButton={followButton}
         shareButton={shareButton}
+        protocol={protocol}
       />
     </WithErrorHandler>
   )

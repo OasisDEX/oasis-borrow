@@ -41,6 +41,7 @@ export function getPrimaryButtonLabelKey({
       return 'confirm'
     case 'transaction':
       if (isTxSuccess && flow === 'open') return 'system.go-to-position'
+      else if (isTxSuccess && flow === 'manage') return 'continue'
       else if (isTxError) return 'retry'
       else return 'confirm'
     case 'transition':
