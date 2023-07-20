@@ -4,7 +4,7 @@ import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnInput'
-import { AJNA_LUP_MOMP_OFFSET, lendingPriceColors } from 'features/ajna/positions/earn/consts'
+import { AJNA_LUP_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
 import {
@@ -116,9 +116,9 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         rightBottomLabel={t('riskier')}
         colorfulRanges={`linear-gradient(to right,
         #D3D4D8 0 ${htpPercentage}%,
-        ${lendingPriceColors.belowLup} ${htpPercentage}% ${lupPercentage}%,
-        ${lendingPriceColors.belowMomp} ${lupPercentage}% ${mompPercentage}%,
-        ${lendingPriceColors.aboveMomp} ${mompPercentage}% 100%)`}
+        #1ECBAE ${htpPercentage}% ${lupPercentage}%,
+        #EABE4C ${lupPercentage}% ${mompPercentage}%,
+        #EE5728 ${mompPercentage}% 100%)`}
       />
       {nestedManualInput ? (
         <PillAccordion
