@@ -124,27 +124,27 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       items={[
         ...(withBuying
           ? [
-            {
-              label: t('vault-changes.buying-token', { token: collateralToken }),
-              value: formatted.buyingCollateral,
-              secondary: {
-                value: formatted.buyingCollateralUSD,
+              {
+                label: t('vault-changes.buying-token', { token: collateralToken }),
+                value: formatted.buyingCollateral,
+                secondary: {
+                  value: formatted.buyingCollateralUSD,
+                },
+                isLoading,
               },
-              isLoading,
-            },
-          ]
+            ]
           : []),
         ...(withSelling
           ? [
-            {
-              label: t('vault-changes.selling-token', { token: collateralToken }),
-              value: formatted.sellingCollateral,
-              secondary: {
-                value: formatted.sellingCollateralUSD,
+              {
+                label: t('vault-changes.selling-token', { token: collateralToken }),
+                value: formatted.sellingCollateral,
+                secondary: {
+                  value: formatted.sellingCollateralUSD,
+                },
+                isLoading,
               },
-              isLoading,
-            },
-          ]
+            ]
           : []),
         {
           label: t('system.total-exposure', { token: collateralToken }),
@@ -154,16 +154,16 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         },
         ...(withBuying || withSelling
           ? [
-            {
-              label: t('vault-changes.price-impact', { token: collateralToken }),
-              value: formatted.collateralPrice,
-              secondary: {
-                value: formatted.collateralPriceImpact,
-                variant: 'negative' as SecondaryVariantType,
+              {
+                label: t('vault-changes.price-impact', { token: collateralToken }),
+                value: formatted.collateralPrice,
+                secondary: {
+                  value: formatted.collateralPriceImpact,
+                  variant: 'negative' as SecondaryVariantType,
+                },
+                isLoading,
               },
-              isLoading,
-            },
-          ]
+            ]
           : []),
         {
           label: t('system.multiple'),
@@ -173,12 +173,12 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         },
         ...(withSlippage
           ? [
-            {
-              label: t('vault-changes.slippage-limit'),
-              value: formatted.slippageLimit,
-              isLoading,
-            },
-          ]
+              {
+                label: t('vault-changes.slippage-limit'),
+                value: formatted.slippageLimit,
+                isLoading,
+              },
+            ]
           : []),
         {
           label: t('system.debt'),
@@ -194,43 +194,43 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         },
         ...(positionData.pool.lowestUtilizedPriceIndex.gt(zero)
           ? [
-            {
-              label: t('system.dynamic-max-ltv'),
-              value: formatted.dynamicMaxLtv,
-              change: formatted.afterDynamicMaxLtv,
-              isLoading,
-            },
-          ]
+              {
+                label: t('system.dynamic-max-ltv'),
+                value: formatted.dynamicMaxLtv,
+                change: formatted.afterDynamicMaxLtv,
+                isLoading,
+              },
+            ]
           : []),
         ...(isTxSuccess && cached
           ? [
-            {
-              label: t('system.total-cost'),
-              value: formatted.totalCost,
-              isLoading,
-            },
-          ]
+              {
+                label: t('system.total-cost'),
+                value: formatted.totalCost,
+                isLoading,
+              },
+            ]
           : isFlowStateReady
-            ? [
+          ? [
               {
                 label: t('system.max-transaction-cost'),
-                value: <GasEstimation addition={oasisFee}/>,
+                value: <GasEstimation addition={oasisFee} />,
                 dropdownValues: oasisFee
                   ? [
-                    {
-                      label: t('vault-changes.oasis-fee'),
-                      value: formatted.oasisFee,
-                    },
-                    {
-                      label: t('max-gas-fee'),
-                      value: <GasEstimation/>,
-                    },
-                  ]
+                      {
+                        label: t('vault-changes.oasis-fee'),
+                        value: formatted.oasisFee,
+                      },
+                      {
+                        label: t('max-gas-fee'),
+                        value: <GasEstimation />,
+                      },
+                    ]
                   : undefined,
                 isLoading,
               },
             ]
-            : []),
+          : []),
       ]}
     />
   )
