@@ -60,7 +60,7 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
           magicLinkEmail: undefined,
           walletLabel: bridgeConnector.wallet.label,
           transactionProvider: new ethers.providers.Web3Provider(
-            bridgeConnector.basicInfo.provider,
+            bridgeConnector.connectorInformation.provider,
           ).getSigner(),
         })
       }

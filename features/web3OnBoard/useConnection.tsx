@@ -63,7 +63,7 @@ export function useConnection({
 
   useEffect(() => {
     if (connector && onConnectHandler) {
-      onConnectHandler(connector.basicInfo)
+      onConnectHandler(connector.connectorInformation)
     }
   }, [connector, onConnectHandler])
 

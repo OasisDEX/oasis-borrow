@@ -1,4 +1,4 @@
-import { NetworkConfigHexId } from 'blockchain/networks'
+import { isNetworkHexIdSupported, NetworkConfigHexId } from 'blockchain/networks'
 import { ReductoActions } from 'helpers/useReducto'
 import { Reducer } from 'react'
 
@@ -15,7 +15,8 @@ export type ConnectingWallet = {
 
 export type SettingChainWallet = {
   type: 'setting-chain'
-  networkHexId: NetworkConfigHexId
+  currentNetworkHexId: NetworkConfigHexId
+  nextNetworkHexId: NetworkConfigHexId
 }
 
 export type ConnectedWallet = {
@@ -25,15 +26,27 @@ export type ConnectedWallet = {
   address: string
 }
 
+export type UnsupportedNetworkWallet = {
+  type: 'unsupported-network'
+  previousNetworkHexId: NetworkConfigHexId | undefined
+  networkHexId: NetworkConfigHexId
+}
+
 export type DisconnectedWallet = {
   type: 'disconnected'
+}
+
+export type DisconnectingWallet = {
+  type: 'disconnecting'
 }
 
 export type WalletManagementState =
   | ConnectedWallet
   | DisconnectedWallet
+  | DisconnectingWallet
   | ConnectingWallet
   | SettingChainWallet
+  | UnsupportedNetworkWallet
 
 export type WalletStateAction = ReductoActions<
   WalletManagementState,
@@ -60,30 +73,23 @@ export type WalletStateAction = ReductoActions<
       type: 'ERROR'
       error: unknown
     }
+  | {
+      type: 'WALLET_NETWORK_CHANGED'
+      networkHexId: NetworkConfigHexId
+    }
+  | {
+      type: 'CHANGE_WALLET_REJECTED'
+      currentNetworkHexId: NetworkConfigHexId
+      nextNetworkHexId: NetworkConfigHexId
+    }
 >
 
-function ensureCorrectState<TType extends WalletManagementState['type']>(
-  state: WalletManagementState,
-  type: TType,
-): asserts state is Extract<WalletManagementState, { type: TType }> {
-  if (state.type !== type) {
-    throw new Error(`Invalid state: expected "${type}", got "${state.type}"`)
-  }
-}
-//
-// const connectingReducer = (
+// function ensureCorrectState<TType extends WalletManagementState['type']>(
 //   state: WalletManagementState,
-//   action: WalletStateAction,
-// ): WalletManagementState => {
-//   ensureCorrectState(state, 'connecting')
-//   switch (action.type) {
-//     case 'CONNECTED':
-//       return {
-//         type: 'connected',
-//         connector: action.connector,
-//         networkHexId: action.connector.basicInfo.hexChainId,
-//         address: action.connector.wallet.accounts[0].address,
-//       }
+//   type: TType,
+// ): asserts state is Extract<WalletManagementState, { type: TType }> {
+//   if (state.type !== type) {
+//     throw new Error(`Invalid state: expected "${type}", got "${state.type}"`)
 //   }
 // }
 
@@ -101,17 +107,69 @@ export const walletStateReducer: Reducer<WalletManagementState, WalletStateActio
       return {
         type: 'connected',
         connector: action.connector,
-        networkHexId: action.connector.basicInfo.hexChainId,
+        networkHexId: action.connector.connectorInformation.hexChainId,
         address: action.connector.wallet.accounts[0].address,
       }
     case 'CHANGE_CHAIN':
+      if (state.type === 'connected') {
+        return {
+          type: 'setting-chain',
+          currentNetworkHexId: state.networkHexId,
+          nextNetworkHexId: action.networkHexId,
+        }
+      }
+      if (state.type === 'unsupported-network') {
+        return {
+          type: 'setting-chain',
+          currentNetworkHexId: state.networkHexId,
+          nextNetworkHexId: action.networkHexId,
+        }
+      }
       return {
-        type: 'setting-chain',
+        type: 'connecting',
         networkHexId: action.networkHexId,
       }
     case 'DISCONNECTED':
       return {
         type: 'disconnected',
+      }
+    case 'WALLET_NETWORK_CHANGED':
+      switch (state.type) {
+        case 'connected':
+        case 'connecting':
+          if (isNetworkHexIdSupported(action.networkHexId)) {
+            return {
+              type: 'connecting',
+              networkHexId: action.networkHexId,
+            }
+          } else {
+            return {
+              type: 'unsupported-network',
+              previousNetworkHexId: state.networkHexId,
+              networkHexId: action.networkHexId,
+            }
+          }
+        case 'disconnecting':
+        case 'disconnected':
+          return {
+            type: 'unsupported-network',
+            previousNetworkHexId: undefined,
+            networkHexId: action.networkHexId,
+          }
+        default:
+          return state
+      }
+    case 'CHANGE_WALLET_REJECTED':
+      if (isNetworkHexIdSupported(action.currentNetworkHexId)) {
+        return {
+          type: 'connecting',
+          networkHexId: action.currentNetworkHexId,
+        }
+      }
+      return {
+        type: 'unsupported-network',
+        previousNetworkHexId: undefined,
+        networkHexId: action.currentNetworkHexId,
       }
     default:
       return state

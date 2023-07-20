@@ -11,7 +11,7 @@ export function NavigationNetworkSwitcherIcon() {
     connector,
     networkConnector,
   } = useWeb3OnBoardConnectorContext()
-  const networkId = connector?.basicInfo.chainId
+  const networkId = connector?.connectorInformation.chainId
   const networkConfig = networkId ? networkSetById[networkId] : undefined
 
   useEffect(() => {

@@ -1,20 +1,22 @@
-import { WalletState } from '@web3-onboard/core'
+import { ConnectedChain, WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { NetworkConfigHexId, networkSetByHexId, useCustomForkParameter } from 'blockchain/networks'
-import { Dispatch, useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 
 import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
-export interface ChainSetterState {
-  networkHexId: NetworkConfigHexId | undefined
-  setNetworkHexId: Dispatch<NetworkConfigHexId | undefined>
-  pageChainsId: NetworkConfigHexId[] | undefined
-  dispatchPageChainId: Dispatch<NetworkConfigHexId | undefined>
+export interface ChainSetter {
+  setChain: (
+    chainId: NetworkConfigHexId,
+    onSuccess: () => void,
+    onReject: () => void,
+  ) => Promise<void>
+  connectedChain: ConnectedChain | null
 }
 
-export function useChainSetter(): ChainSetterState {
+export function useChainSetter(): ChainSetter {
   const [{ wallet }] = useConnectWallet()
-  const [, setChain] = useSetChain()
+  const [{ connectedChain }, setChain] = useSetChain()
   const [customFork, setCustomFork] = useCustomForkParameter()
 
   const addForkToWallet = useCallback(
@@ -44,59 +46,25 @@ export function useChainSetter(): ChainSetterState {
     [customFork],
   )
 
-  useEffect(() => {
-    if (wallet) {
-      const walletNetwork = networkSetByHexId[wallet.chains[0].id]
-      const currentNetwork = networkSetByHexId[networkHexId]
-      if (walletNetwork.hexId !== networkHexId) {
-        void addForkToWallet(wallet, networkHexId)
-          .then(() => {
-            return setChain({ chainId: networkHexId })
-          })
-          .then((chainAdded) => {
-            if (chainAdded) {
-              setCustomNetwork({
-                hexId: currentNetwork.hexId,
-                id: currentNetwork.id,
-                network: currentNetwork.name,
-              })
-            }
-
-            return chainAdded
-          })
-          .then(async (chainAdded) => {
-            console.log(`Chain added: ${chainAdded}`)
-            // if (chainAdded) {
-            //   setRouterAction(true)
-            //   reload()
-            // }
-            //
-            // if (!chainAdded && (pageChainsId === undefined || pageChainsId.length === 0)) {
-            //   setNetworkHexId(walletNetwork.hexId)
-            //   setRouterAction(false)
-            // }
-            //
-            // if (!chainAdded) {
-            //   setRouterAction(true)
-            //   await replace(INTERNAL_LINKS.homepage).then(() => {
-            //     reload()
-            //   })
-            // }
-          })
+  const setChainProxy = useCallback(
+    async (networkHexId: NetworkConfigHexId, onSuccess: () => void, onReject: () => void) => {
+      if (!wallet) {
+        return
       }
-    }
-  }, [wallet, setChain, networkHexId, addForkToWallet, customFork, setCustomNetwork, pageChainsId])
 
-  useEffect(() => {
-    if (wallet) {
-      void addForkToWallet(wallet, wallet.chains[0].id as NetworkConfigHexId)
-    }
-  }, [addForkToWallet, wallet])
+      await addForkToWallet(wallet, networkHexId)
+      const setChainResult = await setChain({ chainId: networkHexId })
+      if (setChainResult) {
+        onSuccess()
+      } else {
+        onReject()
+      }
+    },
+    [addForkToWallet, setChain, wallet],
+  )
 
   return {
-    networkHexId,
-    setNetworkHexId,
-    pageChainsId,
-    dispatchPageChainId,
+    setChain: setChainProxy,
+    connectedChain,
   }
 }

@@ -3,7 +3,6 @@ import {
   getOppositeNetworkHexIdByHexId,
   mainnetNetworkParameter,
   NetworkConfigHexId,
-  NetworkIds,
   NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
@@ -44,8 +43,6 @@ export function NavigationNetworkSwitcherOrb() {
 
   const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
-  const useArbitrum = useFeatureToggle('UseNetworkSwitcherArbitrum')
-  const useOptimism = useFeatureToggle('UseNetworkSwitcherOptimism')
 
   const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
     return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
@@ -75,19 +72,11 @@ export function NavigationNetworkSwitcherOrb() {
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
                   : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
               )
-              .filter((network) => {
-                if (network.id === NetworkIds.OPTIMISMMAINNET && !useOptimism) {
-                  return false
-                }
-                if (network.id === NetworkIds.ARBITRUMMAINNET && !useArbitrum) {
-                  return false
-                }
-                return true
-              })
               .map((network) => (
                 <NetworkButton
+                  key={network.hexId}
                   network={network}
-                  connect={connect}
+                  setChain={setChain}
                   connecting={connecting}
                   currentNetworkName={currentNetworkName}
                   currentHoverNetworkName={currentHoverNetworkName}

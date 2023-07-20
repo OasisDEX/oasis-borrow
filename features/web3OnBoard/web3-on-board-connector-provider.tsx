@@ -1,7 +1,11 @@
-import { useSetChain } from '@web3-onboard/react'
 import { NetworkConnector } from '@web3-react/network-connector'
-import { NetworkConfig, NetworkConfigHexId, networkSetById } from 'blockchain/networks'
-import { useModal } from 'helpers/modalHook'
+import {
+  NetworkConfig,
+  NetworkConfigHexId,
+  NetworkHexIds,
+  networkSetById,
+} from 'blockchain/networks'
+import { useModalContext } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import { useReducto } from 'helpers/useReducto'
 import React, { createContext, useContext, useEffect } from 'react'
@@ -9,6 +13,7 @@ import React, { createContext, useContext, useEffect } from 'react'
 import { BridgeConnector } from './bridge-connector'
 import { UnsupportedNetworkModal } from './unsupported-network-modal'
 import { useBridgeConnector } from './use-bridge-connector'
+import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
 import { WalletManagementState, WalletStateAction, walletStateReducer } from './wallet-state'
 
@@ -49,31 +54,27 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
 export const useWeb3OnBoardConnectorContext = () => useContext(web3OnBoardConnectorContext)
 
 function InternalProvider({ children }: WithChildren) {
-  const { dispatch, state, updateState } = useReducto<WalletManagementState, WalletStateAction>({
+  const { dispatch, state } = useReducto<WalletManagementState, WalletStateAction>({
     defaults: {
       type: 'disconnected',
     },
     reducer: walletStateReducer,
   })
-  const { connecting, createConnector, connector: bridgeConnector } = useBridgeConnector()
+  const {
+    connecting,
+    createConnector,
+    connector: bridgeConnector,
+    disconnect,
+  } = useBridgeConnector()
   const { networkConnector } = useNetworkConnector()
   // const [account, setAccount] = useState<string | undefined>(undefined)
 
-  const openModal = useModal()
-  const [{ connectedChain }, setChain] = useSetChain()
-  // const { pageChainsId, setNetworkHexId } = useChainSetter()
+  useEffect(() => {
+    console.log(`Current state: ${state.type}`)
+  }, [state])
 
-  // useEffect(() => {
-  //   if (
-  //     pageChainsId &&
-  //     pageChainsId.length > 0 &&
-  //     !connecting &&
-  //     bridgeConnector &&
-  //     !pageChainsId.includes(bridgeConnector.hexChainId)
-  //   ) {
-  //     void createConnector()
-  //   }
-  // }, [pageChainsId, bridgeConnector, connecting, createConnector, setNetworkHexId])
+  const { openModal, closeModal } = useModalContext()
+  const { setChain, connectedChain } = useChainSetter()
 
   useEffect(() => {
     if (state.type === 'connecting') {
@@ -84,18 +85,43 @@ function InternalProvider({ children }: WithChildren) {
 
   useEffect(() => {
     if (state.type === 'setting-chain') {
-      if (bridgeConnector) {
-        void setChain({ chainId: state.networkHexId })
-      }
+      void setChain(
+        state.nextNetworkHexId,
+        () => dispatch({ type: 'CONNECT', networkHexId: state.nextNetworkHexId }),
+        () => dispatch({ ...state, type: 'CHANGE_WALLET_REJECTED' }),
+      )
     }
-  })
+  }, [state, setChain, dispatch])
 
   useEffect(() => {
-    const id = connectedChain?.id
-    if (id && id !== '0x1') {
-      openModal(UnsupportedNetworkModal, {})
+    if (connectedChain?.id) {
+      dispatch({
+        type: 'WALLET_NETWORK_CHANGED',
+        networkHexId: connectedChain.id as NetworkConfigHexId,
+      })
     }
-  }, [connectedChain?.id])
+  }, [connectedChain?.id, dispatch])
+
+  useEffect(() => {
+    if (state.type === 'unsupported-network') {
+      openModal(UnsupportedNetworkModal, {
+        switchNetwork: async () => {
+          const networkIdToSet = state.previousNetworkHexId ?? NetworkHexIds.MAINNET
+          dispatch({ type: 'CHANGE_CHAIN', networkHexId: networkIdToSet })
+        },
+      })
+    } else if (state.type === 'connected') {
+      closeModal()
+    }
+  }, [state, dispatch])
+
+  useEffect(() => {
+    if (state.type === 'disconnecting') {
+      void disconnect().then(() => {
+        dispatch({ type: 'DISCONNECTED' })
+      })
+    }
+  }, [state, disconnect, dispatch])
 
   return (
     <web3OnBoardConnectorContext.Provider
