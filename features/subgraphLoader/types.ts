@@ -12,6 +12,7 @@ import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserN
 export type Subgraphs = {
   Ajna: {
     getEarnData: { dpmProxyAddress: string }
+    getPositionCumulatives: { dpmProxyAddress: string }
     getPoolData: { poolAddress: string }
     getPoolsTableData: {}
     getNftIds: { walletAddress: string }
@@ -44,6 +45,13 @@ export type SubgraphsResponses = {
             cumulativeWithdraw: number
           }
         }[]
+      }
+    }>
+    getPositionCumulatives: SubgraphBaseResponse<{
+      account: {
+        cumulativeDeposit: number
+        cumulativeFees: number
+        cumulativeWithdraw: number
       }
     }>
     getPoolData: SubgraphBaseResponse<{
