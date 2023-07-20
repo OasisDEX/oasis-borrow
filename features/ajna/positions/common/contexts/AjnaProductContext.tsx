@@ -47,6 +47,7 @@ interface AjnaProductContextProviderPropsWithBorrow {
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
+
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
   formDefaults: Partial<AjnaEarnFormState>
@@ -55,6 +56,7 @@ interface AjnaProductContextProviderPropsWithEarn {
   positionAuction: AjnaEarnPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
+
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
   formDefaults: Partial<AjnaMultiplyFormState>
@@ -63,6 +65,7 @@ interface AjnaProductContextProviderPropsWithMultiply {
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
+
 type AjnaProductDetailsContextProviderProps =
   | AjnaProductContextProviderPropsWithBorrow
   | AjnaProductContextProviderPropsWithEarn
@@ -193,6 +196,14 @@ export function AjnaProductContextProvider({
   const [simulation, setSimulation] = useState<AjnaSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
 
+  // We need to determine the direction of the swap based on change in position risk
+  let isIncreasingPositionRisk = true
+  if (isAjnaPosition(simulation?.position) && isAjnaPosition(position) && simulation) {
+    isIncreasingPositionRisk = simulation.position.riskRatio.loanToValue.gte(
+      position.riskRatio.loanToValue,
+    )
+  }
+
   const validation = useMemo(
     () =>
       getAjnaValidation({
@@ -268,6 +279,8 @@ export function AjnaProductContextProvider({
   })
 
   useEffect(() => {
+    const fromToken = getToken(isIncreasingPositionRisk ? quoteToken : collateralToken)
+    const toToken = getToken(isIncreasingPositionRisk ? collateralToken : quoteToken)
     setContext((prev) => ({
       ...prev,
       form,
@@ -284,8 +297,8 @@ export function AjnaProductContextProvider({
         swap: {
           current: formatSwapData({
             swapData: simulation?.swaps[0],
-            collateralPrecision: getToken(collateralToken).precision,
-            quotePrecision: getToken(quoteToken).precision,
+            fromTokenPrecision: fromToken.precision,
+            toTokenPrecision: toToken.precision,
           }),
           cached: cachedSwap,
         },
@@ -334,4 +347,8 @@ export function AjnaProductContextProvider({
         </ajnaMultiplyContext.Provider>
       )
   }
+}
+
+function isAjnaPosition(position: any): position is AjnaPosition {
+  return position instanceof AjnaPosition && typeof position.riskRatio === 'object'
 }

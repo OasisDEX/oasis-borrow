@@ -68,7 +68,12 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       simulationData?.riskRatio.loanToValue.lt(positionData.riskRatio.loanToValue))
   const withOasisFee = withBuying || withSelling
 
-  const buyingOrSellingCollateral = swapData ? swapData.minToTokenAmount : zero
+  const buyingOrSellingCollateral = swapData
+    ? withBuying
+      ? swapData.minToTokenAmount
+      : swapData.fromTokenAmount
+    : zero
+
   const priceImpact = calculatePriceImpact(tokenPrice || zero, collateralPrice)
   const oasisFee = withOasisFee
     ? buyingOrSellingCollateral.times(OAZO_FEE.times(collateralPrice))

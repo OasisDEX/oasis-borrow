@@ -2,19 +2,19 @@ import { SwapData } from '@oasisdex/dma-library'
 
 export const formatSwapData = ({
   swapData,
-  quotePrecision,
-  collateralPrecision,
+  fromTokenPrecision,
+  toTokenPrecision,
 }: {
   swapData?: SwapData
-  quotePrecision: number
-  collateralPrecision: number
+  fromTokenPrecision: number
+  toTokenPrecision: number
 }) => {
   if (!swapData) return undefined
 
   return {
     ...swapData,
-    fromTokenAmount: swapData.fromTokenAmount.shiftedBy(-quotePrecision),
-    toTokenAmount: swapData.toTokenAmount.shiftedBy(-collateralPrecision),
-    minToTokenAmount: swapData.minToTokenAmount.shiftedBy(-collateralPrecision),
+    fromTokenAmount: swapData.fromTokenAmount.shiftedBy(-fromTokenPrecision),
+    toTokenAmount: swapData.toTokenAmount.shiftedBy(-toTokenPrecision),
+    minToTokenAmount: swapData.minToTokenAmount.shiftedBy(-toTokenPrecision),
   }
 }
