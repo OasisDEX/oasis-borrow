@@ -10,7 +10,7 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Flex, Text } from 'theme-ui'
@@ -75,10 +75,17 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
           .plus(position.debtAmount)
           .div((simulation || position).collateralAmount.times(tokenPrice))
           .decimalPlaces(2, BigNumber.ROUND_DOWN)
-      : zero
+      : one
 
-  const resolvedValue =
-    loanToValue || simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue || min
+  let resolvedValue = loanToValue || simulation?.riskRatio.loanToValue || min
+  if (resolvedValue.gt(max)) {
+    resolvedValue = max
+    updateState('loanToValue', max)
+  }
+  if (resolvedValue.lt(min)) {
+    resolvedValue = min
+    updateState('loanToValue', max)
+  }
 
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
