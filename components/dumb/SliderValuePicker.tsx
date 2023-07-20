@@ -84,7 +84,6 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           max={props.maxBoundry?.toNumber()}
           value={props.lastValue?.toNumber()}
           onChange={(e) => {
-            console.log('onChange', e.target.value)
             props.onChange(new BigNumber(e.target.value))
           }}
         />
