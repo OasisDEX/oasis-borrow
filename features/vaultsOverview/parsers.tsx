@@ -210,6 +210,40 @@ export function parseAjnaBorrowPositionRows(
     }
   })
 }
+export function parseAjnaMultiplyPositionRows(
+  positions: AjnaPositionDetails[],
+): PositionTableMultiplyRow[] {
+  return positions.map(({ details: { collateralToken, quoteToken, vaultId }, position }) => {
+    const {
+      quotePrice,
+      collateralPrice,
+      debtAmount,
+      liquidationPrice,
+      riskRatio,
+      pool,
+      collateralAmount,
+    } = position as AjnaPosition
+
+    const netValue = collateralAmount.times(collateralPrice).minus(debtAmount.times(quotePrice))
+
+    return {
+      asset: `${collateralToken}/${quoteToken}`,
+      fundingCost: getFundingCost({
+        debt: debtAmount.times(quotePrice),
+        stabilityFee: pool.interestRate,
+        value: netValue,
+      }),
+      icons: [collateralToken, quoteToken],
+      id: vaultId.toString(),
+      liquidationPrice,
+      multiple: riskRatio.multiple,
+      netValue,
+      network: NetworkNames.ethereumMainnet,
+      protocol: LendingProtocol.Ajna,
+      url: `/ethereum/ajna/${vaultId}`,
+    }
+  })
+}
 export function parseAjnaEarnPositionRows(
   positions: AjnaPositionDetails[],
 ): PositionTableEarnRow[] {
@@ -313,16 +347,22 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
       network,
       protocol,
       url,
-    }) => ({
-      asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
-      netValue: `$${formatCryptoBalance(netValue)}`,
-      multiple: `${multiple.toFixed(2)}x`,
-      liquidationPrice: `$${formatCryptoBalance(liquidationPrice)}`,
-      fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
-      // automation: '',
-      protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-      action: <AssetsTableDataCellAction cta="View" link={url} />,
-    }),
+    }) => {
+      const formattedLiquidationPrice =
+        protocol.toLowerCase() === LendingProtocol.Ajna
+          ? `${formatCryptoBalance(liquidationPrice)} ${asset}`
+          : `$${formatCryptoBalance(liquidationPrice)}`
+
+      return {
+        asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
+        netValue: `$${formatCryptoBalance(netValue)}`,
+        multiple: `${multiple.toFixed(2)}x`,
+        liquidationPrice: formattedLiquidationPrice,
+        fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
+        protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
+        action: <AssetsTableDataCellAction cta="View" link={url} />,
+      }
+    },
   )
 }
 export function getEarnPositionRows(rows: PositionTableEarnRow[]): AssetsTableRowData[] {
