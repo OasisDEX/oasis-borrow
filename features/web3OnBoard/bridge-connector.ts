@@ -19,7 +19,7 @@ export interface ConnectorInformation {
   chainId: NetworkIds
   hexChainId: NetworkConfigHexId
   provider: EIP1193Provider
-  account: string | undefined
+  account: string
   networkName: NetworkNames
 }
 
@@ -66,7 +66,7 @@ export class BridgeConnector extends AbstractConnector {
     return this.connectorInformation.networkName
   }
 
-  get connectedAccount(): string | undefined {
+  get connectedAccount(): string {
     return this.connectorInformation.account
   }
 
@@ -80,7 +80,7 @@ export class BridgeConnector extends AbstractConnector {
     const networkConfig = networkSetByHexId[hexChainId]
 
     const networkName = networkConfig?.name as NetworkNames
-    const account = this.wallet.accounts[0]?.address
+    const account = this.wallet.accounts[0].address
     const provider = this.wallet.provider
 
     return { chainId, account, provider, hexChainId, networkName }

@@ -54,7 +54,7 @@ export function AjnaHomepageView() {
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const { connecting, connect } = useConnection({
-    initialConnect: false,
+    requireConnection: false,
   })
   const { isConnected } = useAccount()
 

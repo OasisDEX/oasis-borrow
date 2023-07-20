@@ -22,7 +22,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
   const { t } = useTranslation()
   const [success, setSuccess] = useState(false)
   const { connect } = useConnection({
-    initialConnect: false,
+    requireConnection: false,
   })
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser

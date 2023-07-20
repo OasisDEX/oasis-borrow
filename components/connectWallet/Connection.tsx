@@ -6,16 +6,14 @@ export function Connection({
   children,
   walletConnect,
   chainId,
-  pageChainId,
 }: WithChildren & {
   walletConnect: boolean
   chainId?: NetworkConfigHexId
   pageChainId?: NetworkConfigHexId
 }) {
   useConnection({
-    initialConnect: walletConnect,
+    requireConnection: walletConnect,
     chainId,
-    pageChainId,
   })
 
   return children

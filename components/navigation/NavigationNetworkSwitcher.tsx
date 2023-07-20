@@ -15,7 +15,7 @@ import {
 } from 'blockchain/networks'
 import { useConnection } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import { useModal } from 'helpers/modalHook'
+import { useModalContext } from 'helpers/modalHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useState } from 'react'
 import { Box, Button } from 'theme-ui'
@@ -36,16 +36,16 @@ const renderSeparator = () => {
 
 export function NavigationNetworkSwitcherOrb() {
   const { connectedChain, connect, connecting, setChain } = useConnection({
-    initialConnect: false,
+    requireConnection: false,
   })
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
-  const openModal = useModal()
+  const { openModal } = useModalContext()
 
   const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
 
   const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
+    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain))
   }
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,

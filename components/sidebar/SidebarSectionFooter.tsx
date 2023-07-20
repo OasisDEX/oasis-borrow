@@ -24,7 +24,7 @@ export interface SidebarSectionFooterProps {
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
   const { connect, connecting } = useConnection({
-    initialConnect: false,
+    requireConnection: false,
   })
 
   return useMemo(
@@ -48,14 +48,15 @@ function useChangeChainButton({
 }: Pick<SidebarSectionFooterProps, 'requiredChainHexId'>): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
   const { connect } = useConnection({
-    initialConnect: false,
+    requireConnection: false,
+    chainId: requiredChainHexId,
   })
 
   return useMemo(
     () => ({
       label: t('change-wallet-chain'),
-      action: async () => {
-        await connect(requiredChainHexId, { forced: true })
+      action: () => {
+        connect()
       },
       steps: undefined,
       isLoading: false,

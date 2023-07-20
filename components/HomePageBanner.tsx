@@ -104,7 +104,7 @@ export function HomePageBannerButton({ heading, image, icon }: Omit<HomePageBann
 }
 
 export function HomePageBanner({ link, ...rest }: HomePageBannerProps) {
-  const { connect } = useConnection({ initialConnect: false })
+  const { connect } = useConnection({ requireConnection: false })
 
   return (
     <Notice

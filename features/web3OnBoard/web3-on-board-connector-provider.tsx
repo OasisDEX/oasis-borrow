@@ -15,10 +15,10 @@ import { UnsupportedNetworkModal } from './unsupported-network-modal'
 import { useBridgeConnector } from './use-bridge-connector'
 import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
-import { WalletManagementState, WalletStateAction, walletStateReducer } from './wallet-state'
+import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
 
 export type Web3OnBoardConnectorContext = {
-  connect: (networkId?: NetworkConfigHexId, forced?: boolean) => Promise<void>
+  connect: (desiredNetworkHexId?: NetworkConfigHexId) => void
   connector: BridgeConnector | undefined
   networkConnector: NetworkConnector
   connectedAddress: string | undefined
@@ -54,9 +54,9 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
 export const useWeb3OnBoardConnectorContext = () => useContext(web3OnBoardConnectorContext)
 
 function InternalProvider({ children }: WithChildren) {
-  const { dispatch, state } = useReducto<WalletManagementState, WalletStateAction>({
+  const { dispatch, state } = useReducto<WalletManagementState, WalletStateEvent>({
     defaults: {
-      type: 'disconnected',
+      status: 'disconnected',
     },
     reducer: walletStateReducer,
   })
@@ -70,25 +70,25 @@ function InternalProvider({ children }: WithChildren) {
   // const [account, setAccount] = useState<string | undefined>(undefined)
 
   useEffect(() => {
-    console.log(`Current state: ${state.type}`)
+    console.log(`Current state: ${state.status}`)
   }, [state])
 
   const { openModal, closeModal } = useModalContext()
   const { setChain, connectedChain } = useChainSetter()
 
   useEffect(() => {
-    if (state.type === 'connecting') {
-      if (bridgeConnector) dispatch({ type: 'CONNECTED', connector: bridgeConnector })
+    if (state.status === 'connecting') {
+      if (bridgeConnector) dispatch({ type: 'connected', connector: bridgeConnector })
       else void createConnector()
     }
-  }, [state.type, createConnector, bridgeConnector, dispatch])
+  }, [state.status, createConnector, bridgeConnector, dispatch])
 
   useEffect(() => {
-    if (state.type === 'setting-chain') {
+    if (state.status === 'setting-chain') {
       void setChain(
         state.nextNetworkHexId,
-        () => dispatch({ type: 'CONNECT', networkHexId: state.nextNetworkHexId }),
-        () => dispatch({ ...state, type: 'CHANGE_WALLET_REJECTED' }),
+        () => dispatch({ type: 'connect' }),
+        () => dispatch({ ...state, type: 'change-wallet-rejected' }),
       )
     }
   }, [state, setChain, dispatch])
@@ -96,29 +96,29 @@ function InternalProvider({ children }: WithChildren) {
   useEffect(() => {
     if (connectedChain?.id) {
       dispatch({
-        type: 'WALLET_NETWORK_CHANGED',
+        type: 'wallet-network-changed',
         networkHexId: connectedChain.id as NetworkConfigHexId,
       })
     }
   }, [connectedChain?.id, dispatch])
 
   useEffect(() => {
-    if (state.type === 'unsupported-network') {
+    if (state.status === 'unsupported-network') {
       openModal(UnsupportedNetworkModal, {
         switchNetwork: async () => {
           const networkIdToSet = state.previousNetworkHexId ?? NetworkHexIds.MAINNET
-          dispatch({ type: 'CHANGE_CHAIN', networkHexId: networkIdToSet })
+          dispatch({ type: 'change-chain', networkHexId: networkIdToSet })
         },
       })
-    } else if (state.type === 'connected') {
+    } else if (state.status === 'connected') {
       closeModal()
     }
   }, [state, dispatch])
 
   useEffect(() => {
-    if (state.type === 'disconnecting') {
+    if (state.status === 'disconnecting') {
       void disconnect().then(() => {
-        dispatch({ type: 'DISCONNECTED' })
+        dispatch({ type: 'disconnected' })
       })
     }
   }, [state, disconnect, dispatch])
@@ -126,9 +126,8 @@ function InternalProvider({ children }: WithChildren) {
   return (
     <web3OnBoardConnectorContext.Provider
       value={{
-        connect: (_networkId?: NetworkConfigHexId, _forced?: boolean) => {
-          return createConnector()
-        },
+        connect: (desiredNetworkHexId?: NetworkConfigHexId) =>
+          dispatch({ type: 'connect', desiredNetworkHexId }),
         networkConnector: networkConnector,
         connector: bridgeConnector,
         connectedAddress: bridgeConnector?.connectedAccount,
@@ -136,7 +135,7 @@ function InternalProvider({ children }: WithChildren) {
         networkConfig: undefined,
         setPageChainId: () => undefined,
         setChain: (chainId: NetworkConfigHexId) =>
-          dispatch({ type: 'CHANGE_CHAIN', networkHexId: chainId }),
+          dispatch({ type: 'change-chain', networkHexId: chainId }),
       }}
     >
       {children}
