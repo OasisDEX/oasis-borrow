@@ -14,9 +14,9 @@ export const getLendingPriceColor = ({
   mostOptimisticMatchingPrice,
   price,
 }: GetLendingPriceColorParams): { color: string; index: number } => {
-  if (price.lte(highestThresholdPrice)) return { color: lendingPriceColors.belowHtp, index: 0 }
+  if (price.lt(highestThresholdPrice)) return { color: lendingPriceColors.belowHtp, index: 0 }
   if (price.lt(lowestUtilizedPrice)) return { color: lendingPriceColors.belowLup, index: 1 }
-  if (price.lte(mostOptimisticMatchingPrice))
+  if (price.lt(mostOptimisticMatchingPrice))
     return { color: lendingPriceColors.belowMomp, index: 2 }
   else return { color: lendingPriceColors.aboveMomp, index: 3 }
 }
