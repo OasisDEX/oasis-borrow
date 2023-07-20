@@ -151,10 +151,17 @@ export const walletStateReducer: Reducer<WalletManagementState, WalletStateActio
           }
         case 'disconnecting':
         case 'disconnected':
-          return {
-            type: 'unsupported-network',
-            previousNetworkHexId: undefined,
-            networkHexId: action.networkHexId,
+          if (isNetworkHexIdSupported(action.networkHexId)) {
+            return {
+              type: 'connecting',
+              networkHexId: action.networkHexId,
+            }
+          } else {
+            return {
+              type: 'unsupported-network',
+              previousNetworkHexId: undefined,
+              networkHexId: action.networkHexId,
+            }
           }
         default:
           return state
