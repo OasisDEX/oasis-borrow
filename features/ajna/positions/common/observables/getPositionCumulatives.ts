@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { getAjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionCumulatives'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { from, Observable } from 'rxjs'
-import { map, shareReplay } from 'rxjs/operators'
+import { shareReplay } from 'rxjs/operators'
 
 export type AjnaPositionCumulatives = {
   cumulativeDeposit: BigNumber
