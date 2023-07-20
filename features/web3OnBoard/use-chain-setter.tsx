@@ -1,7 +1,7 @@
 import { ConnectedChain, WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { NetworkConfigHexId, networkSetByHexId, useCustomForkParameter } from 'blockchain/networks'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { addCustomForkToTheWallet } from './injected-wallet-interactions'
 
@@ -45,6 +45,12 @@ export function useChainSetter(): ChainSetter {
     },
     [customFork],
   )
+
+  useEffect(() => {
+    if (wallet) {
+      void addForkToWallet(wallet, wallet.chains[0].id as NetworkConfigHexId)
+    }
+  }, [addForkToWallet, wallet])
 
   const setChainProxy = useCallback(
     async (networkHexId: NetworkConfigHexId, onSuccess: () => void, onReject: () => void) => {
