@@ -3,28 +3,6 @@ import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/typ
 
 export const ajnaProducts: AjnaProduct[] = ['borrow', 'earn', 'multiply']
 
-export const DEFAULT_SELECTED_TOKEN = 'ETH'
-
-export const ajnaComingSoonPools = [
-  'CBETH-ETH',
-  'DAI-ETH',
-  'DAI-RETH',
-  'DAI-WBTC',
-  'ETH-DAI',
-  'ETH-USDC',
-  'RETH-DAI',
-  'RETH-ETH',
-  'USDC-DAI',
-  'USDC-ETH',
-  'USDC-WBTC',
-  'USDC-WSTETH',
-  'WBTC-DAI',
-  'WBTC-USDC',
-  'WBTC-USDC',
-  'WSTETH-ETH',
-  'WSTETH-USDC',
-]
-
 export const steps: {
   [ProductKey in AjnaProduct]: {
     [FlowKey in AjnaFlow]: AjnaSidebarStep[]
