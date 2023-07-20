@@ -74,7 +74,8 @@ export const ajnaOpenMultiply = ({
       operationExecutor: getNetworkContracts(NetworkIds.MAINNET, chainId).operationExecutor.address,
       addresses: {
         DAI: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.DAI.address,
-        ETH: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.ETH.address,
+        // Currently tokens.ETH is being mapped to WETH
+        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH_ACTUAL.address,
         WSTETH: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.WSTETH.address,
         USDC: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.USDC.address,
         WBTC: getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.WBTC.address,
@@ -122,7 +123,8 @@ export const ajnaAdjustMultiply = ({
       operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
       addresses: {
         DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
-        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH.address,
+        // Currently tokens.ETH is being mapped to WETH
+        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH_ACTUAL.address,
         WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
         USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
         WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
@@ -164,7 +166,8 @@ export const ajnaCloseMultiply = ({
       operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
       addresses: {
         DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
-        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH.address,
+        // Currently tokens.ETH is being mapped to WETH
+        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH_ACTUAL.address,
         WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
         USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
         WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
