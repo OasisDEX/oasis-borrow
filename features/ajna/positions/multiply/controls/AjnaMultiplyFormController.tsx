@@ -41,6 +41,7 @@ export function AjnaMultiplyFormController() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'adjust')
+                updateState('action', 'adjust')
               },
             },
             {

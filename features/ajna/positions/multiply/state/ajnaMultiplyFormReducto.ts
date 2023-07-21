@@ -50,6 +50,7 @@ export const ajnaMultiplyReset = {
   paybackAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+  loanToValue: undefined,
 }
 
 export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
@@ -105,7 +106,6 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
           return {
             ...state,
             ...ajnaMultiplyReset,
-            loanToValue: rest.loanToValue,
           }
         default:
           return state
