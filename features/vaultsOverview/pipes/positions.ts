@@ -82,6 +82,7 @@ export type AavePosition = Position & {
   fakePositionCreatedEvtForDsProxyUsers?: boolean
   debtToken: string
   protocol: AaveLendingProtocol
+  chainId: NetworkIds
 }
 
 export function createPositions$(
@@ -119,7 +120,8 @@ function buildAaveViewModel(
   walletAddress: string,
   observables: BuildPositionArgs,
 ): Observable<AavePosition | undefined> {
-  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol } = positionCreatedEvent
+  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol, chainId } =
+    positionCreatedEvent
   const aaveServiceMap: Record<AaveLendingProtocol, AaveServices> = {
     [LendingProtocol.AaveV2]: observables.aaveV2,
     [LendingProtocol.AaveV3]: observables.aaveV3,
@@ -216,6 +218,7 @@ function buildAaveViewModel(
           liquidity: liquidity,
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
+          chainId,
         }
       },
     ),
@@ -231,7 +234,8 @@ function buildAaveV3OnlyViewModel(
   strategyConfig: IStrategyConfig,
   tickerPrices$: (tokens: string[]) => Observable<Tickers>,
 ): Observable<AavePosition | undefined> {
-  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol } = positionCreatedEvent
+  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol, chainId } =
+    positionCreatedEvent
 
   if (!checkIfAave(protocol)) {
     return of(undefined)
@@ -316,6 +320,7 @@ function buildAaveV3OnlyViewModel(
         liquidity: liquidity,
         stopLossData: undefined,
         protocol,
+        chainId,
       }
     }),
   )
@@ -349,6 +354,7 @@ function getStethEthAaveV2DsProxyEarnPosition$(
                 debtTokenSymbol: 'ETH',
                 positionType: 'Earn',
                 protocol: LendingProtocol.AaveV2,
+                chainId: NetworkIds.MAINNET,
                 proxyAddress: dsProxyAddress,
                 fakePositionCreatedEvtForDsProxyUsers: true,
               },
