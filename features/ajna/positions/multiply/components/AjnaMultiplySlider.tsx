@@ -88,8 +88,8 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
 
   useEffect(() => {
     // Give a default value to LTV if it's not set
-    // Avoids issues with LTV of 0 and aligns with the initial LTV value
-    // Used in for openMultiply when getting the initial simulation
+    // Avoids issues with LTV of 0 and aligns with the initial LTV value being
+    // used by ajnaOpenMultiply when getting the initial simulation
     if (loanToValue) return
     updateState('loanToValue', DEFAULT_LTV_ON_NEW_POOL)
   }, [loanToValue, resolvedValue])
