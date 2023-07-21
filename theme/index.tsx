@@ -873,6 +873,21 @@ export const oasisBaseTheme = {
       fontSize: 1,
       textDecoration: 'none',
     },
+    networkPicker: {
+      backgroundColor: 'transparent',
+      color: 'primary100',
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      position: 'relative',
+      fontSize: '14px',
+      padding: 0,
+      cursor: 'pointer',
+      '&:disabled': {
+        opacity: 0.5,
+        cursor: 'not-allowed',
+      },
+    },
   },
   icons,
   radio: {
