@@ -1,39 +1,56 @@
-import { NetworkConfigHexId } from 'blockchain/networks'
+import { NetworkConnector } from '@web3-react/network-connector'
+import { NetworkConfigHexId, NetworkHexIds, NetworkIds } from 'blockchain/networks'
 import { BridgeConnector } from 'features/web3OnBoard/bridge-connector'
 
-export type ConnectingWallet = {
-  status: 'connecting'
+export type WalletManagementStateContext = {
+  connector?: BridgeConnector
   desiredNetworkHexId?: NetworkConfigHexId
+  walletNetworkHexId?: NetworkConfigHexId
+  pageNetworkHexIds?: NetworkConfigHexId[]
+  networkConnector?: NetworkConnector
+  networkConnectorNetworkId?: NetworkIds
 }
-export type SettingChainWallet = {
-  status: 'setting-chain'
-  currentNetworkHexId: NetworkConfigHexId
-  nextNetworkHexId: NetworkConfigHexId
-  desiredNetworkHexId?: NetworkConfigHexId
-}
-export type ConnectedWallet = {
-  status: 'connected'
-  networkHexId: NetworkConfigHexId
-  desiredNetworkHexId?: NetworkConfigHexId
-  connector: BridgeConnector
-  address: string
-}
-export type UnsupportedNetworkWallet = {
-  status: 'unsupported-network'
-  previousNetworkHexId: NetworkConfigHexId | undefined
-  networkHexId: NetworkConfigHexId
-  desiredNetworkHexId?: NetworkConfigHexId
-}
-export type DisconnectedWallet = {
-  status: 'disconnected'
-}
-export type DisconnectingWallet = {
-  status: 'disconnecting'
-}
+
 export type WalletManagementState =
-  | ConnectedWallet
-  | DisconnectedWallet
-  | DisconnectingWallet
-  | ConnectingWallet
-  | SettingChainWallet
-  | UnsupportedNetworkWallet
+  | ({ status: 'connecting' } & WalletManagementStateContext)
+  | ({ status: 'disconnected' } & WalletManagementStateContext)
+  | ({ status: 'disconnecting' } & WalletManagementStateContext & {
+        walletNetworkHexId: NetworkConfigHexId
+      })
+  | ({ status: 'connected' } & WalletManagementStateContext & {
+        connector: BridgeConnector
+        walletNetworkHexId: NetworkConfigHexId
+      })
+  | ({ status: 'setting-chain' } & WalletManagementStateContext & {
+        desiredNetworkHexId: NetworkConfigHexId
+        walletNetworkHexId: NetworkConfigHexId
+      })
+  | ({ status: 'unsupported-network' } & WalletManagementStateContext & {
+        desiredNetworkHexId: NetworkConfigHexId
+        walletNetworkHexId: NetworkConfigHexId
+      })
+
+export function getDesiredNetworkHexId(state: WalletManagementState): NetworkConfigHexId {
+  if (state.pageNetworkHexIds && state.pageNetworkHexIds.length > 0) {
+    return state.pageNetworkHexIds[0] // let's assume that the first network is the desired one
+  }
+  return state.desiredNetworkHexId || state.walletNetworkHexId || NetworkHexIds.MAINNET // fallback to mainnet
+}
+
+export function areThePageNetoworksTheSame(
+  pageNetworkHexIds: NetworkConfigHexId[] | undefined,
+  state: WalletManagementState,
+) {
+  if (pageNetworkHexIds === undefined && state.pageNetworkHexIds === undefined) {
+    return true
+  }
+
+  if (pageNetworkHexIds && state.pageNetworkHexIds) {
+    return (
+      pageNetworkHexIds.length === state.pageNetworkHexIds.length &&
+      pageNetworkHexIds.every((hexId) => state.pageNetworkHexIds?.includes(hexId))
+    )
+  }
+
+  return false
+}

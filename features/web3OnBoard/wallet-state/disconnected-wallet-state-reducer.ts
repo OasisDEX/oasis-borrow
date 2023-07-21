@@ -14,6 +14,14 @@ export const disconnectedWalletStateReducer: Reducer<WalletManagementState, Wall
   return match<WalletStateEvent, WalletManagementState>(event)
     .with({ type: 'connect' }, (event) => {
       return {
+        ...state,
+        status: 'connecting',
+        desiredNetworkHexId: event.desiredNetworkHexId,
+      }
+    })
+    .with({ type: 'change-chain' }, (event) => {
+      return {
+        ...state,
         status: 'connecting',
         desiredNetworkHexId: event.desiredNetworkHexId,
       }

@@ -14,6 +14,8 @@ export const disconnectingWalletStateReducer: Reducer<WalletManagementState, Wal
   return match<WalletStateEvent, WalletManagementState>(event)
     .with({ type: 'disconnected' }, () => {
       return {
+        ...state,
+        connector: undefined,
         status: 'disconnected',
       }
     })

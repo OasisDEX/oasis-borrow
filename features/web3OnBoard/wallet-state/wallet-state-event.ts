@@ -16,7 +16,7 @@ export type WalletStateEvent = ReductoActions<
     }
   | {
       type: 'change-chain'
-      networkHexId: NetworkConfigHexId
+      desiredNetworkHexId: NetworkConfigHexId
     }
   | {
       type: 'disconnect'
@@ -34,7 +34,7 @@ export type WalletStateEvent = ReductoActions<
     }
   | {
       type: 'change-wallet-rejected'
-      currentNetworkHexId: NetworkConfigHexId
-      nextNetworkHexId: NetworkConfigHexId
+      walletNetworkHexId: NetworkConfigHexId
+      desiredNetworkHexId: NetworkConfigHexId
     }
 >

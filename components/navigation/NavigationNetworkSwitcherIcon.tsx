@@ -8,23 +8,17 @@ export function NavigationNetworkSwitcherIcon() {
   const [icon, setIcon] = useState<string | undefined>(undefined)
   const {
     connecting: isWalletConnecting,
-    connector,
-    networkConnector,
+    state: { networkConnectorNetworkId },
   } = useWeb3OnBoardConnectorContext()
-  const networkId = connector?.connectorInformation.chainId
-  const networkConfig = networkId ? networkSetById[networkId] : undefined
 
   useEffect(() => {
-    if (networkConfig && networkConfig.icon !== icon) {
-      setIcon(networkConfig.icon)
-    } else {
-      void networkConnector.getChainId().then((chainId) => {
-        if (chainId && networkSetById[chainId].icon !== icon) {
-          setIcon(networkSetById[chainId].icon)
-        }
-      })
+    if (networkConnectorNetworkId) {
+      const networkConfig = networkSetById[networkConnectorNetworkId]
+      if (networkConfig && networkConfig.icon !== icon) {
+        setIcon(networkConfig.icon)
+      }
     }
-  }, [networkConfig, networkConnector, icon])
+  }, [networkConnectorNetworkId, icon])
 
   return isWalletConnecting || !icon ? (
     <AppSpinner />

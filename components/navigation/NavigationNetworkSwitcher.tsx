@@ -13,7 +13,7 @@ import {
   isTestnetEnabled,
   isTestnetNetworkHexId,
 } from 'blockchain/networks'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useModalContext } from 'helpers/modalHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -35,9 +35,9 @@ const renderSeparator = () => {
 }
 
 export function NavigationNetworkSwitcherOrb() {
-  const { connectedChain, connect, connecting, setChain } = useConnection({
-    requireConnection: false,
-  })
+  const { connect, connecting, setChain } = useConnection()
+  const { wallet } = useWalletManagement()
+  const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
   const { openModal } = useModalContext()
 

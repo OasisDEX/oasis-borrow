@@ -29,12 +29,10 @@ export function useBridgeConnector(): BridgeConnectorState {
   }, [wallet, chains, disconnect, connectedChain])
 
   const createConnector = useCallback(async () => {
-    if (!connecting && !wallet) {
-      if (connector) {
-        return
-      }
-      await connect()
+    if (connector || connecting || wallet) {
+      return
     }
+    await connect()
   }, [wallet, connect, connecting, connector])
 
   const disconnectProxy = useCallback(async () => {
