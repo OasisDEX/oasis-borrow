@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { normalizeValue } from '@oasisdex/dma-library'
+import { DEFAULT_LTV_ON_NEW_POOL } from 'actions/ajna/multiply'
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -10,7 +11,7 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Flex, Text } from 'theme-ui'
@@ -24,6 +25,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
   const {
     environment: { collateralToken, quoteToken, isShort, collateralPrice },
   } = useAjnaGeneralContext()
+
   const {
     form: {
       state: { loanToValue, depositAmount },
@@ -51,10 +53,9 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     }
   }, [depositAmount?.toString()])
 
-  const min = (simulation?.minRiskRatio || position.minRiskRatio).loanToValue.decimalPlaces(
-    2,
-    BigNumber.ROUND_UP,
-  )
+  // Want min to be zero or related to a simulated position
+  // Trying to determine min from existing position (pre simulation) creates issues
+  const min = simulation?.minRiskRatio.loanToValue.decimalPlaces(2, BigNumber.ROUND_UP) || zero
 
   const generateMax = getAjnaBorrowDebtMax({
     precision: getToken(quoteToken).precision,
@@ -69,6 +70,8 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
       swapData: swap?.current,
     }) || collateralPrice
 
+  // Max falls back to 100% if it's zero or NaN to limit issues
+  // With min/loanToValue being larger than max
   const max =
     !generateMax.isZero() && tokenPrice
       ? generateMax
@@ -77,13 +80,43 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
           .decimalPlaces(2, BigNumber.ROUND_DOWN)
       : one
 
-  let resolvedValue = loanToValue || position.riskRatio.loanToValue || min
-  if (resolvedValue.gt(max)) {
-    resolvedValue = max
-  }
-  if (resolvedValue.lt(min)) {
-    resolvedValue = min
-  }
+  const resolvedValue = loanToValue || min || DEFAULT_LTV_ON_NEW_POOL
+
+  const sliderMin = min || DEFAULT_LTV_ON_NEW_POOL
+  const sliderMax = max.gt(min || zero) ? max : one
+  const impossibleLimits = min.gt(max)
+
+  useEffect(() => {
+    // Give a default value to LTV if it's not set
+    // Avoids issues with LTV of 0 and aligns with the initial LTV value
+    // Used in for openMultiply when getting the initial simulation
+    if (loanToValue) return
+    updateState('loanToValue', DEFAULT_LTV_ON_NEW_POOL)
+  }, [loanToValue, resolvedValue])
+
+  useEffect(() => {
+    // If prevailing LTV is lower than min bump it up to min
+    if (!impossibleLimits && min && loanToValue && loanToValue.lt(min)) {
+      updateState('loanToValue', min)
+    }
+  }, [loanToValue, min, impossibleLimits])
+
+  useEffect(() => {
+    // If prevailing LTV is higher than max bump it down to max
+    if (!impossibleLimits && loanToValue && loanToValue.gt(max)) {
+      updateState('loanToValue', max)
+    }
+  }, [loanToValue, max, impossibleLimits])
+
+  useEffect(() => {
+    // Place LTV in middle of impossible limits
+    // To help mediate issues with these edge cases
+    if (!impossibleLimits || !loanToValue) return
+    // Adjustment has already taken effect
+    if (loanToValue.lt(min) && loanToValue.gt(max)) return
+    // Place LTV in middle of impossible limits
+    updateState('loanToValue', min.plus(max).div(2))
+  }, [loanToValue, max, min, impossibleLimits])
 
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
@@ -128,8 +161,8 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
         </Flex>
       )}
       onChange={(value) => updateState('loanToValue', value)}
-      minBoundry={min}
-      maxBoundry={max}
+      minBoundry={sliderMin}
+      maxBoundry={sliderMax}
       lastValue={resolvedValue}
       disabled={disabled}
       step={0.01}

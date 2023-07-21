@@ -116,7 +116,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     oasisFee: `$${formatAmount(oasisFee, 'USD')}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
-
+  
   return (
     <InfoSection
       title={t('vault-changes.order-information')}

@@ -186,7 +186,7 @@ export function AjnaProductContextProvider({
   // @ts-expect-error
   const form = formReducto(formDefaults)
   const { state } = form
-
+  
   const [positionIdFromDpmProxyData] = useObservable(
     useMemo(() => positionIdFromDpmProxy$(state.dpmAddress), [state.dpmAddress]),
   )

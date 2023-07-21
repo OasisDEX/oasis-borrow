@@ -3,7 +3,6 @@ import {
   AjnaCommonPayload,
   AjnaPool,
   AjnaPosition,
-  normalizeValue,
   RiskRatio,
   strategies,
 } from '@oasisdex/dma-library'
@@ -15,7 +14,7 @@ import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/aj
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 
-const DEFAULT_LTV_ON_NEW_POOL = new BigNumber(0.05)
+export const DEFAULT_LTV_ON_NEW_POOL = new BigNumber(0.05)
 
 export const ajnaOpenMultiply = ({
   state,
@@ -25,7 +24,6 @@ export const ajnaOpenMultiply = ({
   collateralToken,
   quoteToken,
   walletAddress,
-  pool,
   slippage,
 }: {
   state: AjnaMultiplyFormState
@@ -40,20 +38,11 @@ export const ajnaOpenMultiply = ({
 }) => {
   const { depositAmount, loanToValue } = state
 
-  /**
-   * Works when deposit amount is high, and pool min debt amount is low
-   * However, when deposit amount is low and pool min debt amount is high it easily
-   * results in LTVs > 100%
-   * Suggested 0.5 LTV which frequently will be in breach of the pool min debt amount
-   * However, multiply pool validation should point the user in the correct direction
-   */
-  const initialLTV = normalizeValue(
-    pool.poolMinDebtAmount.div(depositAmount!.times(commonPayload.collateralPrice)),
-  ).gt(1)
-    ? new BigNumber(0.5)
-    : normalizeValue(
-        pool.poolMinDebtAmount.div(depositAmount!.times(commonPayload.collateralPrice)),
-      )
+  // Align initial LTV of simulation with slider initial LTV
+  // Avoids discrepancy between Order Form Info and slider
+  // Slider also has logic that will iteratively adjust LTV towards a sensible value
+  // Without requiring user input
+  const initialLTV = DEFAULT_LTV_ON_NEW_POOL
 
   return strategies.ajna.multiply.open(
     {
