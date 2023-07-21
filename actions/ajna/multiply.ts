@@ -103,6 +103,9 @@ export const ajnaAdjustMultiply = ({
 }) => {
   const { loanToValue, depositAmount, withdrawAmount } = state
 
+  console.log('LIB TARGET')
+  console.log('loanToValue', loanToValue?.toString())
+  console.log('pos loanToValue', (position as AjnaPosition).riskRatio.loanToValue.toString())
   return strategies.ajna.multiply.adjust(
     {
       ...commonPayload,

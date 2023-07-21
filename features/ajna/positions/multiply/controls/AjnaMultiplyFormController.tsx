@@ -20,7 +20,7 @@ export function AjnaMultiplyFormController() {
   const {
     form: {
       dispatch,
-      state: { uiDropdown },
+      state: { uiDropdown, loanToValue },
       updateState,
     },
   } = useAjnaProductContext('multiply')
@@ -40,6 +40,7 @@ export function AjnaMultiplyFormController() {
               iconShrink: 2,
               action: () => {
                 dispatch({ type: 'reset' })
+                updateState('loanToValue', loanToValue)
                 updateState('uiDropdown', 'adjust')
                 updateState('action', 'adjust')
               },
@@ -53,6 +54,7 @@ export function AjnaMultiplyFormController() {
               icon: getToken(collateralToken).iconCircle,
               action: () => {
                 dispatch({ type: 'reset' })
+                updateState('loanToValue', loanToValue)
                 updateState('uiDropdown', 'collateral')
                 updateState('uiPill', 'deposit-collateral-multiply')
                 updateState('action', 'deposit-collateral-multiply')
