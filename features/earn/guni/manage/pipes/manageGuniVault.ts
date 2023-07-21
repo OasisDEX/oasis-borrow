@@ -339,8 +339,10 @@ export function createManageGuniVault$(
                                   sharedAmount1: sharedAmount1.minus(0.01),
                                   requiredDebt,
                                   fromTokenAmount: swap.collateralAmount,
-                                  toTokenAmount: swap.daiAmount,
-                                  minToTokenAmount: swap.daiAmount.times(one.minus(state.slippage)),
+                                  toTokenAmount: swap.quoteAmount,
+                                  minToTokenAmount: swap.quoteAmount.times(
+                                    one.minus(state.slippage),
+                                  ),
                                 }
                               }),
                             )

@@ -691,11 +691,11 @@ export function applyEstimateGas(
               ? // add oazo fee because Oazo takes the fee from the pre swap amount,
                 // so that means that required debt on the vault must be increased
                 // to incorporate this fee.
-                swap.daiAmount.div(one.minus(OAZO_FEE))
+                swap.quoteAmount.div(one.minus(OAZO_FEE))
               : // remove slippage because we are selling collateral and buying DAI,
                 // and so we will only end up with the amount of DAI that is
                 // returned from the exchange minus the slippage.
-                swap.daiAmount.div(one.plus(SLIPPAGE))
+                swap.quoteAmount.div(one.plus(SLIPPAGE))
             : zero
 
         const borrowedCollateral =
