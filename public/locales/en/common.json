@@ -2778,7 +2778,7 @@
       "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet.",
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
-      "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
+      "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
       "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
