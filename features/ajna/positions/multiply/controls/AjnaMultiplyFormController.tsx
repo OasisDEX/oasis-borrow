@@ -40,6 +40,9 @@ export function AjnaMultiplyFormController() {
               iconShrink: 2,
               action: () => {
                 dispatch({ type: 'reset' })
+                // Need to ensure consistent after pill behaviour between t/xs
+                // https://app.shortcut.com/oazo-apps/story/10537/inconsistent-after-pill-behaviour?vc_group_by=day&ct_workflow=all&cf_workflow=500000053
+                // Undefined loanToValue forces simulation to fallback to stale position
                 updateState('loanToValue', loanToValue)
                 updateState('uiDropdown', 'adjust')
                 updateState('action', 'adjust')
@@ -54,6 +57,9 @@ export function AjnaMultiplyFormController() {
               icon: getToken(collateralToken).iconCircle,
               action: () => {
                 dispatch({ type: 'reset' })
+                // Need to ensure consistent after pill behaviour between t/xs
+                // https://app.shortcut.com/oazo-apps/story/10537/inconsistent-after-pill-behaviour?vc_group_by=day&ct_workflow=all&cf_workflow=500000053
+                // Undefined loanToValue forces simulation to fallback to stale position
                 updateState('loanToValue', loanToValue)
                 updateState('uiDropdown', 'collateral')
                 updateState('uiPill', 'deposit-collateral-multiply')

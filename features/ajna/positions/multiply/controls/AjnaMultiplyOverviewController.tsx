@@ -61,15 +61,6 @@ export function AjnaMultiplyOverviewController() {
       ? simulation.buyingPower
       : undefined
 
-  console.log('---')
-
-  console.log('loanToValue={', position.riskRatio.loanToValue.toString())
-  console.log('afterLoanToValue={', simulation?.riskRatio.loanToValue.toString())
-  console.log('position.collateralAmount', position.collateralAmount.toString())
-  console.log('sim.collateralAmount', simulation?.collateralAmount.toString())
-  console.log('position.debtAmount', position.debtAmount.toString())
-  console.log('sim.debtAmount', simulation?.debtAmount.toString())
-
   return (
     <Grid gap={2}>
       <DetailsSection

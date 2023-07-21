@@ -281,16 +281,6 @@ export function AjnaProductContextProvider({
   useEffect(() => {
     const fromToken = getToken(isIncreasingPositionRisk ? quoteToken : collateralToken)
     const toToken = getToken(isIncreasingPositionRisk ? collateralToken : quoteToken)
-    console.log('-----------------')
-    console.log('PRODUCT CONTEXT USE EFFECT')
-    console.log(
-      'prevPositionLTV',
-      context.position.currentPosition.position?.riskRatio?.loanToValue?.toString(),
-    )
-    console.log('newPositionLTV', position?.riskRatio?.loanToValue?.toString())
-    console.log('simulation?.position', simulation?.position?.riskRatio?.loanToValue?.toString())
-    console.log('cachedPositionLTV', cachedPosition?.riskRatio?.loanToValue?.toString())
-    console.log('-----------------')
     setContext((prev) => ({
       ...prev,
       form,
