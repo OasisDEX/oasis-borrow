@@ -32,9 +32,11 @@ export function createAccountData(
         startWithDefault(readPositionCreatedEvents$(context.account), []),
       ).pipe(
         map(([balance, numberOfVaults, ensName, hasAavePosition, dpmPositionCreatedEvents]) => {
+          // dpm valuts contains aave & ajna positions
           const numberOfDpmVaults = dpmPositionCreatedEvents.length
             ? dpmPositionCreatedEvents.length
             : 0
+          // only one position per user is allowed on ds proxys
           const numberOfAavePositions = hasAavePosition ? 1 : 0
 
           return {

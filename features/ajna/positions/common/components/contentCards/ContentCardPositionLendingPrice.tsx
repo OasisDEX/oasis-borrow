@@ -5,9 +5,10 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import { Steps } from 'components/Steps'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { formatCryptoBalance } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading, Text } from 'theme-ui'
@@ -71,7 +72,8 @@ interface ContentCardPositionLendingPriceProps {
   positionLendingPrice: BigNumber
   highestThresholdPrice: BigNumber
   afterPositionLendingPrice?: BigNumber
-  relationToMarketPrice: BigNumber
+  priceColor: string
+  priceColorIndex: number
   changeVariant?: ChangeVariantType
 }
 
@@ -83,7 +85,8 @@ export function ContentCardPositionLendingPrice({
   positionLendingPrice,
   highestThresholdPrice,
   afterPositionLendingPrice,
-  relationToMarketPrice,
+  priceColor,
+  priceColorIndex,
   changeVariant = 'positive',
 }: ContentCardPositionLendingPriceProps) {
   const { t } = useTranslation()
@@ -98,13 +101,16 @@ export function ContentCardPositionLendingPrice({
     highestThresholdPrice: formatCryptoBalance(
       isShort ? one.div(highestThresholdPrice) : highestThresholdPrice,
     ),
-    relationToMarketPrice: formatDecimalAsPercent(relationToMarketPrice.abs()),
   }
 
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.position-page.earn.manage.overview.position-lending-price'),
     value: formatted.positionLendingPrice,
     unit: priceFormat,
+    customValueColor: priceColor,
+    extra: !isLoading && !afterPositionLendingPrice && (
+      <Steps active={priceColorIndex} color={priceColor} count={4} />
+    ),
     change: {
       isLoading,
       value:
@@ -126,17 +132,5 @@ export function ContentCardPositionLendingPrice({
       </AjnaDetailsSectionContentSimpleModal>
     ),
   }
-
-  if (!positionLendingPrice.isZero()) {
-    contentCardSettings.footnote = t(
-      `ajna.position-page.earn.manage.overview.${
-        relationToMarketPrice.gt(zero) ? 'below' : 'above'
-      }-market-price`,
-      {
-        amount: formatted.relationToMarketPrice,
-      },
-    )
-  }
-
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

@@ -44,8 +44,8 @@ export function AjnaMultiplyOverviewController() {
   const pnl = new BigNumber(-110.26)
 
   const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPrice))
-    : position.liquidationPrice
+    ? normalizeValue(one.div(position.liquidationPriceT0Np))
+    : position.liquidationPriceT0Np
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)

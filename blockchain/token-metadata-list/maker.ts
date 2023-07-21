@@ -205,7 +205,7 @@ export const makerTokensMetadata: TokenConfig[] = [
     name: 'WSTETH',
     icon: 'wsteth_circle_color',
     iconCircle: 'wsteth_circle_color',
-    coinbaseTicker: 'coinbase-wrapped-staked-eth',
+    coinbaseTicker: 'lido-finance-wsteth',
     coinGeckoTicker: 'wrapped-steth',
     coinGeckoId: 'wrapped-steth',
     color: '#ff077d',
