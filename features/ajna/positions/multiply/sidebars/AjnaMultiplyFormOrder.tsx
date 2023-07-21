@@ -27,7 +27,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   } = useAjnaGeneralContext()
   const {
     form: {
-      state: { action },
+      state: { action, loanToValue },
     },
     position: { cachedPosition, isSimulationLoading, currentPosition, swap },
   } = useAjnaProductContext('multiply')
@@ -60,11 +60,11 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const withBuying =
     action === 'open-multiply' ||
     (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
-      simulationData?.riskRatio.loanToValue.gt(positionData.riskRatio.loanToValue))
+      loanToValue?.gt(positionData.riskRatio.loanToValue))
   const withSelling =
     action === 'close-multiply' ||
     (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
-      simulationData?.riskRatio.loanToValue.lt(positionData.riskRatio.loanToValue))
+      loanToValue?.lt(positionData.riskRatio.loanToValue))
   const withOasisFee = withBuying || withSelling
 
   const buyingOrSellingCollateral = swapData

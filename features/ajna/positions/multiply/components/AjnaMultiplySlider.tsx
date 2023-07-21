@@ -77,14 +77,12 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
           .decimalPlaces(2, BigNumber.ROUND_DOWN)
       : one
 
-  let resolvedValue = loanToValue || simulation?.riskRatio.loanToValue || min
+  let resolvedValue = loanToValue || position.riskRatio.loanToValue || min
   if (resolvedValue.gt(max)) {
     resolvedValue = max
-    updateState('loanToValue', max)
   }
   if (resolvedValue.lt(min)) {
     resolvedValue = min
-    updateState('loanToValue', max)
   }
 
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
