@@ -2918,6 +2918,7 @@
     }
   },
   "navigation-network": {
+    "l2beat-title": "Learn about L2s",
     "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
   }
 }
