@@ -17,6 +17,7 @@ import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
+import { AjnaPositionCumulatives } from 'features/ajna/positions/common/observables/getPositionCumulatives'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
 import {
   AjnaEarnFormState,
@@ -46,6 +47,7 @@ interface AjnaProductContextProviderPropsWithBorrow {
   product: 'borrow'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
+  positionCumulatives: AjnaPositionCumulatives
 }
 
 interface AjnaProductContextProviderPropsWithEarn {
@@ -55,6 +57,7 @@ interface AjnaProductContextProviderPropsWithEarn {
   product: 'earn'
   positionAuction: AjnaEarnPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
+  positionCumulatives: AjnaPositionCumulatives
 }
 
 interface AjnaProductContextProviderPropsWithMultiply {
@@ -64,6 +67,7 @@ interface AjnaProductContextProviderPropsWithMultiply {
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
+  positionCumulatives: AjnaPositionCumulatives
 }
 
 type AjnaProductDetailsContextProviderProps =
@@ -91,6 +95,7 @@ interface AjnaProductContextPosition<P, A> {
   setCachedSwap: (swap: SwapData) => void
   positionAuction: A
   history: AjnaUnifiedHistoryEvent[]
+  cumulatives?: AjnaPositionCumulatives
 }
 
 interface AjnaProductContext<P, F, A> {
@@ -163,6 +168,7 @@ export function AjnaProductContextProvider({
   position,
   positionAuction,
   positionHistory,
+  positionCumulatives,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { walletAddress } = useAccount()
@@ -303,6 +309,7 @@ export function AjnaProductContextProvider({
           cached: cachedSwap,
         },
         history: positionHistory,
+        cumulatives: positionCumulatives,
       },
       validation,
       notifications,
