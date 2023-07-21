@@ -135,8 +135,15 @@ export async function getAjnaParameters({
       const { loanToValue } = state
 
       if (loanToValue) {
-        // TODO here handling for complex action once available
-        return defaultPromise
+        return ajnaAdjustMultiply({
+          state,
+          commonPayload,
+          dependencies,
+          position,
+          slippage,
+          collateralToken,
+          quoteToken,
+        })
       }
 
       return ajnaDepositGenerateBorrow({
@@ -151,8 +158,15 @@ export async function getAjnaParameters({
       const { loanToValue } = state
 
       if (loanToValue) {
-        // TODO here handling for complex action once available
-        return defaultPromise
+        return ajnaAdjustMultiply({
+          state,
+          commonPayload,
+          dependencies,
+          position,
+          slippage,
+          collateralToken,
+          quoteToken,
+        })
       }
 
       return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position })

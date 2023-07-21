@@ -56,15 +56,14 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       'withdraw-multiply',
       'close-multiply',
     ].includes(action)
-  // TODO: add condition for both withBuying and withSelling to check id they should be displayed for:
-  // deposit-collateral-multiply, deposit-quote-multiply, withdraw-multiply
+
   const withBuying =
     action === 'open-multiply' ||
-    (action === 'adjust' &&
+    (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
       simulationData?.riskRatio.loanToValue.gt(positionData.riskRatio.loanToValue))
   const withSelling =
     action === 'close-multiply' ||
-    (action === 'adjust' &&
+    (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
       simulationData?.riskRatio.loanToValue.lt(positionData.riskRatio.loanToValue))
   const withOasisFee = withBuying || withSelling
 
