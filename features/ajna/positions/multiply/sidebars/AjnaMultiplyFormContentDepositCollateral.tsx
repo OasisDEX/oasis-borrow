@@ -1,9 +1,7 @@
-import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldDeposit } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
-import { AjnaMultiplySlider } from 'features/ajna/positions/multiply/components/AjnaMultiplySlider'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -29,9 +27,14 @@ export function AjnaMultiplyFormContentDepositCollateral() {
         token={collateralToken}
         tokenPrice={collateralPrice}
       />
-      <PillAccordion title={t('adjust-your-position-additional')}>
-        <AjnaMultiplySlider disabled={!depositAmount} />
-      </PillAccordion>
+      {/* DISABLED: We're currently unable to support this operation
+       * in the library based on existing operation if the LTV increases
+       * added to product continuous improvements backlog
+       * https://app.shortcut.com/oazo-apps/story/10553/multiply-deposit-ltv-decreases-are-not-supported-in-operation
+       */}
+      {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}
+      {/*  <AjnaMultiplySlider disabled={!depositAmount} />*/}
+      {/*</PillAccordion>*/}
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />
