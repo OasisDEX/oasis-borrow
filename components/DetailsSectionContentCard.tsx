@@ -3,7 +3,7 @@ import { SystemStyleObject } from '@styled-system/css'
 import { Skeleton } from 'components/Skeleton'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { TranslateStringType } from 'helpers/translateStringType'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactElement, ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
@@ -35,7 +35,7 @@ export interface ContentCardProps {
   modal?: TranslateStringType | JSX.Element
   title: string
   unit?: TranslateStringType
-  value?: string
+  value?: ReactElement | string
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
