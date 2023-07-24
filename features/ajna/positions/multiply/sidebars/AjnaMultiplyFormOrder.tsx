@@ -73,7 +73,8 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const initialQuote$ = exchangeQuote$(
     collateralToken,
     slippage,
-    one,
+    // use ~1$ worth amount of collateral token
+    one.div(collateralPrice),
     withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL',
     'defaultExchange',
     quoteToken,
