@@ -4,10 +4,9 @@ import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/
 import { AjnaFormFieldWithdraw } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 
 export function AjnaMultiplyFormContentWithdrawCollateral() {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken },
   } = useAjnaGeneralContext()
