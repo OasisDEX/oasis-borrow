@@ -1,15 +1,12 @@
-import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldWithdraw } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
-import { AjnaMultiplySlider } from 'features/ajna/positions/multiply/components/AjnaMultiplySlider'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 
 export function AjnaMultiplyFormContentWithdrawCollateral() {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken },
   } = useAjnaGeneralContext()
@@ -29,9 +26,14 @@ export function AjnaMultiplyFormContentWithdrawCollateral() {
         token={collateralToken}
         tokenPrice={collateralPrice}
       />
-      <PillAccordion title={t('adjust-your-position-additional')}>
-        <AjnaMultiplySlider disabled={!withdrawAmount} />
-      </PillAccordion>
+      {/* DISABLED: We're currently unable to support this operation
+       * in the library based on existing operation if the LTV increases
+       * added to product continuous improvements backlog
+       * https://app.shortcut.com/oazo-apps/story/10552/multiply-withdrawal-ltv-increases-are-not-supported-in-operation
+       */}
+      {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}
+      {/*  <AjnaMultiplySlider disabled={!withdrawAmount} />*/}
+      {/*</PillAccordion>*/}
       {withdrawAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />
