@@ -1,4 +1,5 @@
 import { AjnaEarnPosition } from '@oasisdex/dma-library'
+import { TxStatus } from '@oasisdex/transactions'
 import {
   AjnaFormState,
   AjnaGenericPosition,
@@ -15,6 +16,7 @@ interface GetIsFormEmptyParams {
   state: AjnaFormState
   position: AjnaGenericPosition
   currentStep: AjnaSidebarStep
+  txStatus?: TxStatus
 }
 
 export function getIsFormEmpty({
@@ -22,6 +24,7 @@ export function getIsFormEmpty({
   state,
   position,
   currentStep,
+  txStatus,
 }: GetIsFormEmptyParams): boolean {
   switch (product) {
     case 'borrow': {
@@ -39,7 +42,7 @@ export function getIsFormEmpty({
         case 'nft':
         case 'dpm':
         case 'transaction':
-          return false
+          return txStatus === 'Success'
         case 'manage':
           if ((position as AjnaEarnPosition).quoteTokenAmount.isZero()) {
             return !depositAmount && !withdrawAmount
@@ -63,7 +66,7 @@ export function getIsFormEmpty({
           return !depositAmount
         case 'dpm':
         case 'transaction':
-          return false
+          return txStatus === 'Success'
         case 'manage':
           if (action === 'close-multiply') {
             return false
