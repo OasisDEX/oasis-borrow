@@ -28,7 +28,7 @@ export function useAjnaTxHandler(): () => void {
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    tx: { setTxDetails },
+    tx: { setTxDetails, txDetails },
     environment: {
       collateralPrice,
       collateralToken,
@@ -58,7 +58,13 @@ export function useAjnaTxHandler(): () => void {
     useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
-  const isFormEmpty = getIsFormEmpty({ product, state, position, currentStep })
+  const isFormEmpty = getIsFormEmpty({
+    product,
+    state,
+    position,
+    currentStep,
+    txStatus: txDetails?.txStatus,
+  })
 
   useEffect(() => {
     cancelablePromise?.cancel()
