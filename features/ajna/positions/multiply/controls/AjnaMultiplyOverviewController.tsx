@@ -22,6 +22,7 @@ export function AjnaMultiplyOverviewController() {
       collateralToken,
       quoteToken,
       flow,
+      owner,
       collateralPrice,
       priceFormat,
       quotePrice,
@@ -92,6 +93,9 @@ export function AjnaMultiplyOverviewController() {
               changeVariant={changeVariant}
             />
             <ContentCardNetBorrowCost
+              collateralToken={collateralToken}
+              quoteToken={quoteToken}
+              owner={owner}
               netBorrowCost={position.pool.interestRate}
               changeVariant={changeVariant}
             />
