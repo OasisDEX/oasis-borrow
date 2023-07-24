@@ -61,8 +61,8 @@ function getLibrary(provider: any, connector: AbstractConnector | undefined): We
 
 const globalStyles = `
   ${web3OnboardStyles}
-  body,
   html,
+  body,
   div#__next {
     height: 100%;
   }
