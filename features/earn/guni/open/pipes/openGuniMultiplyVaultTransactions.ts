@@ -27,7 +27,7 @@ export function applyGuniEstimateGas(
     } = state
 
     const daiAmount =
-      swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_LOWER_FEE)) : zero
+      swap?.status === 'SUCCESS' ? swap.quoteAmount.div(one.minus(OAZO_LOWER_FEE)) : zero
     const collateralAmount =
       swap?.status === 'SUCCESS' ? swap.collateralAmount.times(one.minus(SLIPPAGE)) : zero
 

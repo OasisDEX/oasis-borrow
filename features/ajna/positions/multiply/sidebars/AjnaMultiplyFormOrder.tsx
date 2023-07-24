@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { SecondaryVariantType } from 'components/infoSection/Item'
@@ -14,14 +15,16 @@ import {
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
-import { zero } from 'helpers/zero'
+import { useObservable } from 'helpers/observableHook'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
+  const { exchangeQuote$ } = useAppContext()
   const {
-    environment: { collateralPrice, collateralToken, quoteToken, slippage },
+    environment: { collateralPrice, collateralToken, quoteToken, slippage, isShort },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
@@ -67,13 +70,29 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       loanToValue?.lt(positionData.riskRatio.loanToValue))
   const withOasisFee = withBuying || withSelling
 
+  const initialQuote$ = exchangeQuote$(
+    collateralToken,
+    slippage,
+    // use ~1$ worth amount of collateral token
+    one.div(collateralPrice),
+    withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL',
+    'defaultExchange',
+    quoteToken,
+  )
+
+  const [initialQuote] = useObservable(initialQuote$)
+
   const buyingOrSellingCollateral = swapData
     ? withBuying
       ? swapData.minToTokenAmount
       : swapData.fromTokenAmount
     : zero
 
-  const priceImpact = calculatePriceImpact(tokenPrice || zero, collateralPrice)
+  const priceImpact =
+    initialQuote?.status === 'SUCCESS' && tokenPrice
+      ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice)
+      : undefined
+
   const oasisFee = withOasisFee
     ? buyingOrSellingCollateral.times(OAZO_FEE.times(collateralPrice))
     : zero
@@ -111,8 +130,12 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       buyingOrSellingCollateral.times(collateralPrice),
       'USD',
     )}`,
-    collateralPrice: `$${formatAmount(collateralPrice, 'USD')}`,
-    collateralPriceImpact: formatDecimalAsPercent(priceImpact),
+    marketPrice: tokenPrice
+      ? `${formatCryptoBalance(
+          isShort ? one.div(tokenPrice) : tokenPrice,
+        )} ${collateralToken}/${quoteToken}`
+      : 'n/a',
+    marketPriceImpact: priceImpact ? formatDecimalAsPercent(priceImpact) : 'n/a',
     oasisFee: `$${formatAmount(oasisFee, 'USD')}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
@@ -154,10 +177,12 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         ...(withBuying || withSelling
           ? [
               {
-                label: t('vault-changes.price-impact', { token: collateralToken }),
-                value: formatted.collateralPrice,
+                label: t('vault-changes.price-impact', {
+                  token: `${collateralToken}/${quoteToken}`,
+                }),
+                value: formatted.marketPrice,
                 secondary: {
-                  value: formatted.collateralPriceImpact,
+                  value: formatted.marketPriceImpact,
                   variant: 'negative' as SecondaryVariantType,
                 },
                 isLoading,
