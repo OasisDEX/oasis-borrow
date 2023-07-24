@@ -18,7 +18,6 @@ export const L2BeatSection = () => {
       }}
     >
       <Link
-        as={'a'}
         href="https://l2beat.com/scaling/summary"
         target="_blank"
         variant="networkPicker"
@@ -33,6 +32,7 @@ export const L2BeatSection = () => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
+          textDecoration: 'none',
         }}
         onMouseOver={() => {
           setHover(true)
@@ -58,7 +58,7 @@ export const L2BeatSection = () => {
               zIndex: '2',
             }}
           />
-          {'L2Beat'}
+          {t('navigation-network.l2beat-title')}
         </Box>
         {hover && <Icon name="arrow_right_light" />}
       </Link>

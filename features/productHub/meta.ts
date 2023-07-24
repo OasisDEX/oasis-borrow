@@ -60,11 +60,11 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'ETH',
     icon: getToken('ETH').iconCircle,
   },
-  BTC: {
-    title: 'Bitcoin',
-    description: 'WBTC/TBTC',
-    value: 'BTC',
-    icon: 'btc_circle_color',
+  WBTC: {
+    title: 'Wrapped BTC',
+    description: 'WBTC',
+    value: 'WBTC',
+    icon: getToken('WBTC').iconCircle,
   },
   USDC: {
     title: 'USDCoin',
@@ -91,7 +91,7 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      BTC: productHubTokenOptions.BTC,
+      WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
     },
   },
@@ -100,7 +100,7 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      BTC: productHubTokenOptions.BTC,
+      WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
     },
@@ -110,7 +110,7 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      BTC: productHubTokenOptions.BTC,
+      WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
     },
@@ -122,7 +122,7 @@ const productHubOptionsMapFiltered = clone(productHubOptionsMap)
 if (!getFeatureToggle('Ajna')) {
   delete productHubOptionsMapFiltered.borrow.tokens.USDC
   delete productHubOptionsMapFiltered.earn.tokens.USDC
-  delete productHubOptionsMapFiltered.earn.tokens.BTC
+  delete productHubOptionsMapFiltered.earn.tokens.WBTC
 }
 
 export const productHubStrategyFilter = [

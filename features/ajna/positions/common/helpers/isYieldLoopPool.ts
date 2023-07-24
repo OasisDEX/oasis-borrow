@@ -1,4 +1,5 @@
-const POOLS_WITH_YIELD_LOOP = ['CBETH-ETH', 'RETH-ETH', 'WSTETH-ETH', 'TBTC-WBTC']
+const YIELD_LOOP_COLLATERALS = ['CBETH', 'RETH', 'WSTETH']
+const YIELD_LOOP_QUOTES = ['ETH']
 
 interface isYieldLoopParams {
   collateralToken: string
@@ -6,5 +7,5 @@ interface isYieldLoopParams {
 }
 
 export function isYieldLoopPool({ collateralToken, quoteToken }: isYieldLoopParams): boolean {
-  return POOLS_WITH_YIELD_LOOP.includes(`${collateralToken}-${quoteToken}`)
+  return YIELD_LOOP_COLLATERALS.includes(collateralToken) && YIELD_LOOP_QUOTES.includes(quoteToken)
 }

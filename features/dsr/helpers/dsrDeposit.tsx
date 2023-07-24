@@ -1,8 +1,10 @@
 // @ts-nocheck
+import { EventTypes, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
+import { getNetworkById, NetworkIds } from 'blockchain/networks'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { applyAllowanceChanges } from 'features/allowance/allowance'
@@ -125,6 +127,8 @@ function addTransitions(
   proxyAddress$: Observable<string | undefined>,
   change: (ch: DsrCreationChange) => void,
   state: DsrDepositState,
+  chainId: NetworkIds,
+  walletType: string,
 ): DsrDepositState {
   function reset() {
     change({ kind: 'stage', stage: 'editing' })
@@ -210,6 +214,12 @@ function addTransitions(
   }
 
   if (state.stage === 'depositSuccess' || state.stage === 'withdrawSuccess') {
+    trackingEvents.daiSavingsRate(EventTypes.ButtonClick, {
+      depositAmount: state.amount?.toNumber(),
+      txHash: state.depositTxHash,
+      network: getNetworkById(chainId).name,
+      walletType,
+    })
     return {
       ...state,
       reset,
@@ -377,7 +387,15 @@ export function createDsrDeposit$(
             scan(apply, initialState),
             map(validate),
             switchMap(curry(constructEstimateGas)(addGasEstimation$)),
-            map(curry(addTransitions)(txHelpers$, proxyAddress$, change)),
+            map(
+              curry(addTransitions)(
+                txHelpers$,
+                proxyAddress$,
+                change,
+                context.chainId,
+                context.walletLabel,
+              ),
+            ),
           )
         }),
       )

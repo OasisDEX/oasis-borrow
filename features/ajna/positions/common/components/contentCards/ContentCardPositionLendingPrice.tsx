@@ -132,6 +132,5 @@ export function ContentCardPositionLendingPrice({
       </AjnaDetailsSectionContentSimpleModal>
     ),
   }
-
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

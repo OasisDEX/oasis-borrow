@@ -90,6 +90,7 @@ export enum Pages {
   AutoSell = 'AutoSell',
   ConstantMultiple = 'ConstantMultiple',
   TakeProfit = 'TakeProfit',
+  DAISavingsRate = 'DAISavingsRate',
 }
 
 export enum AutomationEventIds {
@@ -179,6 +180,7 @@ export enum CommonAnalyticsSections {
   Form = 'Form',
   NotificationCenter = 'NotificationCenter',
   NotificationPreferences = 'NotificationPreferences',
+  OpenPosition = 'OpenPosition',
 }
 
 export enum EventTypes {
@@ -945,7 +947,7 @@ export const trackingEvents = {
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
@@ -955,7 +957,7 @@ export const trackingEvents = {
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
@@ -966,7 +968,7 @@ export const trackingEvents = {
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
@@ -977,7 +979,7 @@ export const trackingEvents = {
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
@@ -988,7 +990,7 @@ export const trackingEvents = {
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
@@ -1148,6 +1150,22 @@ export const trackingEvents = {
   topBannerEvent: (id: TopBannerEvents, topBannerName: string) => {
     const eventBody = { id, section: 'TopBanner', product: 'TopBanner', topBannerName }
     !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.TopBannerEvent, eventBody)
+  },
+  daiSavingsRate: (
+    event: EventTypes.InputChange | EventTypes.ButtonClick,
+    eventData: { depositAmount: number; txHash?: string; network?: string; walletType?: string },
+  ) => {
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(event, {
+        section: CommonAnalyticsSections.OpenPosition,
+        id: {
+          [EventTypes.InputChange]: 'DepositAmount',
+          [EventTypes.ButtonClick]: 'ConfirmDeposit',
+        }[event],
+        page: Pages.DAISavingsRate,
+        product: ProductType.EARN,
+        ...eventData,
+      })
   },
 }
 
