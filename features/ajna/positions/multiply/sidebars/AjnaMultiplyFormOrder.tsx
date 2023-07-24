@@ -24,7 +24,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const { t } = useTranslation()
   const { exchangeQuote$ } = useAppContext()
   const {
-    environment: { collateralPrice, collateralToken, quoteToken, slippage, isShort },
+    environment: { collateralPrice, collateralToken, quoteToken, slippage, isShort, quotePrice },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
@@ -73,8 +73,8 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   const initialQuote$ = exchangeQuote$(
     collateralToken,
     slippage,
-    // use ~1$ worth amount of collateral token
-    one.div(collateralPrice),
+    // use ~1$ worth amount of collateral or quote token
+    one.div(withBuying ? quotePrice : collateralPrice),
     withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL',
     'defaultExchange',
     quoteToken,
@@ -90,7 +90,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
 
   const priceImpact =
     initialQuote?.status === 'SUCCESS' && tokenPrice
-      ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice)
+      ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice).div(100)
       : undefined
 
   const oasisFee = withOasisFee
