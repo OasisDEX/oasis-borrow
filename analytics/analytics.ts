@@ -1166,7 +1166,8 @@ export const trackingEvents = {
         section: CommonAnalyticsSections.Form,
         id: {
           [EventTypes.InputChange]: 'DepositAmount',
-          [EventTypes.ButtonClick]: 'ConfirmDeposit',
+          [EventTypes.ButtonClick]:
+            eventData.action === 'deposit' ? 'ConfirmDeposit' : 'ConfirmWithdraw',
         }[event],
         page: Pages.DAISavingsRate,
         product: ProductType.EARN,
