@@ -1155,7 +1155,7 @@ export const trackingEvents = {
     event: EventTypes.InputChange | EventTypes.ButtonClick,
     eventData: {
       depositAmount: number
-      action: 'deposit' | 'withdraw'
+      action?: 'deposit' | 'withdraw'
       txHash?: string
       network?: string
       walletType?: string
