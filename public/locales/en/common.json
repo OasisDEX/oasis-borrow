@@ -2764,6 +2764,7 @@
         "common": {
           "overview": {
             "net-borrow-cost": "Net Borrow Cost",
+            "net-borrow-cost-modal-desc": "The net borrow cost rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
             "net-value": "Net Value",
             "pnl": "P&L"
           },
