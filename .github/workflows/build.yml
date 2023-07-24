@@ -68,44 +68,12 @@ jobs:
         run: yarn postinstall
       - name: Typecheck
         run: yarn typecheck
-  tests-prepare:
-    name: Prepare tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-      - name: Install packages
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn --no-progress --non-interactive --frozen-lockfile
-      - name: Run postinstall
-        if: steps.yarn-cache.outputs.cache-hit == 'true'
-        run: yarn postinstall
-      - id: set-test-chunks
-        name: Set Chunks
-        run:
-          echo "::set-output name=test-chunks::$(npx jest --listTests --json | jq -cM
-          '[_nwise(length / 2 | ceil)]')"
-      - id: set-test-chunk-ids
-        name: Set Chunk IDs
-        run:
-          echo "::set-output name=test-chunk-ids::$(echo $CHUNKS | jq -cM 'to_entries | map(.key)')"
-        env:
-          CHUNKS: ${{ steps['set-test-chunks'].outputs['test-chunks'] }}
   test:
-    name: Test (chunk ${{ matrix.chunk }})
+    name: Test
     runs-on: ubuntu-latest
-    needs:
-      - tests-prepare
     strategy:
       matrix:
-        chunk: ${{ fromJson(needs.setup.outputs['test-chunk-ids']) }}
+        shard: [1/3, 2/3, 3/3]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -123,6 +91,4 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit == 'true'
         run: yarn postinstall
       - name: Test
-        run: echo $CHUNKS | jq '.[${{ matrix.chunk }}] | .[] | @text' | xargs npx jest
-        env:
-          CHUNKS: ${{ needs.setup.outputs['test-chunks'] }}
+        run: CI=true yarn test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
