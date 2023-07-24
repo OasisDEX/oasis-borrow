@@ -1153,11 +1153,17 @@ export const trackingEvents = {
   },
   daiSavingsRate: (
     event: EventTypes.InputChange | EventTypes.ButtonClick,
-    eventData: { depositAmount: number; txHash?: string; network?: string; walletType?: string },
+    eventData: {
+      depositAmount: number
+      action: 'deposit' | 'withdraw'
+      txHash?: string
+      network?: string
+      walletType?: string
+    },
   ) => {
     !mixpanel.has_opted_out_tracking() &&
       mixpanelInternalAPI(event, {
-        section: CommonAnalyticsSections.OpenPosition,
+        section: CommonAnalyticsSections.Form,
         id: {
           [EventTypes.InputChange]: 'DepositAmount',
           [EventTypes.ButtonClick]: 'ConfirmDeposit',
