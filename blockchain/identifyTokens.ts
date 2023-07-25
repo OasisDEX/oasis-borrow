@@ -1,9 +1,9 @@
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { Context } from 'blockchain/network'
 import { SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { shareReplay, switchMap } from 'rxjs/operators'
+import { catchError, shareReplay, switchMap } from 'rxjs/operators'
 import { Erc20 } from 'types/web3-v1-contracts'
 
 interface IdentifiedTokens {
@@ -71,6 +71,7 @@ export function identifyTokens$(
         {},
       )
     }),
+    catchError(() => of({})),
     shareReplay(1),
   )
 }
