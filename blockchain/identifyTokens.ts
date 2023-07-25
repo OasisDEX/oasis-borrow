@@ -52,7 +52,7 @@ export function identifyTokens$(
             precision: parseInt(decimals, 10),
             digits: 5,
             name,
-            symbol,
+            symbol: symbol.toUpperCase(),
           },
         }),
         {},

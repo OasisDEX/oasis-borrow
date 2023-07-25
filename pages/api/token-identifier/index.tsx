@@ -39,7 +39,7 @@ const handler: NextApiHandler = async (req, res) => {
               ? {
                   ...total,
                   [address]: {
-                    symbol,
+                    symbol: symbol.toUpperCase(),
                     name,
                     precision: decimals,
                     digits: 5,
