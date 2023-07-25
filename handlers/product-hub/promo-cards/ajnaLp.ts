@@ -17,6 +17,13 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardUSDCETHAjnaBorrow,
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
+    promoCardCBETHETHAjnaMultiply,
+    promoCardUSDCETHAjnaMultiply,
+    promoCardUSDCWBTCAjnaMultiply,
+    promoCardWBTCDAIAjnaMultiply,
+    promoCardWBTCUSDCAjnaMultiply,
+    promoCardWSTETHDAIAjnaMultiply,
+    promoCardWSTETHUSDCAjnaMultiply,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
     promoCardUSDCWBTCAjnaEarn,
@@ -47,8 +54,33 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       },
     },
     [ProductHubProductType.Multiply]: {
-      default: [],
-      tokens: {},
+      default: [
+        promoCardWSTETHUSDCAjnaMultiply,
+        promoCardWBTCUSDCAjnaMultiply,
+        promoCardsWhatAreAjnaRewards,
+      ],
+      tokens: {
+        ETH: [
+          promoCardWSTETHUSDCAjnaMultiply,
+          promoCardCBETHETHAjnaMultiply,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        WBTC: [
+          promoCardWBTCUSDCAjnaMultiply,
+          promoCardWBTCDAIAjnaMultiply,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        USDC: [
+          promoCardUSDCETHAjnaMultiply,
+          promoCardUSDCWBTCAjnaMultiply,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        DAI: [
+          promoCardWBTCDAIAjnaMultiply,
+          promoCardWSTETHDAIAjnaMultiply,
+          promoCardsWhatAreAjnaRewards,
+        ]
+      },
     },
     [ProductHubProductType.Earn]: {
       default: [promoCardETHUSDCAjnaEarn, promoCardWSTETHDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
