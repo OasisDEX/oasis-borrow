@@ -19,16 +19,14 @@ export type CreateDPMAccountViewProps = {
 
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const { connect, connecting } = useConnection({
-    initialConnect: false,
-  })
+  const { connect, connecting } = useConnection()
 
   return useMemo(
     () => ({
       label: t('connect-wallet'),
       action: () => {
         if (!connecting) {
-          void connect()
+          connect()
         }
       },
       steps: undefined,

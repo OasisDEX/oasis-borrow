@@ -3,7 +3,7 @@ import { NetworkConnector } from '@web3-react/network-connector'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { ethers } from 'ethers'
 import { BridgeConnector } from 'features/web3OnBoard'
-import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
+import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard'
 import { isEqual } from 'lodash'
 import { useEffect } from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
@@ -31,9 +31,7 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     const { connector, library, activate, chainId, account, deactivate } = context
 
     const {
-      connector: bridgeConnector,
-      networkConnector,
-      networkConfig,
+      state: { connector: bridgeConnector, networkConnector, networkConnectorNetworkId },
     } = useWeb3OnBoardConnectorContext()
 
     useEffect(() => {
@@ -60,7 +58,7 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
           magicLinkEmail: undefined,
           walletLabel: bridgeConnector.wallet.label,
           transactionProvider: new ethers.providers.Web3Provider(
-            bridgeConnector.basicInfo.provider,
+            bridgeConnector.connectorInformation.provider,
           ).getSigner(),
         })
       }
@@ -73,29 +71,35 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     }, [networkConnector, activate, bridgeConnector, connector])
 
     useEffect(() => {
-      if (connector instanceof NetworkConnector && library && networkConfig) {
+      if (
+        connector &&
+        connector instanceof NetworkConnector &&
+        library &&
+        networkConnectorNetworkId
+      ) {
         push({
           status: 'connectedReadonly',
           connectionKind: 'network',
           web3: library as any,
           connectionMethod: 'web3-onboard',
-          chainId: networkConfig.id,
+          chainId: networkConnectorNetworkId,
           walletLabel: undefined,
         })
       }
-    }, [library, networkConfig, connector])
+    }, [networkConnectorNetworkId, library, connector])
   }
 
-  function switchChains(_nextChainId: number, context: Web3ContextConnectedReadonly) {
-    push({
-      status: context.status,
-      connectionKind: context.connectionKind,
-      web3: context.web3,
-      chainId: _nextChainId,
-      connectionMethod: context.connectionMethod,
-      walletLabel: context.walletLabel,
-    })
-    // this is currently not being used
+  function switchChains(_nextChainId: number, _context: Web3ContextConnectedReadonly) {
+    throw new Error('Not implemented')
+    // push({
+    //   status: context.status,
+    //   connectionKind: context.connectionKind,
+    //   web3: context.web3,
+    //   chainId: _nextChainId,
+    //   connectionMethod: context.connectionMethod,
+    //   walletLabel: context.walletLabel,
+    // })
+    // // this is currently not being used
   }
 
   return [web3Context$.pipe(distinctUntilChanged(isEqual)), useWeb3Context$, switchChains]
