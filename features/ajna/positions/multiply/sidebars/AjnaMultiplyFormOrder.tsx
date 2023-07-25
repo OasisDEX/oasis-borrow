@@ -19,6 +19,7 @@ import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Box } from 'theme-ui'
 
 export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
@@ -237,8 +238,14 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           : isFlowStateReady
           ? [
               {
-                label: t('system.max-transaction-cost'),
-                value: <GasEstimation addition={oasisFee} />,
+                label: t('transaction-fee'),
+                value: (
+                  <>
+                    {formatted.oasisFee}
+                    <Box sx={{ mx: '4px' }}>+</Box>
+                    <GasEstimation addition={oasisFee} />
+                  </>
+                ),
                 dropdownValues: oasisFee
                   ? [
                       {
