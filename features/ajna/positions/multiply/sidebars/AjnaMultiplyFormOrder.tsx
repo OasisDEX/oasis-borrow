@@ -40,7 +40,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     cachedPosition,
     currentPosition,
   })
-
+  
   const swapData = resolveIfCachedSwap({
     cached,
     currentSwap: swap?.current,
@@ -114,7 +114,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     afterLoanToValue:
       simulationData?.riskRatio &&
       formatDecimalAsPercent(
-        simulationData.riskRatio.loanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN),
+        simulationData.riskRatio.loanToValue.decimalPlaces(4, BigNumber.ROUND_DOWN),
       ),
     dynamicMaxLtv: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
     afterDynamicMaxLtv:
