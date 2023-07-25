@@ -51,7 +51,7 @@ async function exchangeTokens(url: string): Promise<any> {
     throw new Error(`Error performing 1inch swap request ${url}: ${await response.text()}`)
   }
 
-  return response.json() as Promise<any>
+  return (await response.json()) as Promise<any>
 }
 
 export async function oneInchCallMock(
@@ -121,7 +121,7 @@ export function getOneInchCall(
       shouldUseOptimismLiquidityProviders ? optimismLiquidityProviders : protocols,
     )
 
-    if (debug) {
+    if (true) {
       console.log('1inch')
       console.log('fromTokenAmount', response.fromTokenAmount.toString())
       console.log('toTokenAmount', response.toTokenAmount.toString())
