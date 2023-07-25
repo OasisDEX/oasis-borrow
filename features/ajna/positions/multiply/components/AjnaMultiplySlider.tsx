@@ -1,10 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { SkeletonLine } from 'components/Skeleton'
-import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
@@ -14,6 +12,10 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Flex, Text } from 'theme-ui'
 
+const min = new BigNumber(0.01)
+const max = new BigNumber(1)
+const openFlowInitialLtv = new BigNumber(0.1)
+
 interface AjnaMultiplySliderProps {
   disabled?: boolean
 }
@@ -21,7 +23,8 @@ interface AjnaMultiplySliderProps {
 export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, isShort, collateralPrice, quotePrice },
+    environment: { collateralToken, quoteToken, isShort },
+    steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -49,38 +52,19 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
     }
   }, [depositAmount?.toString()])
 
-  const min = (simulation?.minRiskRatio || position.minRiskRatio).loanToValue.decimalPlaces(
-    2,
-    BigNumber.ROUND_UP,
-  )
-
-  const generateMax = getAjnaBorrowDebtMax({
-    precision: getToken(quoteToken).precision,
-    position,
-    simulation,
-  })
-
-  const max = !generateMax.isZero()
-    ? generateMax
-        .plus(position.debtAmount)
-        .times(quotePrice)
-        .div((simulation || position).collateralAmount.times(collateralPrice))
-        .decimalPlaces(2, BigNumber.ROUND_DOWN)
-    : one
-
-  let resolvedValue = loanToValue || position.riskRatio.loanToValue || min
-  if (resolvedValue.gt(max)) {
-    resolvedValue = max
-  }
-  if (resolvedValue.lt(min)) {
-    resolvedValue = min
-  }
+  const resolvedValue = loanToValue || position.riskRatio.loanToValue
 
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
   const liquidationPrice = simulation?.liquidationPrice || position.liquidationPriceT0Np
 
   const changeVariant = getBorrowishChangeVariant(simulation)
+
+  useEffect(() => {
+    if (!loanToValue && currentStep === 'setup' && depositAmount) {
+      updateState('loanToValue', openFlowInitialLtv)
+    }
+  }, [loanToValue?.toString(), currentStep, depositAmount?.toString()])
 
   return (
     <SliderValuePicker
