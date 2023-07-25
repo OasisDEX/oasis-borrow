@@ -1,101 +1,44 @@
-import { useConnectWallet } from '@web3-onboard/react'
-import { NetworkConnector } from '@web3-react/network-connector'
-import { NetworkConfigHexId } from 'blockchain/networks'
-import { useEffect, useState } from 'react'
+import { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
 
-import { BridgeConnector, ConnectorInformation } from './BridgeConnector'
-import { useWeb3OnBoardConnectorContext } from './web3OnBoardConnectorProvider'
+import { useWeb3OnBoardConnectorContext } from './web3-on-board-connector-provider'
 
-export interface ConnectionState {
-  connect: (
-    chainId?: NetworkConfigHexId,
-    options?: {
-      forced?: boolean
-      onConnect?: (info: ConnectorInformation) => void
-    },
-  ) => Promise<void>
+export interface Connection {
+  connect: (chainId?: NetworkConfigHexId) => void
   connecting: boolean
-  connectedChain: NetworkConfigHexId | undefined
-  connectedAddress: string | undefined
-  connectors: {
-    network: NetworkConnector
-    bridgeConnector: BridgeConnector | undefined
-  }
+  setPageNetworks: (networkHexIds: NetworkConfigHexId[] | undefined) => void
+  setChain: (chainId: NetworkConfigHexId) => void
 }
 
-export interface ConnectionProps {
-  pageChainId?: NetworkConfigHexId
-  initialConnect: boolean
-  chainId?: NetworkConfigHexId
-}
-
-export function useConnection({
-  initialConnect,
-  chainId,
-  pageChainId,
-}: ConnectionProps): ConnectionState {
-  const { connect, networkConnector, connectedAddress, connector, connecting, setPageChainId } =
-    useWeb3OnBoardConnectorContext()
-
-  useEffect(() => {
-    if (pageChainId) {
-      setPageChainId(pageChainId)
-    }
-  }, [pageChainId, setPageChainId])
-
-  const [onConnectHandler, setOnConnectHandler] = useState<
-    ((info: ConnectorInformation) => void) | undefined
-  >(undefined)
-
-  useEffect(() => {
-    if (initialConnect) {
-      void connect(chainId)
-    }
-  }, [initialConnect, chainId, connect])
-
-  useEffect(() => {
-    if (connector && onConnectHandler) {
-      onConnectHandler(connector.basicInfo)
-    }
-  }, [connector, onConnectHandler])
+export function useConnection(): Connection {
+  const { connect, connecting, setChain, setPageNetworks } = useWeb3OnBoardConnectorContext()
 
   return {
-    connect: async (chainId, options) => {
-      if (options?.onConnect) {
-        setOnConnectHandler(options.onConnect)
-      }
-      await connect(chainId, options?.forced)
-    },
+    connect,
     connecting,
-    connectedAddress,
-    connectedChain: connector?.hexChainId,
-    connectors: {
-      network: networkConnector,
-      bridgeConnector: connector,
-    },
+    setChain,
+    setPageNetworks,
   }
 }
 
 export interface Wallet {
   address: string
+  chainHexId: NetworkConfigHexId
 }
 
 export interface WalletManagementState {
-  disconnect: () => Promise<void>
+  disconnect: () => void
   connecting: boolean
-  chainHexId: NetworkConfigHexId | undefined
+  chainId: NetworkIds | undefined
   wallet: Wallet | undefined
 }
 export function useWalletManagement(): WalletManagementState {
-  const [{ wallet, connecting }, , disconnect] = useConnectWallet()
+  const { state, disconnect } = useWeb3OnBoardConnectorContext()
   return {
-    disconnect: async () => {
-      if (wallet) {
-        await disconnect({ label: wallet.label })
-      }
-    },
-    connecting,
-    chainHexId: wallet?.chains[0].id as NetworkConfigHexId,
-    wallet: wallet ? { address: wallet.accounts[0].address } : undefined,
+    disconnect,
+    connecting: state.status === 'connecting',
+    chainId: state.networkConnectorNetworkId,
+    wallet: state.connector
+      ? { address: state.connector.connectedAccount, chainHexId: state.connector.hexChainId }
+      : undefined,
   }
 }
