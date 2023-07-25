@@ -1,8 +1,10 @@
 // @ts-nocheck
+import { EventTypes, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
+import { getNetworkById, NetworkIds } from 'blockchain/networks'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { applyAllowanceChanges } from 'features/allowance/allowance'
@@ -124,6 +126,8 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: DsrCreationChange) => void,
+  chainId: NetworkIds,
+  walletType: string,
   state: DsrDepositState,
 ): DsrDepositState {
   function reset() {
@@ -210,6 +214,16 @@ function addTransitions(
   }
 
   if (state.stage === 'depositSuccess' || state.stage === 'withdrawSuccess') {
+    trackingEvents.daiSavingsRate(EventTypes.ButtonClick, {
+      depositAmount: state.amount?.toNumber(),
+      txHash: state.depositTxHash,
+      network: getNetworkById(chainId).name,
+      walletType,
+      action: {
+        depositSuccess: 'deposit',
+        withdrawSuccess: 'withdraw',
+      }[state.stage],
+    })
     return {
       ...state,
       reset,
@@ -282,8 +296,6 @@ function validate(state: DsrDepositState): DsrDepositState {
     state.amount.gt(state.netValue) &&
     state.operation === 'withdraw'
   ) {
-    console.log('amount', state.amount.toString())
-    console.log('amountnetValue', state.netValue.toString())
     messages[messages.length] = { kind: 'amountBiggerThanDeposit' }
   }
   return { ...state, messages }
@@ -377,7 +389,15 @@ export function createDsrDeposit$(
             scan(apply, initialState),
             map(validate),
             switchMap(curry(constructEstimateGas)(addGasEstimation$)),
-            map(curry(addTransitions)(txHelpers$, proxyAddress$, change)),
+            map(
+              curry(addTransitions)(
+                txHelpers$,
+                proxyAddress$,
+                change,
+                context.chainId,
+                context.walletLabel,
+              ),
+            ),
           )
         }),
       )
