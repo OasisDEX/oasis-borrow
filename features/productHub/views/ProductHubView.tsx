@@ -118,9 +118,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         }
   }, [data, ajnaMultiplyEnabled])
 
-  console.log(`ajnaMultiplyEnabled: ${ajnaMultiplyEnabled}`)
-  console.log(filteredData)
-
   return (
     <Fragment key={product}>
       <Box
