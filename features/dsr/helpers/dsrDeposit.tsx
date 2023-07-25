@@ -126,9 +126,9 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: DsrCreationChange) => void,
-  state: DsrDepositState,
   chainId: NetworkIds,
   walletType: string,
+  state: DsrDepositState,
 ): DsrDepositState {
   function reset() {
     change({ kind: 'stage', stage: 'editing' })
@@ -219,6 +219,10 @@ function addTransitions(
       txHash: state.depositTxHash,
       network: getNetworkById(chainId).name,
       walletType,
+      action: {
+        depositSuccess: 'deposit',
+        withdrawSuccess: 'withdraw',
+      }[state.stage],
     })
     return {
       ...state,
@@ -292,8 +296,6 @@ function validate(state: DsrDepositState): DsrDepositState {
     state.amount.gt(state.netValue) &&
     state.operation === 'withdraw'
   ) {
-    console.log('amount', state.amount.toString())
-    console.log('amountnetValue', state.netValue.toString())
     messages[messages.length] = { kind: 'amountBiggerThanDeposit' }
   }
   return { ...state, messages }
