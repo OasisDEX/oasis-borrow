@@ -241,12 +241,16 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
                 label: t('transaction-fee'),
                 value: (
                   <>
-                    {formatted.oasisFee}
-                    <Box sx={{ mx: '4px' }}>+</Box>
-                    <GasEstimation addition={oasisFee} />
+                    {!oasisFee.isZero() && (
+                      <>
+                        {formatted.oasisFee}
+                        <Box sx={{ mx: '4px' }}>+</Box>
+                      </>
+                    )}
+                    <GasEstimation />
                   </>
                 ),
-                dropdownValues: oasisFee
+                dropdownValues: !oasisFee.isZero()
                   ? [
                       {
                         label: t('vault-changes.oasis-fee'),
