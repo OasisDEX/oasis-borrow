@@ -68,8 +68,8 @@ export function AjnaMultiplyFormController() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
-                updateState('uiPill', 'deposit-quote-multiply')
-                updateState('action', 'deposit-quote-multiply')
+                updateState('uiPill', 'payback-multiply')
+                updateState('action', 'payback-multiply')
               },
             },
             {
