@@ -37,7 +37,7 @@ export function getDesiredNetworkHexId(state: WalletManagementState): NetworkCon
   return state.desiredNetworkHexId || state.walletNetworkHexId || NetworkHexIds.MAINNET // fallback to mainnet
 }
 
-export function areThePageNetoworksTheSame(
+export function areThePageNetworksTheSame(
   pageNetworkHexIds: NetworkConfigHexId[] | undefined,
   state: WalletManagementState,
 ) {

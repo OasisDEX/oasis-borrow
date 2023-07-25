@@ -16,7 +16,7 @@ import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
 import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
 import { useDebugWalletState } from './wallet-state/use-debug-wallet-state'
-import { areThePageNetoworksTheSame } from './wallet-state/wallet-management-state'
+import { areThePageNetworksTheSame } from './wallet-state/wallet-management-state'
 
 export type Web3OnBoardConnectorContext = {
   connect: (desiredNetworkHexId?: NetworkConfigHexId) => void
@@ -210,7 +210,7 @@ function InternalProvider({ children }: WithChildren) {
             includeTestNet,
           )
 
-          if (areThePageNetoworksTheSame(networksToSet, state)) return
+          if (areThePageNetworksTheSame(networksToSet, state)) return
 
           dispatch({
             type: 'partial-update',
