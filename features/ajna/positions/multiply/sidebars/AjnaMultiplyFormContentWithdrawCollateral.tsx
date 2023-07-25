@@ -1,3 +1,5 @@
+import { getToken } from 'blockchain/tokensMetadata'
+import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
@@ -15,13 +17,22 @@ export function AjnaMultiplyFormContentWithdrawCollateral() {
       dispatch,
       state: { withdrawAmount },
     },
+    position: {
+      currentPosition: { position, simulation },
+    },
   } = useAjnaProductContext('multiply')
+
+  const collateralMax = getAjnaBorrowCollateralMax({
+    digits: getToken(collateralToken).digits,
+    position,
+    simulation,
+  })
 
   return (
     <>
       <AjnaFormFieldWithdraw
         dispatchAmount={dispatch}
-        // maxAmount={collateralMax}
+        maxAmount={collateralMax}
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
