@@ -126,9 +126,9 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: DsrCreationChange) => void,
-  state: DsrDepositState,
   chainId: NetworkIds,
   walletType: string,
+  state: DsrDepositState,
 ): DsrDepositState {
   function reset() {
     change({ kind: 'stage', stage: 'editing' })
