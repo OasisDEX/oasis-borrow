@@ -2,6 +2,7 @@ import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContaine
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
+import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
 import {
   ProductHubFilters,
   ProductHubItem,
@@ -52,9 +53,13 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     () => matchRowsByFilters(dataMatchedByNL, selectedFilters),
     [dataMatchedByNL, selectedFilters],
   )
-  const rows = useMemo(
-    () => parseRows(dataMatchedByFilters, selectedProduct),
+  const dataSortedByDefault = useMemo(
+    () => sortByDefault(dataMatchedByFilters, selectedProduct),
     [dataMatchedByFilters, selectedProduct],
+  )
+  const rows = useMemo(
+    () => parseRows(dataSortedByDefault, selectedProduct),
+    [dataSortedByDefault, selectedProduct],
   )
 
   return (
