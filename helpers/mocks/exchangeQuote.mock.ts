@@ -32,7 +32,7 @@ export function mockExchangeQuote$({
             logoURI: 'ETH',
           },
           collateralAmount: amount,
-          daiAmount: marketPrice.times(amount),
+          quoteAmount: marketPrice.times(amount),
           tokenPrice: marketPrice,
           toToken: {
             symbol: token,

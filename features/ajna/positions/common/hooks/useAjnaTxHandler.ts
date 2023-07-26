@@ -28,15 +28,25 @@ export function useAjnaTxHandler(): () => void {
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    tx: { setTxDetails },
-    environment: { collateralPrice, collateralToken, ethPrice, quotePrice, quoteToken, product },
+    tx: { setTxDetails, txDetails },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      ethPrice,
+      quotePrice,
+      quoteToken,
+      product,
+      slippage,
+    },
     steps: { isExternalStep, currentStep },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
     position: {
       currentPosition: { position, simulation },
+      swap,
       setCachedPosition,
+      setCachedSwap,
       setIsLoadingSimulation,
       setSimulation,
     },
@@ -48,7 +58,13 @@ export function useAjnaTxHandler(): () => void {
     useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
-  const isFormEmpty = getIsFormEmpty({ product, state, position, currentStep })
+  const isFormEmpty = getIsFormEmpty({
+    product,
+    state,
+    position,
+    currentStep,
+    txStatus: txDetails?.txStatus,
+  })
 
   useEffect(() => {
     cancelablePromise?.cancel()
@@ -59,7 +75,7 @@ export function useAjnaTxHandler(): () => void {
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [context?.chainId, state, isFormEmpty])
+  }, [context?.chainId, state, isFormEmpty, slippage])
 
   useDebouncedEffect(
     () => {
@@ -75,6 +91,7 @@ export function useAjnaTxHandler(): () => void {
             rpcProvider: getRpcProvider(context.chainId),
             state,
             isFormValid,
+            slippage,
           }),
         )
         setCancelablePromise(promise)
@@ -102,7 +119,7 @@ export function useAjnaTxHandler(): () => void {
           })
       }
     },
-    [context?.chainId, state, isExternalStep],
+    [context?.chainId, state, isExternalStep, slippage],
     250,
   )
 
@@ -112,18 +129,21 @@ export function useAjnaTxHandler(): () => void {
 
   return () =>
     txHelpers
-      .sendWithGasEstimation(callOasisActionsWithDpmProxy, {
+      .send(callOasisActionsWithDpmProxy, {
         kind: TxMetaKind.libraryCall,
         proxyAddress: dpmAddress,
         ...txData,
       })
       .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
       .subscribe((txState) => {
-        if (txState.status === TxStatus.WaitingForConfirmation)
+        if (txState.status === TxStatus.WaitingForConfirmation) {
           setCachedPosition({
             position,
             simulation,
           })
+          swap?.current && setCachedSwap(swap.current)
+        }
+
         if (txState.status === TxStatus.Success) dispatch({ type: 'reset' })
         handleTransaction({ txState, ethPrice, setTxDetails })
       })

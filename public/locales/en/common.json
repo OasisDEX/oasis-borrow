@@ -1748,7 +1748,6 @@
         "title": "High rETH multiple option",
         "description": "Maximise your rETH exposure with Aave and USDC."
       },
-
       "borrow-against-ETH": {
         "title": "AAVE ETH",
         "description": "A position to borrow against your ETH in AAVE"
@@ -2581,7 +2580,11 @@
                 "There is an origination fee when borrowing to avoid rapid changes in rates.",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
               ],
-              "multiply": ["Lorem ipsum dolor sit amet"],
+              "multiply": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "There is an origination fee when borrowing (or multiplying) to avoid rapid changes in rates.",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ],
               "earn": [
                 "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
                 "Your position will lend only against one asset.",
@@ -2761,6 +2764,7 @@
         "common": {
           "overview": {
             "net-borrow-cost": "Net Borrow Cost",
+            "net-borrow-cost-modal-desc": "The net borrow cost rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
             "net-value": "Net Value",
             "pnl": "P&L"
           },
@@ -2785,6 +2789,7 @@
       "after-lup-index-bigger-than-htp-index-deposit": "You cannot adjust this position as there is not enough available liquidity in the pool. Please wait for more available liquidity.",
       "after-lup-index-bigger-than-htp-index-withdraw": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
       "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the minimum required by the pool. Please enter an amount at least equal to the minimum borrow amount.",
+      "debt-less-then-dust-limit-multiply": "Minimum debt generated is below the pool minimum. Please increase your deposit size or increase the LTV (if available).",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",

@@ -1,5 +1,6 @@
 import { GetEarnData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
 
@@ -13,9 +14,9 @@ const defaultResponse = {
 }
 
 export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
-  const { response } = await loadSubgraph('Ajna', 'getEarnData', {
+  const { response } = (await loadSubgraph('Ajna', 'getEarnData', {
     dpmProxyAddress: proxy.toLowerCase(),
-  })
+  })) as SubgraphsResponses['Ajna']['getEarnData']
 
   if (
     response &&

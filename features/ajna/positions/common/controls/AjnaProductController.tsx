@@ -18,6 +18,7 @@ import {
   getAjnaPositionAuction$,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import { getPositionCumulatives$ } from 'features/ajna/positions/common/observables/getPositionCumulatives'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
 import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
@@ -145,6 +146,13 @@ export function AjnaProductController({
     ),
   )
 
+  const [ajnaPositionCumulatives, ajnaPositionCumulativesError] = useObservable(
+    useMemo(
+      () => (dpmPositionData ? getPositionCumulatives$({ dpmPositionData }) : EMPTY),
+      [dpmPositionData, ajnaPositionData],
+    ),
+  )
+
   if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
 
   return (
@@ -161,6 +169,7 @@ export function AjnaProductController({
                 gasPriceError,
                 ajnaPositionAuctionError,
                 ajnaHistoryError,
+                ajnaPositionCumulativesError,
                 userSettingsError,
               ]}
             >
@@ -173,6 +182,7 @@ export function AjnaProductController({
                   gasPriceData,
                   ajnaPositionAuctionData,
                   ajnaHistoryData,
+                  ajnaPositionCumulatives,
                   userSettingsData,
                 ]}
                 customLoader={
@@ -195,6 +205,7 @@ export function AjnaProductController({
                   gasPrice,
                   ajnaPositionAuction,
                   ajnaHistory,
+                  ajnaPositionCumulatives,
                   { slippage },
                 ]) =>
                   ajnaPosition ? (
@@ -240,6 +251,7 @@ export function AjnaProductController({
                             product={dpmPosition.product}
                             positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
                             positionHistory={ajnaHistory}
+                            positionCumulatives={ajnaPositionCumulatives}
                           >
                             <AjnaBorrowPositionController />
                           </AjnaProductContextProvider>
@@ -261,6 +273,7 @@ export function AjnaProductController({
                             product={dpmPosition.product}
                             positionAuction={ajnaPositionAuction as AjnaEarnPositionAuction}
                             positionHistory={ajnaHistory}
+                            positionCumulatives={ajnaPositionCumulatives}
                           >
                             <AjnaEarnPositionController />
                           </AjnaProductContextProvider>
@@ -275,6 +288,7 @@ export function AjnaProductController({
                             product={dpmPosition.product}
                             positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
                             positionHistory={ajnaHistory}
+                            positionCumulatives={ajnaPositionCumulatives}
                           >
                             <AjnaMultiplyPositionController />
                           </AjnaProductContextProvider>

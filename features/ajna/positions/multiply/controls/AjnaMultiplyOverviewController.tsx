@@ -1,5 +1,4 @@
 import { normalizeValue } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -23,6 +22,7 @@ export function AjnaMultiplyOverviewController() {
       collateralToken,
       quoteToken,
       flow,
+      owner,
       collateralPrice,
       priceFormat,
       quotePrice,
@@ -35,13 +35,20 @@ export function AjnaMultiplyOverviewController() {
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
+      cumulatives,
     },
   } = useAjnaProductContext('multiply')
 
   const changeVariant = 'positive'
 
-  // TODO: replace with data from simulation
-  const pnl = new BigNumber(-110.26)
+  let pnl = zero
+  if (cumulatives) {
+    pnl = position.pnl(
+      cumulatives.cumulativeDeposit,
+      cumulatives.cumulativeWithdraw,
+      cumulatives.cumulativeFees,
+    )
+  }
 
   const liquidationPrice = isShort
     ? normalizeValue(one.div(position.liquidationPriceT0Np))
@@ -55,6 +62,11 @@ export function AjnaMultiplyOverviewController() {
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
       : position.liquidationToMarketPrice,
   )
+
+  const afterBuyingPower =
+    simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
+      ? simulation.buyingPower
+      : undefined
 
   return (
     <Grid gap={2}>
@@ -81,6 +93,9 @@ export function AjnaMultiplyOverviewController() {
               changeVariant={changeVariant}
             />
             <ContentCardNetBorrowCost
+              collateralToken={collateralToken}
+              quoteToken={quoteToken}
+              owner={owner}
               netBorrowCost={position.pool.interestRate}
               changeVariant={changeVariant}
             />
@@ -111,7 +126,7 @@ export function AjnaMultiplyOverviewController() {
               multiple={position.riskRatio.multiple}
               afterMultiple={simulation?.riskRatio.multiple}
               buyingPower={position.buyingPower}
-              afterBuyingPower={simulation && simulation.buyingPower}
+              afterBuyingPower={afterBuyingPower}
               changeVariant={changeVariant}
             />
           </DetailsSectionFooterItemWrapper>

@@ -3,6 +3,7 @@ import { WithArrow } from 'components/WithArrow'
 import { productHubLinksMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { FC } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
@@ -15,9 +16,12 @@ interface AjnaProductHubIntroProps {
 export const AjnaProductHubIntro: FC<AjnaProductHubIntroProps> = ({ selectedProduct }) => {
   const { t } = useTranslation()
 
+  // TODO: remove when Ajna Multiply feature flag is no longer needed
+  const ajnaMultiplyEnabled = useFeatureToggle('AjnaMultiply')
+
   return (
     <Box sx={{ my: 5 }}>
-      {selectedProduct === ProductHubProductType.Multiply ? (
+      {selectedProduct === ProductHubProductType.Multiply && !ajnaMultiplyEnabled ? (
         <>
           <Text as="p" variant="header5" sx={{ mb: 1 }}>
             {t('ajna.product-finder.multiply-soon-title')}
