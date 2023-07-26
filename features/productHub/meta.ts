@@ -117,6 +117,8 @@ export const productHubOptionsMap: {
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
+      GHO: productHubTokenOptions.GHO,
+      WLD: productHubTokenOptions.WLD,
     },
   },
   earn: {
@@ -139,6 +141,10 @@ if (!getFeatureToggle('Ajna')) {
   delete productHubOptionsMapFiltered.borrow.tokens.USDC
   delete productHubOptionsMapFiltered.earn.tokens.USDC
   delete productHubOptionsMapFiltered.earn.tokens.WBTC
+}
+if (!getFeatureToggle('AjnaMultiply')) {
+  delete productHubOptionsMapFiltered.multiply.tokens.GHO
+  delete productHubOptionsMapFiltered.multiply.tokens.WLD
 }
 
 export const productHubStrategyFilter = [
