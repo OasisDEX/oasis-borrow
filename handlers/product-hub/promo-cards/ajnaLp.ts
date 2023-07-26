@@ -14,9 +14,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const {
     promoCardETHDAIAjnaBorrow,
     promoCardETHUSDCAjnaBorrow,
+    promoCardGHODAIAjnaBorrow,
     promoCardUSDCETHAjnaBorrow,
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
+    promoCardWLDUSDCAjnaBorrow,
     promoCardCBETHETHAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
     promoCardUSDCWBTCAjnaMultiply,
@@ -24,12 +26,15 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardWBTCUSDCAjnaMultiply,
     promoCardWSTETHDAIAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
+    promoCardCBETHGHOCAjnaEarn,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
     promoCardUSDCWBTCAjnaEarn,
+    promoCardUSDCWLDAjnaEarn,
     promoCardWBTCDAIAjnaEarn,
     promoCardWBTCUSDCAjnaEarn,
     promoCardWSTETHDAIAjnaEarn,
+    promoCardWSTETHGHOAjnaEarn,
   } = getAjnaPromoCards(table)
 
   return {
@@ -49,6 +54,16 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         USDC: [
           promoCardUSDCETHAjnaBorrow,
           promoCardUSDCWBTCAjnaBorrow,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        GHO: [
+          promoCardGHODAIAjnaBorrow,
+          promoCardHowToUseBorrowOnAjna,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        WLD: [
+          promoCardWLDUSDCAjnaBorrow,
+          promoCardHowToUseBorrowOnAjna,
           promoCardsWhatAreAjnaRewards,
         ],
       },
@@ -89,6 +104,8 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         WBTC: [promoCardUSDCWBTCAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
         USDC: [promoCardETHUSDCAjnaEarn, promoCardWBTCUSDCAjnaEarn, promoCardsWhatAreAjnaRewards],
         DAI: [promoCardWSTETHDAIAjnaEarn, promoCardWBTCDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
+        GHO: [promoCardCBETHGHOCAjnaEarn, promoCardWSTETHGHOAjnaEarn, promoCardsWhatAreAjnaRewards],
+        WLD: [promoCardUSDCWLDAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
       },
     },
   }
