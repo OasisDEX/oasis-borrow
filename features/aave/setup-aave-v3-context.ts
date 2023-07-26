@@ -2,6 +2,7 @@ import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
 import { NetworkNames } from 'blockchain/networks'
 import { networksByName } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
+import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { AppContext } from 'components/AppContext'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
@@ -27,6 +28,7 @@ import {
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
+import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from './helpers'
 import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
@@ -34,6 +36,7 @@ import {
 import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { getSupportedTokens } from './strategy-config'
+import { PositionId } from './types'
 
 export function setupAaveV3Context(appContext: AppContext, network: NetworkNames): AaveContext {
   const networkId = networksByName[network].id
@@ -46,7 +49,6 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     context$,
     tokenPriceUSD$,
     proxyConsumed$,
-    strategyConfig$,
     protocols,
     connectedContext$,
     commonTransactionServices,
@@ -61,12 +63,30 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     operationExecutorTransactionMachine,
     proxyForAccount$,
     proxyStateMachine,
-    proxiesRelatedWithPosition$,
     unconsumedDpmProxyForConnectedAccount$,
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
   } = getCommonPartsFromAppContext(appContext, onEveryBlock$, networkId)
+
+  const userDpms = memoize(getUserDpmProxy, (vaultId, chainId) => `${vaultId}-${chainId}`)
+  const proxiesRelatedWithPosition$: (
+    positionId: PositionId,
+  ) => Observable<ProxiesRelatedWithPosition> = memoize(
+    (positionId) => {
+      return of(undefined).pipe(
+        switchMap(async () => {
+          const dpm = await userDpms(positionId.vaultId!, networkId)
+          return {
+            dsProxy: undefined,
+            dpmProxy: dpm,
+            walletAddress: (dpm?.user || positionId.walletAddress)!,
+          }
+        }),
+      )
+    },
+    (positionId) => JSON.stringify(positionId),
+  )
 
   const {
     aaveUserAccountData$,
@@ -188,6 +208,15 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   )
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
+
+  const strategyConfig$: (
+    positionId: PositionId,
+    networkName: NetworkNames,
+  ) => Observable<IStrategyConfig> = memoize(
+    (positionId: PositionId, networkName: NetworkNames) =>
+      of(undefined).pipe(switchMap(() => getAaveV3StrategyConfig(positionId, networkName))),
+    (positionId, networkName) => JSON.stringify({ positionId, networkName }),
+  )
 
   return {
     ...protocols[LendingProtocol.AaveV3][networkId],

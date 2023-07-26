@@ -5,7 +5,7 @@ import {
   negativeToZero,
 } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { NetworkNames } from 'blockchain/networks'
+import { NetworkNames, networksById } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
@@ -87,6 +87,7 @@ export function parseMakerBorrowPositionRows(
       debtToken: 'DAI',
       icons: [token, 'DAI'],
       id: id.toString(),
+      // TODO: should get chainId from the source event so it works in the generic way for all chains
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Maker,
       riskRatio: {
@@ -112,6 +113,7 @@ export function parseMakerMultiplyPositionRows(
       liquidationPrice,
       multiple: calculateMultiply({ debt, lockedCollateralUSD }),
       netValue: value,
+      // TODO: should get chainId from the source event so it works in the generic way for all chains
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Maker,
       url: `/ethereum/maker/${id}`,
@@ -130,6 +132,7 @@ export function parseMakerEarnPositionRows(
       liquidityToken: 'DAI',
       netValue: value,
       pnl: calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100),
+      // TODO: should get chainId from the source event so it works in the generic way for all chains
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Maker,
       url: `/ethereum/maker/${id}`,
@@ -150,6 +153,7 @@ export function parseAaveMultiplyPositionRows(
       protocol,
       token,
       url,
+      chainId,
     }) => ({
       asset: `${token}/${debtToken}`,
       fundingCost,
@@ -158,21 +162,21 @@ export function parseAaveMultiplyPositionRows(
       liquidationPrice,
       multiple,
       netValue,
-      network: NetworkNames.ethereumMainnet,
+      network: networksById[chainId].name,
       protocol,
       url,
     }),
   )
 }
 export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTableEarnRow[] {
-  return positions.map(({ debtToken, id, liquidity, netValue, protocol, token, url }) => ({
+  return positions.map(({ debtToken, id, liquidity, netValue, protocol, token, url, chainId }) => ({
     asset: `${token}/${debtToken}`,
     icons: [token, debtToken],
     id,
     liquidity,
     liquidityToken: 'USDC',
     netValue,
-    network: NetworkNames.ethereumMainnet,
+    network: networksById[chainId].name,
     protocol,
     url,
   }))
@@ -196,6 +200,7 @@ export function parseAjnaBorrowPositionRows(
       debtToken: quoteToken,
       icons: [collateralToken, quoteToken],
       id: vaultId,
+      // TODO: should get chainId from the source event so it works in the generic way for all chains
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Ajna,
       riskRatio: {
@@ -218,7 +223,7 @@ export function parseAjnaMultiplyPositionRows(
       quotePrice,
       collateralPrice,
       debtAmount,
-      liquidationPrice,
+      liquidationPriceT0Np,
       riskRatio,
       pool,
       collateralAmount,
@@ -235,7 +240,7 @@ export function parseAjnaMultiplyPositionRows(
       }),
       icons: [collateralToken, quoteToken],
       id: vaultId.toString(),
-      liquidationPrice,
+      liquidationPrice: liquidationPriceT0Np,
       multiple: riskRatio.multiple,
       netValue,
       network: NetworkNames.ethereumMainnet,
@@ -264,6 +269,7 @@ export function parseAjnaEarnPositionRows(
       pnl: earnPosition.pnl,
       liquidity,
       liquidityToken: quoteToken,
+      // TODO: should get chainId from the source event so it works in the generic way for all chains
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Ajna,
       url: `/ethereum/ajna/${vaultId}`,
@@ -288,6 +294,7 @@ export function parseDsrEarnPosition({
           liquidity: 'Unlimited',
           liquidityToken: 'DAI',
           netValue,
+          // TODO: should get chainId from the source event so it works in the generic way for all chains
           network: NetworkNames.ethereumMainnet,
           protocol: LendingProtocol.Maker,
           url: `/earn/dsr/${address}`,
