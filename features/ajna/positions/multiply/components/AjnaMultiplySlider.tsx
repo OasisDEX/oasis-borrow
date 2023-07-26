@@ -1,17 +1,20 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
-import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
+import { SkeletonLine } from 'components/Skeleton'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Flex, Text } from 'theme-ui'
+
+const min = new BigNumber(0.01)
+const max = new BigNumber(1)
+const openFlowInitialLtv = new BigNumber(0.1)
 
 interface AjnaMultiplySliderProps {
   disabled?: boolean
@@ -20,63 +23,81 @@ interface AjnaMultiplySliderProps {
 export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, collateralPrice, isShort },
+    environment: { collateralToken, quoteToken, isShort },
+    steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
     form: {
-      state: { loanToValue },
+      state: { loanToValue, depositAmount },
       updateState,
     },
     position: {
       currentPosition: { position, simulation },
+      isSimulationLoading,
     },
   } = useAjnaProductContext('multiply')
+  const [depositChanged, setDepositChanged] = useState(false)
 
-  const min = (simulation?.minRiskRatio || position.minRiskRatio).loanToValue.decimalPlaces(
-    2,
-    BigNumber.ROUND_UP,
-  )
+  useEffect(() => {
+    if (depositChanged && !isSimulationLoading) {
+      setDepositChanged(false)
+    }
+  }, [isSimulationLoading])
 
-  const generateMax = getAjnaBorrowDebtMax({
-    precision: getToken(quoteToken).precision,
-    position,
-    simulation,
-  })
+  useEffect(() => {
+    setDepositChanged(true)
 
-  const max = !generateMax.isZero()
-    ? generateMax
-        .plus(position.debtAmount)
-        .div((simulation || position).collateralAmount.times(collateralPrice))
-        .decimalPlaces(2, BigNumber.ROUND_DOWN)
-    : zero
+    if (!depositAmount) {
+      setDepositChanged(false)
+    }
+  }, [depositAmount?.toString()])
 
-  const resolvedValue =
-    loanToValue || simulation?.riskRatio.loanToValue || position.riskRatio.loanToValue || min
+  const resolvedValue = loanToValue || position.riskRatio.loanToValue
 
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
-  const liquidationPrice = simulation?.liquidationPrice || position.liquidationPrice
+  const liquidationPrice = simulation?.liquidationPrice || position.liquidationPriceT0Np
 
   const changeVariant = getBorrowishChangeVariant(simulation)
+
+  useEffect(() => {
+    if (!loanToValue && currentStep === 'setup' && depositAmount) {
+      updateState('loanToValue', openFlowInitialLtv)
+    }
+  }, [loanToValue?.toString(), currentStep, depositAmount?.toString()])
 
   return (
     <SliderValuePicker
       sliderPercentageFill={percentage}
       leftBoundry={isShort ? normalizeValue(one.div(liquidationPrice)) : liquidationPrice}
-      leftBoundryFormatter={(val) => `${formatCryptoBalance(val)} ${collateralToken}/${quoteToken}`}
+      leftBoundryFormatter={(val) =>
+        isSimulationLoading ? (
+          <Flex sx={{ alignItems: 'center', height: '28px' }}>
+            <SkeletonLine height="18px" />
+          </Flex>
+        ) : (
+          `${formatCryptoBalance(val)} ${collateralToken}/${quoteToken}`
+        )
+      }
       rightBoundry={resolvedValue}
       rightBoundryFormatter={(val) => (
         <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-          {formatDecimalAsPercent(ltv)}
-          {!ltv.eq(resolvedValue) && (
+          {depositChanged && isSimulationLoading ? (
+            <SkeletonLine height="18px" sx={{ my: '5px' }} />
+          ) : (
             <>
-              <Icon name="arrow_right" size={14} sx={{ mx: 2 }} />
-              <Text
-                as="span"
-                sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
-              >
-                {formatDecimalAsPercent(val)}
-              </Text>
+              {formatDecimalAsPercent(ltv)}
+              {!ltv.eq(resolvedValue) && (
+                <>
+                  <Icon name="arrow_right" size={14} sx={{ mx: 2 }} />
+                  <Text
+                    as="span"
+                    sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}
+                  >
+                    {formatDecimalAsPercent(val)}
+                  </Text>
+                </>
+              )}
             </>
           )}
         </Flex>

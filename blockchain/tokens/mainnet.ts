@@ -75,6 +75,9 @@ export const tokensMainnet = {
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
   CBETH: contractDesc(erc20, mainnet.common.CBETH),
   ETH: contractDesc(erc20, mainnet.common.WETH),
+  // Used to represent ETH as an ERC20 token
+  // See @oasisdex/addresses package for info
+  ETH_ACTUAL: contractDesc(erc20, mainnet.common.ETH),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = [

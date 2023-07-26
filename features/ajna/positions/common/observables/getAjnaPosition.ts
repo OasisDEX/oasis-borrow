@@ -10,6 +10,7 @@ import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
+import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
@@ -126,19 +127,28 @@ export function getAjnaPositionsWithDetails$(
                   protocol,
                   proxyAddress,
                 }) => {
-                  return getAjnaPositionDetails$(
-                    context$,
-                    tokenPrice[collateralTokenSymbol],
-                    tokenPrice[debtTokenSymbol],
-                    {
-                      collateralToken: collateralTokenSymbol,
-                      product: positionType.toLowerCase(),
-                      protocol,
-                      proxy: proxyAddress,
-                      quoteToken: debtTokenSymbol,
-                      user: walletAddress,
-                      vaultId: idMap[proxyAddress],
-                    },
+                  const vaultId = idMap[proxyAddress]
+
+                  return combineLatest(
+                    checkMultipleVaultsFromApi$([idMap[proxyAddress]], protocol),
+                  ).pipe(
+                    switchMap(([vaultsFromApi]) =>
+                      getAjnaPositionDetails$(
+                        context$,
+                        tokenPrice[collateralTokenSymbol],
+                        tokenPrice[debtTokenSymbol],
+                        {
+                          collateralToken: collateralTokenSymbol,
+                          product:
+                            vaultsFromApi[vaultId]?.toLowerCase() || positionType.toLowerCase(),
+                          protocol,
+                          proxy: proxyAddress,
+                          quoteToken: debtTokenSymbol,
+                          user: walletAddress,
+                          vaultId,
+                        },
+                      ),
+                    ),
                   )
                 },
               ),

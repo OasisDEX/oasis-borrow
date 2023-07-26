@@ -26,7 +26,7 @@ interface SkeletonProps {
   width?: string | number
 }
 
-function SkeletonLine({
+export function SkeletonLine({
   circle = false,
   color = 'default',
   doughnut,

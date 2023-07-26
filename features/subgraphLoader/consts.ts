@@ -51,6 +51,15 @@ export const subgraphMethodsRecord: {
       }
     }
   `,
+  getPositionCumulatives: gql`
+    query getAccount($dpmProxyAddress: ID!) {
+      account(id: $dpmProxyAddress) {
+        cumulativeDeposit
+        cumulativeFees
+        cumulativeWithdraw
+      }
+    }
+  `,
   getPoolData: gql`
     query getPool($poolAddress: ID!) {
       pool(id: $poolAddress) {

@@ -26,7 +26,6 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   } = getMakerPromoCards(table)
   const { promoCardSTETHUSDCAaveV2Earn } = getAaveV2PromoCards(table)
   const {
-    promoCardETHUSDCAaveV3EthereumMultiply,
     promoCardWBTCUSDCAaveV3EthereumMultiply,
     promoCardWSTETHUSDCAaveV3EthereumMultiply,
     promoCardETHUSDCAaveV3OptimismMultiply,
@@ -38,6 +37,9 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardUSDCETHAjnaBorrow,
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
+    promoCardUSDCETHAjnaMultiply,
+    promoCardWBTCUSDCAjnaMultiply,
+    promoCardWSTETHUSDCAjnaMultiply,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
     promoCardUSDCWBTCAjnaEarn,
@@ -56,23 +58,23 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     },
     [ProductHubProductType.Multiply]: {
       default: [
-        promoCardETHUSDCAaveV3EthereumMultiply,
+        promoCardWSTETHUSDCAjnaMultiply,
         promoCardWBTCUSDCAaveV3OptimismMultiply,
         promoCardETHBMakerMultiply,
       ],
       tokens: {
         ETH: [
-          promoCardETHUSDCAaveV3EthereumMultiply,
+          promoCardWSTETHUSDCAjnaMultiply,
           promoCardWSTETHAMakerMultiply,
           promoCardETHUSDCAaveV3OptimismMultiply,
         ],
         WBTC: [
           promoCardWBTCBMakerMultiply,
-          promoCardWBTCUSDCAaveV3EthereumMultiply,
+          promoCardWBTCUSDCAjnaMultiply,
           promoCardWBTCUSDCAaveV3OptimismMultiply,
         ],
         USDC: [
-          promoCardETHUSDCAaveV3EthereumMultiply,
+          promoCardUSDCETHAjnaMultiply,
           promoCardWSTETHUSDCAaveV3EthereumMultiply,
           promoCardWBTCUSDCAaveV3EthereumMultiply,
         ],

@@ -37,6 +37,8 @@ export function getFlowStateConfig({
       }
     case 'withdraw-earn':
     case 'claim-earn':
+    case 'adjust':
+    case 'close-multiply':
       return {
         amount: zero,
         token: 'ETH',

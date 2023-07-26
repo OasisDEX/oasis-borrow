@@ -8,6 +8,7 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -24,6 +25,9 @@ export function AjnaBorrowFormController() {
       updateState,
     },
   } = useAjnaProductContext('borrow')
+
+  // TODO: remove when Ajna Multiply feature flag is no longer needed
+  const ajnaMultiplyEnabled = useFeatureToggle('AjnaMultiply')
 
   return (
     <AjnaFormView
@@ -60,18 +64,21 @@ export function AjnaBorrowFormController() {
                 updateState('action', 'generate-borrow')
               },
             },
-            // TODO: uncomment on multiply release
-            // {
-            //   label: t('system.actions.borrow.switch-to-multiply'),
-            //   icon: 'circle_exchange',
-            //   iconShrink: 2,
-            //   panel: 'switch',
-            //   action: () => {
-            //     dispatch({ type: 'reset' })
-            //     updateState('uiDropdown', 'switch')
-            //     updateState('action', 'switch-borrow')
-            //   },
-            // },
+            ...(ajnaMultiplyEnabled
+              ? [
+                  {
+                    label: t('system.actions.borrow.switch-to-multiply'),
+                    icon: 'circle_exchange',
+                    iconShrink: 2,
+                    panel: 'switch',
+                    action: () => {
+                      dispatch({ type: 'reset' })
+                      updateState('uiDropdown', 'switch')
+                      updateState('action', 'switch-borrow')
+                    },
+                  },
+                ]
+              : []),
           ],
         },
       })}

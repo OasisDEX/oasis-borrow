@@ -27,6 +27,7 @@ import {
   parseAaveMultiplyPositionRows,
   parseAjnaBorrowPositionRows,
   parseAjnaEarnPositionRows,
+  parseAjnaMultiplyPositionRows,
   parseDsrEarnPosition,
   parseMakerBorrowPositionRows,
   parseMakerEarnPositionRows,
@@ -213,6 +214,10 @@ export function PositionsTableWithAjna({
     () => getBorrowPositionRows([...parsedMakerBorrowPositions, ...parsedAjnaBorrowPositions]),
     [parsedMakerBorrowPositions, parsedAjnaBorrowPositions],
   )
+  const parsedAjnaMultiplyPositions = useMemo(
+    () => parseAjnaMultiplyPositionRows(ajnaPositions.multiply),
+    [ajnaPositions.multiply],
+  )
 
   const parsedMakerMultiplyPositions = useMemo(
     () => parseMakerMultiplyPositionRows(makerPositions.multiply),
@@ -224,8 +229,12 @@ export function PositionsTableWithAjna({
   )
   const multiplyPositionsRows = useMemo(
     () =>
-      getMultiplyPositionRows([...parsedMakerMultiplyPositions, ...parsedAaveMultiplyPositions]),
-    [parsedMakerMultiplyPositions, parsedAaveMultiplyPositions],
+      getMultiplyPositionRows([
+        ...parsedMakerMultiplyPositions,
+        ...parsedAaveMultiplyPositions,
+        ...parsedAjnaMultiplyPositions,
+      ]),
+    [parsedMakerMultiplyPositions, parsedAaveMultiplyPositions, parsedAjnaMultiplyPositions],
   )
 
   const parsedMakerEarnPositions = useMemo(

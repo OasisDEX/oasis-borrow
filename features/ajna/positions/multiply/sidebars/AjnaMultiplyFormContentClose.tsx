@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
@@ -6,6 +5,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
@@ -20,11 +20,18 @@ export function AjnaMultiplyFormContentClose() {
       state: { closeTo },
       updateState,
     },
+    position: {
+      currentPosition: { position },
+      swap,
+      isSimulationLoading,
+    },
   } = useAjnaProductContext('multiply')
   const closeToToken = closeTo === 'collateral' ? collateralToken : quoteToken
 
-  const collateralOnClose = new BigNumber(6.01)
-  const quoteOnClose = new BigNumber(90562)
+  const collateralOnClose = swap?.current
+    ? position.collateralAmount.minus(swap.current.fromTokenAmount)
+    : zero
+  const quoteOnClose = swap?.current?.minToTokenAmount.minus(position.debtAmount) || zero
 
   const formatted = {
     collateralOnClose: `${formatCryptoBalance(
@@ -64,6 +71,7 @@ export function AjnaMultiplyFormContentClose() {
         iconCircle={getToken(closeToToken).iconCircle}
         label={t('after-closing', { token: closeToToken })}
         value={formatted[closeTo === 'collateral' ? 'collateralOnClose' : 'quoteOnClose']}
+        isLoading={isSimulationLoading}
       />
       <AjnaMultiplyFormOrder />
     </>

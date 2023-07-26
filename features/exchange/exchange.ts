@@ -55,7 +55,7 @@ export type QuoteResult = {
   fromTokenAddress: string
   toTokenAddress: string
   collateralAmount: BigNumber
-  daiAmount: BigNumber
+  quoteAmount: BigNumber
   tokenPrice: BigNumber
   tx: Tx
 }
@@ -76,7 +76,7 @@ export function getTokenMetaData(
 export const defaultExchangeProtocols = []
 
 export function getQuote$(
-  dai: TokenMetadata,
+  quote: TokenMetadata,
   collateral: TokenMetadata,
   account: string,
   amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
@@ -84,12 +84,12 @@ export function getQuote$(
   action: ExchangeAction,
   protocols?: string,
 ) {
-  const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
-  const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
+  const fromTokenAddress = action === 'BUY_COLLATERAL' ? quote.address : collateral.address
+  const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : quote.address
 
   const _1inchAmount = amountToWei(
     amount,
-    action === 'BUY_COLLATERAL' ? dai.decimals : collateral.decimals,
+    action === 'BUY_COLLATERAL' ? quote.decimals : collateral.decimals,
   ).toFixed(0)
 
   //TODO: set proper precision depending on token
@@ -117,7 +117,7 @@ export function getQuote$(
       ...responseBase,
 
       collateralAmount: amountFromWei(new BigNumber(0)),
-      daiAmount: amountFromWei(new BigNumber(0)),
+      quoteAmount: amountFromWei(new BigNumber(0)),
       tokenPrice: new BigNumber(0),
       tx: {
         //empty payload
@@ -151,7 +151,7 @@ export function getQuote$(
             : new BigNumber(fromTokenAmount),
           action === 'BUY_COLLATERAL' ? toToken.decimals : fromToken.decimals,
         ),
-        daiAmount: amountFromWei(
+        quoteAmount: amountFromWei(
           action === 'BUY_COLLATERAL'
             ? new BigNumber(fromTokenAmount)
             : new BigNumber(toTokenAmount),
@@ -179,6 +179,7 @@ export function createExchangeQuote$(
   amount: BigNumber,
   action: ExchangeAction,
   exchangeType: ExchangeType,
+  quoteToken?: string,
 ) {
   return context$.pipe(
     switchMap((context) => {
@@ -186,10 +187,10 @@ export function createExchangeQuote$(
       const tokensMainnet = contracts.tokensMainnet
       const exchange = contracts[exchangeType]
 
-      const dai = getTokenMetaData('DAI', tokensMainnet)
+      const quote = getTokenMetaData(quoteToken || 'DAI', tokensMainnet)
       const collateral = getTokenMetaData(token, tokensMainnet)
 
-      return getQuote$(dai, collateral, exchange.address, amount, slippage, action, protocols)
+      return getQuote$(quote, collateral, exchange.address, amount, slippage, action, protocols)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)

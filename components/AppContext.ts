@@ -807,7 +807,18 @@ export function setupAppContext() {
       amount: BigNumber,
       action: ExchangeAction,
       exchangeType: ExchangeType,
-    ) => createExchangeQuote$(context$, undefined, token, slippage, amount, action, exchangeType),
+      quoteToken?: string,
+    ) =>
+      createExchangeQuote$(
+        context$,
+        undefined,
+        token,
+        slippage,
+        amount,
+        action,
+        exchangeType,
+        quoteToken,
+      ),
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
@@ -1372,6 +1383,7 @@ export function setupAppContext() {
     chainContext$,
     positionIdFromDpmProxy$,
     switchChains,
+    exchangeQuote$,
   }
 }
 
