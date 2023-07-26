@@ -79,7 +79,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardWBTCDAIAjnaMultiply,
           promoCardWSTETHDAIAjnaMultiply,
           promoCardsWhatAreAjnaRewards,
-        ]
+        ],
       },
     },
     [ProductHubProductType.Earn]: {
