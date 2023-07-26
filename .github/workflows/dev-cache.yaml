@@ -1,0 +1,24 @@
+name: Create dev npm cache
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  create-cache:
+    name: Create npm cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --no-progress --non-interactive --frozen-lockfile

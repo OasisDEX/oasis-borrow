@@ -66,6 +66,12 @@ export function getMaxLtvPill(maxLtv: string) {
   }
 }
 
+export function getShortTokenPill(token: string) {
+  return {
+    label: { key: 'product-hub.promo-cards.short-token', props: { token } },
+  }
+}
+
 export function getUpToYieldExposurePill(maxMultiple: string) {
   return {
     label: {

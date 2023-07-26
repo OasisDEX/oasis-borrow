@@ -7,6 +7,16 @@ type WindowWithInjectedWallet = {
     request: (args: { method: string; params?: any[] }) => Promise<any>
   }
 }
+
+function extractUuidFromUrl(url: string): string | null {
+  if (!url.includes('rpc.tenderly')) {
+    return null
+  }
+
+  const parts = url.split('/')
+  return parts[parts.length - 1]
+}
+
 export async function addCustomForkToTheWallet(network: NetworkConfig) {
   if (!window) {
     return
@@ -23,13 +33,16 @@ export async function addCustomForkToTheWallet(network: NetworkConfig) {
     throw new Error('Only MetaMask is supported')
   }
 
+  const uuid = extractUuidFromUrl(network.rpcUrl)
+  const label = uuid ? `${network.getParentNetwork()?.label} - Tenderly - ${uuid}` : network.label
+
   await ethereum.request({
     method: 'wallet_addEthereumChain',
     params: [
       {
         chainId: network.hexId,
         rpcUrls: [network.rpcUrl],
-        chainName: network.label,
+        chainName: label,
         nativeCurrency: {
           name: network.token,
           symbol: network.token,

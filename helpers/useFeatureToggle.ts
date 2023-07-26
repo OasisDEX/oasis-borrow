@@ -26,6 +26,7 @@ export type Feature =
   | 'AaveV3Protection'
   | 'AaveV3ProtectionWrite'
   | 'Ajna'
+  | 'AjnaMultiply'
   | 'AjnaSafetySwitch'
   | 'AjnaSuppressValidation'
   | 'DaiSavingsRate'
@@ -74,6 +75,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3Protection: false,
   AaveV3ProtectionWrite: false,
   Ajna: true,
+  AjnaMultiply: true,
   AjnaSafetySwitch: false,
   AjnaSuppressValidation: false,
   DaiSavingsRate: true,
