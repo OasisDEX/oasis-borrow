@@ -40,7 +40,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     cachedPosition,
     currentPosition,
   })
-  
+
   const swapData = resolveIfCachedSwap({
     cached,
     currentSwap: swap?.current,
