@@ -415,7 +415,6 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
         liquidationPrice: formattedLiquidationPrice,
         fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
         protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-        action: <AssetsTableDataCellAction cta="View" link={url} />,
         protection: (
           <AssetsTableDataCellRiskProtectionIcon
             isOwner={isOwner}
@@ -423,6 +422,7 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
             link={url}
           />
         ),
+        action: <AssetsTableDataCellAction cta="View" link={url} />,
       }
     },
   )
