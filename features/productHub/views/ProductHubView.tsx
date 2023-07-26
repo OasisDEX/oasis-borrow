@@ -69,8 +69,9 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(defaultFilters)
 
-  // TODO: remove when Ajna Multiply featuge flag is no longer needed
-  const ajnaMultiplyEnabled = useFeatureToggle('')
+  // TODO: remove when Ajna Multiply feature flag is no longer needed
+  const ajnaMultiplyEnabled = useFeatureToggle('AjnaMultiply')
+
   const filteredData = useMemo(() => {
     return !data
       ? undefined
