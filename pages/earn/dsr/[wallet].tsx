@@ -27,7 +27,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
     <WithFeatureToggleRedirect feature="DaiSavingsRate">
-      <WithConnection pageChainId={ethereumMainnetHexId}>
+      <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags

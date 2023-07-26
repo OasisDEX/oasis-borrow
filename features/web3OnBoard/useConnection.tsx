@@ -5,7 +5,10 @@ import { useWeb3OnBoardConnectorContext } from './web3-on-board-connector-provid
 export interface Connection {
   connect: (chainId?: NetworkConfigHexId) => void
   connecting: boolean
-  setPageNetworks: (networkHexIds: NetworkConfigHexId[] | undefined) => void
+  setPageNetworks: (
+    networkHexIds: NetworkConfigHexId[] | undefined,
+    includeTestNet?: boolean,
+  ) => void
   setChain: (chainId: NetworkConfigHexId) => void
 }
 
