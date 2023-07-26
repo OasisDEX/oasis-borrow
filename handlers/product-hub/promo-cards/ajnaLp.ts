@@ -14,22 +14,31 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const {
     promoCardETHDAIAjnaBorrow,
     promoCardETHUSDCAjnaBorrow,
+    promoCardGHODAIAjnaBorrow,
     promoCardUSDCETHAjnaBorrow,
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
+    promoCardWLDUSDCAjnaBorrow,
     promoCardCBETHETHAjnaMultiply,
+    promoCardETHGHOAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
     promoCardUSDCWBTCAjnaMultiply,
+    promoCardUSDCWLDAjnaMultiply,
     promoCardWBTCDAIAjnaMultiply,
     promoCardWBTCUSDCAjnaMultiply,
+    promoCardWLDUSDCAjnaMultiply,
     promoCardWSTETHDAIAjnaMultiply,
+    promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
+    promoCardCBETHGHOCAjnaEarn,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
     promoCardUSDCWBTCAjnaEarn,
+    promoCardUSDCWLDAjnaEarn,
     promoCardWBTCDAIAjnaEarn,
     promoCardWBTCUSDCAjnaEarn,
     promoCardWSTETHDAIAjnaEarn,
+    promoCardWSTETHGHOAjnaEarn,
   } = getAjnaPromoCards(table)
 
   return {
@@ -49,6 +58,16 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         USDC: [
           promoCardUSDCETHAjnaBorrow,
           promoCardUSDCWBTCAjnaBorrow,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        GHO: [
+          promoCardGHODAIAjnaBorrow,
+          promoCardHowToUseBorrowOnAjna,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        WLD: [
+          promoCardWLDUSDCAjnaBorrow,
+          promoCardHowToUseBorrowOnAjna,
           promoCardsWhatAreAjnaRewards,
         ],
       },
@@ -80,6 +99,16 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardWSTETHDAIAjnaMultiply,
           promoCardsWhatAreAjnaRewards,
         ],
+        GHO: [
+          promoCardETHGHOAjnaMultiply,
+          promoCardWSTETHGHOAjnaMultiply,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        WLD: [
+          promoCardWLDUSDCAjnaMultiply,
+          promoCardUSDCWLDAjnaMultiply,
+          promoCardsWhatAreAjnaRewards,
+        ],
       },
     },
     [ProductHubProductType.Earn]: {
@@ -89,6 +118,8 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         WBTC: [promoCardUSDCWBTCAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
         USDC: [promoCardETHUSDCAjnaEarn, promoCardWBTCUSDCAjnaEarn, promoCardsWhatAreAjnaRewards],
         DAI: [promoCardWSTETHDAIAjnaEarn, promoCardWBTCDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
+        GHO: [promoCardWSTETHGHOAjnaEarn, promoCardCBETHGHOCAjnaEarn, promoCardsWhatAreAjnaRewards],
+        WLD: [promoCardUSDCWLDAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
       },
     },
   }
