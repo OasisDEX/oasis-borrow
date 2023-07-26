@@ -84,12 +84,12 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'GHO',
     icon: getToken('GHO').iconCircle,
   },
-  WLD: {
-    title: 'Worldcoin',
-    description: 'WLD',
-    value: 'WLD',
-    icon: getToken('WLD').iconCircle,
-  },
+  // WLD: {
+  //   title: 'Worldcoin',
+  //   description: 'WLD',
+  //   value: 'WLD',
+  //   icon: getToken('WLD').iconCircle,
+  // },
 }
 
 export const productHubOptionsMap: {
@@ -106,7 +106,7 @@ export const productHubOptionsMap: {
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
       GHO: productHubTokenOptions.GHO,
-      WLD: productHubTokenOptions.WLD,
+      // WLD: productHubTokenOptions.WLD,
     },
   },
   multiply: {
@@ -118,7 +118,7 @@ export const productHubOptionsMap: {
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
-      WLD: productHubTokenOptions.WLD,
+      // WLD: productHubTokenOptions.WLD,
     },
   },
   earn: {
@@ -130,7 +130,7 @@ export const productHubOptionsMap: {
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
-      WLD: productHubTokenOptions.WLD,
+      // WLD: productHubTokenOptions.WLD,
     },
   },
 }
@@ -144,7 +144,7 @@ if (!getFeatureToggle('Ajna')) {
 }
 if (!getFeatureToggle('AjnaMultiply')) {
   delete productHubOptionsMapFiltered.multiply.tokens.GHO
-  delete productHubOptionsMapFiltered.multiply.tokens.WLD
+  // delete productHubOptionsMapFiltered.multiply.tokens.WLD
 }
 
 export const productHubStrategyFilter = [
