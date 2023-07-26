@@ -78,6 +78,18 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'DAI',
     icon: getToken('DAI').iconCircle,
   },
+  GHO: {
+    title: 'GHO stablecoin',
+    description: 'GHO',
+    value: 'GHO',
+    icon: getToken('GHO').iconCircle,
+  },
+  WLD: {
+    title: 'Worldcoin',
+    description: 'WLD',
+    value: 'WLD',
+    icon: getToken('WLD').iconCircle,
+  },
 }
 
 export const productHubOptionsMap: {
@@ -93,6 +105,8 @@ export const productHubOptionsMap: {
       ETH: productHubTokenOptions.ETH,
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
+      GHO: productHubTokenOptions.GHO,
+      WLD: productHubTokenOptions.WLD,
     },
   },
   multiply: {
@@ -103,6 +117,8 @@ export const productHubOptionsMap: {
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
+      GHO: productHubTokenOptions.GHO,
+      WLD: productHubTokenOptions.WLD,
     },
   },
   earn: {
@@ -113,6 +129,8 @@ export const productHubOptionsMap: {
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
+      GHO: productHubTokenOptions.GHO,
+      WLD: productHubTokenOptions.WLD,
     },
   },
 }
@@ -123,6 +141,10 @@ if (!getFeatureToggle('Ajna')) {
   delete productHubOptionsMapFiltered.borrow.tokens.USDC
   delete productHubOptionsMapFiltered.earn.tokens.USDC
   delete productHubOptionsMapFiltered.earn.tokens.WBTC
+}
+if (!getFeatureToggle('AjnaMultiply')) {
+  delete productHubOptionsMapFiltered.multiply.tokens.GHO
+  delete productHubOptionsMapFiltered.multiply.tokens.WLD
 }
 
 export const productHubStrategyFilter = [

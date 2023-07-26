@@ -1,14 +1,14 @@
-import { LendingProtocol } from 'lendingProtocols'
-import { findKey, keyBy } from 'lodash'
-import type { ElementOf } from 'ts-essentials'
-
-import { ensureTokensExist, getNetworkContracts } from './contracts'
-import { MainNetworkNames, NetworkIds } from './networks'
+import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
+import { MainNetworkNames, NetworkIds } from 'blockchain/networks'
 import {
   aaveV2TokensMetadata,
   aaveV3TokensMetadata,
+  ajnaTokensMetadata,
   makerTokensMetadata,
-} from './token-metadata-list'
+} from 'blockchain/token-metadata-list'
+import { LendingProtocol } from 'lendingProtocols'
+import { findKey, keyBy } from 'lodash'
+import type { ElementOf } from 'ts-essentials'
 
 export interface TokenConfig {
   symbol: string
@@ -37,6 +37,8 @@ export interface TokenConfig {
   chain: MainNetworkNames
 }
 
+export type SimplifiedTokenConfig = Pick<TokenConfig, 'digits' | 'name' | 'precision' | 'symbol'>
+
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 
@@ -44,6 +46,7 @@ export const tokens: TokenConfig[] = [
   ...makerTokensMetadata,
   ...aaveV2TokensMetadata,
   ...aaveV3TokensMetadata,
+  ...ajnaTokensMetadata,
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
