@@ -9,17 +9,16 @@ import { Grid } from 'theme-ui'
 
 export function AjnaBorrowPositionController() {
   return (
-
     <AjnaPositionView
       tabs={{
         position: (
           <Grid variant="vaultContainer">
-            <AjnaBorrowOverviewController/>
-            <AjnaBorrowFormController/>
+            <AjnaBorrowOverviewController />
+            <AjnaBorrowFormController />
           </Grid>
         ),
-        info: <AjnaFaqController content={{ en }}/>,
-        history: <AjnaPositionHistoryController/>,
+        info: <AjnaFaqController content={{ en }} />,
+        history: <AjnaPositionHistoryController />,
       }}
     />
   )
