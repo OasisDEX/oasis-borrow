@@ -65,7 +65,7 @@ export interface PositionTableMultiplyRow extends PositionTableRow {
   netValue: BigNumber
   stopLossData?: StopLossTriggerData
   autoSellData?: AutoBSTriggerData
-  isOwner: boolean
+  isOwner?: boolean
 }
 export interface PositionTableEarnRow extends PositionTableRow {
   liquidity?: BigNumber | string
