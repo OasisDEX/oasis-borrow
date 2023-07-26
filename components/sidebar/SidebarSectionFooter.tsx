@@ -23,7 +23,9 @@ export interface SidebarSectionFooterProps {
 
 function useConnectWalletPrimaryButton(): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const { connect, connecting } = useConnection()
+  const { connect, connecting } = useConnection({
+    initialConnect: false,
+  })
 
   return useMemo(
     () => ({
@@ -45,13 +47,15 @@ function useChangeChainButton({
   requiredChainHexId,
 }: Pick<SidebarSectionFooterProps, 'requiredChainHexId'>): SidebarSectionFooterButtonSettings {
   const { t } = useTranslation()
-  const { connect } = useConnection()
+  const { connect } = useConnection({
+    initialConnect: false,
+  })
 
   return useMemo(
     () => ({
       label: t('change-wallet-chain'),
-      action: () => {
-        connect(requiredChainHexId)
+      action: async () => {
+        await connect(requiredChainHexId, { forced: true })
       },
       steps: undefined,
       isLoading: false,
@@ -71,19 +75,14 @@ function useResolvePrimaryButton({
 } {
   const connectButton = useConnectWalletPrimaryButton()
   const changeChainButton = useChangeChainButton({ requiredChainHexId })
-  const { wallet } = useWalletManagement()
+  const { wallet, chainHexId } = useWalletManagement()
   if (requireConnection && !wallet) {
     return {
       resolvedPrimaryButton: connectButton,
       blockOthers: true,
     }
   }
-  if (
-    requireConnection &&
-    wallet &&
-    requiredChainHexId &&
-    wallet.chainHexId !== requiredChainHexId
-  ) {
+  if (requireConnection && wallet && requiredChainHexId && chainHexId !== requiredChainHexId) {
     return {
       resolvedPrimaryButton: changeChainButton,
       blockOthers: true,

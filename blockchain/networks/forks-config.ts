@@ -23,7 +23,6 @@ export const forkNetworks: NetworkConfig[] = Object.entries(forkSettings).map(
       ...originalNetworkConfig,
       id: forkNetwork.id as unknown as NetworkIds,
       originalId: originalNetworkConfig.id,
-      originalHexId: originalNetworkConfig.hexId,
       hexId: `0x${Number(forkNetwork.id).toString(16)}` as NetworkConfigHexId,
       label: `${originalNetworkConfig.label} Test` as NetworkLabelType,
       rpcUrl: forkNetwork.url,
@@ -37,5 +36,3 @@ export const forkNetworks: NetworkConfig[] = Object.entries(forkSettings).map(
 
 export const forkNetworksByOriginalId = keyBy(forkNetworks, 'originalId')
 export const forksByHexId = keyBy(forkNetworks, 'hexId')
-
-export const forksByParentHexId = keyBy(forkNetworks, 'originalHexId')

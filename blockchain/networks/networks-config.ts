@@ -14,7 +14,6 @@ import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
 import { Abi } from 'helpers/types'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
@@ -26,14 +25,13 @@ import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainne
 import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
 
-import { NetworkHexIds } from './network-hex-ids'
 import { NetworkIds } from './network-ids'
 import { NetworkLabelType, NetworkNames } from './network-names'
 export type NetworkConfigHexId = `0x${number | string}`
 
-export const ethereumMainnetHexId: NetworkConfigHexId = NetworkHexIds.MAINNET
-export const optimismMainnetHexId: NetworkConfigHexId = NetworkHexIds.OPTIMISMMAINNET
-export const arbitrumMainnetHexId: NetworkConfigHexId = NetworkHexIds.ARBITRUMMAINNET
+export const ethereumMainnetHexId: NetworkConfigHexId = '0x1'
+export const optimismMainnetHexId: NetworkConfigHexId = '0xa'
+export const arbitrumMainnetHexId: NetworkConfigHexId = '0xa4b1'
 
 export type NetworkConfig = {
   id: NetworkIds
@@ -48,7 +46,7 @@ export type NetworkConfig = {
   icon: string
   badge: string
   testnet: boolean
-  isEnabled: () => boolean
+  enabled: boolean
   token: string
   rpcUrl: string
   getReadProvider: () => ethers.providers.Provider | undefined
@@ -75,9 +73,9 @@ export function emptyContractDesc(contractName: string): ContractDesc & { genesi
 
 const mainnetConfig: NetworkConfig = {
   id: NetworkIds.MAINNET,
-  hexId: NetworkHexIds.MAINNET,
-  mainnetHexId: NetworkHexIds.MAINNET,
-  testnetHexId: NetworkHexIds.GOERLI,
+  hexId: '0x1',
+  mainnetHexId: '0x1',
+  testnetHexId: '0x5',
   testnetId: NetworkIds.GOERLI,
   mainnetId: NetworkIds.MAINNET,
   token: 'ETH',
@@ -87,7 +85,7 @@ const mainnetConfig: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   badge: ethereumMainnetBadge as string,
   testnet: false,
-  isEnabled: () => true,
+  enabled: true,
   rpcUrl: mainnetRpc,
   getReadProvider: memoize(
     () =>
@@ -104,9 +102,9 @@ const mainnetConfig: NetworkConfig = {
 
 const goerliConfig: NetworkConfig = {
   id: NetworkIds.GOERLI,
-  hexId: NetworkHexIds.GOERLI,
-  mainnetHexId: NetworkHexIds.MAINNET,
-  testnetHexId: NetworkHexIds.GOERLI,
+  hexId: '0x5',
+  mainnetHexId: '0x1',
+  testnetHexId: '0x5',
   mainnetId: NetworkIds.MAINNET,
   testnetId: NetworkIds.GOERLI,
   token: 'GoerliETH',
@@ -116,7 +114,7 @@ const goerliConfig: NetworkConfig = {
   icon: ethereumMainnetIcon as string,
   badge: ethereumMainnetBadge as string,
   testnet: true,
-  isEnabled: () => true,
+  enabled: true,
   rpcUrl: goerliRpc,
   getReadProvider: memoize(
     () =>
@@ -134,9 +132,9 @@ const goerliConfig: NetworkConfig = {
 
 const arbitrumMainnetConfig: NetworkConfig = {
   id: NetworkIds.ARBITRUMMAINNET,
-  hexId: NetworkHexIds.ARBITRUMMAINNET,
-  mainnetHexId: NetworkHexIds.ARBITRUMMAINNET,
-  testnetHexId: NetworkHexIds.ARBITRUMGOERLI,
+  hexId: '0xa4b1',
+  mainnetHexId: '0xa4b1',
+  testnetHexId: '0x66eed',
   mainnetId: NetworkIds.ARBITRUMMAINNET,
   testnetId: NetworkIds.ARBITRUMGOERLI,
   name: NetworkNames.arbitrumMainnet,
@@ -145,7 +143,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherArbitrum'),
+  enabled: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
   getReadProvider: memoize(
@@ -167,9 +165,9 @@ const arbitrumMainnetConfig: NetworkConfig = {
 
 const arbitrumGoerliConfig: NetworkConfig = {
   id: NetworkIds.ARBITRUMGOERLI,
-  hexId: NetworkHexIds.ARBITRUMGOERLI,
-  mainnetHexId: NetworkHexIds.ARBITRUMMAINNET,
-  testnetHexId: NetworkHexIds.ARBITRUMGOERLI,
+  hexId: '0x66eed',
+  mainnetHexId: '0xa4b1',
+  testnetHexId: '0x66eed',
   mainnetId: NetworkIds.ARBITRUMMAINNET,
   testnetId: NetworkIds.ARBITRUMGOERLI,
   name: NetworkNames.arbitrumGoerli,
@@ -178,7 +176,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherArbitrum'),
+  enabled: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
   getReadProvider: memoize(
@@ -195,9 +193,9 @@ const arbitrumGoerliConfig: NetworkConfig = {
 
 const polygonMainnetConfig: NetworkConfig = {
   id: NetworkIds.POLYGONMAINNET,
-  hexId: NetworkHexIds.POLYGONMAINNET,
-  testnetHexId: NetworkHexIds.POLYGONMUMBAI,
-  mainnetHexId: NetworkHexIds.POLYGONMAINNET,
+  hexId: '0x89',
+  testnetHexId: '0x13881',
+  mainnetHexId: '0x89',
   mainnetId: NetworkIds.POLYGONMAINNET,
   testnetId: NetworkIds.POLYGONMUMBAI,
   name: NetworkNames.polygonMainnet,
@@ -206,7 +204,7 @@ const polygonMainnetConfig: NetworkConfig = {
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
   testnet: false,
-  isEnabled: () => false,
+  enabled: false,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
   getReadProvider: () => undefined,
@@ -217,9 +215,9 @@ const polygonMainnetConfig: NetworkConfig = {
 
 const polygonMumbaiConfig: NetworkConfig = {
   id: NetworkIds.POLYGONMUMBAI,
-  hexId: NetworkHexIds.POLYGONMUMBAI,
-  mainnetHexId: NetworkHexIds.POLYGONMAINNET,
-  testnetHexId: NetworkHexIds.POLYGONMUMBAI,
+  hexId: '0x13881',
+  mainnetHexId: '0x89',
+  testnetHexId: '0x13881',
   mainnetId: NetworkIds.POLYGONMAINNET,
   testnetId: NetworkIds.POLYGONMUMBAI,
   name: NetworkNames.polygonMumbai,
@@ -228,7 +226,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
   testnet: true,
-  isEnabled: () => false,
+  enabled: false,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
   getReadProvider: () => undefined,
@@ -239,9 +237,9 @@ const polygonMumbaiConfig: NetworkConfig = {
 
 const optimismMainnetConfig: NetworkConfig = {
   id: NetworkIds.OPTIMISMMAINNET,
-  hexId: NetworkHexIds.OPTIMISMMAINNET,
-  testnetHexId: NetworkHexIds.OPTIMISMGOERLI,
-  mainnetHexId: NetworkHexIds.OPTIMISMMAINNET,
+  hexId: '0xa',
+  testnetHexId: '0x1A4',
+  mainnetHexId: '0xa',
   mainnetId: NetworkIds.OPTIMISMMAINNET,
   testnetId: NetworkIds.OPTIMISMGOERLI,
   name: NetworkNames.optimismMainnet,
@@ -250,7 +248,7 @@ const optimismMainnetConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherOptimism'),
+  enabled: true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
   getReadProvider: memoize(
@@ -272,9 +270,9 @@ const optimismMainnetConfig: NetworkConfig = {
 
 const optimismGoerliConfig: NetworkConfig = {
   id: NetworkIds.OPTIMISMGOERLI,
-  hexId: NetworkHexIds.OPTIMISMGOERLI,
-  mainnetHexId: NetworkHexIds.OPTIMISMMAINNET,
-  testnetHexId: NetworkHexIds.OPTIMISMGOERLI,
+  hexId: '0x1A4',
+  mainnetHexId: '0xa',
+  testnetHexId: '0x1A4',
   mainnetId: NetworkIds.OPTIMISMMAINNET,
   testnetId: NetworkIds.OPTIMISMGOERLI,
   name: NetworkNames.optimismGoerli,
@@ -283,7 +281,7 @@ const optimismGoerliConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherOptimism'),
+  enabled: true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
   getReadProvider: () => undefined,
@@ -294,14 +292,14 @@ const optimismGoerliConfig: NetworkConfig = {
 
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const emptyNetworkConfig: NetworkConfig = {
-  hexId: NetworkHexIds.EMPTYNET,
+  hexId: '0x0',
   name: 'empty' as NetworkNames,
   label: 'empty' as NetworkLabelType,
   color: '#ff',
   icon: 'empty',
   badge: 'empty',
   testnet: false,
-  isEnabled: () => true,
+  enabled: true,
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
   rpcUrl: 'empty',
@@ -324,14 +322,14 @@ export const L2Networks = [
 
 export const defaultForkSettings: NetworkConfig = {
   id: NetworkIds.HARDHAT,
-  hexId: NetworkHexIds.DEFAULTFORK,
+  hexId: '0x859',
   name: NetworkNames.ethereumMainnet, // these are being overridden
   label: 'Ethereum', // these are being overridden
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
   badge: ethereumMainnetBadge as string,
   testnet: true,
-  isEnabled: () => false,
+  enabled: false,
   token: 'ETH',
   rpcUrl: '',
   getReadProvider: () => undefined,

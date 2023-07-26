@@ -21,7 +21,9 @@ interface UpsertUser {
 export function NewReferralModal({ account, userReferral }: NewReferralModalProps) {
   const { t } = useTranslation()
   const [success, setSuccess] = useState(false)
-  const { connect } = useConnection()
+  const { connect } = useConnection({
+    initialConnect: false,
+  })
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 
@@ -46,7 +48,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
       {!success && !userReferral && (
         <ReferralModal
           heading="Welcome to the Summer.fi Referral Program"
-          topButton={{ text: t('connect-wallet'), func: () => connect() }}
+          topButton={{ text: t('connect-wallet'), func: async () => await connect() }}
         />
       )}
       {!success && userReferral && userReferral.state === 'newUser' && (

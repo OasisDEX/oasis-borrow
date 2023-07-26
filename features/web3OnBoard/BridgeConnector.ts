@@ -19,19 +19,20 @@ export interface ConnectorInformation {
   chainId: NetworkIds
   hexChainId: NetworkConfigHexId
   provider: EIP1193Provider
-  account: string
+  account: string | undefined
   networkName: NetworkNames
 }
 
 export class BridgeConnector extends AbstractConnector {
-  private readonly _connectorInformation: ConnectorInformation
-  private _disconnectExecuted = false
+  public readonly basicInfo: ConnectorInformation
+
+  private disconnectExecuted = false
 
   public isTheSame(other: AbstractConnector | undefined) {
     return (
       other instanceof BridgeConnector &&
-      this.connectorInformation.account === other?.connectorInformation.account &&
-      this.connectorInformation.chainId === other?.connectorInformation.chainId &&
+      this.basicInfo.account === other?.basicInfo.account &&
+      this.basicInfo.chainId === other?.basicInfo.chainId &&
       this.isConnected === other?.isConnected
     )
   }
@@ -43,7 +44,7 @@ export class BridgeConnector extends AbstractConnector {
   ) {
     const chainsIds = chains.map((chain) => parseInt(chain.id, 16))
     super({ supportedChainIds: chainsIds })
-    this._connectorInformation = this.createConnectorInformation()
+    this.basicInfo = this.getBasicInfoFromWallet()
   }
 
   get connectionKind(): ConnectionKind {
@@ -51,36 +52,32 @@ export class BridgeConnector extends AbstractConnector {
   }
 
   get isConnected(): boolean {
-    return !this._disconnectExecuted
+    return !this.disconnectExecuted
   }
 
   get chainId(): NetworkIds {
-    return this.connectorInformation.chainId
+    return this.basicInfo.chainId
   }
 
   get hexChainId(): NetworkConfigHexId {
-    return this.connectorInformation.hexChainId
+    return this.basicInfo.hexChainId
   }
 
   get networkName(): NetworkNames {
-    return this.connectorInformation.networkName
+    return this.basicInfo.networkName
   }
 
-  get connectedAccount(): string {
-    return this.connectorInformation.account
+  get connectedAccount(): string | undefined {
+    return this.basicInfo.account
   }
 
-  get connectorInformation(): ConnectorInformation {
-    return this._connectorInformation
-  }
-
-  private createConnectorInformation(): ConnectorInformation {
+  private getBasicInfoFromWallet() {
     const chainId = parseInt(this.wallet.chains[0].id, 16) as NetworkIds
     const hexChainId = this.wallet.chains[0].id as NetworkConfigHexId
     const networkConfig = networkSetByHexId[hexChainId]
 
     const networkName = networkConfig?.name as NetworkNames
-    const account = this.wallet.accounts[0].address
+    const account = this.wallet.accounts[0]?.address
     const provider = this.wallet.provider
 
     return { chainId, account, provider, hexChainId, networkName }
@@ -88,7 +85,7 @@ export class BridgeConnector extends AbstractConnector {
 
   activate(): Promise<ConnectorUpdate> {
     return Promise.resolve({
-      ...this.connectorInformation,
+      ...this.basicInfo,
     })
   }
 
@@ -96,14 +93,14 @@ export class BridgeConnector extends AbstractConnector {
   deactivate(): void {}
 
   getAccount(): Promise<string | null> {
-    return Promise.resolve(this.connectorInformation.account || null)
+    return Promise.resolve(this.basicInfo.account || null)
   }
 
   getChainId(): Promise<number | string> {
-    return Promise.resolve(this.connectorInformation.chainId)
+    return Promise.resolve(this.basicInfo.chainId)
   }
 
   getProvider(): Promise<any> {
-    return Promise.resolve(this.connectorInformation.provider)
+    return Promise.resolve(this.basicInfo.provider)
   }
 }

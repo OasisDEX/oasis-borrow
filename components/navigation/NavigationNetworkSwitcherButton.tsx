@@ -6,6 +6,7 @@ import {
   SwapWidgetChangeAction,
   SwapWidgetState,
 } from 'features/swapWidget/SwapWidgetChange'
+import { ConnectorInformation } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'
 import React, { useCallback } from 'react'
@@ -13,14 +14,20 @@ import { Box, Button, Image, Link } from 'theme-ui'
 
 export const NetworkButton = ({
   network,
-  setChain,
+  connect,
   connecting,
   currentNetworkName,
   currentHoverNetworkName,
   setCurrentHoverNetworkName,
 }: {
   network: NetworkConfig
-  setChain: (chainId: NetworkConfigHexId) => void
+  connect: (
+    chainId?: NetworkConfigHexId,
+    options?: {
+      forced?: boolean
+      onConnect?: (info: ConnectorInformation) => void
+    },
+  ) => Promise<void>
   connecting: boolean
   currentNetworkName: NetworkNames | undefined
   currentHoverNetworkName: NetworkNames | undefined
@@ -74,7 +81,7 @@ export const NetworkButton = ({
             },
           }),
         }}
-        onClick={() => setChain(network.hexId)}
+        onClick={() => connect(network.hexId)}
         disabled={connecting}
         key={network.hexId}
         onMouseOver={() => {
@@ -138,7 +145,6 @@ export const NetworkButton = ({
           >
             {network.links.map((link) => (
               <Link
-                key={`${link.label}:${link.url}`}
                 href={link.url}
                 onClick={(e) => {
                   e.stopPropagation()

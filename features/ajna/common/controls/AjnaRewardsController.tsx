@@ -66,11 +66,11 @@ export function AjnaRewardsController() {
   const userAjnaRewards = useAjnaRewards()
 
   const { isConnected } = useAccount()
-  const { connect } = useConnection()
+  const { connect } = useConnection({ initialConnect: false })
 
-  const handleConnect = useCallback(() => {
+  const handleConnect = useCallback(async () => {
     if (!isConnected) {
-      connect()
+      await connect()
     }
   }, [isConnected, connect])
 

@@ -23,7 +23,8 @@ import { TopBanner } from 'components/TopBanner'
 import { WithArrow } from 'components/WithArrow'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
-import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBoard'
+import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
+import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
@@ -204,11 +205,11 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         <CacheProvider value={cache}>
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
-            <ModalProvider>
-              <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-                <Web3OnBoardConnectorProvider>
-                  <Web3ReactProvider {...{ getLibrary }}>
-                    <AppContextProvider>
+            <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+              <Web3OnBoardConnectorProvider>
+                <Web3ReactProvider {...{ getLibrary }}>
+                  <AppContextProvider>
+                    <ModalProvider>
                       <HeadTags />
                       {seoTags}
                       <SetupWeb3Context>
@@ -226,11 +227,11 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                           </GasEstimationContextProvider>
                         </SharedUIProvider>
                       </SetupWeb3Context>
-                    </AppContextProvider>
-                  </Web3ReactProvider>
-                </Web3OnBoardConnectorProvider>
-              </Web3OnboardProvider>
-            </ModalProvider>
+                    </ModalProvider>
+                  </AppContextProvider>
+                </Web3ReactProvider>
+              </Web3OnBoardConnectorProvider>
+            </Web3OnboardProvider>
           </MDXProvider>
         </CacheProvider>
       </ThemeProvider>

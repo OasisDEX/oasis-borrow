@@ -319,7 +319,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
 
   const disconnectCallback = useCallback(async () => {
     socket?.disconnect()
-    disconnect()
+    await disconnect()
   }, [socket, disconnect])
 
   return (

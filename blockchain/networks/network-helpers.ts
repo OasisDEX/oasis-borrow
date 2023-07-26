@@ -53,7 +53,7 @@ const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
   return [...acc, network]
 }, [] as NetworkConfig[])
 
-export const enableNetworksSet = networksSet.filter((network) => network.isEnabled())
+export const enableNetworksSet = networksSet.filter((network) => network.enabled)
 export const networkSetByHexId = keyBy(enableNetworksSet, 'hexId')
 export const networkSetById = keyBy(enableNetworksSet, 'id')
 
@@ -180,8 +180,4 @@ export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): Netw
     (id): id is NetworkConfigHexId => id !== undefined,
   )
   return Array.from(new Set(baseHexs))
-}
-
-export function isNetworkHexIdSupported(networkId: NetworkConfigHexId) {
-  return !!networkSetByHexId[networkId]
 }

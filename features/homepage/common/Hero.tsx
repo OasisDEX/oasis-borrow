@@ -25,7 +25,9 @@ export function Hero({
 }) {
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
-  const { connecting, connect } = useConnection()
+  const { connecting, connect } = useConnection({
+    initialConnect: false,
+  })
 
   return (
     <Flex
@@ -67,7 +69,9 @@ export function Hero({
               transform: 'translateX(10px)',
             },
           }}
-          onClick={isConnected ? scrollTo('product-hub') : () => connecting || connect()}
+          onClick={
+            isConnected ? scrollTo('product-hub') : async () => connecting || (await connect())
+          }
         >
           {isConnected ? t('find-your-defi-product') : t('connect-wallet')}
           <Icon

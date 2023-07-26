@@ -18,20 +18,8 @@ export type ModalOpener = <M extends React.ComponentType<any>, P extends React.C
   modalComponentProps?: Omit<P, 'close'>,
 ) => void
 
-export interface ModalState {
-  openModal: ModalOpener
-  closeModal: () => void
-  modal: Modal | undefined
-}
-
-const ModalContext = React.createContext<ModalState>({
-  openModal: () => {
-    console.warn('ModalContext not setup properly ')
-  },
-  closeModal: () => {
-    console.warn('ModalContext not setup properly ')
-  },
-  modal: undefined,
+const ModalContext = React.createContext<ModalOpener>(() => {
+  console.warn('ModalContext not setup properly ')
 })
 
 export function ModalProvider(props: { children?: React.ReactNode }) {
@@ -40,18 +28,13 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   function close() {
     setModal(undefined)
   }
-
   return (
     <ModalContext.Provider
-      value={{
-        openModal: (modal, modalProps) => {
-          setModal({
-            modalComponent: modal,
-            modalComponentProps: modalProps,
-          })
-        },
-        closeModal: close,
-        modal: TheModal,
+      value={(modal, modalProps) => {
+        setModal({
+          modalComponent: modal,
+          modalComponentProps: modalProps,
+        })
       }}
     >
       {props.children}
@@ -64,13 +47,6 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   )
 }
 
-/**
- * @deprecated use useModalContext instead. This is only here for backwards compatibility. New hook contains handler for closing and reference for actual modal.
- */
 export function useModal(): ModalOpener {
-  return useContext(ModalContext).openModal
-}
-
-export function useModalContext(): ModalState {
   return useContext(ModalContext)
 }
