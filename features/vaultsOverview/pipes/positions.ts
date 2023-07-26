@@ -80,7 +80,7 @@ export type AavePosition = Position & {
   type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
   stopLossData?: StopLossTriggerData
-  autoSellData?: AutoBSTriggerData // this is just for type safety in positioins table, its not happening right now
+  autoSellData?: AutoBSTriggerData // this is just for type safety in positions table, its not happening right now
   fakePositionCreatedEvtForDsProxyUsers?: boolean
   debtToken: string
   protocol: AaveLendingProtocol

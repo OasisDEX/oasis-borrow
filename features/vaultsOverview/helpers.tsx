@@ -66,7 +66,7 @@ export function getProtection({
   autoSellData?: AutoBSTriggerData
 }): number {
   return stopLossData
-    ? (stopLossData.stopLossLevel.gt(zero)
+    ? (stopLossData?.stopLossLevel.gt(zero)
         ? stopLossData.stopLossLevel.times(100)
         : autoSellData?.execCollRatio.gt(zero)
         ? autoSellData.execCollRatio
