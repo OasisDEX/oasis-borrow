@@ -2,19 +2,12 @@ import { ethers } from 'ethers'
 
 import { networkSetById } from './network-helpers'
 import { NetworkIds } from './network-ids'
-import { networksById } from './networks-config'
 
 export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider {
   const provider = networkSetById[networkId]?.getReadProvider()
 
   if (provider) {
     return provider
-  }
-
-  const maybeDisabledProvider = networksById[networkId]?.getReadProvider()
-
-  if (maybeDisabledProvider) {
-    return maybeDisabledProvider
   }
 
   throw new Error(

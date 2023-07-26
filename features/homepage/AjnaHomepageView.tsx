@@ -53,7 +53,9 @@ export function AjnaHomepageView() {
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
-  const { connecting, connect } = useConnection()
+  const { connecting, connect } = useConnection({
+    initialConnect: false,
+  })
   const { isConnected } = useAccount()
 
   return (
@@ -131,7 +133,11 @@ export function AjnaHomepageView() {
               {t('ajna.landing-banner.button-label')}
             </AppLink>
           ) : (
-            <Button variant="primary" sx={{ px: '40px' }} onClick={() => connecting || connect()}>
+            <Button
+              variant="primary"
+              sx={{ px: '40px' }}
+              onClick={async () => connecting || (await connect())}
+            >
               {t('connect-wallet')} →
             </Button>
           )

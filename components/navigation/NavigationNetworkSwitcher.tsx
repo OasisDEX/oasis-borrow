@@ -3,6 +3,7 @@ import {
   getOppositeNetworkHexIdByHexId,
   mainnetNetworkParameter,
   NetworkConfigHexId,
+  NetworkIds,
   NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
@@ -13,9 +14,9 @@ import {
   isTestnetEnabled,
   isTestnetNetworkHexId,
 } from 'blockchain/networks'
-import { useConnection, useWalletManagement } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import { useModalContext } from 'helpers/modalHook'
+import { useModal } from 'helpers/modalHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useState } from 'react'
 import { Box, Button } from 'theme-ui'
@@ -35,17 +36,19 @@ const renderSeparator = () => {
 }
 
 export function NavigationNetworkSwitcherOrb() {
-  const { connect, connecting, setChain } = useConnection()
-  const { wallet } = useWalletManagement()
-  const connectedChain = wallet?.chainHexId
+  const { connectedChain, connect, connecting } = useConnection({
+    initialConnect: false,
+  })
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
-  const { openModal } = useModalContext()
+  const openModal = useModal()
 
   const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
+  const useArbitrum = useFeatureToggle('UseNetworkSwitcherArbitrum')
+  const useOptimism = useFeatureToggle('UseNetworkSwitcherOptimism')
 
   const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain))
+    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
   }
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,
@@ -54,7 +57,7 @@ export function NavigationNetworkSwitcherOrb() {
 
   return (
     <NavigationOrb customIcon={NavigationNetworkSwitcherIcon}>
-      {() => (
+      {(_isOpen) => (
         <>
           <Box
             sx={{
@@ -72,11 +75,19 @@ export function NavigationNetworkSwitcherOrb() {
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
                   : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
               )
+              .filter((network) => {
+                if (network.id === NetworkIds.OPTIMISMMAINNET && !useOptimism) {
+                  return false
+                }
+                if (network.id === NetworkIds.ARBITRUMMAINNET && !useArbitrum) {
+                  return false
+                }
+                return true
+              })
               .map((network) => (
                 <NetworkButton
-                  key={network.hexId}
                   network={network}
-                  setChain={setChain}
+                  connect={connect}
                   connecting={connecting}
                   currentNetworkName={currentNetworkName}
                   currentHoverNetworkName={currentHoverNetworkName}

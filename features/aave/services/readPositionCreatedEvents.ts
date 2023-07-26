@@ -6,7 +6,7 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
 import { combineLatest, EMPTY, Observable } from 'rxjs'
-import { catchError, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { catchError, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import { PositionCreated__factory } from 'types/ethers-contracts'
 import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
@@ -95,37 +95,35 @@ function extractLendingProtocolFromPositionCreatedEvent(
 export function getLastCreatedPositionForProxy$(
   context$: Observable<Context>,
   proxyAddress: string,
-): Observable<PositionCreated | undefined> {
+): Observable<PositionCreated> {
   return context$.pipe(
-    switchMap((context) => {
-      return getLastCreatedPositionForProxy(proxyAddress, context.chainId)
+    switchMap(async (context) => {
+      const events = await getPositionCreatedEventForProxyAddress(
+        { chainId: context.chainId },
+        proxyAddress,
+      )
+      return { context, events }
+    }),
+    map(({ context, events }) => ({ context, event: events.pop() })),
+    filter(({ event }) => event !== undefined),
+    map(({ context, event }) => {
+      return {
+        positionType: event!.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
+        collateralTokenSymbol: getTokenSymbolBasedOnAddress(
+          context.chainId,
+          event!.args.collateralToken,
+        ),
+        debtTokenSymbol: getTokenSymbolBasedOnAddress(context.chainId, event!.args.debtToken),
+        protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
+        chainId: context.chainId,
+        proxyAddress: event!.args.proxyAddress,
+      }
     }),
     catchError((error) => {
       console.error(`Error while fetching last created position for proxy ${proxyAddress}`, error)
       return EMPTY
     }),
   )
-}
-
-export async function getLastCreatedPositionForProxy(
-  proxyAddress: string,
-  chainId: NetworkIds,
-): Promise<PositionCreated | undefined> {
-  const events = await getPositionCreatedEventForProxyAddress({ chainId }, proxyAddress)
-
-  const lastEvent = events.pop()
-  if (lastEvent === undefined) {
-    return undefined
-  }
-
-  return {
-    positionType: lastEvent!.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
-    collateralTokenSymbol: getTokenSymbolBasedOnAddress(chainId, lastEvent!.args.collateralToken),
-    debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, lastEvent!.args.debtToken),
-    protocol: extractLendingProtocolFromPositionCreatedEvent(lastEvent!),
-    chainId,
-    proxyAddress: lastEvent!.args.proxyAddress,
-  }
 }
 
 export function createReadPositionCreatedEvents$(

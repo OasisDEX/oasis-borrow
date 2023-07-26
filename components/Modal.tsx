@@ -327,7 +327,7 @@ export function ModalTrezorMetamaskEIP1559() {
   }
 
   const disconnectHandler = async () => {
-    disconnect()
+    await disconnect()
     close()
   }
 
