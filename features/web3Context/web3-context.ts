@@ -47,14 +47,14 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     }, [bridgeConnector, deactivate, connector])
 
     useEffect(() => {
-      if (library && bridgeConnector && bridgeConnector.chainId === chainId && account) {
+      if (library && bridgeConnector) {
         push({
           status: 'connected',
           connectionKind: 'injected',
           web3: library as any,
           chainId: bridgeConnector.chainId,
           connectionMethod: 'web3-onboard',
-          account: account,
+          account: bridgeConnector.connectedAccount,
           magicLinkEmail: undefined,
           walletLabel: bridgeConnector.wallet.label,
           transactionProvider: new ethers.providers.Web3Provider(

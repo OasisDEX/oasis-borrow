@@ -1,13 +1,16 @@
+import { usePrevious } from '@react-hooks-library/core'
 import { ConnectorEvent } from '@web3-react/types'
 import {
   forksByParentHexId,
   NetworkConfigHexId,
+  NetworkHexIds,
   NetworkIds,
   networkSetByHexId,
 } from 'blockchain/networks'
 import { useModalContext } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import { useReducto } from 'helpers/useReducto'
+import { useRouter } from 'next/router'
 import React, { createContext, useCallback, useContext, useEffect } from 'react'
 
 import { UnsupportedNetworkModal } from './unsupported-network-modal'
@@ -15,6 +18,7 @@ import { useBridgeConnector } from './use-bridge-connector'
 import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
 import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
+import { ensureCorrectState } from './wallet-state/ensure-correct-state'
 import { useDebugWalletState } from './wallet-state/use-debug-wallet-state'
 import {
   areThePageNetworksTheSame,
@@ -85,6 +89,42 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
   },
 })
 
+export function shouldSendChangeNetworkOnConnected(
+  desiredNetworkHexId: NetworkConfigHexId,
+  state: WalletManagementState,
+) {
+  ensureCorrectState(state, WalletManagementStateStatus.connected)
+  if (desiredNetworkHexId === undefined) {
+    return false
+  }
+
+  if (state.pageNetworkHexIds) {
+    return !state.pageNetworkHexIds.includes(desiredNetworkHexId)
+  }
+
+  return state.walletNetworkHexId !== desiredNetworkHexId
+}
+
+export function useSafaftyReload({ walletNetworkHexId }: WalletManagementState) {
+  const previuosWalletNetworkHexId = usePrevious(walletNetworkHexId)
+  const { reload } = useRouter()
+
+  useEffect(() => {
+    if (
+      walletNetworkHexId === NetworkHexIds.MAINNET &&
+      previuosWalletNetworkHexId === NetworkHexIds.GOERLI
+    ) {
+      reload()
+    }
+    if (
+      walletNetworkHexId === NetworkHexIds.GOERLI &&
+      previuosWalletNetworkHexId === NetworkHexIds.MAINNET
+    ) {
+      reload()
+    }
+  }, [reload, previuosWalletNetworkHexId, walletNetworkHexId])
+}
+
 export const useWeb3OnBoardConnectorContext = () => useContext(web3OnBoardConnectorContext)
 
 function InternalProvider({ children }: WithChildren) {
@@ -105,6 +145,7 @@ function InternalProvider({ children }: WithChildren) {
   } = useBridgeConnector()
 
   useDebugWalletState({ state })
+  useSafaftyReload(state)
 
   const { openModal, closeModal } = useModalContext()
   const { setChain, connectedChain } = useChainSetter()

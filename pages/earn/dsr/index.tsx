@@ -23,7 +23,11 @@ function DsrProxyPage({ walletAddress }: { walletAddress: string }) {
     void replace(`/earn/dsr/${walletContextAddress}`)
   }
 
-  return <WithWalletConnection chainId={ethereumMainnetHexId}>{null}</WithWalletConnection>
+  return (
+    <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+      {null}
+    </WithWalletConnection>
+  )
 }
 
 DsrProxyPage.layout = AppLayout
