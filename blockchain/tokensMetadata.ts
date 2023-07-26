@@ -37,6 +37,8 @@ export interface TokenConfig {
   chain: MainNetworkNames
 }
 
+export type SimplifiedTokenConfig = Pick<TokenConfig, 'digits' | 'name' | 'precision' | 'symbol'>
+
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 

@@ -85,6 +85,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
+import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
@@ -1303,6 +1304,10 @@ export function setupAppContext() {
         .toString()}`,
   )
 
+  const identifiedTokens$ = memoize(curry(identifyTokens$)(context$, once$), (tokens: string[]) =>
+    tokens.join(),
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1380,6 +1385,7 @@ export function setupAppContext() {
     contextForAddress$,
     dpmPositionData$,
     ajnaPosition$,
+    identifiedTokens$,
     chainContext$,
     positionIdFromDpmProxy$,
     switchChains,
