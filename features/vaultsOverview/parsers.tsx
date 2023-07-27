@@ -377,13 +377,14 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
       protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-      protection: aaveProtection ? (
-        <AssetsTableDataCellRiskProtectionIcon
-          isOwner={isOwner}
-          level={getProtection({ stopLossData, autoSellData })}
-          link={url}
-        />
-      ) : undefined,
+      protection:
+        aaveProtection && protocol === LendingProtocol.AaveV3 ? (
+          <AssetsTableDataCellRiskProtectionIcon
+            isOwner={isOwner}
+            level={getProtection({ stopLossData, autoSellData })}
+            link={url}
+          />
+        ) : undefined,
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
@@ -418,13 +419,14 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
         liquidationPrice: formattedLiquidationPrice,
         fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
         protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-        protection: aaveProtection ? (
-          <AssetsTableDataCellRiskProtectionIcon
-            isOwner={isOwner}
-            level={getProtection({ stopLossData, autoSellData })}
-            link={url}
-          />
-        ) : undefined,
+        protection:
+          aaveProtection && protocol === LendingProtocol.AaveV3 ? (
+            <AssetsTableDataCellRiskProtectionIcon
+              isOwner={isOwner}
+              level={getProtection({ stopLossData, autoSellData })}
+              link={url}
+            />
+          ) : undefined,
         action: <AssetsTableDataCellAction cta="View" link={url} />,
       }
     },
