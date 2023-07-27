@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { isSupportedNetwork, NetworkIds } from 'blockchain/networks'
+import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
@@ -8,32 +8,34 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-interface AjnaOpenPositionPageProps {
+interface AjnaPositionPageProps {
+  id: string
   pool: string
   product: AjnaProduct
 }
 
-function AjnaOpenPositionPage({ pool, product }: AjnaOpenPositionPageProps) {
+function AjnaPositionPage({ id, pool, product }: AjnaPositionPageProps) {
   const [collateralToken, quoteToken] = pool.split('-')
 
   return (
     <AjnaProductController
       collateralToken={collateralToken}
-      flow="open"
+      flow={id ? 'manage' : 'open'}
+      id={id}
       product={product}
       quoteToken={quoteToken}
     />
   )
 }
 
-AjnaOpenPositionPage.layout = AjnaLayout
-AjnaOpenPositionPage.seoTags = ajnaPageSeoTags
+AjnaPositionPage.layout = AjnaLayout
+AjnaPositionPage.seoTags = ajnaPageSeoTags
 
-export default AjnaOpenPositionPage
+export default AjnaPositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const network = query.networkOrProduct as string
-  const [product, pool] = query.pool as string[]
+  const [product, pool, id = null] = query.position as string[]
   const supportedPools = Object.keys({
     ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,
     ...getNetworkContracts(NetworkIds.GOERLI).ajnaPoolPairs,
@@ -41,6 +43,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
 
   if (
     isSupportedNetwork(network) &&
+    network === NetworkNames.ethereumMainnet &&
     ajnaProducts.includes(product as AjnaProduct) &&
     supportedPools.includes(pool)
   ) {
@@ -49,6 +52,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
         ...(await serverSideTranslations(locale || 'en', ['common'])),
         product,
         pool,
+        id,
       },
     }
   }

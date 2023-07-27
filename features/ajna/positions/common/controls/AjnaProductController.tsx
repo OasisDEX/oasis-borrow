@@ -42,25 +42,12 @@ import React from 'react'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
-interface AjnaProductControllerOpenFlow {
-  collateralToken: string
-  product: AjnaProduct
-  quoteToken: string
-  id?: never
-}
-
-interface AjnaProductControllerManageFlow {
-  id: string
-  collateralToken?: never
-  product?: never
-  quoteToken?: never
-}
-
-type AjnaProductControllerProps = (
-  | AjnaProductControllerOpenFlow
-  | AjnaProductControllerManageFlow
-) & {
+interface AjnaProductControllerProps {
+  collateralToken?: string
+  id?: string
   flow: AjnaFlow
+  product?: AjnaProduct
+  quoteToken?: string
 }
 
 export function AjnaProductController({
@@ -75,7 +62,7 @@ export function AjnaProductController({
   const {
     ajnaPosition$,
     balancesInfoArray$,
-    dpmPositionData$,
+    dpmPositionDataV2$,
     tokenPriceUSD$,
     gasPrice$,
     userSettings$,
@@ -89,13 +76,14 @@ export function AjnaProductController({
     useMemo(
       () =>
         id
-          ? dpmPositionData$(getPositionIdentity(id))
+          ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
           : collateralToken && product && quoteToken
           ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
           : EMPTY,
       [collateralToken, id, product, quoteToken],
     ),
   )
+
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>

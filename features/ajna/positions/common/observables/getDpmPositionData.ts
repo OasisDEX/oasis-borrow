@@ -10,9 +10,11 @@ import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rx
 
 export interface DpmPositionData extends UserDpmAccount {
   collateralToken: string
+  collateralTokenAddress: string
   product: string
   protocol: string
   quoteToken: string
+  quoteTokenAddress: string
 }
 
 export function getDpmPositionData$(
@@ -41,14 +43,72 @@ export function getDpmPositionData$(
         ? {
             ...dpmProxy,
             collateralToken: lastCreatedPosition.collateralTokenSymbol,
+            collateralTokenAddress: lastCreatedPosition.collateralTokenAddress,
             product: (
               vaultsFromApi[dpmProxy.vaultId] || lastCreatedPosition.positionType
             ).toLowerCase(),
             protocol: lastCreatedPosition.protocol,
             quoteToken: lastCreatedPosition.debtTokenSymbol,
+            quoteTokenAddress: lastCreatedPosition.debtTokenAddress,
           }
         : null
     }),
+    distinctUntilChanged(isEqual),
+    shareReplay(1),
+  )
+}
+
+export function getDpmPositionDataV2$(
+  proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
+  readPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>,
+  positionId: PositionId,
+  collateralToken?: string,
+  quoteToken?: string,
+  product?: string,
+): Observable<DpmPositionData> {
+  return proxiesForPosition$(positionId).pipe(
+    switchMap(({ dpmProxy }) =>
+      combineLatest(
+        of(dpmProxy),
+        dpmProxy ? readPositionCreatedEvents$(dpmProxy.user) : of(undefined),
+      ),
+    ),
+    switchMap(([dpmProxy, positions]) => {
+      const proxyPosition =
+        collateralToken && quoteToken && product
+          ? positions?.filter(
+              (position) =>
+                position.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase() &&
+                position.collateralTokenSymbol === collateralToken &&
+                position.debtTokenSymbol === quoteToken &&
+                position.positionType.toLowerCase() === product.toLowerCase(),
+            )[0]
+          : positions?.[0]
+
+      return combineLatest(
+        of(dpmProxy),
+        of(proxyPosition),
+        dpmProxy && proxyPosition
+          ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], proxyPosition.protocol)
+          : of(undefined),
+      )
+    }),
+    map(([dpmProxy, position, vaultsFromApi]) =>
+      dpmProxy && position && vaultsFromApi
+        ? {
+            ...dpmProxy,
+            collateralToken: position.collateralTokenSymbol,
+            collateralTokenAddress: position.collateralTokenAddress,
+            product: (position.positionType === 'Earn'
+              ? position.positionType
+              : vaultsFromApi[dpmProxy.vaultId] || position.positionType
+            ).toLowerCase(),
+            protocol: position.protocol,
+            quoteToken: position.debtTokenSymbol,
+            quoteTokenAddress: position.debtTokenAddress,
+          }
+        : null,
+    ),
     distinctUntilChanged(isEqual),
     shareReplay(1),
   )
@@ -68,10 +128,12 @@ export function getStaticDpmPositionData$({
   return EMPTY.pipe(
     startWith({
       collateralToken,
+      collateralTokenAddress: ethers.constants.AddressZero,
       product,
       protocol,
       proxy: ethers.constants.AddressZero,
       quoteToken,
+      quoteTokenAddress: ethers.constants.AddressZero,
       user: ethers.constants.AddressZero,
       vaultId: '0',
     }),
