@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -25,7 +24,7 @@ export const AjnaBorrowOriginationFee = () => {
   return (
     <HighlightedOrderInformation
       label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
-      iconCircle={getToken(quoteToken).iconCircle}
+      symbol={quoteToken}
       value={originationFeeFormatted}
     />
   )

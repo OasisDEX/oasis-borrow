@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { FIAT_PRECISION } from 'components/constants'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/formatters/format'
@@ -117,8 +116,8 @@ export function VaultActionInput({
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
   const [toggleStatus, setToggleStatus] = useState<boolean>(defaultToggle)
-  const tokenSymbol = currencyCode !== 'USD' ? getToken(currencyCode).symbol : 'USD'
-  const auxiliarySymbol = auxiliaryCurrencyCode ? getToken(auxiliaryCurrencyCode).symbol : 'USD'
+  const tokenSymbol = currencyCode !== 'USD' ? currencyCode : 'USD'
+  const auxiliarySymbol = auxiliaryCurrencyCode || 'USD'
 
   const toggleResolved = typeof defaultToggle === 'boolean' ? defaultToggle : toggleStatus
 

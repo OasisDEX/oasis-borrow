@@ -1,4 +1,4 @@
-import { getToken } from 'blockchain/tokensMetadata'
+
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -50,7 +50,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
           </Text>
           {!debt.isZero() && (
             <HighlightedOrderInformation
-              iconCircle={getToken('DAI').iconCircle}
+              symbol="DAI"
               label={`${t('minimum')} ${t('after-closing', { token: 'DAI' })}`}
               value={`${formatCryptoBalance(afterCloseToDai)} DAI`}
             />

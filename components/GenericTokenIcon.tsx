@@ -10,6 +10,7 @@ interface GenericTokenIconProps {
 
 export function GenericTokenIcon({ size, sx, symbol }: GenericTokenIconProps) {
   const innerSize = size * 0.8125
+  const fontSize = size * 0.5
 
   return (
     <Flex
@@ -33,7 +34,7 @@ export function GenericTokenIcon({ size, sx, symbol }: GenericTokenIconProps) {
         sx={{
           width: `${innerSize}px`,
           position: 'absolute',
-          fontSize: 2,
+          fontSize: `${fontSize}px`,
           color: 'primary100',
           textAlign: 'center',
           fontWeight: 'semiBold',

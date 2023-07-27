@@ -28,6 +28,7 @@ import React, {
 
 interface AjnaGeneralContextProviderProps {
   collateralBalance: BigNumber
+  collateralDigits: number
   collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
@@ -36,9 +37,11 @@ interface AjnaGeneralContextProviderProps {
   ethPrice: BigNumber
   flow: AjnaFlow
   id?: string
+  isOracless: boolean
   owner: string
   product: AjnaProduct
   quoteBalance: BigNumber
+  quoteDigits: number
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string

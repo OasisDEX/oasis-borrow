@@ -217,12 +217,16 @@ export function AjnaProductController({
   const tokensPrecision = useMemo(() => {
     return !isOracless && dpmPositionData
       ? {
+          collateralDigits: getToken(dpmPositionData.collateralToken).digits,
           collateralPrecision: getToken(dpmPositionData.collateralToken).precision,
+          quoteDigits: getToken(dpmPositionData.quoteToken).digits,
           quotePrecision: getToken(dpmPositionData.quoteToken).precision,
         }
       : isOracless && identifiedTokensData
       ? {
+          collateralDigits: identifiedTokensData[collateralToken].digits,
           collateralPrecision: identifiedTokensData[collateralToken].precision,
+          quoteDigits: identifiedTokensData[quoteToken].digits,
           quotePrecision: identifiedTokensData[quoteToken].precision,
         }
       : undefined
@@ -286,7 +290,7 @@ export function AjnaProductController({
                   ajnaHistory,
                   ajnaPositionCumulatives,
                   { slippage },
-                  { collateralPrecision, quotePrecision },
+                  { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 ]) =>
                   ajnaPosition ? (
                     <>
@@ -305,6 +309,7 @@ export function AjnaProductController({
                       />
                       <AjnaGeneralContextProvider
                         collateralBalance={collateralBalance}
+                        collateralDigits={collateralDigits}
                         collateralPrecision={collateralPrecision}
                         collateralPrice={tokenPriceUSD[dpmPosition.collateralToken]}
                         collateralToken={dpmPosition.collateralToken}
@@ -313,9 +318,11 @@ export function AjnaProductController({
                         ethPrice={tokenPriceUSD.ETH}
                         flow={flow}
                         id={id}
+                        isOracless={!!isOracless}
                         owner={dpmPosition.user}
                         product={dpmPosition.product as AjnaProduct}
                         quoteBalance={quoteBalance}
+                        quoteDigits={quoteDigits}
                         quotePrecision={quotePrecision}
                         quotePrice={tokenPriceUSD[dpmPosition.quoteToken]}
                         quoteToken={dpmPosition.quoteToken}
