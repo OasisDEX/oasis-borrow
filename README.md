@@ -67,7 +67,7 @@ HTTPS=true yarn start
 
 The application will be viewable on <http://localhost:3000> or <https://localhost:3443> respectively
 
-At this point, no prodcust will be loaded in the products hub of the homepage. To see products, open a third terminal and run:
+At this point, no products will be loaded in the products hub of the homepage. To see products, open a third terminal and run:
 ```
 curl -X PATCH -H "Authorization: <your PRODUCT_HUB_KEY entered in .env.local file>" -H "Content-Type: application/json" -d '{"protocols": ["aavev2", "aavev3", "maker"]}' http://localhost:3000/api/product-hub
 ``` 
