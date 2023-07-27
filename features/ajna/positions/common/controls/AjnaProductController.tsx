@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
+import { isAddress } from 'ethers/lib/utils'
 import { steps } from 'features/ajna/common/consts'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
@@ -74,24 +75,41 @@ export function AjnaProductController({
     ajnaPosition$,
     balancesInfoArray$,
     dpmPositionData$,
-    tokenPriceUSD$,
     gasPrice$,
+    identifiedTokens$,
+    tokenPriceUSD$,
     userSettings$,
   } = useAppContext()
   const { walletAddress } = useAccount()
+  const isOracless =
+    collateralToken && quoteToken && isAddress(collateralToken) && isAddress(quoteToken)
 
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
 
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
+
+  const [identifiedTokensData] = useObservable(
+    useMemo(
+      () => (isOracless ? identifiedTokens$([collateralToken, quoteToken]) : EMPTY),
+      [isOracless, collateralToken, quoteToken],
+    ),
+  )
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
         id
           ? dpmPositionData$(getPositionIdentity(id))
-          : collateralToken && product && quoteToken
+          : !isOracless && product && collateralToken && quoteToken
           ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
+          : isOracless && identifiedTokensData && product
+          ? getStaticDpmPositionData$({
+              collateralToken: identifiedTokensData[collateralToken].symbol,
+              product,
+              protocol: 'Ajna',
+              quoteToken: identifiedTokensData[quoteToken].symbol,
+            })
           : EMPTY,
-      [collateralToken, id, product, quoteToken],
+      [collateralToken, id, identifiedTokensData, product, quoteToken],
     ),
   )
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
@@ -118,14 +136,24 @@ export function AjnaProductController({
   const [ajnaPositionData, ajnaPositionError] = useObservable(
     useMemo(
       () =>
-        dpmPositionData && tokenPriceUSDData
+        !isOracless && dpmPositionData && tokenPriceUSDData
           ? ajnaPosition$(
               tokenPriceUSDData[dpmPositionData.collateralToken],
               tokenPriceUSDData[dpmPositionData.quoteToken],
               dpmPositionData,
+              undefined,
+              undefined,
+            )
+          : isOracless && dpmPositionData && tokenPriceUSDData
+          ? ajnaPosition$(
+              tokenPriceUSDData[dpmPositionData.collateralToken],
+              tokenPriceUSDData[dpmPositionData.quoteToken],
+              dpmPositionData,
+              collateralToken,
+              quoteToken,
             )
           : EMPTY,
-      [dpmPositionData, tokenPriceUSDData],
+      [dpmPositionData, isOracless, tokenPriceUSDData],
     ),
   )
 

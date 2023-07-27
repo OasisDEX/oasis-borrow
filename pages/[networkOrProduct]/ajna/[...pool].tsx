@@ -35,6 +35,12 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
   const network = query.networkOrProduct as string
   const [product, pool] = query.pool as string[]
   const [collateralToken, quoteToken] = pool.split('-')
+  const caseSensitiveCollateralToken = isAddress(collateralToken)
+    ? collateralToken.toLocaleLowerCase()
+    : collateralToken.toUpperCase()
+  const caseSensitiveQuoteToken = isAddress(quoteToken)
+    ? quoteToken.toLocaleLowerCase()
+    : quoteToken.toUpperCase()
   const supportedPools = Object.keys({
     ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,
     ...getNetworkContracts(NetworkIds.GOERLI).ajnaPoolPairs,
@@ -43,7 +49,8 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
   if (
     isSupportedNetwork(network) &&
     ajnaProducts.includes(product as AjnaProduct) &&
-    (supportedPools.includes(pool) || (isAddress(collateralToken) && isAddress(quoteToken)))
+    (supportedPools.includes(`${caseSensitiveCollateralToken}-${caseSensitiveQuoteToken}`) ||
+      (isAddress(caseSensitiveCollateralToken) && isAddress(caseSensitiveQuoteToken)))
   ) {
     return {
       props: {
