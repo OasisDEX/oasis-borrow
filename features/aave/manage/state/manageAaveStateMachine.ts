@@ -1,6 +1,7 @@
 import { IPosition } from '@oasisdex/dma-library'
 import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
+import { ProductType as AnalyticsProductType } from 'analytics/common'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -155,7 +156,7 @@ export function createManageAaveStateMachine(
               },
             },
             loading: {
-              entry: ['requestParameters'],
+              entry: ['requestParameters', 'riskRatioEvent'],
               on: {
                 STRATEGY_RECEIVED: {
                   target: 'idle',
@@ -215,7 +216,7 @@ export function createManageAaveStateMachine(
                 SET_RISK_RATIO: {
                   cond: 'canChangePosition',
                   target: '#manageAaveStateMachine.background.debouncing',
-                  actions: ['userInputRiskRatio', 'riskRatioEvent'],
+                  actions: ['userInputRiskRatio'],
                 },
                 RESET_RISK_RATIO: {
                   cond: 'canChangePosition',
@@ -591,10 +592,18 @@ export function createManageAaveStateMachine(
           transition: undefined,
         })),
         riskRatioEvent: (context) => {
-          trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
+          trackingEvents.earn.aaveAdjustRiskSliderAction(
+            'MoveSlider',
+            context.userInput.riskRatio!.loanToValue,
+            context.strategyConfig.type as AnalyticsProductType,
+          )
         },
         riskRatioConfirmEvent: (context) => {
-          trackingEvents.earn.stETHAdjustRiskConfirmRisk(context.userInput.riskRatio!.loanToValue)
+          trackingEvents.earn.aaveAdjustRiskSliderAction(
+            'ConfirmRisk',
+            context.userInput.riskRatio!.loanToValue,
+            context.strategyConfig.type as AnalyticsProductType,
+          )
         },
         // riskRatioConfirmTransactionEvent: (context) => {
         //   trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
