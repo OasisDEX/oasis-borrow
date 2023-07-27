@@ -1,8 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
-import { getTokens } from 'blockchain/tokensMetadata'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
+import { TokensGroup } from 'components/TokensGroup'
 import {
   ShareButton,
   twitterSharePositionText,
@@ -12,10 +11,9 @@ import {
   FollowButtonControl,
   FollowButtonControlProps,
 } from 'features/follow/controllers/FollowButtonControl'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { ReactNode } from 'react'
-import { Box, Flex, Image } from 'theme-ui'
+import { Flex } from 'theme-ui'
 
 import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetails'
 
@@ -23,7 +21,6 @@ export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]
   followButton?: FollowButtonControlProps
   header: ReactNode
-  label?: string
   loading?: boolean
   shareButton?: boolean
   token?: string[]
@@ -35,14 +32,12 @@ export function VaultHeadline({
   details,
   followButton,
   header,
-  label,
   loading = false,
   shareButton,
   token = [],
   handleClick,
   protocol,
 }: VaultHeadlineProps) {
-  const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
 
   return (
@@ -80,25 +75,8 @@ export function VaultHeadline({
             columnGap: 2,
           }}
         >
-          {tokenData instanceof Array && tokenData.length > 0 && (
-            <Box sx={{ mr: 2, flexShrink: 0 }}>
-              {tokenData.map(({ iconCircle }, iconIndex) => (
-                <Icon
-                  key={`VaultHeadlineIcon_${iconCircle}`}
-                  name={iconCircle}
-                  size="32px"
-                  sx={{
-                    verticalAlign: 'text-bottom',
-                    position: 'relative',
-                    zIndex: tokenData.length - iconIndex,
-                    mr: tokenData.length - 1 === iconIndex ? 0 : '-16px',
-                  }}
-                />
-              ))}
-            </Box>
-          )}
+          <TokensGroup tokens={token} forceSize={32} sx={{ mt: '2px', mr: 2, flexShrink: 0 }} />
           {header}
-          {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
         </Flex>
         {/* protocol label & icon buttons */}
         <Flex
@@ -114,7 +92,11 @@ export function VaultHeadline({
             },
           }}
         >
-          {protocol && <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />}
+          {protocol && (
+            <Flex sx={{ ml: [0, 3] }}>
+              <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
+            </Flex>
+          )}
           {followVaultEnabled && (
             <>
               {followButton && <FollowButtonControl {...followButton} />}

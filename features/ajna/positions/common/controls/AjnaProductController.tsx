@@ -34,6 +34,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -146,8 +147,8 @@ export function AjnaProductController({
             )
           : isOracless && dpmPositionData && tokenPriceUSDData
           ? ajnaPosition$(
-              tokenPriceUSDData[dpmPositionData.collateralToken],
-              tokenPriceUSDData[dpmPositionData.quoteToken],
+              tokenPriceUSDData[dpmPositionData.collateralToken] || zero,
+              tokenPriceUSDData[dpmPositionData.quoteToken] || zero,
               dpmPositionData,
               collateralToken,
               quoteToken,
