@@ -75,6 +75,16 @@ export interface PositionTableEarnRow extends PositionTableRow {
   pnl?: BigNumber
 }
 
+const isAutomationEnabledProtocol = (protocol: LendingProtocol) => {
+  const aaveProtection = useFeatureToggle('AaveV3Protection')
+  return {
+    [LendingProtocol.Maker]: true,
+    [LendingProtocol.AaveV3]: aaveProtection,
+    [LendingProtocol.AaveV2]: false,
+    [LendingProtocol.Ajna]: false,
+  }[protocol]
+}
+
 export function parseMakerBorrowPositionRows(
   positions: MakerPositionDetails[],
 ): PositionTableBorrowRow[] {
@@ -377,14 +387,17 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
       protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-      protection:
-        aaveProtection && protocol === LendingProtocol.AaveV3 ? (
-          <AssetsTableDataCellRiskProtectionIcon
-            isOwner={isOwner}
-            level={getProtection({ stopLossData, autoSellData })}
-            link={url}
-          />
-        ) : undefined,
+      ...(isAutomationEnabledProtocol(protocol)
+        ? {
+            protection: (
+              <AssetsTableDataCellRiskProtectionIcon
+                isOwner={isOwner}
+                level={getProtection({ stopLossData, autoSellData })}
+                link={url}
+              />
+            ),
+          }
+        : {}),
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
@@ -419,14 +432,17 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
         liquidationPrice: formattedLiquidationPrice,
         fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
         protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-        protection:
-          aaveProtection && protocol === LendingProtocol.AaveV3 ? (
-            <AssetsTableDataCellRiskProtectionIcon
-              isOwner={isOwner}
-              level={getProtection({ stopLossData, autoSellData })}
-              link={url}
-            />
-          ) : undefined,
+        ...(isAutomationEnabledProtocol(protocol)
+          ? {
+              protection: (
+                <AssetsTableDataCellRiskProtectionIcon
+                  isOwner={isOwner}
+                  level={getProtection({ stopLossData, autoSellData })}
+                  link={url}
+                />
+              ),
+            }
+          : {}),
         action: <AssetsTableDataCellAction cta="View" link={url} />,
       }
     },
