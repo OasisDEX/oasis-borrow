@@ -9,6 +9,7 @@ import { NetworkNames, networksById } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
+import { AssetsTableDataCellRiskNoProtectionAvailableIcon } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskNoProtectionAvailableIcon'
 import { AssetsTableDataCellRiskProtectionIcon } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskProtectionIcon'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
 import { AssetsTableRowData } from 'components/assetsTable/types'
@@ -75,11 +76,11 @@ export interface PositionTableEarnRow extends PositionTableRow {
   pnl?: BigNumber
 }
 
-const isAutomationEnabledProtocol = (protocol: LendingProtocol) => {
+const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: NetworkNames) => {
   const aaveProtection = useFeatureToggle('AaveV3Protection')
   return {
-    [LendingProtocol.Maker]: true,
-    [LendingProtocol.AaveV3]: aaveProtection,
+    [LendingProtocol.Maker]: network === NetworkNames.ethereumMainnet,
+    [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV2]: false,
     [LendingProtocol.Ajna]: false,
   }[protocol]
@@ -351,7 +352,6 @@ export function parseDsrEarnPosition({
 }
 
 export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTableRowData[] {
-  const aaveProtection = useFeatureToggle('AaveV3Protection')
   return rows.map(
     ({
       asset,
@@ -387,7 +387,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
       protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-      ...(isAutomationEnabledProtocol(protocol)
+      ...(isAutomationEnabledProtocol(protocol, network)
         ? {
             protection: (
               <AssetsTableDataCellRiskProtectionIcon
@@ -397,7 +397,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
               />
             ),
           }
-        : {}),
+        : { protection: <AssetsTableDataCellRiskNoProtectionAvailableIcon /> }),
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
@@ -419,7 +419,6 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
       autoSellData,
       isOwner,
     }) => {
-      const aaveProtection = useFeatureToggle('AaveV3Protection')
       const formattedLiquidationPrice =
         protocol.toLowerCase() === LendingProtocol.Ajna
           ? `${formatCryptoBalance(liquidationPrice)} ${asset}`
@@ -432,7 +431,7 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
         liquidationPrice: formattedLiquidationPrice,
         fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
         protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-        ...(isAutomationEnabledProtocol(protocol)
+        ...(isAutomationEnabledProtocol(protocol, network)
           ? {
               protection: (
                 <AssetsTableDataCellRiskProtectionIcon
@@ -442,7 +441,7 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
                 />
               ),
             }
-          : {}),
+          : { protection: <AssetsTableDataCellRiskNoProtectionAvailableIcon /> }),
         action: <AssetsTableDataCellAction cta="View" link={url} />,
       }
     },
