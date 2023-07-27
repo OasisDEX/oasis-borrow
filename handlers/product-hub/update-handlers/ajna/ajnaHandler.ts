@@ -9,6 +9,7 @@ import {
   AjnaPoolsTableData,
   getAjnaPoolsTableData,
 } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { isYieldLoopPool } from 'features/ajna/positions/common/helpers/isYieldLoopPool'
@@ -75,6 +76,7 @@ async function getAjnaPoolData(
           const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
           const isShort = isShortPosition({ collateralToken })
           const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
+          const isWithMultiply = isPoolSupportingMultiply({ collateralToken, quoteToken })
           const collateralPrice = prices[collateralToken]
           const quotePrice = prices[quoteToken]
           const marketPrice = collateralPrice.div(quotePrice)
@@ -127,8 +129,8 @@ async function getAjnaPoolData(
                 ...getTokenGroup(collateralToken, 'primary'),
                 product: [
                   ProductHubProductType.Borrow,
-                  ProductHubProductType.Multiply,
-                  ...(isYieldLoop ? [ProductHubProductType.Earn] : []),
+                  ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
+                  ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,

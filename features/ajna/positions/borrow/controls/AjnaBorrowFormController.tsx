@@ -5,6 +5,7 @@ import { AjnaBorrowFormContentTransition } from 'features/ajna/positions/borrow/
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
@@ -64,7 +65,7 @@ export function AjnaBorrowFormController() {
                 updateState('action', 'generate-borrow')
               },
             },
-            ...(ajnaMultiplyEnabled
+            ...(isPoolSupportingMultiply({ collateralToken, quoteToken }) && ajnaMultiplyEnabled
               ? [
                   {
                     label: t('system.actions.borrow.switch-to-multiply'),

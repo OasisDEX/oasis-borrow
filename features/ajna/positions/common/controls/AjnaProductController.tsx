@@ -11,6 +11,7 @@ import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/a
 import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
+import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { getAjnaHistory$ } from 'features/ajna/positions/common/observables/getAjnaHistory'
 import {
   AjnaBorrowishPositionAuction,
@@ -28,6 +29,7 @@ import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply
 import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
@@ -153,7 +155,14 @@ export function AjnaProductController({
     ),
   )
 
-  if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
+  if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
+  if (
+    !id &&
+    collateralToken &&
+    quoteToken &&
+    !isPoolSupportingMultiply({ collateralToken, quoteToken })
+  )
+    void push(INTERNAL_LINKS.ajnaMultiply)
 
   return (
     <WithConnection>
