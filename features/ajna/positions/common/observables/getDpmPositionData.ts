@@ -128,12 +128,12 @@ export function getStaticDpmPositionData$({
   return EMPTY.pipe(
     startWith({
       collateralToken,
-      collateralTokenAddress: '0x0',
+      collateralTokenAddress: ethers.constants.AddressZero,
       product,
       protocol,
       proxy: ethers.constants.AddressZero,
       quoteToken,
-      quoteTokenAddress: '0x0',
+      quoteTokenAddress: ethers.constants.AddressZero,
       user: ethers.constants.AddressZero,
       vaultId: '0',
     }),

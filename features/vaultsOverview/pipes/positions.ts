@@ -5,6 +5,7 @@ import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import { ethers } from 'ethers'
 import { loadStrategyFromTokens } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
@@ -359,8 +360,8 @@ function getStethEthAaveV2DsProxyEarnPosition$(
                 chainId: NetworkIds.MAINNET,
                 proxyAddress: dsProxyAddress,
                 fakePositionCreatedEvtForDsProxyUsers: true,
-                collateralTokenAddress: '0x0',
-                debtTokenAddress: '0x0',
+                collateralTokenAddress: ethers.constants.AddressZero,
+                debtTokenAddress: ethers.constants.AddressZero,
               },
             ]
           } else {
