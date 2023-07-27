@@ -40,25 +40,12 @@ import React from 'react'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
-interface AjnaProductControllerOpenFlow {
-  collateralToken: string
-  product: AjnaProduct
-  quoteToken: string
-  id?: never
-}
-
-interface AjnaProductControllerManageFlow {
-  id: string
-  collateralToken?: never
-  product?: never
-  quoteToken?: never
-}
-
-type AjnaProductControllerProps = (
-  | AjnaProductControllerOpenFlow
-  | AjnaProductControllerManageFlow
-) & {
+interface AjnaProductControllerProps {
+  collateralToken?: string
+  id?: string
   flow: AjnaFlow
+  product?: AjnaProduct
+  quoteToken?: string
 }
 
 export function AjnaProductController({
