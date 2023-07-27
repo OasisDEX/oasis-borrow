@@ -1,4 +1,5 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
@@ -213,6 +214,20 @@ export function AjnaProductController({
     ),
   )
 
+  const tokensPrecision = useMemo(() => {
+    return !isOracless && dpmPositionData
+      ? {
+          collateralPrecision: getToken(dpmPositionData.collateralToken).precision,
+          quotePrecision: getToken(dpmPositionData.quoteToken).precision,
+        }
+      : isOracless && identifiedTokensData
+      ? {
+          collateralPrecision: identifiedTokensData[collateralToken].precision,
+          quotePrecision: identifiedTokensData[quoteToken].precision,
+        }
+      : undefined
+  }, [collateralToken, dpmPositionData, identifiedTokensData, isOracless, quoteToken])
+
   if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
 
   return (
@@ -246,6 +261,7 @@ export function AjnaProductController({
                   ajnaHistoryData,
                   ajnaPositionCumulatives,
                   userSettingsData,
+                  tokensPrecision,
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -270,6 +286,7 @@ export function AjnaProductController({
                   ajnaHistory,
                   ajnaPositionCumulatives,
                   { slippage },
+                  { collateralPrecision, quotePrecision },
                 ]) =>
                   ajnaPosition ? (
                     <>
@@ -288,6 +305,7 @@ export function AjnaProductController({
                       />
                       <AjnaGeneralContextProvider
                         collateralBalance={collateralBalance}
+                        collateralPrecision={collateralPrecision}
                         collateralPrice={tokenPriceUSD[dpmPosition.collateralToken]}
                         collateralToken={dpmPosition.collateralToken}
                         {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
@@ -298,6 +316,7 @@ export function AjnaProductController({
                         owner={dpmPosition.user}
                         product={dpmPosition.product as AjnaProduct}
                         quoteBalance={quoteBalance}
+                        quotePrecision={quotePrecision}
                         quotePrice={tokenPriceUSD[dpmPosition.quoteToken]}
                         quoteToken={dpmPosition.quoteToken}
                         steps={steps[dpmPosition.product as AjnaProduct][flow]}

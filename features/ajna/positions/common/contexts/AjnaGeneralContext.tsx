@@ -28,6 +28,7 @@ import React, {
 
 interface AjnaGeneralContextProviderProps {
   collateralBalance: BigNumber
+  collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
   dpmProxy?: string
@@ -38,6 +39,7 @@ interface AjnaGeneralContextProviderProps {
   owner: string
   product: AjnaProduct
   quoteBalance: BigNumber
+  quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
   steps: AjnaSidebarStep[]
