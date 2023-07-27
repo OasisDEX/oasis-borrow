@@ -442,7 +442,7 @@ function ManageAaveReviewingStateView({
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
   // TODO validation suppressed for testing trigger execution
-  // const stopLossError = automation?.stopLoss?.stopLossError
+  const stopLossError = automation?.stopLoss?.stopLossError
 
   const label = allowanceNeeded
     ? t('set-allowance-for', {
@@ -454,9 +454,7 @@ function ManageAaveReviewingStateView({
     ...GetReviewingSidebarProps({ state, send, automation }),
     primaryButton: {
       isLoading: false,
-      disabled: !state.can('NEXT_STEP') || isLocked(state),
-      // TODO validation suppressed for testing trigger execution
-      // || stopLossError,
+      disabled: !state.can('NEXT_STEP') || isLocked(state) || stopLossError,
       label: label,
       action: () => send('NEXT_STEP'),
     },
@@ -667,7 +665,11 @@ export function SidebarManageAaveVault() {
           }
           primaryButton={{
             isLoading: loading(),
-            disabled: !state.can('ADJUST_POSITION') || isLocked(state) || !state.context.transition,
+            disabled:
+              !state.can('ADJUST_POSITION') ||
+              isLocked(state) ||
+              !state.context.transition ||
+              stopLossError,
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')
