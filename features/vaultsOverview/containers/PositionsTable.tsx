@@ -276,7 +276,7 @@ export function PositionsTableWithAjna({
           <AssetsTableHeading>
             Summer.fi {t('nav.borrow')} ({borrowPositionsRows.length})
           </AssetsTableHeading>
-          <AssetsResponsiveTable rows={borrowPositionsRows} />
+          <AssetsResponsiveTable rows={borrowPositionsRows} tooltips={positionsTableTooltips} />
         </>
       )}
       {multiplyPositionsRows.length > 0 && (
@@ -284,7 +284,7 @@ export function PositionsTableWithAjna({
           <AssetsTableHeading>
             Summer.fi {t('nav.multiply')} ({multiplyPositionsRows.length})
           </AssetsTableHeading>
-          <AssetsResponsiveTable rows={multiplyPositionsRows} />
+          <AssetsResponsiveTable rows={multiplyPositionsRows} tooltips={positionsTableTooltips} />
         </>
       )}
       {earnPositionsRows.length > 0 && (
@@ -292,7 +292,7 @@ export function PositionsTableWithAjna({
           <AssetsTableHeading>
             Summer.fi {t('nav.earn')} ({earnPositionsRows.length})
           </AssetsTableHeading>
-          <AssetsResponsiveTable rows={earnPositionsRows} />
+          <AssetsResponsiveTable rows={earnPositionsRows} tooltips={positionsTableTooltips} />
         </>
       )}
     </>
