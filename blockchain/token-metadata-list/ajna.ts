@@ -35,7 +35,7 @@ export const ajnaTokensMetadata: TokenConfig[] = [
     bannerIcon: '',
     bannerGif: '',
     coinbaseTicker: 'worldcoin-org',
-    coinGeckoTicker: 'worldcoin',
+    coinGeckoTicker: 'worldcoin-wld',
     coinpaprikaTicker: 'wld-worldcoi',
     tags: [],
     protocol: LendingProtocol.Ajna,
