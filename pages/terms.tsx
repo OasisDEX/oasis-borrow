@@ -1,5 +1,5 @@
 import { PageSEONoFollow } from 'components/HeadTags'
-import { MarketingLayout } from 'components/Layouts'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { currentContent } from 'features/content'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'

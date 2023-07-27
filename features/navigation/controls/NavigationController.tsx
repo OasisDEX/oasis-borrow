@@ -12,7 +12,7 @@ import { useAccount } from 'helpers/useAccount'
 import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 
-export function NavigationController() {
+export default function NavigationController() {
   const { isConnected, walletAddress } = useAccount()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
 

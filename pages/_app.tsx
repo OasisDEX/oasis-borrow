@@ -11,13 +11,11 @@ import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
-import { AppContextProvider } from 'components/AppContextProvider'
 import { CookieBanner, SavedSettings } from 'components/CookieBanner'
-import { GasEstimationContextProvider } from 'components/GasEstimationContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
-import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
+import { MarketingLayoutProps } from 'components/layouts/MarketingLayout'
 import { AppLink, CustomMDXLink } from 'components/Links'
-import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { TopBanner } from 'components/TopBanner'
 import { WithArrow } from 'components/WithArrow'
@@ -208,27 +206,21 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
             <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
               <Web3OnBoardConnectorProvider>
                 <Web3ReactProvider {...{ getLibrary }}>
-                  <AppContextProvider>
-                    <ModalProvider>
-                      <HeadTags />
-                      {seoTags}
-                      <SetupWeb3Context>
-                        <SharedUIProvider>
-                          <GasEstimationContextProvider>
-                            <NotificationSocketProvider>
-                              <WithFollowVaults>
-                                <TopBanner name="rebranding">{topBannerContent}</TopBanner>
-                                <Layout {...layoutProps}>
-                                  <Component {...pageProps} />
-                                  <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
-                                </Layout>
-                              </WithFollowVaults>
-                            </NotificationSocketProvider>
-                          </GasEstimationContextProvider>
-                        </SharedUIProvider>
-                      </SetupWeb3Context>
-                    </ModalProvider>
-                  </AppContextProvider>
+                  <ModalProvider>
+                    <HeadTags />
+                    {seoTags}
+                    <SetupWeb3Context>
+                      <SharedUIProvider>
+                        <WithFollowVaults>
+                          <TopBanner name="rebranding">{topBannerContent}</TopBanner>
+                          <Layout {...layoutProps}>
+                            <div>asdf</div>
+                            <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
+                          </Layout>
+                        </WithFollowVaults>
+                      </SharedUIProvider>
+                    </SetupWeb3Context>
+                  </ModalProvider>
                 </Web3ReactProvider>
               </Web3OnBoardConnectorProvider>
             </Web3OnboardProvider>

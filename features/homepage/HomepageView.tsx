@@ -1,12 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { ImagesSlider } from 'components/ImagesSlider'
 import { InfoCard } from 'components/InfoCard'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -19,8 +17,9 @@ import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 import { partnerLogosConfig } from './helpers/constants'
 import { OasisStats } from './OasisStats'
+import { useOasisStats } from './stats'
 
-function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
+function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
   const { t } = useTranslation()
 
   return (
@@ -32,7 +31,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
       <Grid columns={['1fr', '1fr 1fr 1fr 1fr']}>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
-            {oasisStatsValue ? oasisStatsValue.vaultsWithActiveTrigger : '-'}
+            {oasisStats ? oasisStats.vaultsWithActiveTrigger : '-'}
           </Text>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.vaults-automated')}
@@ -40,9 +39,9 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
         </Box>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
-            {oasisStatsValue
+            {oasisStats
               ? `$${formatAsShorthandNumbers(
-                  new BigNumber(oasisStatsValue.lockedCollateralActiveTrigger),
+                  new BigNumber(oasisStats.lockedCollateralActiveTrigger),
                   2,
                 )}`
               : '-'}
@@ -53,7 +52,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
         </Box>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
-            {oasisStatsValue ? oasisStatsValue.executedTriggersLast90Days : '-'}
+            {oasisStats ? oasisStats.executedTriggersLast90Days : '-'}
           </Text>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.actions-executed')}
@@ -61,7 +60,7 @@ function WhyOasisStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
         </Box>
         <Box sx={{ my: ['30px', 0] }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
-            {oasisStatsValue ? `${oasisStatsValue.triggersSuccessRate}%` : '-'}
+            {oasisStats ? `${oasisStats.triggersSuccessRate}%` : '-'}
           </Text>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.success-rate')}
@@ -76,8 +75,7 @@ export function HomepageView() {
   const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
-  const { getOasisStats$ } = useAppContext()
-  const [oasisStatsValue] = useObservable(getOasisStats$())
+  const { data: oasisStats } = useOasisStats()
 
   return (
     <Box
@@ -162,7 +160,7 @@ export function HomepageView() {
           </Flex>
         </HomepagePromoBlock.Big>
       </Grid>
-      <WhyOasisStats oasisStatsValue={oasisStatsValue} />
+      <WhyOasisStats oasisStats={oasisStats} />
       <Box sx={{ mt: 7 }}>
         <ProductHubView
           product={ProductHubProductType.Earn}

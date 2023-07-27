@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'

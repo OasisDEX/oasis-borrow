@@ -1,5 +1,5 @@
 import { PageSEOTags } from 'components/HeadTags'
-import { MarketingLayout } from 'components/Layouts'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { AppLink } from 'components/Links'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'

@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultOverviewView'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'

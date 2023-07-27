@@ -1,7 +1,7 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'

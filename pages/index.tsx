@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
-import { LandingPageLayout } from 'components/Layouts'
+import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
 import { aaveContext, AaveContextProvider } from 'features/aave'
 import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'

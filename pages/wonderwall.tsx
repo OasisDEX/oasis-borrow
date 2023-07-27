@@ -1,4 +1,4 @@
-import { LandingPageLayout } from 'components/Layouts'
+import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'

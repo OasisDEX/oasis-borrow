@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'

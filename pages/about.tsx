@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
-import { MarketingLayout } from 'components/Layouts'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { AppLink } from 'components/Links'
 import { getTeamPicsFileNames, parseMemberInfo, TeamMember } from 'features/about/about'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
