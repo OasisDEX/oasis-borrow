@@ -160,6 +160,7 @@ export function AjnaProductController({
     !id &&
     collateralToken &&
     quoteToken &&
+    product === 'multiply' &&
     !isPoolSupportingMultiply({ collateralToken, quoteToken })
   )
     void push(INTERNAL_LINKS.ajnaMultiply)
