@@ -40,7 +40,6 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
   const GHODAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['GHO', 'DAI'])
   const USDCETHAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'ETH'])
   const USDCWBTCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'WBTC'])
-  const USDCWLDAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'WLD'])
   const WBTCDAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WBTC', 'DAI'])
   const WBTCGHOAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WBTC', 'GHO'])
   const WBTCUSDCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WBTC', 'USDC'])
@@ -143,13 +142,6 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     pills: [getAjnaTokensPill(), getShortTokenPill('WBTC')],
     ...commonPromoCardPayload,
   })
-  const promoCardUSDCWLDAjnaMultiply = parseMultiplyPromoCard({
-    collateralToken: 'USDC',
-    debtToken: 'WLD',
-    product: USDCWLDAjnaBorrowishProduct,
-    pills: [getAjnaTokensPill(), getShortTokenPill('WLD')],
-    ...commonPromoCardPayload,
-  })
   const promoCardWBTCDAIAjnaMultiply = parseMultiplyPromoCard({
     collateralToken: 'WBTC',
     debtToken: 'DAI',
@@ -169,13 +161,6 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'USDC',
     product: WBTCUSDCAjnaBorrowishProduct,
     pills: [getAjnaTokensPill(), getLongTokenPill('WBTC')],
-    ...commonPromoCardPayload,
-  })
-  const promoCardWLDUSDCAjnaMultiply = parseMultiplyPromoCard({
-    collateralToken: 'WLD',
-    debtToken: 'USDC',
-    product: WLDUSDCAjnaBorrowishProduct,
-    pills: [getAjnaTokensPill(), getLongTokenPill('WLD')],
     ...commonPromoCardPayload,
   })
   const promoCardWSTETHDAIAjnaMultiply = parseMultiplyPromoCard({
@@ -275,11 +260,9 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     promoCardETHGHOAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
     promoCardUSDCWBTCAjnaMultiply,
-    promoCardUSDCWLDAjnaMultiply,
     promoCardWBTCDAIAjnaMultiply,
     promoCardWBTCGHOAjnaMultiply,
     promoCardWBTCUSDCAjnaMultiply,
-    promoCardWLDUSDCAjnaMultiply,
     promoCardWSTETHDAIAjnaMultiply,
     promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,

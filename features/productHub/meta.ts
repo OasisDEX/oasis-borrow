@@ -84,12 +84,12 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'GHO',
     icon: getToken('GHO').iconCircle,
   },
-  // WLD: {
-  //   title: 'Worldcoin',
-  //   description: 'WLD',
-  //   value: 'WLD',
-  //   icon: getToken('WLD').iconCircle,
-  // },
+  WLD: {
+    title: 'Worldcoin',
+    description: 'WLD',
+    value: 'WLD',
+    icon: getToken('WLD').iconCircle,
+  },
 }
 
 export const productHubOptionsMap: {
@@ -106,7 +106,7 @@ export const productHubOptionsMap: {
       WBTC: productHubTokenOptions.WBTC,
       USDC: productHubTokenOptions.USDC,
       GHO: productHubTokenOptions.GHO,
-      // WLD: productHubTokenOptions.WLD,
+      WLD: productHubTokenOptions.WLD,
     },
   },
   multiply: {
@@ -118,7 +118,6 @@ export const productHubOptionsMap: {
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
-      // WLD: productHubTokenOptions.WLD,
     },
   },
   earn: {
@@ -130,7 +129,7 @@ export const productHubOptionsMap: {
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
-      // WLD: productHubTokenOptions.WLD,
+      WLD: productHubTokenOptions.WLD,
     },
   },
 }
@@ -139,12 +138,15 @@ const productHubOptionsMapFiltered = clone(productHubOptionsMap)
 
 if (!getFeatureToggle('Ajna')) {
   delete productHubOptionsMapFiltered.borrow.tokens.USDC
+  delete productHubOptionsMapFiltered.borrow.tokens.GHO
+  delete productHubOptionsMapFiltered.borrow.tokens.WLD
   delete productHubOptionsMapFiltered.earn.tokens.USDC
   delete productHubOptionsMapFiltered.earn.tokens.WBTC
+  delete productHubOptionsMapFiltered.earn.tokens.GHO
+  delete productHubOptionsMapFiltered.earn.tokens.WLD
 }
 if (!getFeatureToggle('AjnaMultiply')) {
   delete productHubOptionsMapFiltered.multiply.tokens.GHO
-  // delete productHubOptionsMapFiltered.multiply.tokens.WLD
 }
 
 export const productHubStrategyFilter = [

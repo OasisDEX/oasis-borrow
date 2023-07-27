@@ -23,10 +23,8 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardETHGHOAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
     promoCardUSDCWBTCAjnaMultiply,
-    promoCardUSDCWLDAjnaMultiply,
     promoCardWBTCDAIAjnaMultiply,
     promoCardWBTCUSDCAjnaMultiply,
-    promoCardWLDUSDCAjnaMultiply,
     promoCardWSTETHDAIAjnaMultiply,
     promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
@@ -102,11 +100,6 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         GHO: [
           promoCardETHGHOAjnaMultiply,
           promoCardWSTETHGHOAjnaMultiply,
-          promoCardsWhatAreAjnaRewards,
-        ],
-        WLD: [
-          promoCardWLDUSDCAjnaMultiply,
-          promoCardUSDCWLDAjnaMultiply,
           promoCardsWhatAreAjnaRewards,
         ],
       },
