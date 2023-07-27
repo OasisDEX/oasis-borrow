@@ -63,7 +63,7 @@ export type SubgraphsResponses = {
     getPoolData: SubgraphBaseResponse<{
       pool: AjnaPoolDataResponse
     }>
-    getPoolsData: SubgraphBaseResponse<{
+    getPoolsTableData: SubgraphBaseResponse<{
       pools: AjnaPoolsDataResponse[]
     }>
     getNftIds: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>

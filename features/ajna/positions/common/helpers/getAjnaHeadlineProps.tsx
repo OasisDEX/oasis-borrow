@@ -30,7 +30,7 @@ export function getAjnaHeadlineProps({
           product: upperFirst(product),
           quoteToken,
         }),
-        token: [collateralToken, quoteToken],
+        tokens: [collateralToken, quoteToken],
         protocol: {
           network: NetworkNames.ethereumMainnet,
           protocol: LendingProtocol.Ajna,

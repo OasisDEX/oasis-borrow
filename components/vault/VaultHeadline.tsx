@@ -23,7 +23,7 @@ export type VaultHeadlineProps = {
   header: ReactNode
   loading?: boolean
   shareButton?: boolean
-  token?: string[]
+  tokens?: string[]
   handleClick?: () => void
   protocol?: ProtocolLabelProps
 }
@@ -34,7 +34,7 @@ export function VaultHeadline({
   header,
   loading = false,
   shareButton,
-  token = [],
+  tokens = [],
   handleClick,
   protocol,
 }: VaultHeadlineProps) {
@@ -75,7 +75,9 @@ export function VaultHeadline({
             columnGap: 2,
           }}
         >
-          <TokensGroup tokens={token} forceSize={32} sx={{ mt: '2px', mr: 2, flexShrink: 0 }} />
+          {tokens.length > 0 && (
+            <TokensGroup tokens={tokens} forceSize={32} sx={{ mt: '2px', mr: 2, flexShrink: 0 }} />
+          )}
           {header}
         </Flex>
         {/* protocol label & icon buttons */}
