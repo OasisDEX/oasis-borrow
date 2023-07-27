@@ -28,6 +28,7 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
@@ -340,6 +341,7 @@ export function parseDsrEarnPosition({
 }
 
 export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTableRowData[] {
+  const aaveProtection = useFeatureToggle('AaveV3Protection')
   return rows.map(
     ({
       asset,
@@ -375,13 +377,13 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
       protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-      protection: (
+      protection: aaveProtection ? (
         <AssetsTableDataCellRiskProtectionIcon
           isOwner={isOwner}
           level={getProtection({ stopLossData, autoSellData })}
           link={url}
         />
-      ),
+      ) : undefined,
       action: <AssetsTableDataCellAction cta="View" link={url} />,
     }),
   )
@@ -403,6 +405,7 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
       autoSellData,
       isOwner,
     }) => {
+      const aaveProtection = useFeatureToggle('AaveV3Protection')
       const formattedLiquidationPrice =
         protocol.toLowerCase() === LendingProtocol.Ajna
           ? `${formatCryptoBalance(liquidationPrice)} ${asset}`
@@ -415,13 +418,13 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
         liquidationPrice: formattedLiquidationPrice,
         fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
         protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-        protection: (
+        protection: aaveProtection ? (
           <AssetsTableDataCellRiskProtectionIcon
             isOwner={isOwner}
             level={getProtection({ stopLossData, autoSellData })}
             link={url}
           />
-        ),
+        ) : undefined,
         action: <AssetsTableDataCellAction cta="View" link={url} />,
       }
     },
