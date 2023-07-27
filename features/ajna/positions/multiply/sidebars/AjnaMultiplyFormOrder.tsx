@@ -1,3 +1,4 @@
+import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
@@ -14,7 +15,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_FEE, SUMMER_CORRELATED_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -62,13 +63,15 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     ].includes(action)
 
   const withBuying =
-    action === 'open-multiply' ||
+    (action === 'open-multiply' && !isCorrelatedPosition(quoteToken, collateralToken)) ||
     (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
       loanToValue?.gt(positionData.riskRatio.loanToValue))
+
   const withSelling =
     action === 'close-multiply' ||
     (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
+
   const withOasisFee = withBuying || withSelling
 
   const initialQuote$ = exchangeQuote$(
@@ -94,8 +97,12 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice).div(100)
       : undefined
 
+  const resolvedFee =
+    withSelling && isCorrelatedPosition(quoteToken, collateralToken)
+      ? SUMMER_CORRELATED_FEE
+      : OAZO_FEE
   const oasisFee = withOasisFee
-    ? buyingOrSellingCollateral.times(OAZO_FEE.times(collateralPrice))
+    ? buyingOrSellingCollateral.times(resolvedFee.times(collateralPrice))
     : zero
 
   const isLoading = !cached && isSimulationLoading
