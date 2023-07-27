@@ -75,6 +75,7 @@ export function AjnaProductController({
   const {
     ajnaPosition$,
     balancesInfoArray$,
+    balancesFromAddressInfoArray$,
     dpmPositionData$,
     gasPrice$,
     identifiedTokens$,
@@ -113,16 +114,46 @@ export function AjnaProductController({
       [collateralToken, id, identifiedTokensData, product, quoteToken],
     ),
   )
-  const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
+  const [ethBalanceData, ethBalanceError] = useObservable(
     useMemo(
       () =>
         dpmPositionData
+          ? balancesInfoArray$(['ETH'], walletAddress || dpmPositionData.user)
+          : EMPTY,
+      [dpmPositionData, walletAddress],
+    ),
+  )
+  const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
+    useMemo(
+      () =>
+        !isOracless && dpmPositionData
           ? balancesInfoArray$(
               [dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'],
               walletAddress || dpmPositionData.user,
             )
+          : isOracless && dpmPositionData && identifiedTokensData
+          ? balancesFromAddressInfoArray$(
+              [
+                {
+                  address: collateralToken,
+                  precision: identifiedTokensData[collateralToken].precision,
+                },
+                {
+                  address: quoteToken,
+                  precision: identifiedTokensData[quoteToken].precision,
+                },
+              ],
+              walletAddress || dpmPositionData.user,
+            )
           : EMPTY,
-      [dpmPositionData, walletAddress],
+      [
+        collateralToken,
+        dpmPositionData,
+        identifiedTokensData,
+        isOracless,
+        quoteToken,
+        walletAddress,
+      ],
     ),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
@@ -192,6 +223,7 @@ export function AjnaProductController({
             <WithErrorHandler
               error={[
                 ajnaPositionError,
+                ethBalanceError,
                 balancesInfoArrayError,
                 dpmPositionError,
                 tokenPriceUSDError,
@@ -205,6 +237,7 @@ export function AjnaProductController({
               <WithLoadingIndicator
                 value={[
                   ajnaPositionData,
+                  ethBalanceData,
                   balancesInfoArrayData,
                   dpmPositionData,
                   tokenPriceUSDData,
@@ -228,7 +261,8 @@ export function AjnaProductController({
               >
                 {([
                   ajnaPosition,
-                  [collateralBalance, quoteBalance, ethBalance],
+                  [ethBalance],
+                  [collateralBalance, quoteBalance],
                   dpmPosition,
                   tokenPriceUSD,
                   gasPrice,

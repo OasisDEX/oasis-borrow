@@ -39,6 +39,20 @@ export function createBalancesArrayInfo$(
   )
 }
 
+export function createBalancesFromAddressArrayInfo$(
+  balance$: (
+    token: { address: string; precision: number },
+    address: string,
+  ) => Observable<BigNumber>,
+  tokens: { address: string; precision: number }[],
+  address: string | undefined,
+): Observable<BigNumber[]> {
+  return combineLatest(tokens.map((token) => (address ? balance$(token, address) : of(zero)))).pipe(
+    map((balances) => balances),
+    shareReplay(1),
+  )
+}
+
 export interface BalanceInfoChange {
   kind: 'balanceInfo'
   balanceInfo: BalanceInfo

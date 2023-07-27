@@ -40,6 +40,7 @@ import {
   DisapproveData,
   tokenAllowance,
   tokenBalance,
+  tokenBalanceFromAddress,
   tokenBalanceRawForJoin,
   tokenDecimals,
   tokenName,
@@ -111,6 +112,7 @@ import {
   createAccountBalance$,
   createAllowance$,
   createBalance$,
+  createBalanceFromAddress$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
 import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
@@ -204,6 +206,7 @@ import {
   BalanceInfo,
   createBalanceInfo$,
   createBalancesArrayInfo$,
+  createBalancesFromAddressArrayInfo$,
 } from 'features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
@@ -508,6 +511,7 @@ export function setupAppContext() {
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
+  const tokenBalanceFromAddress$ = observe(onEveryBlock$, context$, tokenBalanceFromAddress)
 
   const balance$ = memoize(
     curry(createBalance$)(onEveryBlock$, chainContext$, tokenBalance$),
@@ -517,6 +521,11 @@ export function setupAppContext() {
   const balanceLean$ = memoize(
     curry(createBalance$)(once$, chainContext$, tokenBalanceLean$),
     (token, address) => `${token}_${address}`,
+  )
+
+  const balanceFromAddress$ = memoize(
+    curry(createBalanceFromAddress$)(tokenBalanceFromAddress$),
+    (token, address) => `${token.address}_${token.precision}_${address}`,
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
@@ -778,6 +787,9 @@ export function setupAppContext() {
   ) => Observable<BalanceInfo>
 
   const balancesInfoArray$ = curry(createBalancesArrayInfo$)(balance$)
+  const balancesFromAddressInfoArray$ = curry(createBalancesFromAddressArrayInfo$)(
+    balanceFromAddress$,
+  )
 
   const userSettings$ = createUserSettings$(
     checkUserSettingsLocalStorage$,
@@ -1328,6 +1340,7 @@ export function setupAppContext() {
     ilks$: ilksSupportedOnNetwork$,
     balance$,
     balancesInfoArray$,
+    balancesFromAddressInfoArray$,
     accountBalances$,
     openVault$,
     manageVault$,
