@@ -8,13 +8,13 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-interface AjnaManagePositionPageProps {
+interface AjnaPositionPageProps {
   id: string
   pool: string
   product: AjnaProduct
 }
 
-function AjnaManagePositionPage({ id, pool, product }: AjnaManagePositionPageProps) {
+function AjnaPositionPage({ id, pool, product }: AjnaPositionPageProps) {
   const [collateralToken, quoteToken] = pool.split('-')
 
   return (
@@ -28,10 +28,10 @@ function AjnaManagePositionPage({ id, pool, product }: AjnaManagePositionPagePro
   )
 }
 
-AjnaManagePositionPage.layout = AjnaLayout
-AjnaManagePositionPage.seoTags = ajnaPageSeoTags
+AjnaPositionPage.layout = AjnaLayout
+AjnaPositionPage.seoTags = ajnaPageSeoTags
 
-export default AjnaManagePositionPage
+export default AjnaPositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const network = query.networkOrProduct as string
