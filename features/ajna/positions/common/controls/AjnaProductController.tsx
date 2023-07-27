@@ -62,7 +62,7 @@ export function AjnaProductController({
   const {
     ajnaPosition$,
     balancesInfoArray$,
-    dpmPositionData$,
+    dpmPositionDataV2$,
     tokenPriceUSD$,
     gasPrice$,
     userSettings$,
@@ -76,13 +76,14 @@ export function AjnaProductController({
     useMemo(
       () =>
         id
-          ? dpmPositionData$(getPositionIdentity(id))
+          ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
           : collateralToken && product && quoteToken
           ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
           : EMPTY,
       [collateralToken, id, product, quoteToken],
     ),
   )
+
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>

@@ -12,7 +12,9 @@ import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 export type PositionCreated = {
   collateralTokenSymbol: string
+  collateralTokenAddress: string
   debtTokenSymbol: string
+  debtTokenAddress: string
   positionType: 'Borrow' | 'Multiply' | 'Earn'
   protocol: LendingProtocol
   chainId: NetworkIds
@@ -63,7 +65,9 @@ function mapEvent(
       return {
         positionType: e.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
         collateralTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.collateralToken),
+        collateralTokenAddress: e.args.collateralToken,
         debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.debtToken),
+        debtTokenAddress: e.args.debtToken,
         protocol: extractLendingProtocolFromPositionCreatedEvent(e),
         chainId,
         proxyAddress: e.args.proxyAddress,
@@ -113,7 +117,9 @@ export function getLastCreatedPositionForProxy$(
           context.chainId,
           event!.args.collateralToken,
         ),
+        collateralTokenAddress: event!.args.collateralToken,
         debtTokenSymbol: getTokenSymbolBasedOnAddress(context.chainId, event!.args.debtToken),
+        debtTokenAddress: event!.args.debtToken,
         protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
         chainId: context.chainId,
         proxyAddress: event!.args.proxyAddress,

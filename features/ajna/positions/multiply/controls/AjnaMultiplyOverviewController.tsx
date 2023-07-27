@@ -1,4 +1,5 @@
 import { normalizeValue } from '@oasisdex/dma-library'
+import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -10,9 +11,10 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
+import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 export function AjnaMultiplyOverviewController() {
@@ -27,8 +29,23 @@ export function AjnaMultiplyOverviewController() {
       priceFormat,
       quotePrice,
       isShort,
+      dpmProxy,
     },
   } = useAjnaGeneralContext()
+
+  const { readPositionCreatedEvents$ } = useAppContext()
+
+  const [positionCreatedEvents] = useObservable(
+    useMemo(() => readPositionCreatedEvents$(owner), [owner]),
+  )
+
+  // For now we need to hide P&L for proxies with many positions
+  // because subgraph doesn't support it yet
+  const isProxyWithManyPositions = positionCreatedEvents
+    ? positionCreatedEvents.filter(
+        (item) => item.proxyAddress.toLowerCase() === dpmProxy?.toLowerCase(),
+      ).length > 1
+    : false
 
   const {
     notifications,
@@ -108,6 +125,7 @@ export function AjnaMultiplyOverviewController() {
                 .times(collateralPrice)
                 .minus(simulation?.debtAmount.times(quotePrice))}
               pnl={pnl}
+              pnlNotAvailable={isProxyWithManyPositions}
               showPnl={flow === 'manage'}
               changeVariant={changeVariant}
             />

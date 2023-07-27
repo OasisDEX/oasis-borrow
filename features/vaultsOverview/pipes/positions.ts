@@ -359,6 +359,8 @@ function getStethEthAaveV2DsProxyEarnPosition$(
                 chainId: NetworkIds.MAINNET,
                 proxyAddress: dsProxyAddress,
                 fakePositionCreatedEvtForDsProxyUsers: true,
+                collateralTokenAddress: '0x0',
+                debtTokenAddress: '0x0',
               },
             ]
           } else {

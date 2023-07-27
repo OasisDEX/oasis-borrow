@@ -7,7 +7,7 @@ import { from, Observable } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 
 export const getAjnaHistory$ = ({
-  dpmPositionData: { proxy, product },
+  dpmPositionData: { proxy, product, collateralTokenAddress, quoteTokenAddress },
 }: {
   dpmPositionData: DpmPositionData
 }): Observable<AjnaUnifiedHistoryEvent[]> => {
@@ -24,6 +24,15 @@ export const getAjnaHistory$ = ({
           return []
       }
     }),
+    map((data) =>
+      // filter events that are from different positions of the same kind (i.e. 2x earn) but on different pools
+      // since currently subgraph aggregate all existing events for given proxy
+      data.filter(
+        (item) =>
+          item.collateralAddress?.toLowerCase() === collateralTokenAddress.toLowerCase() &&
+          item.debtAddress?.toLowerCase() === quoteTokenAddress.toLowerCase(),
+      ),
+    ),
     shareReplay(1),
   )
 }
