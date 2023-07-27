@@ -97,6 +97,10 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice).div(100)
       : undefined
 
+  /**
+   * If position is correlated then there's no fee when opening/increasing risk
+   * And there's a reduced fee when closing/decreasing risk
+   */
   const resolvedFee =
     withSelling && isCorrelatedPosition(quoteToken, collateralToken)
       ? SUMMER_CORRELATED_FEE
