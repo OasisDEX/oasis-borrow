@@ -1004,8 +1004,8 @@ export const trackingEvents = {
         product: productType.toLocaleLowerCase(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: {
-          [ProductType.EARN]: Pages.ManageSTETH,
           [ProductType.MULTIPLY]: Pages.AdjustPosition,
+          [ProductType.EARN]: Pages.ManageSTETH,
           [ProductType.BORROW]: '',
         }[productType],
         section: 'AdjustRisk',
