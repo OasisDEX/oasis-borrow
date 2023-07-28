@@ -236,6 +236,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
+              entry: ['reset'],
               on: {
                 NEXT_STEP: [
                   {
@@ -255,6 +256,7 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
+                  actions: ['reset'],
                 },
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
@@ -268,6 +270,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageDebt: {
+              entry: ['reset'],
               on: {
                 NEXT_STEP: [
                   {
@@ -286,6 +289,7 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
+                  actions: ['reset'],
                 },
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
@@ -336,6 +340,7 @@ export function createManageAaveStateMachine(
               on: {
                 BACK_TO_EDITING: {
                   target: 'editing',
+                  actions: ['reset', 'killCurrentParametersMachine'],
                 },
                 NEXT_STEP: [
                   {
@@ -425,7 +430,7 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
-                  actions: ['reset'],
+                  actions: ['reset', 'killCurrentParametersMachine'],
                 },
               },
             },
@@ -473,7 +478,7 @@ export function createManageAaveStateMachine(
         BACK_TO_EDITING: {
           cond: 'canAdjustPosition',
           target: 'frontend.editing',
-          actions: ['reset'],
+          actions: ['reset', 'killCurrentParametersMachine'],
         },
         CLOSE_POSITION: {
           target: ['frontend.reviewingClosing'],
