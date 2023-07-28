@@ -66,10 +66,9 @@ export function AjnaProductController({
     tokenPriceUSD$,
     gasPrice$,
     userSettings$,
+    readPositionCreatedEvents$,
   } = useAppContext()
   const { walletAddress } = useAccount()
-
-  const { readPositionCreatedEvents$ } = useAppContext()
 
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
 
