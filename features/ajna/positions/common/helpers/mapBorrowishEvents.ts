@@ -97,5 +97,5 @@ export const mapAjnaBorrowishEvents = (
     }
   })
 
-  return mappedEvents.filter((event) => !!event)
+  return mappedEvents.filter((event) => !!event && Object.keys(event).length > 0)
 }

@@ -132,6 +132,8 @@ export function getAjnaPositionsWithDetails$(
                   positionType,
                   protocol,
                   proxyAddress,
+                  debtTokenAddress,
+                  collateralTokenAddress,
                 }) => {
                   const vaultId = idMap[proxyAddress]
 
@@ -145,8 +147,12 @@ export function getAjnaPositionsWithDetails$(
                         tokenPrice[debtTokenSymbol],
                         {
                           collateralToken: collateralTokenSymbol,
-                          product:
-                            vaultsFromApi[vaultId]?.toLowerCase() || positionType.toLowerCase(),
+                          quoteTokenAddress: debtTokenAddress,
+                          collateralTokenAddress,
+                          product: (positionType === 'Earn'
+                            ? positionType
+                            : vaultsFromApi[vaultId] || positionType
+                          ).toLowerCase(),
                           protocol,
                           proxy: proxyAddress,
                           quoteToken: debtTokenSymbol,

@@ -149,6 +149,7 @@ import {
 import {
   DpmPositionData,
   getDpmPositionData$,
+  getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -1308,6 +1309,15 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
+  // v2 because it takes into account all positions created using specific proxies and filter them
+  // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
+  // only single position should be picked to be displayed
+  const dpmPositionDataV2$ = memoize(
+    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$, readPositionCreatedEvents$),
+    (positionId: PositionId, collateralToken?: string, quoteToken?: string, product?: string) =>
+      `${positionId.walletAddress}-${positionId.vaultId}-${collateralToken}-${quoteToken}-${product}`,
+  )
+
   const ajnaPosition$ = memoize(
     curry(getAjnaPosition$)(context$, onEveryBlock$),
     (
@@ -1403,6 +1413,7 @@ export function setupAppContext() {
     allowanceForAccount$,
     contextForAddress$,
     dpmPositionData$,
+    dpmPositionDataV2$,
     ajnaPosition$,
     identifiedTokens$,
     chainContext$,

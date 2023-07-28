@@ -13,6 +13,7 @@ import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/a
 import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
+import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { getAjnaHistory$ } from 'features/ajna/positions/common/observables/getAjnaHistory'
 import {
   AjnaBorrowishPositionAuction,
@@ -30,6 +31,7 @@ import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply
 import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
@@ -39,29 +41,16 @@ import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
-interface AjnaProductControllerOpenFlow {
-  collateralToken: string
-  product: AjnaProduct
-  quoteToken: string
-  id?: never
-}
-
-interface AjnaProductControllerManageFlow {
-  id: string
-  collateralToken?: never
-  product?: never
-  quoteToken?: never
-}
-
-type AjnaProductControllerProps = (
-  | AjnaProductControllerOpenFlow
-  | AjnaProductControllerManageFlow
-) & {
+interface AjnaProductControllerProps {
+  collateralToken?: string
+  id?: string
   flow: AjnaFlow
+  product?: AjnaProduct
+  quoteToken?: string
 }
 
 export function AjnaProductController({
@@ -75,11 +64,12 @@ export function AjnaProductController({
   const { push } = useRouter()
   const {
     ajnaPosition$,
-    balancesInfoArray$,
     balancesFromAddressInfoArray$,
-    dpmPositionData$,
+    balancesInfoArray$,
+    dpmPositionDataV2$,
     gasPrice$,
     identifiedTokens$,
+    readPositionCreatedEvents$,
     tokenPriceUSD$,
     userSettings$,
   } = useAppContext()
@@ -101,7 +91,7 @@ export function AjnaProductController({
     useMemo(
       () =>
         id
-          ? dpmPositionData$(getPositionIdentity(id))
+          ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
           : !isOracless && product && collateralToken && quoteToken
           ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
           : isOracless && identifiedTokensData && product
@@ -115,6 +105,39 @@ export function AjnaProductController({
       [collateralToken, id, identifiedTokensData, product, quoteToken],
     ),
   )
+
+  const [positionCreatedEvents] = useObservable(
+    useMemo(
+      () => (dpmPositionData ? readPositionCreatedEvents$(dpmPositionData.user) : EMPTY),
+      [dpmPositionData],
+    ),
+  )
+
+  const isProxyWithManyPositions = positionCreatedEvents
+    ? positionCreatedEvents.filter(
+        (item) => item.proxyAddress.toLowerCase() === dpmPositionData?.proxy.toLowerCase(),
+      ).length > 1
+    : false
+
+  useEffect(() => {
+    if (
+      id &&
+      isProxyWithManyPositions &&
+      dpmPositionData &&
+      !collateralToken &&
+      !quoteToken &&
+      !product
+    ) {
+      const {
+        product: dpmProduct,
+        collateralToken: dpmCollateralToken,
+        quoteToken: dpmQuoteToken,
+      } = dpmPositionData
+
+      void push(`/ethereum/ajna/${dpmProduct}/${dpmCollateralToken}-${dpmQuoteToken}/${id}`)
+    }
+  }, [isProxyWithManyPositions, dpmPositionData])
+
   const [ethBalanceData, ethBalanceError] = useObservable(
     useMemo(
       () =>
@@ -232,7 +255,15 @@ export function AjnaProductController({
       : undefined
   }, [collateralToken, dpmPositionData, identifiedTokensData, isOracless, quoteToken])
 
-  if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
+  if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
+  if (
+    !id &&
+    collateralToken &&
+    quoteToken &&
+    product === 'multiply' &&
+    !isPoolSupportingMultiply({ collateralToken, quoteToken })
+  )
+    void push(INTERNAL_LINKS.ajnaMultiply)
 
   return (
     <WithConnection>
@@ -329,6 +360,7 @@ export function AjnaProductController({
                         steps={steps[dpmPosition.product as AjnaProduct][flow]}
                         gasPrice={gasPrice}
                         slippage={slippage}
+                        isProxyWithManyPositions={isProxyWithManyPositions}
                       >
                         {dpmPosition.product === 'borrow' && (
                           <AjnaProductContextProvider

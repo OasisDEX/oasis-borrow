@@ -155,6 +155,9 @@ export function AjnaFormView({
     },
     resolvedId,
     walletAddress,
+    product: product.toLowerCase(),
+    collateralToken,
+    quoteToken,
   })
   const textButtonAction = () => {
     setisTransitionWaitingForApproval(false)
