@@ -5,7 +5,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
 import { OpenAaveContext, OpenAaveEvent } from 'features/aave/open/state'
 import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
-import { aaveOffsetFromMinAndMax } from 'features/automation/metadata/aave/stopLossMetadata'
+import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import { StopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
@@ -74,9 +74,9 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
   })
 
   const sliderMin = new BigNumber(
-    positionRatio.plus(aaveOffsetFromMinAndMax).times(100).toFixed(0, BigNumber.ROUND_UP),
+    positionRatio.plus(aaveOffsets.open.min).times(100).toFixed(0, BigNumber.ROUND_UP),
   )
-  const sliderMax = liquidationRatio.minus(aaveOffsetFromMinAndMax).times(100)
+  const sliderMax = liquidationRatio.minus(aaveOffsets.open.max).times(100)
 
   const afterNewLiquidationPrice = getDynamicStopLossPrice({
     liquidationPrice,
