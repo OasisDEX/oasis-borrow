@@ -38,7 +38,7 @@ import { useAccount } from 'helpers/useAccount'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
@@ -66,6 +66,7 @@ export function AjnaProductController({
     tokenPriceUSD$,
     gasPrice$,
     userSettings$,
+    readPositionCreatedEvents$,
   } = useAppContext()
   const { walletAddress } = useAccount()
 
@@ -83,6 +84,38 @@ export function AjnaProductController({
       [collateralToken, id, product, quoteToken],
     ),
   )
+
+  const [positionCreatedEvents] = useObservable(
+    useMemo(
+      () => (dpmPositionData ? readPositionCreatedEvents$(dpmPositionData.user) : EMPTY),
+      [dpmPositionData],
+    ),
+  )
+
+  const isProxyWithManyPositions = positionCreatedEvents
+    ? positionCreatedEvents.filter(
+        (item) => item.proxyAddress.toLowerCase() === dpmPositionData?.proxy.toLowerCase(),
+      ).length > 1
+    : false
+
+  useEffect(() => {
+    if (
+      id &&
+      isProxyWithManyPositions &&
+      dpmPositionData &&
+      !collateralToken &&
+      !quoteToken &&
+      !product
+    ) {
+      const {
+        product: dpmProduct,
+        collateralToken: dpmCollateralToken,
+        quoteToken: dpmQuoteToken,
+      } = dpmPositionData
+
+      void push(`/ethereum/ajna/${dpmProduct}/${dpmCollateralToken}-${dpmQuoteToken}/${id}`)
+    }
+  }, [isProxyWithManyPositions, dpmPositionData])
 
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
@@ -238,6 +271,7 @@ export function AjnaProductController({
                         steps={steps[dpmPosition.product as AjnaProduct][flow]}
                         gasPrice={gasPrice}
                         slippage={slippage}
+                        isProxyWithManyPositions={isProxyWithManyPositions}
                       >
                         {dpmPosition.product === 'borrow' && (
                           <AjnaProductContextProvider
