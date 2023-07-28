@@ -1,4 +1,6 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
@@ -37,7 +39,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -63,6 +65,7 @@ export function AjnaProductController({
   const { t } = useTranslation()
   const { push } = useRouter()
   const {
+    context$,
     ajnaPosition$,
     balancesFromAddressInfoArray$,
     balancesInfoArray$,
@@ -76,6 +79,12 @@ export function AjnaProductController({
   const { walletAddress } = useAccount()
   const isOracless =
     collateralToken && quoteToken && isAddress(collateralToken) && isAddress(quoteToken)
+
+  const [context] = useObservable(context$)
+  const tokensAddresses = useMemo(
+    () => getNetworkContracts(NetworkIds.MAINNET, context?.chainId).tokens,
+    [context],
+  )
 
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
 
@@ -93,16 +102,25 @@ export function AjnaProductController({
         id
           ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
           : !isOracless && product && collateralToken && quoteToken
-          ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
+          ? getStaticDpmPositionData$({
+              collateralToken,
+              collateralTokenAddress: tokensAddresses[collateralToken].address,
+              product,
+              protocol: 'Ajna',
+              quoteToken,
+              quoteTokenAddress: tokensAddresses[quoteToken].address,
+            })
           : isOracless && identifiedTokensData && product
           ? getStaticDpmPositionData$({
               collateralToken: identifiedTokensData[collateralToken].symbol,
+              collateralTokenAddress: collateralToken,
               product,
               protocol: 'Ajna',
               quoteToken: identifiedTokensData[quoteToken].symbol,
+              quoteTokenAddress: quoteToken,
             })
           : EMPTY,
-      [collateralToken, id, identifiedTokensData, product, quoteToken],
+      [collateralToken, id, identifiedTokensData, isOracless, product, quoteToken, tokensAddresses],
     ),
   )
 
@@ -197,17 +215,11 @@ export function AjnaProductController({
               tokenPriceUSDData[dpmPositionData.collateralToken],
               tokenPriceUSDData[dpmPositionData.quoteToken],
               dpmPositionData,
-              undefined,
-              undefined,
+              dpmPositionData.collateralTokenAddress,
+              dpmPositionData.quoteTokenAddress,
             )
           : isOracless && dpmPositionData && tokenPriceUSDData
-          ? ajnaPosition$(
-              tokenPriceUSDData[dpmPositionData.collateralToken] || zero,
-              tokenPriceUSDData[dpmPositionData.quoteToken] || zero,
-              dpmPositionData,
-              collateralToken,
-              quoteToken,
-            )
+          ? ajnaPosition$(one, one, dpmPositionData, collateralToken, quoteToken)
           : EMPTY,
       [dpmPositionData, isOracless, tokenPriceUSDData],
     ),
@@ -339,10 +351,13 @@ export function AjnaProductController({
                         url={document.location.pathname}
                       />
                       <AjnaGeneralContextProvider
+                        collateralAddress={dpmPosition.collateralTokenAddress}
                         collateralBalance={collateralBalance}
                         collateralDigits={collateralDigits}
                         collateralPrecision={collateralPrecision}
-                        collateralPrice={tokenPriceUSD[dpmPosition.collateralToken]}
+                        collateralPrice={
+                          isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]
+                        }
                         collateralToken={dpmPosition.collateralToken}
                         {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
                         ethBalance={ethBalance}
@@ -352,10 +367,11 @@ export function AjnaProductController({
                         isOracless={!!isOracless}
                         owner={dpmPosition.user}
                         product={dpmPosition.product as AjnaProduct}
+                        quoteAddress={dpmPosition.quoteTokenAddress}
                         quoteBalance={quoteBalance}
                         quoteDigits={quoteDigits}
                         quotePrecision={quotePrecision}
-                        quotePrice={tokenPriceUSD[dpmPosition.quoteToken]}
+                        quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                         quoteToken={dpmPosition.quoteToken}
                         steps={steps[dpmPosition.product as AjnaProduct][flow]}
                         gasPrice={gasPrice}

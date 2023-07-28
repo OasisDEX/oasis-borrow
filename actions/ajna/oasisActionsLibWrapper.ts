@@ -16,16 +16,19 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { ethers } from 'ethers'
-import { AjnaFormState, AjnaGenericPosition, AjnaPoolPairs } from 'features/ajna/common/types'
+import { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
+import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 
 interface AjnaTxHandlerInput {
+  collateralAddress: string
   collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
   context: Context
   isFormValid: boolean
   position: AjnaGenericPosition
+  quoteAddress: string
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
@@ -35,12 +38,14 @@ interface AjnaTxHandlerInput {
 }
 
 export async function getAjnaParameters({
+  collateralAddress,
   collateralPrecision,
   collateralPrice,
   collateralToken,
   context,
   isFormValid,
   position,
+  quoteAddress,
   quotePrecision,
   quotePrice,
   quoteToken,
@@ -48,13 +53,13 @@ export async function getAjnaParameters({
   slippage,
   state,
 }: AjnaTxHandlerInput): Promise<AjnaStrategy<AjnaGenericPosition> | undefined> {
-  const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const defaultPromise = Promise.resolve(undefined)
   const chainId = context.chainId
   const walletAddress = context.account
 
   const { action, dpmAddress } = state
   const addressesConfig = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+  const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress)
 
   const dependencies: AjnaCommonDependencies = {
     ajnaProxyActions: addressesConfig.ajnaProxyActions.address,
@@ -65,14 +70,10 @@ export async function getAjnaParameters({
     network: 'mainnet' as Network,
   }
 
-  if (!addressesConfig.ajnaPoolPairs[tokenPair]) {
-    throw new Error(`No pool for given token pair: ${tokenPair}`)
-  }
-
   const commonPayload: AjnaCommonPayload = {
     collateralTokenPrecision: collateralPrecision,
     dpmProxyAddress: dpmAddress,
-    poolAddress: addressesConfig.ajnaPoolPairs[tokenPair].address,
+    poolAddress,
     quoteTokenPrecision: quotePrecision,
     collateralPrice,
     quotePrice,

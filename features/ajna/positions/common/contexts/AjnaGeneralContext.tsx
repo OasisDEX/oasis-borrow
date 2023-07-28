@@ -27,6 +27,7 @@ import React, {
 } from 'react'
 
 interface AjnaGeneralContextProviderProps {
+  collateralAddress: string
   collateralBalance: BigNumber
   collateralDigits: number
   collateralPrecision: number
@@ -40,6 +41,7 @@ interface AjnaGeneralContextProviderProps {
   isOracless: boolean
   owner: string
   product: AjnaProduct
+  quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number
   quotePrecision: number

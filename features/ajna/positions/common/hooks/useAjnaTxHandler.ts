@@ -30,10 +30,12 @@ export function useAjnaTxHandler(): () => void {
   const {
     tx: { setTxDetails, txDetails },
     environment: {
+      collateralAddress,
       collateralPrecision,
       collateralPrice,
       collateralToken,
       ethPrice,
+      quoteAddress,
       quotePrecision,
       quotePrice,
       quoteToken,
@@ -84,12 +86,14 @@ export function useAjnaTxHandler(): () => void {
       if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
         const promise = cancelable(
           getAjnaParameters({
+            collateralAddress,
             collateralPrecision,
             collateralPrice,
             collateralToken,
             context,
             isFormValid,
             position,
+            quoteAddress,
             quotePrecision,
             quotePrice,
             quoteToken,

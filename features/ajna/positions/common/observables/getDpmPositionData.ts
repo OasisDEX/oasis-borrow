@@ -59,17 +59,17 @@ export function getDpmPositionData$(
 }
 
 const filterPositionWhenUrlParamsDefined = ({
-  positions,
-  proxy,
-  product,
-  quoteToken,
   collateralToken,
+  positions,
+  product,
+  proxy,
+  quoteToken,
 }: {
-  positions?: PositionCreated[]
   collateralToken: string
-  quoteToken: string
+  positions?: PositionCreated[]
   product: string
   proxy: string
+  quoteToken: string
 }) =>
   positions?.filter(
     (position) =>
@@ -148,24 +148,28 @@ export function getDpmPositionDataV2$(
 
 export function getStaticDpmPositionData$({
   collateralToken,
+  collateralTokenAddress,
   product,
   protocol,
   quoteToken,
+  quoteTokenAddress,
 }: {
   collateralToken: string
+  collateralTokenAddress: string
   product: string
   protocol: string
   quoteToken: string
+  quoteTokenAddress: string
 }): Observable<DpmPositionData> {
   return EMPTY.pipe(
     startWith({
       collateralToken,
-      collateralTokenAddress: ethers.constants.AddressZero,
+      collateralTokenAddress,
       product,
       protocol,
       proxy: ethers.constants.AddressZero,
       quoteToken,
-      quoteTokenAddress: ethers.constants.AddressZero,
+      quoteTokenAddress,
       user: ethers.constants.AddressZero,
       vaultId: '0',
     }),
