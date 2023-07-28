@@ -58,6 +58,38 @@ export function getDpmPositionData$(
   )
 }
 
+const filterPositionWhenUrlParamsDefined = ({
+  positions,
+  proxy,
+  product,
+  quoteToken,
+  collateralToken,
+}: {
+  positions?: PositionCreated[]
+  collateralToken: string
+  quoteToken: string
+  product: string
+  proxy: string
+}) =>
+  positions?.filter(
+    (position) =>
+      position.proxyAddress.toLowerCase() === proxy.toLowerCase() &&
+      position.collateralTokenSymbol === collateralToken &&
+      position.debtTokenSymbol === quoteToken &&
+      (product.toLowerCase() === 'earn'
+        ? position.positionType.toLowerCase() === product.toLowerCase()
+        : true),
+  )[0]
+
+const filterPositionWhenUrlParamsNotDefined = ({
+  positions,
+  proxy,
+}: {
+  positions?: PositionCreated[]
+  proxy?: string
+}) =>
+  positions?.filter((position) => position.proxyAddress.toLowerCase() === proxy?.toLowerCase())[0]
+
 export function getDpmPositionDataV2$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   readPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>,
@@ -75,15 +107,15 @@ export function getDpmPositionDataV2$(
     ),
     switchMap(([dpmProxy, positions]) => {
       const proxyPosition =
-        collateralToken && quoteToken && product
-          ? positions?.filter(
-              (position) =>
-                position.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase() &&
-                position.collateralTokenSymbol === collateralToken &&
-                position.debtTokenSymbol === quoteToken &&
-                position.positionType.toLowerCase() === product.toLowerCase(),
-            )[0]
-          : positions?.[0]
+        collateralToken && quoteToken && product && dpmProxy
+          ? filterPositionWhenUrlParamsDefined({
+              positions,
+              collateralToken,
+              quoteToken,
+              product,
+              proxy: dpmProxy.proxy,
+            })
+          : filterPositionWhenUrlParamsNotDefined({ positions, proxy: dpmProxy?.proxy })
 
       return combineLatest(
         of(dpmProxy),

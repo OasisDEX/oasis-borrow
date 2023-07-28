@@ -1302,7 +1302,8 @@ export function setupAppContext() {
   // only single position should be picked to be displayed
   const dpmPositionDataV2$ = memoize(
     curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$, readPositionCreatedEvents$),
-    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+    (positionId: PositionId, collateralToken?: string, quoteToken?: string, product?: string) =>
+      `${positionId.walletAddress}-${positionId.vaultId}-${collateralToken}-${quoteToken}-${product}`,
   )
 
   const ajnaPosition$ = memoize(

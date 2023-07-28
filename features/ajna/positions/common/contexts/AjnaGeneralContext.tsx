@@ -43,6 +43,7 @@ interface AjnaGeneralContextProviderProps {
   steps: AjnaSidebarStep[]
   gasPrice: GasPriceParams
   slippage: BigNumber
+  isProxyWithManyPositions: boolean
 }
 
 type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'> & {
@@ -106,6 +107,7 @@ export function AjnaGeneralContextProvider({
     owner,
     product,
     slippage,
+    isProxyWithManyPositions,
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
@@ -152,6 +154,7 @@ export function AjnaGeneralContextProvider({
     environment: {
       ...props,
       isShort,
+      isProxyWithManyPositions,
       priceFormat: isShort
         ? `${quoteToken}/${collateralToken}`
         : `${collateralToken}/${quoteToken}`,
