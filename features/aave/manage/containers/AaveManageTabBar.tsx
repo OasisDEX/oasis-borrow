@@ -7,6 +7,8 @@ import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
 import { useTranslation } from 'next-i18next'
@@ -28,6 +30,11 @@ export function AaveManageTabBar({
   const aaveProtection = useFeatureToggle('AaveV3Protection')
   const {
     triggerData: { stopLossTriggerData },
+    metadata: {
+      stopLossMetadata: {
+        values: { resetData },
+      },
+    },
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
@@ -95,6 +102,12 @@ export function AaveManageTabBar({
                 value: 'protection',
                 tag: { include: true, active: protectionEnabled },
                 content: <ProtectionControl />,
+                callback: () => {
+                  uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                    type: 'reset',
+                    resetData,
+                  })
+                },
               },
             ]
           : []),
