@@ -592,18 +592,22 @@ export function createManageAaveStateMachine(
           transition: undefined,
         })),
         riskRatioEvent: (context) => {
-          trackingEvents.earn.aaveAdjustRiskSliderAction(
-            'MoveSlider',
-            context.userInput.riskRatio!.loanToValue,
-            context.strategyConfig.type as AnalyticsProductType,
-          )
+          context.userInput.riskRatio?.loanToValue &&
+            context.strategyConfig.type &&
+            trackingEvents.earn.aaveAdjustRiskSliderAction(
+              'MoveSlider',
+              context.userInput.riskRatio.loanToValue,
+              context.strategyConfig.type as AnalyticsProductType,
+            )
         },
         riskRatioConfirmEvent: (context) => {
-          trackingEvents.earn.aaveAdjustRiskSliderAction(
-            'ConfirmRisk',
-            context.userInput.riskRatio!.loanToValue,
-            context.strategyConfig.type as AnalyticsProductType,
-          )
+          context.userInput.riskRatio?.loanToValue &&
+            context.strategyConfig.type &&
+            trackingEvents.earn.aaveAdjustRiskSliderAction(
+              'ConfirmRisk',
+              context.userInput.riskRatio.loanToValue,
+              context.strategyConfig.type as AnalyticsProductType,
+            )
         },
         // riskRatioConfirmTransactionEvent: (context) => {
         //   trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
