@@ -1,12 +1,14 @@
 import * as erc20 from 'blockchain/abi/erc20.json'
+import { extendTokensContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { combineLatest, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, shareReplay, switchMap } from 'rxjs/operators'
 import { Erc20 } from 'types/web3-v1-contracts'
 
-interface IdentifiedTokens {
+export interface IdentifiedTokens {
   [key: string]: SimplifiedTokenConfig
 }
 
@@ -50,7 +52,7 @@ export function identifyTokens$(
           ...total,
           [address]: {
             precision: parseInt(decimals, 10),
-            digits: 5,
+            digits: DEFAULT_TOKEN_DIGITS,
             name,
             symbol: symbol.toUpperCase(),
           },
@@ -58,7 +60,7 @@ export function identifyTokens$(
         {},
       )
 
-      return tokens.reduce<IdentifiedTokens>(
+      const identifiedTokens = tokens.reduce<IdentifiedTokens>(
         (total, token) => ({
           ...total,
           ...(Object.keys(ajaxResponse).includes(token) && {
@@ -70,6 +72,10 @@ export function identifyTokens$(
         }),
         {},
       )
+
+      void extendTokensContracts(identifiedTokens)
+
+      return identifiedTokens
     }),
     catchError(() => of({})),
     shareReplay(1),

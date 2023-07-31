@@ -7,6 +7,7 @@ import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
@@ -27,6 +28,8 @@ export function getAjnaPosition$(
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   { collateralToken, product, protocol, proxy, quoteToken }: DpmPositionData,
+  collateralAddress?: string,
+  quoteAddress?: string,
 ): Observable<AjnaGenericPosition> {
   return combineLatest(
     context$,
@@ -44,7 +47,10 @@ export function getAjnaPosition$(
         quotePrice,
         proxyAddress: proxy,
         poolAddress:
-          ajnaPoolPairs[`${collateralToken}-${quoteToken}` as keyof typeof ajnaPoolPairs].address,
+          collateralAddress && quoteAddress
+            ? await getAjnaPoolAddress(collateralAddress, quoteAddress)
+            : ajnaPoolPairs[`${collateralToken}-${quoteToken}` as keyof typeof ajnaPoolPairs]
+                .address,
       }
 
       const commonDependency = {
@@ -126,6 +132,8 @@ export function getAjnaPositionsWithDetails$(
                   positionType,
                   protocol,
                   proxyAddress,
+                  debtTokenAddress,
+                  collateralTokenAddress,
                 }) => {
                   const vaultId = idMap[proxyAddress]
 
@@ -139,8 +147,12 @@ export function getAjnaPositionsWithDetails$(
                         tokenPrice[debtTokenSymbol],
                         {
                           collateralToken: collateralTokenSymbol,
-                          product:
-                            vaultsFromApi[vaultId]?.toLowerCase() || positionType.toLowerCase(),
+                          quoteTokenAddress: debtTokenAddress,
+                          collateralTokenAddress,
+                          product: (positionType === 'Earn'
+                            ? positionType
+                            : vaultsFromApi[vaultId] || positionType
+                          ).toLowerCase(),
                           protocol,
                           proxy: proxyAddress,
                           quoteToken: debtTokenSymbol,

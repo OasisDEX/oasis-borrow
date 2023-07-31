@@ -30,7 +30,7 @@ import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
-import { aaveOffsetFromMaxDuringOpenFLow } from 'features/automation/metadata/aave/stopLossMetadata'
+import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -861,7 +861,7 @@ export function createOpenAaveStateMachine(
           const { proxyAddress, debtTokenAddress, collateralTokenAddress } =
             extractStopLossDataInput(context)
           const stopLossLevel = context
-            .reserveConfig!.liquidationThreshold.minus(aaveOffsetFromMaxDuringOpenFLow)
+            .reserveConfig!.liquidationThreshold.minus(aaveOffsets.open.max)
             .times(100)
 
           return {

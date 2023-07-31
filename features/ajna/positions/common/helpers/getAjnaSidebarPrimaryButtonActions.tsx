@@ -15,6 +15,9 @@ export function getAjnaSidebarPrimaryButtonActions({
   onTransition,
   onUpdated,
   resolvedId,
+  product,
+  collateralToken,
+  quoteToken,
   walletAddress,
 }: {
   currentStep: string
@@ -30,6 +33,9 @@ export function getAjnaSidebarPrimaryButtonActions({
   onSelectTransition: () => void
   onTransition: () => void
   onUpdated: () => void
+  product: string
+  collateralToken: string
+  quoteToken: string
   resolvedId?: string
   walletAddress?: string
 }) {
@@ -37,7 +43,7 @@ export function getAjnaSidebarPrimaryButtonActions({
     case !walletAddress && currentStep === editingStep:
       return { action: onDisconnected }
     case isTxSuccess && flow === 'open':
-      return { url: `/ethereum/ajna/${resolvedId}` }
+      return { url: `/ethereum/ajna/${product}/${collateralToken}-${quoteToken}/${resolvedId}` }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }
     case isTransitionWaitingForApproval:

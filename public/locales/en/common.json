@@ -1021,6 +1021,7 @@
     "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}"
   },
   "set-allowance-for": "Set Allowance for {{token}}",
+  "setup-stop-loss": "Setup Stop-Loss",
   "setting-allowance-for": "Setting Allowance for {{token}}",
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
@@ -2659,6 +2660,7 @@
             "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price.",
             "loan-to-value": "Loan to value",
             "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+            "lowest-utilization-price": "Lowest Utilization Price",
             "position-debt": "Position debt",
             "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },

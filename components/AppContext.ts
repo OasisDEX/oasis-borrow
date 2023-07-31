@@ -40,6 +40,7 @@ import {
   DisapproveData,
   tokenAllowance,
   tokenBalance,
+  tokenBalanceFromAddress,
   tokenBalanceRawForJoin,
   tokenDecimals,
   tokenName,
@@ -111,6 +112,7 @@ import {
   createAccountBalance$,
   createAllowance$,
   createBalance$,
+  createBalanceFromAddress$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
 import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
@@ -147,6 +149,7 @@ import {
 import {
   DpmPositionData,
   getDpmPositionData$,
+  getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -203,6 +206,7 @@ import {
   BalanceInfo,
   createBalanceInfo$,
   createBalancesArrayInfo$,
+  createBalancesFromAddressArrayInfo$,
 } from 'features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
@@ -507,6 +511,7 @@ export function setupAppContext() {
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
+  const tokenBalanceFromAddress$ = observe(onEveryBlock$, context$, tokenBalanceFromAddress)
 
   const balance$ = memoize(
     curry(createBalance$)(onEveryBlock$, chainContext$, tokenBalance$),
@@ -516,6 +521,11 @@ export function setupAppContext() {
   const balanceLean$ = memoize(
     curry(createBalance$)(once$, chainContext$, tokenBalanceLean$),
     (token, address) => `${token}_${address}`,
+  )
+
+  const balanceFromAddress$ = memoize(
+    curry(createBalanceFromAddress$)(tokenBalanceFromAddress$),
+    (token, address) => `${token.address}_${token.precision}_${address}`,
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
@@ -777,6 +787,9 @@ export function setupAppContext() {
   ) => Observable<BalanceInfo>
 
   const balancesInfoArray$ = curry(createBalancesArrayInfo$)(balance$)
+  const balancesFromAddressInfoArray$ = curry(createBalancesFromAddressArrayInfo$)(
+    balanceFromAddress$,
+  )
 
   const userSettings$ = createUserSettings$(
     checkUserSettingsLocalStorage$,
@@ -1295,12 +1308,27 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
+  // v2 because it takes into account all positions created using specific proxies and filter them
+  // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
+  // only single position should be picked to be displayed
+  const dpmPositionDataV2$ = memoize(
+    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$, readPositionCreatedEvents$),
+    (positionId: PositionId, collateralToken?: string, quoteToken?: string, product?: string) =>
+      `${positionId.walletAddress}-${positionId.vaultId}-${collateralToken}-${quoteToken}-${product}`,
+  )
+
   const ajnaPosition$ = memoize(
     curry(getAjnaPosition$)(context$, onEveryBlock$),
-    (collateralPrice: BigNumber, quotePrice: BigNumber, dpmPositionData: DpmPositionData) =>
+    (
+      collateralPrice: BigNumber,
+      quotePrice: BigNumber,
+      dpmPositionData: DpmPositionData,
+      collateralAddress?: string,
+      quoteAddress?: string,
+    ) =>
       `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
         .decimalPlaces(2)
-        .toString()}`,
+        .toString()}-${collateralAddress}-${quoteAddress}`,
   )
 
   const identifiedTokens$ = memoize(curry(identifyTokens$)(context$, once$), (tokens: string[]) =>
@@ -1321,6 +1349,7 @@ export function setupAppContext() {
     ilks$: ilksSupportedOnNetwork$,
     balance$,
     balancesInfoArray$,
+    balancesFromAddressInfoArray$,
     accountBalances$,
     openVault$,
     manageVault$,
@@ -1383,6 +1412,7 @@ export function setupAppContext() {
     allowanceForAccount$,
     contextForAddress$,
     dpmPositionData$,
+    dpmPositionDataV2$,
     ajnaPosition$,
     identifiedTokens$,
     chainContext$,

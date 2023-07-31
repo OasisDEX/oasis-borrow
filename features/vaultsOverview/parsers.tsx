@@ -258,7 +258,7 @@ export function parseAjnaBorrowPositionRows(
         isAtRiskWarning: false,
         type: 'LTV',
       },
-      url: `/ethereum/ajna/${vaultId}`,
+      url: `/ethereum/ajna/borrow/${collateralToken}-${quoteToken}/${vaultId}`,
       variable: interestRate.times(100),
     }
   })
@@ -293,7 +293,7 @@ export function parseAjnaMultiplyPositionRows(
       netValue,
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Ajna,
-      url: `/ethereum/ajna/${vaultId}`,
+      url: `/ethereum/ajna/multiply/${collateralToken}-${quoteToken}/${vaultId}`,
     }
   })
 }
@@ -320,7 +320,7 @@ export function parseAjnaEarnPositionRows(
       // TODO: should get chainId from the source event so it works in the generic way for all chains
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Ajna,
-      url: `/ethereum/ajna/${vaultId}`,
+      url: `/ethereum/ajna/earn/${collateralToken}-${quoteToken}/${vaultId}`,
     }
   })
 }

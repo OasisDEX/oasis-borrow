@@ -27,6 +27,7 @@ export function AjnaMultiplyOverviewController() {
       priceFormat,
       quotePrice,
       isShort,
+      isProxyWithManyPositions,
     },
   } = useAjnaGeneralContext()
 
@@ -108,6 +109,9 @@ export function AjnaMultiplyOverviewController() {
                 .times(collateralPrice)
                 .minus(simulation?.debtAmount.times(quotePrice))}
               pnl={pnl}
+              // For now we need to hide P&L for proxies with many positions
+              // because subgraph doesn't support it yet
+              pnlNotAvailable={isProxyWithManyPositions}
               showPnl={flow === 'manage'}
               changeVariant={changeVariant}
             />

@@ -27,6 +27,7 @@ export function AaveManageTabBar({
   const { t } = useTranslation()
   const aaveProtection = useFeatureToggle('AaveV3Protection')
   const {
+    automationTriggersData: { isAutomationDataLoaded },
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
@@ -93,7 +94,11 @@ export function AaveManageTabBar({
               {
                 label: t('system.protection'),
                 value: 'protection',
-                tag: { include: true, active: protectionEnabled },
+                tag: {
+                  include: true,
+                  active: protectionEnabled,
+                  isLoading: !isAutomationDataLoaded,
+                },
                 content: <ProtectionControl />,
               },
             ]

@@ -994,25 +994,26 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHAdjustRiskMoveSlider: (riskRatio: BigNumber) => {
+    aaveAdjustRiskSliderAction: (
+      action: 'ConfirmRisk' | 'MoveSlider',
+      riskRatio: BigNumber,
+      productType: ProductType,
+    ) => {
       const eventBody = {
-        id: 'MoveSlider',
-        product: ProductType.EARN,
+        id: action,
+        product: productType.toLocaleLowerCase(),
         riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.ManageSTETH,
+        page: {
+          [ProductType.MULTIPLY]: Pages.AdjustPosition,
+          [ProductType.EARN]: Pages.ManageSTETH,
+          [ProductType.BORROW]: '',
+        }[productType],
         section: 'AdjustRisk',
       }
-      mixpanelInternalAPI(EventTypes.InputChange, eventBody)
-    },
-    stETHAdjustRiskConfirmRisk: (riskRatio: BigNumber) => {
-      const eventBody = {
-        id: 'ConfirmRisk',
-        product: ProductType.EARN,
-        riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.ManageSTETH,
-        section: 'AdjustRisk',
-      }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(
+        action === 'MoveSlider' ? EventTypes.InputChange : EventTypes.ButtonClick,
+        eventBody,
+      )
     },
     stETHAdjustRiskConfirmTransaction: (riskRatio: BigNumber) => {
       const eventBody = {

@@ -27,7 +27,10 @@ import React, {
 } from 'react'
 
 interface AjnaGeneralContextProviderProps {
+  collateralAddress: string
   collateralBalance: BigNumber
+  collateralDigits: number
+  collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
   dpmProxy?: string
@@ -35,14 +38,19 @@ interface AjnaGeneralContextProviderProps {
   ethPrice: BigNumber
   flow: AjnaFlow
   id?: string
+  isOracless: boolean
   owner: string
   product: AjnaProduct
+  quoteAddress: string
   quoteBalance: BigNumber
+  quoteDigits: number
+  quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
   steps: AjnaSidebarStep[]
   gasPrice: GasPriceParams
   slippage: BigNumber
+  isProxyWithManyPositions: boolean
 }
 
 type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'> & {
@@ -106,6 +114,7 @@ export function AjnaGeneralContextProvider({
     owner,
     product,
     slippage,
+    isProxyWithManyPositions,
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
@@ -152,6 +161,7 @@ export function AjnaGeneralContextProvider({
     environment: {
       ...props,
       isShort,
+      isProxyWithManyPositions,
       priceFormat: isShort
         ? `${quoteToken}/${collateralToken}`
         : `${collateralToken}/${quoteToken}`,

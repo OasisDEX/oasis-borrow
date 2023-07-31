@@ -54,7 +54,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
   const USDCWBTCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['WBTC', 'USDC'])
   const USDCWLDAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['WLD', 'USDC'])
   const WBTCDAICAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['DAI', 'WBTC'])
-  const WBTCGHOCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['GHO', 'WBTC'])
+  const WBTCGHOAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['GHO', 'WBTC'])
   const WBTCUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'WBTC'])
   const WSTETHDAIAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['DAI', 'WSTETH'])
   const WSTETHGHOAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['GHO', 'WSTETH'])
@@ -76,6 +76,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'DAI',
     product: GHODAIAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
+    pills: [],
   })
   const promoCardUSDCETHAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'USDC',
@@ -100,18 +101,21 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'GHO',
     product: WBTCGHOAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
+    pills: [],
   })
   const promoCardWLDUSDCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'WLD',
     debtToken: 'USDC',
     product: WLDUSDCAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
+    pills: [],
   })
   const promoCardWSTETHGHOAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'WSTETH',
     debtToken: 'GHO',
     product: WSTETHGHOAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
+    pills: [],
   })
 
   const promoCardCBETHETHAjnaMultiply = parseMultiplyPromoCard({
@@ -125,7 +129,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     collateralToken: 'ETH',
     debtToken: 'GHO',
     product: ETHGHOAjnaBorrowishProduct,
-    pills: [getAjnaTokensPill(), getLongTokenPill('ETH')],
+    pills: [getLongTokenPill('ETH')],
     ...commonPromoCardPayload,
   })
   const promoCardUSDCETHAjnaMultiply = parseMultiplyPromoCard({
@@ -153,7 +157,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     collateralToken: 'WBTC',
     debtToken: 'GHO',
     product: WBTCGHOAjnaBorrowishProduct,
-    pills: [getAjnaTokensPill(), getLongTokenPill('WBTC')],
+    pills: [getLongTokenPill('WBTC')],
     ...commonPromoCardPayload,
   })
   const promoCardWBTCUSDCAjnaMultiply = parseMultiplyPromoCard({
@@ -174,7 +178,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     collateralToken: 'WSTETH',
     debtToken: 'GHO',
     product: WSTETHGHOAjnaBorrowishProduct,
-    pills: [getAjnaTokensPill(), getLongTokenPill('WSTETH')],
+    pills: [getLongTokenPill('WSTETH')],
     ...commonPromoCardPayload,
   })
   const promoCardWSTETHUSDCAjnaMultiply = parseMultiplyPromoCard({
@@ -185,11 +189,12 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     ...commonPromoCardPayload,
   })
 
-  const promoCardCBETHGHOCAjnaEarn = parseEarnLiquidityProvisionPromoCard({
+  const promoCardCBETHGHOAjnaEarn = parseEarnLiquidityProvisionPromoCard({
     collateralToken: 'CBETH',
     debtToken: 'GHO',
     product: CBETHGHOAjnaEarnProduct,
     ...commonEarnPromoCardPayload,
+    pills: [getActiveManagementPill()],
   })
   const promoCardETHUSDCAjnaEarn = parseEarnLiquidityProvisionPromoCard({
     collateralToken: 'ETH',
@@ -208,6 +213,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'WLD',
     product: USDCWLDAjnaEarnProduct,
     ...commonEarnPromoCardPayload,
+    pills: [getActiveManagementPill()],
   })
   const promoCardUSDCWBTCAjnaEarn = parseEarnLiquidityProvisionPromoCard({
     collateralToken: 'USDC',
@@ -224,8 +230,9 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
   const promoCardWBTCGHOAjnaEarn = parseEarnLiquidityProvisionPromoCard({
     collateralToken: 'WBTC',
     debtToken: 'GHO',
-    product: WBTCGHOCAjnaEarnProduct,
+    product: WBTCGHOAjnaEarnProduct,
     ...commonEarnPromoCardPayload,
+    pills: [getActiveManagementPill()],
   })
   const promoCardWBTCUSDCAjnaEarn = parseEarnLiquidityProvisionPromoCard({
     collateralToken: 'WBTC',
@@ -244,6 +251,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'GHO',
     product: WSTETHGHOAjnaEarnProduct,
     ...commonEarnPromoCardPayload,
+    pills: [getActiveManagementPill()],
   })
 
   return {
@@ -266,7 +274,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     promoCardWSTETHDAIAjnaMultiply,
     promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
-    promoCardCBETHGHOCAjnaEarn,
+    promoCardCBETHGHOAjnaEarn,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
     promoCardUSDCWBTCAjnaEarn,

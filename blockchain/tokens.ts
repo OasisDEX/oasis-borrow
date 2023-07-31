@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
+import { maxUint256, tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { getNetworkContracts } from './contracts'
 import { Context } from './network'
@@ -30,6 +30,14 @@ export function createBalance$(
       return tokenBalance$({ token, account: address })
     }),
   )
+}
+
+export function createBalanceFromAddress$(
+  tokenBalanceFromAddress$: CallObservable<typeof tokenBalanceFromAddress>,
+  token: { address: string; precision: number },
+  address: string,
+) {
+  return tokenBalanceFromAddress$({ ...token, account: address })
 }
 
 export function createCollateralTokens$(

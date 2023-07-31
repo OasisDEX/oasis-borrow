@@ -1,6 +1,7 @@
 import { IPosition } from '@oasisdex/dma-library'
 import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
+import { ProductType as AnalyticsProductType } from 'analytics/common'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -155,7 +156,7 @@ export function createManageAaveStateMachine(
               },
             },
             loading: {
-              entry: ['requestParameters'],
+              entry: ['requestParameters', 'riskRatioEvent'],
               on: {
                 STRATEGY_RECEIVED: {
                   target: 'idle',
@@ -215,7 +216,7 @@ export function createManageAaveStateMachine(
                 SET_RISK_RATIO: {
                   cond: 'canChangePosition',
                   target: '#manageAaveStateMachine.background.debouncing',
-                  actions: ['userInputRiskRatio', 'riskRatioEvent'],
+                  actions: ['userInputRiskRatio'],
                 },
                 RESET_RISK_RATIO: {
                   cond: 'canChangePosition',
@@ -235,6 +236,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
+              entry: ['reset'],
               on: {
                 NEXT_STEP: [
                   {
@@ -254,6 +256,7 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
+                  actions: ['reset'],
                 },
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
@@ -267,6 +270,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageDebt: {
+              entry: ['reset'],
               on: {
                 NEXT_STEP: [
                   {
@@ -285,6 +289,7 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
+                  actions: ['reset'],
                 },
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
@@ -335,6 +340,7 @@ export function createManageAaveStateMachine(
               on: {
                 BACK_TO_EDITING: {
                   target: 'editing',
+                  actions: ['reset', 'killCurrentParametersMachine'],
                 },
                 NEXT_STEP: [
                   {
@@ -424,7 +430,7 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   cond: 'canAdjustPosition',
                   target: 'editing',
-                  actions: ['reset'],
+                  actions: ['reset', 'killCurrentParametersMachine'],
                 },
               },
             },
@@ -472,7 +478,7 @@ export function createManageAaveStateMachine(
         BACK_TO_EDITING: {
           cond: 'canAdjustPosition',
           target: 'frontend.editing',
-          actions: ['reset'],
+          actions: ['reset', 'killCurrentParametersMachine'],
         },
         CLOSE_POSITION: {
           target: ['frontend.reviewingClosing'],
@@ -591,10 +597,22 @@ export function createManageAaveStateMachine(
           transition: undefined,
         })),
         riskRatioEvent: (context) => {
-          trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
+          context.userInput.riskRatio?.loanToValue &&
+            context.strategyConfig.type &&
+            trackingEvents.earn.aaveAdjustRiskSliderAction(
+              'MoveSlider',
+              context.userInput.riskRatio.loanToValue,
+              context.strategyConfig.type as AnalyticsProductType,
+            )
         },
         riskRatioConfirmEvent: (context) => {
-          trackingEvents.earn.stETHAdjustRiskConfirmRisk(context.userInput.riskRatio!.loanToValue)
+          context.userInput.riskRatio?.loanToValue &&
+            context.strategyConfig.type &&
+            trackingEvents.earn.aaveAdjustRiskSliderAction(
+              'ConfirmRisk',
+              context.userInput.riskRatio.loanToValue,
+              context.strategyConfig.type as AnalyticsProductType,
+            )
         },
         // riskRatioConfirmTransactionEvent: (context) => {
         //   trackingEvents.earn.stETHAdjustRiskConfirmTransaction(

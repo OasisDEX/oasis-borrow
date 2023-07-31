@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -68,7 +67,7 @@ export function AjnaMultiplyFormContentClose() {
         {t('vault-info-messages.closing')}
       </Text>
       <HighlightedOrderInformation
-        iconCircle={getToken(closeToToken).iconCircle}
+        symbol={closeToToken}
         label={t('after-closing', { token: closeToToken })}
         value={formatted[closeTo === 'collateral' ? 'collateralOnClose' : 'quoteOnClose']}
         isLoading={isSimulationLoading}

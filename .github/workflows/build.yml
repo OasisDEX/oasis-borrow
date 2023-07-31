@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Linter

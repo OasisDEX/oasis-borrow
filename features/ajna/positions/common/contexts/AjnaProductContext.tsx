@@ -1,6 +1,5 @@
 import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
@@ -178,11 +177,13 @@ export function AjnaProductContextProvider({
   const {
     environment: {
       collateralBalance,
+      collateralPrecision,
       collateralToken,
       ethBalance,
       ethPrice,
       flow,
       quoteBalance,
+      quotePrecision,
       quoteToken,
     },
     steps: { currentStep },
@@ -285,8 +286,9 @@ export function AjnaProductContextProvider({
   })
 
   useEffect(() => {
-    const fromToken = getToken(isIncreasingPositionRisk ? quoteToken : collateralToken)
-    const toToken = getToken(isIncreasingPositionRisk ? collateralToken : quoteToken)
+    const fromTokenPrecision = isIncreasingPositionRisk ? quotePrecision : collateralPrecision
+    const toTokenPrecision = isIncreasingPositionRisk ? collateralPrecision : quotePrecision
+
     setContext((prev) => ({
       ...prev,
       form,
@@ -303,8 +305,8 @@ export function AjnaProductContextProvider({
         swap: {
           current: formatSwapData({
             swapData: simulation?.swaps[0],
-            fromTokenPrecision: fromToken.precision,
-            toTokenPrecision: toToken.precision,
+            fromTokenPrecision,
+            toTokenPrecision,
           }),
           cached: cachedSwap,
         },

@@ -624,13 +624,15 @@ export function SidebarManageAaveVault() {
     },
   } = useAutomationContext()
 
-  const stopLossError =
-    isStopLossEnabled &&
-    state.context.transition?.simulation?.position.riskRatio.loanToValue.gte(stopLossLevel)
-
   function loading(): boolean {
     return isLoading(state)
   }
+
+  const stopLossError =
+    isStopLossEnabled &&
+    ((state.context.transition?.simulation?.position.riskRatio.loanToValue.gte(stopLossLevel) &&
+      !loading()) ||
+      state.context.userInput.riskRatio?.loanToValue.gte(stopLossLevel))
 
   const dropdownConfig = getDropdownConfig({ state, send })
 
