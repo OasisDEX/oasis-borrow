@@ -14,7 +14,7 @@ interface ContentCardPositionDebtProps {
   quoteToken: string
   positionDebt: BigNumber
   afterPositionDebt?: BigNumber
-  positionDebtUSD: BigNumber
+  positionDebtUSD?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
@@ -32,7 +32,7 @@ export function ContentCardPositionDebt({
     positionDebt: formatCryptoBalance(positionDebt),
     afterPositionDebt:
       afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
-    positionDebtUSD: `$${formatAmount(positionDebtUSD, 'USD')}`,
+    positionDebtUSD: positionDebtUSD && `$${formatAmount(positionDebtUSD, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -54,7 +54,7 @@ export function ContentCardPositionDebt({
     ),
   }
 
-  if (!positionDebt.isZero()) {
+  if (positionDebtUSD && !positionDebt.isZero()) {
     contentCardSettings.footnote = formatted.positionDebtUSD
   }
 
