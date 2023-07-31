@@ -10,3 +10,4 @@ coverage
 .idea
 .run
 .swc
+.vercel
