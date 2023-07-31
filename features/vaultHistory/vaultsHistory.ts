@@ -133,11 +133,13 @@ function mapToVaultWithHistory(
 
     const history = flatEvents([vaultEvents, vaultAutomationEvents])
     const stopLossData = extractStopLossData({
+      isAutomationDataLoaded: true,
       isAutomationEnabled,
       triggers,
     })
     const autoSellData = extractAutoBSData({
       triggersData: {
+        isAutomationDataLoaded: true,
         isAutomationEnabled,
         triggers,
       },

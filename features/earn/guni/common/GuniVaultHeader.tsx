@@ -46,7 +46,7 @@ export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnV
           return (
             <EarnVaultHeadline
               header={ilk}
-              token={[token]}
+              tokens={[token]}
               details={details}
               followButton={followButton}
               shareButton={shareButton}

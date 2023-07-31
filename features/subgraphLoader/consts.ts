@@ -60,6 +60,13 @@ export const subgraphMethodsRecord: {
       }
     }
   `,
+  getPoolAddress: gql`
+    query getPools($collateralAddress: ID!, $quoteAddress: ID!) {
+      pools(where: { collateralAddress: $collateralAddress, quoteTokenAddress: $quoteAddress }) {
+        address
+      }
+    }
+  `,
   getPoolData: gql`
     query getPool($poolAddress: ID!) {
       pool(id: $poolAddress) {

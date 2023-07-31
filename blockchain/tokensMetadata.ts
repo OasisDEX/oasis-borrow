@@ -62,6 +62,12 @@ export function getToken(tokenSymbol: TokenSymbolType): TokenMetadataType {
   return tokensBySymbol[tokenSymbol]
 }
 
+export function getTokenGuarded(
+  tokenSymbol: TokenSymbolType,
+): ReturnType<typeof getToken> | undefined {
+  return Object.keys(tokensBySymbol).includes(tokenSymbol) ? getToken(tokenSymbol) : undefined
+}
+
 export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
   if (tokenSymbol instanceof Array) {
     return tokenSymbol.map(getToken)

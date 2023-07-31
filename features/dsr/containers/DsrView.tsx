@@ -65,7 +65,7 @@ export function DsrView({
       )}
       <VaultHeadline
         header={t('dsr.titles.heading')}
-        token={['DAI']}
+        tokens={['DAI']}
         details={[
           {
             label: t('dsr.details.current-yield'),

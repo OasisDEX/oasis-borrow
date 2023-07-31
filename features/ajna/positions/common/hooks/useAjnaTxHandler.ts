@@ -30,9 +30,13 @@ export function useAjnaTxHandler(): () => void {
   const {
     tx: { setTxDetails, txDetails },
     environment: {
+      collateralAddress,
+      collateralPrecision,
       collateralPrice,
       collateralToken,
       ethPrice,
+      quoteAddress,
+      quotePrecision,
       quotePrice,
       quoteToken,
       product,
@@ -82,16 +86,20 @@ export function useAjnaTxHandler(): () => void {
       if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
         const promise = cancelable(
           getAjnaParameters({
+            collateralAddress,
+            collateralPrecision,
             collateralPrice,
             collateralToken,
             context,
+            isFormValid,
             position,
+            quoteAddress,
+            quotePrecision,
             quotePrice,
             quoteToken,
             rpcProvider: getRpcProvider(context.chainId),
-            state,
-            isFormValid,
             slippage,
+            state,
           }),
         )
         setCancelablePromise(promise)

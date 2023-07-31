@@ -21,6 +21,7 @@ interface AjnaFormField<D> {
 
 interface AjnaFormFieldWithDefinedToken {
   token: string
+  tokenPrecision?: number
   tokenPrice: BigNumber
 }
 
@@ -41,6 +42,7 @@ export function AjnaFormFieldDeposit({
   maxAmountLabel = 'balance',
   resetOnClear,
   token,
+  tokenPrecision,
   tokenPrice,
 }: AjnaFormField<AjnaFormActionsUpdateDeposit> &
   AjnaFormFieldWithDefinedToken &
@@ -58,6 +60,7 @@ export function AjnaFormFieldDeposit({
     <VaultActionInput
       action="Deposit"
       currencyCode={token}
+      currencyDigits={tokenPrecision}
       tokenUsdPrice={tokenPrice}
       amount={state.depositAmount}
       auxiliaryAmount={state.depositAmountUSD}
@@ -108,7 +111,7 @@ export function AjnaFormFieldGenerate({
   AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { product, quotePrice, quoteToken },
+    environment: { product, quotePrecision, quotePrice, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -119,6 +122,7 @@ export function AjnaFormFieldGenerate({
     <VaultActionInput
       action="Borrow"
       currencyCode={quoteToken}
+      currencyDigits={quotePrecision}
       tokenUsdPrice={quotePrice}
       amount={state.generateAmount}
       auxiliaryAmount={state.generateAmountUSD}

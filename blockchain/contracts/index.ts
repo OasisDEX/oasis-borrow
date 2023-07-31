@@ -1,3 +1,5 @@
+import * as erc20 from 'blockchain/abi/erc20.json'
+import { IdentifiedTokens } from 'blockchain/identifyTokens'
 import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
 
@@ -5,6 +7,10 @@ import { arbitrumContracts } from './arbitrum'
 import { goerliContracts } from './goerli'
 import { mainnetContracts } from './mainnet'
 import { optimismContracts } from './optimism'
+
+// this const will contain contracts of tokens, that aren't a part of original config
+// but identified by identifyTokens$ observable whenever it's called
+const extendedTokensContracts: { [key: string]: ContractDesc & { genesisBlock: number } } = {}
 
 export const allNetworksContracts = {
   [NetworkIds.MAINNET]: mainnetContracts,
@@ -45,7 +51,26 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   if (!contracts) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
-  return contracts as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
+
+  return {
+    ...contracts,
+    tokens: {
+      ...(contracts.tokens as {}),
+      ...extendedTokensContracts,
+    },
+  } as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
+}
+
+export function extendTokensContracts(tokens: IdentifiedTokens): void {
+  Object.keys(tokens).forEach((address) => {
+    const token = tokens[address]
+
+    extendedTokensContracts[token.symbol] = {
+      abi: erc20,
+      address,
+      genesisBlock: 0,
+    }
+  })
 }
 
 export function ensureContractsExist(

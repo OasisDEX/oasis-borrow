@@ -65,7 +65,7 @@ function AaveHeader({
     <WithErrorHandler error={[positionTokenPricesError, chainlinkUSDCUSDPriceError]}>
       <VaultHeadline
         header={t(headerLabelString, { ...strategyConfig.tokens })}
-        token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
+        tokens={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
         loading={!positionTokenPrices}
         details={detailsList}
         followButton={followButton}

@@ -1,8 +1,12 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
+import { isAddress } from 'ethers/lib/utils'
 import { steps } from 'features/ajna/common/consts'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
@@ -35,6 +39,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { one } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -60,28 +65,62 @@ export function AjnaProductController({
   const { t } = useTranslation()
   const { push } = useRouter()
   const {
+    context$,
     ajnaPosition$,
+    balancesFromAddressInfoArray$,
     balancesInfoArray$,
     dpmPositionDataV2$,
-    tokenPriceUSD$,
     gasPrice$,
-    userSettings$,
+    identifiedTokens$,
     readPositionCreatedEvents$,
+    tokenPriceUSD$,
+    userSettings$,
   } = useAppContext()
   const { walletAddress } = useAccount()
+  const isOracless =
+    collateralToken && quoteToken && isAddress(collateralToken) && isAddress(quoteToken)
+
+  const [context] = useObservable(context$)
+  const tokensAddresses = useMemo(
+    () => getNetworkContracts(NetworkIds.MAINNET, context?.chainId).tokens,
+    [context],
+  )
 
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
 
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
+
+  const [identifiedTokensData] = useObservable(
+    useMemo(
+      () => (isOracless ? identifiedTokens$([collateralToken, quoteToken]) : EMPTY),
+      [isOracless, collateralToken, quoteToken],
+    ),
+  )
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
         id
           ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
-          : collateralToken && product && quoteToken
-          ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
+          : !isOracless && product && collateralToken && quoteToken
+          ? getStaticDpmPositionData$({
+              collateralToken,
+              collateralTokenAddress: tokensAddresses[collateralToken].address,
+              product,
+              protocol: 'Ajna',
+              quoteToken,
+              quoteTokenAddress: tokensAddresses[quoteToken].address,
+            })
+          : isOracless && identifiedTokensData && product
+          ? getStaticDpmPositionData$({
+              collateralToken: identifiedTokensData[collateralToken].symbol,
+              collateralTokenAddress: collateralToken,
+              product,
+              protocol: 'Ajna',
+              quoteToken: identifiedTokensData[quoteToken].symbol,
+              quoteTokenAddress: quoteToken,
+            })
           : EMPTY,
-      [collateralToken, id, product, quoteToken],
+      [collateralToken, id, identifiedTokensData, isOracless, product, quoteToken, tokensAddresses],
     ),
   )
 
@@ -117,16 +156,46 @@ export function AjnaProductController({
     }
   }, [isProxyWithManyPositions, dpmPositionData])
 
-  const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
+  const [ethBalanceData, ethBalanceError] = useObservable(
     useMemo(
       () =>
         dpmPositionData
+          ? balancesInfoArray$(['ETH'], walletAddress || dpmPositionData.user)
+          : EMPTY,
+      [dpmPositionData, walletAddress],
+    ),
+  )
+  const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
+    useMemo(
+      () =>
+        !isOracless && dpmPositionData
           ? balancesInfoArray$(
               [dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'],
               walletAddress || dpmPositionData.user,
             )
+          : isOracless && dpmPositionData && identifiedTokensData
+          ? balancesFromAddressInfoArray$(
+              [
+                {
+                  address: collateralToken,
+                  precision: identifiedTokensData[collateralToken].precision,
+                },
+                {
+                  address: quoteToken,
+                  precision: identifiedTokensData[quoteToken].precision,
+                },
+              ],
+              walletAddress || dpmPositionData.user,
+            )
           : EMPTY,
-      [dpmPositionData, walletAddress],
+      [
+        collateralToken,
+        dpmPositionData,
+        identifiedTokensData,
+        isOracless,
+        quoteToken,
+        walletAddress,
+      ],
     ),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
@@ -141,14 +210,18 @@ export function AjnaProductController({
   const [ajnaPositionData, ajnaPositionError] = useObservable(
     useMemo(
       () =>
-        dpmPositionData && tokenPriceUSDData
+        !isOracless && dpmPositionData && tokenPriceUSDData
           ? ajnaPosition$(
               tokenPriceUSDData[dpmPositionData.collateralToken],
               tokenPriceUSDData[dpmPositionData.quoteToken],
               dpmPositionData,
+              dpmPositionData.collateralTokenAddress,
+              dpmPositionData.quoteTokenAddress,
             )
+          : isOracless && dpmPositionData && tokenPriceUSDData
+          ? ajnaPosition$(one, one, dpmPositionData, collateralToken, quoteToken)
           : EMPTY,
-      [dpmPositionData, tokenPriceUSDData],
+      [dpmPositionData, isOracless, tokenPriceUSDData],
     ),
   )
 
@@ -176,6 +249,24 @@ export function AjnaProductController({
     ),
   )
 
+  const tokensPrecision = useMemo(() => {
+    return !isOracless && dpmPositionData
+      ? {
+          collateralDigits: getToken(dpmPositionData.collateralToken).digits,
+          collateralPrecision: getToken(dpmPositionData.collateralToken).precision,
+          quoteDigits: getToken(dpmPositionData.quoteToken).digits,
+          quotePrecision: getToken(dpmPositionData.quoteToken).precision,
+        }
+      : isOracless && identifiedTokensData
+      ? {
+          collateralDigits: identifiedTokensData[collateralToken].digits,
+          collateralPrecision: identifiedTokensData[collateralToken].precision,
+          quoteDigits: identifiedTokensData[quoteToken].digits,
+          quotePrecision: identifiedTokensData[quoteToken].precision,
+        }
+      : undefined
+  }, [collateralToken, dpmPositionData, identifiedTokensData, isOracless, quoteToken])
+
   if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
   if (
     !id &&
@@ -194,6 +285,7 @@ export function AjnaProductController({
             <WithErrorHandler
               error={[
                 ajnaPositionError,
+                ethBalanceError,
                 balancesInfoArrayError,
                 dpmPositionError,
                 tokenPriceUSDError,
@@ -207,6 +299,7 @@ export function AjnaProductController({
               <WithLoadingIndicator
                 value={[
                   ajnaPositionData,
+                  ethBalanceData,
                   balancesInfoArrayData,
                   dpmPositionData,
                   tokenPriceUSDData,
@@ -215,6 +308,7 @@ export function AjnaProductController({
                   ajnaHistoryData,
                   ajnaPositionCumulatives,
                   userSettingsData,
+                  tokensPrecision,
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -230,7 +324,8 @@ export function AjnaProductController({
               >
                 {([
                   ajnaPosition,
-                  [collateralBalance, quoteBalance, ethBalance],
+                  [ethBalance],
+                  [collateralBalance, quoteBalance],
                   dpmPosition,
                   tokenPriceUSD,
                   gasPrice,
@@ -238,6 +333,7 @@ export function AjnaProductController({
                   ajnaHistory,
                   ajnaPositionCumulatives,
                   { slippage },
+                  { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 ]) =>
                   ajnaPosition ? (
                     <>
@@ -255,18 +351,27 @@ export function AjnaProductController({
                         url={document.location.pathname}
                       />
                       <AjnaGeneralContextProvider
+                        collateralAddress={dpmPosition.collateralTokenAddress}
                         collateralBalance={collateralBalance}
-                        collateralPrice={tokenPriceUSD[dpmPosition.collateralToken]}
+                        collateralDigits={collateralDigits}
+                        collateralPrecision={collateralPrecision}
+                        collateralPrice={
+                          isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]
+                        }
                         collateralToken={dpmPosition.collateralToken}
                         {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
                         ethBalance={ethBalance}
                         ethPrice={tokenPriceUSD.ETH}
                         flow={flow}
                         id={id}
+                        isOracless={!!isOracless}
                         owner={dpmPosition.user}
                         product={dpmPosition.product as AjnaProduct}
+                        quoteAddress={dpmPosition.quoteTokenAddress}
                         quoteBalance={quoteBalance}
-                        quotePrice={tokenPriceUSD[dpmPosition.quoteToken]}
+                        quoteDigits={quoteDigits}
+                        quotePrecision={quotePrecision}
+                        quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                         quoteToken={dpmPosition.quoteToken}
                         steps={steps[dpmPosition.product as AjnaProduct][flow]}
                         gasPrice={gasPrice}

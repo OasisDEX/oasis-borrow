@@ -111,7 +111,7 @@ function AavePositionHeader({
   return (
     <VaultHeadline
       header={t(tokenPairList[strategy.name].translationKey)}
-      token={tokenPairList[strategy.name].tokenList}
+      tokens={tokenPairList[strategy.name].tokenList}
       details={headlineDetails}
       loading={!aaveTVL?.totalValueLocked}
     />
@@ -167,7 +167,7 @@ export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: Mana
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}
-      token={tokenData.tokenList}
+      tokens={tokenData.tokenList}
       details={[]}
       followButton={followButton}
       shareButton

@@ -44,6 +44,7 @@ async function loadTriggerDataFromCache({
   )
 
   return {
+    isAutomationDataLoaded: true,
     isAutomationEnabled: activeTriggersForVault.length > 0,
     triggers: activeTriggersForVault,
   }
@@ -57,6 +58,7 @@ export interface TriggerRecord {
 }
 
 export interface TriggersData {
+  isAutomationDataLoaded: boolean
   isAutomationEnabled: boolean
   triggers?: TriggerRecord[]
 }
