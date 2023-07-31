@@ -180,7 +180,7 @@ export function AjnaFormFieldPayback({
 }: AjnaFormField<AjnaFormActionsUpdatePayback> & AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { quotePrecision, quotePrice, quoteToken, product },
+    environment: { isOracless, quotePrecision, quotePrice, quoteToken, product },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -195,7 +195,7 @@ export function AjnaFormFieldPayback({
       tokenUsdPrice={quotePrice}
       amount={state.paybackAmount}
       auxiliaryAmount={state.paybackAmountUSD}
-      hasAuxiliary={true}
+      hasAuxiliary={!isOracless}
       hasError={false}
       disabled={isDisabled || isFormFrozen}
       showMax={true}
@@ -237,6 +237,7 @@ export function AjnaFormFieldWithdraw({
   maxAmountLabel = 'max',
   resetOnClear,
   token,
+  tokenPrecision,
   tokenPrice,
 }: AjnaFormField<AjnaFormActionsUpdateWithdraw> &
   AjnaFormFieldWithDefinedToken &
@@ -244,7 +245,7 @@ export function AjnaFormFieldWithdraw({
   const { t } = useTranslation()
 
   const {
-    environment: { product },
+    environment: { isOracless, product },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -255,10 +256,11 @@ export function AjnaFormFieldWithdraw({
     <VaultActionInput
       action="Withdraw"
       currencyCode={token}
+      currencyDigits={tokenPrecision}
       tokenUsdPrice={tokenPrice}
       amount={state.withdrawAmount}
       auxiliaryAmount={state.withdrawAmountUSD}
-      hasAuxiliary={true}
+      hasAuxiliary={!isOracless}
       hasError={false}
       disabled={isDisabled || isFormFrozen}
       showMax={maxAmount?.gt(zero)}

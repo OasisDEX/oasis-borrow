@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { AjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/controls/AjnaBorrowOriginationFee'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
@@ -14,7 +13,14 @@ import React from 'react'
 
 export function AjnaBorrowFormContentGenerate() {
   const {
-    environment: { collateralBalance, collateralPrice, collateralToken, quoteToken },
+    environment: {
+      collateralDigits,
+      collateralBalance,
+      collateralPrecision,
+      collateralPrice,
+      collateralToken,
+      quoteDigits,
+    },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -26,9 +32,9 @@ export function AjnaBorrowFormContentGenerate() {
     },
   } = useAjnaProductContext('borrow')
 
-  const debtMin = getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position })
+  const debtMin = getAjnaBorrowDebtMin({ digits: collateralDigits, position })
   const debtMax = getAjnaBorrowDebtMax({
-    precision: getToken(quoteToken).precision,
+    precision: quoteDigits,
     position,
     simulation,
   })
@@ -47,6 +53,7 @@ export function AjnaBorrowFormContentGenerate() {
         maxAmount={collateralBalance}
         token={collateralToken}
         tokenPrice={collateralPrice}
+        tokenPrecision={collateralPrecision}
       />
       {generateAmount && (
         <>
