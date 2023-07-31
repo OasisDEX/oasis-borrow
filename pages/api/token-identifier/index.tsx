@@ -34,7 +34,7 @@ const handler: NextApiHandler = async (req, res) => {
             await fetch('https://tokens.coingecko.com/uniswap/all.json')
           ).json())) as TokensListResponse
         const tokensList = response.tokens.reduce<{ [key: string]: SimplifiedTokenConfig }>(
-          (total, { address, decimals, name, symbol }) =>
+          (total, { address, decimals, name, symbol, chainId }) =>
             tokens.includes(address)
               ? {
                   ...total,
@@ -43,6 +43,7 @@ const handler: NextApiHandler = async (req, res) => {
                     name,
                     precision: decimals,
                     digits: 5,
+                    chainId,
                   },
                 }
               : total,

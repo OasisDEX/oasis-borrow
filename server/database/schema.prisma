@@ -226,28 +226,28 @@ model UsersWhoFollowVaults {
 }
 
 model ProductHubItems {
-  id String @id @default(uuid())
-  label String
-  network NetworkNamesWithTestnets
-  primaryToken String
-  primaryTokenGroup String?
-  product Product[]
-  protocol Protocol
-  secondaryToken String
-  secondaryTokenGroup String?
-  weeklyNetApy String?
-  depositToken String?
-  earnStrategy String?
-  fee String?
-  liquidity String?
-  managementType ProductHubManagementSimple?
-  maxLtv String?
-  maxMultiply String?
-  multiplyStrategy String?
+  id                   String                      @id @default(uuid())
+  label                String
+  network              NetworkNamesWithTestnets
+  primaryToken         String
+  primaryTokenGroup    String?
+  product              Product[]
+  protocol             Protocol
+  secondaryToken       String
+  secondaryTokenGroup  String?
+  weeklyNetApy         String?
+  depositToken         String?
+  earnStrategy         String?
+  fee                  String?
+  liquidity            String?
+  managementType       ProductHubManagementSimple?
+  maxLtv               String?
+  maxMultiply          String?
+  multiplyStrategy     String?
   multiplyStrategyType ProductHubStrategy?
-  reverseTokens Boolean?
-  updatedAt DateTime @updatedAt
-  tooltips Json?
+  reverseTokens        Boolean?
+  updatedAt            DateTime                    @updatedAt
+  tooltips             Json?
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
   @@map("product_hub_items")
@@ -354,4 +354,15 @@ model AjnaRewardsMerkleTree {
 
   @@unique([week_number, chain_id], name: "week_number_chain_id_unique_id")
   @@map("ajna_rewards_merkle_tree")
+}
+
+model Tokens {
+  address   String
+  name      String
+  symbol    String
+  precision Int
+  chain_id  Int
+
+  @@unique([address, chain_id], name: "address_chain_id_unique_id")
+  @@map("tokens")
 }

@@ -76,9 +76,20 @@ export function HomepageView() {
   const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
-  const { getOasisStats$ } = useAppContext()
+  const { getOasisStats$, context$, identifiedTokens$ } = useAppContext()
   const [oasisStatsValue] = useObservable(getOasisStats$())
+  const [context] = useObservable(context$)
+  const [identifiedTokens] = useObservable(
+    identifiedTokens$([
+      '0xae78736cd615f374d3085123a210448e74fc6393',
+      '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942',
+      '0x6982508145454ce325ddbe47a25d4ec3d2311933',
+    ]),
+  )
+  console.log('identifiedTokensV2', identifiedTokens)
 
+  console.log('context', context)
+  // console.log('contracts', getNetworkContracts(1))
   return (
     <Box
       sx={{
