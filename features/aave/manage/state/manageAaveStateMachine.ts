@@ -149,6 +149,12 @@ export function createManageAaveStateMachine(
               after: {
                 500: 'loading',
               },
+              on: {
+                SET_RISK_RATIO: {
+                  target: '#manageAaveStateMachine.background.debouncing',
+                  actions: ['reset'],
+                },
+              },
             },
             debouncingManage: {
               after: {
@@ -161,6 +167,10 @@ export function createManageAaveStateMachine(
                 STRATEGY_RECEIVED: {
                   target: 'idle',
                   actions: ['updateContext'],
+                },
+                SET_RISK_RATIO: {
+                  target: '#manageAaveStateMachine.background.debouncing',
+                  actions: ['reset'],
                 },
               },
             },

@@ -1007,7 +1007,7 @@ export const trackingEvents = {
           [ProductType.MULTIPLY]: Pages.AdjustPosition,
           [ProductType.EARN]: Pages.ManageSTETH,
           [ProductType.BORROW]: '',
-        }[productType],
+        }[productType.toLocaleLowerCase()],
         section: 'AdjustRisk',
       }
       mixpanelInternalAPI(
