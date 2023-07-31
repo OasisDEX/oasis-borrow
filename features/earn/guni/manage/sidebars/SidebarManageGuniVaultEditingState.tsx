@@ -1,4 +1,3 @@
-
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'

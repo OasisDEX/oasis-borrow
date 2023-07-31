@@ -1,4 +1,3 @@
-
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
 import React, { ReactNode } from 'react'
