@@ -39,10 +39,10 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
   const [product, pool, id = null] = query.position as string[]
   const [collateralToken, quoteToken] = pool.split('-')
   const caseSensitiveCollateralToken = isAddress(collateralToken)
-    ? collateralToken.toLocaleLowerCase()
+    ? collateralToken.toLowerCase()
     : collateralToken.toUpperCase()
   const caseSensitiveQuoteToken = isAddress(quoteToken)
-    ? quoteToken.toLocaleLowerCase()
+    ? quoteToken.toLowerCase()
     : quoteToken.toUpperCase()
   const supportedPools = Object.keys({
     ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,

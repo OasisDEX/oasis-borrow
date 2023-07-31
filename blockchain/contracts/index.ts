@@ -8,6 +8,8 @@ import { goerliContracts } from './goerli'
 import { mainnetContracts } from './mainnet'
 import { optimismContracts } from './optimism'
 
+// this const will contain contracts of tokens, that aren't a part of original config
+// but identified by identifyTokens$ observable whenever it's called
 const extendedTokensContracts: { [key: string]: ContractDesc & { genesisBlock: number } } = {}
 
 export const allNetworksContracts = {
