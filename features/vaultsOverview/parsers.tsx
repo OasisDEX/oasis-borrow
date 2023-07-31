@@ -15,6 +15,7 @@ import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellCompone
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
@@ -352,6 +353,14 @@ export function parseDsrEarnPosition({
 }
 
 export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTableRowData[] {
+  const isSupportedAaveV3Automation = (
+    protocol: LendingProtocol,
+    collateralToken: string,
+    debtToken: string,
+  ) =>
+    protocol === LendingProtocol.AaveV3
+      ? isSupportedAutomationTokenPair(collateralToken, debtToken)
+      : true // if its not AaveV3, then we skip this check
   return rows.map(
     ({
       asset,
@@ -387,7 +396,8 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       collateralLocked: `${formatCryptoBalance(collateralLocked)} ${collateralToken}`,
       variable: `${formatPercent(variable, { precision: 2 })}`,
       protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-      ...(isAutomationEnabledProtocol(protocol, network)
+      ...(isAutomationEnabledProtocol(protocol, network) &&
+      isSupportedAaveV3Automation(protocol, collateralToken, debtToken)
         ? {
             protection: (
               <AssetsTableDataCellRiskProtectionIcon
