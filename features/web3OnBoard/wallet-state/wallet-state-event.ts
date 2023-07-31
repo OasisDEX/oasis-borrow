@@ -11,6 +11,9 @@ export type WalletStateEvent = ReductoActions<
       desiredNetworkHexId?: NetworkConfigHexId
     }
   | {
+      type: 'connection-cancelled'
+    }
+  | {
       type: 'connected'
       connector: BridgeConnector
     }
