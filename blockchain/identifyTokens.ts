@@ -1,5 +1,5 @@
 import { Tokens } from '@prisma/client'
-import { getNetworkContracts } from 'blockchain/contracts'
+import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { combineLatest, from, Observable, of } from 'rxjs'
@@ -52,7 +52,11 @@ export const identifyTokens$ = (
           }),
         }).then((resp) => resp.json()),
       ).pipe(
-        map((tokens) => [...tokens, ...identifiedTokens]),
+        map((tokens) => {
+          void extendTokensContracts(tokens)
+
+          return [...tokens, ...identifiedTokens]
+        }),
         shareReplay(1),
       )
     }),
