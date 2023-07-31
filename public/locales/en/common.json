@@ -1021,6 +1021,7 @@
     "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}"
   },
   "set-allowance-for": "Set Allowance for {{token}}",
+  "setup-stop-loss": "Setup Stop-Loss",
   "setting-allowance-for": "Setting Allowance for {{token}}",
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",

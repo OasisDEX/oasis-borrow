@@ -35,8 +35,16 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const aaveOffsetFromMinAndMax = new BigNumber(0.05)
-export const aaveOffsetFromMaxDuringOpenFLow = new BigNumber(0.1)
+export const aaveOffsets = {
+  open: {
+    min: new BigNumber(0.01),
+    max: new BigNumber(0.025),
+  },
+  manage: {
+    min: new BigNumber(0.01),
+    max: new BigNumber(0.025),
+  },
+}
 
 export function createGetAaveStopLossMetadata(
   lendingProtocol: LendingProtocol,
@@ -70,9 +78,9 @@ export function createGetAaveStopLossMetadata(
     })
 
     const sliderMin = new BigNumber(
-      positionRatio.plus(aaveOffsetFromMinAndMax).times(100).toFixed(0, BigNumber.ROUND_UP),
+      positionRatio.plus(aaveOffsets.manage.min).times(100).toFixed(0, BigNumber.ROUND_UP),
     )
-    const sliderMax = liquidationRatio.minus(aaveOffsetFromMinAndMax).times(100)
+    const sliderMax = liquidationRatio.minus(aaveOffsets.manage.max).times(100)
 
     const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
       stopLossLevel: stopLossLevel,
