@@ -13,7 +13,7 @@ import React from 'react'
 
 export function AjnaBorrowFormContentWithdraw() {
   const {
-    environment: { collateralPrice, collateralToken, quoteBalance, quoteToken },
+    environment: { collateralPrecision, collateralPrice, collateralToken, quoteBalance, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -45,6 +45,7 @@ export function AjnaBorrowFormContentWithdraw() {
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
+        tokenPrecision={collateralPrecision}
       />
       <AjnaFormFieldPayback
         dispatchAmount={dispatch}
