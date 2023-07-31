@@ -285,32 +285,6 @@ export function AjnaProductController({
   )
     void push(INTERNAL_LINKS.ajnaMultiply)
 
-  console.log({
-    ajnaPositionData,
-    ethBalanceData,
-    balancesInfoArrayData,
-    dpmPositionData,
-    tokenPriceUSDData,
-    gasPriceData,
-    ajnaPositionAuctionData,
-    ajnaHistoryData,
-    ajnaPositionCumulatives,
-    userSettingsData,
-    tokensPrecision,
-  })
-  // console.log(
-  //   ajnaPositionError,
-  //   ethBalanceError,
-  //   balancesInfoArrayError,
-  //   dpmPositionError,
-  //   tokenPriceUSDError,
-  //   gasPriceError,
-  //   ajnaPositionAuctionError,
-  //   ajnaHistoryError,
-  //   ajnaPositionCumulativesError,
-  //   userSettingsError,
-  // )
-
   return (
     <WithConnection>
       <WithTermsOfService>

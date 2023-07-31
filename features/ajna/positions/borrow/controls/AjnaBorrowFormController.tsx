@@ -1,4 +1,3 @@
-
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentTransition } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentTransition'

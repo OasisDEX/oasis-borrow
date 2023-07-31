@@ -32,7 +32,9 @@ export function ContentCardLUP({ priceFormat, lup }: ContentCardLUPProps) {
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.borrow.common.overview.lowest-utilization-price')}
-        description={t('ajna.position-page.borrow.common.overview.lowest-utilization-price-modal-desc')}
+        description={t(
+          'ajna.position-page.borrow.common.overview.lowest-utilization-price-modal-desc',
+        )}
         value={`${formatted.lup} ${lup ? priceFormat : ''}`}
       />
     ),
