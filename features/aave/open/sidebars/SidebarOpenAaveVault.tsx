@@ -9,6 +9,7 @@ import { OpenAaveStopLossInformation } from 'features/aave/common/components/inf
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { hasUserInteracted } from 'features/aave/helpers'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
@@ -298,12 +299,27 @@ function EditingStateViewSidebarPrimaryButton({
       : state.context.connectedProxyAddress !== undefined
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
+  const isSettingStopLoss =
+    !state.context.stopLossSkipped &&
+    supportsAaveStopLoss(
+      state.context.strategyConfig.protocol,
+      state.context.strategyConfig.networkId,
+    )
 
-  const label = hasProxy
-    ? allowanceNeeded
-      ? t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
-      : t(state.context.strategyConfig.viewComponents.sidebarButton)
-    : t('dpm.create-flow.welcome-screen.create-button')
+  function getLabel() {
+    if (!hasProxy) {
+      return t('dpm.create-flow.welcome-screen.create-button')
+    }
+    if (allowanceNeeded) {
+      return t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
+    }
+    if (isSettingStopLoss) {
+      return t('setup-stop-loss')
+    }
+    return t(state.context.strategyConfig.viewComponents.sidebarButton)
+  }
+
+  const label = getLabel()
 
   return {
     isLoading: isLoading(),

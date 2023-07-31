@@ -13,6 +13,7 @@ export type Subgraphs = {
   Ajna: {
     getEarnData: { dpmProxyAddress: string }
     getPositionCumulatives: { dpmProxyAddress: string }
+    getPoolAddress: { collateralAddress: string; quoteAddress: string }
     getPoolData: { poolAddress: string }
     getPoolsTableData: {}
     getNftIds: { walletAddress: string }
@@ -54,10 +55,15 @@ export type SubgraphsResponses = {
         cumulativeWithdraw: number
       }
     }>
+    getPoolAddress: SubgraphBaseResponse<{
+      pools: {
+        address: string
+      }[]
+    }>
     getPoolData: SubgraphBaseResponse<{
       pool: AjnaPoolDataResponse
     }>
-    getPoolsData: SubgraphBaseResponse<{
+    getPoolsTableData: SubgraphBaseResponse<{
       pools: AjnaPoolsDataResponse[]
     }>
     getNftIds: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>

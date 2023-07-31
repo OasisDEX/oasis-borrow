@@ -1,4 +1,5 @@
 import { SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { NextApiHandler } from 'next'
 import NodeCache from 'node-cache'
 
@@ -42,7 +43,7 @@ const handler: NextApiHandler = async (req, res) => {
                     symbol: symbol.toUpperCase(),
                     name,
                     precision: decimals,
-                    digits: 5,
+                    digits: DEFAULT_TOKEN_DIGITS,
                     chainId,
                   },
                 }

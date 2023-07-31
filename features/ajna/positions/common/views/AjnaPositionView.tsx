@@ -34,6 +34,7 @@ export function AjnaPositionView({
       flow,
       id,
       isShort,
+      isOracless,
       owner,
       priceFormat,
       product,
@@ -62,14 +63,18 @@ export function AjnaPositionView({
         {...(flow === 'manage' && { shareButton: true })}
         details={[
           ...(headlineDetails || []),
-          {
-            label: t('ajna.position-page.common.headline.current-market-price', {
-              collateralToken,
-            }),
-            value: `${formatCryptoBalance(
-              isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
-            )} ${priceFormat}`,
-          },
+          ...(!isOracless
+            ? [
+                {
+                  label: t('ajna.position-page.common.headline.current-market-price', {
+                    collateralToken,
+                  }),
+                  value: `${formatCryptoBalance(
+                    isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
+                  )} ${priceFormat}`,
+                },
+              ]
+            : []),
         ]}
         handleClick={
           proxyReveal ? () => console.log(`DPM proxy: ${dpmProxy?.toLowerCase()}`) : undefined

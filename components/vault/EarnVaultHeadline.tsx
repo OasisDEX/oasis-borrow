@@ -4,7 +4,7 @@ import { VaultHeadline, VaultHeadlineProps } from './VaultHeadline'
 
 export function EarnVaultHeadline({
   header,
-  token,
+  tokens,
   details,
   followButton,
   shareButton,
@@ -12,7 +12,7 @@ export function EarnVaultHeadline({
   return (
     <VaultHeadline
       header={header}
-      token={token}
+      tokens={tokens}
       details={details}
       followButton={followButton}
       shareButton={shareButton}

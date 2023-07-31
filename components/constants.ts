@@ -15,3 +15,5 @@ export const DAY = 24 * HOUR
 export const SECONDS_PER_YEAR = 365 * DAY
 
 export const FLASH_MINT_LIMIT_PER_TX = new BigNumber('500000000')
+
+export const DEFAULT_TOKEN_DIGITS = 5
