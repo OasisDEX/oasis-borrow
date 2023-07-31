@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import {
@@ -114,7 +113,7 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
         {t('vault-info-messages.closing')}
       </Text>
       <HighlightedOrderInformation
-        iconCircle={getToken(closeToTokenSymbol).iconCircle}
+        symbol={closeToTokenSymbol}
         label={t('after-closing', { token: closeToTokenSymbol })}
         value={amountOnClose}
       />

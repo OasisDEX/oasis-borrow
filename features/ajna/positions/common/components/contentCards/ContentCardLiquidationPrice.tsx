@@ -16,6 +16,7 @@ interface ContentCardLiquidationPriceProps {
   liquidationPrice: BigNumber
   afterLiquidationPrice?: BigNumber
   belowCurrentPrice: BigNumber
+  isOracless?: boolean
   changeVariant?: ChangeVariantType
 }
 
@@ -25,6 +26,7 @@ export function ContentCardLiquidationPrice({
   liquidationPrice,
   afterLiquidationPrice,
   belowCurrentPrice,
+  isOracless,
   changeVariant = 'positive',
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
@@ -55,7 +57,7 @@ export function ContentCardLiquidationPrice({
     ),
   }
 
-  if (!liquidationPrice.isZero()) {
+  if (!isOracless || !liquidationPrice.isZero()) {
     contentCardSettings.footnote = t(
       `ajna.position-page.borrow.common.overview.${
         belowCurrentPrice.gt(zero) ? 'below' : 'above'

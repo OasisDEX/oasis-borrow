@@ -2,6 +2,7 @@ import { Bucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaPoolsDataResponse {
@@ -41,7 +42,12 @@ export interface AjnaPoolsTableData {
 export const getAjnaPoolsTableData = async (
   networkId?: NetworkIds,
 ): Promise<AjnaPoolsTableData[]> => {
-  const { response } = await loadSubgraph('Ajna', 'getPoolsTableData', {}, networkId)
+  const { response } = (await loadSubgraph(
+    'Ajna',
+    'getPoolsTableData',
+    {},
+    networkId,
+  )) as SubgraphsResponses['Ajna']['getPoolsTableData']
 
   const negativeWadPrecision = WAD_PRECISION * -1
 

@@ -1,5 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
+import { isAddress } from 'ethers/lib/utils'
 import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
@@ -12,11 +13,11 @@ interface AjnaPositionPageProps {
   id: string
   pool: string
   product: AjnaProduct
+  collateralToken: string
+  quoteToken: string
 }
 
-function AjnaPositionPage({ id, pool, product }: AjnaPositionPageProps) {
-  const [collateralToken, quoteToken] = pool.split('-')
-
+function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
   return (
     <AjnaProductController
       collateralToken={collateralToken}
@@ -36,6 +37,13 @@ export default AjnaPositionPage
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const network = query.networkOrProduct as string
   const [product, pool, id = null] = query.position as string[]
+  const [collateralToken, quoteToken] = pool.split('-')
+  const caseSensitiveCollateralToken = isAddress(collateralToken)
+    ? collateralToken.toLowerCase()
+    : collateralToken.toUpperCase()
+  const caseSensitiveQuoteToken = isAddress(quoteToken)
+    ? quoteToken.toLowerCase()
+    : quoteToken.toUpperCase()
   const supportedPools = Object.keys({
     ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,
     ...getNetworkContracts(NetworkIds.GOERLI).ajnaPoolPairs,
@@ -45,12 +53,15 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     isSupportedNetwork(network) &&
     network === NetworkNames.ethereumMainnet &&
     ajnaProducts.includes(product as AjnaProduct) &&
-    supportedPools.includes(pool)
+    (supportedPools.includes(`${caseSensitiveCollateralToken}-${caseSensitiveQuoteToken}`) ||
+      (isAddress(caseSensitiveCollateralToken) && isAddress(caseSensitiveQuoteToken)))
   ) {
     return {
       props: {
         ...(await serverSideTranslations(locale || 'en', ['common'])),
         product,
+        collateralToken,
+        quoteToken,
         pool,
         id,
       },
