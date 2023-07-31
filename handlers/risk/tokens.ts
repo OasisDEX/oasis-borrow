@@ -55,7 +55,7 @@ export const readTokensFromApi = async (tokens: string[]): Promise<Tokens[]> => 
     (total, token, i) => `${total}${i > 0 ? '&' : ''}token=${token}`,
     '?',
   )
-  const tokensFromApi = await fetch(`${basePath}/api/token-identifier${query}`).then((resp) =>
+  const tokensFromApi = await fetch(`${basePath}/api/external-tokens-info${query}`).then((resp) =>
     resp.json(),
   )
 

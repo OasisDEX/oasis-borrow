@@ -1,5 +1,5 @@
+import { Tokens } from '@prisma/client'
 import * as erc20 from 'blockchain/abi/erc20.json'
-import { IdentifiedTokens } from 'blockchain/identifyTokens'
 import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
 
@@ -61,13 +61,11 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   } as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
 }
 
-export function extendTokensContracts(tokens: IdentifiedTokens): void {
-  Object.keys(tokens).forEach((address) => {
-    const token = tokens[address]
-
+export function extendTokensContracts(tokens: Tokens[]): void {
+  tokens.forEach((token) => {
     extendedTokensContracts[token.symbol] = {
       abi: erc20,
-      address,
+      address: token.address,
       genesisBlock: 0,
     }
   })

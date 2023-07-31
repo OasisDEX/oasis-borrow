@@ -27,7 +27,6 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
     tokensFromDb = await readTokensFromDb(lowerCasedAddresses, chainId)
 
     if (tokensFromDb.length === lowerCasedAddresses.length) {
-      console.log('Loaded from db')
       return res.status(200).json(tokensFromDb)
     }
   } catch (e) {
@@ -44,7 +43,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
 
     await saveTokensToDb(tokensFromApi)
 
-    if (tokensFromApi.length === lowerCasedAddresses.length) {
+    if ([...tokensFromApi, ...tokensFromDb].length === lowerCasedAddresses.length) {
       return res.status(200).json([...tokensFromApi, ...tokensFromDb])
     }
   } catch (e) {

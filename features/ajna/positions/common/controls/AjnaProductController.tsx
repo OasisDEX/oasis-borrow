@@ -4,6 +4,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { isAddress } from 'ethers/lib/utils'
@@ -96,6 +97,15 @@ export function AjnaProductController({
       [isOracless, collateralToken, quoteToken],
     ),
   )
+
+  const { collateralTokenData, quoteTokenData } = useMemo(
+    () => ({
+      collateralTokenData: identifiedTokensData?.find((token) => token.symbol === collateralToken),
+      quoteTokenData: identifiedTokensData?.find((token) => token.symbol === quoteToken),
+    }),
+    [identifiedTokensData, collateralToken, quoteToken],
+  )
+
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
@@ -110,17 +120,26 @@ export function AjnaProductController({
               quoteToken,
               quoteTokenAddress: tokensAddresses[quoteToken].address,
             })
-          : isOracless && identifiedTokensData && product
+          : isOracless && collateralTokenData && quoteTokenData && product
           ? getStaticDpmPositionData$({
-              collateralToken: identifiedTokensData[collateralToken].symbol,
+              collateralToken: collateralTokenData.symbol,
               collateralTokenAddress: collateralToken,
               product,
               protocol: 'Ajna',
-              quoteToken: identifiedTokensData[quoteToken].symbol,
+              quoteToken: quoteTokenData.symbol,
               quoteTokenAddress: quoteToken,
             })
           : EMPTY,
-      [collateralToken, id, identifiedTokensData, isOracless, product, quoteToken, tokensAddresses],
+      [
+        collateralToken,
+        id,
+        collateralTokenData,
+        quoteTokenData,
+        isOracless,
+        product,
+        quoteToken,
+        tokensAddresses,
+      ],
     ),
   )
 
@@ -173,16 +192,16 @@ export function AjnaProductController({
               [dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'],
               walletAddress || dpmPositionData.user,
             )
-          : isOracless && dpmPositionData && identifiedTokensData
+          : isOracless && dpmPositionData && collateralTokenData && quoteTokenData
           ? balancesFromAddressInfoArray$(
               [
                 {
                   address: collateralToken,
-                  precision: identifiedTokensData[collateralToken].precision,
+                  precision: collateralTokenData.precision,
                 },
                 {
                   address: quoteToken,
-                  precision: identifiedTokensData[quoteToken].precision,
+                  precision: quoteTokenData.precision,
                 },
               ],
               walletAddress || dpmPositionData.user,
@@ -191,7 +210,8 @@ export function AjnaProductController({
       [
         collateralToken,
         dpmPositionData,
-        identifiedTokensData,
+        collateralTokenData,
+        quoteTokenData,
         isOracless,
         quoteToken,
         walletAddress,
@@ -257,15 +277,22 @@ export function AjnaProductController({
           quoteDigits: getToken(dpmPositionData.quoteToken).digits,
           quotePrecision: getToken(dpmPositionData.quoteToken).precision,
         }
-      : isOracless && identifiedTokensData
+      : isOracless && collateralTokenData && quoteTokenData
       ? {
-          collateralDigits: identifiedTokensData[collateralToken].digits,
-          collateralPrecision: identifiedTokensData[collateralToken].precision,
-          quoteDigits: identifiedTokensData[quoteToken].digits,
-          quotePrecision: identifiedTokensData[quoteToken].precision,
+          collateralDigits: DEFAULT_TOKEN_DIGITS,
+          collateralPrecision: collateralTokenData.precision,
+          quoteDigits: DEFAULT_TOKEN_DIGITS,
+          quotePrecision: quoteTokenData.precision,
         }
       : undefined
-  }, [collateralToken, dpmPositionData, identifiedTokensData, isOracless, quoteToken])
+  }, [
+    collateralToken,
+    dpmPositionData,
+    collateralTokenData,
+    quoteTokenData,
+    isOracless,
+    quoteToken,
+  ])
 
   if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
   if (
