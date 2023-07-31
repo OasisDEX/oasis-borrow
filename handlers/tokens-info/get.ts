@@ -5,7 +5,7 @@ import {
   readTokensFromBlockchain,
   readTokensFromDb,
   saveTokensToDb,
-} from 'handlers/risk/tokens'
+} from 'handlers/tokens-info/tokens'
 import { NextApiRequest, NextApiResponse } from 'next'
 import * as z from 'zod'
 
