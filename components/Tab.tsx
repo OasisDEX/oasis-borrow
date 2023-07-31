@@ -14,6 +14,7 @@ interface TabProps {
   tag?: {
     include: boolean
     active: boolean
+    isLoading?: boolean
   }
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
@@ -33,7 +34,9 @@ export function Tab({ variant, value, label, selected, tag, onClick }: TabProps)
       }}
     >
       {label}
-      {variant === 'underline' && tag?.include && <VaultTabTag isEnabled={tag.active} />}
+      {variant === 'underline' && tag?.include && (
+        <VaultTabTag isEnabled={tag.active} isLoading={tag.isLoading} />
+      )}
     </Button>
   )
 }

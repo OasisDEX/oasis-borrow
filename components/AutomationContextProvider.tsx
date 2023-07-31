@@ -111,7 +111,11 @@ export interface AutomationContextProviderProps {
   overwriteTriggersDefaults?: OverwriteTriggersDefaults
 }
 
-const automationTriggersDataInitialState = { isAutomationEnabled: false, triggers: [] }
+const automationTriggersDataInitialState = {
+  isAutomationEnabled: false,
+  triggers: [],
+  isAutomationDataLoaded: false,
+}
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
 
