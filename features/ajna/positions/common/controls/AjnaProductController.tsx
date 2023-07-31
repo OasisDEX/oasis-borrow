@@ -99,8 +99,15 @@ export function AjnaProductController({
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
-        id
+        !isOracless && id
           ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
+          : isOracless && identifiedTokensData && id
+          ? dpmPositionDataV2$(
+              getPositionIdentity(id),
+              identifiedTokensData[collateralToken].symbol,
+              identifiedTokensData[quoteToken].symbol,
+              product,
+            )
           : !isOracless && product && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken,
@@ -276,6 +283,32 @@ export function AjnaProductController({
     !isPoolSupportingMultiply({ collateralToken, quoteToken })
   )
     void push(INTERNAL_LINKS.ajnaMultiply)
+
+  console.log({
+    ajnaPositionData,
+    ethBalanceData,
+    balancesInfoArrayData,
+    dpmPositionData,
+    tokenPriceUSDData,
+    gasPriceData,
+    ajnaPositionAuctionData,
+    ajnaHistoryData,
+    ajnaPositionCumulatives,
+    userSettingsData,
+    tokensPrecision,
+  })
+  // console.log(
+  //   ajnaPositionError,
+  //   ethBalanceError,
+  //   balancesInfoArrayError,
+  //   dpmPositionError,
+  //   tokenPriceUSDError,
+  //   gasPriceError,
+  //   ajnaPositionAuctionError,
+  //   ajnaHistoryError,
+  //   ajnaPositionCumulativesError,
+  //   userSettingsError,
+  // )
 
   return (
     <WithConnection>

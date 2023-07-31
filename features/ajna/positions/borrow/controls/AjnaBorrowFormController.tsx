@@ -1,4 +1,4 @@
-import { getToken } from 'blockchain/tokensMetadata'
+
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentTransition } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentTransition'
@@ -43,7 +43,7 @@ export function AjnaBorrowFormController() {
               }),
               panel: 'collateral',
               shortLabel: collateralToken,
-              icon: getToken(collateralToken).iconCircle,
+              tokenIcon: collateralToken,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
@@ -57,7 +57,7 @@ export function AjnaBorrowFormController() {
               }),
               panel: 'quote',
               shortLabel: quoteToken,
-              icon: getToken(quoteToken).iconCircle,
+              tokenIcon: quoteToken,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
