@@ -24,7 +24,7 @@ function reduceIdentifiedTokens(
 }
 
 export const identifyTokens$ = (
-  context$: Observable<Context>,
+  context$: Observable<Pick<Context, 'chainId'>>,
   once$: Observable<unknown>,
   tokensAddresses: string[],
 ): Observable<IdentifiedTokens> =>

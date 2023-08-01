@@ -101,15 +101,8 @@ export function AjnaProductController({
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
-        !isOracless && id
+        id
           ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
-          : isOracless && identifiedTokensData && id
-          ? dpmPositionDataV2$(
-              getPositionIdentity(id),
-              identifiedTokensData[collateralToken].symbol,
-              identifiedTokensData[quoteToken].symbol,
-              product,
-            )
           : !isOracless && product && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken,
