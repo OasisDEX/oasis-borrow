@@ -7,8 +7,8 @@ import { WithConnection } from 'components/connectWallet'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import { isAddress } from 'ethers/lib/utils'
 import { steps } from 'features/ajna/common/consts'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaBorrowPositionController } from 'features/ajna/positions/borrow/controls/AjnaBorrowPositionController'
@@ -78,10 +78,12 @@ export function AjnaProductController({
     userSettings$,
   } = useAppContext()
   const { walletAddress } = useAccount()
-  const isOracless =
-    collateralToken && quoteToken && isAddress(collateralToken) && isAddress(quoteToken)
-
   const [context] = useObservable(context$)
+
+  const isOracless =
+    collateralToken &&
+    quoteToken &&
+    isPoolOracless({ collateralToken, quoteToken })
   const tokensAddresses = useMemo(
     () => getNetworkContracts(NetworkIds.MAINNET, context?.chainId).tokens,
     [context],

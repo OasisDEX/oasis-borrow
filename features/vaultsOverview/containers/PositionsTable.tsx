@@ -7,15 +7,9 @@ import { getAddress } from 'ethers/lib/utils'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
-  getAaveEarnPositions,
-  getAaveMultiplyPositions,
   getAavePositionOfType,
   getAjnaPositionOfType,
-  getDsrPosition,
   getDsrValue,
-  getMakerBorrowPositions,
-  getMakerEarnPositions,
-  getMakerMultiplyPositions,
   getMakerPositionOfType,
   positionsTableTooltips,
 } from 'features/vaultsOverview/helpers'
@@ -39,13 +33,11 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
 export function PositionsTable({ address }: { address: string }) {
-  const ajnaEnabled = useFeatureToggle('Ajna')
   const { t } = useTranslation()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const { ownersPositionsList$ } = useAppContext()
@@ -60,6 +52,8 @@ export function PositionsTable({ address }: { address: string }) {
 
   const isOwner = address === walletAddress
 
+  console.log(ownersPositionsListError)
+
   return (
     <WithErrorHandler error={[ownersPositionsListError]}>
       <WithLoadingIndicator
@@ -68,9 +62,10 @@ export function PositionsTable({ address }: { address: string }) {
       >
         {([ownersPositionsList]) => {
           let amountOfPositions =
-            ownersPositionsList.makerPositions.length + ownersPositionsList.aavePositions.length
+            ownersPositionsList.makerPositions.length +
+            ownersPositionsList.aavePositions.length +
+            ownersPositionsList.ajnaPositions.length
           if (getDsrValue(ownersPositionsList.dsrPosition).gt(zero)) amountOfPositions++
-          if (ajnaEnabled) amountOfPositions += ownersPositionsList.ajnaPositions.length
 
           return amountOfPositions ? (
             <AssetsTableContainer
@@ -78,17 +73,7 @@ export function PositionsTable({ address }: { address: string }) {
                 address: formatAddress(address),
               })} (${amountOfPositions})`}
             >
-              {ajnaEnabled ? (
-                <PositionsTableWithAjna
-                  address={address}
-                  ownersPositionsList={ownersPositionsList}
-                />
-              ) : (
-                <PositionsTableWithoutAjna
-                  address={address}
-                  ownersPositionsList={ownersPositionsList}
-                />
-              )}
+              <PositionsTableContent address={address} ownersPositionsList={ownersPositionsList} />
             </AssetsTableContainer>
           ) : (
             <PositionTableEmptyState
@@ -116,71 +101,7 @@ export function PositionsTable({ address }: { address: string }) {
   )
 }
 
-export function PositionsTableWithoutAjna({
-  address,
-  ownersPositionsList,
-}: {
-  address: string
-  ownersPositionsList: PositionsList
-}) {
-  const { t } = useTranslation()
-
-  const dsrPosition = getDsrPosition({
-    dsr: ownersPositionsList.dsrPosition,
-    address,
-  })
-  const borrowPositions = getMakerBorrowPositions({
-    positions: ownersPositionsList.makerPositions,
-  })
-  const multiplyPositions = [
-    ...getMakerMultiplyPositions({
-      positions: ownersPositionsList.makerPositions,
-    }),
-    ...getAaveMultiplyPositions({
-      positions: ownersPositionsList.aavePositions,
-    }),
-  ]
-  const earnPositions = [
-    ...getMakerEarnPositions({
-      positions: ownersPositionsList.makerPositions,
-    }),
-    ...getAaveEarnPositions({
-      positions: ownersPositionsList.aavePositions,
-    }),
-    ...dsrPosition,
-  ]
-
-  return (
-    <>
-      {borrowPositions.length > 0 && (
-        <>
-          <AssetsTableHeading>
-            Summer.fi {t('nav.borrow')} ({borrowPositions.length})
-          </AssetsTableHeading>
-          <AssetsResponsiveTable rows={borrowPositions} tooltips={positionsTableTooltips} />
-        </>
-      )}
-      {multiplyPositions.length > 0 && (
-        <>
-          <AssetsTableHeading>
-            Summer.fi {t('nav.multiply')} ({multiplyPositions.length})
-          </AssetsTableHeading>
-          <AssetsResponsiveTable rows={multiplyPositions} tooltips={positionsTableTooltips} />
-        </>
-      )}
-      {earnPositions.length > 0 && (
-        <>
-          <AssetsTableHeading>
-            Summer.fi {t('nav.earn')} ({earnPositions.length})
-          </AssetsTableHeading>
-          <AssetsResponsiveTable rows={earnPositions} tooltips={positionsTableTooltips} />
-        </>
-      )}
-    </>
-  )
-}
-
-export function PositionsTableWithAjna({
+export function PositionsTableContent({
   address,
   ownersPositionsList,
 }: {
