@@ -52,8 +52,6 @@ export function PositionsTable({ address }: { address: string }) {
 
   const isOwner = address === walletAddress
 
-  console.log(ownersPositionsListError)
-
   return (
     <WithErrorHandler error={[ownersPositionsListError]}>
       <WithLoadingIndicator
