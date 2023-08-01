@@ -406,7 +406,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
               </Text>
             </>
           ) : (
-            <AssetsTableDataCellInactive>n/a</AssetsTableDataCellInactive>
+            <AssetsTableDataCellInactive />
           )}
         </>
       ),
