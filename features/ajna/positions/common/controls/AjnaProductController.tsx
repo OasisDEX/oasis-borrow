@@ -81,9 +81,7 @@ export function AjnaProductController({
   const [context] = useObservable(context$)
 
   const isOracless =
-    collateralToken &&
-    quoteToken &&
-    isPoolOracless({ collateralToken, quoteToken })
+    collateralToken && quoteToken && isPoolOracless({ collateralToken, quoteToken })
   const tokensAddresses = useMemo(
     () => getNetworkContracts(NetworkIds.MAINNET, context?.chainId).tokens,
     [context],

@@ -8,7 +8,11 @@ interface isPoolOraclessParams {
   quoteToken: string
 }
 
-export function isPoolOracless({ chainId, collateralToken, quoteToken }: isPoolOraclessParams): boolean {
+export function isPoolOracless({
+  chainId,
+  collateralToken,
+  quoteToken,
+}: isPoolOraclessParams): boolean {
   const { ajnaPoolPairs } = getNetworkContracts(NetworkIds.MAINNET, chainId)
 
   return isAddress(collateralToken) && isAddress(quoteToken)
