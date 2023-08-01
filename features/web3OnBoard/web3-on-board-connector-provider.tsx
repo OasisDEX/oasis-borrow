@@ -136,9 +136,14 @@ function InternalProvider({ children }: WithChildren) {
       if (bridgeConnector) dispatch({ type: 'connected', connector: bridgeConnector })
       else {
         if (!connecting) {
-          void createConnector().then((result) => {
-            if (!result) dispatch({ type: 'connection-cancelled' })
-          })
+          createConnector()
+            .then((result) => {
+              if (!result) dispatch({ type: 'connection-cancelled' })
+            })
+            .catch((error) => {
+              console.error(error)
+              dispatch({ type: 'connection-cancelled' })
+            })
         }
       }
     }
