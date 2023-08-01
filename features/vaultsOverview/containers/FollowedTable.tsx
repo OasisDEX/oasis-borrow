@@ -6,12 +6,15 @@ import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
+import { positionsTableTooltips } from 'features/vaultsOverview/helpers'
 import {
-  getMakerBorrowPositions,
-  getMakerEarnPositions,
-  getMakerMultiplyPositions,
-  positionsTableTooltips,
-} from 'features/vaultsOverview/helpers'
+  getBorrowPositionRows,
+  getEarnPositionRows,
+  getMultiplyPositionRows,
+  parseMakerBorrowPositionRows,
+  parseMakerEarnPositionRows,
+  parseMakerMultiplyPositionRows,
+} from 'features/vaultsOverview/parsers'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
@@ -33,15 +36,15 @@ export function FollowedTable({ address }: { address: string }) {
     <WithErrorHandler error={[followedListError]}>
       <WithLoadingIndicator value={[followedListData]} customLoader={<PositionTableLoadingState />}>
         {([followedMakerPositions]) => {
-          const borrowPositions = getMakerBorrowPositions({
-            positions: followedMakerPositions,
-          })
-          const multiplyPositions = getMakerMultiplyPositions({
-            positions: followedMakerPositions,
-          })
-          const earnPositions = getMakerEarnPositions({
-            positions: followedMakerPositions,
-          })
+          const borrowPositions = getBorrowPositionRows(
+            parseMakerBorrowPositionRows(followedMakerPositions),
+          )
+          const multiplyPositions = getMultiplyPositionRows(
+            parseMakerMultiplyPositionRows(followedMakerPositions),
+          )
+          const earnPositions = getEarnPositionRows(
+            parseMakerEarnPositionRows(followedMakerPositions),
+          )
 
           return followedMakerPositions.length ? (
             <AssetsTableContainer

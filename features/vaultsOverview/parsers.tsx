@@ -14,6 +14,7 @@ import { AssetsTableDataCellRiskProtectionIcon } from 'components/assetsTable/ce
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -53,7 +54,7 @@ export interface PositionTableBorrowRow extends PositionTableRow {
   stopLossData?: StopLossTriggerData
   autoSellData?: AutoBSTriggerData
   riskRatio: {
-    level: BigNumber
+    level?: BigNumber
     isAtRiskDanger: boolean
     isAtRiskWarning: boolean
     type: 'Coll. Ratio' | 'LTV'
@@ -233,36 +234,47 @@ export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTa
 export function parseAjnaBorrowPositionRows(
   positions: AjnaPositionDetails[],
 ): PositionTableBorrowRow[] {
-  return positions.map(({ details: { collateralToken, vaultId, quoteToken }, position }) => {
-    const {
-      collateralAmount,
-      debtAmount,
-      pool: { interestRate },
-      riskRatio,
-    } = position as AjnaPosition
+  return positions.map(
+    ({
+      details: { collateralToken, collateralTokenAddress, quoteToken, quoteTokenAddress, vaultId },
+      position,
+    }) => {
+      const isOracless = isPoolOracless({ collateralToken, quoteToken })
+      const poolUrl = isOracless
+        ? `${collateralTokenAddress}-${quoteTokenAddress}`
+        : `${collateralToken}-${quoteToken}`
+      const {
+        collateralAmount,
+        debtAmount,
+        pool: { interestRate },
+        riskRatio,
+      } = position as AjnaPosition
 
-    return {
-      asset: `${collateralToken}/${quoteToken}`,
-      collateralLocked: collateralAmount,
-      collateralToken: collateralToken,
-      debt: debtAmount,
-      debtToken: quoteToken,
-      icons: [collateralToken, quoteToken],
-      id: vaultId,
-      // TODO: should get chainId from the source event so it works in the generic way for all chains
-      network: NetworkNames.ethereumMainnet,
-      protocol: LendingProtocol.Ajna,
-      riskRatio: {
-        level: riskRatio.loanToValue.times(100),
-        // TODO: get from position/lib when available
-        isAtRiskDanger: false,
-        isAtRiskWarning: false,
-        type: 'LTV',
-      },
-      url: `/ethereum/ajna/borrow/${collateralToken}-${quoteToken}/${vaultId}`,
-      variable: interestRate.times(100),
-    }
-  })
+      return {
+        asset: `${collateralToken}/${quoteToken}`,
+        collateralLocked: collateralAmount,
+        collateralToken,
+        debt: debtAmount,
+        debtToken: quoteToken,
+        icons: [collateralToken, quoteToken],
+        id: vaultId,
+        // TODO: should get chainId from the source event so it works in the generic way for all chains
+        network: NetworkNames.ethereumMainnet,
+        protocol: LendingProtocol.Ajna,
+        riskRatio: {
+          ...(!isOracless && {
+            level: riskRatio.loanToValue.times(100),
+          }),
+          // TODO: get from position/lib when available
+          isAtRiskDanger: false,
+          isAtRiskWarning: false,
+          type: 'LTV',
+        },
+        url: `/ethereum/ajna/borrow/${poolUrl}/${vaultId}`,
+        variable: interestRate.times(100),
+      }
+    },
+  )
 }
 export function parseAjnaMultiplyPositionRows(
   positions: AjnaPositionDetails[],
@@ -382,14 +394,20 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
       asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
       riskRatio: (
         <>
-          <AssetsTableDataCellRiskRatio
-            level={level.toNumber()}
-            isAtRiskDanger={isAtRiskDanger}
-            isAtRiskWarning={isAtRiskWarning}
-          />{' '}
-          <Text as="small" sx={{ fontSize: 1, color: 'neutral80' }}>
-            {type}
-          </Text>
+          {level ? (
+            <>
+              <AssetsTableDataCellRiskRatio
+                level={level.toNumber()}
+                isAtRiskDanger={isAtRiskDanger}
+                isAtRiskWarning={isAtRiskWarning}
+              />{' '}
+              <Text as="small" sx={{ fontSize: 1, color: 'neutral80' }}>
+                {type}
+              </Text>
+            </>
+          ) : (
+            <AssetsTableDataCellInactive />
+          )}
         </>
       ),
       debt: `${formatCryptoBalance(debt)} ${debtToken}`,

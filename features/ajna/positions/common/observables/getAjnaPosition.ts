@@ -6,12 +6,14 @@ import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
+import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
@@ -81,8 +83,18 @@ export function getAjnaPositionDetails$(
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   details: DpmPositionData,
+  collateralAddress: string,
+  quoteAddress: string,
 ): Observable<AjnaPositionDetails> {
-  return getAjnaPosition$(context$, undefined, collateralPrice, quotePrice, details).pipe(
+  return getAjnaPosition$(
+    context$,
+    undefined,
+    collateralPrice,
+    quotePrice,
+    details,
+    collateralAddress,
+    quoteAddress,
+  ).pipe(
     switchMap((position) => {
       return [{ position, details }]
     }),
@@ -102,7 +114,7 @@ export function getAjnaPositionsWithDetails$(
     readPositionCreatedEvents$(walletAddress),
     context$,
   ).pipe(
-    switchMap(([userDpmProxies, positionCreatedEvents]) => {
+    switchMap(([userDpmProxies, positionCreatedEvents, context]) => {
       const idMap = userDpmProxies.reduce<{ [key: string]: string }>(
         (a, v) => ({ ...a, [v.proxy]: v.vaultId }),
         {},
@@ -127,14 +139,19 @@ export function getAjnaPositionsWithDetails$(
               .filter(({ protocol }) => protocol.toLowerCase() === LendingProtocol.Ajna)
               .map(
                 ({
+                  collateralTokenAddress,
                   collateralTokenSymbol,
+                  debtTokenAddress,
                   debtTokenSymbol,
                   positionType,
                   protocol,
                   proxyAddress,
-                  debtTokenAddress,
-                  collateralTokenAddress,
                 }) => {
+                  const isOracless = isPoolOracless({
+                    chainId: context.chainId,
+                    collateralToken: collateralTokenSymbol,
+                    quoteToken: debtTokenSymbol,
+                  })
                   const vaultId = idMap[proxyAddress]
 
                   return combineLatest(
@@ -143,8 +160,8 @@ export function getAjnaPositionsWithDetails$(
                     switchMap(([vaultsFromApi]) =>
                       getAjnaPositionDetails$(
                         context$,
-                        tokenPrice[collateralTokenSymbol],
-                        tokenPrice[debtTokenSymbol],
+                        isOracless ? one : tokenPrice[collateralTokenSymbol],
+                        isOracless ? one : tokenPrice[debtTokenSymbol],
                         {
                           collateralToken: collateralTokenSymbol,
                           quoteTokenAddress: debtTokenAddress,
@@ -159,6 +176,8 @@ export function getAjnaPositionsWithDetails$(
                           user: walletAddress,
                           vaultId,
                         },
+                        collateralTokenAddress,
+                        debtTokenAddress,
                       ),
                     ),
                   )
