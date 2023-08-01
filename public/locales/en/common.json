@@ -791,6 +791,7 @@
     "below-current-ratio": "({{percentage}} below current ratio)",
     "below-current-price": "{{percentage}} below current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
+    "stop-loss-ltv": "Stop Loss LTV: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
     "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}. This net value doesn't include the cost of the closing fee or the difference that might happen due to slippage or price changes once you close your position. Net value of position if closed will likely be lower.",
@@ -808,9 +809,12 @@
       "first-header": "Current Loan to Value (LTV)",
       "second-header": "Max Loan to value",
       "third-header": "Liquidation Threshold (LT)",
+      "fourth-header": "Stop loss Loan to Value",
       "first-description-line": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied",
       "second-description-line": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral",
-      "third-description-line": "The liquidation threshold is the percentage at which a position is undercollateralised. If your LTV rises above the LT, the position is undercollateralised and could be liquidated."
+      "third-description-line": "The liquidation threshold is the percentage at which a position is undercollateralised. If your LTV rises above the LT, the position is undercollateralised and could be liquidated.",
+      "fourth-description-line": "The Stop loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the <0>protection tab</0>.",
+      "stop-loss-not-set": "Not set - click to set up stop loss."
     },
     "net-borrow-cost": {
       "first-header": "Net borrow Cost %",
