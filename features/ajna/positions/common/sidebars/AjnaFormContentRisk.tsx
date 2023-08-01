@@ -18,7 +18,7 @@ const LINKS_MAP: { [key in AjnaProduct]: string } = {
 export function AjnaFormContentRisk() {
   const { t } = useTranslation()
   const {
-    environment: { product },
+    environment: { isOracless, product },
   } = useAjnaGeneralContext()
 
   return (
@@ -30,9 +30,16 @@ export function AjnaFormContentRisk() {
         icon="checkmark"
         iconSize="14px"
         iconColor="primary100"
-        items={t(`ajna.position-page.common.form.risk.bullet-points.${product}`, {
-          returnObjects: true,
-        })}
+        items={[
+          ...(isOracless
+            ? t(`ajna.position-page.common.form.risk.bullet-points.${product}-oracless`, {
+                returnObjects: true,
+              })
+            : []),
+          ...t(`ajna.position-page.common.form.risk.bullet-points.${product}`, {
+            returnObjects: true,
+          }),
+        ]}
         listStyle={{ mt: 2 }}
         components={{
           2: <AppLink href={EXTERNAL_LINKS.AJNA.AUDITS} sx={{ display: 'inline-block' }} />,
