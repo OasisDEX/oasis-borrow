@@ -33,7 +33,8 @@ export function useBridgeConnector(): BridgeConnectorState {
       return true
     }
     const currentWallet = await connect()
-    return !(!currentWallet || currentWallet.length === 0)
+    const isWalletConnected = currentWallet && currentWallet.length > 0
+    return isWalletConnected
   }, [wallet, connect, connecting, connector])
 
   const disconnectProxy = useCallback(async () => {
