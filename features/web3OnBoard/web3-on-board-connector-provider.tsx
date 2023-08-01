@@ -93,7 +93,12 @@ function InternalProvider({ children }: WithChildren) {
     },
     reducer: walletStateReducer,
   })
-  const { createConnector, connector: bridgeConnector, disconnect } = useBridgeConnector()
+  const {
+    createConnector,
+    connector: bridgeConnector,
+    disconnect,
+    connecting,
+  } = useBridgeConnector()
 
   useDebugWalletState({ state })
 
@@ -129,9 +134,20 @@ function InternalProvider({ children }: WithChildren) {
   useEffect(() => {
     if (state.status === 'connecting') {
       if (bridgeConnector) dispatch({ type: 'connected', connector: bridgeConnector })
-      else void createConnector()
+      else {
+        if (!connecting) {
+          createConnector()
+            .then((result) => {
+              if (!result) dispatch({ type: 'connection-cancelled' })
+            })
+            .catch((error) => {
+              console.error(error)
+              dispatch({ type: 'connection-cancelled' })
+            })
+        }
+      }
     }
-  }, [state.status, createConnector, bridgeConnector, dispatch])
+  }, [state.status, createConnector, bridgeConnector, dispatch, connecting])
 
   useEffect(() => {
     if (state.status === 'disconnected' && bridgeConnector) {
