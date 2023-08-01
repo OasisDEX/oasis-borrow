@@ -6,7 +6,7 @@ import { useCallback, useMemo } from 'react'
 import { BridgeConnector } from './bridge-connector'
 
 export interface BridgeConnectorState {
-  createConnector: () => Promise<void>
+  createConnector: () => Promise<boolean>
   connecting: boolean
   connector: BridgeConnector | undefined
   wallet: WalletState | null
@@ -30,9 +30,11 @@ export function useBridgeConnector(): BridgeConnectorState {
 
   const createConnector = useCallback(async () => {
     if (connector || connecting || wallet) {
-      return
+      return true
     }
-    await connect()
+    const currentWallet = await connect()
+    const isWalletConnected = currentWallet && currentWallet.length > 0
+    return isWalletConnected
   }, [wallet, connect, connecting, connector])
 
   const disconnectProxy = useCallback(async () => {

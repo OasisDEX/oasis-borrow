@@ -35,5 +35,11 @@ export const connectingWalletStateReducer: Reducer<WalletManagementState, Wallet
         walletNetworkHexId: event.connector.hexChainId,
       }
     })
+    .with({ type: 'connection-cancelled' }, () => {
+      return {
+        ...state,
+        status: 'disconnected',
+      }
+    })
     .otherwise(() => state)
 }
