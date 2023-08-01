@@ -76,7 +76,9 @@ export const protocolAutomations = {
 export const aaveTokenPairsAllowedAutomation = [
   ['ETH', 'USDC'],
   ['WBTC', 'USDC'],
-  ['STETH', 'USDC'],
+  ['WSTETH', 'USDC'],
+  ['RETH', 'USDC'],
+  ['CBETH', 'USDC'],
 ]
 
 export const vaultIdsThatAutoBuyTriggerShouldBeRecreated = [

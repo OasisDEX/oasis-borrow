@@ -6,7 +6,7 @@ import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
 import { useTranslation } from 'next-i18next'
@@ -41,7 +41,7 @@ export function AaveManageTabBar({
   } = state.context
 
   const protectionEnabled = stopLossTriggerData.isStopLossEnabled
-  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
+  const showAutomationTabs = isSupportedAaveAutomationTokenPair(collateralToken, debtToken)
 
   const isClosingPosition = state.matches('frontend.reviewingClosing')
   const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken

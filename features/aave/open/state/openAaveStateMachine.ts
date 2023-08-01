@@ -26,6 +26,7 @@ import {
 } from 'features/aave/common/BaseAaveContext'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
@@ -553,6 +554,10 @@ export function createOpenAaveStateMachine(
             supportsAaveStopLoss(
               context.strategyConfig.protocol,
               context.strategyConfig.networkId,
+            ) &&
+            isSupportedAaveAutomationTokenPair(
+              context.strategyConfig.tokens.collateral,
+              context.strategyConfig.tokens.debt,
             ) &&
             context.strategyConfig.type === 'Multiply'
               ? 1

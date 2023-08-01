@@ -506,8 +506,7 @@ export function openFlowInitialStopLossLevel({
   return stopLossSliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100)
 }
 
-export function isSupportedAutomationTokenPair(collateralToken: string, debtToken: string) {
+export function isSupportedAaveAutomationTokenPair(collateralToken: string, debtToken: string) {
   const joined = [collateralToken, debtToken].join('-')
-
   return aaveTokenPairsAllowedAutomation.map((pair) => pair.join('-')).includes(joined)
 }
