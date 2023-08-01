@@ -1,6 +1,7 @@
 import { IPosition } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCard,
@@ -88,6 +89,11 @@ export function AaveMultiplyPositionData({
   aaveHistory,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
+  const {
+    triggerData: {
+      stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
+    },
+  } = useAutomationContext()
 
   const currentPositionThings = calcViewValuesForPosition(
     currentPosition,
@@ -197,6 +203,7 @@ export function AaveMultiplyPositionData({
               liquidationThreshold={currentPosition.category.liquidationThreshold}
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={currentPosition.category.maxLoanToValue}
+              stopLossLevel={isStopLossEnabled ? stopLossLevel : undefined}
             />
             <DetailsSectionContentCard
               title={t('system.net-borrow-cost')}
