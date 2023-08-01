@@ -507,6 +507,6 @@ export function openFlowInitialStopLossLevel({
 }
 
 export function isSupportedAaveAutomationTokenPair(collateralToken: string, debtToken: string) {
-  const joined = [collateralToken, debtToken].sort().join('-')
-  return aaveTokenPairsAllowedAutomation.map((pair) => pair.sort().join('-')).includes(joined)
+  const joined = [collateralToken, debtToken].join('-')
+  return aaveTokenPairsAllowedAutomation.map((pair) => pair.join('-')).includes(joined)
 }
