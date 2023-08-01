@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { TokensGroup } from 'components/TokensGroup'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useEffect, useState } from 'react'
@@ -10,6 +11,7 @@ export interface SidebarSectionHeaderSelectItem {
   shortLabel?: TranslateStringType
   icon?: string
   iconShrink?: number
+  tokenIcon?: string
   panel?: string
   action?: () => void
 }
@@ -63,16 +65,29 @@ export function SidebarSectionHeaderSelect({
           pointerEvents: !disabled ? 'auto' : 'none',
         }}
       >
-        {activeItem?.icon ? (
-          <Icon
-            name={activeItem?.icon as string}
-            size={!activeItem?.iconShrink ? '32px' : `${32 - activeItem.iconShrink * 2}px`}
-            sx={{
-              verticalAlign: 'text-bottom',
-              m: !activeItem?.iconShrink ? 0 : `${activeItem.iconShrink}px`,
-              mr: !activeItem?.iconShrink ? 1 : `${4 + activeItem.iconShrink}px`,
-            }}
-          />
+        {activeItem?.icon || activeItem.tokenIcon ? (
+          <>
+            {activeItem?.icon && (
+              <Icon
+                name={activeItem?.icon as string}
+                size={!activeItem?.iconShrink ? '32px' : `${32 - activeItem.iconShrink * 2}px`}
+                sx={{
+                  verticalAlign: 'text-bottom',
+                  m: !activeItem?.iconShrink ? 0 : `${activeItem.iconShrink}px`,
+                  mr: !activeItem?.iconShrink ? 1 : `${4 + activeItem.iconShrink}px`,
+                }}
+              />
+            )}
+            {activeItem?.tokenIcon && (
+              <TokensGroup
+                tokens={[activeItem.tokenIcon]}
+                forceSize={32}
+                sx={{
+                  mr: 1,
+                }}
+              />
+            )}
+          </>
         ) : (
           <Box
             sx={{

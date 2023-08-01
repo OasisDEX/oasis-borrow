@@ -14,7 +14,7 @@ interface ContentCardCollateralLockedProps {
   collateralToken: string
   collateralLocked: BigNumber
   afterCollateralLocked?: BigNumber
-  collateralLockedUSD: BigNumber
+  collateralLockedUSD?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
@@ -32,7 +32,7 @@ export function ContentCardCollateralLocked({
     collateralLocked: formatCryptoBalance(collateralLocked),
     afterCollateralLocked:
       afterCollateralLocked && `${formatCryptoBalance(afterCollateralLocked)} ${collateralToken}`,
-    collateralLockedUSD: `$${formatAmount(collateralLockedUSD, 'USD')}`,
+    collateralLockedUSD: collateralLockedUSD && `$${formatAmount(collateralLockedUSD, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -55,7 +55,7 @@ export function ContentCardCollateralLocked({
     ),
   }
 
-  if (!collateralLocked.isZero()) {
+  if (collateralLockedUSD && !collateralLocked.isZero()) {
     contentCardSettings.footnote = formatted.collateralLockedUSD
   }
 

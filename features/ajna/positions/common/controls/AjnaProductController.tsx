@@ -98,19 +98,18 @@ export function AjnaProductController({
     ),
   )
 
-  const { collateralTokenData, quoteTokenData } = useMemo(
-    () => ({
-      collateralTokenData: identifiedTokensData?.find((token) => token.symbol === collateralToken),
-      quoteTokenData: identifiedTokensData?.find((token) => token.symbol === quoteToken),
-    }),
-    [identifiedTokensData, collateralToken, quoteToken],
-  )
-
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
-        id
+        !isOracless && id
           ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
+          : isOracless && identifiedTokensData && id
+          ? dpmPositionDataV2$(
+              getPositionIdentity(id),
+              identifiedTokensData[collateralToken].symbol,
+              identifiedTokensData[quoteToken].symbol,
+              product,
+            )
           : !isOracless && product && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken,
@@ -120,26 +119,17 @@ export function AjnaProductController({
               quoteToken,
               quoteTokenAddress: tokensAddresses[quoteToken].address,
             })
-          : isOracless && collateralTokenData && quoteTokenData && product
+          : isOracless && identifiedTokensData && product
           ? getStaticDpmPositionData$({
-              collateralToken: collateralTokenData.symbol,
+              collateralToken: identifiedTokensData[collateralToken].symbol,
               collateralTokenAddress: collateralToken,
               product,
               protocol: 'Ajna',
-              quoteToken: quoteTokenData.symbol,
+              quoteToken: identifiedTokensData[quoteToken].symbol,
               quoteTokenAddress: quoteToken,
             })
           : EMPTY,
-      [
-        collateralToken,
-        id,
-        collateralTokenData,
-        quoteTokenData,
-        isOracless,
-        product,
-        quoteToken,
-        tokensAddresses,
-      ],
+      [isOracless, id, collateralToken, quoteToken, product, identifiedTokensData, tokensAddresses],
     ),
   )
 
@@ -192,29 +182,28 @@ export function AjnaProductController({
               [dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'],
               walletAddress || dpmPositionData.user,
             )
-          : isOracless && dpmPositionData && collateralTokenData && quoteTokenData
+          : isOracless && dpmPositionData && identifiedTokensData
           ? balancesFromAddressInfoArray$(
               [
                 {
                   address: collateralToken,
-                  precision: collateralTokenData.precision,
+                  precision: identifiedTokensData[collateralToken].precision,
                 },
                 {
                   address: quoteToken,
-                  precision: quoteTokenData.precision,
+                  precision: identifiedTokensData[quoteToken].precision,
                 },
               ],
               walletAddress || dpmPositionData.user,
             )
           : EMPTY,
       [
-        collateralToken,
-        dpmPositionData,
-        collateralTokenData,
-        quoteTokenData,
         isOracless,
-        quoteToken,
+        dpmPositionData,
         walletAddress,
+        identifiedTokensData,
+        collateralToken,
+        quoteToken,
       ],
     ),
   )
@@ -277,22 +266,15 @@ export function AjnaProductController({
           quoteDigits: getToken(dpmPositionData.quoteToken).digits,
           quotePrecision: getToken(dpmPositionData.quoteToken).precision,
         }
-      : isOracless && collateralTokenData && quoteTokenData
+      : isOracless && identifiedTokensData
       ? {
           collateralDigits: DEFAULT_TOKEN_DIGITS,
-          collateralPrecision: collateralTokenData.precision,
+          collateralPrecision: identifiedTokensData[collateralToken].precision,
           quoteDigits: DEFAULT_TOKEN_DIGITS,
-          quotePrecision: quoteTokenData.precision,
+          quotePrecision: identifiedTokensData[quoteToken].precision,
         }
       : undefined
-  }, [
-    collateralToken,
-    dpmPositionData,
-    collateralTokenData,
-    quoteTokenData,
-    isOracless,
-    quoteToken,
-  ])
+  }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
   if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
   if (

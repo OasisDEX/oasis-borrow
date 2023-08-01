@@ -15,7 +15,7 @@ interface ContentCardLiquidationPriceProps {
   priceFormat: string
   liquidationPrice: BigNumber
   afterLiquidationPrice?: BigNumber
-  belowCurrentPrice: BigNumber
+  belowCurrentPrice?: BigNumber
   isOracless?: boolean
   changeVariant?: ChangeVariantType
 }
@@ -26,7 +26,6 @@ export function ContentCardLiquidationPrice({
   liquidationPrice,
   afterLiquidationPrice,
   belowCurrentPrice,
-  isOracless,
   changeVariant = 'positive',
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
@@ -34,7 +33,7 @@ export function ContentCardLiquidationPrice({
   const formatted = {
     liquidationPrice: formatCryptoBalance(liquidationPrice),
     afterLiquidationPrice: afterLiquidationPrice && formatCryptoBalance(afterLiquidationPrice),
-    belowCurrentPrice: formatDecimalAsPercent(belowCurrentPrice.abs()),
+    belowCurrentPrice: belowCurrentPrice && formatDecimalAsPercent(belowCurrentPrice.abs()),
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -57,7 +56,7 @@ export function ContentCardLiquidationPrice({
     ),
   }
 
-  if (!isOracless || !liquidationPrice.isZero()) {
+  if (belowCurrentPrice && !liquidationPrice.isZero()) {
     contentCardSettings.footnote = t(
       `ajna.position-page.borrow.common.overview.${
         belowCurrentPrice.gt(zero) ? 'below' : 'above'

@@ -1,15 +1,33 @@
 import { Tokens } from '@prisma/client'
 import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { getToken } from 'blockchain/tokensMetadata'
+import { getToken, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
 import { combineLatest, from, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
+
+export interface IdentifiedTokens {
+  [key: string]: SimplifiedTokenConfig
+}
+
+function reduceIdentifiedTokens(
+  total: IdentifiedTokens,
+  { address, name, precision, symbol }: Tokens,
+) {
+  return {
+    ...total,
+    [address]: {
+      precision,
+      name,
+      symbol,
+    },
+  }
+}
 
 export const identifyTokens$ = (
   context$: Observable<Context>,
   once$: Observable<unknown>,
   tokensAddresses: string[],
-): Observable<Tokens[]> =>
+): Observable<IdentifiedTokens> =>
   combineLatest(context$, once$).pipe(
     switchMap(([context]) => {
       const contracts = getNetworkContracts(context.chainId)
@@ -35,7 +53,8 @@ export const identifyTokens$ = (
           chain_id: context.chainId,
         }))
 
-        if (tokensAddresses.length === localTokensAddresses.length) return of(identifiedTokens)
+        if (tokensAddresses.length === localTokensAddresses.length)
+          return of(identifiedTokens.reduce<IdentifiedTokens>(reduceIdentifiedTokens, {}))
       }
 
       return from(
@@ -55,7 +74,10 @@ export const identifyTokens$ = (
         map((tokens) => {
           void extendTokensContracts(tokens)
 
-          return [...tokens, ...identifiedTokens]
+          return [...tokens, ...identifiedTokens].reduce<IdentifiedTokens>(
+            reduceIdentifiedTokens,
+            {},
+          )
         }),
         shareReplay(1),
       )

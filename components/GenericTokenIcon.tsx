@@ -18,6 +18,7 @@ export function GenericTokenIcon({ size, sx, symbol }: GenericTokenIconProps) {
         position: 'relative',
         alignContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center',
         width: size,
         height: size,
         ...sx,
