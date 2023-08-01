@@ -17,7 +17,7 @@ export function AjnaPositionViewInfoPlaceholder() {
 export function AjnaPositionHistoryController() {
   const { t } = useTranslation()
   const {
-    environment: { product, isShort, priceFormat, collateralToken, quoteToken },
+    environment: { isOracless, product, isShort, priceFormat, collateralToken, quoteToken },
   } = useAjnaGeneralContext()
   const {
     position: { history },
@@ -26,10 +26,11 @@ export function AjnaPositionHistoryController() {
   return history.length ? (
     <Grid variant="vaultContainer">
       <PositionHistory
+        collateralToken={collateralToken}
         historyEvents={history}
+        isOracless={isOracless}
         isShort={isShort}
         priceFormat={priceFormat}
-        collateralToken={collateralToken}
         quoteToken={quoteToken}
       />
     </Grid>

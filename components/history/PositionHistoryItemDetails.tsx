@@ -15,19 +15,21 @@ import React, { FC } from 'react'
 import { PositionHistoryRow } from './PositionHistoryRow'
 
 interface PositionHistoryItemDetailsProps {
-  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>
   collateralToken: string
-  quoteToken: string
+  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>
+  isOracless?: boolean
   isShort?: boolean
   priceFormat?: string
+  quoteToken: string
 }
 
 export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = ({
-  event,
   collateralToken,
-  quoteToken,
+  event,
+  isOracless,
   isShort,
   priceFormat,
+  quoteToken,
 }) => {
   const { t } = useTranslation()
 
@@ -58,7 +60,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatCryptoBalance(event.debtAfter)} {quoteToken}
         </PositionHistoryRow>
       )}
-      {event.ltvBefore && event.ltvAfter && (
+      {!isOracless && event.ltvBefore && event.ltvAfter && (
         <PositionHistoryRow label={t('position-history.ltv')}>
           {formatDecimalAsPercent(
             isShort ? normalizeValue(one.div(event.ltvBefore)) : event.ltvBefore,
