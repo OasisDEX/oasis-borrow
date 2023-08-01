@@ -15,7 +15,7 @@ import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellCompone
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
@@ -359,7 +359,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
     debtToken: string,
   ) =>
     protocol === LendingProtocol.AaveV3
-      ? isSupportedAutomationTokenPair(collateralToken, debtToken)
+      ? isSupportedAaveAutomationTokenPair(collateralToken, debtToken)
       : true // if its not AaveV3, then we skip this check
   return rows.map(
     ({
