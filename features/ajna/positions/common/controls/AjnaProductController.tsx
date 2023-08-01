@@ -97,6 +97,7 @@ export function AjnaProductController({
       [isOracless, collateralToken, quoteToken],
     ),
   )
+
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
@@ -128,7 +129,7 @@ export function AjnaProductController({
               quoteTokenAddress: quoteToken,
             })
           : EMPTY,
-      [collateralToken, id, identifiedTokensData, isOracless, product, quoteToken, tokensAddresses],
+      [isOracless, id, collateralToken, quoteToken, product, identifiedTokensData, tokensAddresses],
     ),
   )
 
@@ -197,12 +198,12 @@ export function AjnaProductController({
             )
           : EMPTY,
       [
-        collateralToken,
-        dpmPositionData,
-        identifiedTokensData,
         isOracless,
-        quoteToken,
+        dpmPositionData,
         walletAddress,
+        identifiedTokensData,
+        collateralToken,
+        quoteToken,
       ],
     ),
   )
@@ -273,7 +274,7 @@ export function AjnaProductController({
           quotePrecision: identifiedTokensData[quoteToken].precision,
         }
       : undefined
-  }, [collateralToken, dpmPositionData, identifiedTokensData, isOracless, quoteToken])
+  }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
   if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
   if (

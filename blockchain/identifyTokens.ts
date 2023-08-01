@@ -1,83 +1,85 @@
-import * as erc20 from 'blockchain/abi/erc20.json'
-import { extendTokensContracts } from 'blockchain/contracts'
+import { Tokens } from '@prisma/client'
+import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
-import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
-import { combineLatest, Observable, of } from 'rxjs'
-import { ajax } from 'rxjs/ajax'
-import { catchError, shareReplay, switchMap } from 'rxjs/operators'
-import { Erc20 } from 'types/web3-v1-contracts'
+import { getToken, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
+import { combineLatest, from, Observable, of } from 'rxjs'
+import { map, shareReplay, switchMap } from 'rxjs/operators'
 
 export interface IdentifiedTokens {
   [key: string]: SimplifiedTokenConfig
 }
 
-async function getErc20TokenData(context: Context, address: string) {
-  return Promise.all([
-    context.contract<Erc20>({ abi: erc20, address }).methods.decimals().call(),
-    context.contract<Erc20>({ abi: erc20, address }).methods.name().call(),
-    context.contract<Erc20>({ abi: erc20, address }).methods.symbol().call(),
-  ]).then(([decimals, name, symbol]) => ({
-    address,
-    decimals,
-    name,
-    symbol,
-  }))
+function reduceIdentifiedTokens(
+  total: IdentifiedTokens,
+  { address, name, precision, symbol }: Tokens,
+) {
+  return {
+    ...total,
+    [address]: {
+      precision,
+      name,
+      symbol,
+    },
+  }
 }
 
-export function identifyTokens$(
+export const identifyTokens$ = (
   context$: Observable<Context>,
   once$: Observable<unknown>,
-  tokens: string[],
-): Observable<IdentifiedTokens> {
-  const query = tokens.reduce<string>(
-    (total, token, i) => `${total}${i > 0 ? '&' : ''}token=${token}`,
-    '?',
-  )
+  tokensAddresses: string[],
+): Observable<IdentifiedTokens> =>
+  combineLatest(context$, once$).pipe(
+    switchMap(([context]) => {
+      const contracts = getNetworkContracts(context.chainId)
 
-  return combineLatest(
-    ajax.getJSON<IdentifiedTokens>(`/api/token-identifier${query}`),
-    context$,
-    once$,
-  ).pipe(
-    switchMap(async ([ajaxResponse, context]) => {
-      const contractResponse = (
-        await Promise.all(
-          tokens
-            .filter((token) => !Object.keys(ajaxResponse).includes(token))
-            .map((token) => getErc20TokenData(context, token)),
+      let identifiedTokens: Tokens[] = []
+      let localTokensAddresses: string[] = []
+
+      if ('tokens' in contracts) {
+        const tokensContracts = contracts.tokens
+
+        const localTokens = Object.keys(tokensContracts).filter((token) =>
+          tokensAddresses.includes(tokensContracts[token].address),
         )
-      ).reduce<IdentifiedTokens>(
-        (total, { address, decimals, name, symbol }) => ({
-          ...total,
-          [address]: {
-            precision: parseInt(decimals, 10),
-            digits: DEFAULT_TOKEN_DIGITS,
-            name,
-            symbol: symbol.toUpperCase(),
+        localTokensAddresses = localTokens.map((token) =>
+          tokensContracts[token].address.toLowerCase(),
+        )
+
+        identifiedTokens = localTokens.map((token) => ({
+          name: getToken(token).name,
+          symbol: getToken(token).symbol,
+          precision: getToken(token).precision,
+          address: tokensContracts[token].address,
+          chain_id: context.chainId,
+        }))
+
+        if (tokensAddresses.length === localTokensAddresses.length)
+          return of(identifiedTokens.reduce<IdentifiedTokens>(reduceIdentifiedTokens, {}))
+      }
+
+      return from(
+        fetch(`/api/tokens-info`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        }),
-        {},
-      )
-
-      const identifiedTokens = tokens.reduce<IdentifiedTokens>(
-        (total, token) => ({
-          ...total,
-          ...(Object.keys(ajaxResponse).includes(token) && {
-            [token]: ajaxResponse[token],
+          body: JSON.stringify({
+            addresses: tokensAddresses.filter(
+              (address) => !localTokensAddresses.includes(address.toLowerCase()),
+            ),
+            chainId: context.chainId,
           }),
-          ...(Object.keys(contractResponse).includes(token) && {
-            [token]: contractResponse[token],
-          }),
+        }).then((resp) => resp.json()),
+      ).pipe(
+        map((tokens) => {
+          void extendTokensContracts(tokens)
+
+          return [...tokens, ...identifiedTokens].reduce<IdentifiedTokens>(
+            reduceIdentifiedTokens,
+            {},
+          )
         }),
-        {},
+        shareReplay(1),
       )
-
-      void extendTokensContracts(identifiedTokens)
-
-      return identifiedTokens
     }),
-    catchError(() => of({})),
-    shareReplay(1),
   )
-}
