@@ -86,6 +86,7 @@ export function NavigationNetworkSwitcherOrb() {
               })
               .map((network) => (
                 <NetworkButton
+                  key={network.id}
                   network={network}
                   connect={connect}
                   connecting={connecting}
