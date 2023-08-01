@@ -204,6 +204,7 @@ export function AaveMultiplyPositionData({
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={currentPosition.category.maxLoanToValue}
               stopLossLevel={isStopLossEnabled ? stopLossLevel : undefined}
+              stopLossLevelLoading={true}
             />
             <DetailsSectionContentCard
               title={t('system.net-borrow-cost')}

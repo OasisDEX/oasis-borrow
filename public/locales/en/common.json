@@ -813,7 +813,8 @@
       "first-description-line": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied",
       "second-description-line": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral",
       "third-description-line": "The liquidation threshold is the percentage at which a position is undercollateralised. If your LTV rises above the LT, the position is undercollateralised and could be liquidated.",
-      "fourth-description-line": "The Stop loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the <0>protection tab</0>."
+      "fourth-description-line": "The Stop loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the <0>protection tab</0>.",
+      "stop-loss-not-set": "Not set - click to set up stop loss."
     },
     "net-borrow-cost": {
       "first-header": "Net borrow Cost %",

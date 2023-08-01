@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { useHash } from 'helpers/useHash'
@@ -31,6 +32,7 @@ interface ContentCardLtvModalProps {
   liquidationThreshold: BigNumber
   maxLoanToValue?: BigNumber
   stopLossLevel?: BigNumber
+  stopLossLevelLoading?: boolean
 }
 
 function ContentCardLtvModal({
@@ -38,6 +40,7 @@ function ContentCardLtvModal({
   liquidationThreshold,
   maxLoanToValue,
   stopLossLevel,
+  stopLossLevelLoading,
 }: ContentCardLtvModalProps) {
   const { close: closeModal } = useModal()
   const { t } = useTranslation()
@@ -94,7 +97,7 @@ function ContentCardLtvModal({
           formatDecimalAsPercent(stopLossLevel)
         ) : (
           <Text as="p" variant="paragraph3" onClick={goToProtection} sx={{ cursor: 'pointer' }}>
-            Not set - click to set up stop loss
+            {stopLossLevelLoading ? <AppSpinner /> : t('aave-position-modal.ltv.stop-loss-not-set')}
           </Text>
         )}
       </Card>
@@ -108,6 +111,7 @@ interface ContentCardLtvProps {
   maxLoanToValue?: BigNumber
   afterLoanToValue?: BigNumber
   stopLossLevel?: BigNumber
+  stopLossLevelLoading?: boolean
 }
 
 export function ContentCardLtv({
@@ -116,6 +120,7 @@ export function ContentCardLtv({
   afterLoanToValue,
   maxLoanToValue,
   stopLossLevel,
+  stopLossLevelLoading,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
 
@@ -131,6 +136,7 @@ export function ContentCardLtv({
     maxLoanToValue,
     liquidationThreshold,
     stopLossLevel,
+    stopLossLevelLoading,
   }
 
   const contentCardSettings: ContentCardProps = {
