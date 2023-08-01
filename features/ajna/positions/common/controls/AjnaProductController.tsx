@@ -4,6 +4,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { isAddress } from 'ethers/lib/utils'
@@ -99,8 +100,15 @@ export function AjnaProductController({
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
-        id
+        !isOracless && id
           ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
+          : isOracless && identifiedTokensData && id
+          ? dpmPositionDataV2$(
+              getPositionIdentity(id),
+              identifiedTokensData[collateralToken].symbol,
+              identifiedTokensData[quoteToken].symbol,
+              product,
+            )
           : !isOracless && product && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken,
@@ -259,9 +267,9 @@ export function AjnaProductController({
         }
       : isOracless && identifiedTokensData
       ? {
-          collateralDigits: identifiedTokensData[collateralToken].digits,
+          collateralDigits: DEFAULT_TOKEN_DIGITS,
           collateralPrecision: identifiedTokensData[collateralToken].precision,
-          quoteDigits: identifiedTokensData[quoteToken].digits,
+          quoteDigits: DEFAULT_TOKEN_DIGITS,
           quotePrecision: identifiedTokensData[quoteToken].precision,
         }
       : undefined
