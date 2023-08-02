@@ -15,7 +15,7 @@ export async function getSDaiOracleTicker(): Promise<PriceServiceResponse> {
   )
 
   const response = await SdaiPriceOracleContract.latestAnswer()
-  const sdai = new BigNumber(response.toString()).div(new BigNumber(10 ** 8)).toString()
+  const sdai = new BigNumber(response.toString()).div(new BigNumber(10 ** 8)).toNumber()
 
   return {
     sdai,
