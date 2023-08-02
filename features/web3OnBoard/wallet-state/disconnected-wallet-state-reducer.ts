@@ -9,7 +9,7 @@ export const disconnectedWalletStateReducer: Reducer<WalletManagementState, Wall
   state,
   event,
 ) => {
-  ensureCorrectState(state, WalletManagementStateStatus.disconnecting)
+  ensureCorrectState(state, WalletManagementStateStatus.disconnected)
 
   return match<WalletStateEvent, WalletManagementState>(event)
     .with({ type: WalletStateEventType.connect }, (event) => {
