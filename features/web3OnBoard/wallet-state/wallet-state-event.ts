@@ -4,39 +4,51 @@ import { ReductoActions } from 'helpers/useReducto'
 
 import { WalletManagementState } from './wallet-management-state'
 
+export enum WalletStateEventType {
+  connect = 'connect',
+  connectionCancelled = 'connection-cancelled',
+  connected = 'connected',
+  changeChain = 'change-chain',
+  disconnect = 'disconnect',
+  disconnected = 'disconnected',
+  error = 'error',
+  walletNetworkChanged = 'wallet-network-changed',
+  changeWalletRejected = 'change-wallet-rejected',
+}
+
 export type WalletStateEvent = ReductoActions<
   WalletManagementState,
   | {
-      type: 'connect'
+      type: WalletStateEventType.connect
       desiredNetworkHexId?: NetworkConfigHexId
     }
   | {
-      type: 'connection-cancelled'
+      type: WalletStateEventType.connectionCancelled
     }
   | {
-      type: 'connected'
+      type: WalletStateEventType.connected
       connector: BridgeConnector
     }
   | {
-      type: 'change-chain'
+      type: WalletStateEventType.changeChain
       desiredNetworkHexId: NetworkConfigHexId
     }
   | {
-      type: 'disconnect'
+      type: WalletStateEventType.disconnect
     }
   | {
-      type: 'disconnected'
+      type: WalletStateEventType.disconnected
     }
   | {
-      type: 'error'
+      type: WalletStateEventType.error
       error: unknown
     }
   | {
-      type: 'wallet-network-changed'
+      type: WalletStateEventType.walletNetworkChanged
       networkHexId: NetworkConfigHexId
     }
   | {
-      type: 'change-wallet-rejected'
+      type: WalletStateEventType.changeWalletRejected
       walletNetworkHexId: NetworkConfigHexId
       desiredNetworkHexId: NetworkConfigHexId
     }

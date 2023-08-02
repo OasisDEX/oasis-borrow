@@ -2,60 +2,64 @@ import { Reducer } from 'react'
 import { match, P } from 'ts-pattern'
 
 import { ensureCorrectState } from './ensure-correct-state'
-import { getDesiredNetworkHexId, WalletManagementState } from './wallet-management-state'
-import { WalletStateEvent } from './wallet-state-event'
+import {
+  getDesiredNetworkHexId,
+  WalletManagementState,
+  WalletManagementStateStatus,
+} from './wallet-management-state'
+import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
 import { canTransitWithNetworkHexId } from './wallet-state-guards'
 
 export const settingChainWalletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state,
   event,
 ) => {
-  ensureCorrectState(state, 'setting-chain')
+  ensureCorrectState(state, WalletManagementStateStatus.settingChain)
 
   return match<WalletStateEvent, WalletManagementState>(event)
     .with(
       {
-        type: 'change-wallet-rejected',
+        type: WalletStateEventType.changeWalletRejected,
         walletNetworkHexId: P.when((hexId) => !canTransitWithNetworkHexId(hexId, state)),
       },
       () => {
         return {
           ...state,
-          status: 'unsupported-network',
+          status: WalletManagementStateStatus.unsupportedNetwork,
           desiredNetworkHexId: getDesiredNetworkHexId(state),
         }
       },
     )
     .with(
       {
-        type: 'change-wallet-rejected',
+        type: WalletStateEventType.changeWalletRejected,
       },
       (event) => {
         return {
           ...state,
-          status: 'connecting',
+          status: WalletManagementStateStatus.connecting,
           desiredNetworkHexId: event.walletNetworkHexId,
         }
       },
     )
     .with(
       {
-        type: 'wallet-network-changed',
+        type: WalletStateEventType.walletNetworkChanged,
         networkHexId: P.when((hexId) => !canTransitWithNetworkHexId(hexId, state)),
       },
       (event) => {
         return {
           ...state,
-          status: 'unsupported-network',
+          status: WalletManagementStateStatus.unsupportedNetwork,
           walletNetworkHexId: event.networkHexId,
           desiredNetworkHexId: getDesiredNetworkHexId(state),
         }
       },
     )
-    .with({ type: 'wallet-network-changed' }, (event) => {
+    .with({ type: WalletStateEventType.walletNetworkChanged }, (event) => {
       return {
         ...state,
-        status: 'connecting',
+        status: WalletManagementStateStatus.connecting,
         walletNetworkHexId: event.networkHexId,
         desiredNetworkHexId: event.networkHexId,
       }

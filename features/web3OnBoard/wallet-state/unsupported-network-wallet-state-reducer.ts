@@ -2,48 +2,48 @@ import { Reducer } from 'react'
 import { match, P } from 'ts-pattern'
 
 import { ensureCorrectState } from './ensure-correct-state'
-import { WalletManagementState } from './wallet-management-state'
-import { WalletStateEvent } from './wallet-state-event'
+import { WalletManagementState, WalletManagementStateStatus } from './wallet-management-state'
+import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
 import { canTransitWithNetworkHexId } from './wallet-state-guards'
 
 export const unsupportedNetworkWalletStateReducer: Reducer<
   WalletManagementState,
   WalletStateEvent
 > = (state, event) => {
-  ensureCorrectState(state, 'unsupported-network')
+  ensureCorrectState(state, WalletManagementStateStatus.unsupportedNetwork)
 
   return match<WalletStateEvent, WalletManagementState>(event)
     .with(
       {
-        type: 'change-chain',
+        type: WalletStateEventType.changeChain,
         desiredNetworkHexId: P.when((hexId) => canTransitWithNetworkHexId(hexId, state)),
       },
       (event) => {
         return {
           ...state,
-          status: 'setting-chain',
+          status: WalletManagementStateStatus.settingChain,
           desiredNetworkHexId: event.desiredNetworkHexId,
         }
       },
     )
     .with(
       {
-        type: 'wallet-network-changed',
+        type: WalletStateEventType.walletNetworkChanged,
         networkHexId: P.when((hexId) => canTransitWithNetworkHexId(hexId, state)),
       },
       (event) => {
         return {
           ...state,
-          status: 'connecting',
+          status: WalletManagementStateStatus.connecting,
           walletNetworkHexId: event.networkHexId,
           desiredNetworkHexId: event.networkHexId,
         }
       },
     )
-    .with({ type: 'disconnect' }, () => {
+    .with({ type: WalletStateEventType.disconnect }, () => {
       return {
         ...state,
-        status: 'disconnecting',
+        status: WalletManagementStateStatus.disconnecting,
       }
     })
     .otherwise(() => state)
