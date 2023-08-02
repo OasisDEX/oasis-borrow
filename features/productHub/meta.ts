@@ -60,11 +60,11 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'ETH',
     icon: getToken('ETH').iconCircle,
   },
-  WBTC: {
-    title: 'Wrapped BTC',
-    description: 'WBTC',
-    value: 'WBTC',
-    icon: getToken('WBTC').iconCircle,
+  BTC: {
+    title: 'Bitcoin',
+    description: 'WBTC/TBTC',
+    value: 'BTC',
+    icon: 'btc_circle_color',
   },
   USDC: {
     title: 'USDCoin',
@@ -103,7 +103,7 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
+      BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
       GHO: productHubTokenOptions.GHO,
       WLD: productHubTokenOptions.WLD,
@@ -114,7 +114,7 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
+      BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
@@ -125,7 +125,7 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
+      BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
@@ -141,7 +141,7 @@ if (!getFeatureToggle('Ajna')) {
   delete productHubOptionsMapFiltered.borrow.tokens.GHO
   delete productHubOptionsMapFiltered.borrow.tokens.WLD
   delete productHubOptionsMapFiltered.earn.tokens.USDC
-  delete productHubOptionsMapFiltered.earn.tokens.WBTC
+  delete productHubOptionsMapFiltered.earn.tokens.BTC
   delete productHubOptionsMapFiltered.earn.tokens.GHO
   delete productHubOptionsMapFiltered.earn.tokens.WLD
 }

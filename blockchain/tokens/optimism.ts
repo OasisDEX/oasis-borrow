@@ -25,6 +25,7 @@ export const tokensOptimism = {
   MKR: contractDesc(erc20, optimism.maker.common.McdGov),
   RENBTC: contractDesc(erc20, optimism.common.RENBTC),
   STETH: contractDesc(erc20, optimism.common.STETH),
+  TBTC: contractDesc(erc20, optimism.common.TBTC),
   USDC: contractDesc(erc20, optimism.common.USDC),
   USDP: contractDesc(erc20, optimism.common.PAXUSD),
   WBTC: contractDesc(erc20, optimism.common.WBTC),
