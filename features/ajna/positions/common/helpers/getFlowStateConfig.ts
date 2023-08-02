@@ -45,14 +45,24 @@ export function getFlowStateConfig({
       }
     case 'open-borrow':
     case 'deposit-borrow':
+    case 'generate-borrow':
+    case 'generate-multiply':
     case 'open-multiply':
     case 'deposit-collateral-multiply':
+      if (!state.depositAmount) {
+        return {
+          amount: zero,
+          token: 'ETH',
+        }
+      }
+
       return {
         amount: state.depositAmount,
         token: collateralToken,
       }
     case 'payback-borrow':
     case 'withdraw-borrow':
+    case 'withdraw-multiply':
     case 'payback-multiply':
       if (!state.paybackAmount) {
         return {
@@ -65,6 +75,12 @@ export function getFlowStateConfig({
         token: quoteToken,
       }
     case 'deposit-quote-multiply':
+      if (!state.depositAmount) {
+        return {
+          amount: zero,
+          token: 'ETH',
+        }
+      }
       return {
         amount: state.depositAmount,
         token: quoteToken,
