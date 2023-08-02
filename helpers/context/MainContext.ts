@@ -1,35 +1,4 @@
 import { createSend } from '@oasisdex/transactions'
-import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
-import { ClaimAjnaRewardsTxData } from 'blockchain/calls/ajnaRewardsClaimer'
-import {
-  AutomationBotAddTriggerData,
-  AutomationBotV2AddTriggerData,
-  AutomationBotV2RemoveTriggerData,
-} from 'blockchain/calls/automationBot'
-import {
-  AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
-import { EstimateGasFunction, SendTransactionFunction } from 'blockchain/calls/callsHelpers'
-import { ApproveData, DisapproveData } from 'blockchain/calls/erc20'
-import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
-import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
-import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
-import { CreateDsProxyData, SetProxyOwnerData } from 'blockchain/calls/proxy'
-import {
-  ClaimRewardData,
-  DepositAndGenerateData,
-  OpenData,
-  WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import {
-  CloseGuniMultiplyData,
-  CloseVaultData,
-  MultiplyAdjustData,
-  OpenGuniMultiplyData,
-  OpenMultiplyData,
-  ReclaimData,
-} from 'blockchain/calls/proxyActions/proxyActions'
 import {
   createAccount$,
   createContext$,
@@ -41,42 +10,10 @@ import {
 import { createGasPrice$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'
 import { createTxHelpers$ } from 'helpers/createTxHelpers'
-import { Observable, of } from 'rxjs'
+import { of } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
-export type TxData =
-  | OpenData
-  | DepositAndGenerateData
-  | WithdrawAndPaybackData
-  | ApproveData
-  | DisapproveData
-  | CreateDsProxyData
-  | SetProxyOwnerData
-  | ReclaimData
-  | OpenMultiplyData
-  | MultiplyAdjustData
-  | CloseVaultData
-  | OpenGuniMultiplyData
-  | AutomationBotAddTriggerData
-  | AutomationBotV2AddTriggerData
-  | CloseGuniMultiplyData
-  | ClaimRewardData
-  | ClaimMultipleData
-  | AutomationBotAddAggregatorTriggerData
-  | AutomationBotRemoveTriggersData
-  | AutomationBotV2RemoveTriggerData
-  | OperationExecutorTxMeta
-  | CreateDPMAccount
-  | OasisActionsTxData
-  | ClaimAjnaRewardsTxData
-
-export interface TxHelpers {
-  send: SendTransactionFunction<TxData>
-  sendWithGasEstimation: SendTransactionFunction<TxData>
-  estimateGas: EstimateGasFunction<TxData>
-}
-
-export type TxHelpers$ = Observable<TxHelpers>
+import { DepreciatedServices, TxData, TxHelpers$ } from './types'
 
 export function setupMainContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
@@ -114,4 +51,4 @@ export function setupMainContext() {
   }
 }
 
-export type MainContext = ReturnType<typeof setupMainContext>
+export type MainContext = ReturnType<typeof setupMainContext> & DepreciatedServices

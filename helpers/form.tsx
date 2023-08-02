@@ -261,26 +261,6 @@ export function transactionToX<X, Y extends TxMeta>(
     )
 }
 
-export enum GasEstimationStatus {
-  unset = 'unset',
-  calculating = 'calculating',
-  calculated = 'calculated',
-  error = 'error',
-  unknown = 'unknown',
-}
-
-export interface HasGasEstimationCost {
-  gasEstimationUsd?: BigNumber
-  gasEstimationEth?: BigNumber
-  gasEstimationDai?: BigNumber
-}
-
-export interface HasGasEstimation extends HasGasEstimationCost {
-  gasEstimationStatus: GasEstimationStatus
-  error?: any
-  gasEstimation?: number
-}
-
 export function doGasEstimation<S extends HasGasEstimation>(
   gasPrice$: Observable<GasPriceParams>,
   tokenPricesInUSD$: Observable<Tickers>,

@@ -1,28 +1,9 @@
-import { createSend, SendFunction } from '@oasisdex/transactions'
+import { createSend } from '@oasisdex/transactions'
 import * as Sentry from '@sentry/react'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
-import { ClaimAjnaRewardsTxData } from 'blockchain/calls/ajnaRewardsClaimer'
-import {
-  AutomationBotAddTriggerData,
-  AutomationBotV2AddTriggerData,
-  AutomationBotV2RemoveTriggerData,
-} from 'blockchain/calls/automationBot'
-import {
-  AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
-import {
-  call,
-  createSendTransaction,
-  createSendWithGasConstraints,
-  estimateGas,
-  EstimateGasFunction,
-  SendTransactionFunction,
-  TransactionDef,
-} from 'blockchain/calls/callsHelpers'
+import { call } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
@@ -36,8 +17,6 @@ import {
 } from 'blockchain/calls/cropper'
 import { dogIlk } from 'blockchain/calls/dog'
 import {
-  ApproveData,
-  DisapproveData,
   tokenAllowance,
   tokenBalance,
   tokenBalanceFromAddress,
@@ -50,32 +29,10 @@ import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
-import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
-import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
 import { observe } from 'blockchain/calls/observe'
-import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
-import {
-  CreateDsProxyData,
-  createProxyAddress$,
-  createProxyOwner$,
-  SetProxyOwnerData,
-} from 'blockchain/calls/proxy'
+import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
 import { CropjoinProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
-import {
-  ClaimRewardData,
-  DepositAndGenerateData,
-  OpenData,
-  WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import {
-  CloseGuniMultiplyData,
-  CloseVaultData,
-  MultiplyAdjustData,
-  OpenGuniMultiplyData,
-  OpenMultiplyData,
-  ReclaimData,
-} from 'blockchain/calls/proxyActions/proxyActions'
 import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from 'blockchain/calls/spot'
@@ -105,7 +62,6 @@ import {
   createGasPrice$,
   createOraclePriceData$,
   createTokenPriceInUSD$,
-  GasPriceParams,
   tokenPrices$,
 } from 'blockchain/prices'
 import {
@@ -244,105 +200,27 @@ import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import { createWeb3Context$ } from 'features/web3Context'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
-import { doGasEstimation, HasGasEstimation } from 'helpers/form'
-import { getGasMultiplier } from 'helpers/getGasMultiplier'
+import { doGasEstimation } from 'helpers/form'
 import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
-import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of } from 'rxjs'
 import {
   distinctUntilChanged,
   distinctUntilKeyChanged,
-  filter,
   map,
   mergeMap,
   shareReplay,
   switchMap,
 } from 'rxjs/operators'
 
+import { DepreciatedServices, HasGasEstimation, TxHelpers } from './types'
 import curry from 'ramda/src/curry'
-
-export type TxData =
-  | OpenData
-  | DepositAndGenerateData
-  | WithdrawAndPaybackData
-  | ApproveData
-  | DisapproveData
-  | CreateDsProxyData
-  | SetProxyOwnerData
-  | ReclaimData
-  | OpenMultiplyData
-  | MultiplyAdjustData
-  | CloseVaultData
-  | OpenGuniMultiplyData
-  | AutomationBotAddTriggerData
-  | AutomationBotV2AddTriggerData
-  | CloseGuniMultiplyData
-  | ClaimRewardData
-  | ClaimMultipleData
-  | AutomationBotAddAggregatorTriggerData
-  | AutomationBotRemoveTriggersData
-  | AutomationBotV2RemoveTriggerData
-  | OperationExecutorTxMeta
-  | CreateDPMAccount
-  | OasisActionsTxData
-  | ClaimAjnaRewardsTxData
-
-export type AutomationTxData =
-  | AutomationBotAddTriggerData
-  | AutomationBotV2AddTriggerData
-  | AutomationBotAddAggregatorTriggerData
-  | AutomationBotRemoveTriggersData
-  | AutomationBotV2RemoveTriggerData
-
-export interface TxHelpers {
-  send: SendTransactionFunction<TxData>
-  sendWithGasEstimation: SendTransactionFunction<TxData>
-  estimateGas: EstimateGasFunction<TxData>
-}
-
-export const protoTxHelpers: TxHelpers = {
-  send: () => null as any,
-  sendWithGasEstimation: () => null as any,
-  estimateGas: () => null as any,
-}
-
-export type AddGasEstimationFunction = <S extends HasGasEstimation>(
-  state: S,
-  call: (send: TxHelpers, state: S) => Observable<number> | undefined,
-) => Observable<S>
-
-export type TxHelpers$ = Observable<TxHelpers>
-
-function createTxHelpers$(
-  context$: Observable<ContextConnected>,
-  send: SendFunction<TxData>,
-  gasPrice$: Observable<GasPriceParams>,
-): TxHelpers$ {
-  return context$.pipe(
-    filter(({ status }) => status === 'connected'),
-    map((context) => ({
-      send: createSendTransaction(send, context),
-      sendWithGasEstimation: createSendWithGasConstraints(
-        send,
-        context,
-        gasPrice$,
-        getGasMultiplier(context),
-      ),
-      estimateGas: <B extends TxData>(def: TransactionDef<B>, args: B): Observable<number> => {
-        return estimateGas(context, def, args, getGasMultiplier(context))
-      },
-    })),
-  )
-}
-
-const refreshInterval = 1000 * 60
 
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
@@ -1417,47 +1295,6 @@ export function setupAppContext() {
     switchChains,
     exchangeQuote$,
   }
-}
-
-export function bigNumberTostring(v: BigNumber): string {
-  return v.toString()
-}
-
-function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
-  return `${ilk}-${urnAddress}`
-}
-
-export type ProtocolsServices = {
-  [LendingProtocol.AaveV2]: AaveServices
-  [LendingProtocol.AaveV3]: {
-    [NetworkIds.MAINNET]: AaveServices
-    [NetworkIds.OPTIMISMMAINNET]: AaveServices
-    [NetworkIds.ARBITRUMMAINNET]: AaveServices
-  }
-}
-
-export type DepreciatedServices = {
-  /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLiquidations$ instead
-   */
-  aaveLiquidations$: ReturnType<typeof getAaveV2Services>['aaveLiquidations$']
-
-  /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveUserAccountData$ instead
-   */
-  aaveUserAccountData$: ReturnType<typeof getAaveV2Services>['aaveUserAccountData$']
-
-  /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveAvailableLiquidityInUSDC$ instead
-   */
-  aaveAvailableLiquidityInUSDC$: ReturnType<
-    typeof getAaveV2Services
-  >['aaveAvailableLiquidityInUSDC$']
-
-  /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveProtocolData$ instead
-   */
-  aaveProtocolData$: ReturnType<typeof getAaveV2Services>['aaveProtocolData$']
 }
 
 export type AppContext = ReturnType<typeof setupAppContext> & DepreciatedServices

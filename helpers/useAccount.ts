@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/MainContextProvider'
 import { useObservable } from 'helpers/observableHook'
 
 interface AccountState {
@@ -10,7 +10,7 @@ interface AccountState {
 }
 
 export function useAccount(): AccountState {
-  const { accountData$, context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
 
