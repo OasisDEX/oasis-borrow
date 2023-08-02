@@ -17,7 +17,7 @@ import React from 'react'
 export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, isShort, priceFormat, quoteToken },
+    environment: { collateralToken, isOracless, isShort, priceFormat, quoteToken },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
@@ -87,19 +87,23 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterCollateralLocked,
           isLoading,
         },
-        {
-          label: t('vault-changes.ltv'),
-          value: formatted.ltv,
-          change: formatted.afterLtv,
-          isLoading,
-        },
+        ...(!isOracless
+          ? [
+              {
+                label: t('vault-changes.ltv'),
+                value: formatted.ltv,
+                change: formatted.afterLtv,
+                isLoading,
+              },
+            ]
+          : []),
         {
           label: t('system.liquidation-price'),
           value: formatted.liquidationPrice,
           change: formatted.afterLiquidationPrice,
           isLoading,
         },
-        ...(positionData.pool.lowestUtilizedPriceIndex.gt(zero)
+        ...(!isOracless && positionData.pool.lowestUtilizedPriceIndex.gt(zero)
           ? [
               {
                 label: t('system.dynamic-max-ltv'),

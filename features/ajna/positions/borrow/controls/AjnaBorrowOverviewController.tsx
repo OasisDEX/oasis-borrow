@@ -70,12 +70,15 @@ export function AjnaBorrowOverviewController() {
               priceFormat={priceFormat}
               liquidationPrice={liquidationPrice}
               afterLiquidationPrice={afterLiquidationPrice}
-              belowCurrentPrice={belowCurrentPrice}
               isOracless={isOracless}
               changeVariant={changeVariant}
+              {...(!isOracless && {
+                belowCurrentPrice,
+              })}
             />
             {isOracless ? (
               <ContentCardLUP
+                priceFormat={priceFormat}
                 {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
                   lup: position.pool.lup,
                 })}
@@ -95,17 +98,21 @@ export function AjnaBorrowOverviewController() {
               isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               collateralLocked={position.collateralAmount}
-              collateralLockedUSD={position.collateralAmount.times(collateralPrice)}
               afterCollateralLocked={simulation?.collateralAmount}
               changeVariant={changeVariant}
+              {...(!isOracless && {
+                collateralLockedUSD: position.collateralAmount.times(collateralPrice),
+              })}
             />
             <ContentCardPositionDebt
               isLoading={isSimulationLoading}
               quoteToken={quoteToken}
               positionDebt={position.debtAmount}
-              positionDebtUSD={position.debtAmount.times(quotePrice)}
               afterPositionDebt={simulation?.debtAmount.plus(originationFee)}
               changeVariant={changeVariant}
+              {...(!isOracless && {
+                positionDebtUSD: position.debtAmount.times(quotePrice),
+              })}
             />
           </DetailsSectionContentCardWrapper>
         }

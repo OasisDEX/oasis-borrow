@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import * as ReactDOM from 'react-dom'
 
 export interface WithClose {
-  close: () => void
+  close?: () => void
   id?: string
 }
 
@@ -18,7 +18,9 @@ export type ModalOpener = <M extends React.ComponentType<any>, P extends React.C
   modalComponentProps?: Omit<P, 'close'>,
 ) => void
 
-const ModalContext = React.createContext<ModalOpener>(() => {
+type ModalOpenerWithClose = ModalOpener & WithClose
+
+const ModalContext = React.createContext<ModalOpenerWithClose>(() => {
   console.warn('ModalContext not setup properly ')
 })
 
@@ -28,15 +30,17 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   function close() {
     setModal(undefined)
   }
+  const modalContextValue: ModalOpenerWithClose = (modal, modalProps) => {
+    setModal({
+      modalComponent: modal,
+      modalComponentProps: modalProps,
+    })
+  }
+  // Adding this to the context so that we can close the modal from anywhere
+  // without having to pass the close function down the component tree
+  modalContextValue.close = close
   return (
-    <ModalContext.Provider
-      value={(modal, modalProps) => {
-        setModal({
-          modalComponent: modal,
-          modalComponentProps: modalProps,
-        })
-      }}
-    >
+    <ModalContext.Provider value={modalContextValue}>
       {props.children}
       {TheModal &&
         ReactDOM.createPortal(
@@ -47,6 +51,6 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   )
 }
 
-export function useModal(): ModalOpener {
+export function useModal(): ModalOpenerWithClose {
   return useContext(ModalContext)
 }

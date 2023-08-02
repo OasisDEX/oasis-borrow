@@ -4,10 +4,11 @@ import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import { isAddress } from 'ethers/lib/utils'
 import { steps } from 'features/ajna/common/consts'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaBorrowPositionController } from 'features/ajna/positions/borrow/controls/AjnaBorrowPositionController'
@@ -77,10 +78,10 @@ export function AjnaProductController({
     userSettings$,
   } = useAppContext()
   const { walletAddress } = useAccount()
-  const isOracless =
-    collateralToken && quoteToken && isAddress(collateralToken) && isAddress(quoteToken)
-
   const [context] = useObservable(context$)
+
+  const isOracless =
+    collateralToken && quoteToken && isPoolOracless({ collateralToken, quoteToken })
   const tokensAddresses = useMemo(
     () => getNetworkContracts(NetworkIds.MAINNET, context?.chainId).tokens,
     [context],
@@ -96,6 +97,7 @@ export function AjnaProductController({
       [isOracless, collateralToken, quoteToken],
     ),
   )
+
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
@@ -120,7 +122,7 @@ export function AjnaProductController({
               quoteTokenAddress: quoteToken,
             })
           : EMPTY,
-      [collateralToken, id, identifiedTokensData, isOracless, product, quoteToken, tokensAddresses],
+      [isOracless, id, collateralToken, quoteToken, product, identifiedTokensData, tokensAddresses],
     ),
   )
 
@@ -189,12 +191,12 @@ export function AjnaProductController({
             )
           : EMPTY,
       [
-        collateralToken,
-        dpmPositionData,
-        identifiedTokensData,
         isOracless,
-        quoteToken,
+        dpmPositionData,
         walletAddress,
+        identifiedTokensData,
+        collateralToken,
+        quoteToken,
       ],
     ),
   )
@@ -259,13 +261,13 @@ export function AjnaProductController({
         }
       : isOracless && identifiedTokensData
       ? {
-          collateralDigits: identifiedTokensData[collateralToken].digits,
+          collateralDigits: DEFAULT_TOKEN_DIGITS,
           collateralPrecision: identifiedTokensData[collateralToken].precision,
-          quoteDigits: identifiedTokensData[quoteToken].digits,
+          quoteDigits: DEFAULT_TOKEN_DIGITS,
           quotePrecision: identifiedTokensData[quoteToken].precision,
         }
       : undefined
-  }, [collateralToken, dpmPositionData, identifiedTokensData, isOracless, quoteToken])
+  }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
   if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
   if (

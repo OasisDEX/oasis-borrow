@@ -240,7 +240,7 @@ import {
 } from 'features/vaultsOverview/pipes/positions'
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
-import { createPositionsList$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import { createWeb3Context$ } from 'features/web3Context'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
@@ -1093,8 +1093,6 @@ export function setupAppContext() {
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$, aavePositions$))
-
   const assetActions$ = memoize(
     curry(createAssetActions$)(
       context$,
@@ -1356,7 +1354,6 @@ export function setupAppContext() {
     manageInstiVault$,
     manageMultiplyVault$,
     manageGuniVault$,
-    vaultsOverview$,
     vaultBanners$,
     gasPrice$,
     automationTriggersData$,

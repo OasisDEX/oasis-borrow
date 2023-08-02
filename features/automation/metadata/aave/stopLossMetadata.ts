@@ -10,7 +10,10 @@ import { NetworkIds } from 'blockchain/networks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE } from 'features/automation/common/consts'
-import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import {
+  getShouldRemoveAllowance,
+  isSupportedAaveAutomationTokenPair,
+} from 'features/automation/common/helpers'
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
@@ -67,6 +70,7 @@ export function createGetAaveStopLossMetadata(
         debtTokenAddress,
         collateralTokenAddress,
         debtToken,
+        token,
       },
     } = context
 
@@ -121,7 +125,9 @@ export function createGetAaveStopLossMetadata(
     }
 
     const aaveProtectionWriteEnabled =
-      useFeatureToggle('AaveV3ProtectionWrite') && supportsAaveStopLoss(lendingProtocol, networkId)
+      useFeatureToggle('AaveV3ProtectionWrite') &&
+      supportsAaveStopLoss(lendingProtocol, networkId) &&
+      isSupportedAaveAutomationTokenPair(token, debtToken)
 
     return {
       callbacks: {},

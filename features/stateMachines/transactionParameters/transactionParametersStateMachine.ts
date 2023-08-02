@@ -109,6 +109,13 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         idle: {},
         gettingParameters: {
           entry: ['setRetries'],
+          on: {
+            VARIABLES_RECEIVED: {
+              target: 'gettingParameters',
+              cond: 'parametersReady',
+              actions: ['updateContext', 'resetRetries'],
+            },
+          },
           invoke: {
             src: 'getParameters',
             id: 'library-call',
