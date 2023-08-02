@@ -174,6 +174,8 @@ export const goerliContracts: MainnetContracts = {
     'RETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHUSDC),
     'SDAI-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_TBTCWBTC),
     'USDC-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCETH),
     'USDC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWBTC),
     'USDC-WLD': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWLD),
