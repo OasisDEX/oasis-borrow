@@ -2561,7 +2561,9 @@
         "banners": {
           "tokens": {
             "title": "This position earns AJNA tokens",
+            "title-below-lup": "Adjust your position to earn AJNA tokens",
             "description-open": "Opening this Ajna position on Summer.fi makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.",
+            "description-manage-below-lup": "By opening an Ajna position on Summer.fi you can earn exclusive AJNA tokens. Adjust your position lending price to the active liquidity range in order to start earning AJNA rewards. <1><2>Find out more here.</1></2>",
             "description-manage": "This Ajna position on Summer.fi makes you eligible for AJNA token rewards. You are earning automatically and tokens will be claimable weekly in the near future.",
             "button-open": "Read more about AJNA rewards",
             "button-manage": "Claim your AJNA tokens"

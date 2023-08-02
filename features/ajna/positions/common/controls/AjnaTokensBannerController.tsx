@@ -1,25 +1,53 @@
 import { Banner } from 'components/Banner'
+import { AppLink } from 'components/Links'
 import { AjnaFlow } from 'features/ajna/common/types'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useRedirect } from 'helpers/useRedirect'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 
 interface AjnaTokensBannerControllerProps {
   flow: AjnaFlow
+  isPriceBelowLup?: boolean // used only in earn product
 }
 
-export const AjnaTokensBannerController: FC<AjnaTokensBannerControllerProps> = ({ flow }) => {
+const PriceBelowLupDescription = () => (
+  <Trans
+    i18nKey="ajna.position-page.common.banners.tokens.description-manage-below-lup"
+    components={{
+      1: <strong />,
+      2: (
+        <AppLink
+          href={EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE}
+          sx={{ display: 'inline-block' }}
+        />
+      ),
+    }}
+  />
+)
+
+export const AjnaTokensBannerController: FC<AjnaTokensBannerControllerProps> = ({
+  flow,
+  isPriceBelowLup = false,
+}) => {
   const { t } = useTranslation()
   const { push } = useRedirect()
 
   return (
     <Banner
-      title={t('ajna.position-page.common.banners.tokens.title')}
+      title={
+        isPriceBelowLup
+          ? t('ajna.position-page.common.banners.tokens.title-below-lup')
+          : t('ajna.position-page.common.banners.tokens.title')
+      }
       description={
-        flow === 'open'
-          ? t('ajna.position-page.common.banners.tokens.description-open')
-          : t('ajna.position-page.common.banners.tokens.description-manage')
+        flow === 'open' ? (
+          t('ajna.position-page.common.banners.tokens.description-open')
+        ) : isPriceBelowLup ? (
+          <PriceBelowLupDescription />
+        ) : (
+          t('ajna.position-page.common.banners.tokens.description-manage')
+        )
       }
       image={{
         src: '/static/img/ajna-tokens-banner.svg',
