@@ -165,6 +165,7 @@ export const mainnetContracts = {
     'RETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHETH),
     'RETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SDAIUSDC),
     'USDC-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCETH),
     'USDC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWBTC),
     'USDC-WLD': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWLD),
