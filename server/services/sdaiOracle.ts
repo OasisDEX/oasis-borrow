@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
-import { getRpcProvider } from 'blockchain/networks'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { getRpcProvider,NetworkIds } from 'blockchain/networks'
 import { PriceServiceResponse } from 'helpers/types'
 import { SdaiPriceOracle__factory } from 'types/ethers-contracts'
 
 const SdaiPriceOracleFactory = SdaiPriceOracle__factory
 
 export async function getSDaiOracleTicker(): Promise<PriceServiceResponse> {
-  const rpcProvider = getRpcProvider(1)
-  const SdaiPriceOracleContractAddress = '0xb9E6DBFa4De19CCed908BcbFe1d015190678AB5f'
+  const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
+  const SdaiPriceOracleContractAddress = getNetworkContracts(NetworkIds.MAINNET).SdaiOracle.address
   const SdaiPriceOracleContract = SdaiPriceOracleFactory.connect(
     SdaiPriceOracleContractAddress,
     rpcProvider,

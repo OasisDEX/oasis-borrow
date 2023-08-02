@@ -190,4 +190,5 @@ export const arbitrumContracts: MainnetContracts = {
   magicLink: {
     apiKey: '',
   },
+  SdaiOracle: contractDesc(ajnaPoolInfo, arbitrum.common.SdaiOracle),
 }

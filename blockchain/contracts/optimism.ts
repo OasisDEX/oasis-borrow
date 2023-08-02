@@ -213,4 +213,5 @@ export const optimismContracts: OptimismContracts = {
     apiKey: '',
   },
   gasPriceOracle: contractDesc(gasPriceOracle, '0x420000000000000000000000000000000000000F'),
+  SdaiOracle: contractDesc(ajnaPoolInfo, optimism.common.SdaiOracle),
 }
