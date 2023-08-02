@@ -55,6 +55,5 @@ export const AJNA_TOKENS_WITH_MULTIPLY = [
   'GHO',
   'RETH',
   'USDC',
-  'TBTC',
   'WBTC',
 ]
