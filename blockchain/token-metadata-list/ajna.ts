@@ -26,7 +26,7 @@ export const ajnaTokensMetadata: TokenConfig[] = [
     digits: 4,
     name: 'Savings Dai',
     icon: 'gho_circle_color',
-    iconCircle: 'dai_circle_color',
+    iconCircle: 'sdai_circle_color',
     color: '#54ac3c',
     background: '',
     bannerIcon: '',
