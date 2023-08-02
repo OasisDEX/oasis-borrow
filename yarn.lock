@@ -3930,10 +3930,10 @@
   resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.0.34.tgz#4fb85d92c5e38a4566178f84104838e0147a8c98"
   integrity sha512-t5Y8xbSwNx9jgiFGc5MuGg+049JyDbpMj4ld5V3+7lW8vfn8EhoN4JRZu8HQA0JrdnUVSy7o03aC1X2khoO+qw==
 
-"@oasisdex/automation@1.5.0-alpha.8":
-  version "1.5.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.5.0-alpha.8.tgz#0660f0bb27cfbfcd18f1d5e959a84855059690c6"
-  integrity sha512-Q9aHj65/L9yl9c+roctxPsn1SI5g8zFMRwdibgwzsqOOSe6PdBHIxhbXtsfreygLhI8+qd8SWdZd7nx4CISpvg==
+"@oasisdex/automation@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.5.0.tgz#b5201f039921f79aee4efe22b77fa460296aec58"
+  integrity sha512-fqhWTtJwzyLYLgE4y0hCi4W5CwPtQp/+8Vzfdv0fOT86KUBgpvwAvI9Qs4WI0ahCZiGozJE/q+eixSo8/WPN/Q==
   dependencies:
     ethers "^5.6.2"
 
