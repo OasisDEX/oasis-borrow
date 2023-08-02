@@ -2,43 +2,47 @@ import { Reducer } from 'react'
 import { match, P } from 'ts-pattern'
 
 import { ensureCorrectState } from './ensure-correct-state'
-import { getDesiredNetworkHexId, WalletManagementState } from './wallet-management-state'
-import { WalletStateEvent } from './wallet-state-event'
+import {
+  getDesiredNetworkHexId,
+  WalletManagementState,
+  WalletManagementStateStatus,
+} from './wallet-management-state'
+import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
 import { canTransitWithNetworkHexId } from './wallet-state-guards'
 
 export const connectingWalletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state: WalletManagementState,
   event: WalletStateEvent,
 ) => {
-  ensureCorrectState(state, 'connecting')
+  ensureCorrectState(state, WalletManagementStateStatus.connecting)
 
   return match<WalletStateEvent, WalletManagementState>(event)
     .with(
       {
-        type: 'connected',
+        type: WalletStateEventType.connected,
         connector: P.when((connector) => !canTransitWithNetworkHexId(connector.hexChainId, state)),
       },
       (event) => {
         return {
           ...state,
-          status: 'unsupported-network',
+          status: WalletManagementStateStatus.unsupportedNetwork,
           desiredNetworkHexId: getDesiredNetworkHexId(state),
           walletNetworkHexId: event.connector.hexChainId,
         }
       },
     )
-    .with({ type: 'connected' }, (event) => {
+    .with({ type: WalletStateEventType.connected }, (event) => {
       return {
         ...state,
-        status: 'connected',
+        status: WalletManagementStateStatus.connected,
         connector: event.connector,
         walletNetworkHexId: event.connector.hexChainId,
       }
     })
-    .with({ type: 'connection-cancelled' }, () => {
+    .with({ type: WalletStateEventType.connectionCancelled }, () => {
       return {
         ...state,
-        status: 'disconnected',
+        status: WalletManagementStateStatus.disconnected,
       }
     })
     .otherwise(() => state)
