@@ -2,6 +2,15 @@ import { NetworkConnector } from '@web3-react/network-connector'
 import { NetworkConfigHexId, NetworkHexIds, NetworkIds } from 'blockchain/networks'
 import { BridgeConnector } from 'features/web3OnBoard/bridge-connector'
 
+export enum WalletManagementStateStatus {
+  connecting = 'connecting',
+  disconnected = 'disconnected',
+  disconnecting = 'disconnecting',
+  connected = 'connected',
+  settingChain = 'setting-chain',
+  unsupportedNetwork = 'unsupported-network',
+}
+
 export type WalletManagementStateContext = {
   connector?: BridgeConnector
   desiredNetworkHexId?: NetworkConfigHexId
@@ -12,20 +21,20 @@ export type WalletManagementStateContext = {
 }
 
 export type WalletManagementState =
-  | ({ status: 'connecting' } & WalletManagementStateContext)
-  | ({ status: 'disconnected' } & WalletManagementStateContext)
-  | ({ status: 'disconnecting' } & WalletManagementStateContext & {
+  | ({ status: WalletManagementStateStatus.connecting } & WalletManagementStateContext)
+  | ({ status: WalletManagementStateStatus.disconnected } & WalletManagementStateContext)
+  | ({ status: WalletManagementStateStatus.disconnecting } & WalletManagementStateContext & {
         walletNetworkHexId: NetworkConfigHexId
       })
-  | ({ status: 'connected' } & WalletManagementStateContext & {
+  | ({ status: WalletManagementStateStatus.connected } & WalletManagementStateContext & {
         connector: BridgeConnector
         walletNetworkHexId: NetworkConfigHexId
       })
-  | ({ status: 'setting-chain' } & WalletManagementStateContext & {
+  | ({ status: WalletManagementStateStatus.settingChain } & WalletManagementStateContext & {
         desiredNetworkHexId: NetworkConfigHexId
         walletNetworkHexId: NetworkConfigHexId
       })
-  | ({ status: 'unsupported-network' } & WalletManagementStateContext & {
+  | ({ status: WalletManagementStateStatus.unsupportedNetwork } & WalletManagementStateContext & {
         desiredNetworkHexId: NetworkConfigHexId
         walletNetworkHexId: NetworkConfigHexId
       })
