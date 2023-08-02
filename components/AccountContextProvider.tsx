@@ -1,7 +1,6 @@
+import { AccountContext, setupAccountContext } from 'helpers/context/AccountContext'
 import { WithChildren } from 'helpers/types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
-
-import { AccountContext, setupAccountContext } from './AccountContext'
 
 export const accountContext = React.createContext<AccountContext | undefined>(undefined)
 

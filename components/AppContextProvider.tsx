@@ -1,12 +1,11 @@
+import { AppContext, setupAppContext } from 'helpers/context/AppContext'
 import { WithChildren } from 'helpers/types'
-import React, { useContext, useEffect, useState } from 'react'
-
-import { AppContext, setupAppContext } from './AppContext'
+import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 
 export const appContext = React.createContext<AppContext | undefined>(undefined)
 
 export function isAppContextAvailable(): boolean {
-  return !!useContext(appContext)
+  return !!checkContext(appContext)
 }
 
 export function useAppContext(): AppContext {
