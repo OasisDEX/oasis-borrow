@@ -169,7 +169,7 @@ export function ContentCardLtv({
     title: t('system.loan-to-value'),
     value: formatted.loanToValue,
     footnote:
-      isAutomationAvailable && stopLossLevel
+      isAutomationAvailable && isStopLossEnabled && stopLossLevel
         ? t('manage-earn-vault.stop-loss-ltv', {
             percentage: formatted.stopLossLevel,
           })
