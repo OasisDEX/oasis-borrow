@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { AppSpinner } from 'helpers/AppSpinner'
@@ -31,20 +32,26 @@ interface ContentCardLtvModalProps {
   loanToValue: BigNumber
   liquidationThreshold: BigNumber
   maxLoanToValue?: BigNumber
+  isAutomationAvailable?: boolean
   stopLossLevel?: BigNumber
-  stopLossLevelLoading?: boolean
+  isStopLossEnabled?: boolean
+  isAutomationDataLoaded?: boolean
 }
 
 function ContentCardLtvModal({
   loanToValue,
   liquidationThreshold,
   maxLoanToValue,
+  isAutomationAvailable,
+  isStopLossEnabled,
+  isAutomationDataLoaded,
   stopLossLevel,
-  stopLossLevelLoading,
 }: ContentCardLtvModalProps) {
   const { close: closeModal } = useModal()
   const { t } = useTranslation()
   const [, setHash] = useHash()
+  const usableStopLossLevel = isStopLossEnabled ? stopLossLevel : undefined
+  const stopLossLevelLoading = !isAutomationDataLoaded
 
   const goToProtection = () => {
     closeModal!()
@@ -78,29 +85,42 @@ function ContentCardLtvModal({
       <Card as="p" variant="vaultDetailsCardModal">
         {formatDecimalAsPercent(liquidationThreshold)}
       </Card>
-      <Heading variant="header4">{t('aave-position-modal.ltv.fourth-header')}</Heading>
-      <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-        <Trans
-          i18nKey="aave-position-modal.ltv.fourth-description-line"
-          components={[
-            <Text
-              as="span"
-              variant="boldParagraph3"
-              onClick={goToProtection}
-              sx={{ cursor: 'pointer' }}
-            />,
-          ]}
-        />
-      </Text>
-      <Card as="p" variant="vaultDetailsCardModal">
-        {stopLossLevel ? (
-          formatDecimalAsPercent(stopLossLevel)
-        ) : (
-          <Text as="p" variant="paragraph3" onClick={goToProtection} sx={{ cursor: 'pointer' }}>
-            {stopLossLevelLoading ? <AppSpinner /> : t('aave-position-modal.ltv.stop-loss-not-set')}
+      {isAutomationAvailable && (
+        <>
+          <Heading variant="header4">{t('aave-position-modal.ltv.fourth-header')}</Heading>
+          <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
+            <Trans
+              i18nKey="aave-position-modal.ltv.fourth-description-line"
+              components={[
+                <Text
+                  as="span"
+                  variant="boldParagraph3"
+                  onClick={goToProtection}
+                  sx={{ cursor: 'pointer' }}
+                />,
+              ]}
+            />
           </Text>
-        )}
-      </Card>
+          <Card as="p" variant="vaultDetailsCardModal">
+            {usableStopLossLevel ? (
+              formatDecimalAsPercent(usableStopLossLevel)
+            ) : (
+              <Text
+                as="p"
+                variant="paragraph3"
+                onClick={!stopLossLevelLoading ? goToProtection : undefined}
+                sx={!stopLossLevelLoading ? { cursor: 'pointer' } : {}}
+              >
+                {stopLossLevelLoading ? (
+                  <AppSpinner />
+                ) : (
+                  t('aave-position-modal.ltv.stop-loss-not-set')
+                )}
+              </Text>
+            )}
+          </Card>
+        </>
+      )}
     </Grid>
   )
 }
@@ -110,8 +130,7 @@ interface ContentCardLtvProps {
   liquidationThreshold: BigNumber
   maxLoanToValue?: BigNumber
   afterLoanToValue?: BigNumber
-  stopLossLevel?: BigNumber
-  stopLossLevelLoading?: boolean
+  isAutomationAvailable?: boolean
 }
 
 export function ContentCardLtv({
@@ -119,10 +138,15 @@ export function ContentCardLtv({
   liquidationThreshold,
   afterLoanToValue,
   maxLoanToValue,
-  stopLossLevel,
-  stopLossLevelLoading,
+  isAutomationAvailable,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
+  const {
+    triggerData: {
+      stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
+    },
+    automationTriggersData: { isAutomationDataLoaded },
+  } = useAutomationContext()
 
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
@@ -135,20 +159,23 @@ export function ContentCardLtv({
     loanToValue,
     maxLoanToValue,
     liquidationThreshold,
+    isAutomationAvailable,
     stopLossLevel,
-    stopLossLevelLoading,
+    isStopLossEnabled,
+    isAutomationDataLoaded,
   }
 
   const contentCardSettings: ContentCardProps = {
     title: t('system.loan-to-value'),
     value: formatted.loanToValue,
-    footnote: stopLossLevel
-      ? t('manage-earn-vault.stop-loss-ltv', {
-          percentage: formatted.stopLossLevel,
-        })
-      : t('manage-earn-vault.liquidation-threshold', {
-          percentage: formatted.liquidationThreshold,
-        }),
+    footnote:
+      isAutomationAvailable && isStopLossEnabled && stopLossLevel
+        ? t('manage-earn-vault.stop-loss-ltv', {
+            percentage: formatted.stopLossLevel,
+          })
+        : t('manage-earn-vault.liquidation-threshold', {
+            percentage: formatted.liquidationThreshold,
+          }),
     customBackground:
       afterLoanToValue && !liquidationThreshold.eq(zero)
         ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))

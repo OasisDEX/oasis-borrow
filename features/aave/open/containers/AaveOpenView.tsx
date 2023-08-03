@@ -37,6 +37,7 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 
   return (
     <SimulateSection
+      isOpenView
       strategyConfig={config}
       currentPosition={state.context.currentPosition}
       collateralPrice={state.context.collateralPrice}
