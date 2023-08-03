@@ -1,4 +1,4 @@
-import { isAppContextAvailable } from 'components/AppContextProvider'
+import { isAppContextAvailable } from 'components/context/AppContextProvider'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { Footer } from 'components/Footer'
 import { PageSEOTags } from 'components/HeadTags'

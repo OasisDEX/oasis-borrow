@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'

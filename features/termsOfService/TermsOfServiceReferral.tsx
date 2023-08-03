@@ -1,14 +1,20 @@
-import { AppContextProvider, useAppContext } from 'components/AppContextProvider'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { useReferralContext } from 'components/context/ReferralContextProvider'
+import { tosContext } from 'components/context/TOSContextProvider'
 import { useObservable } from 'helpers/observableHook'
 
 import { TermsOfService } from './TermsOfService'
 
-export default function TermsOfServiceReferral() {
-  const { userReferral$ } = useAppContext()
+function TermsOfServiceReferralProxy() {
+  const { userReferral$ } = useReferralContext()
   const [userReferral] = useObservable(userReferral$)
+  return <TermsOfService userReferral={userReferral} />
+}
+
+export default function TermsOfServiceReferral() {
   return (
-    <AppContextProvider>
-      <TermsOfService userReferral={userReferral} />
-    </AppContextProvider>
+    <DeferedContextProvider context={tosContext}>
+      <TermsOfServiceReferralProxy />
+    </DeferedContextProvider>
   )
 }

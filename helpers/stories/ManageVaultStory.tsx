@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
-import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { appContext, isAppContextAvailable } from 'components/context/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import {

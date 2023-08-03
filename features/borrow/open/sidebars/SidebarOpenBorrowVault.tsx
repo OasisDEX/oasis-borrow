@@ -1,6 +1,6 @@
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
-import { AutomationContextProvider } from 'components/AutomationContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
+import { AutomationContextProvider } from 'components/context/AutomationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'

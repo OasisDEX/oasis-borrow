@@ -1,4 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import {
+  referralContext,
+  ReferralContextProvider,
+} from 'components/context/ReferralContextProvider'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { checkReferralLocalStorage } from 'features/referralOverview/referralLocal'
 import { TermsOfServiceReferralDynamic } from 'features/termsOfService/TermsOfServiceReferralDynamic'
@@ -94,22 +99,26 @@ export const HomepageHero = () => {
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   return (
-    <Container>
-      {referralsEnabled && landedWithRef && <NewReferralModal />}
-      {(referralsEnabled || notificationsEnabled) && <TermsOfServiceReferralDynamic />}
-      <Flex
-        sx={{
-          height: 'auto',
-          flexDirection: 'column',
-        }}
-      >
-        <Hero
-          isConnected={isConnected}
-          heading="landing.hero.main.headline"
-          subheading={<Trans i18nKey="landing.hero.main.subheader" components={[<br />]} />}
-        />
-        <ManagedVolumeStats oasisStats={oasisStats} />
-      </Flex>
-    </Container>
+    <ReferralContextProvider>
+      <DeferedContextProvider context={referralContext}>
+        <Container>
+          {referralsEnabled && landedWithRef && <NewReferralModal />}
+          {(referralsEnabled || notificationsEnabled) && <TermsOfServiceReferralDynamic />}
+          <Flex
+            sx={{
+              height: 'auto',
+              flexDirection: 'column',
+            }}
+          >
+            <Hero
+              isConnected={isConnected}
+              heading="landing.hero.main.headline"
+              subheading={<Trans i18nKey="landing.hero.main.subheader" components={[<br />]} />}
+            />
+            <ManagedVolumeStats oasisStats={oasisStats} />
+          </Flex>
+        </Container>
+      </DeferedContextProvider>
+    </ReferralContextProvider>
   )
 }

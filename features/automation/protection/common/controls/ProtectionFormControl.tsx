@@ -1,5 +1,5 @@
 import { TxHelpers } from 'components/AppContext'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import {
   getAvailableAutomation,
   getShouldRemoveAllowance,

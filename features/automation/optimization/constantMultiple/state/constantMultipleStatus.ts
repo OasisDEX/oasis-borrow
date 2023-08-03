@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { getAutoBSVaultChange } from 'features/automation/common/helpers'
 import { SidebarAutomationStages } from 'features/automation/common/types'
 import {

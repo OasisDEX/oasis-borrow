@@ -1,5 +1,5 @@
 import { getMixpanelUserContext } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { DiscoverNavigation } from 'features/discover/common/DiscoverNavigation'
 import { DiscoverWrapperWithIntro } from 'features/discover/common/DiscoverWrapperWithIntro'
 import { DiscoverControl } from 'features/discover/controllers/DiscoverControl'

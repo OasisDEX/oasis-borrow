@@ -1,5 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useReferralContext } from 'components/context/ReferralContextProvider'
+import {
+  tosContext,
+  TOSContextProvider,
+  useTOSContext,
+} from 'components/context/TOSContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
@@ -180,7 +187,7 @@ const hiddenStages: TermsAcceptanceStage[] = [
 ]
 
 export function TermsOfService({ userReferral }: { userReferral?: UserReferralState }) {
-  const { termsAcceptance$ } = useAppContext()
+  const { termsAcceptance$ } = useTOSContext()
   const [termsAcceptance] = useObservable(termsAcceptance$)
 
   const { disconnect, wallet } = useWalletManagement()
@@ -241,7 +248,8 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
 }
 
 export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
-  const { web3ContextConnected$, userReferral$ } = useAppContext()
+  const { web3ContextConnected$ } = useMainContext()
+  const { userReferral$ } = useReferralContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
   const [userReferral] = useObservable(userReferral$)
 
@@ -256,9 +264,11 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   }
 
   return (
-    <>
+    <TOSContextProvider>
       {children}
-      <TermsOfService userReferral={userReferral} />
-    </>
+      <DeferedContextProvider context={tosContext}>
+        <TermsOfService userReferral={userReferral} />
+      </DeferedContextProvider>
+    </TOSContextProvider>
   )
 }

@@ -1,4 +1,4 @@
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { getAvailableAutomation } from 'features/automation/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,

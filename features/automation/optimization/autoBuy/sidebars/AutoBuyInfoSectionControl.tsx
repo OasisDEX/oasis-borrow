@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { AddAutoBuyInfoSection } from 'features/automation/optimization/autoBuy/controls/AddAutoBuyInfoSection'
 import { one } from 'helpers/zero'

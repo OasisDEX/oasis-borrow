@@ -1,5 +1,5 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'

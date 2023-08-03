@@ -11,6 +11,8 @@ import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
 import { CookieBanner, SavedSettings } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -212,11 +214,15 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <SetupWeb3Context>
                       <SharedUIProvider>
                         <WithFollowVaults>
-                          <TopBanner name="rebranding">{topBannerContent}</TopBanner>
-                          <Layout {...layoutProps}>
-                            <div>asdf</div>
-                            <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
-                          </Layout>
+                          <MainContextProvider>
+                            <DeferedContextProvider context={mainContext}>
+                              <TopBanner name="rebranding">{topBannerContent}</TopBanner>
+                              <Layout {...layoutProps}>
+                                <Component {...pageProps} />
+                                <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
+                              </Layout>
+                            </DeferedContextProvider>
+                          </MainContextProvider>
                         </WithFollowVaults>
                       </SharedUIProvider>
                     </SetupWeb3Context>

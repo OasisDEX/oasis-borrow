@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { EarnVaultHeadline } from 'components/vault/EarnVaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import dayjs from 'dayjs'

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'

@@ -1,6 +1,6 @@
 import { Heading } from '@theme-ui/components'
 import { BigNumber } from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'

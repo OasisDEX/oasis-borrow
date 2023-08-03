@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/AutomationContextProvider'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'

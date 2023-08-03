@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'

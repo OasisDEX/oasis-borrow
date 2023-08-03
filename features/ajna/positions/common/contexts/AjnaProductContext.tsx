@@ -1,8 +1,8 @@
 import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
+import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
 import { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
 import {

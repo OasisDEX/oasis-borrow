@@ -1,5 +1,5 @@
 import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { checkIfIsEditingAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
 import {

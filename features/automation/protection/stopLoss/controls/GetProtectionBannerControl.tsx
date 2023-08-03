@@ -6,7 +6,7 @@ import {
 } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { getNetworkName } from 'features/web3Context'

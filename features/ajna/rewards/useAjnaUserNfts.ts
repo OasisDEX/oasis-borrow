@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { claimAjnaRewards } from 'blockchain/calls/ajnaRewardsClaimer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import {
   AjnaUserNftsResponse,
   getAjnaUserNfts,

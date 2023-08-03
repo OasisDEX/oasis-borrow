@@ -1,4 +1,4 @@
-import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { appContext, isAppContextAvailable } from 'components/context/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import {

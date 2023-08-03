@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { useObservable } from 'helpers/observableHook'

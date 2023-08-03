@@ -1,5 +1,5 @@
 import { useActor } from '@xstate/react'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'

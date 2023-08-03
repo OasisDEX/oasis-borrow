@@ -4,7 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
-import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
+import { isAppContextAvailable, useAppContext } from 'components/context/AppContextProvider'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AutoBSTriggerData,

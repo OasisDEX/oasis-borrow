@@ -9,7 +9,7 @@ import { Context } from 'blockchain/network'
 import { emptyNetworkConfig } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { AutomationPositionData } from 'components/AutomationContextProvider'
+import { AutomationPositionData } from 'components/context/AutomationContextProvider'
 import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,

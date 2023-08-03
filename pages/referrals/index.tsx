@@ -1,4 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
+import { TOSContextProvider } from 'components/context/TOSContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
@@ -19,9 +20,9 @@ function ReferralsPage() {
   const referralsEnabled = useFeatureToggle('Referrals')
 
   return (
-    <>
+    <TOSContextProvider>
       <WithConnection>{referralsEnabled ? <ReferralLandingSummary /> : null}</WithConnection>
-    </>
+    </TOSContextProvider>
   )
 }
 

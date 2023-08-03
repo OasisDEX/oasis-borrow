@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { EarnVaultHeaderProps } from 'features/earn/guni/common/GuniVaultHeader'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'

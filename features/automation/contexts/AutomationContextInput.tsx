@@ -1,9 +1,9 @@
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import {
   AutomationCommonData,
   AutomationContextProvider,
   AutomationPositionData,
-} from 'components/AutomationContextProvider'
+} from 'components/context/AutomationContextProvider'
 import {
   AutomationDefinitionMetadata,
   OverwriteTriggersDefaults,

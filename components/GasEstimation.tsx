@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import React from 'react'
 

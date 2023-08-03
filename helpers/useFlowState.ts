@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'

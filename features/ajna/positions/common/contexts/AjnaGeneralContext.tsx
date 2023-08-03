@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
-import { isAppContextAvailable } from 'components/AppContextProvider'
+import { isAppContextAvailable } from 'components/context/AppContextProvider'
 import {
   AjnaFlow,
   AjnaProduct,

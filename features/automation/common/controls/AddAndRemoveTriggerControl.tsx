@@ -4,7 +4,7 @@ import {
 } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
 import {
   AutomationTxHandlerAnalytics,

@@ -1,6 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { tosContext } from 'components/context/TOSContextProvider'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { jwtAuthGetToken } from 'features/shared/jwt'
@@ -32,13 +34,15 @@ export function ReferralLandingSummary() {
   const [userReferral, userReferralError] = useObservable(userReferral$)
 
   return (
-    <WithErrorHandler error={[contextError, userReferralError]}>
-      <WithLoadingIndicator value={[context, userReferral]}>
-        {([context, userReferral]) => (
-          <ReferralLanding context={context} userReferral={userReferral} />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <DeferedContextProvider context={tosContext}>
+      <WithErrorHandler error={[contextError, userReferralError]}>
+        <WithLoadingIndicator value={[context, userReferral]}>
+          {([context, userReferral]) => (
+            <ReferralLanding context={context} userReferral={userReferral} />
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    </DeferedContextProvider>
   )
 }
 

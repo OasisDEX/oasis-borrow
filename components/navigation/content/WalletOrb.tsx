@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/context/AppContextProvider'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { ContextAccountDetails, getShowHeaderSettings } from 'helpers/functions'

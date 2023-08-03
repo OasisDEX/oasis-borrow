@@ -53,9 +53,9 @@ import {
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
 import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
-import { useAccountContext } from 'components/AccountContextProvider'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
-import { useMainContext } from 'components/MainContextProvider'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
@@ -200,7 +200,6 @@ export function setupAppContext() {
     once$,
     onEveryBlock$,
     oracleContext$,
-    setupWeb3Context$,
     switchChains,
     txHelpers$,
     web3Context$,
@@ -1093,7 +1092,6 @@ export function setupAppContext() {
     protocols,
     readPositionCreatedEvents$,
     reclaimCollateral$,
-    setupWeb3Context$,
     strategyConfig$,
     switchChains,
     termsAcceptance$,
