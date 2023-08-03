@@ -1163,17 +1163,31 @@ export const trackingEvents = {
     },
   ) => {
     const { txHash, ...eventDataRest } = eventData
-    mixpanelInternalAPI(event, {
+    const eventCommons = {
       section: CommonAnalyticsSections.Form,
-      id: {
-        [EventTypes.InputChange]: 'DepositAmount',
-        [EventTypes.ButtonClick]:
-          eventData.action === 'deposit' ? 'ConfirmDeposit' : 'ConfirmWithdraw',
-      }[event],
       page: Pages.DAISavingsRate,
       product: ProductType.EARN,
-      eventData: mixpanel.has_opted_out_tracking() ? { txHash } : { txHash, ...eventDataRest },
-    })
+    }
+    if (event === EventTypes.InputChange) {
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(event, {
+          ...eventCommons,
+          id: {
+            [EventTypes.InputChange]: 'DepositAmount',
+          },
+          eventData: { txHash, ...eventDataRest },
+        })
+    }
+    if (event === EventTypes.ButtonClick) {
+      mixpanelInternalAPI(event, {
+        ...eventCommons,
+        id: {
+          [EventTypes.ButtonClick]:
+            eventData.action === 'deposit' ? 'ConfirmDeposit' : 'ConfirmWithdraw',
+        },
+        eventData: mixpanel.has_opted_out_tracking() ? { txHash } : { txHash, ...eventDataRest },
+      })
+    }
   },
 }
 
