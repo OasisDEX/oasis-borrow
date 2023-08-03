@@ -207,5 +207,5 @@ export const goerliContracts: MainnetContracts = {
   magicLink: {
     apiKey: '',
   },
-  SdaiOracle: contractDesc(ajnaPoolInfo, goerli.common.SdaiOracle)
+  SdaiOracle: contractDesc(ajnaPoolInfo, goerli.common.SdaiOracle),
 }

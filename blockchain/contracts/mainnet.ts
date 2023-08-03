@@ -199,7 +199,7 @@ export const mainnetContracts = {
   magicLink: {
     apiKey: '',
   },
-  SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle)
+  SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
 }
 
 export type MainnetContracts = typeof mainnetContracts
