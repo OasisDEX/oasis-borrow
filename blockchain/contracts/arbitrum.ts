@@ -159,7 +159,7 @@ export const arbitrumContracts: MainnetContracts = {
     'RETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHETH),
     'RETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHUSDC),
-    'SDAI-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SDAIUSDC),
+    // 'SDAI-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SDAIUSDC),
     'TBTC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_TBTCUSDC),
     'TBTC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_TBTCWBTC),
     'USDC-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_USDCETH),
