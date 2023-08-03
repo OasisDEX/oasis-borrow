@@ -1162,18 +1162,32 @@ export const trackingEvents = {
       walletType?: string
     },
   ) => {
-    !mixpanel.has_opted_out_tracking() &&
+    const { txHash, ...eventDataRest } = eventData
+    const eventCommons = {
+      section: CommonAnalyticsSections.Form,
+      page: Pages.DAISavingsRate,
+      product: ProductType.EARN,
+    }
+    if (event === EventTypes.InputChange) {
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(event, {
+          ...eventCommons,
+          id: {
+            [EventTypes.InputChange]: 'DepositAmount',
+          },
+          eventData: { txHash, ...eventDataRest },
+        })
+    }
+    if (event === EventTypes.ButtonClick) {
       mixpanelInternalAPI(event, {
-        section: CommonAnalyticsSections.Form,
+        ...eventCommons,
         id: {
-          [EventTypes.InputChange]: 'DepositAmount',
           [EventTypes.ButtonClick]:
             eventData.action === 'deposit' ? 'ConfirmDeposit' : 'ConfirmWithdraw',
-        }[event],
-        page: Pages.DAISavingsRate,
-        product: ProductType.EARN,
-        ...eventData,
+        },
+        eventData: mixpanel.has_opted_out_tracking() ? { txHash } : { txHash, ...eventDataRest },
       })
+    }
   },
 }
 
