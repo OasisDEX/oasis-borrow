@@ -1,5 +1,7 @@
 import { createSend } from '@oasisdex/transactions'
+import { getNetworkContracts } from 'blockchain/contracts'
 import {
+  ContextConnected,
   createAccount$,
   createContext$,
   createContextConnected$,
@@ -7,11 +9,12 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
 import { createGasPrice$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'
 import { createTxHelpers$ } from 'helpers/createTxHelpers'
-import { of } from 'rxjs'
-import { shareReplay } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 import { DepreciatedServices, TxData, TxHelpers$ } from './types'
 
@@ -23,6 +26,18 @@ export function setupMainContext() {
   const [onEveryBlock$, everyBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
   const context$ = createContext$(web3ContextConnected$)
+  const chainContext$ = context$.pipe(
+    distinctUntilChanged(
+      (previousContext, newContext) => previousContext.chainId === newContext.chainId,
+    ),
+    shareReplay(1),
+  )
+  const oracleContext$ = context$.pipe(
+    switchMap((ctx) =>
+      of({ ...ctx, account: getNetworkContracts(NetworkIds.MAINNET, ctx.chainId).mcdSpot.address }),
+    ),
+    shareReplay(1),
+  ) as Observable<ContextConnected>
   const account$ = createAccount$(web3Context$)
   const connectedContext$ = createContextConnected$(context$)
   const initializedAccount$ = createInitializedAccount$(account$)
@@ -38,16 +53,22 @@ export function setupMainContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
 
   return {
+    account$,
+    chainContext$,
+    connectedContext$,
+    context$,
+    everyBlock$,
+    gasPrice$,
+    initializedAccount$,
+    once$,
+    onEveryBlock$,
+    oracleContext$,
+    send,
+    setupWeb3Context$,
+    switchChains,
+    txHelpers$,
     web3Context$,
     web3ContextConnected$,
-    setupWeb3Context$,
-    context$,
-    onEveryBlock$,
-    everyBlock$,
-    txHelpers$,
-    connectedContext$,
-    once$,
-    switchChains,
   }
 }
 

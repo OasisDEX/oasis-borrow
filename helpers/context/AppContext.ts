@@ -1,19 +1,15 @@
-import { createSend } from '@oasisdex/transactions'
 import * as Sentry from '@sentry/react'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
-import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
-import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
+import { charterNib, charterPeace, charterUline } from 'blockchain/calls/charter'
 import {
   cropperBonusTokenAddress,
   cropperCrops,
   cropperShare,
   cropperStake,
   cropperStock,
-  cropperUrnProxy,
 } from 'blockchain/calls/cropper'
 import { dogIlk } from 'blockchain/calls/dog'
 import {
@@ -25,45 +21,23 @@ import {
   tokenName,
   tokenSymbol,
 } from 'blockchain/calls/erc20'
-import { getCdps } from 'blockchain/calls/getCdps'
-import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
-import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
 import { CropjoinProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from 'blockchain/calls/spot'
-import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
+import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { resolveENSName$ } from 'blockchain/ens'
 import { createTokenBalance$ } from 'blockchain/erc20'
-import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
-import {
-  compareBigNumber,
-  ContextConnected,
-  createAccount$,
-  createContext$,
-  createContextConnected$,
-  createInitializedAccount$,
-  createOnEveryBlock$,
-  createWeb3ContextConnected$,
-  every10Seconds$,
-} from 'blockchain/network'
+import { compareBigNumber, every10Seconds$ } from 'blockchain/network'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import {
-  createGasPrice$,
-  createOraclePriceData$,
-  createTokenPriceInUSD$,
-  tokenPrices$,
-} from 'blockchain/prices'
+import { createOraclePriceData$, createTokenPriceInUSD$, tokenPrices$ } from 'blockchain/prices'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -71,33 +45,25 @@ import {
   createBalanceFromAddress$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
+import { charterIlks } from 'blockchain/tokens/mainnet'
 import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
   getUserDpmProxy$,
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
-import {
-  createStandardCdps$,
-  createVault$,
-  createVaults$,
-  createVaultsFromIds$,
-  decorateVaultsWithValue$,
-  Vault,
-} from 'blockchain/vaults'
+import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
+import { useAccountContext } from 'components/AccountContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { useMainContext } from 'components/MainContextProvider'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
-import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
 import {
-  createProxyConsumed$,
   createReadPositionCreatedEvents$,
   getLastCreatedPositionForProxy$,
 } from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
-import { createAccountData } from 'features/account/AccountData'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
@@ -198,7 +164,7 @@ import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positio
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
-import { createWeb3Context$ } from 'features/web3Context'
+import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
 import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
@@ -219,30 +185,45 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import { DepreciatedServices, HasGasEstimation, TxHelpers } from './types'
+import { refreshInterval } from './constants'
+import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
 import curry from 'ramda/src/curry'
 
 export function setupAppContext() {
-  const once$ = of(undefined).pipe(shareReplay(1))
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$()
-
-  const account$ = createAccount$(web3Context$)
-  const initializedAccount$ = createInitializedAccount$(account$)
-
-  const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
-
-  const [onEveryBlock$, everyBlock$] = createOnEveryBlock$(web3ContextConnected$)
-
-  const context$ = createContext$(web3ContextConnected$)
-
-  const chainContext$ = context$.pipe(
-    distinctUntilChanged(
-      (previousContext, newContext) => previousContext.chainId === newContext.chainId,
-    ),
-    shareReplay(1),
-  )
-
-  const connectedContext$ = createContextConnected$(context$)
+  const {
+    account$,
+    chainContext$,
+    connectedContext$,
+    context$,
+    everyBlock$,
+    gasPrice$,
+    once$,
+    onEveryBlock$,
+    oracleContext$,
+    setupWeb3Context$,
+    switchChains,
+    txHelpers$,
+    web3Context$,
+    web3ContextConnected$,
+  } = useMainContext()
+  const {
+    balance$,
+    cdpManagerIlks$,
+    charterCdps$,
+    cropJoinCdps$,
+    ilkData$,
+    ilkToToken$,
+    mainnetReadPositionCreatedEvents$,
+    optimismReadPositionCreatedEvents$,
+    oraclePriceData$,
+    proxyAddress$,
+    standardCdps$,
+    urnResolver$,
+    vatGem$,
+    vatUrns$,
+    vault$,
+    vaults$,
+  } = useAccountContext()
 
   combineLatest(account$, connectedContext$)
     .pipe(
@@ -264,24 +245,6 @@ export function setupAppContext() {
         trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }
     })
-
-  const oracleContext$ = context$.pipe(
-    switchMap((ctx) =>
-      of({ ...ctx, account: getNetworkContracts(NetworkIds.MAINNET, ctx.chainId).mcdSpot.address }),
-    ),
-    shareReplay(1),
-  ) as Observable<ContextConnected>
-
-  const [send] = createSend<TxData>(
-    initializedAccount$,
-    onEveryBlock$,
-    // @ts-ignore
-    connectedContext$,
-  )
-
-  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
-
-  const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
 
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(every10Seconds$, tokenPrices$),
@@ -317,30 +280,16 @@ export function setupAppContext() {
   })
 
   // base
-  const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
-  const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
-  const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
-  const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
-  const cdpManagerOwner$ = observe(onEveryBlock$, chainContext$, cdpManagerOwner, bigNumberTostring)
-  const cdpRegistryOwns$ = observe(onEveryBlock$, chainContext$, cdpRegistryOwns)
-  const cdpRegistryCdps$ = observe(onEveryBlock$, chainContext$, cdpRegistryCdps)
-  const vatIlks$ = observe(onEveryBlock$, chainContext$, vatIlk)
+
   const vatIlksLean$ = observe(once$, chainContext$, vatIlk)
-  const vatUrns$ = observe(onEveryBlock$, chainContext$, vatUrns, ilkUrnAddressToString)
-  const vatGem$ = observe(onEveryBlock$, chainContext$, vatGem, ilkUrnAddressToString)
-  const spotIlks$ = observe(onEveryBlock$, chainContext$, spotIlk)
   const spotIlksLean$ = observe(once$, chainContext$, spotIlk)
-  const jugIlks$ = observe(onEveryBlock$, chainContext$, jugIlk)
   const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
-  const dogIlks$ = observe(onEveryBlock$, chainContext$, dogIlk)
   const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
   const charterUline$ = observe(onEveryBlock$, context$, charterUline)
-  const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
-  const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
   const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
   const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
   const cropperStock$ = observe(onEveryBlock$, context$, cropperStock)
@@ -348,31 +297,18 @@ export function setupAppContext() {
   const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
-  const pipZzz$ = observe(onEveryBlock$, chainContext$, pipZzz)
   const pipZzzLean$ = observe(once$, chainContext$, pipZzz)
-  const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipHopLean$ = observe(once$, context$, pipHop)
-  const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
   const pipPeekLean$ = observe(once$, oracleContext$, pipPeek)
-  const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
   const pipPeepLean$ = observe(once$, oracleContext$, pipPeep)
 
   const unclaimedCrvLdoRewardsForIlk$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
-
-  const getCdps$ = observe(onEveryBlock$, context$, getCdps)
 
   const charter = {
     nib$: (args: { ilk: string; usr: string }) => charterNib$(args),
     peace$: (args: { ilk: string; usr: string }) => charterPeace$(args),
     uline$: (args: { ilk: string; usr: string }) => charterUline$(args),
   }
-
-  const oraclePriceData$ = memoize(
-    curry(createOraclePriceData$)(chainContext$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
-    ({ token, requestedData }) => {
-      return `${token}-${requestedData.join(',')}`
-    },
-  )
 
   const oraclePriceDataLean$ = memoize(
     curry(createOraclePriceData$)(
@@ -387,14 +323,8 @@ export function setupAppContext() {
     },
   )
 
-  const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
   const tokenBalanceFromAddress$ = observe(onEveryBlock$, context$, tokenBalanceFromAddress)
-
-  const balance$ = memoize(
-    curry(createBalance$)(onEveryBlock$, chainContext$, tokenBalance$),
-    (token, address) => `${token}_${address}`,
-  )
 
   const balanceLean$ = memoize(
     curry(createBalance$)(once$, chainContext$, tokenBalanceLean$),
@@ -405,8 +335,6 @@ export function setupAppContext() {
     curry(createBalanceFromAddress$)(tokenBalanceFromAddress$),
     (token, address) => `${token.address}_${token.precision}_${address}`,
   )
-
-  const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const userDpmProxies$ = memoize(
     curry(getUserDpmProxies$)(context$),
@@ -427,44 +355,8 @@ export function setupAppContext() {
 
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
-  const ilkToToken$ = memoize(curry(createIlkToToken$)(chainContext$))
-
-  const ilkData$ = memoize(
-    curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
-  )
-
   const ilkDataLean$ = memoize(
     curry(createIlkData$)(vatIlksLean$, spotIlksLean$, jugIlksLean$, dogIlksLean$, ilkToToken$),
-  )
-
-  const charterCdps$ = memoize(
-    curry(createGetRegistryCdps$)(
-      onEveryBlock$,
-      chainContext$,
-      cdpRegistryCdps$,
-      proxyAddress$,
-      charterIlks,
-    ),
-  )
-  const cropJoinCdps$ = memoize(
-    curry(createGetRegistryCdps$)(
-      onEveryBlock$,
-      chainContext$,
-      cdpRegistryCdps$,
-      proxyAddress$,
-      cropJoinIlks,
-    ),
-  )
-  const standardCdps$ = memoize(curry(createStandardCdps$)(proxyAddress$, getCdps$))
-
-  const urnResolver$ = curry(createVaultResolver$)(
-    cdpManagerIlks$,
-    cdpManagerUrns$,
-    charterUrnProxy$,
-    cropperUrnProxy$,
-    cdpRegistryOwns$,
-    cdpManagerOwner$,
-    proxyOwner$,
   )
 
   const bonusAdapter = memoize(
@@ -603,21 +495,6 @@ export function setupAppContext() {
     (item) => item,
   )
 
-  const vault$ = memoize(
-    (id: BigNumber) =>
-      createVault$(
-        urnResolver$,
-        vatUrns$,
-        vatGem$,
-        ilkData$,
-        oraclePriceData$,
-        ilkToToken$,
-        chainContext$,
-        id,
-      ),
-    bigNumberTostring,
-  )
-
   const instiVault$ = memoize(
     curry(createInstiVault$)(
       urnResolver$,
@@ -634,14 +511,6 @@ export function setupAppContext() {
   const vaultHistory$ = memoize(curry(createVaultHistory$)(chainContext$, onEveryBlock$, vault$))
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
-
-  const vaults$ = memoize(
-    curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [
-      charterCdps$,
-      cropJoinCdps$,
-      standardCdps$,
-    ]),
-  )
 
   const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(chainContext$)
 
@@ -718,8 +587,6 @@ export function setupAppContext() {
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
 
-  const proxyConsumed$ = memoize(curry(createProxyConsumed$)(context$))
-
   const proxiesRelatedWithPosition$ = memoize(
     curry(getProxiesRelatedWithPosition$)(proxyAddress$, userDpmProxy$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
@@ -750,13 +617,6 @@ export function setupAppContext() {
     (walletAddress) => walletAddress,
   )
 
-  const mainnetReadPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(
-      of({ chainId: NetworkIds.MAINNET }),
-      mainnetDpmProxies$,
-    ),
-  )
-
   const mainnetAavePositions$ = memoize(
     curry(createAavePosition$)(
       {
@@ -777,13 +637,6 @@ export function setupAppContext() {
   const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
     curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
     (walletAddress) => walletAddress,
-  )
-
-  const optimismReadPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(
-      of({ chainId: NetworkIds.OPTIMISMMAINNET }),
-      optimismDpmProxies$,
-    ),
   )
 
   const aaveOptimismPositions$ = memoize(
@@ -1018,32 +871,6 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
-    connectedContext$,
-    proxyAddress$,
-    proxyConsumed$,
-  )
-
-  // Here we're aggregating events from all networks to show all open positions
-  // Should add new networks here in the future to count all positions
-  const allNetworkReadPositionCreatedEvents$ = (wallet: string) =>
-    combineLatest([
-      mainnetReadPositionCreatedEvents$(wallet),
-      optimismReadPositionCreatedEvents$(wallet),
-    ]).pipe(
-      map(([mainnetEvents, optimismEvents]) => {
-        return [...mainnetEvents, ...optimismEvents]
-      }),
-    )
-
-  const accountData$ = createAccountData(
-    web3Context$,
-    balance$,
-    vaults$,
-    hasActiveDsProxyAavePosition$,
-    allNetworkReadPositionCreatedEvents$,
-    ensName$,
-  )
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(chainContext$),
@@ -1212,88 +1039,78 @@ export function setupAppContext() {
   )
 
   return {
-    web3Context$,
-    web3ContextConnected$,
-    setupWeb3Context$,
-    context$,
-    onEveryBlock$,
-    txHelpers$,
-    proxyAddress$,
-    proxyOwner$,
-    vaults$,
-    vault$,
-    ilks$: ilksSupportedOnNetwork$,
-    balance$,
-    balancesInfoArray$,
-    balancesFromAddressInfoArray$,
-    accountBalances$,
-    openVault$,
-    manageVault$,
-    manageInstiVault$,
-    manageMultiplyVault$,
-    manageGuniVault$,
-    vaultBanners$,
-    gasPrice$,
-    automationTriggersData$,
-    accountData$,
-    vaultHistory$,
-    termsAcceptance$,
-    walletAssociatedRisk$,
-    reclaimCollateral$,
-    openMultiplyVault$,
-    generalManageVault$,
-    userSettings$,
-    openGuniVault$,
-    ilkDataList$,
-    connectedContext$,
-
-    addGasEstimation$,
-    instiVault$,
-    ilkToToken$,
-    bonus$,
-    positionsOverviewSummary$,
-    priceInfo$,
-    yields$,
-    daiEthTokenPrice$,
-    totalValueLocked$,
-    yieldsChange$,
-    tokenPriceUSD$,
-    userReferral$,
-    checkReferralLocal$,
-    balanceInfo$,
-    once$,
-    allowance$,
-    userDpmProxies$,
-    userDpmProxy$,
-    hasActiveDsProxyAavePosition$,
-    aaveLiquidations$: aaveV2.aaveLiquidations$, // @deprecated,
-    aaveUserAccountData$: aaveV2.aaveUserAccountData$,
     aaveAvailableLiquidityInUSDC$: aaveV2.aaveAvailableLiquidityInUSDC$,
-    proxyConsumed$,
-    dsr$,
-    dsrDeposit$,
-    potDsr$,
-    potTotalValueLocked$,
+    aaveLiquidations$: aaveV2.aaveLiquidations$, // @deprecated,
     aaveProtocolData$: aaveV2.aaveProtocolData$,
-    strategyConfig$,
-    readPositionCreatedEvents$,
-    ownersPositionsList$,
-    followedList$,
-    protocols,
-    commonTransactionServices,
-    gasEstimation$,
-    dpmAccountStateMachine,
-    allowanceStateMachine,
+    aaveUserAccountData$: aaveV2.aaveUserAccountData$,
+    accountBalances$,
+    addGasEstimation$,
+    ajnaPosition$,
+    allowance$,
     allowanceForAccount$,
+    allowanceStateMachine,
+    automationTriggersData$,
+    balanceInfo$,
+    balancesFromAddressInfoArray$,
+    balancesInfoArray$,
+    bonus$,
+    chainContext$,
+    checkReferralLocal$,
+    commonTransactionServices,
+    connectedContext$,
+    context$,
     contextForAddress$,
+    daiEthTokenPrice$,
+    dpmAccountStateMachine,
     dpmPositionData$,
     dpmPositionDataV2$,
-    ajnaPosition$,
-    identifiedTokens$,
-    chainContext$,
-    positionIdFromDpmProxy$,
-    switchChains,
+    dsr$,
+    dsrDeposit$,
     exchangeQuote$,
+    followedList$,
+    gasEstimation$,
+    gasPrice$,
+    generalManageVault$,
+    identifiedTokens$,
+    ilkDataList$,
+    ilks$: ilksSupportedOnNetwork$,
+    instiVault$,
+    manageGuniVault$,
+    manageInstiVault$,
+    manageMultiplyVault$,
+    manageVault$,
+    once$,
+    onEveryBlock$,
+    openGuniVault$,
+    openMultiplyVault$,
+    openVault$,
+    ownersPositionsList$,
+    positionIdFromDpmProxy$,
+    positionsOverviewSummary$,
+    potDsr$,
+    potTotalValueLocked$,
+    priceInfo$,
+    protocols,
+    readPositionCreatedEvents$,
+    reclaimCollateral$,
+    setupWeb3Context$,
+    strategyConfig$,
+    switchChains,
+    termsAcceptance$,
+    tokenPriceUSD$,
+    totalValueLocked$,
+    txHelpers$,
+    userDpmProxies$,
+    userDpmProxy$,
+    userReferral$,
+    userSettings$,
+    vaultBanners$,
+    vaultHistory$,
+    walletAssociatedRisk$,
+    web3Context$,
+    web3ContextConnected$,
+    yields$,
+    yieldsChange$,
   }
 }
 
