@@ -68,7 +68,7 @@ export function AjnaEarnOverviewManageController() {
       history,
     },
     form: {
-      state: { withdrawAmount },
+      state: { withdrawAmount, depositAmount },
     },
     notifications,
   } = useAjnaProductContext('earn')
@@ -142,7 +142,13 @@ export function AjnaEarnOverviewManageController() {
             projectedAnnualReward={zero}
             afterAvailableToWithdraw={
               simulation
-                ? negativeToZero(availableToWithdraw.minus(withdrawAmount || zero))
+                ? negativeToZero(
+                    depositAmount
+                      ? availableToWithdraw.plus(depositAmount)
+                      : withdrawAmount
+                      ? availableToWithdraw.minus(withdrawAmount)
+                      : zero,
+                  )
                 : undefined
             }
           />
