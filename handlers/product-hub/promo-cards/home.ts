@@ -39,7 +39,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       default: [promoCardETHCMakerBorrow, promoCardWSTETHBMakerBorrow, promoCardWBTCCMakerBorrow],
       tokens: {
         ETH: [promoCardETHCMakerBorrow, promoCardWSTETHBMakerBorrow, promoCardRETHAMakerBorrow],
-        WBTC: [promoCardWBTCCMakerBorrow, promoCardWBTCBMakerBorrow, promoCardLearnAboutBorrow],
+        BTC: [promoCardWBTCCMakerBorrow, promoCardWBTCBMakerBorrow, promoCardLearnAboutBorrow],
       },
     },
     [ProductHubProductType.Multiply]: {
@@ -54,7 +54,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardWSTETHAMakerMultiply,
           promoCardETHUSDCAaveV3OptimismMultiply,
         ],
-        WBTC: [
+        BTC: [
           promoCardWBTCBMakerMultiply,
           promoCardWBTCUSDCAaveV3EthereumMultiply,
           promoCardWBTCUSDCAaveV3OptimismMultiply,

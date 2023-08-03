@@ -16,6 +16,8 @@ export function getTokenGroup(
     case 'TBTC':
     case 'WBTC':
       return { [`${type}TokenGroup`]: 'BTC' }
+    case 'SDAI':
+      return { [`${type}TokenGroup`]: 'DAI' }
     default:
       return {}
   }

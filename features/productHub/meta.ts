@@ -105,6 +105,7 @@ export const productHubOptionsMap: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      // DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
       WLD: productHubTokenOptions.WLD,
     },

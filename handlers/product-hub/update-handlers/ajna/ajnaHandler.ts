@@ -12,7 +12,6 @@ import {
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
-import { isYieldLoopPool } from 'features/ajna/positions/common/helpers/isYieldLoopPool'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import {
@@ -75,7 +74,8 @@ async function getAjnaPoolData(
         ) => {
           const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
           const isShort = isShortPosition({ collateralToken })
-          const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
+          // Temporary hidden yield loops products until APY solution is found
+          // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const isWithMultiply = isPoolSupportingMultiply({ collateralToken, quoteToken })
           const collateralPrice = prices[collateralToken]
           const quotePrice = prices[quoteToken]
@@ -103,7 +103,7 @@ async function getAjnaPoolData(
             zero,
           ).toString()
           const earnLPStrategy = `${collateralToken}/${quoteToken} LP`
-          const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
+          // const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
           const weeklyNetApy = lendApr.toString()
 
@@ -130,7 +130,7 @@ async function getAjnaPoolData(
                 product: [
                   ProductHubProductType.Borrow,
                   ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
-                  ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
+                  // ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,
@@ -143,13 +143,13 @@ async function getAjnaPoolData(
                 }),
                 multiplyStrategy,
                 multiplyStrategyType,
-                ...(isYieldLoop && {
-                  earnStrategy: earnYieldLoopStrategy,
-                  managementType,
-                  ...(isPoolNotEmpty && {
-                    weeklyNetApy,
-                  }),
-                }),
+                // ...(isYieldLoop && {
+                //   earnStrategy: earnYieldLoopStrategy,
+                //   managementType,
+                //   ...(isPoolNotEmpty && {
+                //     weeklyNetApy,
+                //   }),
+                // }),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
                     fee: ajnaRewardsTooltip,

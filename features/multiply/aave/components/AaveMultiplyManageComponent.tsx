@@ -2,6 +2,8 @@ import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -10,6 +12,7 @@ import React from 'react'
 import { AaveMultiplyPositionData } from './AaveMultiplyPositionData'
 
 export type AaveMultiplyManageComponentProps = {
+  isOpenView?: boolean
   currentPosition?: IPosition
   nextPosition?: IPosition
   strategyConfig: IStrategyConfig
@@ -26,6 +29,7 @@ export function AaveMultiplyManageComponent({
   strategyConfig,
   nextPosition,
   dpmProxy,
+  isOpenView,
 }: AaveMultiplyManageComponentProps) {
   const { getAaveReserveData$, aaveReserveConfigurationData$, aaveHistory$ } = useAaveContext(
     strategyConfig.protocol,
@@ -45,6 +49,13 @@ export function AaveMultiplyManageComponent({
       debtToken: strategyConfig.tokens.collateral,
     }),
   )
+  const isAutomationAvailable =
+    !isOpenView &&
+    isSupportedAaveAutomationTokenPair(
+      strategyConfig.tokens.collateral,
+      strategyConfig.tokens.debt,
+    ) &&
+    supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId)
 
   return (
     <WithErrorHandler
@@ -86,6 +97,7 @@ export function AaveMultiplyManageComponent({
               debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
               aaveHistory={_aaveHistory}
+              isAutomationAvailable={isAutomationAvailable}
             />
           )
         }}
