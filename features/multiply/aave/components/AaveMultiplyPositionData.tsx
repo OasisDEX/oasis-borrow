@@ -1,7 +1,6 @@
 import { IPosition } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCard,
@@ -32,6 +31,7 @@ type AaveMultiplyPositionDataProps = {
   debtTokenReserveData: ReserveData
   debtTokenReserveConfigurationData: ReserveConfigurationData
   aaveHistory: VaultHistoryEvent[]
+  isAutomationAvailable?: boolean
 }
 
 function calcViewValuesForPosition(
@@ -87,13 +87,9 @@ export function AaveMultiplyPositionData({
   debtTokenReserveData,
   debtTokenReserveConfigurationData,
   aaveHistory,
+  isAutomationAvailable,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
-  const {
-    triggerData: {
-      stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
-    },
-  } = useAutomationContext()
 
   const currentPositionThings = calcViewValuesForPosition(
     currentPosition,
@@ -203,8 +199,7 @@ export function AaveMultiplyPositionData({
               liquidationThreshold={currentPosition.category.liquidationThreshold}
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={currentPosition.category.maxLoanToValue}
-              stopLossLevel={isStopLossEnabled ? stopLossLevel : undefined}
-              stopLossLevelLoading={true}
+              isAutomationAvailable={isAutomationAvailable}
             />
             <DetailsSectionContentCard
               title={t('system.net-borrow-cost')}
