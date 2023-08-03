@@ -52,11 +52,16 @@ function verifyAcceptance$(
     version: string,
   ) => Observable<{ acceptance: boolean; updated?: boolean }>,
   saveAcceptance$: (token: JWToken, version: string, email?: string) => Observable<void>,
-  jwtAuthSetupToken$: (web3: Web3, account: string, isGnosisSafe: boolean) => Observable<JWToken>,
+  jwtAuthSetupToken$: (
+    web3: Web3,
+    chainId: number,
+    account: string,
+    isGnosisSafe: boolean,
+  ) => Observable<JWToken>,
   version: string,
   web3Context: Web3ContextConnected,
 ): Observable<TermsAcceptanceState> {
-  const { account, web3, magicLinkEmail } = web3Context
+  const { account, web3, magicLinkEmail, chainId } = web3Context
 
   // helper function used in case when user deletes his JWT from Local storage
   // we have to recheck newly issued JWT against addresses in db that acceppted terms and then eventually save them
@@ -107,7 +112,7 @@ function verifyAcceptance$(
       const jwtAuth$ = new Subject<boolean>()
       if (updated) {
         token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
-        return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
+        return jwtAuthSetupToken$(web3, chainId, account, isGnosisSafe).pipe(
           switchMap((token) => {
             return checkAcceptance(token, version, magicLinkEmail)
           }),
@@ -125,7 +130,7 @@ function verifyAcceptance$(
             return withClose({ stage: 'jwtAuthRejected' })
           }
           token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
-          return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
+          return jwtAuthSetupToken$(web3, chainId, account, isGnosisSafe).pipe(
             switchMap((token) => {
               return checkAcceptance(token, version, magicLinkEmail)
             }),
@@ -156,7 +161,12 @@ function verifyAcceptance$(
 export function createTermsAcceptance$(
   web3Context$: Observable<Web3Context>,
   version: string,
-  jwtAuthSetupToken$: (web3: Web3, account: string, isGnosisSafe: boolean) => Observable<JWToken>,
+  jwtAuthSetupToken$: (
+    web3: Web3,
+    chainId: number,
+    account: string,
+    isGnosisSafe: boolean,
+  ) => Observable<JWToken>,
   checkAcceptance$: (
     token: JWToken,
     version: string,

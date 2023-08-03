@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Rewards } from 'features/ajna/common/components/AjnaRewardCard'
 import { getAjnaRewards } from 'features/ajna/positions/common/helpers/getAjnaRewards'
-import { getNetworkId } from 'features/web3Context'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
@@ -26,6 +26,7 @@ const errorState = {
 
 export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
   const { walletAddress } = useAccount()
+  const { chainId } = useWalletManagement()
   const resolvedAddress = useMemo(() => address || walletAddress, [address, walletAddress])
   const [state, setState] = useState<AjnaRewardsParamsState>({
     rewards: defaultRewards,
@@ -33,7 +34,6 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
     isLoading: true,
     refetch: () => {},
   })
-  const networkId = getNetworkId()
 
   const fetchData = useCallback(async (): Promise<void> => {
     setState({
@@ -44,7 +44,7 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
     if (resolvedAddress) {
       Promise.all([
         fetch(
-          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${networkId}`,
+          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}`,
         ),
         getAjnaRewards(resolvedAddress),
       ])

@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
-import { isTestnetNetworkId, NetworkIds, useCustomNetworkParameter } from 'blockchain/networks'
+import { isTestnetNetworkId } from 'blockchain/networks'
 import { ProductHubData } from 'features/productHub/types'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { ProductHubDataParams, PromoCardsCollection } from 'handlers/product-hub/types'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -19,7 +20,7 @@ export const useProductHubData = ({
   protocols,
   promoCardsCollection,
 }: ProductHubDataWithCards): ProductHubDataState => {
-  const [networkParameter] = useCustomNetworkParameter()
+  const { chainId } = useWalletManagement()
   const [state, setState] = useState<ProductHubDataState>({
     isError: false,
     isLoading: true,
@@ -41,7 +42,7 @@ export const useProductHubData = ({
         data: {
           protocols,
           promoCardsCollection,
-          testnet: isTestnetNetworkId(networkParameter?.id ?? NetworkIds.MAINNET),
+          testnet: isTestnetNetworkId(chainId),
         },
       })
       .then(({ data }) => {

@@ -32,7 +32,6 @@ import {
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { getNetworkId } from 'features/web3Context'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { UIChanges } from 'helpers/uiChanges'
@@ -49,9 +48,8 @@ export interface TriggerDataType {
 export function getTriggersByType(
   triggers: TriggerRecord[],
   triggerTypes: TriggerType[],
+  networkId: NetworkIds,
 ): TriggerDataType[] {
-  const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
-
   try {
     const decodedTriggers = triggers.map((trigger) => {
       const result = decodeTriggerDataAsJson(

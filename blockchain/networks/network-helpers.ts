@@ -1,11 +1,9 @@
-import { getStorageValue } from 'helpers/useLocalStorage'
 import { keyBy } from 'lodash'
 import { env } from 'process'
 
 import { forkNetworks, forkSettings } from './forks-config'
 import { NetworkIds } from './network-ids'
 import { NetworkConfig, NetworkConfigHexId, networks, networksById } from './networks-config'
-import { CustomNetworkStorageKey, mainnetNetworkParameter } from './use-custom-network-parameter'
 
 export const isTestnetEnabled = () => {
   const isDev = env.NODE_ENV !== 'production'
@@ -136,9 +134,7 @@ export const filterNetworksAccordingToSavedNetwork =
   }
 
 export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: NetworkIds) {
-  const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
-  const { id } = (customNetworkData || mainnetNetworkParameter) as typeof mainnetNetworkParameter
-  const isTestnet = isTestnetNetworkId(connectedChainId || id)
+  const isTestnet = connectedChainId ? isTestnetNetworkId(connectedChainId) : false
   const isForkSet = isForkSetForNetworkId(networkId)
   if (!networksById[networkId]) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
@@ -184,4 +180,8 @@ export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): Netw
 
 export function isNetworkHexIdSupported(networkId: NetworkConfigHexId) {
   return !!networkSetByHexId[networkId]
+}
+
+export function NetworkIdToNetworkHexIds(networkId: NetworkIds): NetworkConfigHexId {
+  return networkId.toString(16) as NetworkConfigHexId
 }

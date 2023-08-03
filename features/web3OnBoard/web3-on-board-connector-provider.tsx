@@ -86,6 +86,7 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
   },
   state: {
     status: WalletManagementStateStatus.disconnected,
+    networkConnectorNetworkId: NetworkIds.MAINNET,
   },
 })
 
@@ -153,7 +154,7 @@ function InternalProvider({ children }: WithChildren) {
   useEffect(() => {
     if (
       bridgeConnector &&
-      state.status === 'connected' &&
+      state.status === WalletManagementStateStatus.connected &&
       bridgeConnector.chainId !== state.networkConnectorNetworkId
     ) {
       networkConnector?.changeChainId(bridgeConnector.chainId)
@@ -177,7 +178,7 @@ function InternalProvider({ children }: WithChildren) {
   }, [networkConnector, handleChainChanged])
 
   useEffect(() => {
-    if (state.status === 'connecting') {
+    if (state.status === WalletManagementStateStatus.connecting) {
       if (bridgeConnector)
         dispatch({ type: WalletStateEventType.connected, connector: bridgeConnector })
       else {
@@ -196,7 +197,7 @@ function InternalProvider({ children }: WithChildren) {
   }, [state.status, createConnector, bridgeConnector, dispatch, connecting])
 
   useEffect(() => {
-    if (state.status === 'disconnected' && bridgeConnector) {
+    if (state.status === WalletManagementStateStatus.disconnected && bridgeConnector) {
       dispatch({
         type: WalletStateEventType.connect,
         desiredNetworkHexId: bridgeConnector.hexChainId,
@@ -206,7 +207,7 @@ function InternalProvider({ children }: WithChildren) {
 
   useEffect(() => {
     if (
-      state.status === 'setting-chain' &&
+      state.status === WalletManagementStateStatus.settingChain &&
       state.desiredNetworkHexId !== state.walletNetworkHexId
     ) {
       void setChain(
@@ -236,7 +237,7 @@ function InternalProvider({ children }: WithChildren) {
   }, [connectedChain?.id, dispatch])
 
   useEffect(() => {
-    if (state.status === 'unsupported-network') {
+    if (state.status === WalletManagementStateStatus.unsupportedNetwork) {
       openModal(UnsupportedNetworkModal, {
         switchNetwork: async () => {
           dispatch({
@@ -245,13 +246,13 @@ function InternalProvider({ children }: WithChildren) {
           })
         },
       })
-    } else if (state.status === 'connected') {
+    } else if (state.status === WalletManagementStateStatus.connected) {
       closeModal()
     }
   }, [state, dispatch])
 
   useEffect(() => {
-    if (state.status === 'disconnecting') {
+    if (state.status === WalletManagementStateStatus.disconnecting) {
       void disconnect().then(() => {
         dispatch({ type: WalletStateEventType.disconnected })
       })
@@ -263,7 +264,7 @@ function InternalProvider({ children }: WithChildren) {
       value={{
         connect: (desiredNetworkHexId?: NetworkConfigHexId) => {
           if (
-            state.status === 'connected' &&
+            state.status === WalletManagementStateStatus.connected &&
             desiredNetworkHexId &&
             state.walletNetworkHexId !== desiredNetworkHexId
           ) {
@@ -273,7 +274,7 @@ function InternalProvider({ children }: WithChildren) {
           }
         },
         disconnect: () => dispatch({ type: WalletStateEventType.disconnect }),
-        connecting: state.status === 'connecting',
+        connecting: state.status === WalletManagementStateStatus.connecting,
         setChain: (chainId: NetworkConfigHexId) =>
           dispatch({ type: WalletStateEventType.changeChain, desiredNetworkHexId: chainId }),
         setPageNetworks: (networkHexIds, includeTestNet = false) => {

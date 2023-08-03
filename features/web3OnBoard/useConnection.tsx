@@ -31,7 +31,7 @@ export interface Wallet {
 export interface WalletManagementState {
   disconnect: () => void
   connecting: boolean
-  chainId: NetworkIds | undefined
+  chainId: NetworkIds
   wallet: Wallet | undefined
 }
 export function useWalletManagement(): WalletManagementState {

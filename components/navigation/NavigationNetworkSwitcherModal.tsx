@@ -2,9 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import {
   CustomForkParameterFieldsType,
   CustomForkParameterType,
-  mainnetNetworkParameter,
   useCustomForkParameter,
-  useCustomNetworkParameter,
 } from 'blockchain/networks'
 import { NetworkNames } from 'blockchain/networks'
 import { networks, networksByName } from 'blockchain/networks'
@@ -14,7 +12,6 @@ import React from 'react'
 import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
 
 export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>) {
-  const [, setCustomNetwork] = useCustomNetworkParameter()
   const [forkSettings, setForkSettings] = useCustomForkParameter()
   const handleForkUpdate =
     (field: CustomForkParameterFieldsType) =>
@@ -33,7 +30,6 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
     setForkSettings(rest as CustomForkParameterType)
   }
   const saveAndReset = () => {
-    setCustomNetwork(mainnetNetworkParameter)
     window && window.location.reload() // duh
   }
   const closeProxy = () => {
