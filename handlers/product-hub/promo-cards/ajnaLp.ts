@@ -45,7 +45,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     [ProductHubProductType.Borrow]: {
       default: [
         promoCardETHUSDCAjnaBorrow,
-        promoCardSDAIUSDCAjnaBorrow,
+        promoCardWBTCUSDCAjnaBorrow,
         promoCardsWhatAreAjnaRewards,
       ],
       tokens: {
