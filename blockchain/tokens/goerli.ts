@@ -24,6 +24,7 @@ export const tokensGoerli = {
   LDO: contractDesc(erc20, goerli.common.LDO),
   MKR: contractDesc(erc20, goerli.maker.common.McdGov),
   RENBTC: contractDesc(erc20, goerli.common.RENBTC),
+  SDAI: contractDesc(erc20, goerli.common.SDAI),
   STETH: contractDesc(erc20, goerli.common.STETH),
   TBTC: contractDesc(erc20, goerli.common.TBTC),
   USDC: contractDesc(erc20, goerli.common.USDC),

@@ -70,6 +70,7 @@ export const tokensMainnet = {
   LDO: contractDesc(erc20, mainnet.common.LDO),
   MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
+  SDAI: contractDesc(erc20, mainnet.common.SDAI),
   STETH: contractDesc(erc20, mainnet.common.STETH),
   TBTC: contractDesc(erc20, mainnet.common.TBTC),
   USDC: contractDesc(erc20, mainnet.common.USDC),
