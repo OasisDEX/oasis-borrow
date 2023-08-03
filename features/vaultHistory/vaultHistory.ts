@@ -73,6 +73,7 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
         triggersData: {
           isAutomationDataLoaded: true,
           isAutomationEnabled: false,
+          chainId: event.chainId,
           triggers: [
             {
               triggerId: Number(event.triggerId),
@@ -95,6 +96,7 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
       const stopLossData = extractStopLossData({
         isAutomationDataLoaded: true,
         isAutomationEnabled: false,
+        chainId: event.chainId,
         triggers: [
           {
             triggerId: Number(event.triggerId),
@@ -112,6 +114,7 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
       const autoTakeProfitData = extractAutoTakeProfitData({
         isAutomationDataLoaded: true,
         isAutomationEnabled: false,
+        chainId: event.chainId,
         triggers: [
           {
             triggerId: Number(event.triggerId),

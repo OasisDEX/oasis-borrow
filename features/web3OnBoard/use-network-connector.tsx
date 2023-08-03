@@ -18,7 +18,7 @@ export function useNetworkConnector(): NetworkConnectorState {
     return {
       networkConnector: new NetworkConnector({
         urls,
-        defaultChainId: 1,
+        defaultChainId: 5,
       }),
       networkConfigs,
     }
