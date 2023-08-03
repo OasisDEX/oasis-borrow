@@ -141,7 +141,9 @@ export function AjnaEarnOverviewManageController() {
             // TODO adjust once data available in subgraph
             projectedAnnualReward={zero}
             afterAvailableToWithdraw={
-              simulation ? negativeToZero(availableToWithdraw.minus(withdrawAmount)) : undefined
+              simulation
+                ? negativeToZero(availableToWithdraw.minus(withdrawAmount || zero))
+                : undefined
             }
           />
         </DetailsSectionFooterItemWrapper>
