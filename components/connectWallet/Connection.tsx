@@ -20,7 +20,7 @@ export function Connection({
   useEffect(() => {}, [pageChainId, setPageNetworks])
   useEffect(() => {
     setPageNetworks(pageChainId ? [pageChainId] : undefined, includeTestNet)
-    if (walletConnect) connect(chainId)
+    if (walletConnect) connect(chainId, includeTestNet)
   }, [walletConnect, chainId, connect, setPageNetworks, pageChainId, includeTestNet])
 
   return children
