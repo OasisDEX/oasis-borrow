@@ -197,6 +197,8 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       ).length > 1,
   )
 
+  console.log(`multiple: ${dpmPositionData?.hasMultiplePositions}`)
+
   return {
     data: {
       ajnaPositionAggregatedData,
