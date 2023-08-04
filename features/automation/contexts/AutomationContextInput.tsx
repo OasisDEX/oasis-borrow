@@ -1,10 +1,10 @@
-import { useProductContext } from 'components/context/ProductContextProvider'
 import {
   AutomationCommonData,
   AutomationContextProvider,
   AutomationPositionData,
 } from 'components/context/AutomationContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import {
   AutomationDefinitionMetadata,
   OverwriteTriggersDefaults,

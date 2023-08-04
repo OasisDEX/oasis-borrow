@@ -1,7 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useProductContext } from 'components/context/ProductContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { createOpenVaultAnalytics$ } from 'features/borrow/open/pipes/openVaultAnalytics'
