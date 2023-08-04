@@ -45,9 +45,9 @@ export const getAjnaPositionAggregatedData = async (
 
   return {
     cumulatives: {
-      cumulativeDeposit: new BigNumber(response.account.cumulativeDeposit || 0),
-      cumulativeWithdraw: new BigNumber(response.account.cumulativeWithdraw || 0),
-      cumulativeFees: new BigNumber(response.account.cumulativeFees || 0),
+      cumulativeDeposit: new BigNumber(response.account?.cumulativeDeposit || 0),
+      cumulativeWithdraw: new BigNumber(response.account?.cumulativeWithdraw || 0),
+      cumulativeFees: new BigNumber(response.account?.cumulativeFees || 0),
     },
     auctions: response.auctions.map(
       ({ alreadyTaken, collateral, debtToCover, endOfGracePeriod, id, inLiquidation }) => ({
