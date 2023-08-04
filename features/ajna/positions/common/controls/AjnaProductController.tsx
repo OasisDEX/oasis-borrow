@@ -10,8 +10,8 @@ import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/a
 import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
-import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { useAjnaData } from 'features/ajna/positions/common/hooks/useAjnaData'
+import { useAjnaRedirect } from 'features/ajna/positions/common/hooks/useAjnaRedirect'
 import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
@@ -25,14 +25,13 @@ import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply
 import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { one } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 interface AjnaProductControllerProps {
   collateralToken?: string
@@ -75,35 +74,17 @@ export function AjnaProductController({
     product,
     quoteToken,
   })
+  const redirect = useAjnaRedirect({
+    ajnaPositionData,
+    collateralToken,
+    dpmPositionData,
+    id,
+    isProxyWithManyPositions,
+    product,
+    quoteToken,
+  })
 
-  useEffect(() => {
-    if (
-      id &&
-      isProxyWithManyPositions &&
-      dpmPositionData &&
-      !collateralToken &&
-      !quoteToken &&
-      !product
-    ) {
-      const {
-        product: dpmProduct,
-        collateralToken: dpmCollateralToken,
-        quoteToken: dpmQuoteToken,
-      } = dpmPositionData
-
-      void push(`/ethereum/ajna/${dpmProduct}/${dpmCollateralToken}-${dpmQuoteToken}/${id}`)
-    }
-  }, [isProxyWithManyPositions, dpmPositionData, id, collateralToken, quoteToken, product, push])
-
-  if ((dpmPositionData || ajnaPositionData) === null) void push(INTERNAL_LINKS.notFound)
-  if (
-    !id &&
-    collateralToken &&
-    quoteToken &&
-    product === 'multiply' &&
-    !isPoolSupportingMultiply({ collateralToken, quoteToken })
-  )
-    void push(INTERNAL_LINKS.ajnaMultiply)
+  if (redirect) void push(redirect)
 
   return (
     <WithConnection>

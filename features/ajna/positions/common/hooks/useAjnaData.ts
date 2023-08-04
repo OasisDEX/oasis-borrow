@@ -16,7 +16,7 @@ import { one } from 'helpers/zero'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
-export interface AjnaDataProps {
+interface AjnaDataProps {
   collateralToken?: string
   id?: string
   product?: AjnaProduct
