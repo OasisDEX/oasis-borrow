@@ -1,7 +1,7 @@
 import { getCloseToCollateralParams, getCloseToDaiParams } from '@oasisdex/multiply'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { AVERAGE_CLOSE_VAULT_COST } from 'features/automation/common/estimations/helpers'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -28,7 +28,7 @@ export function getOnCloseEstimations({
   const { gasPrice$ } = useMainContext()
   const [gasPrice] = useObservable(gasPrice$)
 
-  const { userSettings$ } = useAppContext()
+  const { userSettings$ } = useAccountContext()
   const [userSettings] = useObservable(userSettings$)
 
   const slippage = userSettings?.slippage || zero

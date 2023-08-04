@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useAppContext } from 'components/context/AppContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
 import { AppLink } from 'components/Links'
@@ -122,7 +121,7 @@ function SlippageLimitMessages({
 }
 
 function SlippageSettingsForm() {
-  const { userSettings$ } = useAppContext()
+  const { userSettings$ } = useAccountContext()
   const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()
   const [customOpened, setCustomOpened] = useState(false)

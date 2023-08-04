@@ -36,6 +36,11 @@ import {
   PositionCreated,
 } from 'features/aave/services/readPositionCreatedEvents'
 import { AccountDetails, createAccountData } from 'features/account/AccountData'
+import { createUserSettings$, UserSettingsState } from 'features/userSettings/userSettings'
+import {
+  checkUserSettingsLocalStorage$,
+  saveUserSettingsLocalStorage$,
+} from 'features/userSettings/userSettingsLocal'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { DepreciatedServices } from 'helpers/context/types'
 import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'
@@ -226,6 +231,11 @@ export function AccountContextProvider({ children }: WithChildren) {
         ensName$,
       )
 
+      const userSettings$ = createUserSettings$(
+        checkUserSettingsLocalStorage$,
+        saveUserSettingsLocalStorage$,
+      )
+
       return {
         accountData$,
         allNetworkReadPositionCreatedEvents$,
@@ -260,6 +270,7 @@ export function AccountContextProvider({ children }: WithChildren) {
         standardCdps$,
         tokenBalance$,
         urnResolver$,
+        userSettings$,
         vatGem$,
         vatIlks$,
         vatUrns$,
@@ -314,6 +325,7 @@ export type AccountContext = {
   standardCdps$: (address: string) => Observable<BigNumber[]>
   tokenBalance$: (args: TokenBalanceArgs) => Observable<BigNumber>
   urnResolver$: (cdpId: BigNumber) => Observable<VaultResolve>
+  userSettings$: Observable<UserSettingsState>
   vatGem$: (args: { ilk: string; urnAddress: string }) => Observable<BigNumber>
   vatIlks$: (args: string) => Observable<VatIlk>
   vatUrns$: (args: { ilk: string; urnAddress: string }) => Observable<Urn>

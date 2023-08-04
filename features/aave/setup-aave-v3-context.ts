@@ -47,9 +47,8 @@ export function setupAaveV3Context(
   ensureIsSupportedAaveV3NetworkId(networkId)
 
   const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
-  const { proxyConsumed$ } = accountContext
-  const { userSettings$, tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } =
-    appContext
+  const { userSettings$, proxyConsumed$ } = accountContext
+  const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = appContext
 
   const {
     allowanceForAccount$,

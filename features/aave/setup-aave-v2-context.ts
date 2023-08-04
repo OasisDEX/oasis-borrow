@@ -39,9 +39,8 @@ export function setupAaveV2Context(
   appContext: AppContext,
 ): AaveContext {
   const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
-  const { proxyConsumed$ } = accountContext
-  const { userSettings$, tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } =
-    appContext
+  const { proxyConsumed$, userSettings$ } = accountContext
+  const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = appContext
 
   const {
     allowanceForAccount$,

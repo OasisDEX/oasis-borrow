@@ -1,6 +1,5 @@
 import { NotificationsEventAdditionalParams } from 'analytics/analytics'
 import { NetworkIds } from 'blockchain/networks'
-import { isAppContextAvailable } from 'components/context/AppContextProvider'
 import {
   firstNotificationsRelevantDate,
   maxNumberOfNotifications,
@@ -20,7 +19,7 @@ import getConfig from 'next/config'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import io, { Socket } from 'socket.io-client'
 
-import { useMainContext } from './MainContextProvider'
+import { isMainContextAvailable, useMainContext } from './MainContextProvider'
 
 interface WebSocket {
   socket?: Socket
@@ -32,7 +31,7 @@ export const NotificationSocketContext = createContext<WebSocket | {}>({})
 export const useNotificationSocket = () => useContext(NotificationSocketContext) as WebSocket
 
 export function NotificationSocketProvider({ children }: WithChildren) {
-  if (!isAppContextAvailable()) {
+  if (!isMainContextAvailable()) {
     return null
   }
 

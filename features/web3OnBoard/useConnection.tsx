@@ -61,6 +61,7 @@ export function useConnection({
 
   return {
     connect: async (chainId, options) => {
+      console.log('connect context setup', chainId, options)
       if (options?.onConnect) {
         setOnConnectHandler(options.onConnect)
       }

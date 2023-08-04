@@ -145,11 +145,6 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
-import { createUserSettings$ } from 'features/userSettings/userSettings'
-import {
-  checkUserSettingsLocalStorage$,
-  saveUserSettingsLocalStorage$,
-} from 'features/userSettings/userSettingsLocal'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
@@ -216,6 +211,7 @@ export function setupAppContext(
     proxyAddress$,
     standardCdps$,
     urnResolver$,
+    userSettings$,
     vatGem$,
     vatUrns$,
     vault$,
@@ -534,11 +530,6 @@ export function setupAppContext(
   const balancesInfoArray$ = curry(createBalancesArrayInfo$)(balance$)
   const balancesFromAddressInfoArray$ = curry(createBalancesFromAddressArrayInfo$)(
     balanceFromAddress$,
-  )
-
-  const userSettings$ = createUserSettings$(
-    checkUserSettingsLocalStorage$,
-    saveUserSettingsLocalStorage$,
   )
 
   const openVault$ = memoize((ilk: string) =>
@@ -1088,7 +1079,6 @@ export function setupAppContext(
     userDpmProxies$,
     userDpmProxy$,
     userReferral$,
-    userSettings$,
     vaultBanners$,
     vaultHistory$,
     walletAssociatedRisk$,

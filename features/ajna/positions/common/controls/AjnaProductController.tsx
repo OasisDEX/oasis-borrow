@@ -4,6 +4,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { WithConnection } from 'components/connectWallet'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useAppContext } from 'components/context/AppContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
@@ -75,8 +76,8 @@ export function AjnaProductController({
     identifiedTokens$,
     readPositionCreatedEvents$,
     tokenPriceUSD$,
-    userSettings$,
   } = useAppContext()
+  const { userSettings$ } = useAccountContext()
   const { walletAddress } = useAccount()
   const [context] = useObservable(context$)
 

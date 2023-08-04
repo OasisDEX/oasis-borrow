@@ -64,6 +64,7 @@ export function useBridgeConnector(): BridgeConnectorState {
       networkId?: NetworkConfigHexId,
       forced: boolean = false,
     ) => {
+      console.log('createConnector context setup 1', connect)
       if (!connecting) {
         if (networkId && shouldSetRequestedNetworkHexId(customNetwork?.hexId, networkId)) {
           console.log(
@@ -76,9 +77,12 @@ export function useBridgeConnector(): BridgeConnectorState {
           )
           setNetworkHexId(networkId)
         }
+        console.log('createConnector context setup 2')
         if (automaticConnector) {
+          console.log('createConnector context setup 2.5')
           return
         }
+        console.log('createConnector context setup 3')
         await connect()
       }
     },

@@ -23,8 +23,11 @@ export type Web3OnBoardConnectorContext = {
   setPageChainId: React.Dispatch<NetworkConfigHexId | undefined>
 }
 
-const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
-  connect: () => Promise.resolve(undefined),
+export const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
+  connect: () => {
+    console.log('web3OnBoardConnectorContext default context setup')
+    return Promise.resolve(undefined)
+  },
   connector: undefined,
   networkConnector: new NetworkConnector({
     urls: {
@@ -70,6 +73,12 @@ function InternalProvider({ children }: WithChildren) {
     <web3OnBoardConnectorContext.Provider
       value={{
         connect: (networkId?: NetworkConfigHexId, forced?: boolean) => {
+          console.log(
+            'web3OnBoardConnectorContext set context setup',
+            setNetworkHexId,
+            networkId,
+            forced,
+          )
           return createConnector(setNetworkHexId, networkId, forced)
         },
         networkConnector: networkConnector,
