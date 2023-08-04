@@ -8,8 +8,8 @@ import {
   defaultMutableOpenVaultState,
   MutableOpenVaultState,
 } from 'features/borrow/open/pipes/openVault'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
-import { ProductContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'

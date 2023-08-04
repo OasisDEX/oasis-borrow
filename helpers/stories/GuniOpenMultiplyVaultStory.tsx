@@ -8,9 +8,9 @@ import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
 } from 'features/multiply/open/pipes/openMultiplyVault'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { mockGuniOpenEarnVault } from 'helpers/mocks/guniOpenEarnVault.mock'
 import { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
-import { ProductContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
