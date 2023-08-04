@@ -15,7 +15,7 @@ import { useAjnaRedirect } from 'features/ajna/positions/common/hooks/useAjnaRed
 import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
+} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
 import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
@@ -53,9 +53,7 @@ export function AjnaProductController({
 
   const {
     data: {
-      ajnaHistoryData,
-      ajnaPositionAuctionData,
-      ajnaPositionCumulativesData,
+      ajnaPositionAggregatedData,
       ajnaPositionData,
       balancesInfoArrayData,
       dpmPositionData,
@@ -100,9 +98,7 @@ export function AjnaProductController({
                   dpmPositionData,
                   tokenPriceUSDData,
                   gasPriceData,
-                  ajnaPositionAuctionData,
-                  ajnaHistoryData,
-                  ajnaPositionCumulativesData,
+                  ajnaPositionAggregatedData,
                   userSettingsData,
                   tokensPrecision,
                 ]}
@@ -125,9 +121,7 @@ export function AjnaProductController({
                   dpmPosition,
                   tokenPriceUSD,
                   gasPrice,
-                  ajnaPositionAuction,
-                  ajnaHistory,
-                  ajnaPositionCumulatives,
+                  { auction, history, cumulatives },
                   { slippage },
                   { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 ]) => (
@@ -181,9 +175,9 @@ export function AjnaProductController({
                           formReducto={useAjnaBorrowFormReducto}
                           position={ajnaPosition as AjnaPosition}
                           product={dpmPosition.product}
-                          positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
-                          positionHistory={ajnaHistory}
-                          positionCumulatives={ajnaPositionCumulatives}
+                          positionAuction={auction as AjnaBorrowishPositionAuction}
+                          positionHistory={history}
+                          positionCumulatives={cumulatives}
                         >
                           <AjnaBorrowPositionController />
                         </AjnaProductContextProvider>
@@ -203,9 +197,9 @@ export function AjnaProductController({
                           formReducto={useAjnaEarnFormReducto}
                           position={ajnaPosition as AjnaEarnPosition}
                           product={dpmPosition.product}
-                          positionAuction={ajnaPositionAuction as AjnaEarnPositionAuction}
-                          positionHistory={ajnaHistory}
-                          positionCumulatives={ajnaPositionCumulatives}
+                          positionAuction={auction as AjnaEarnPositionAuction}
+                          positionHistory={history}
+                          positionCumulatives={cumulatives}
                         >
                           <AjnaEarnPositionController />
                         </AjnaProductContextProvider>
@@ -218,9 +212,9 @@ export function AjnaProductController({
                           formReducto={useAjnaMultiplyFormReducto}
                           position={ajnaPosition as AjnaPosition}
                           product={dpmPosition.product}
-                          positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
-                          positionHistory={ajnaHistory}
-                          positionCumulatives={ajnaPositionCumulatives}
+                          positionAuction={auction as AjnaBorrowishPositionAuction}
+                          positionHistory={history}
+                          positionCumulatives={cumulatives}
                         >
                           <AjnaMultiplyPositionController />
                         </AjnaProductContextProvider>

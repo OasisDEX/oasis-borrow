@@ -1,7 +1,4 @@
-import {
-  AjnaBorrowerEvent,
-  AjnaHistoryEvent,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaBorrowerEvent, AjnaHistoryEvent } from 'features/ajna/history/types'
 import { zero } from 'helpers/zero'
 
 export const ajnaUnifiedHistoryItem = {

@@ -15,7 +15,7 @@ import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
+} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import {
   AjnaEarnFormAction,
   AjnaEarnFormState,

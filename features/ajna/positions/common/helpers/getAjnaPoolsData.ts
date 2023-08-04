@@ -39,15 +39,15 @@ export interface AjnaPoolsTableData {
   buckets: Bucket[]
 }
 
-export const getAjnaPoolsTableData = async (
+export const getAjnaPoolsData = async (
   networkId?: NetworkIds,
 ): Promise<AjnaPoolsTableData[]> => {
   const { response } = (await loadSubgraph(
     'Ajna',
-    'getPoolsTableData',
+    'getAjnaPoolsData',
     {},
     networkId,
-  )) as SubgraphsResponses['Ajna']['getPoolsTableData']
+  )) as SubgraphsResponses['Ajna']['getAjnaPoolsData']
 
   const negativeWadPrecision = WAD_PRECISION * -1
 

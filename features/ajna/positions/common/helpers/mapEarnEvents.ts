@@ -1,4 +1,4 @@
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 
 export const mapAjnaEarnEvents = (
   events: AjnaUnifiedHistoryEvent[],

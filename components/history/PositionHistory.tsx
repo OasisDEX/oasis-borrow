@@ -3,14 +3,13 @@ import { NetworkIds } from 'blockchain/networks'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
+import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
 import { Skeleton } from 'components/Skeleton'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
-import { AaveHistoryEvent } from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
-
-import { PositionHistoryItem } from './PositionHistoryItem'
 
 interface PositionHistoryProps {
   historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]

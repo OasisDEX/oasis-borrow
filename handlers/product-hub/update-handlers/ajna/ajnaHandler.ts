@@ -7,8 +7,8 @@ import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import {
   AjnaPoolsTableData,
-  getAjnaPoolsTableData,
-} from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+  getAjnaPoolsData,
+} from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
@@ -34,7 +34,7 @@ async function getAjnaPoolData(
   )
 
   try {
-    return (await getAjnaPoolsTableData(networkId))
+    return (await getAjnaPoolsData(networkId))
       .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>((v, pool) => {
         try {
           return [
