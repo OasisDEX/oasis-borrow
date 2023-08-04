@@ -1,12 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { FunctionalContextProvider } from 'components/context/FunctionalContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
-import {
-  tosContext,
-  TOSContextProvider,
-  useTOSContext,
-} from 'components/context/TOSContextProvider'
+import { useTOSContext } from 'components/context/TOSContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
@@ -264,11 +260,9 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   }
 
   return (
-    <TOSContextProvider>
+    <FunctionalContextProvider>
       {children}
-      <DeferedContextProvider context={tosContext}>
-        <TermsOfService userReferral={userReferral} />
-      </DeferedContextProvider>
-    </TOSContextProvider>
+      <TermsOfService userReferral={userReferral} />
+    </FunctionalContextProvider>
   )
 }
