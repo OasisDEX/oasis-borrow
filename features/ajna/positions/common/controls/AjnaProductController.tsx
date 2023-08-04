@@ -64,7 +64,6 @@ export function AjnaProductController({
     },
     errors,
     isOracless,
-    isProxyWithManyPositions,
     tokensPrecision,
   } = useAjnaData({
     collateralToken,
@@ -77,7 +76,6 @@ export function AjnaProductController({
     collateralToken,
     dpmPositionData,
     id,
-    isProxyWithManyPositions,
     product,
     quoteToken,
   })
@@ -165,7 +163,7 @@ export function AjnaProductController({
                       steps={steps[dpmPosition.product as AjnaProduct][flow]}
                       gasPrice={gasPrice}
                       slippage={slippage}
-                      isProxyWithManyPositions={isProxyWithManyPositions}
+                      isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
                     >
                       {dpmPosition.product === 'borrow' && (
                         <AjnaProductContextProvider

@@ -31,7 +31,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     dpmPositionDataV2$,
     gasPrice$,
     identifiedTokens$,
-    readPositionCreatedEvents$,
     tokenPriceUSD$,
     userSettings$,
   } = useAppContext()
@@ -80,13 +79,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
             })
           : EMPTY,
       [isOracless, id, collateralToken, quoteToken, product, identifiedTokensData, tokensAddresses],
-    ),
-  )
-
-  const [positionCreatedEventsData] = useObservable(
-    useMemo(
-      () => (dpmPositionData ? readPositionCreatedEvents$(dpmPositionData.user) : EMPTY),
-      [dpmPositionData],
     ),
   )
 
@@ -190,15 +182,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : undefined
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
-  const isProxyWithManyPositions = Boolean(
-    positionCreatedEventsData &&
-      positionCreatedEventsData.filter(
-        (item) => item.proxyAddress.toLowerCase() === dpmPositionData?.proxy.toLowerCase(),
-      ).length > 1,
-  )
-
-  console.log(`multiple: ${dpmPositionData?.hasMultiplePositions}`)
-
   return {
     data: {
       ajnaPositionAggregatedData,
@@ -222,7 +205,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       userSettingsError,
     ],
     isOracless,
-    isProxyWithManyPositions,
     tokensPrecision,
   }
 }
