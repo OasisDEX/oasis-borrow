@@ -32,7 +32,7 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <WithWalletConnection chainId={ethereumMainnetHexId}>
+    <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <PageSEOTags

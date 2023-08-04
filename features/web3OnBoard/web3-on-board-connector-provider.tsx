@@ -27,7 +27,7 @@ import {
 import { WalletStateEventType } from './wallet-state/wallet-state-event'
 
 export type Web3OnBoardConnectorContext = {
-  connect: (desiredNetworkHexId?: NetworkConfigHexId) => void
+  connect: (desiredNetworkHexId?: NetworkConfigHexId, couldBeConnectedToTestNet?: boolean) => void
   disconnect: () => void
   connecting: boolean
   setChain: (desiredNetworkHexId: NetworkConfigHexId) => void
@@ -93,6 +93,7 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
 export function shouldSendChangeNetworkOnConnected(
   desiredNetworkHexId: NetworkConfigHexId,
   state: WalletManagementState,
+  couldBeConnectedToTestNet: boolean,
 ) {
   ensureCorrectState(state, WalletManagementStateStatus.connected)
   if (desiredNetworkHexId === undefined) {
@@ -103,7 +104,14 @@ export function shouldSendChangeNetworkOnConnected(
     return !state.pageNetworkHexIds.includes(desiredNetworkHexId)
   }
 
-  return state.walletNetworkHexId !== desiredNetworkHexId
+  const desiredNetworkConfig = networkSetByHexId[desiredNetworkHexId]
+
+  const possibleNetworkHexIds = [desiredNetworkConfig.mainnetHexId]
+  if (couldBeConnectedToTestNet) {
+    possibleNetworkHexIds.push(desiredNetworkConfig.testnetHexId)
+  }
+
+  return !possibleNetworkHexIds.includes(state.walletNetworkHexId)
 }
 
 export function useSafaftyReload({ walletNetworkHexId }: WalletManagementState) {
@@ -262,11 +270,19 @@ function InternalProvider({ children }: WithChildren) {
   return (
     <web3OnBoardConnectorContext.Provider
       value={{
-        connect: (desiredNetworkHexId?: NetworkConfigHexId) => {
+        connect: (
+          desiredNetworkHexId?: NetworkConfigHexId,
+          couldBeConnectedToTestNet: boolean = false,
+        ) => {
           if (
             state.status === WalletManagementStateStatus.connected &&
             desiredNetworkHexId &&
-            state.walletNetworkHexId !== desiredNetworkHexId
+            state.walletNetworkHexId !== desiredNetworkHexId &&
+            shouldSendChangeNetworkOnConnected(
+              desiredNetworkHexId,
+              state,
+              couldBeConnectedToTestNet,
+            )
           ) {
             dispatch({ type: WalletStateEventType.changeChain, desiredNetworkHexId })
           } else {

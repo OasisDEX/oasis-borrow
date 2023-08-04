@@ -3,7 +3,7 @@ import { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
 import { useWeb3OnBoardConnectorContext } from './web3-on-board-connector-provider'
 
 export interface Connection {
-  connect: (chainId?: NetworkConfigHexId) => void
+  connect: (chainId?: NetworkConfigHexId, couldBeConnectedToTestNet?: boolean) => void
   connecting: boolean
   setPageNetworks: (
     networkHexIds: NetworkConfigHexId[] | undefined,
