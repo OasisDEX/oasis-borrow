@@ -145,6 +145,7 @@ export const NetworkButton = ({
           >
             {network.links.map((link) => (
               <Link
+                key={link.label}
                 href={link.url}
                 onClick={(e) => {
                   e.stopPropagation()

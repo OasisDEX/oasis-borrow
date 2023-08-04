@@ -222,6 +222,7 @@ export function setupAppContext(
     vaults$,
   }: AccountContext,
 ) {
+  console.log('App context setup')
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {

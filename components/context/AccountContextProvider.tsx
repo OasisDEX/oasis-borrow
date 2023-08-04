@@ -64,7 +64,6 @@ export function useAccountContext(): AccountContext {
 
 export function AccountContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AccountContext | undefined>(undefined)
-  console.log('context', context)
   const {
     context$,
     web3Context$,

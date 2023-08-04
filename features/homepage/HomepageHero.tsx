@@ -4,9 +4,10 @@ import {
   referralContext,
   ReferralContextProvider,
 } from 'components/context/ReferralContextProvider'
+import { tosContext, TOSContextProvider } from 'components/context/TOSContextProvider'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { checkReferralLocalStorage } from 'features/referralOverview/referralLocal'
-import { TermsOfServiceReferralDynamic } from 'features/termsOfService/TermsOfServiceReferralDynamic'
+import TermsOfServiceReferral from 'features/termsOfService/TermsOfServiceReferral'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -103,7 +104,13 @@ export const HomepageHero = () => {
       <DeferedContextProvider context={referralContext}>
         <Container>
           {referralsEnabled && landedWithRef && <NewReferralModal />}
-          {(referralsEnabled || notificationsEnabled) && <TermsOfServiceReferralDynamic />}
+          {(referralsEnabled || notificationsEnabled) && (
+            <TOSContextProvider>
+              <DeferedContextProvider context={tosContext}>
+                <TermsOfServiceReferral />
+              </DeferedContextProvider>
+            </TOSContextProvider>
+          )}
           <Flex
             sx={{
               height: 'auto',
