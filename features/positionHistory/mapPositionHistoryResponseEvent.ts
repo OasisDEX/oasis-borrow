@@ -65,6 +65,7 @@ export const mapPositionHistoryResponseEvent = (event: PositionHistoryResponse) 
   swapToToken: event.swapToToken,
   timestamp: Number(event.timestamp) * 1000,
   totalFee: new BigNumber(event.totalFee),
+  totalFeeInQuoteToken: new BigNumber(event.totalFeeInQuoteToken),
   txHash: event.txHash,
   withdrawnUSD: new BigNumber(event.withdrawnUSD),
 })
