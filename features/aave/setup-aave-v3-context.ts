@@ -6,7 +6,7 @@ import { AccountContext } from 'components/context/AccountContextProvider'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
-import { AppContext } from 'helpers/context/AppContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { MainContext } from 'helpers/context/MainContext'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -28,7 +28,7 @@ import {
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
-import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
+import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
@@ -40,7 +40,7 @@ import { getSupportedTokens } from './strategy-config'
 export function setupAaveV3Context(
   mainContext: MainContext,
   accountContext: AccountContext,
-  appContext: AppContext,
+  productContext: ProductContext,
   network: NetworkNames,
 ): AaveContext {
   const networkId = networksByName[network].id
@@ -48,7 +48,7 @@ export function setupAaveV3Context(
 
   const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
   const { userSettings$, proxyConsumed$ } = accountContext
-  const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = appContext
+  const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = productContext
 
   const {
     allowanceForAccount$,
@@ -63,10 +63,10 @@ export function setupAaveV3Context(
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(
+  } = getCommonPartsFromProductContext(
     mainContext,
     accountContext,
-    appContext,
+    productContext,
     onEveryBlock$,
     networkId,
   )

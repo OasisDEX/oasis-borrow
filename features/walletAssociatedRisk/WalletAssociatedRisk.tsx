@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'
@@ -9,7 +9,7 @@ interface WithWalletAssociatedRiskProps {
 }
 
 export function WithWalletAssociatedRisk({ children }: WithWalletAssociatedRiskProps) {
-  const { walletAssociatedRisk$ } = useAppContext()
+  const { walletAssociatedRisk$ } = useProductContext()
   const [walletAssociatedRisk] = useObservable(walletAssociatedRisk$)
   const shouldUseTrm = getConfig()?.publicRuntimeConfig?.useTrmApi
   const { disconnect } = useWalletManagement()

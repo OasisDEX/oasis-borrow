@@ -1,7 +1,7 @@
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
@@ -40,7 +40,7 @@ import React, { useMemo } from 'react'
 export function PositionsTable({ address }: { address: string }) {
   const { t } = useTranslation()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
-  const { ownersPositionsList$ } = useAppContext()
+  const { ownersPositionsList$ } = useProductContext()
   const { walletAddress } = useAccount()
   const memoizedOwnersPositionList$ = useMemo(
     () => ownersPositionsList$(checksumAddress),

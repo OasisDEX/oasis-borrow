@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Banner } from 'components/Banner'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +14,7 @@ type BonusContainerProps = {
 }
 
 export function BonusContainer(props: BonusContainerProps) {
-  const { bonus$ } = useAppContext()
+  const { bonus$ } = useProductContext()
   const [bonusViewModel] = useObservable(bonus$(props.cdpId))
   const { t } = useTranslation()
 

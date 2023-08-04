@@ -1,4 +1,7 @@
-import { appContext, isAppContextAvailable } from 'components/context/AppContextProvider'
+import {
+  isProductContextAvailable,
+  productContext,
+} from 'components/context/ProductContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
 import {
@@ -6,7 +9,7 @@ import {
   MutableOpenVaultState,
 } from 'features/borrow/open/pipes/openVault'
 import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
-import { AppContext } from 'next/app'
+import { ProductContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
@@ -67,10 +70,10 @@ export function openVaultStory({
       const ctx = {
         openVault$,
         accountData$: of(EMPTY),
-      } as any as AppContext
+      } as any as ProductContext
 
       return (
-        <appContext.Provider value={ctx as any}>
+        <productContext.Provider value={ctx as any}>
           <SharedUIContext.Provider
             value={{
               vaultFormOpened: true,
@@ -80,13 +83,13 @@ export function openVaultStory({
           >
             <OpenVaultStoryContainer ilk={ilk} title={title} />
           </SharedUIContext.Provider>
-        </appContext.Provider>
+        </productContext.Provider>
       )
     }
 }
 
 const OpenVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {
-  if (!isAppContextAvailable()) return null
+  if (!isProductContextAvailable()) return null
 
   return (
     <Container variant="appContainer">

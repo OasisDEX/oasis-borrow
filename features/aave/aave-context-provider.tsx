@@ -1,6 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { WithChildren } from 'helpers/types'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
@@ -41,18 +41,18 @@ export function useAaveContext(
 export function AaveContextProvider({ children }: WithChildren) {
   const mainContext = useMainContext()
   const accountContext = useAccountContext()
-  const appContext = useAppContext()
+  const productContext = useProductContext()
   const [aaveContexts, setAaveContexts] = useState<AaveContexts | undefined>(undefined)
 
   useEffect(() => {
-    if (appContext) {
+    if (productContext) {
       setAaveContexts({
         [NetworkNames.ethereumMainnet]: {
-          [LendingProtocol.AaveV2]: setupAaveV2Context(mainContext, accountContext, appContext),
+          [LendingProtocol.AaveV2]: setupAaveV2Context(mainContext, accountContext, productContext),
           [LendingProtocol.AaveV3]: setupAaveV3Context(
             mainContext,
             accountContext,
-            appContext,
+            productContext,
             NetworkNames.ethereumMainnet,
           ),
         },
@@ -60,16 +60,16 @@ export function AaveContextProvider({ children }: WithChildren) {
           [LendingProtocol.AaveV3]: setupAaveV3Context(
             mainContext,
             accountContext,
-            appContext,
+            productContext,
             NetworkNames.optimismMainnet,
           ),
         },
         // [NetworkNames.arbitrumMainnet]: {
-        //   [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.arbitrumMainnet),
+        //   [LendingProtocol.AaveV3]: setupAaveV3Context(productContext, NetworkNames.arbitrumMainnet),
         // },
       })
     }
-  }, [appContext])
+  }, [productContext])
 
   return <aaveContext.Provider value={aaveContexts}>{children}</aaveContext.Provider>
 }

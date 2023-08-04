@@ -171,7 +171,7 @@ import { MainContext } from './MainContext'
 import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
 import curry from 'ramda/src/curry'
 
-export function setupAppContext(
+export function setupProductContext(
   {
     account$,
     chainContext$,
@@ -206,7 +206,7 @@ export function setupAppContext(
   }: AccountContext,
   { termsAcceptance$ }: TOSContext,
 ) {
-  console.log('App context setup')
+  console.log('Product context setup')
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
@@ -1056,4 +1056,4 @@ export function setupAppContext(
   }
 }
 
-export type AppContext = ReturnType<typeof setupAppContext> & DepreciatedServices
+export type ProductContext = ReturnType<typeof setupProductContext> & DepreciatedServices

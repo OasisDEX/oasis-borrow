@@ -1,7 +1,7 @@
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
@@ -25,7 +25,7 @@ import React from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()
-  const { followedList$ } = useAppContext()
+  const { followedList$ } = useProductContext()
   const { walletAddress } = useAccount()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))

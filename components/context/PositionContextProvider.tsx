@@ -1,8 +1,8 @@
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 
-import { appContext, AppContextProvider } from './AppContextProvider'
 import { DeferedContextProvider } from './DeferedContextProvider'
+import { productContext, ProductContextProvider } from './ProductContextProvider'
 import { tosContext, TOSContextProvider } from './TOSContextProvider'
 
 export const PositionContextProvider = ({ children }: WithChildren) => {
@@ -10,9 +10,9 @@ export const PositionContextProvider = ({ children }: WithChildren) => {
   return (
     <TOSContextProvider>
       <DeferedContextProvider context={tosContext}>
-        <AppContextProvider>
-          <DeferedContextProvider context={appContext}>{children}</DeferedContextProvider>
-        </AppContextProvider>
+        <ProductContextProvider>
+          <DeferedContextProvider context={productContext}>{children}</DeferedContextProvider>
+        </ProductContextProvider>
       </DeferedContextProvider>
     </TOSContextProvider>
   )

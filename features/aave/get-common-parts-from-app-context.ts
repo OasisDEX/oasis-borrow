@@ -10,7 +10,7 @@ import { AccountContext } from 'components/context/AccountContextProvider'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'
-import { AppContext } from 'helpers/context/AppContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { MainContext } from 'helpers/context/MainContext'
 import { makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
@@ -23,7 +23,7 @@ import { getOperationExecutorTransactionMachine } from './common/services/getTra
 import { getProxiesRelatedWithPosition$ } from './helpers'
 import { PositionId } from './types'
 
-export function getCommonPartsFromAppContext(
+export function getCommonPartsFromProductContext(
   { connectedContext$, context$, txHelpers$ }: MainContext,
   { proxyAddress$, proxyConsumed$ }: AccountContext,
   {
@@ -33,7 +33,7 @@ export function getCommonPartsFromAppContext(
     commonTransactionServices,
     dpmAccountStateMachine,
     contextForAddress$,
-  }: AppContext,
+  }: ProductContext,
   refresh$: Observable<unknown>,
   networkId: ChainlinkSupportedNetworks,
 ) {

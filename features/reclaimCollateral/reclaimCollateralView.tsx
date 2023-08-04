@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -13,7 +13,7 @@ type ReclaimCollateralButtonProps = {
 
 export function ReclaimCollateralButton({ amount, token, id }: ReclaimCollateralButtonProps) {
   const { t } = useTranslation()
-  const { reclaimCollateral$ } = useAppContext()
+  const { reclaimCollateral$ } = useProductContext()
   const [state] = useObservable(reclaimCollateral$(id, token, amount))
 
   if (!state) return null

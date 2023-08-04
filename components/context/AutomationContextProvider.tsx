@@ -4,7 +4,10 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
-import { isAppContextAvailable, useAppContext } from 'components/context/AppContextProvider'
+import {
+  isProductContextAvailable,
+  useProductContext,
+} from 'components/context/ProductContextProvider'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AutoBSTriggerData,
@@ -146,7 +149,7 @@ export function AutomationContextProvider({
 }: PropsWithChildren<AutomationContextProviderProps>) {
   const { controller, nextCollateralPrice, token } = commonData
 
-  if (!isAppContextAvailable()) {
+  if (!isProductContextAvailable()) {
     return null
   }
 
@@ -201,7 +204,7 @@ export function AutomationContextProvider({
     metadata: initializedMetadata,
   })
 
-  const { automationTriggersData$ } = useAppContext()
+  const { automationTriggersData$ } = useProductContext()
   const autoTriggersData$ = useMemo(
     () => automationTriggersData$(positionData.id),
     [positionData.id.toNumber()],

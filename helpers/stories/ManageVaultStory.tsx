@@ -1,5 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { appContext, isAppContextAvailable } from 'components/context/AppContextProvider'
+import {
+  isProductContextAvailable,
+  productContext,
+} from 'components/context/ProductContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import {
@@ -8,7 +11,7 @@ import {
 } from 'features/borrow/manage/pipes/manageVault'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { AppContext } from 'helpers/context/AppContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import {
   MOCK_VAULT_ID,
   mockManageVault$,
@@ -111,10 +114,10 @@ export function manageVaultStory({
           ),
         ),
         manageVault$: () => obs$,
-      } as any as AppContext
+      } as any as ProductContext
 
       return (
-        <appContext.Provider value={ctx as any}>
+        <productContext.Provider value={ctx as any}>
           <SharedUIContext.Provider
             value={{
               vaultFormOpened: true,
@@ -124,13 +127,13 @@ export function manageVaultStory({
           >
             <ManageVaultStoryContainer title={title} vaultId={vault?.id || MOCK_VAULT_ID} />
           </SharedUIContext.Provider>
-        </appContext.Provider>
+        </productContext.Provider>
       )
     }
 }
 
 const ManageVaultStoryContainer = ({ title, vaultId }: { title?: string; vaultId: BigNumber }) => {
-  if (!isAppContextAvailable()) return null
+  if (!isProductContextAvailable()) return null
 
   return (
     <Container variant="appContainer">

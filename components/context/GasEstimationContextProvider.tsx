@@ -9,7 +9,7 @@ import { zero } from 'helpers/zero'
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { of } from 'rxjs'
 
-import { isAppContextAvailable, useAppContext } from './AppContextProvider'
+import { isProductContextAvailable, useProductContext } from './ProductContextProvider'
 
 export type GasEstimationContext = {
   isSuccessful: boolean
@@ -27,11 +27,11 @@ export const useGasEstimationContext = () => useContext(gasEstimationContext)
 */
 
 export function GasEstimationContextProvider({ children }: WithChildren) {
-  if (!isAppContextAvailable()) {
+  if (!isProductContextAvailable()) {
     return null
   }
   const [gasEstimate, setEstimate] = useState<GasEstimationContext | undefined>(undefined)
-  const { addGasEstimation$ } = useAppContext()
+  const { addGasEstimation$ } = useProductContext()
 
   const [txData] = useUIChanges<TxPayloadChange>(TX_DATA_CHANGE)
 

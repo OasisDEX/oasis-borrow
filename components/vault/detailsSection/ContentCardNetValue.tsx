@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import {
   ChangeVariantType,
   ContentCardProps,
@@ -213,7 +213,7 @@ export function ContentCardNetValue({
   changeVariant,
 }: ContentCardNetValueProps) {
   const { t } = useTranslation()
-  const { tokenPriceUSD$ } = useAppContext()
+  const { tokenPriceUSD$ } = useProductContext()
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([token]), [token])
   const [tokenPrice] = useObservable(_tokenPriceUSD$)
 

@@ -1,4 +1,7 @@
-import { appContext, isAppContextAvailable } from 'components/context/AppContextProvider'
+import {
+  isProductContextAvailable,
+  productContext,
+} from 'components/context/ProductContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
@@ -7,7 +10,7 @@ import {
   defaultMutableManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { AppContext } from 'helpers/context/AppContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import {
   MOCK_VAULT_ID,
   mockManageMultiplyVault$,
@@ -103,10 +106,10 @@ export function manageMultiplyVaultStory({
         ),
         manageMultiplyVault$: () => obs$,
         manageGuniVault$: () => obs$,
-      } as any as AppContext
+      } as any as ProductContext
 
       return (
-        <appContext.Provider value={ctx as any}>
+        <productContext.Provider value={ctx as any}>
           <SharedUIContext.Provider
             value={{
               vaultFormOpened: true,
@@ -116,13 +119,13 @@ export function manageMultiplyVaultStory({
           >
             <ManageMultiplyVaultStoryContainer title={title} />
           </SharedUIContext.Provider>
-        </appContext.Provider>
+        </productContext.Provider>
       )
     }
 }
 
 const ManageMultiplyVaultStoryContainer = ({ title }: { title?: string }) => {
-  if (!isAppContextAvailable()) return null
+  if (!isProductContextAvailable()) return null
 
   return (
     <Container variant="appContainer">

@@ -1,6 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ChevronUpDown } from 'components/ChevronUpDown'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import {
   EstimationError,
@@ -19,7 +19,7 @@ import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { context$ } = useMainContext()
-  const { manageVault$ } = useAppContext()
+  const { manageVault$ } = useProductContext()
   const {
     vault: { id },
     clear,

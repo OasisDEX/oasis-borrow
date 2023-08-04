@@ -1,6 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/context/AppContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
@@ -30,7 +30,7 @@ export function ManageMultiplyVaultContainer({
   history: History,
 }: ManageMultiplyVaultContainerProps & ManageMultiplyVaultContainerComponents) {
   const { context$ } = useMainContext()
-  const { manageMultiplyVault$, manageGuniVault$ } = useAppContext()
+  const { manageMultiplyVault$, manageGuniVault$ } = useProductContext()
   const {
     vault: { id, ilk },
     clear,

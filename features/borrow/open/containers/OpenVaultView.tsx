@@ -1,6 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
@@ -51,7 +51,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { context$ } = useMainContext()
   const { accountData$ } = useAccountContext()
-  const { openVault$ } = useAppContext()
+  const { openVault$ } = useProductContext()
   const openVaultWithIlk$ = openVault$(ilk)
   const [openVault, error] = useObservable(openVaultWithIlk$)
 

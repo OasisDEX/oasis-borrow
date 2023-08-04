@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import {
   AutomationCommonData,
   AutomationContextProvider,
@@ -32,7 +32,7 @@ export function AutomationContextInput({
   overwriteTriggersDefaults,
 }: PropsWithChildren<GeneralManageControlProps>) {
   const { context$ } = useMainContext()
-  const { tokenPriceUSD$, balanceInfo$ } = useAppContext()
+  const { tokenPriceUSD$, balanceInfo$ } = useProductContext()
   const [contextData, contextError] = useObservable(context$)
 
   const resolvedAccount =

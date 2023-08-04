@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
@@ -22,7 +22,7 @@ export function ManageVaultContainer({
   manageVault: ManageStandardBorrowVaultState
 }) {
   const { context$ } = useMainContext()
-  const { manageVault$ } = useAppContext()
+  const { manageVault$ } = useProductContext()
   const {
     vault: { id, ilk, token },
     clear,

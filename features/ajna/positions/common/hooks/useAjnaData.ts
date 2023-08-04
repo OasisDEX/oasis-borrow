@@ -3,7 +3,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaProduct } from 'features/ajna/common/types'
@@ -37,7 +37,7 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     identifiedTokens$,
     readPositionCreatedEvents$,
     tokenPriceUSD$,
-  } = useAppContext()
+  } = useProductContext()
 
   const isOracless =
     collateralToken && quoteToken && isPoolOracless({ collateralToken, quoteToken })

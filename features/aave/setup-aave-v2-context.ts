@@ -4,7 +4,7 @@ import { AccountContext } from 'components/context/AccountContextProvider'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
-import { AppContext } from 'helpers/context/AppContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { MainContext } from 'helpers/context/MainContext'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
@@ -24,7 +24,7 @@ import {
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
-import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
+import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
@@ -36,11 +36,11 @@ import { getSupportedTokens } from './strategy-config'
 export function setupAaveV2Context(
   mainContext: MainContext,
   accountContext: AccountContext,
-  appContext: AppContext,
+  productContext: ProductContext,
 ): AaveContext {
   const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
   const { proxyConsumed$, userSettings$ } = accountContext
-  const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = appContext
+  const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = productContext
 
   const {
     allowanceForAccount$,
@@ -55,10 +55,10 @@ export function setupAaveV2Context(
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(
+  } = getCommonPartsFromProductContext(
     mainContext,
     accountContext,
-    appContext,
+    productContext,
     onEveryBlock$,
     NetworkIds.MAINNET,
   )

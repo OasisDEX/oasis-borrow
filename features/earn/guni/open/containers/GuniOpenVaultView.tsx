@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
 import { guniFaq } from 'features/content/faqs/guni'
@@ -17,7 +17,7 @@ import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { gasPrice$ } = useMainContext()
-  const { openGuniVault$, daiEthTokenPrice$, yields$ } = useAppContext()
+  const { openGuniVault$, daiEthTokenPrice$, yields$ } = useProductContext()
   const [openVault, openVaultError] = useObservable(openGuniVault$(ilk))
   const [yields, yieldsError] = useObservable(yields$(ilk))
   const [gasPrice, gasPriceError] = useObservable(gasPrice$)

@@ -1,6 +1,6 @@
 import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
@@ -172,7 +172,7 @@ export function AjnaProductContextProvider({
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
-  const { positionIdFromDpmProxy$ } = useAppContext()
+  const { positionIdFromDpmProxy$ } = useProductContext()
 
   const {
     environment: {

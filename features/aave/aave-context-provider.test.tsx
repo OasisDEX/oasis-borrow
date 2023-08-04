@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react'
 import { NetworkNames } from 'blockchain/networks'
 import { accountContext, AccountContextProvider } from 'components/context/AccountContextProvider'
-import { appContext } from 'components/context/AppContextProvider'
+import { productContext } from 'components/context/ProductContextProvider'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
-import { AppContext } from 'helpers/context/AppContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { WithChildren } from 'helpers/types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
@@ -26,17 +26,17 @@ jest.mock('./setup-aave-v3-context', () => {
 })
 
 describe('AaveContextProvider', () => {
-  const context = { protocols: {} } as AppContext
+  const context = { protocols: {} } as ProductContext
   const wrapper = ({ children }: WithChildren) => (
     <MainContextProvider>
       <DeferedContextProvider context={mainContext}>
         <AccountContextProvider>
           <DeferedContextProvider context={accountContext}>
-            <appContext.Provider value={context}>
+            <productContext.Provider value={context}>
               <AaveContextProvider>
                 <DeferedContextProvider context={aaveContext}>{children}</DeferedContextProvider>
               </AaveContextProvider>
-            </appContext.Provider>
+            </productContext.Provider>
           </DeferedContextProvider>
         </AccountContextProvider>
       </DeferedContextProvider>

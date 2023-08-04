@@ -3,7 +3,7 @@ import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
 import { networksByName } from 'blockchain/networks'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
 import dayjs from 'dayjs'
@@ -421,7 +421,7 @@ export function VaultNextPriceUpdateCounter({
 }
 
 export function VaultNoticesView({ id }: { id: BigNumber }) {
-  const { vaultBanners$ } = useAppContext()
+  const { vaultBanners$ } = useProductContext()
   const [vaultBanners] = useObservable(vaultBanners$(id))
 
   if (!vaultBanners) return null
@@ -534,7 +534,7 @@ function getProtocolServices(
 }
 
 export function AavePositionNoticesView() {
-  const { protocols } = useAppContext()
+  const { protocols } = useProductContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const { aaveLiquidations$ } = getProtocolServices(state, protocols)
