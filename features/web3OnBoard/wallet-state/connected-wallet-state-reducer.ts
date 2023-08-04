@@ -8,7 +8,10 @@ import {
   WalletManagementStateStatus,
 } from './wallet-management-state'
 import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
-import { canTransitWithNetworkHexId } from './wallet-state-guards'
+import {
+  canTransitWithNetworkHexId,
+  shouldSendChangeNetworkOnConnected,
+} from './wallet-state-guards'
 
 export const connectedWalletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state: WalletManagementState,
@@ -26,8 +29,13 @@ export const connectedWalletStateReducer: Reducer<WalletManagementState, WalletS
     .with(
       {
         type: WalletStateEventType.changeChain,
-        desiredNetworkHexId: P.when((hexId) => hexId !== state.walletNetworkHexId),
       },
+      (event) =>
+        shouldSendChangeNetworkOnConnected(
+          event.desiredNetworkHexId,
+          state,
+          event.couldBeConnectedToTestNet ?? false,
+        ),
       (event) => {
         return {
           ...state,
