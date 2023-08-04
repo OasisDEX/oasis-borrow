@@ -8,5 +8,17 @@ export function getTokenGroup(
   // could be extended with switch case if there is more than one group of tokens
   // for now this simple condition is enough
 
-  return ['CBETH', 'RETH', 'WSTETH'].includes(token) ? { [`${type}TokenGroup`]: 'ETH' } : {}
+  switch (token) {
+    case 'CBETH':
+    case 'RETH':
+    case 'WSTETH':
+      return { [`${type}TokenGroup`]: 'ETH' }
+    case 'TBTC':
+    case 'WBTC':
+      return { [`${type}TokenGroup`]: 'BTC' }
+    case 'SDAI':
+      return { [`${type}TokenGroup`]: 'DAI' }
+    default:
+      return {}
+  }
 }

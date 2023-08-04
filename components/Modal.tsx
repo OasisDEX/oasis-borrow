@@ -37,7 +37,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
   const handleEscClose = useCallback((event) => {
     const { keyCode } = event
     if (keyCode === 27) {
-      close()
+      close && close()
     }
   }, [])
 

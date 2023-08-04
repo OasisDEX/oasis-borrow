@@ -15,6 +15,8 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardETHDAIAjnaBorrow,
     promoCardETHUSDCAjnaBorrow,
     promoCardGHODAIAjnaBorrow,
+    promoCardSDAIUSDCAjnaBorrow,
+    promoCardTBTCWBTCAjnaBorrow,
     promoCardUSDCETHAjnaBorrow,
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
@@ -48,14 +50,19 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       ],
       tokens: {
         ETH: [promoCardETHUSDCAjnaBorrow, promoCardETHDAIAjnaBorrow, promoCardsWhatAreAjnaRewards],
-        WBTC: [
+        BTC: [
           promoCardWBTCUSDCAjnaBorrow,
-          promoCardHowToUseBorrowOnAjna,
+          promoCardTBTCWBTCAjnaBorrow,
           promoCardsWhatAreAjnaRewards,
         ],
         USDC: [
           promoCardUSDCETHAjnaBorrow,
           promoCardUSDCWBTCAjnaBorrow,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        DAI: [
+          promoCardSDAIUSDCAjnaBorrow,
+          promoCardHowToUseBorrowOnAjna,
           promoCardsWhatAreAjnaRewards,
         ],
         GHO: [
@@ -82,7 +89,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardCBETHETHAjnaMultiply,
           promoCardsWhatAreAjnaRewards,
         ],
-        WBTC: [
+        BTC: [
           promoCardWBTCUSDCAjnaMultiply,
           promoCardWBTCDAIAjnaMultiply,
           promoCardsWhatAreAjnaRewards,
@@ -108,7 +115,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       default: [promoCardETHUSDCAjnaEarn, promoCardWSTETHDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
       tokens: {
         ETH: [promoCardUSDCETHAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
-        WBTC: [promoCardUSDCWBTCAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
+        BTC: [promoCardUSDCWBTCAjnaEarn, promoCardWhatIsEarnOnAjna, promoCardsWhatAreAjnaRewards],
         USDC: [promoCardETHUSDCAjnaEarn, promoCardWBTCUSDCAjnaEarn, promoCardsWhatAreAjnaRewards],
         DAI: [promoCardWSTETHDAIAjnaEarn, promoCardWBTCDAIAjnaEarn, promoCardsWhatAreAjnaRewards],
         GHO: [promoCardWSTETHGHOAjnaEarn, promoCardCBETHGHOAjnaEarn, promoCardsWhatAreAjnaRewards],

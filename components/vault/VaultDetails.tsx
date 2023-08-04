@@ -165,7 +165,7 @@ export function VaultDetailsCardModal({
   close,
   children,
 }: {
-  close: () => void
+  close?: () => void
   children: ReactNode
 }) {
   return (

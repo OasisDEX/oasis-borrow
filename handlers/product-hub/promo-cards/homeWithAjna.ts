@@ -36,6 +36,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
   const {
     promoCardETHUSDCAjnaBorrow,
     promoCardGHODAIAjnaBorrow,
+    promoCardSDAIUSDCAjnaBorrow,
     promoCardUSDCETHAjnaBorrow,
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
@@ -62,8 +63,9 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
       default: [promoCardETHCMakerBorrow, promoCardWSTETHBMakerBorrow, promoCardETHUSDCAjnaBorrow],
       tokens: {
         ETH: [promoCardETHCMakerBorrow, promoCardWSTETHBMakerBorrow, promoCardETHUSDCAjnaBorrow],
-        WBTC: [promoCardWBTCCMakerBorrow, promoCardWBTCBMakerBorrow, promoCardWBTCUSDCAjnaBorrow],
+        BTC: [promoCardWBTCCMakerBorrow, promoCardWBTCBMakerBorrow, promoCardWBTCUSDCAjnaBorrow],
         USDC: [promoCardUSDCETHAjnaBorrow, promoCardUSDCWBTCAjnaBorrow, promoCardLearnAboutBorrow],
+        DAI: [promoCardSDAIUSDCAjnaBorrow, promoCardLearnAboutBorrow, promoCardsWhatAreAjnaRewards],
         GHO: [promoCardGHODAIAjnaBorrow, promoCardLearnAboutBorrow, promoCardsWhatAreAjnaRewards],
         WLD: [promoCardWLDUSDCAjnaBorrow, promoCardLearnAboutBorrow, promoCardsWhatAreAjnaRewards],
       },
@@ -80,7 +82,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardWSTETHAMakerMultiply,
           promoCardETHUSDCAaveV3OptimismMultiply,
         ],
-        WBTC: [
+        BTC: [
           promoCardWBTCBMakerMultiply,
           promoCardWBTCUSDCAjnaMultiply,
           promoCardWBTCUSDCAaveV3OptimismMultiply,
@@ -114,7 +116,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardSTETHUSDCAaveV2Earn,
           promoCardUSDCETHAjnaEarn,
         ],
-        WBTC: [promoCardUSDCWBTCAjnaEarn, promoCardEarnOnYourAssets, promoCardFullySelfCustodial],
+        BTC: [promoCardUSDCWBTCAjnaEarn, promoCardEarnOnYourAssets, promoCardFullySelfCustodial],
         USDC: [promoCardETHUSDCAjnaEarn, promoCardWBTCUSDCAjnaEarn, promoCardEarnOnYourAssets],
         DAI: [promoCardDsrMakerEarn, promoCardWSTETHDAIAjnaEarn, promoCardEarnOnYourAssets],
         GHO: [promoCardWSTETHGHOAjnaEarn, promoCardCBETHGHOAjnaEarn, promoCardWBTCGHOAjnaEarn],

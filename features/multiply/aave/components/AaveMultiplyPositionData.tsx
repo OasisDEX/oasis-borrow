@@ -31,6 +31,7 @@ type AaveMultiplyPositionDataProps = {
   debtTokenReserveData: ReserveData
   debtTokenReserveConfigurationData: ReserveConfigurationData
   aaveHistory: VaultHistoryEvent[]
+  isAutomationAvailable?: boolean
 }
 
 function calcViewValuesForPosition(
@@ -86,6 +87,7 @@ export function AaveMultiplyPositionData({
   debtTokenReserveData,
   debtTokenReserveConfigurationData,
   aaveHistory,
+  isAutomationAvailable,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
 
@@ -197,6 +199,7 @@ export function AaveMultiplyPositionData({
               liquidationThreshold={currentPosition.category.liquidationThreshold}
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={currentPosition.category.maxLoanToValue}
+              isAutomationAvailable={isAutomationAvailable}
             />
             <DetailsSectionContentCard
               title={t('system.net-borrow-cost')}

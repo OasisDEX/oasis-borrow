@@ -38,6 +38,8 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
   const ETHGHOAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['ETH', 'GHO'])
   const ETHUSDCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['ETH', 'USDC'])
   const GHODAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['GHO', 'DAI'])
+  const SDAIUSDCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['SDAI', 'USDC'])
+  const TBTCWBTCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['TBTC', 'WBTC'])
   const USDCETHAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'ETH'])
   const USDCWBTCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['USDC', 'WBTC'])
   const WBTCDAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WBTC', 'DAI'])
@@ -75,6 +77,20 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     collateralToken: 'GHO',
     debtToken: 'DAI',
     product: GHODAIAjnaBorrowishProduct,
+    ...commonBorrowPromoCardPayload,
+    pills: [],
+  })
+  const promoCardSDAIUSDCAjnaBorrow = parseBorrowPromoCard({
+    collateralToken: 'SDAI',
+    debtToken: 'USDC',
+    product: SDAIUSDCAjnaBorrowishProduct,
+    ...commonBorrowPromoCardPayload,
+    pills: [],
+  })
+  const promoCardTBTCWBTCAjnaBorrow = parseBorrowPromoCard({
+    collateralToken: 'TBTC',
+    debtToken: 'WBTC',
+    product: TBTCWBTCAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
     pills: [],
   })
@@ -258,6 +274,8 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     promoCardETHDAIAjnaBorrow,
     promoCardETHUSDCAjnaBorrow,
     promoCardGHODAIAjnaBorrow,
+    promoCardSDAIUSDCAjnaBorrow,
+    promoCardTBTCWBTCAjnaBorrow,
     promoCardUSDCETHAjnaBorrow,
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCGHOAjnaBorrow,

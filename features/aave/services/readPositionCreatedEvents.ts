@@ -1,11 +1,13 @@
 import { ensureContractsExist, extendContract, getNetworkContracts } from 'blockchain/contracts'
+import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { Context } from 'blockchain/network'
 import { getRpcProvidersForLogs, NetworkIds } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
-import { combineLatest, EMPTY, Observable } from 'rxjs'
+import { uniq } from 'lodash'
+import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { catchError, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import { PositionCreated__factory } from 'types/ethers-contracts'
 import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
@@ -138,17 +140,31 @@ export function createReadPositionCreatedEvents$(
   walletAddress: string,
 ): Observable<Array<PositionCreated>> {
   return combineLatest(context$, userDpmProxies$(walletAddress)).pipe(
-    switchMap(([context, dpmProxies]) => {
-      return combineLatest(
-        dpmProxies.map((dpmProxy) => {
-          return getPositionCreatedEventForProxyAddress(context, dpmProxy.proxy)
-        }),
-      ).pipe(
-        map((positionCreatedEvents) => {
-          return mapEvent(positionCreatedEvents, context.chainId)
-        }),
-      )
-    }),
+    switchMap(([context, dpmProxies]) =>
+      combineLatest(
+        dpmProxies.map((dpmProxy) =>
+          getPositionCreatedEventForProxyAddress(context, dpmProxy.proxy),
+        ),
+      ),
+    ),
+    switchMap((positionCreatedEvents) =>
+      combineLatest(
+        context$,
+        of(positionCreatedEvents),
+        identifyTokens$(
+          context$,
+          of(undefined),
+          uniq(
+            positionCreatedEvents
+              .flatMap((e) => e)
+              .flatMap((e) => [e.args.collateralToken, e.args.debtToken]),
+          ),
+        ),
+      ),
+    ),
+    switchMap(([{ chainId }, positionCreatedEvents]) =>
+      of(mapEvent(positionCreatedEvents, chainId)),
+    ),
     startWith([]),
     shareReplay(1),
   )

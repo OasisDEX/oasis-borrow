@@ -35,6 +35,7 @@ export interface TokenConfig {
   safeCollRatio?: number
   protocol: LendingProtocol
   chain: MainNetworkNames
+  oracleTicker?: string
 }
 
 export type SimplifiedTokenConfig = Pick<TokenConfig, 'name' | 'precision' | 'symbol'>

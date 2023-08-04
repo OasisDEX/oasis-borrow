@@ -37,6 +37,7 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 
   return (
     <SimulateSection
+      isOpenView
       strategyConfig={config}
       currentPosition={state.context.currentPosition}
       collateralPrice={state.context.collateralPrice}
@@ -66,15 +67,15 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
           label: t('open-vault.simulate'),
           content: (
             <Grid variant="vaultContainer">
-              <Box>
-                <SimulateSectionComponent config={strategyConfig} />
-                <Box sx={{ mt: 5 }}></Box>
-              </Box>
-              <Box>
-                <AutomationContextInput {...automationContextProps}>
+              <AutomationContextInput {...automationContextProps}>
+                <Box>
+                  <SimulateSectionComponent config={strategyConfig} />
+                  <Box sx={{ mt: 5 }}></Box>
+                </Box>
+                <Box>
                   <SidebarOpenAaveVault />
-                </AutomationContextInput>
-              </Box>
+                </Box>
+              </AutomationContextInput>
             </Grid>
           ),
         },

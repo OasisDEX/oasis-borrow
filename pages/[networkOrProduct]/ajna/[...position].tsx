@@ -60,8 +60,8 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
       props: {
         ...(await serverSideTranslations(locale || 'en', ['common'])),
         product,
-        collateralToken,
-        quoteToken,
+        collateralToken: caseSensitiveCollateralToken,
+        quoteToken: caseSensitiveQuoteToken,
         pool,
         id,
       },
