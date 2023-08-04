@@ -35,7 +35,7 @@ const renderSeparator = () => {
 }
 
 export function NavigationNetworkSwitcherOrb() {
-  const { connect, connecting, setChain } = useConnection()
+  const { connecting, setChain } = useConnection()
   const { wallet, chainId } = useWalletManagement()
   const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
@@ -45,7 +45,7 @@ export function NavigationNetworkSwitcherOrb() {
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
 
   const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain))
+    return setChain(getOppositeNetworkHexIdByHexId(currentConnectedChain))
   }
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,
