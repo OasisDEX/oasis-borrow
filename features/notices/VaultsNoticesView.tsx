@@ -3,7 +3,6 @@ import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
 import { networksByName } from 'blockchain/networks'
-import { ProtocolsServices } from 'components/AppContext'
 import { useAppContext } from 'components/context/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
@@ -12,6 +11,7 @@ import { useManageAaveStateMachineContext } from 'features/aave/manage/container
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
+import { ProtocolsServices } from 'helpers/context/types'
 import {
   formatAddress,
   formatCryptoBalance,

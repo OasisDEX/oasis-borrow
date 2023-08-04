@@ -6,10 +6,12 @@ import {
 } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { AppContext } from 'components/AppContext'
+import { AccountContext } from 'components/context/AccountContextProvider'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'
+import { AppContext } from 'helpers/context/AppContext'
+import { MainContext } from 'helpers/context/MainContext'
 import { makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -22,14 +24,11 @@ import { getProxiesRelatedWithPosition$ } from './helpers'
 import { PositionId } from './types'
 
 export function getCommonPartsFromAppContext(
+  { connectedContext$, context$, txHelpers$ }: MainContext,
+  { proxyAddress$, proxyConsumed$ }: AccountContext,
   {
-    connectedContext$,
-    context$,
     gasEstimation$,
-    proxyAddress$,
     userDpmProxy$,
-    txHelpers$,
-    proxyConsumed$,
     userDpmProxies$,
     commonTransactionServices,
     dpmAccountStateMachine,

@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
 import { Skeleton } from 'components/Skeleton'
@@ -27,7 +27,7 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
   isShort = false,
   priceFormat,
 }) => {
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
 
   const { t } = useTranslation()

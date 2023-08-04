@@ -4,8 +4,8 @@ import {
   Pages,
   trackingEvents,
 } from 'analytics/analytics'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'

@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/context/AppContextProvider'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { AppLink } from 'components/Links'
 import {
   AUTO_SELL_FORM_CHANGE,
@@ -130,7 +130,7 @@ function getZeroDebtProtectionBannerProps({
 }
 
 export function ProtectionControl() {
-  const { txHelpers$ } = useAppContext()
+  const { txHelpers$ } = useMainContext()
   const {
     positionData: { debt, debtFloor, debtToken },
     metadata: {

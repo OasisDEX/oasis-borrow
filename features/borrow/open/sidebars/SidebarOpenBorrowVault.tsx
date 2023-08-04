@@ -1,5 +1,5 @@
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { AutomationContextProvider } from 'components/context/AutomationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
@@ -32,7 +32,7 @@ import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenSta
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { t } = useTranslation()
-  const { accountData$ } = useAppContext()
+  const { accountData$ } = useAccountContext()
   const [accountData] = useObservable(accountData$)
 
   const {

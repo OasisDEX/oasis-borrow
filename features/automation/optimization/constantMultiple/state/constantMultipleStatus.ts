@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { getAutoBSVaultChange } from 'features/automation/common/helpers'
 import { SidebarAutomationStages } from 'features/automation/common/types'
 import {
@@ -60,7 +60,7 @@ export function getConstantMultipleStatus({
   lockedCollateral,
   positionRatio,
 }: GetConstantMultipleStatusParams): ConstantMultipleStatus {
-  const { gasPrice$ } = useAppContext()
+  const { gasPrice$ } = useMainContext()
   const [gasPrice] = useObservable(gasPrice$)
 
   const isEditing = checkIfIsEditingConstantMultiple({

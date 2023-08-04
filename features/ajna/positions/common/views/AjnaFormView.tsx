@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { FlowSidebar } from 'components/FlowSidebar'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
@@ -37,7 +37,7 @@ export function AjnaFormView({
 }: PropsWithChildren<AjnaFormViewProps>) {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
   const { walletAddress } = useAccount()
   const {

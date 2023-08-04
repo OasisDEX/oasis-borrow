@@ -5,7 +5,6 @@ import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { TxHelpers } from 'components/AppContext'
 import {
   contextToEthersTransactions,
   IStrategyInfo,
@@ -18,6 +17,7 @@ import { OpenAaveStateMachineServices } from 'features/aave/open/state'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
+import { TxHelpers } from 'helpers/context/types'
 import {
   AaveReserveConfigurationDataParams,
   ProtocolData,

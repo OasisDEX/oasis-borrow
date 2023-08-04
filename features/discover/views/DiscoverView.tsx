@@ -1,5 +1,5 @@
 import { getMixpanelUserContext } from 'analytics/analytics'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { DiscoverNavigation } from 'features/discover/common/DiscoverNavigation'
 import { DiscoverWrapperWithIntro } from 'features/discover/common/DiscoverWrapperWithIntro'
 import { DiscoverControl } from 'features/discover/controllers/DiscoverControl'
@@ -10,7 +10,7 @@ import React from 'react'
 
 export function DiscoverView({ kind }: { kind: DiscoverPages }) {
   const { i18n } = useTranslation()
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
 
   const userContext = getMixpanelUserContext(i18n.language, context)

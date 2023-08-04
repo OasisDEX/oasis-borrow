@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
@@ -23,7 +23,7 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
-  const { accountData$ } = useAppContext()
+  const { accountData$ } = useAccountContext()
   const [accountData] = useObservable(accountData$)
 
   const {

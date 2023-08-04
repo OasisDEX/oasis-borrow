@@ -5,7 +5,7 @@ import { GasEstimationContext } from 'components/context/GasEstimationContextPro
 import { DimmedList } from 'components/DImmedList'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
 import { Tooltip, useTooltip } from 'components/Tooltip'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
 import { formatAmount } from 'helpers/formatters/format'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { WithChildren } from 'helpers/types'

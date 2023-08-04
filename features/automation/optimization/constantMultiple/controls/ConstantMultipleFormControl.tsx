@@ -1,5 +1,4 @@
 import { AutomationEventIds, Pages } from 'analytics/analytics'
-import { TxHelpers } from 'components/AppContext'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import {
@@ -16,6 +15,7 @@ import {
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { getConstantMultipleStatus } from 'features/automation/optimization/constantMultiple/state/constantMultipleStatus'
 import { getConstantMultipleTxHandlers } from 'features/automation/optimization/constantMultiple/state/constantMultipleTxHandlers'
+import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

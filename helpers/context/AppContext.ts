@@ -53,8 +53,7 @@ import {
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
 import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
-import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { AccountContext } from 'components/context/AccountContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
@@ -186,11 +185,12 @@ import {
 } from 'rxjs/operators'
 
 import { refreshInterval } from './constants'
+import { MainContext } from './MainContext'
 import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
 import curry from 'ramda/src/curry'
 
-export function setupAppContext() {
-  const {
+export function setupAppContext(
+  {
     account$,
     chainContext$,
     connectedContext$,
@@ -200,12 +200,10 @@ export function setupAppContext() {
     once$,
     onEveryBlock$,
     oracleContext$,
-    switchChains,
     txHelpers$,
     web3Context$,
-    web3ContextConnected$,
-  } = useMainContext()
-  const {
+  }: MainContext,
+  {
     balance$,
     cdpManagerIlks$,
     charterCdps$,
@@ -222,8 +220,8 @@ export function setupAppContext() {
     vatUrns$,
     vault$,
     vaults$,
-  } = useAccountContext()
-
+  }: AccountContext,
+) {
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
@@ -859,8 +857,6 @@ export function setupAppContext() {
     checkReferralLocalStorage$,
   )
 
-  const checkReferralLocal$ = checkReferralLocalStorage$()
-
   const vaultBanners$ = memoize(
     curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
@@ -1042,7 +1038,6 @@ export function setupAppContext() {
     aaveLiquidations$: aaveV2.aaveLiquidations$, // @deprecated,
     aaveProtocolData$: aaveV2.aaveProtocolData$,
     aaveUserAccountData$: aaveV2.aaveUserAccountData$,
-    accountBalances$,
     addGasEstimation$,
     ajnaPosition$,
     allowance$,
@@ -1053,11 +1048,7 @@ export function setupAppContext() {
     balancesFromAddressInfoArray$,
     balancesInfoArray$,
     bonus$,
-    chainContext$,
-    checkReferralLocal$,
     commonTransactionServices,
-    connectedContext$,
-    context$,
     contextForAddress$,
     daiEthTokenPrice$,
     dpmAccountStateMachine,
@@ -1068,7 +1059,6 @@ export function setupAppContext() {
     exchangeQuote$,
     followedList$,
     gasEstimation$,
-    gasPrice$,
     generalManageVault$,
     identifiedTokens$,
     ilkDataList$,
@@ -1078,8 +1068,6 @@ export function setupAppContext() {
     manageInstiVault$,
     manageMultiplyVault$,
     manageVault$,
-    once$,
-    onEveryBlock$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,
@@ -1093,11 +1081,9 @@ export function setupAppContext() {
     readPositionCreatedEvents$,
     reclaimCollateral$,
     strategyConfig$,
-    switchChains,
     termsAcceptance$,
     tokenPriceUSD$,
     totalValueLocked$,
-    txHelpers$,
     userDpmProxies$,
     userDpmProxy$,
     userReferral$,
@@ -1105,8 +1091,6 @@ export function setupAppContext() {
     vaultBanners$,
     vaultHistory$,
     walletAssociatedRisk$,
-    web3Context$,
-    web3ContextConnected$,
     yields$,
     yieldsChange$,
   }

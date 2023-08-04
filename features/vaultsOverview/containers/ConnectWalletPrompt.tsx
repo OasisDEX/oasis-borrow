@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { AppLink } from 'components/Links'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +8,7 @@ import { Flex, Heading } from 'theme-ui'
 
 export function ConnectWalletPrompt() {
   const { t } = useTranslation()
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [contextData] = useObservable(context$)
 
   return contextData?.status === 'connectedReadonly' ? (

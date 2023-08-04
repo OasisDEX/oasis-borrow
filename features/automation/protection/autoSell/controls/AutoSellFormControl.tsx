@@ -1,6 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
-import { TxHelpers } from 'components/AppContext'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers'
@@ -13,6 +12,7 @@ import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHa
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
+import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

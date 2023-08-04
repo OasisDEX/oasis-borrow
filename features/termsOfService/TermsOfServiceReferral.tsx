@@ -2,6 +2,7 @@ import { DeferedContextProvider } from 'components/context/DeferedContextProvide
 import { useReferralContext } from 'components/context/ReferralContextProvider'
 import { tosContext } from 'components/context/TOSContextProvider'
 import { useObservable } from 'helpers/observableHook'
+import React from 'react'
 
 import { TermsOfService } from './TermsOfService'
 

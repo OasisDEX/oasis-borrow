@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/context/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
@@ -9,6 +8,7 @@ import {
 } from 'features/borrow/manage/pipes/manageVault'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { AppContext } from 'helpers/context/AppContext'
 import {
   MOCK_VAULT_ID,
   mockManageVault$,

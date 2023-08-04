@@ -9,7 +9,7 @@ import { DsrDepositStage, DsrDepositState } from 'features/dsr/helpers/dsrDeposi
 import { DsrSidebarCreation } from 'features/dsr/sidebar/DsrSidebarCreation'
 import { createPrimaryButtonLabel, isDsrButtonDisabled } from 'features/dsr/utils/helpers'
 import { isProxyStage } from 'features/proxy/proxy'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent, useMemo } from 'react'

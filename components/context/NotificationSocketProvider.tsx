@@ -1,6 +1,6 @@
 import { NotificationsEventAdditionalParams } from 'analytics/analytics'
 import { NetworkIds } from 'blockchain/networks'
-import { isAppContextAvailable, useAppContext } from 'components/context/AppContextProvider'
+import { isAppContextAvailable } from 'components/context/AppContextProvider'
 import {
   firstNotificationsRelevantDate,
   maxNumberOfNotifications,
@@ -20,6 +20,8 @@ import getConfig from 'next/config'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import io, { Socket } from 'socket.io-client'
 
+import { useMainContext } from './MainContextProvider'
+
 interface WebSocket {
   socket?: Socket
   analyticsData: NotificationsEventAdditionalParams
@@ -35,7 +37,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
   }
 
   const notificationsToggle = useFeatureToggle('Notifications')
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
   const [socket, setSocket] = useState<Socket | undefined>(undefined)
   const [token, setToken] = useState('')

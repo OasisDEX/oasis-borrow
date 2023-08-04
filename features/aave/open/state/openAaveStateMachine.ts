@@ -14,7 +14,6 @@ import {
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
-import { AutomationTxData } from 'components/AppContext'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
 import {
   BaseAaveContext,
@@ -48,6 +47,7 @@ import {
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
+import { AutomationTxData } from 'helpers/context/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'

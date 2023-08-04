@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { TxData } from 'components/AppContext'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation, TxData } from 'helpers/context/types'
 import { TX_DATA_CHANGE, TxPayloadChange } from 'helpers/gasEstimate'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'

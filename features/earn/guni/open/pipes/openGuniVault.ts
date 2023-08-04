@@ -4,7 +4,6 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { compareBigNumber, ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import {
   AllowanceChanges,
   AllowanceFunctions,
@@ -33,7 +32,8 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
 import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { combineTransitions } from 'helpers/pipelines/combineTransitions'

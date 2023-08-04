@@ -1,6 +1,6 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
-import { useAppContext } from 'components/context/AppContextProvider'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
@@ -51,7 +51,7 @@ export const benefitCardsAnja = [
 export function AjnaHomepageView() {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
   const { connecting, connect } = useConnection({
     initialConnect: false,

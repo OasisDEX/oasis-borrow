@@ -2,9 +2,10 @@ import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/context/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
+import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { steps } from 'features/ajna/common/consts'
@@ -65,13 +66,12 @@ export function AjnaProductController({
 }: AjnaProductControllerProps) {
   const { t } = useTranslation()
   const { push } = useRouter()
+  const { context$, gasPrice$ } = useMainContext()
   const {
-    context$,
     ajnaPosition$,
     balancesFromAddressInfoArray$,
     balancesInfoArray$,
     dpmPositionDataV2$,
-    gasPrice$,
     identifiedTokens$,
     readPositionCreatedEvents$,
     tokenPriceUSD$,

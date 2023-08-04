@@ -1,9 +1,11 @@
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
-import { AppContext } from 'components/AppContext'
+import { AccountContext } from 'components/context/AccountContextProvider'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { AppContext } from 'helpers/context/AppContext'
+import { MainContext } from 'helpers/context/MainContext'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
@@ -31,20 +33,15 @@ import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } fr
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { getSupportedTokens } from './strategy-config'
 
-export function setupAaveV2Context(appContext: AppContext): AaveContext {
-  const {
-    userSettings$,
-    txHelpers$,
-    onEveryBlock$,
-    context$,
-    tokenPriceUSD$,
-    proxyConsumed$,
-    strategyConfig$,
-    protocols,
-    connectedContext$,
-    commonTransactionServices,
-    chainContext$,
-  } = appContext
+export function setupAaveV2Context(
+  mainContext: MainContext,
+  accountContext: AccountContext,
+  appContext: AppContext,
+): AaveContext {
+  const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
+  const { proxyConsumed$ } = accountContext
+  const { userSettings$, tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } =
+    appContext
 
   const {
     allowanceForAccount$,
@@ -59,7 +56,13 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(appContext, onEveryBlock$, NetworkIds.MAINNET)
+  } = getCommonPartsFromAppContext(
+    mainContext,
+    accountContext,
+    appContext,
+    onEveryBlock$,
+    NetworkIds.MAINNET,
+  )
 
   const {
     aaveUserAccountData$,

@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/context/AppContextProvider'
 import { ChevronUpDown } from 'components/ChevronUpDown'
+import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import {
   EstimationError,
   getEstimatedGasFeeTextOld,
@@ -17,7 +18,8 @@ import { Box, Flex, Grid } from 'theme-ui'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
-  const { manageVault$, context$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { manageVault$ } = useAppContext()
   const {
     vault: { id },
     clear,

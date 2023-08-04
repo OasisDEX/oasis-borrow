@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { AutomationContextProvider } from 'components/context/AutomationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
@@ -30,7 +30,7 @@ import { Grid } from 'theme-ui'
 
 export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()
-  const { accountData$ } = useAppContext()
+  const { accountData$ } = useAccountContext()
   const [accountData] = useObservable(accountData$)
 
   const {

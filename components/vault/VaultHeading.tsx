@@ -1,5 +1,6 @@
 import { Heading } from '@theme-ui/components'
 import { BigNumber } from 'bignumber.js'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useAppContext } from 'components/context/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -13,7 +14,8 @@ interface VaultHeadingManageProps {
 function VaultHeadingManage({ vaultId }: VaultHeadingManageProps) {
   const { t } = useTranslation()
 
-  const { ilkDataList$, vault$ } = useAppContext()
+  const { ilkDataList$ } = useAppContext()
+  const { vault$ } = useAccountContext()
   const [ilkDataList] = useObservable(ilkDataList$)
   const [vault] = useObservable(vault$(vaultId))
 

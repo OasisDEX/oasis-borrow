@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -11,7 +12,8 @@ import { Container } from 'theme-ui'
 import { DsrView } from './DsrView'
 
 export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
-  const { dsrDeposit$, dsr$, context$, potTotalValueLocked$, potDsr$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { dsrDeposit$, dsr$, potTotalValueLocked$, potDsr$ } = useAppContext()
   const [potDsr] = useObservable(potDsr$)
   const [potTotalValueLocked] = useObservable(potTotalValueLocked$)
   const resolvedDsrDeposit$ = dsrDeposit$(walletAddress)

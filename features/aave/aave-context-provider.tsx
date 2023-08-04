@@ -1,5 +1,7 @@
 import { NetworkNames } from 'blockchain/networks'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { WithChildren } from 'helpers/types'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import React, { useContext, useEffect, useState } from 'react'
@@ -37,6 +39,8 @@ export function useAaveContext(
 }
 
 export function AaveContextProvider({ children }: WithChildren) {
+  const mainContext = useMainContext()
+  const accountContext = useAccountContext()
   const appContext = useAppContext()
   const [aaveContexts, setAaveContexts] = useState<AaveContexts | undefined>(undefined)
 
@@ -44,11 +48,21 @@ export function AaveContextProvider({ children }: WithChildren) {
     if (appContext) {
       setAaveContexts({
         [NetworkNames.ethereumMainnet]: {
-          [LendingProtocol.AaveV2]: setupAaveV2Context(appContext),
-          [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.ethereumMainnet),
+          [LendingProtocol.AaveV2]: setupAaveV2Context(mainContext, accountContext, appContext),
+          [LendingProtocol.AaveV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            appContext,
+            NetworkNames.ethereumMainnet,
+          ),
         },
         [NetworkNames.optimismMainnet]: {
-          [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.optimismMainnet),
+          [LendingProtocol.AaveV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            appContext,
+            NetworkNames.optimismMainnet,
+          ),
         },
         // [NetworkNames.arbitrumMainnet]: {
         //   [LendingProtocol.AaveV3]: setupAaveV3Context(appContext, NetworkNames.arbitrumMainnet),

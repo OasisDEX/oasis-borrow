@@ -9,7 +9,7 @@ import { VaultChangesInformationContainer } from 'components/vault/VaultChangesI
 import { getSlippage, StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { UserSettingsState } from 'features/userSettings/userSettings'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

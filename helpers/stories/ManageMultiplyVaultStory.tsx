@@ -1,4 +1,3 @@
-import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/context/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
@@ -8,6 +7,7 @@ import {
   defaultMutableManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { AppContext } from 'helpers/context/AppContext'
 import {
   MOCK_VAULT_ID,
   mockManageMultiplyVault$,

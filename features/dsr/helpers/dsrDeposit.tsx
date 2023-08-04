@@ -15,14 +15,8 @@ import { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { applyProxyChanges } from 'features/proxy/proxy'
-import {
-  ApplyChange,
-  applyChange,
-  Change,
-  Changes,
-  GasEstimationStatus,
-  HasGasEstimation,
-} from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
+import { ApplyChange, applyChange, Change, Changes } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'

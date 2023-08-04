@@ -1,5 +1,4 @@
 import { AutomationEventIds, Pages } from 'analytics/analytics'
-import { TxHelpers } from 'components/AppContext'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { CloseVaultToEnum, MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -15,6 +14,7 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
+import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

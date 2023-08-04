@@ -1,4 +1,3 @@
-import { TxHelpers } from 'components/AppContext'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import {
   getAvailableAutomation,
@@ -13,6 +12,7 @@ import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/con
 import { AutoTakeProfitFormControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
+import { TxHelpers } from 'helpers/context/types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'

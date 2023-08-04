@@ -5,7 +5,7 @@ import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getRpcProvider } from 'blockchain/networks'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
@@ -24,7 +24,7 @@ export interface OasisActionCallData extends AjnaTxData {
 }
 
 export function useAjnaTxHandler(): () => void {
-  const { txHelpers$, context$ } = useAppContext()
+  const { txHelpers$, context$ } = useMainContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {

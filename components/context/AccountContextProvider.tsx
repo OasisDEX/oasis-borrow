@@ -48,13 +48,13 @@ import { map } from 'rxjs/operators'
 import { useMainContext } from './MainContextProvider'
 import curry from 'ramda/src/curry'
 
-export const accountContext = React.createContext<AccountContextType | undefined>(undefined)
+export const accountContext = React.createContext<AccountContext | undefined>(undefined)
 
 export function isAccountContextAvailable(): boolean {
   return !!checkContext(accountContext)
 }
 
-export function useAccountContext(): AccountContextType {
+export function useAccountContext(): AccountContext {
   const ac = useContext(accountContext)
   if (!ac) {
     throw new Error("AccountContext not available! useAccountContext can't be used serverside")
@@ -63,7 +63,7 @@ export function useAccountContext(): AccountContextType {
 }
 
 export function AccountContextProvider({ children }: WithChildren) {
-  const [context, setContext] = useState<AccountContextType | undefined>(undefined)
+  const [context, setContext] = useState<AccountContext | undefined>(undefined)
   console.log('context', context)
   const {
     context$,
@@ -281,7 +281,7 @@ export function AccountContextProvider({ children }: WithChildren) {
   return <accountContext.Provider value={context}>{children}</accountContext.Provider>
 }
 
-export type AccountContextType = {
+export type AccountContext = {
   accountData$: Observable<AccountDetails>
   allNetworkReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
   balance$: (token: string, address: string) => Observable<BigNumber>

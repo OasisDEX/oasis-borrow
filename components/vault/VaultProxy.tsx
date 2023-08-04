@@ -5,7 +5,7 @@ import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault
 import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
 import { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/context/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { CommonVaultState } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'

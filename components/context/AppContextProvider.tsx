@@ -2,6 +2,9 @@ import { AppContext, setupAppContext } from 'helpers/context/AppContext'
 import { WithChildren } from 'helpers/types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 
+import { useAccountContext } from './AccountContextProvider'
+import { useMainContext } from './MainContextProvider'
+
 export const appContext = React.createContext<AppContext | undefined>(undefined)
 
 export function isAppContextAvailable(): boolean {
@@ -25,10 +28,12 @@ export function useAppContext(): AppContext {
 
 export function AppContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
+  const mainContext = useMainContext()
+  const accountContext = useAccountContext()
 
   useEffect(() => {
-    setContext(setupAppContext())
-  }, [])
+    setContext(setupAppContext(mainContext, accountContext))
+  }, [accountContext, mainContext])
 
   return <appContext.Provider value={context}>{children}</appContext.Provider>
 }

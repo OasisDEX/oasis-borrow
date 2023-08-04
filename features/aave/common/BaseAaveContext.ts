@@ -25,7 +25,7 @@ import {
 } from 'features/stateMachines/transaction'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'

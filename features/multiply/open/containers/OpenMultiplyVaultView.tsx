@@ -1,5 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useAppContext } from 'components/context/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { createOpenMultiplyVaultAnalytics$ } from 'features/multiply/open/pipes/openMultiplyVaultAnalytics'
@@ -14,7 +16,9 @@ import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
 import { OpenMultiplyVaultForm } from './OpenMultiplyVaultForm'
 
 export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
-  const { openMultiplyVault$, accountData$, context$ } = useAppContext()
+  const { openMultiplyVault$ } = useAppContext()
+  const { accountData$ } = useAccountContext()
+  const { context$ } = useMainContext()
   const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
   const { t } = useTranslation()
 

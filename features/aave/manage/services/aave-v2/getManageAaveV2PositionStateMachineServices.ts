@@ -4,7 +4,6 @@ import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
-import { TxHelpers } from 'components/AppContext'
 import {
   contextToEthersTransactions,
   IStrategyConfig,
@@ -19,6 +18,7 @@ import { PositionId } from 'features/aave/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
+import { TxHelpers } from 'helpers/context/types'
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
