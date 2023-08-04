@@ -21,6 +21,7 @@ export type WalletStateEvent = ReductoActions<
   | {
       type: WalletStateEventType.connect
       desiredNetworkHexId?: NetworkConfigHexId
+      couldBeConnectedToTestNet?: boolean
     }
   | {
       type: WalletStateEventType.connectionCancelled
@@ -32,6 +33,7 @@ export type WalletStateEvent = ReductoActions<
   | {
       type: WalletStateEventType.changeChain
       desiredNetworkHexId: NetworkConfigHexId
+      couldBeConnectedToTestNet?: boolean
     }
   | {
       type: WalletStateEventType.disconnect

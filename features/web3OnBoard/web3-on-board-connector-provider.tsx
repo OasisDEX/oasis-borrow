@@ -1,24 +1,18 @@
 import { usePrevious } from '@react-hooks-library/core'
 import { ConnectorEvent } from '@web3-react/types'
-import {
-  forksByParentHexId,
-  NetworkConfigHexId,
-  NetworkHexIds,
-  NetworkIds,
-  networkSetByHexId,
-} from 'blockchain/networks'
+import { NetworkConfigHexId, NetworkHexIds, NetworkIds } from 'blockchain/networks'
 import { useModalContext } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import { useReducto } from 'helpers/useReducto'
 import { useRouter } from 'next/router'
 import React, { createContext, useCallback, useContext, useEffect } from 'react'
 
+import { getNetworksFromPageNetwork } from './get-networks-from-page-network'
 import { UnsupportedNetworkModal } from './unsupported-network-modal'
 import { useBridgeConnector } from './use-bridge-connector'
 import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
 import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
-import { ensureCorrectState } from './wallet-state/ensure-correct-state'
 import { useDebugWalletState } from './wallet-state/use-debug-wallet-state'
 import {
   areThePageNetworksTheSame,
@@ -36,38 +30,6 @@ export type Web3OnBoardConnectorContext = {
     includeTestNet?: boolean,
   ) => void
   state: WalletManagementState
-}
-
-function getNetworksFromPageNetwork(
-  networkHexIds: NetworkConfigHexId[] | undefined,
-  includeTestNet: boolean,
-): NetworkConfigHexId[] | undefined {
-  if (networkHexIds === undefined) return undefined
-
-  const hexSet = new Set<NetworkConfigHexId | undefined>()
-
-  networkHexIds.forEach((networkHexId) => {
-    const networkConfig = networkSetByHexId[networkHexId]
-
-    hexSet.add(networkConfig.mainnetHexId)
-    if (includeTestNet) hexSet.add(networkConfig.testnetHexId)
-
-    const parentNetwork = networkConfig.getParentNetwork()
-
-    if (parentNetwork) {
-      hexSet.add(parentNetwork.hexId)
-      hexSet.add(parentNetwork.mainnetHexId)
-      if (includeTestNet) hexSet.add(parentNetwork.testnetHexId)
-    }
-
-    const forkConfig = forksByParentHexId[networkHexId]
-
-    if (forkConfig) {
-      hexSet.add(forkConfig.hexId)
-    }
-  })
-
-  return Array.from(hexSet).filter((hexId): hexId is NetworkConfigHexId => hexId !== undefined)
 }
 
 const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
@@ -90,30 +52,12 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
   },
 })
 
-export function shouldSendChangeNetworkOnConnected(
-  desiredNetworkHexId: NetworkConfigHexId,
-  state: WalletManagementState,
-  couldBeConnectedToTestNet: boolean,
-) {
-  ensureCorrectState(state, WalletManagementStateStatus.connected)
-  if (desiredNetworkHexId === undefined) {
-    return false
-  }
-
-  if (state.pageNetworkHexIds) {
-    return !state.pageNetworkHexIds.includes(desiredNetworkHexId)
-  }
-
-  const desiredNetworkConfig = networkSetByHexId[desiredNetworkHexId]
-
-  const possibleNetworkHexIds = [desiredNetworkConfig.mainnetHexId]
-  if (couldBeConnectedToTestNet) {
-    possibleNetworkHexIds.push(desiredNetworkConfig.testnetHexId)
-  }
-
-  return !possibleNetworkHexIds.includes(state.walletNetworkHexId)
-}
-
+/*
+ * I don't like this solution,
+ * but it's the only way I found to make it work.
+ * The problem is that some components strictly depend on Mainnet or Goerli,
+ * so the only way to refresh them is to reload the page.
+ */
 export function useSafaftyReload({ walletNetworkHexId }: WalletManagementState) {
   const previuosWalletNetworkHexId = usePrevious(walletNetworkHexId)
   const { reload } = useRouter()
@@ -274,17 +218,12 @@ function InternalProvider({ children }: WithChildren) {
           desiredNetworkHexId?: NetworkConfigHexId,
           couldBeConnectedToTestNet: boolean = false,
         ) => {
-          if (
-            state.status === WalletManagementStateStatus.connected &&
-            desiredNetworkHexId &&
-            state.walletNetworkHexId !== desiredNetworkHexId &&
-            shouldSendChangeNetworkOnConnected(
+          if (state.status === WalletManagementStateStatus.connected && desiredNetworkHexId) {
+            dispatch({
+              type: WalletStateEventType.changeChain,
               desiredNetworkHexId,
-              state,
               couldBeConnectedToTestNet,
-            )
-          ) {
-            dispatch({ type: WalletStateEventType.changeChain, desiredNetworkHexId })
+            })
           } else {
             dispatch({ type: WalletStateEventType.connect, desiredNetworkHexId })
           }
