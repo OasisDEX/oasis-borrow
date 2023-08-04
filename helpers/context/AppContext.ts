@@ -242,11 +242,11 @@ export function setupAppContext(
 
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(every10Seconds$, tokenPrices$),
-    (tokens: string[]) => tokens.sort().join(','),
+    (tokens: string[]) => tokens.sort((a, b) => a.localeCompare(b)).join(','),
   )
   const tokenPriceUSDStatic$ = memoize(
     curry(createTokenPriceInUSD$)(once$, tokenPrices$),
-    (tokens: string[]) => tokens.sort().join(','),
+    (tokens: string[]) => tokens.sort((a, b) => a.localeCompare(b)).join(','),
   )
 
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
