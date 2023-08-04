@@ -1,7 +1,5 @@
 import {
   enableNetworksSet,
-  getOppositeNetworkHexIdByHexId,
-  NetworkConfigHexId,
   NetworkIdToNetworkHexIds,
   NetworkNames,
   networkSetByHexId,
@@ -35,7 +33,7 @@ const renderSeparator = () => {
 }
 
 export function NavigationNetworkSwitcherOrb() {
-  const { connecting, setChain } = useConnection()
+  const { connecting, toggleBetweenMainnetAndTestnet, setChain } = useConnection()
   const { wallet, chainId } = useWalletManagement()
   const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
@@ -44,9 +42,6 @@ export function NavigationNetworkSwitcherOrb() {
   const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
 
-  const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return setChain(getOppositeNetworkHexIdByHexId(currentConnectedChain))
-  }
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,
   )
@@ -90,9 +85,7 @@ export function NavigationNetworkSwitcherOrb() {
                   <Button
                     variant="bean"
                     sx={{ fontSize: 2 }}
-                    onClick={() =>
-                      toggleChains(connectedChain ?? NetworkIdToNetworkHexIds(chainId))
-                    }
+                    onClick={() => toggleBetweenMainnetAndTestnet()}
                   >
                     <Box sx={{ width: '100%' }}>
                       {(() => {
