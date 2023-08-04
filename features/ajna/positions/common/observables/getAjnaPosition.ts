@@ -164,8 +164,8 @@ export function getAjnaPositionsWithDetails$(
                         isOracless ? one : tokenPrice[debtTokenSymbol],
                         {
                           collateralToken: collateralTokenSymbol,
-                          quoteTokenAddress: debtTokenAddress,
                           collateralTokenAddress,
+                          hasMultiplePositions: false,
                           product: (positionType === 'Earn'
                             ? positionType
                             : vaultsFromApi[vaultId] || positionType
@@ -173,6 +173,7 @@ export function getAjnaPositionsWithDetails$(
                           protocol,
                           proxy: proxyAddress,
                           quoteToken: debtTokenSymbol,
+                          quoteTokenAddress: debtTokenAddress,
                           user: walletAddress,
                           vaultId,
                         },

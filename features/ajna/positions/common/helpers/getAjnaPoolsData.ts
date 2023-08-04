@@ -39,9 +39,7 @@ export interface AjnaPoolsTableData {
   buckets: Bucket[]
 }
 
-export const getAjnaPoolsData = async (
-  networkId?: NetworkIds,
-): Promise<AjnaPoolsTableData[]> => {
+export const getAjnaPoolsData = async (networkId?: NetworkIds): Promise<AjnaPoolsTableData[]> => {
   const { response } = (await loadSubgraph(
     'Ajna',
     'getAjnaPoolsData',
