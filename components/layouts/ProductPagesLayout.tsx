@@ -1,5 +1,5 @@
 import { Footer } from 'components/Footer'
-import { NavigationControllerDynamic } from 'features/navigation/controls/NavigationControllerDynamic'
+import { NavigationController } from 'features/navigation/controls/NavigationController'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
@@ -10,7 +10,7 @@ export function ProductPagesLayout({ children }: WithChildren) {
   return (
     <>
       <WithAnnouncementLayout
-        header={<NavigationControllerDynamic />}
+        header={<NavigationController />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"

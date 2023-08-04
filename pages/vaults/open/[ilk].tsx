@@ -1,5 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
+import { PositionContextProvider } from 'components/context/PositionContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
@@ -32,24 +33,26 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <WithWalletConnection chainId={ethereumMainnetHexId}>
-      <WithTermsOfService>
-        <WithWalletAssociatedRisk>
-          <PageSEOTags
-            title="seo.title-product-w-tokens"
-            titleParams={{
-              product: t('seo.borrow.title'),
-              protocol: LendingProtocolLabel.maker,
-              token1: ilk,
-              token2: 'DAI',
-            }}
-            description="seo.borrow.description"
-            url="/borrow"
-          />
-          <OpenVaultView ilk={ilk} />
-        </WithWalletAssociatedRisk>
-      </WithTermsOfService>
-    </WithWalletConnection>
+    <PositionContextProvider>
+      <WithWalletConnection chainId={ethereumMainnetHexId}>
+        <WithTermsOfService>
+          <WithWalletAssociatedRisk>
+            <PageSEOTags
+              title="seo.title-product-w-tokens"
+              titleParams={{
+                product: t('seo.borrow.title'),
+                protocol: LendingProtocolLabel.maker,
+                token1: ilk,
+                token2: 'DAI',
+              }}
+              description="seo.borrow.description"
+              url="/borrow"
+            />
+            <OpenVaultView ilk={ilk} />
+          </WithWalletAssociatedRisk>
+        </WithTermsOfService>
+      </WithWalletConnection>
+    </PositionContextProvider>
   )
 }
 

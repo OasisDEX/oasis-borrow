@@ -15,13 +15,13 @@ import { Observable } from 'rxjs'
 
 import { useMainContext } from './MainContextProvider'
 
-export const tosContext = React.createContext<TOSContextType | undefined>(undefined)
+export const tosContext = React.createContext<TOSContext | undefined>(undefined)
 
 export function isTOSContextAvailable(): boolean {
   return !!checkContext(tosContext)
 }
 
-export function useTOSContext(): TOSContextType {
+export function useTOSContext(): TOSContext {
   const ac = useContext(tosContext)
   if (!ac) {
     throw new Error("TOSContext not available! useTOSContext can't be used serverside")
@@ -30,7 +30,7 @@ export function useTOSContext(): TOSContextType {
 }
 
 export function TOSContextProvider({ children }: WithChildren) {
-  const [context, setContext] = useState<TOSContextType | undefined>(undefined)
+  const [context, setContext] = useState<TOSContext | undefined>(undefined)
   const { web3Context$, txHelpers$ } = useMainContext()
 
   useEffect(() => {
@@ -53,6 +53,6 @@ export function TOSContextProvider({ children }: WithChildren) {
   return <tosContext.Provider value={context}>{children}</tosContext.Provider>
 }
 
-export type TOSContextType = {
+export type TOSContext = {
   termsAcceptance$: Observable<TermsAcceptanceState>
 } & DepreciatedServices

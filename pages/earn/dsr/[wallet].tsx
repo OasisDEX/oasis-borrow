@@ -1,5 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
+import { PositionContextProvider } from 'components/context/PositionContextProvider'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -26,26 +27,28 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
-    <WithFeatureToggleRedirect feature="DaiSavingsRate">
-      <WithConnection pageChainId={ethereumMainnetHexId}>
-        <WithTermsOfService>
-          <WithWalletAssociatedRisk>
-            <PageSEOTags
-              title="seo.title-dsr"
-              titleParams={{
-                product: t('seo.earn.title'),
-                protocol: LendingProtocolLabel.maker,
-              }}
-              description="seo.multiply.description"
-              url="/earn/dsr"
-            />
-            <BackgroundLight />
-            <DsrViewContainer walletAddress={walletAddress} />
-            <Survey for="earn" />
-          </WithWalletAssociatedRisk>
-        </WithTermsOfService>
-      </WithConnection>
-    </WithFeatureToggleRedirect>
+    <PositionContextProvider>
+      <WithFeatureToggleRedirect feature="DaiSavingsRate">
+        <WithConnection pageChainId={ethereumMainnetHexId}>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <PageSEOTags
+                title="seo.title-dsr"
+                titleParams={{
+                  product: t('seo.earn.title'),
+                  protocol: LendingProtocolLabel.maker,
+                }}
+                description="seo.multiply.description"
+                url="/earn/dsr"
+              />
+              <BackgroundLight />
+              <DsrViewContainer walletAddress={walletAddress} />
+              <Survey for="earn" />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithConnection>
+      </WithFeatureToggleRedirect>
+    </PositionContextProvider>
   )
 }
 

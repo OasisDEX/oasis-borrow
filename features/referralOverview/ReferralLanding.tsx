@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
-import { useAppContext } from 'components/context/AppContextProvider'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { tosContext } from 'components/context/TOSContextProvider'
@@ -30,7 +30,7 @@ interface Props {
 
 export function ReferralLandingSummary() {
   const { context$ } = useMainContext()
-  const { userReferral$ } = useAppContext()
+  const { userReferral$ } = useAccountContext()
 
   const [context, contextError] = useObservable(context$)
   const [userReferral, userReferralError] = useObservable(userReferral$)

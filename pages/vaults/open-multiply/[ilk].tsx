@@ -1,5 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
+import { PositionContextProvider } from 'components/context/PositionContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
@@ -33,25 +34,27 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <WithWalletConnection chainId={ethereumMainnetHexId}>
-      <WithTermsOfService>
-        <WithWalletAssociatedRisk>
-          <PageSEOTags
-            title="seo.title-product-w-tokens"
-            titleParams={{
-              product: t('seo.multiply.title'),
-              protocol: LendingProtocolLabel.maker,
-              token1: ilk,
-              token2: 'DAI',
-            }}
-            description="seo.multiply.description"
-            url="/multiply"
-          />
-          <OpenMultiplyVaultView ilk={ilk} />
-          <Survey for="multiply" />
-        </WithWalletAssociatedRisk>
-      </WithTermsOfService>
-    </WithWalletConnection>
+    <PositionContextProvider>
+      <WithWalletConnection chainId={ethereumMainnetHexId}>
+        <WithTermsOfService>
+          <WithWalletAssociatedRisk>
+            <PageSEOTags
+              title="seo.title-product-w-tokens"
+              titleParams={{
+                product: t('seo.multiply.title'),
+                protocol: LendingProtocolLabel.maker,
+                token1: ilk,
+                token2: 'DAI',
+              }}
+              description="seo.multiply.description"
+              url="/multiply"
+            />
+            <OpenMultiplyVaultView ilk={ilk} />
+            <Survey for="multiply" />
+          </WithWalletAssociatedRisk>
+        </WithTermsOfService>
+      </WithWalletConnection>
+    </PositionContextProvider>
   )
 }
 

@@ -36,6 +36,13 @@ import {
   PositionCreated,
 } from 'features/aave/services/readPositionCreatedEvents'
 import { AccountDetails, createAccountData } from 'features/account/AccountData'
+import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
+import { createUserReferral$, UserReferralState } from 'features/referralOverview/user'
+import {
+  getReferralsFromApi$,
+  getUserFromApi$,
+  getWeeklyClaimsFromApi$,
+} from 'features/referralOverview/userApi'
 import { createUserSettings$, UserSettingsState } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
@@ -77,6 +84,7 @@ export function AccountContextProvider({ children }: WithChildren) {
     chainContext$,
     oracleContext$,
     connectedContext$,
+    txHelpers$,
   } = useMainContext()
 
   useEffect(() => {
@@ -236,6 +244,16 @@ export function AccountContextProvider({ children }: WithChildren) {
         saveUserSettingsLocalStorage$,
       )
 
+      const userReferral$ = createUserReferral$(
+        web3Context$,
+        txHelpers$,
+        getUserFromApi$,
+        getReferralsFromApi$,
+        getWeeklyClaimsFromApi$,
+        checkReferralLocalStorage$,
+      )
+      const checkReferralLocal$ = checkReferralLocalStorage$()
+
       return {
         accountData$,
         allNetworkReadPositionCreatedEvents$,
@@ -247,6 +265,7 @@ export function AccountContextProvider({ children }: WithChildren) {
         cdpRegistryOwns$,
         charterCdps$,
         charterUrnProxy$,
+        checkReferralLocal$,
         cropJoinCdps$,
         cropperUrnProxy$,
         dogIlks$,
@@ -270,6 +289,7 @@ export function AccountContextProvider({ children }: WithChildren) {
         standardCdps$,
         tokenBalance$,
         urnResolver$,
+        userReferral$,
         userSettings$,
         vatGem$,
         vatIlks$,
@@ -285,6 +305,7 @@ export function AccountContextProvider({ children }: WithChildren) {
     onEveryBlock$,
     once$,
     oracleContext$,
+    txHelpers$,
     web3Context$,
   ])
 
@@ -302,6 +323,7 @@ export type AccountContext = {
   cdpRegistryOwns$: (args: BigNumber) => Observable<string>
   charterCdps$: (address: string) => Observable<BigNumber[]>
   charterUrnProxy$: (args: string) => Observable<string>
+  checkReferralLocal$: Observable<string | null>
   cropJoinCdps$: (address: string) => Observable<BigNumber[]>
   cropperUrnProxy$: (args: string) => Observable<string>
   dogIlks$: (args: string) => Observable<DogIlk>
@@ -325,6 +347,7 @@ export type AccountContext = {
   standardCdps$: (address: string) => Observable<BigNumber[]>
   tokenBalance$: (args: TokenBalanceArgs) => Observable<BigNumber>
   urnResolver$: (cdpId: BigNumber) => Observable<VaultResolve>
+  userReferral$: Observable<UserReferralState>
   userSettings$: Observable<UserSettingsState>
   vatGem$: (args: { ilk: string; urnAddress: string }) => Observable<BigNumber>
   vatIlks$: (args: string) => Observable<VatIlk>

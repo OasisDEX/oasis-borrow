@@ -1,6 +1,7 @@
 import { NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { PositionContextProvider } from 'components/context/PositionContextProvider'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { aaveContext, AaveContextProvider, isSupportedStrategy } from 'features/aave'
 import { getSurveyType, ProductType } from 'features/aave/common'
@@ -61,17 +62,19 @@ function OpenPosition({
   }
 
   return (
-    <AaveContextProvider>
-      <WithConnection>
-        <WithTermsOfService>
-          <BackgroundLight />
-          <DeferedContextProvider context={aaveContext}>
-            <AaveOpenView config={definedStrategy} />
-          </DeferedContextProvider>
-          <Survey for={getSurveyType(product)} />
-        </WithTermsOfService>
-      </WithConnection>
-    </AaveContextProvider>
+    <PositionContextProvider>
+      <AaveContextProvider>
+        <WithConnection>
+          <WithTermsOfService>
+            <BackgroundLight />
+            <DeferedContextProvider context={aaveContext}>
+              <AaveOpenView config={definedStrategy} />
+            </DeferedContextProvider>
+            <Survey for={getSurveyType(product)} />
+          </WithTermsOfService>
+        </WithConnection>
+      </AaveContextProvider>
+    </PositionContextProvider>
   )
 }
 

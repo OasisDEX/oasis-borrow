@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
-import { useReferralContext } from 'components/context/ReferralContextProvider'
 import {
   tosContext,
   TOSContextProvider,
@@ -249,7 +249,7 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
 
 export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   const { web3ContextConnected$ } = useMainContext()
-  const { userReferral$ } = useReferralContext()
+  const { userReferral$ } = useAccountContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
   const [userReferral] = useObservable(userReferral$)
 

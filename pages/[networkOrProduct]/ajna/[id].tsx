@@ -1,4 +1,5 @@
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
+import { PositionContextProvider } from 'components/context/PositionContextProvider'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
 import { GetServerSidePropsContext } from 'next'
@@ -10,7 +11,11 @@ interface AjnaManagePositionPageProps {
 }
 
 function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
-  return <AjnaProductController id={id} flow="manage" />
+  return (
+    <PositionContextProvider>
+      <AjnaProductController id={id} flow="manage" />
+    </PositionContextProvider>
+  )
 }
 
 AjnaManagePositionPage.layout = AjnaLayout

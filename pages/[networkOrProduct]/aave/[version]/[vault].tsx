@@ -1,5 +1,6 @@
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
+import { PositionContextProvider } from 'components/context/PositionContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { getAddress } from 'ethers/lib/utils'
@@ -141,17 +142,19 @@ function Position({
   }
 
   return (
-    <AaveContextProvider>
-      <WithConnection>
-        <WithTermsOfService>
-          <WithStrategy
-            positionId={{ walletAddress: address, vaultId }}
-            protocol={protocol}
-            network={network}
-          />
-        </WithTermsOfService>
-      </WithConnection>
-    </AaveContextProvider>
+    <PositionContextProvider>
+      <AaveContextProvider>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithStrategy
+              positionId={{ walletAddress: address, vaultId }}
+              protocol={protocol}
+              network={network}
+            />
+          </WithTermsOfService>
+        </WithConnection>
+      </AaveContextProvider>
+    </PositionContextProvider>
   )
 }
 

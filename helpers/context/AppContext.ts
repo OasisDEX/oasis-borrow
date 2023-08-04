@@ -54,6 +54,7 @@ import {
 } from 'blockchain/userDpmProxies'
 import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
 import { AccountContext } from 'components/context/AccountContextProvider'
+import { TOSContext } from 'components/context/TOSContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
@@ -89,7 +90,6 @@ import {
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
-import { currentContent } from 'features/content'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
 import { createDsrHistory$ } from 'features/dsr/helpers/dsrHistory'
@@ -116,13 +116,6 @@ import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manag
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
-import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
-import { createUserReferral$ } from 'features/referralOverview/user'
-import {
-  getReferralsFromApi$,
-  getUserFromApi$,
-  getWeeklyClaimsFromApi$,
-} from 'features/referralOverview/userApi'
 import {
   BalanceInfo,
   createBalanceInfo$,
@@ -130,7 +123,6 @@ import {
   createBalancesFromAddressArrayInfo$,
 } from 'features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
-import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -140,11 +132,6 @@ import {
 } from 'features/stateMachines/dpmAccount'
 import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
 import { transactionContextService } from 'features/stateMachines/transaction'
-import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
-import {
-  checkAcceptanceFromApi$,
-  saveAcceptanceFromApi$,
-} from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
@@ -217,6 +204,7 @@ export function setupAppContext(
     vault$,
     vaults$,
   }: AccountContext,
+  { termsAcceptance$ }: TOSContext,
 ) {
   console.log('App context setup')
   combineLatest(account$, connectedContext$)
@@ -830,24 +818,7 @@ export function setupAppContext(
     curry(createPositionsOverviewSummary$)(balanceLean$, tokenPriceUSD$, positions$, assetActions$),
   )
 
-  const termsAcceptance$ = createTermsAcceptance$(
-    web3Context$,
-    currentContent.tos.version,
-    jwtAuthSetupToken$,
-    checkAcceptanceFromApi$,
-    saveAcceptanceFromApi$,
-  )
-
   const walletAssociatedRisk$ = createWalletAssociatedRisk$(web3Context$, termsAcceptance$)
-
-  const userReferral$ = createUserReferral$(
-    web3Context$,
-    txHelpers$,
-    getUserFromApi$,
-    getReferralsFromApi$,
-    getWeeklyClaimsFromApi$,
-    checkReferralLocalStorage$,
-  )
 
   const vaultBanners$ = memoize(
     curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
@@ -1073,12 +1044,10 @@ export function setupAppContext(
     readPositionCreatedEvents$,
     reclaimCollateral$,
     strategyConfig$,
-    termsAcceptance$,
     tokenPriceUSD$,
     totalValueLocked$,
     userDpmProxies$,
     userDpmProxy$,
-    userReferral$,
     vaultBanners$,
     vaultHistory$,
     walletAssociatedRisk$,

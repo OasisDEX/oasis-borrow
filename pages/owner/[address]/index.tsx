@@ -1,4 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
+import { PositionContextProvider } from 'components/context/PositionContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -22,22 +23,24 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function VaultsSummary({ address }: { address: string }) {
   const { t } = useTranslation()
   return address ? (
-    <WithConnection>
-      <WithTermsOfService>
-        <WithWalletAssociatedRisk>
-          <PageSEOTags
-            title="seo.title-single-token"
-            titleParams={{
-              product: t('seo.owner.title'),
-              token: `${address.slice(0, 7)}...`,
-            }}
-            description="seo.multiply.description"
-            url={`/owner/${address}`}
-          />
-          <VaultsOverviewView address={address} />
-        </WithWalletAssociatedRisk>
-      </WithTermsOfService>
-    </WithConnection>
+    <PositionContextProvider>
+      <WithConnection>
+        <WithTermsOfService>
+          <WithWalletAssociatedRisk>
+            <PageSEOTags
+              title="seo.title-single-token"
+              titleParams={{
+                product: t('seo.owner.title'),
+                token: `${address.slice(0, 7)}...`,
+              }}
+              description="seo.multiply.description"
+              url={`/owner/${address}`}
+            />
+            <VaultsOverviewView address={address} />
+          </WithWalletAssociatedRisk>
+        </WithTermsOfService>
+      </WithConnection>
+    </PositionContextProvider>
   ) : null
 }
 

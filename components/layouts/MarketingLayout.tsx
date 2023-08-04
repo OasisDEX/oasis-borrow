@@ -1,5 +1,5 @@
 import { Footer } from 'components/Footer'
-import { NavigationControllerDynamic } from 'features/navigation/controls/NavigationControllerDynamic'
+import { NavigationController } from 'features/navigation/controls/NavigationController'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 
@@ -19,7 +19,7 @@ export function MarketingLayout({
   return (
     <>
       <BasicLayout
-        header={<NavigationControllerDynamic />}
+        header={<NavigationController />}
         footer={<Footer />}
         variant={variant || 'marketingContainer'}
         sx={{ position: 'relative' }}

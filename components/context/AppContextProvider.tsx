@@ -4,6 +4,7 @@ import React, { useContext as checkContext, useContext, useEffect, useState } fr
 
 import { useAccountContext } from './AccountContextProvider'
 import { useMainContext } from './MainContextProvider'
+import { useTOSContext } from './TOSContextProvider'
 
 export const appContext = React.createContext<AppContext | undefined>(undefined)
 
@@ -30,10 +31,11 @@ export function AppContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
   const mainContext = useMainContext()
   const accountContext = useAccountContext()
+  const tosContext = useTOSContext()
 
   useEffect(() => {
-    setContext(setupAppContext(mainContext, accountContext))
-  }, [accountContext, mainContext])
+    setContext(setupAppContext(mainContext, accountContext, tosContext))
+  }, [accountContext, mainContext, tosContext])
 
   return <appContext.Provider value={context}>{children}</appContext.Provider>
 }

@@ -1,6 +1,6 @@
 import { Footer } from 'components/Footer'
 import { ModalTrezorMetamaskEIP1559 } from 'components/Modal'
-import { NavigationControllerDynamic } from 'features/navigation/controls/NavigationControllerDynamic'
+import { NavigationController } from 'features/navigation/controls/NavigationController'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
@@ -14,7 +14,7 @@ export function AppLayout({ children }: WithChildren) {
         sx={{ zIndex: 2, position: 'relative' }}
         showAnnouncement={false}
         footer={<Footer />}
-        header={<NavigationControllerDynamic />}
+        header={<NavigationController />}
         bg={<BackgroundLight />}
       >
         {children}
