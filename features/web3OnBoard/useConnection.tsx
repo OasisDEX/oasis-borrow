@@ -10,16 +10,19 @@ export interface Connection {
     includeTestNet?: boolean,
   ) => void
   setChain: (chainId: NetworkConfigHexId) => void
+  toggleBetweenMainnetAndTestnet: () => void
 }
 
 export function useConnection(): Connection {
-  const { connect, connecting, setChain, setPageNetworks } = useWeb3OnBoardConnectorContext()
+  const { connect, connecting, setChain, setPageNetworks, toggleBetweenMainnetAndTestnet } =
+    useWeb3OnBoardConnectorContext()
 
   return {
     connect,
     connecting,
     setChain,
     setPageNetworks,
+    toggleBetweenMainnetAndTestnet,
   }
 }
 

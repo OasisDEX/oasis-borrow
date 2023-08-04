@@ -9,6 +9,7 @@ export enum WalletStateEventType {
   connectionCancelled = 'connection-cancelled',
   connected = 'connected',
   changeChain = 'change-chain',
+  toggleBetweenMainnetAndTestnet = 'toggle-between-mainnet-and-testnet',
   disconnect = 'disconnect',
   disconnected = 'disconnected',
   error = 'error',
@@ -53,5 +54,8 @@ export type WalletStateEvent = ReductoActions<
       type: WalletStateEventType.changeWalletRejected
       walletNetworkHexId: NetworkConfigHexId
       desiredNetworkHexId: NetworkConfigHexId
+    }
+  | {
+      type: WalletStateEventType.toggleBetweenMainnetAndTestnet
     }
 >

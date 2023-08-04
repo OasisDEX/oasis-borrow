@@ -25,6 +25,7 @@ export type Web3OnBoardConnectorContext = {
   disconnect: () => void
   connecting: boolean
   setChain: (desiredNetworkHexId: NetworkConfigHexId) => void
+  toggleBetweenMainnetAndTestnet: () => void
   setPageNetworks: (
     networkHexIds: NetworkConfigHexId[] | undefined,
     includeTestNet?: boolean,
@@ -44,6 +45,9 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
     console.warn('Web3OnBoardConnectorContext not initialized')
   },
   setPageNetworks: () => {
+    console.warn('Web3OnBoardConnectorContext not initialized')
+  },
+  toggleBetweenMainnetAndTestnet: () => {
     console.warn('Web3OnBoardConnectorContext not initialized')
   },
   state: {
@@ -246,6 +250,9 @@ function InternalProvider({ children }: WithChildren) {
               pageNetworkHexIds: networksToSet,
             },
           })
+        },
+        toggleBetweenMainnetAndTestnet: () => {
+          dispatch({ type: WalletStateEventType.toggleBetweenMainnetAndTestnet })
         },
         state,
       }}
