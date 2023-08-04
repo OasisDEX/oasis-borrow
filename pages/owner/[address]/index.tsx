@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { PositionContextProvider } from 'components/context/PositionContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -23,7 +23,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function VaultsSummary({ address }: { address: string }) {
   const { t } = useTranslation()
   return address ? (
-    <PositionContextProvider>
+    <ProductContextHandler>
       <WithConnection>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
@@ -40,7 +40,7 @@ function VaultsSummary({ address }: { address: string }) {
           </WithWalletAssociatedRisk>
         </WithTermsOfService>
       </WithConnection>
-    </PositionContextProvider>
+    </ProductContextHandler>
   ) : null
 }
 

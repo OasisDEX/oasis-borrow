@@ -1,6 +1,6 @@
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
-import { PositionContextProvider } from 'components/context/PositionContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { getAddress } from 'ethers/lib/utils'
@@ -142,7 +142,7 @@ function Position({
   }
 
   return (
-    <PositionContextProvider>
+    <ProductContextHandler>
       <AaveContextProvider>
         <WithConnection>
           <WithTermsOfService>
@@ -154,7 +154,7 @@ function Position({
           </WithTermsOfService>
         </WithConnection>
       </AaveContextProvider>
-    </PositionContextProvider>
+    </ProductContextHandler>
   )
 }
 

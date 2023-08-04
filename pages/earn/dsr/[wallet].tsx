@@ -1,6 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
-import { PositionContextProvider } from 'components/context/PositionContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -27,7 +27,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
-    <PositionContextProvider>
+    <ProductContextHandler>
       <WithFeatureToggleRedirect feature="DaiSavingsRate">
         <WithConnection pageChainId={ethereumMainnetHexId}>
           <WithTermsOfService>
@@ -48,7 +48,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
           </WithTermsOfService>
         </WithConnection>
       </WithFeatureToggleRedirect>
-    </PositionContextProvider>
+    </ProductContextHandler>
   )
 }
 

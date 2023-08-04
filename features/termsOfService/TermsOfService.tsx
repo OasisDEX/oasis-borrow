@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAccountContext } from 'components/context/AccountContextProvider'
-import { FunctionalContextProvider } from 'components/context/FunctionalContextProvider'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useTOSContext } from 'components/context/TOSContextProvider'
 import { AppLink } from 'components/Links'
@@ -260,9 +260,9 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   }
 
   return (
-    <FunctionalContextProvider>
+    <FunctionalContextHandler>
       {children}
       <TermsOfService userReferral={userReferral} />
-    </FunctionalContextProvider>
+    </FunctionalContextHandler>
   )
 }

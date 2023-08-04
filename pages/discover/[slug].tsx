@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextProvider } from 'components/context/FunctionalContextProvider'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import {
   DiscoverPageLayout,
   discoverPageLayoutProps,
@@ -16,7 +16,7 @@ import React from 'react'
 
 function DiscoverPage({ kind }: { kind: DiscoverPages }) {
   return (
-    <FunctionalContextProvider>
+    <FunctionalContextHandler>
       <WithConnection>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
@@ -24,7 +24,7 @@ function DiscoverPage({ kind }: { kind: DiscoverPages }) {
           </WithWalletAssociatedRisk>
         </WithTermsOfService>
       </WithConnection>
-    </FunctionalContextProvider>
+    </FunctionalContextHandler>
   )
 }
 

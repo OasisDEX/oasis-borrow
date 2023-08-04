@@ -1,7 +1,7 @@
 import { NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
-import { PositionContextProvider } from 'components/context/PositionContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { aaveContext, AaveContextProvider, isSupportedStrategy } from 'features/aave'
 import { getSurveyType, ProductType } from 'features/aave/common'
@@ -62,7 +62,7 @@ function OpenPosition({
   }
 
   return (
-    <PositionContextProvider>
+    <ProductContextHandler>
       <AaveContextProvider>
         <WithConnection>
           <WithTermsOfService>
@@ -74,7 +74,7 @@ function OpenPosition({
           </WithTermsOfService>
         </WithConnection>
       </AaveContextProvider>
-    </PositionContextProvider>
+    </ProductContextHandler>
   )
 }
 

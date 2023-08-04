@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { FunctionalContextProvider } from 'components/context/FunctionalContextProvider'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { checkReferralLocalStorage } from 'features/referralOverview/referralLocal'
 import TermsOfServiceReferral from 'features/termsOfService/TermsOfServiceReferral'
@@ -98,9 +98,9 @@ export const HomepageHero = () => {
     <Container>
       {referralsEnabled && landedWithRef && <NewReferralModal />}
       {(referralsEnabled || notificationsEnabled) && (
-        <FunctionalContextProvider>
+        <FunctionalContextHandler>
           <TermsOfServiceReferral />
-        </FunctionalContextProvider>
+        </FunctionalContextHandler>
       )}
       <Flex
         sx={{

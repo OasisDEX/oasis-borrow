@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextProvider } from 'components/context/FunctionalContextProvider'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { AjnaRewardsController } from 'features/ajna/common/controls/AjnaRewardsController'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -9,7 +9,7 @@ import React from 'react'
 
 function AjnaRewardsPage() {
   return (
-    <FunctionalContextProvider>
+    <FunctionalContextHandler>
       <WithConnection>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
@@ -19,7 +19,7 @@ function AjnaRewardsPage() {
           </WithWalletAssociatedRisk>
         </WithTermsOfService>
       </WithConnection>
-    </FunctionalContextProvider>
+    </FunctionalContextHandler>
   )
 }
 

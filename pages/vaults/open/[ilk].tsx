@@ -1,6 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
-import { PositionContextProvider } from 'components/context/PositionContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
@@ -33,7 +33,7 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <PositionContextProvider>
+    <ProductContextHandler>
       <WithWalletConnection chainId={ethereumMainnetHexId}>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
@@ -52,7 +52,7 @@ function OpenVault({ ilk }: { ilk: string }) {
           </WithWalletAssociatedRisk>
         </WithTermsOfService>
       </WithWalletConnection>
-    </PositionContextProvider>
+    </ProductContextHandler>
   )
 }
 

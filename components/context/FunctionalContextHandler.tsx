@@ -4,7 +4,7 @@ import React from 'react'
 import { DeferedContextProvider } from './DeferedContextProvider'
 import { tosContext, TOSContextProvider } from './TOSContextProvider'
 
-export const FunctionalContextProvider = ({ children }: WithChildren) => {
+export const FunctionalContextHandler = ({ children }: WithChildren) => {
   // theese are needed on rewards/discover, which is sort of between open/manage and static pages
   return (
     <TOSContextProvider>
