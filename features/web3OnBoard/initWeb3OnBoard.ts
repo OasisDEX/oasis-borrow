@@ -22,6 +22,7 @@ const walletConnect = walletConnectModule({
 
 const ledger = ledgerModule({
   projectId: '832580820193ff6bae62a15dc0feff03',
+  walletConnectVersion: 2,
 })
 const gnosis = gnosisModule()
 
