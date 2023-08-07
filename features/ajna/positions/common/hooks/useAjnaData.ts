@@ -5,10 +5,8 @@ import { useAppContext } from 'components/AppContextProvider'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaProduct } from 'features/ajna/common/types'
-import { getAjnaHistory$ } from 'features/ajna/positions/common/observables/getAjnaHistory'
-import { getAjnaPositionAuction$ } from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
+import { getAjnaPositionAggregatedData$ } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { getPositionCumulatives$ } from 'features/ajna/positions/common/observables/getPositionCumulatives'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -33,7 +31,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     dpmPositionDataV2$,
     gasPrice$,
     identifiedTokens$,
-    readPositionCreatedEvents$,
     tokenPriceUSD$,
     userSettings$,
   } = useAppContext()
@@ -82,13 +79,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
             })
           : EMPTY,
       [isOracless, id, collateralToken, quoteToken, product, identifiedTokensData, tokensAddresses],
-    ),
-  )
-
-  const [positionCreatedEventsData] = useObservable(
-    useMemo(
-      () => (dpmPositionData ? readPositionCreatedEvents$(dpmPositionData.user) : EMPTY),
-      [dpmPositionData],
     ),
   )
 
@@ -164,26 +154,12 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     ),
   )
 
-  const [ajnaPositionAuctionData, ajnaPositionAuctionError] = useObservable(
+  const [ajnaPositionAggregatedData, ajnaPositionAggregatedError] = useObservable(
     useMemo(
       () =>
         dpmPositionData && ajnaPositionData
-          ? getAjnaPositionAuction$({ dpmPositionData, ajnaPositionData })
+          ? getAjnaPositionAggregatedData$({ dpmPositionData, position: ajnaPositionData })
           : EMPTY,
-      [dpmPositionData, ajnaPositionData],
-    ),
-  )
-
-  const [ajnaHistoryData, ajnaHistoryError] = useObservable(
-    useMemo(
-      () => (dpmPositionData ? getAjnaHistory$({ dpmPositionData }) : EMPTY),
-      [dpmPositionData, ajnaPositionData],
-    ),
-  )
-
-  const [ajnaPositionCumulativesData, ajnaPositionCumulativesError] = useObservable(
-    useMemo(
-      () => (dpmPositionData ? getPositionCumulatives$({ dpmPositionData }) : EMPTY),
       [dpmPositionData, ajnaPositionData],
     ),
   )
@@ -206,31 +182,19 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : undefined
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
-  const isProxyWithManyPositions = Boolean(
-    positionCreatedEventsData &&
-      positionCreatedEventsData.filter(
-        (item) => item.proxyAddress.toLowerCase() === dpmPositionData?.proxy.toLowerCase(),
-      ).length > 1,
-  )
-
   return {
     data: {
-      ajnaHistoryData,
-      ajnaPositionAuctionData,
-      ajnaPositionCumulativesData,
+      ajnaPositionAggregatedData,
       ajnaPositionData,
       balancesInfoArrayData,
       dpmPositionData,
       ethBalanceData,
       gasPriceData,
-      positionCreatedEventsData,
       tokenPriceUSDData,
       userSettingsData,
     },
     errors: [
-      ajnaHistoryError,
-      ajnaPositionAuctionError,
-      ajnaPositionCumulativesError,
+      ajnaPositionAggregatedError,
       ajnaPositionError,
       balancesInfoArrayError,
       balancesInfoArrayError,
@@ -241,7 +205,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       userSettingsError,
     ],
     isOracless,
-    isProxyWithManyPositions,
     tokensPrecision,
   }
 }

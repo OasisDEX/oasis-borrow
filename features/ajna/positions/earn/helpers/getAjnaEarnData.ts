@@ -14,9 +14,9 @@ const defaultResponse = {
 }
 
 export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
-  const { response } = (await loadSubgraph('Ajna', 'getEarnData', {
+  const { response } = (await loadSubgraph('Ajna', 'getAjnaEarnPositionData', {
     dpmProxyAddress: proxy.toLowerCase(),
-  })) as SubgraphsResponses['Ajna']['getEarnData']
+  })) as SubgraphsResponses['Ajna']['getAjnaEarnPositionData']
 
   if (
     response &&

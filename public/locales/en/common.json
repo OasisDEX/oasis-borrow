@@ -2463,13 +2463,14 @@
     },
     "labels": {
       "deposit": "Deposit",
-      "withdraw": "Withdraw"
+      "withdraw": "Withdraw",
+      "convert": "Convert"
     },
     "product-card": {
       "description": "Earn on your Dai using the Maker Protocol"
     },
     "order": {
-      "total-dai": "Total DAI {{action}}"
+      "total-dai": "Total {{token}} {{action}}"
     },
     "simulation": {
       "header1": "Duration",
@@ -2489,6 +2490,14 @@
     },
     "landing-page-banner": {
       "title": "NEW DSR RATE! Earn 3.49% on your DAI. <1>Get started</1>"
+    },
+    "links": {
+      "what-is-sdai": "What's sDAI"
+    },
+    "common": {
+      "mint-savings-dai": "Mint Savings Dai (sDAI)",
+      "conversion-desc": "If you are are holding Savings Dai (sDAI) you can convert it back to Dai. Converting back to Dai means you will no longer accrue the Dai Savings Rate on the amount you convert.",
+      "what-is-sdai-conversion": "What is sDAI conversion?"
     }
   },
   "ajna": {

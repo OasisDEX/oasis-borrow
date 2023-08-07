@@ -1,25 +1,19 @@
 import { NetworkIds } from 'blockchain/networks'
-import {
-  AjnaBorrowerEventsResponse,
-  AjnaHistoryResponse,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaBorrowerEventsResponse, AjnaHistoryResponse } from 'features/ajna/history/types'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
 import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
-import { AjnaPositionAuctionResponse } from 'features/ajna/rewards/helpers/getAjnaPositionAuction'
 import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
 
 export type Subgraphs = {
   Ajna: {
-    getEarnData: { dpmProxyAddress: string }
-    getPositionCumulatives: { dpmProxyAddress: string }
-    getPoolAddress: { collateralAddress: string; quoteAddress: string }
-    getPoolData: { poolAddress: string }
-    getPoolsTableData: {}
-    getNftIds: { walletAddress: string }
-    getPositionAuction: { dpmProxyAddress: string }
-    getHistory: { dpmProxyAddress: string }
-    getClaimedRewards: { walletAddress: string }
+    getAjnaEarnPositionData: { dpmProxyAddress: string }
+    getAjnaPositionAggregatedData: { dpmProxyAddress: string }
+    getAjnaPoolAddress: { collateralAddress: string; quoteAddress: string }
+    getAjnaPoolData: { poolAddress: string }
+    getAjnaPoolsData: {}
+    getAjnaEarnPositionNftId: { walletAddress: string }
+    getAjnaClaimedRewards: { walletAddress: string }
     searchAjnaPool: { collateralAddress: string; poolAddress: string; quoteAddress: string }
   }
   TempGraph: {
@@ -35,7 +29,35 @@ export type SubgraphBaseResponse<R> = {
 
 export type SubgraphsResponses = {
   Ajna: {
-    getEarnData: SubgraphBaseResponse<{
+    getAjnaPositionAggregatedData: SubgraphBaseResponse<{
+      account: {
+        cumulativeDeposit: number
+        cumulativeFees: number
+        cumulativeWithdraw: number
+      }
+      auctions: {
+        alreadyTaken: boolean
+        collateral: number
+        debtToCover: number
+        endOfGracePeriod: number
+        id: string
+        inLiquidation: boolean
+      }[]
+      borrowerEvents: AjnaBorrowerEventsResponse[]
+      oasisEvents: AjnaHistoryResponse[]
+    }>
+    getAjnaPoolAddress: SubgraphBaseResponse<{
+      pools: {
+        address: string
+      }[]
+    }>
+    getAjnaPoolData: SubgraphBaseResponse<{
+      pool: AjnaPoolDataResponse
+    }>
+    getAjnaPoolsData: SubgraphBaseResponse<{
+      pools: AjnaPoolsDataResponse[]
+    }>
+    getAjnaEarnPositionData: SubgraphBaseResponse<{
       account: {
         earnPositions: {
           lps: number
@@ -49,31 +71,8 @@ export type SubgraphsResponses = {
         }[]
       }
     }>
-    getPositionCumulatives: SubgraphBaseResponse<{
-      account: {
-        cumulativeDeposit: number
-        cumulativeFees: number
-        cumulativeWithdraw: number
-      }
-    }>
-    getPoolAddress: SubgraphBaseResponse<{
-      pools: {
-        address: string
-      }[]
-    }>
-    getPoolData: SubgraphBaseResponse<{
-      pool: AjnaPoolDataResponse
-    }>
-    getPoolsTableData: SubgraphBaseResponse<{
-      pools: AjnaPoolsDataResponse[]
-    }>
-    getNftIds: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
-    getPositionAuction: SubgraphBaseResponse<{ auctions: AjnaPositionAuctionResponse[] }>
-    getAjnaHistory: SubgraphBaseResponse<{
-      oasisEvents: AjnaHistoryResponse[]
-      borrowerEvents: AjnaBorrowerEventsResponse[]
-    }>
-    getClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
+    getAjnaEarnPositionNftId: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
+    getAjnaClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
     searchAjnaPool: SubgraphBaseResponse<{
       pools: {
         address: string

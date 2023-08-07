@@ -3,20 +3,20 @@ import { AjnaSimulationData } from 'actions/ajna'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
 import { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import {
   AjnaBorrowFormState,
   useAjnaBorrowFormReducto,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
+import { AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
-import { AjnaPositionCumulatives } from 'features/ajna/positions/common/observables/getPositionCumulatives'
+} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
 import {
   AjnaEarnFormState,

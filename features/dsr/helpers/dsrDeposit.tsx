@@ -3,16 +3,17 @@ import { EventTypes, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { applyAllowanceChanges } from 'features/allowance/allowance'
 import { setDsrAllowance } from 'features/allowance/setAllowance'
 import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
-import { depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
+import { convertDsr, depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
 import { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
+import { applyDsrAllowanceChanges } from 'features/dsr/utils/applyDsrAllowance'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { applyProxyChanges } from 'features/proxy/proxy'
 import {
@@ -29,7 +30,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { exit, join } from './potCalls'
+import { exit, join, savingsDaiConvert, savingsDaiDeposit } from './potCalls'
 
 export type DsrDepositStage =
   | 'editing'
@@ -60,16 +61,19 @@ type DsrDepositMessage = {
 export interface DsrDepositState extends HasGasEstimation {
   stage: DsrDepositStage
   proxyAddress: string
+  walletAddress: string
   allowanceTxHash?: string
   depositTxHash?: string
   withdrawTxHash?: string
   proxyTxHash?: string
   daiBalance: BigNumber
+  sDaiBalance: BigNumber
   allowance?: BigNumber
+  daiWalletAllowance?: BigNumber
   amount?: BigNumber
   depositAmount?: BigNumber
   messages: DsrDepositMessage[]
-  change: (change: ManualChange) => void
+  change: (change: ManualChange | CheckboxChange) => void
   reset?: () => void
   proceed?: () => void
   setAllowance?: () => void
@@ -81,6 +85,7 @@ export interface DsrDepositState extends HasGasEstimation {
   operation: DsrSidebarTabOptions
   operationChange: (operation: DsrSidebarTabOptions) => void
   withdraw?: () => void
+  convert?: () => void
   daiDeposit: BigNumber
   progress?: () => void
   potDsr: BigNumber
@@ -88,11 +93,15 @@ export interface DsrDepositState extends HasGasEstimation {
   proxyConfirmations?: number
   allowanceAmount?: BigNumber
   netValue?: BigNumber
+  isMintingSDai: boolean
 }
 
 export type ManualChange = Change<DsrDepositState, 'amount'>
 export type DaiBalanceChange = Change<DsrDepositState, 'daiBalance'>
+export type SDaiBalanceChange = Change<DsrDepositState, 'sDaiBalance'>
 export type DsrCreationChange = Changes<DsrDepositState>
+export type CheckboxChange = Changes<DsrDepositState, 'isMintingSDai'>
+export type WalletAddressChange = Changes<DsrDepositState, 'walletAddress'>
 
 export function applyOther(state: DsrDepositState, change) {
   if (change.kind === 'progressAllowance') {
@@ -118,7 +127,7 @@ export function applyOther(state: DsrDepositState, change) {
 const apply: ApplyChange<DsrDepositState> = combineApplyChanges(
   applyChange,
   applyProxyChanges,
-  (state, change) => applyAllowanceChanges({ ...state, depositAmount: state.amount }, change),
+  (state, change) => applyDsrAllowanceChanges({ ...state, depositAmount: state.amount }, change),
   applyOther,
 )
 
@@ -235,7 +244,12 @@ function addTransitions(
     state.stage === 'depositFiasco' ||
     state.stage === 'withdrawFiasco'
   ) {
-    if (state.amount && !state.proxyAddress) {
+    if (
+      state.amount &&
+      !state.proxyAddress &&
+      state.operation !== 'convert' &&
+      !state.isMintingSDai
+    ) {
       return {
         ...state,
         deposit: () => change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' }),
@@ -243,7 +257,12 @@ function addTransitions(
         reset,
       }
     }
-    if (state.amount?.gt(state.allowance || zero) && state.operation === 'deposit') {
+    if (
+      state.amount?.gt(
+        state.isMintingSDai ? state.daiWalletAllowance || zero : state.allowance || zero,
+      ) &&
+      state.operation === 'deposit'
+    ) {
       return {
         ...state,
         deposit: () => change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' }),
@@ -269,6 +288,15 @@ function addTransitions(
           proceed: () => change({ kind: 'stage', stage: 'withdrawWaiting4Confirmation' }),
           reset,
           withdraw: () => withdrawDsr(txHelpers$, change, state),
+        }
+      }
+      if (state.operation === 'convert') {
+        return {
+          ...state,
+          change,
+          proceed: () => change({ kind: 'stage', stage: 'withdrawWaiting4Confirmation' }),
+          reset,
+          convert: () => convertDsr(txHelpers$, change, state),
         }
       }
     }
@@ -306,7 +334,7 @@ function constructEstimateGas(
   state: DsrDepositState,
 ): Observable<DsrDepositState> {
   return addGasEstimation(state, ({ estimateGas }: TxHelpers) => {
-    const { messages, amount, proxyAddress } = state
+    const { messages, amount, proxyAddress, walletAddress, operation, isMintingSDai } = state
 
     if (
       state.stage === 'proxyWaitingForConfirmation' ||
@@ -316,7 +344,30 @@ function constructEstimateGas(
       return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
-    if (!proxyAddress || !amount || messages.length > 0) {
+    if (!amount || messages.length > 0) {
+      return undefined
+    }
+
+    if (operation === 'convert') {
+      const convertArgs = {
+        amount: amount.gt(state.sDaiBalance) ? state.sDaiBalance : amount,
+        walletAddress,
+      }
+      return estimateGas(
+        savingsDaiConvert as any,
+        { ...convertArgs, kind: TxMetaKind.savingsDaiConvert } as any,
+      )
+    }
+
+    if (isMintingSDai) {
+      const sDaiArgs = { amount, walletAddress }
+      return estimateGas(
+        savingsDaiDeposit as any,
+        { ...sDaiArgs, kind: TxMetaKind.savingsDaiDeposit } as any,
+      )
+    }
+
+    if (!proxyAddress) {
       return undefined
     }
 
@@ -335,22 +386,28 @@ export function createDsrDeposit$(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  daiBalance$: Observable<BigNumber>,
+  balancesInfoArray$: Observable<BigNumber[]>,
   daiDeposit$: Observable<BigNumber>,
   potDsr$: Observable<BigNumber>,
   dsr$: Observable<Dsr>, // TODO make use of it instead fetching dsrOverview separately
   addGasEstimation$: AddGasEstimationFunction,
 ): Observable<DsrDepositState> {
-  return combineLatest(context$, proxyAddress$, daiBalance$, daiDeposit$, potDsr$).pipe(
+  return combineLatest(context$, proxyAddress$, balancesInfoArray$, daiDeposit$, potDsr$).pipe(
     first(),
-    switchMap(([context, proxyAddress, daiBalance, daiDeposit, potDsr]) => {
+    switchMap(([context, proxyAddress, balances, daiDeposit, potDsr]) => {
+      const {
+        tokens: { SDAI },
+      } = getNetworkContracts(NetworkIds.MAINNET)
       return combineLatest(
         proxyAddress && context.status === 'connected' && context.account
-          ? allowance$('DAI', context.account, proxyAddress)
-          : of(undefined),
+          ? [
+              allowance$('DAI', context.account, proxyAddress),
+              allowance$('DAI', context.account, SDAI.address),
+            ]
+          : [of(undefined), allowance$('DAI', context.account, SDAI.address)],
       ).pipe(
         first(),
-        switchMap(([allowance]) => {
+        switchMap(([daiProxyAllowance, daiWalletAllowance]) => {
           const change$ = new Subject<DsrCreationChange>()
           function change(ch: DsrCreationChange) {
             change$.next(ch)
@@ -368,12 +425,16 @@ export function createDsrDeposit$(
             daiDeposit,
             potDsr,
             stage: 'editing',
-            daiBalance,
-            allowance,
+            daiBalance: balances[0],
+            sDaiBalance: balances[1],
+            allowance: daiProxyAllowance,
+            daiWalletAllowance,
             proxyAddress: proxyAddress!,
+            walletAddress: context.account!,
             messages: [],
             gasEstimationStatus: GasEstimationStatus.unset,
             depositAmount: zero,
+            isMintingSDai: false,
             token: 'DAI',
             operation: 'deposit',
             operationChange: (operation: DsrSidebarTabOptions) =>
@@ -381,11 +442,26 @@ export function createDsrDeposit$(
             change,
           }
 
-          const daiBalanceChange$: Observable<DaiBalanceChange> = daiBalance$.pipe(
-            map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+          const daiBalanceChange$: Observable<DaiBalanceChange> = balancesInfoArray$.pipe(
+            map(([daiBalance]) => ({ kind: 'daiBalance', daiBalance })),
           )
 
-          return merge(change$, daiBalanceChange$, daiDepositChange$, netValueChange$).pipe(
+          const sDaiBalanceChange$: Observable<SDaiBalanceChange> = balancesInfoArray$.pipe(
+            map(([_, sDaiBalance]) => ({ kind: 'sDaiBalance', sDaiBalance })),
+          )
+
+          const walletAddressChange$: Observable<WalletAddressChange> = context$.pipe(
+            map((context) => ({ kind: 'walletAddress', walletAddress: context.account })),
+          )
+
+          return merge(
+            change$,
+            daiBalanceChange$,
+            sDaiBalanceChange$,
+            daiDepositChange$,
+            netValueChange$,
+            walletAddressChange$,
+          ).pipe(
             scan(apply, initialState),
             map(validate),
             switchMap(curry(constructEstimateGas)(addGasEstimation$)),

@@ -1,3 +1,4 @@
+import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaClaimedReward {
@@ -10,9 +11,9 @@ export interface AjnaClaimedReward {
 type GetAjnaRewards = (walletAddress: string) => Promise<AjnaClaimedReward[]>
 
 export const getAjnaRewards: GetAjnaRewards = async (walletAddress: string) => {
-  const { response } = await loadSubgraph('Ajna', 'getClaimedRewards', {
+  const { response } = (await loadSubgraph('Ajna', 'getAjnaClaimedRewards', {
     walletAddress: walletAddress.toLowerCase(),
-  })
+  })) as SubgraphsResponses['Ajna']['getAjnaClaimedRewards']
 
   if (response && 'claimeds' in response) {
     return response.claimeds

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networks'
+import { getNetworkRpcEndpoint, NetworkIds } from 'blockchain/networks'
 import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'
@@ -10,6 +10,7 @@ import { fromPromise } from 'rxjs/internal-compatibility'
 import { mergeAll } from 'rxjs/internal/operators'
 import { filter, map, mergeMap, toArray } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
+import Web3 from 'web3'
 
 export enum DsrEventKind {
   dsrDeposit = 'dsrDeposit',
@@ -72,8 +73,12 @@ function createEventTypeHistory$(
   proxyAddress: string,
   kind: DsrEventKind,
 ): Observable<DsrEvent> {
+  const web3ProviderGetPastLogs = new Web3(
+    getNetworkRpcEndpoint(NetworkIds.MAINNET, context.chainId),
+  )
+
   const potEvents$ = fromPromise(
-    context.web3ProviderGetPastLogs.eth.getPastLogs({
+    web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdPot.address,
       topics: [eventSigntures[kind][0], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
@@ -81,7 +86,7 @@ function createEventTypeHistory$(
   )
 
   const adapterEvents$ = fromPromise(
-    context.web3ProviderGetPastLogs.eth.getPastLogs({
+    web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdJoinDai.address,
       topics: [eventSigntures[kind][1], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
@@ -124,6 +129,7 @@ export function createDsrHistory$(context: Context, proxyAddress: string): Obser
     proxyAddress,
     DsrEventKind.dsrDeposit,
   )
+
   const withdrawEvents$ = createEventTypeHistory$(
     context,
     fromBlock,

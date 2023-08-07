@@ -23,7 +23,9 @@ export function createProxyAddress$(
           owner,
         )(dsProxyAddress).pipe(
           mergeMap((ownerAddress: string) =>
-            ownerAddress === account ? of(dsProxyAddress) : of(undefined),
+            ownerAddress.toLowerCase() === account.toLowerCase()
+              ? of(dsProxyAddress)
+              : of(undefined),
           ),
         )
       }),

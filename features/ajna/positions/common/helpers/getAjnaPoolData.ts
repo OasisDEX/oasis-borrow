@@ -34,7 +34,7 @@ export interface AjnaPoolDataResponse {
 }
 
 export const getAjnaPoolData: GetPoolData = async (poolAddress: string) => {
-  const { response } = await loadSubgraph('Ajna', 'getPoolData', {
+  const { response } = await loadSubgraph('Ajna', 'getAjnaPoolData', {
     poolAddress: poolAddress.toLowerCase(),
   })
 
