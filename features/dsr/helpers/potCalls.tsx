@@ -1,6 +1,7 @@
 import { amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
+import * as savingsDai from 'blockchain/abi/savings-dai.json'
 import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -73,11 +74,9 @@ export type SavingDaiData = {
 
 export const savingsDaiDeposit: TransactionDef<SavingDaiData> = {
   call: (_, { contract }) => {
-    const {
-      tokens: { SDAI },
-    } = getNetworkContracts(NetworkIds.MAINNET)
-
-    return contract<SavingsDai>(contractDesc(SDAI.abi, SDAI.address)).methods.deposit
+    return contract<SavingsDai>(
+      contractDesc(savingsDai, '0x83f20f44975d03b1b09e64809b757c47f942beea'),
+    ).methods.deposit
   },
   prepareArgs: (data) => {
     const { amount, walletAddress } = data
@@ -87,15 +86,17 @@ export const savingsDaiDeposit: TransactionDef<SavingDaiData> = {
 
 export const savingsDaiConvert: TransactionDef<SavingDaiData> = {
   call: (_, { contract }) => {
-    const {
-      tokens: { SDAI },
-    } = getNetworkContracts(NetworkIds.MAINNET)
-
-    return contract<SavingsDai>(contractDesc(SDAI.abi, SDAI.address)).methods.redeem
+    return contract<SavingsDai>(
+      contractDesc(savingsDai, '0x83f20f44975d03b1b09e64809b757c47f942beea'),
+    ).methods.redeem
   },
   prepareArgs: (data) => {
     const { amount, walletAddress } = data
-    return [amountToWei(amount, getToken('SDAI').precision).toFixed(0), walletAddress, walletAddress]
+    return [
+      amountToWei(amount, getToken('SDAI').precision).toFixed(0),
+      walletAddress,
+      walletAddress,
+    ]
   },
 }
 

@@ -99,15 +99,12 @@ function createEventTypeHistory$(
       const adapterFiltered$ = adapterEvents$.pipe(
         mergeAll(),
         filter((e: LogEvent) => {
-          console.log('here5')
-
           return e.transactionHash === event.transactionHash
         }),
       )
       return combineLatest(of(event), adapterFiltered$)
     }),
     map((result: LogEvent[]) => {
-      console.log('here4')
       const [potEvent, joinEvent] = result
       return {
         kind,
@@ -126,14 +123,12 @@ function createEventTypeHistory$(
 export function createDsrHistory$(context: Context, proxyAddress: string): Observable<DsrEvent[]> {
   // 8600000 is 2019-09-22 on mainnet
   const fromBlock = 8600000
-  console.log('hehe1')
   const depositEvents$ = createEventTypeHistory$(
     context,
     fromBlock,
     proxyAddress,
     DsrEventKind.dsrDeposit,
   )
-  console.log('hehe2')
 
   const withdrawEvents$ = createEventTypeHistory$(
     context,
@@ -141,7 +136,6 @@ export function createDsrHistory$(context: Context, proxyAddress: string): Obser
     proxyAddress,
     DsrEventKind.dsrWithdrawal,
   )
-  console.log('hehe3')
 
   return merge(withdrawEvents$, depositEvents$).pipe(
     mergeMap((e: LogEvent) => {

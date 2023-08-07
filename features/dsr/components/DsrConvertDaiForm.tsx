@@ -5,6 +5,7 @@ import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent } from 'react'
 import { Box, Text } from 'theme-ui'
 
@@ -27,6 +28,7 @@ export function DsrConvertDaiForm({
   activeTab,
   gasData,
 }: DsrConvertDaiFormProps) {
+  const { t } = useTranslation()
   return (
     <Box
       sx={{
@@ -34,8 +36,7 @@ export function DsrConvertDaiForm({
       }}
     >
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mb: 4 }}>
-        If you are are holding Savings Dai (sDAI) you can convert it back to Dai. Converting back to
-        Dai means you will no longer accrue the Dai Savings Rate on the amount you convert.
+        {t('dsr.common.conversion-desc')}
       </Text>
       <VaultActionInput
         optionalLabel="Convert sDai to Dai"
@@ -53,8 +54,11 @@ export function DsrConvertDaiForm({
         }
       />
       <Box sx={{ mt: 2 }}>
-        <AppLink sx={{ fontSize: 2, fontWeight: 'regular' }} href={EXTERNAL_LINKS.KB.WHAT_IS_SDAI}>
-          What is sDAI conversion?
+        <AppLink
+          sx={{ fontSize: 2, fontWeight: 'regular' }}
+          href={EXTERNAL_LINKS.KB.WHAT_IS_SDAI_CONVERSION}
+        >
+          {t('dsr.common.what-is-sdai-conversion')}
         </AppLink>
       </Box>
 

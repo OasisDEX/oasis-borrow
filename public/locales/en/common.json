@@ -2495,7 +2495,9 @@
       "what-is-sdai": "What's sDAI"
     },
     "common": {
-      "mint-savings-dai": "Mint Savings Dai (sDAI)"
+      "mint-savings-dai": "Mint Savings Dai (sDAI)",
+      "conversion-desc": "If you are are holding Savings Dai (sDAI) you can convert it back to Dai. Converting back to Dai means you will no longer accrue the Dai Savings Rate on the amount you convert.",
+      "what-is-sdai-conversion": "What is sDAI conversion?"
     }
   },
   "ajna": {

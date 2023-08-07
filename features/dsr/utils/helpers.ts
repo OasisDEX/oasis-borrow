@@ -31,7 +31,7 @@ export function createPrimaryButtonLabel({
   if (stage === 'proxySuccess') return 'Set Allowance'
   if (activeTab === 'withdraw') return 'Withdraw'
   if (activeTab === 'convert') return 'Convert'
-  if (depositInputValue && !proxyAddress) return 'Setup Proxy'
+  if (depositInputValue && !proxyAddress && !isMintingSDai) return 'Setup Proxy'
   if (stage === 'allowanceSuccess') return 'Go to deposit'
   if (
     (depositInputValue &&
