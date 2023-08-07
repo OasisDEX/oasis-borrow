@@ -29,7 +29,7 @@ export function shouldSendChangeNetworkOnConnected(
   }
 
   if (state.pageNetworkHexIds) {
-    return !state.pageNetworkHexIds.includes(desiredNetworkHexId)
+    return !state.pageNetworkHexIds.includes(state.walletNetworkHexId)
   }
 
   const desiredNetworkConfig = networkSetByHexId[desiredNetworkHexId]
