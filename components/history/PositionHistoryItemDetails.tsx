@@ -88,11 +88,18 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {priceFormat || `${collateralToken}/${quoteToken}`}
         </PositionHistoryRow>
       )}
-      {'originationFee' in event && event.originationFee?.gt(zero) && (
+      {!isOracless && 'originationFee' in event && event.originationFee?.gt(zero) && (
         <PositionHistoryRow label={t('position-history.origination-fee')}>
           {formatFiatBalance(event.originationFee)} USD
         </PositionHistoryRow>
       )}
+      {isOracless &&
+        'originationFeeInQuoteToken' in event &&
+        event.originationFeeInQuoteToken?.gt(zero) && (
+          <PositionHistoryRow label={t('position-history.origination-fee')}>
+            {formatFiatBalance(event.originationFeeInQuoteToken)} {quoteToken}
+          </PositionHistoryRow>
+        )}
       {event.moveQuoteFromPrice && event.moveQuoteToPrice && (
         <PositionHistoryRow label={t('position-history.lending-price')}>
           {formatFiatBalance(
@@ -152,9 +159,14 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.collateralTokenPriceUSD)} USD
         </PositionHistoryRow>
       )}
-      {event.totalFee && (
+      {!isOracless && event.totalFee && (
         <PositionHistoryRow label={t('position-history.total-fees')}>
           {formatFiatBalance(event.totalFee)} USD
+        </PositionHistoryRow>
+      )}
+      {isOracless && event.totalFeeInQuoteToken && (
+        <PositionHistoryRow label={t('position-history.total-fees')}>
+          {formatFiatBalance(event.totalFeeInQuoteToken)} {quoteToken}
         </PositionHistoryRow>
       )}
       {/* AUCTION events */}
