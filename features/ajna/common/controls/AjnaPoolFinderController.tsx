@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networks'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
@@ -5,7 +6,11 @@ import { AppLink } from 'components/Links'
 import { TokensGroup } from 'components/TokensGroup'
 import { isAddress } from 'ethers/lib/utils'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
+import { AjnaProduct } from 'features/ajna/common/types'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import { useState } from 'react'
@@ -51,9 +56,23 @@ function validateParams({
   return errors
 }
 
-export function AjnaPoolFinderController() {
-  const { identifiedTokens$ } = useAppContext()
+function getOraclessUrl({
+  chainId,
+  collateralAddress,
+  collateralToken,
+  product,
+  quoteAddress,
+  quoteToken,
+}: OraclessPoolResult & { product: AjnaProduct; chainId: NetworkIds }) {
+  return !isPoolOracless({ chainId, collateralToken, quoteToken })
+    ? `/ethereum/ajna/${product}/${collateralToken}-${quoteToken}`
+    : `/ethereum/ajna/${product}/${collateralAddress}-${quoteAddress}`
+}
 
+export function AjnaPoolFinderController() {
+  const { context$, identifiedTokens$ } = useAppContext()
+
+  const [context] = useObservable(context$)
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
   const [poolAddress, setPoolAddress] = useState<string>('')
   const [collateralAddress, setCollateralAddress] = useState<string>('')
@@ -105,13 +124,18 @@ export function AjnaPoolFinderController() {
               })
               try {
                 identifiedTokensSubscription.unsubscribe()
-              } catch(e) {}
+              } catch (e) {}
             },
             undefined,
             () => {
               console.log('complete?')
             },
           )
+        } else {
+          setResults({
+            ...results,
+            [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: [],
+          })
         }
       }
     },
@@ -123,62 +147,76 @@ export function AjnaPoolFinderController() {
     <WithConnection>
       <AnimatedWrapper>
         <AjnaHeader title="Ajna pool finder" intro="Lorem ipsum dolor sit amet" />
-        <Flex
-          sx={{
-            flexDirection: 'column',
-            rowGap: 2,
-            justifyItems: 'center',
-            alignItems: 'center',
-            mb: '48px',
-          }}
-        >
-          <Input
-            sx={inputStyles}
-            placeholder="Pool address"
-            value={poolAddress}
-            onChange={(e) => setPoolAddress(e.target.value.toLowerCase())}
-          />
-          <Box>OR</Box>
-          <Input
-            sx={inputStyles}
-            placeholder="Collateral token address"
-            value={collateralAddress}
-            onChange={(e) => setCollateralAddress(e.target.value.toLowerCase())}
-          />
-          <Input
-            sx={inputStyles}
-            placeholder="Quote token address"
-            value={quoteAddress}
-            onChange={(e) => setQuoteAddress(e.target.value.toLowerCase())}
-          />
-        </Flex>
-        {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] ? (
-          <Flex sx={{ flexDirection: 'column', rowGap: 2 }}>
-            {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`].map((pool) => (
-              <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
-                <TokensGroup tokens={[pool.collateralToken, pool.quoteToken]} />
-                <Text as="p" sx={{ fontWeight: 'semiBold' }}>
-                  {pool.collateralToken}/{pool.quoteToken}
-                </Text>
-                <AppLink
-                  href={`/ethereum/ajna/borrow/${pool.collateralAddress}/${pool.quoteAddress}`}
-                >
-                  <Button variant="tertiary">Borrow</Button>
-                </AppLink>
-                or
-                <AppLink
-                  href={`/ethereum/ajna/earn/${pool.collateralAddress}/${pool.quoteAddress}`}
-                >
-                  <Button variant="tertiary">Earn</Button>
-                </AppLink>
+        <WithLoadingIndicator value={[context]}>
+          {([{ chainId }]) => (
+            <>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  rowGap: 2,
+                  justifyItems: 'center',
+                  alignItems: 'center',
+                  mb: '48px',
+                }}
+              >
+                <Input
+                  sx={inputStyles}
+                  placeholder="Pool address"
+                  value={poolAddress}
+                  onChange={(e) => setPoolAddress(e.target.value.toLowerCase())}
+                />
+                <Box>OR</Box>
+                <Input
+                  sx={inputStyles}
+                  placeholder="Collateral token address"
+                  value={collateralAddress}
+                  onChange={(e) => setCollateralAddress(e.target.value.toLowerCase())}
+                />
+                <Input
+                  sx={inputStyles}
+                  placeholder="Quote token address"
+                  value={quoteAddress}
+                  onChange={(e) => setQuoteAddress(e.target.value.toLowerCase())}
+                />
               </Flex>
-            ))}
-          </Flex>
-        ) : (
-          <>
-            {errors.length > 0 ? errors.map((error) => <Text as="p">{error}</Text>) : <Spinner />}
-          </>
-        )}
+              {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] ? (
+                <>
+                  {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`].length > 0 ? (
+                    <Flex sx={{ flexDirection: 'column', rowGap: 2 }}>
+                      {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`].map(
+                        (pool) => (
+                          <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
+                            <TokensGroup tokens={[pool.collateralToken, pool.quoteToken]} />
+                            <Text as="p" sx={{ fontWeight: 'semiBold' }}>
+                              {pool.collateralToken}/{pool.quoteToken}
+                            </Text>
+                            <AppLink href={getOraclessUrl({ chainId, product: 'borrow', ...pool })}>
+                              <Button variant="tertiary">Borrow</Button>
+                            </AppLink>
+                            or
+                            <AppLink href={getOraclessUrl({ chainId, product: 'earn', ...pool })}>
+                              <Button variant="tertiary">Earn</Button>
+                            </AppLink>
+                          </Flex>
+                        ),
+                      )}
+                    </Flex>
+                  ) : (
+                    <Text as="p">No results for provided input.</Text>
+                  )}
+                </>
+              ) : (
+                <>
+                  {errors.length > 0 ? (
+                    errors.map((error) => <Text as="p">{error}</Text>)
+                  ) : (
+                    <Spinner />
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </WithLoadingIndicator>
       </AnimatedWrapper>
     </WithConnection>
   )

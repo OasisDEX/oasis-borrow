@@ -18,21 +18,21 @@ export const searchAjnaPool = async ({
     quoteAddress: quoteAddress?.toLowerCase() || '',
   })) as SubgraphsResponses['Ajna']['searchAjnaPool']
 
+  let pools = response?.pools || []
+
+  if (poolAddress)
+    pools = pools.filter((pool) => pool.address.toLowerCase() === poolAddress.toLowerCase())
+  if (collateralAddress)
+    pools = pools.filter(
+      (pool) => pool.collateralAddress.toLowerCase() === collateralAddress.toLowerCase(),
+    )
+  if (quoteAddress)
+    pools = pools.filter(
+      (pool) => pool.quoteTokenAddress.toLowerCase() === quoteAddress.toLowerCase(),
+    )
+
   return {
-    pools:
-      response && response.pools
-        ? poolAddress
-          ? response.pools.filter(
-              (pool) => pool.address.toLowerCase() === poolAddress.toLowerCase(),
-            )
-          : collateralAddress && quoteAddress
-          ? response.pools.filter(
-              (pool) =>
-                pool.collateralAddress.toLowerCase() === collateralAddress.toLowerCase() &&
-                pool.quoteTokenAddress.toLowerCase() === quoteAddress.toLowerCase(),
-            )
-          : response.pools
-        : [],
+    pools,
     size: response?.pools?.length || 0,
   }
 }

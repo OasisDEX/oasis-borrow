@@ -1,5 +1,9 @@
 import { Tokens } from '@prisma/client'
-import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
+import {
+  extendTokensContracts,
+  getNetworkContracts,
+  pruneTokensContracts,
+} from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { getToken, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
 import { combineLatest, from, Observable, of } from 'rxjs'
@@ -30,6 +34,7 @@ export const identifyTokens$ = (
 ): Observable<IdentifiedTokens> =>
   combineLatest(context$, once$).pipe(
     switchMap(([context]) => {
+      void pruneTokensContracts()
       const contracts = getNetworkContracts(context.chainId)
 
       let identifiedTokens: Tokens[] = []
