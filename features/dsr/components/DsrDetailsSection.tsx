@@ -11,6 +11,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface DsrDetailsSectionProps {
+  dsr: BigNumber
   apy: BigNumber
   netValue: BigNumber
   earnings: BigNumber
@@ -18,6 +19,7 @@ interface DsrDetailsSectionProps {
 }
 
 export function DsrDetailsSection({
+  dsr,
   apy,
   depositAmount,
   netValue,
@@ -47,7 +49,7 @@ export function DsrDetailsSection({
           }
         />
       ) : (
-        <DsrSimulationSection apy={apy} userInputAmount={depositAmount || zero} />
+        <DsrSimulationSection dsr={dsr} userInputAmount={depositAmount || zero} />
       )}
     </>
   )
