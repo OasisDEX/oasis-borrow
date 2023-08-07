@@ -72,11 +72,12 @@ export type SavingDaiData = {
   amount: BigNumber
 }
 
+// TODO hardcoded because there is an non deterministic issue while using it from library
+const savingsDaiAddress = '0x83f20f44975d03b1b09e64809b757c47f942beea'
+
 export const savingsDaiDeposit: TransactionDef<SavingDaiData> = {
   call: (_, { contract }) => {
-    return contract<SavingsDai>(
-      contractDesc(savingsDai, '0x83f20f44975d03b1b09e64809b757c47f942beea'),
-    ).methods.deposit
+    return contract<SavingsDai>(contractDesc(savingsDai, savingsDaiAddress)).methods.deposit
   },
   prepareArgs: (data) => {
     const { amount, walletAddress } = data
@@ -86,9 +87,7 @@ export const savingsDaiDeposit: TransactionDef<SavingDaiData> = {
 
 export const savingsDaiConvert: TransactionDef<SavingDaiData> = {
   call: (_, { contract }) => {
-    return contract<SavingsDai>(
-      contractDesc(savingsDai, '0x83f20f44975d03b1b09e64809b757c47f942beea'),
-    ).methods.redeem
+    return contract<SavingsDai>(contractDesc(savingsDai, savingsDaiAddress)).methods.redeem
   },
   prepareArgs: (data) => {
     const { amount, walletAddress } = data
