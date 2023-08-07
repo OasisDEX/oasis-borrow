@@ -30,8 +30,22 @@ export type DsrPot =
 
 // TODO: global setting!
 BigNumber.config({ POW_PRECISION: 100 })
-export function getYearlyRate(apy: BigNumber) {
-  return apy.div(RAY).pow(SECONDS_PER_YEAR)
+/**
+ * Calculates the yearly rate (APY) based on the Dai Savings Rate (DSR).
+ * @param dsr The Dai Savings Rate as a BigNumber.
+ * @returns The yearly rate as a BigNumber.
+ */
+export function getYearlyRate(dsr: BigNumber) {
+  return getRate(dsr, new BigNumber(SECONDS_PER_YEAR))
+}
+/**
+ * Calculates the rate based on the Dai Savings Rate (DSR) and a time interval.
+ * @param dsr The Dai Savings Rate as a BigNumber.
+ * @param interval The time interval in seconds as a BigNumber.
+ * @returns The rate as a BigNumber.
+ */
+export function getRate(dsr: BigNumber, interval: BigNumber) {
+  return dsr.div(RAY).pow(interval)
 }
 
 export function getApyPercentage(pot: DsrPot) {

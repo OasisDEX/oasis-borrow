@@ -26,6 +26,7 @@ interface DsrViewProps {
   context: Context
   potTotalValueLocked?: BigNumber
   apy: BigNumber
+  dsr: BigNumber
 }
 
 const isLoadingCollection = [
@@ -46,6 +47,7 @@ export function DsrView({
   context,
   potTotalValueLocked,
   apy,
+  dsr,
 }: DsrViewProps) {
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
@@ -89,6 +91,7 @@ export function DsrView({
                 <Box>
                   <DsrDetailsSection
                     apy={apy}
+                    dsr={dsr}
                     depositAmount={dsrDepositState.amount}
                     netValue={netValue}
                     earnings={earnings}
