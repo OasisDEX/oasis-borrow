@@ -9,6 +9,7 @@ export const mapAjnaEarnEvents = (
       txHash: event.txHash,
       timestamp: event.timestamp,
       totalFee: event.totalFee,
+      totalFeeInQuoteToken: event.totalFee,
       debtAddress: event.debtAddress,
       collateralAddress: event.collateralAddress,
       addOrRemovePrice: event.addOrRemovePrice,

@@ -1,6 +1,7 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
+import * as savingsDai from 'blockchain/abi/savings-dai.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import { contractDesc } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
@@ -70,7 +71,7 @@ export const tokensMainnet = {
   LDO: contractDesc(erc20, mainnet.common.LDO),
   MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
-  SDAI: contractDesc(erc20, mainnet.common.SDAI),
+  SDAI: contractDesc(savingsDai, mainnet.common.SDAI),
   STETH: contractDesc(erc20, mainnet.common.STETH),
   TBTC: contractDesc(erc20, mainnet.common.TBTC),
   USDC: contractDesc(erc20, mainnet.common.USDC),

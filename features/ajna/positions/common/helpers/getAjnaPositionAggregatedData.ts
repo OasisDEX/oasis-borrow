@@ -63,6 +63,7 @@ export const getAjnaPositionAggregatedData = async (
       ...response.oasisEvents.map((event) => ({
         ...ajnaUnifiedHistoryItem,
         originationFee: new BigNumber(event.originationFee),
+        originationFeeInQuoteToken: new BigNumber(event.originationFeeInQuoteToken),
         ...mapPositionHistoryResponseEvent(event),
       })),
       ...response.borrowerEvents

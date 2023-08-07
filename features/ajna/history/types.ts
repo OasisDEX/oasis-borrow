@@ -3,6 +3,7 @@ import { PositionHistoryEvent, PositionHistoryResponse } from 'features/position
 
 export interface AjnaHistoryResponse extends PositionHistoryResponse {
   originationFee: string
+  originationFeeInQuoteToken: string
 }
 
 export interface AjnaBorrowerEventsResponse {
@@ -21,6 +22,7 @@ export interface AjnaBorrowerEventsResponse {
 
 export interface AjnaHistoryEvent extends PositionHistoryEvent {
   originationFee: BigNumber
+  originationFeeInQuoteToken: BigNumber
 }
 
 export type AjnaBorrowerEvent = {
