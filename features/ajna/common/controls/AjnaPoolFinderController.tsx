@@ -1,10 +1,13 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
+import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
+import { isAddress } from 'ethers/lib/utils'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import React, { useState } from 'react'
-import { Box, Button, Flex, Grid, Input, SxStyleProp } from 'theme-ui'
+import React, { useMemo, useState } from 'react'
+import { Box, Flex, Grid, Input, SxStyleProp, Text } from 'theme-ui'
 
 const inputStyles: SxStyleProp = {
   height: '50px',
@@ -15,12 +18,47 @@ const inputStyles: SxStyleProp = {
   borderRadius: 'medium',
 }
 
+function validateParams(collateralAddress: string, poolAddress: string, quoteAddress: string) {
+  const errors: string[] = []
+
+  if (poolAddress) {
+    if (!isAddress(poolAddress)) errors.push('Pool address is not valid contract address.')
+  }
+
+  return errors
+}
+
 export function AjnaPoolFinderController() {
+  const { identifiedTokens$ } = useAppContext()
+
   const [poolAddress, setPoolAddress] = useState<string>('')
+  const [collateralAddress, setCollateralAddress] = useState<string>('')
+  const [quoteAddress, setQuoteAddress] = useState<string>('')
+  const [errors, setErrors] = useState<string[]>([])
+
+  const [identifiedTokensData] = useObservable(
+    useMemo(() => identifiedTokens$(['0xa168ef12e32933485199983bef1fa6fe55a29bdf']), []),
+  )
+
+  console.log('identifiedTokensData')
+  console.log(identifiedTokensData)
 
   useDebouncedEffect(
-    () => {
-      console.log('new')
+    async () => {
+      if (poolAddress || collateralAddress || quoteAddress) {
+        const validation = validateParams(collateralAddress, poolAddress, quoteAddress)
+
+        setErrors(validation)
+        if (validation.length === 0) {
+          const data = await searchAjnaPool({
+            collateralAddress,
+            poolAddress,
+            quoteAddress,
+          })
+
+          console.log(data)
+        }
+      } else setErrors([])
     },
     [poolAddress],
     250,
@@ -51,19 +89,7 @@ export function AjnaPoolFinderController() {
             <Input sx={inputStyles} placeholder="Quote token symbol or address" />
           </Flex>
         </Grid>
-        <Button
-          onClick={async () => {
-            const data = await searchAjnaPool({
-              collateralAddress: '',
-              poolAddress: '',
-              quoteAddress: '0x10aa0cf12aab305bd77ad8f76c037e048b12513b',
-            })
-
-            console.log(data)
-          }}
-        >
-          Search
-        </Button>
+        {errors.length > 0 && <Text as="p">{errors.join('\n')}</Text>}
       </AnimatedWrapper>
     </WithConnection>
   )

@@ -246,6 +246,7 @@ export const subgraphMethodsRecord: {
           ]
         }
       ) {
+        address
         collateralAddress
         quoteTokenAddress
       }

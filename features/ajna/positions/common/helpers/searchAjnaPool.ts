@@ -18,20 +18,21 @@ export const searchAjnaPool = async ({
     quoteAddress: quoteAddress?.toLowerCase() || '',
   })) as SubgraphsResponses['Ajna']['searchAjnaPool']
 
-  if (response && response.pools.length) {
-    return {
-      pools: poolAddress
-        ? response.pools.filter((pool) => pool.address.toLowerCase() === poolAddress.toLowerCase())
-        : collateralAddress && quoteAddress
-        ? response.pools.filter(
-            (pool) =>
-              pool.collateralAddress.toLowerCase() === collateralAddress.toLowerCase() &&
-              pool.quoteTokenAddress.toLowerCase() === quoteAddress.toLowerCase(),
-          )
-        : response.pools,
-      size: response.pools.length,
-    }
+  return {
+    pools:
+      response && response.pools
+        ? poolAddress
+          ? response.pools.filter(
+              (pool) => pool.address.toLowerCase() === poolAddress.toLowerCase(),
+            )
+          : collateralAddress && quoteAddress
+          ? response.pools.filter(
+              (pool) =>
+                pool.collateralAddress.toLowerCase() === collateralAddress.toLowerCase() &&
+                pool.quoteTokenAddress.toLowerCase() === quoteAddress.toLowerCase(),
+            )
+          : response.pools
+        : [],
+    size: response?.pools?.length || 0,
   }
-
-  throw new Error(`No pool found for provided query, Response: ${JSON.stringify(response)}`)
 }
