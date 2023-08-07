@@ -1,11 +1,11 @@
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import {  getYearlyRate } from 'features/dsr/helpers/dsrPot'
+import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { RAY } from 'features/dsr/utils/constants'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import {  zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { Container } from 'theme-ui'
 
