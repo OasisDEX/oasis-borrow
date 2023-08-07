@@ -13,9 +13,11 @@ export const mapAjnaBorrowishEvents = (
       liquidationPriceBefore: event.liquidationPriceBefore,
       liquidationPriceAfter: event.liquidationPriceAfter,
       totalFee: event.totalFee,
+      totalFeeInQuoteToken: event.totalFee,
       debtAddress: event.debtAddress,
       collateralAddress: event.collateralAddress,
       originationFee: event.originationFee,
+      originationFeeInQuoteToken: event.originationFeeInQuoteToken,
       isOpen: event.isOpen,
     }
 

@@ -10,6 +10,7 @@ import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaHistoryResponse extends PositionHistoryResponse {
   originationFee: string
+  originationFeeInQuoteToken: string
 }
 
 export interface AjnaBorrowerEventsResponse {
@@ -28,6 +29,7 @@ export interface AjnaBorrowerEventsResponse {
 
 export interface AjnaHistoryEvent extends PositionHistoryEvent {
   originationFee: BigNumber
+  originationFeeInQuoteToken: BigNumber
 }
 
 export type AjnaBorrowerEvent = {
@@ -56,6 +58,7 @@ export const getAjnaHistory: GetAjnaHistory = async (dpmProxyAddress: string) =>
       ...response.oasisEvents.map((event) => ({
         ...ajnaUnifiedHistoryItem,
         originationFee: new BigNumber(event.originationFee),
+        originationFeeInQuoteToken: new BigNumber(event.originationFeeInQuoteToken),
         ...mapPositionHistoryResponseEvent(event),
       })),
       ...response.borrowerEvents

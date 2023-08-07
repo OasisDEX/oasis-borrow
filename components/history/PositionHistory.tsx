@@ -13,19 +13,21 @@ import React, { FC } from 'react'
 import { PositionHistoryItem } from './PositionHistoryItem'
 
 interface PositionHistoryProps {
-  historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]
   collateralToken: string
-  quoteToken: string
+  historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]
+  isOracless?: boolean
   isShort?: boolean
   priceFormat?: string
+  quoteToken: string
 }
 
 export const PositionHistory: FC<PositionHistoryProps> = ({
-  historyEvents,
-  quoteToken,
   collateralToken,
+  historyEvents,
+  isOracless = false,
   isShort = false,
   priceFormat,
+  quoteToken,
 }) => {
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -40,14 +42,15 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
         <DefinitionList>
           {historyEvents.map((item) => (
             <PositionHistoryItem
-              item={item}
+              collateralToken={collateralToken}
               etherscanUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url}
               ethtxUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).ethtx.url}
-              key={`${item.id}-${item.txHash}`}
+              isOracless={isOracless}
               isShort={isShort}
+              item={item}
+              key={`${item.id}-${item.txHash}`}
               priceFormat={priceFormat}
               quoteToken={quoteToken}
-              collateralToken={collateralToken}
             />
           ))}
         </DefinitionList>

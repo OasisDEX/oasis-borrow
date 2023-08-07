@@ -15,23 +15,25 @@ import { Box, Flex, Text } from 'theme-ui'
 import { PositionHistoryItemDetails } from './PositionHistoryItemDetails'
 
 interface PositionHistoryItemProps {
-  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<AjnaBorrowerEvent>
-  ethtxUrl: string
-  etherscanUrl: string
   collateralToken: string
-  quoteToken: string
+  etherscanUrl: string
+  ethtxUrl: string
+  isOracless?: boolean
   isShort?: boolean
+  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<AjnaBorrowerEvent>
   priceFormat?: string
+  quoteToken: string
 }
 
 export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
-  item,
-  ethtxUrl,
-  etherscanUrl,
   collateralToken,
-  quoteToken,
+  etherscanUrl,
+  ethtxUrl,
+  isOracless,
   isShort,
+  item,
   priceFormat,
+  quoteToken,
 }) => {
   const [opened, setOpened] = useState(false)
   const { t, i18n } = useTranslation()
@@ -78,11 +80,12 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
       {opened && (
         <Box sx={{ pb: 3 }}>
           <PositionHistoryItemDetails
+            collateralToken={collateralToken}
             event={item}
+            isOracless={isOracless}
             isShort={isShort}
             priceFormat={priceFormat}
             quoteToken={quoteToken}
-            collateralToken={collateralToken}
           />
           <Flex
             sx={{
