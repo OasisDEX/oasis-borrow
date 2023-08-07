@@ -1,8 +1,8 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
-import { AaveHistoryEvent } from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,

@@ -11,6 +11,7 @@ import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rx
 export interface DpmPositionData extends UserDpmAccount {
   collateralToken: string
   collateralTokenAddress: string
+  hasMultiplePositions: boolean
   product: string
   protocol: string
   quoteToken: string
@@ -108,6 +109,12 @@ export function getDpmPositionDataV2$(
       ),
     ),
     switchMap(([dpmProxy, positions]) => {
+      const hasMultiplePositions = Boolean(
+        positions &&
+          positions.filter(
+            (item) => item.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase(),
+          ).length > 1,
+      )
       const proxyPosition =
         collateralToken && quoteToken && product && dpmProxy
           ? filterPositionWhenUrlParamsDefined({
@@ -125,9 +132,10 @@ export function getDpmPositionDataV2$(
         dpmProxy && proxyPosition
           ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], proxyPosition.protocol)
           : of(undefined),
+        of(hasMultiplePositions),
       )
     }),
-    map(([dpmProxy, position, vaultsFromApi]) =>
+    map(([dpmProxy, position, vaultsFromApi, hasMultiplePositions]) =>
       dpmProxy && position && vaultsFromApi
         ? {
             ...dpmProxy,
@@ -140,6 +148,7 @@ export function getDpmPositionDataV2$(
             protocol: position.protocol,
             quoteToken: position.debtTokenSymbol,
             quoteTokenAddress: position.debtTokenAddress,
+            hasMultiplePositions,
           }
         : null,
     ),
@@ -167,6 +176,7 @@ export function getStaticDpmPositionData$({
     startWith({
       collateralToken,
       collateralTokenAddress,
+      hasMultiplePositions: false,
       product,
       protocol,
       proxy: ethers.constants.AddressZero,

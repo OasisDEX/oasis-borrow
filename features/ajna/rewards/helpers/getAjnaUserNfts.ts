@@ -8,7 +8,7 @@ export interface AjnaUserNftsResponse {
 }
 
 export const getAjnaUserNfts = async (walletAddress: string): Promise<AjnaUserNftsResponse[]> => {
-  const { response } = await loadSubgraph('Ajna', 'getNftIds', {
+  const { response } = await loadSubgraph('Ajna', 'getAjnaEarnPositionNftId', {
     walletAddress: walletAddress.toLowerCase(),
   })
 

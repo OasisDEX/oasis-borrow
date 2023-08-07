@@ -4,10 +4,10 @@ import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 type GetAjnaPoolAddress = (collateralAddress: string, quoteAddress: string) => Promise<string>
 
 export const getAjnaPoolAddress: GetAjnaPoolAddress = async (collateralAddress, quoteAddress) => {
-  const { response } = (await loadSubgraph('Ajna', 'getPoolAddress', {
+  const { response } = (await loadSubgraph('Ajna', 'getAjnaPoolAddress', {
     collateralAddress: collateralAddress.toLowerCase(),
     quoteAddress: quoteAddress.toLowerCase(),
-  })) as SubgraphsResponses['Ajna']['getPoolAddress']
+  })) as SubgraphsResponses['Ajna']['getAjnaPoolAddress']
 
   if (response && response.pools.length) {
     const [pool] = response.pools
