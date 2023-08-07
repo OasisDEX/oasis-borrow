@@ -12,12 +12,16 @@ export function createPrimaryButtonLabel({
   depositInputValue,
   proxyAddress,
   daiAllowance,
+  daiWalletAllowance,
+  isMintingSDai,
 }: {
   stage: DsrDepositStage | DsrWithdrawStage
   activeTab: DsrSidebarTabOptions
   depositInputValue?: BigNumber
   proxyAddress?: string
   daiAllowance?: BigNumber
+  daiWalletAllowance?: BigNumber
+  isMintingSDai: boolean
 }) {
   if (['depositSuccess', 'withdrawSuccess'].includes(stage)) return 'Finished'
   if (['depositFiasco', 'withdrawFiasco', 'proxyFailure', 'allowanceFailure'].includes(stage))
@@ -26,10 +30,12 @@ export function createPrimaryButtonLabel({
   if (stage === 'withdrawInProgress' && activeTab === 'withdraw') return 'Withdrawing DAI'
   if (stage === 'proxySuccess') return 'Set Allowance'
   if (activeTab === 'withdraw') return 'Withdraw'
+  if (activeTab === 'convert') return 'Convert'
   if (depositInputValue && !proxyAddress) return 'Setup Proxy'
   if (stage === 'allowanceSuccess') return 'Go to deposit'
   if (
-    (depositInputValue && depositInputValue.gt(daiAllowance || zero)) ||
+    (depositInputValue &&
+      depositInputValue.gt(isMintingSDai ? daiWalletAllowance || zero : daiAllowance || zero)) ||
     getIsAllowanceStage(stage)
   )
     return 'Set Allowance'
@@ -55,7 +61,11 @@ export function selectPrimaryAction(
     case 'withdrawSuccess':
       return dsrDepositState.reset
     default:
-      return activeTab === 'deposit' ? dsrDepositState.deposit : dsrDepositState.withdraw
+      return activeTab === 'deposit'
+        ? dsrDepositState.deposit
+        : activeTab === 'withdraw'
+        ? dsrDepositState.withdraw
+        : dsrDepositState.convert
   }
 }
 

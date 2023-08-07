@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
 import { MessageCard } from 'components/MessageCard'
+import { DsrConvertDaiForm } from 'features/dsr/components/DsrConvertDaiForm'
 import { DsrDepositDaiFrom } from 'features/dsr/components/DsrDepositDaiForm'
+import { DsrWithdrawDaiForm } from 'features/dsr/components/DsrWithdrawDaiForm'
 import { DsrDepositStage } from 'features/dsr/helpers/dsrDeposit'
 import { DsrWithdrawStage } from 'features/dsr/pipes/dsrWithdraw'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
@@ -16,6 +18,7 @@ import { OpenVaultAnimation } from 'theme/animations'
 interface DsrEditingProps {
   activeTab: DsrSidebarTabOptions
   daiBalance: BigNumber
+  sDaiBalance: BigNumber
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
   depositInputValue?: BigNumber
   onPrimaryButtonClick?: () => void
@@ -25,6 +28,8 @@ interface DsrEditingProps {
   validationMessages: string[]
   netValue: BigNumber
   gasData: HasGasEstimation
+  onCheckboxChange: () => void
+  isMintingSDai: boolean
 }
 
 export function DsrEditing({
@@ -34,10 +39,13 @@ export function DsrEditing({
   onDepositAmountChange,
   depositInputValue,
   daiBalance,
+  sDaiBalance,
   operationChange,
   validationMessages,
   netValue,
   gasData,
+  onCheckboxChange,
+  isMintingSDai,
 }: DsrEditingProps) {
   const { t } = useTranslation()
 
@@ -84,17 +92,69 @@ export function DsrEditing({
                   },
                   disabled: netValue.isZero(),
                 },
+                {
+                  id: 'convert',
+                  label: t('dsr.labels.convert'),
+                  action: () => {
+                    operationChange('convert')
+                  },
+                },
               ]}
             />
           )}
-          <DsrDepositDaiFrom
-            action={action}
-            onDepositAmountChange={onDepositAmountChange}
-            amount={depositInputValue}
-            maxAmount={activeTab === 'deposit' ? daiBalance : netValue}
-            activeTab={activeTab}
-            gasData={gasData}
-          />
+          {netValue.isZero() && (
+            <ActionPills
+              active={activeTab}
+              items={[
+                {
+                  id: 'deposit',
+                  label: t('dsr.labels.deposit'),
+                  action: () => {
+                    operationChange('deposit')
+                  },
+                },
+                {
+                  id: 'convert',
+                  label: t('dsr.labels.convert'),
+                  action: () => {
+                    operationChange('convert')
+                  },
+                },
+              ]}
+            />
+          )}
+          {activeTab === 'deposit' && (
+            <DsrDepositDaiFrom
+              action={action}
+              onDepositAmountChange={onDepositAmountChange}
+              amount={depositInputValue}
+              maxAmount={daiBalance}
+              activeTab={activeTab}
+              gasData={gasData}
+              onCheckboxChange={onCheckboxChange}
+              isMintingSDai={isMintingSDai}
+            />
+          )}
+          {activeTab === 'withdraw' && (
+            <DsrWithdrawDaiForm
+              action={action}
+              onDepositAmountChange={onDepositAmountChange}
+              amount={depositInputValue}
+              maxAmount={netValue}
+              activeTab={activeTab}
+              gasData={gasData}
+            />
+          )}
+          {activeTab === 'convert' && (
+            <DsrConvertDaiForm
+              action={action}
+              onDepositAmountChange={onDepositAmountChange}
+              amount={depositInputValue}
+              maxAmount={sDaiBalance}
+              activeTab={activeTab}
+              gasData={gasData}
+            />
+          )}
           {!!validationMessages.length && (
             <MessageCard
               type="error"

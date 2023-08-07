@@ -71,6 +71,7 @@ export const EXTERNAL_LINKS = {
       CRVV1ETHSTETH: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
     },
     SWAP_FAQ: 'https://docs.summer.fi/general/how-to-swap-and-bridge-using-the-lifi-widget',
+    WHAT_IS_SDAI: 'https://docs.summer.fi/products/earn/dai-savings-rate-dsr',
   },
   BLOG: {
     MAIN: 'https://blog.summer.fi',

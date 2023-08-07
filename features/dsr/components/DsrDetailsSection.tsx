@@ -5,6 +5,7 @@ import {
   DetailsSectionContentCardWrapper,
 } from 'components/DetailsSectionContentCard'
 import { DsrSimulationSection } from 'features/dsr/components/DsrSimulationSection'
+import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -15,6 +16,8 @@ interface DsrDetailsSectionProps {
   apy: BigNumber
   netValue: BigNumber
   earnings: BigNumber
+  operation: DsrSidebarTabOptions
+  isMintingSDai: boolean
   depositAmount?: BigNumber
 }
 
@@ -24,6 +27,8 @@ export function DsrDetailsSection({
   depositAmount,
   netValue,
   earnings,
+  operation,
+  isMintingSDai,
 }: DsrDetailsSectionProps) {
   const { t } = useTranslation()
 
@@ -49,7 +54,10 @@ export function DsrDetailsSection({
           }
         />
       ) : (
-        <DsrSimulationSection dsr={dsr} userInputAmount={depositAmount || zero} />
+        <DsrSimulationSection
+          dsr={dsr}
+          userInputAmount={operation === 'convert' || isMintingSDai ? zero : depositAmount || zero}
+        />
       )}
     </>
   )

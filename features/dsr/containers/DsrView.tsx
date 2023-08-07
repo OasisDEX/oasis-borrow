@@ -95,12 +95,15 @@ export function DsrView({
                     depositAmount={dsrDepositState.amount}
                     netValue={netValue}
                     earnings={earnings}
+                    operation={dsrDepositState.operation}
+                    isMintingSDai={dsrDepositState.isMintingSDai}
                   />
                 </Box>
                 <Box>
                   <DsrSideBar
                     activeTab={dsrDepositState.operation}
                     daiBalance={dsrDepositState.daiBalance}
+                    sDaiBalance={dsrDepositState.sDaiBalance}
                     onDepositAmountChange={handleAmountChange(dsrDepositState.change!)}
                     depositInputValue={dsrDepositState.amount}
                     withDrawInputValue={dsrDepositState.amount}
@@ -113,6 +116,7 @@ export function DsrView({
                     isLoading={isLoading}
                     proxyAddress={dsrDepositState.proxyAddress}
                     daiAllowance={dsrDepositState.allowance}
+                    daiWalletAllowance={dsrDepositState.daiWalletAllowance}
                     isOwner={isOwner}
                     operationChange={dsrDepositState.operationChange}
                     netValue={netValue}
@@ -137,7 +141,6 @@ export function DsrView({
             label: t('system.faq'),
             content: (
               <Card variant="faq">
-                {/* TODO: Chris to add the DSR Faq */}
                 <DsrFaq />
               </Card>
             ),

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networks'
+import { getNetworkRpcEndpoint, NetworkIds } from 'blockchain/networks'
 import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'
@@ -10,6 +10,7 @@ import { fromPromise } from 'rxjs/internal-compatibility'
 import { mergeAll } from 'rxjs/internal/operators'
 import { filter, map, mergeMap, toArray } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
+import Web3 from 'web3'
 
 export enum DsrEventKind {
   dsrDeposit = 'dsrDeposit',
@@ -72,8 +73,12 @@ function createEventTypeHistory$(
   proxyAddress: string,
   kind: DsrEventKind,
 ): Observable<DsrEvent> {
+  const web3ProviderGetPastLogs = new Web3(
+    getNetworkRpcEndpoint(NetworkIds.MAINNET, context.chainId),
+  )
+
   const potEvents$ = fromPromise(
-    context.web3ProviderGetPastLogs.eth.getPastLogs({
+    web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdPot.address,
       topics: [eventSigntures[kind][0], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
@@ -81,7 +86,7 @@ function createEventTypeHistory$(
   )
 
   const adapterEvents$ = fromPromise(
-    context.web3ProviderGetPastLogs.eth.getPastLogs({
+    web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdJoinDai.address,
       topics: [eventSigntures[kind][1], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
       fromBlock,
@@ -94,12 +99,15 @@ function createEventTypeHistory$(
       const adapterFiltered$ = adapterEvents$.pipe(
         mergeAll(),
         filter((e: LogEvent) => {
+          console.log('here5')
+
           return e.transactionHash === event.transactionHash
         }),
       )
       return combineLatest(of(event), adapterFiltered$)
     }),
     map((result: LogEvent[]) => {
+      console.log('here4')
       const [potEvent, joinEvent] = result
       return {
         kind,
@@ -118,18 +126,22 @@ function createEventTypeHistory$(
 export function createDsrHistory$(context: Context, proxyAddress: string): Observable<DsrEvent[]> {
   // 8600000 is 2019-09-22 on mainnet
   const fromBlock = 8600000
+  console.log('hehe1')
   const depositEvents$ = createEventTypeHistory$(
     context,
     fromBlock,
     proxyAddress,
     DsrEventKind.dsrDeposit,
   )
+  console.log('hehe2')
+
   const withdrawEvents$ = createEventTypeHistory$(
     context,
     fromBlock,
     proxyAddress,
     DsrEventKind.dsrWithdrawal,
   )
+  console.log('hehe3')
 
   return merge(withdrawEvents$, depositEvents$).pipe(
     mergeMap((e: LogEvent) => {
