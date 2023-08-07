@@ -20,6 +20,7 @@ export type Subgraphs = {
     getPositionAuction: { dpmProxyAddress: string }
     getHistory: { dpmProxyAddress: string }
     getClaimedRewards: { walletAddress: string }
+    searchAjnaPool: { collateralAddress: string; poolAddress: string; quoteAddress: string }
   }
   TempGraph: {
     tempMethod: undefined
@@ -73,6 +74,13 @@ export type SubgraphsResponses = {
       borrowerEvents: AjnaBorrowerEventsResponse[]
     }>
     getClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
+    searchAjnaPool: SubgraphBaseResponse<{
+      pools: {
+        address: string
+        collateralAddress: string
+        quoteTokenAddress: string
+      }[]
+    }>
   }
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>

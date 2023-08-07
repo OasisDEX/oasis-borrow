@@ -234,4 +234,21 @@ export const subgraphMethodsRecord: {
     }
   `,
   tempMethod: '',
+  searchAjnaPool: gql`
+    query searchPool($collateralAddress: ID!, $poolAddress: ID!, $quoteAddress: ID!) {
+      pools(
+        first: 111
+        where: {
+          or: [
+            { address: $poolAddress }
+            { collateralAddress: $collateralAddress }
+            { quoteTokenAddress: $quoteAddress }
+          ]
+        }
+      ) {
+        collateralAddress
+        quoteTokenAddress
+      }
+    }
+  `,
 }
