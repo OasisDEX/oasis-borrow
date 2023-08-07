@@ -15,7 +15,7 @@ function reduceIdentifiedTokens(
 ) {
   return {
     ...total,
-    [address]: {
+    [address.toLowerCase()]: {
       precision,
       name,
       symbol,
@@ -39,7 +39,7 @@ export const identifyTokens$ = (
         const tokensContracts = contracts.tokens
 
         const localTokens = Object.keys(tokensContracts).filter((token) =>
-          tokensAddresses.includes(tokensContracts[token].address),
+          tokensAddresses.includes(tokensContracts[token].address.toLowerCase()),
         )
         localTokensAddresses = localTokens.map((token) =>
           tokensContracts[token].address.toLowerCase(),

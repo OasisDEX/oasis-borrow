@@ -88,8 +88,6 @@ export function AjnaPoolFinderController() {
             ),
           ).subscribe(
             (identifiedTokens) => {
-              console.log(pools)
-              console.log(identifiedTokens)
               setResults({
                 ...results,
                 [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: pools
@@ -105,7 +103,9 @@ export function AjnaPoolFinderController() {
                     quoteToken: identifiedTokens[pool.quoteTokenAddress].symbol,
                   })),
               })
-              identifiedTokensSubscription.unsubscribe()
+              try {
+                identifiedTokensSubscription.unsubscribe()
+              } catch(e) {}
             },
             undefined,
             () => {
@@ -136,20 +136,20 @@ export function AjnaPoolFinderController() {
             sx={inputStyles}
             placeholder="Pool address"
             value={poolAddress}
-            onChange={(e) => setPoolAddress(e.target.value)}
+            onChange={(e) => setPoolAddress(e.target.value.toLowerCase())}
           />
           <Box>OR</Box>
           <Input
             sx={inputStyles}
             placeholder="Collateral token address"
             value={collateralAddress}
-            onChange={(e) => setCollateralAddress(e.target.value)}
+            onChange={(e) => setCollateralAddress(e.target.value.toLowerCase())}
           />
           <Input
             sx={inputStyles}
             placeholder="Quote token address"
             value={quoteAddress}
-            onChange={(e) => setQuoteAddress(e.target.value)}
+            onChange={(e) => setQuoteAddress(e.target.value.toLowerCase())}
           />
         </Flex>
         {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] ? (
