@@ -60,9 +60,8 @@ export function DsrDepositDaiFrom({
           <Text as="p" variant="paragraph3" sx={{ fontWeight: 'regular' }}>
             {t('dsr.common.mint-savings-dai')}
           </Text>
-          {/* TODO update link to sDAI */}
           <AppLink
-            sx={{ fontSize: 'inherit', fontWeight: 'regular' }}
+            sx={{ fontSize: 2, fontWeight: 'regular' }}
             href={EXTERNAL_LINKS.KB.WHAT_IS_SDAI}
           >
             {t('dsr.links.what-is-sdai')}
