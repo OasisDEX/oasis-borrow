@@ -1,38 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { COOKIE_NAMES, CookieName, manageCookie } from 'analytics/common'
+import { Checkbox } from 'components/Checkbox'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
 import { currentContent } from 'features/content'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { Fragment, MouseEventHandler, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
-
-function Checkbox({
-  checked,
-  onClick,
-}: {
-  checked: boolean
-  onClick: MouseEventHandler<HTMLDivElement>
-}) {
-  return (
-    <Flex
-      onClick={onClick}
-      sx={{
-        border: '1px solid',
-        borderColor: checked ? 'success100' : 'lavender_o25',
-        backgroundColor: checked ? 'success10' : 'neutral10',
-        width: '20px',
-        height: '20px',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      {checked && <Icon name="checkmark" color="success100" size="auto" width="12px" />}
-    </Flex>
-  )
-}
 
 type SelectedCookies = Record<CookieName, boolean>
 

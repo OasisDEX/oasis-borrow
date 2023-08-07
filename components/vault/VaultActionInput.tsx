@@ -41,6 +41,7 @@ export const MinusIcon = () => (
 
 interface VaultActionInputProps {
   action: VaultAction
+  optionalLabel?: string
   currencyCode: string
   currencyDigits?: number
   tokenUsdPrice?: BigNumber
@@ -79,6 +80,7 @@ interface VaultActionInputProps {
 
 export function VaultActionInput({
   action,
+  optionalLabel,
   currencyCode,
   currencyDigits,
   tokenUsdPrice = one,
@@ -162,7 +164,11 @@ export function VaultActionInput({
         }}
       >
         <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }}>
-          {action} {currencyCode}
+          {optionalLabel || (
+            <>
+              {action} {currencyCode}
+            </>
+          )}
         </Text>
         {(showMin || showMax || showToggle) && (
           <Text

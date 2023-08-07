@@ -10,6 +10,8 @@ import {
   exit,
   exitAll,
   join,
+  savingsDaiConvert,
+  savingsDaiDeposit,
 } from 'features/dsr/helpers/potCalls'
 import { DsrWithdrawChange } from 'features/dsr/pipes/dsrWithdraw'
 import { transactionToX } from 'helpers/form'
@@ -21,18 +23,75 @@ import { first, switchMap } from 'rxjs/operators'
 export function depositDsr(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: DsrCreationChange) => void,
-  { amount, proxyAddress, allowance }: DsrDepositState,
+  {
+    amount,
+    proxyAddress,
+    allowance,
+    isMintingSDai,
+    walletAddress,
+    daiWalletAllowance,
+  }: DsrDepositState,
 ) {
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(
-          join as any,
+      switchMap(({ sendWithGasEstimation }) => {
+        const callData = isMintingSDai ? savingsDaiDeposit : join
+        const txData = isMintingSDai
+          ? {
+              kind: TxMetaKind.savingsDaiDeposit,
+              walletAddress,
+              amount: amount!,
+            }
+          : {
+              kind: TxMetaKind.dsrJoin,
+              proxyAddress,
+              amount: amount!,
+            }
+
+        return sendWithGasEstimation(callData as any, txData as any).pipe(
+          transactionToX<DsrCreationChange, DsrJoinData>(
+            { kind: 'stage', stage: 'depositWaiting4Approval' },
+            (txState) =>
+              of(
+                { kind: 'depositTxHash', depositTxHash: (txState as any).txHash as string },
+                { kind: 'stage', stage: 'depositInProgress' },
+              ),
+            { kind: 'stage', stage: 'depositFiasco' },
+            () =>
+              of(
+                { kind: 'stage', stage: 'depositSuccess' },
+                isMintingSDai
+                  ? {
+                      kind: 'daiWalletAllowance',
+                      daiWalletAllowance: daiWalletAllowance?.minus(amount || zero),
+                    }
+                  : { kind: 'allowance', allowance: allowance?.minus(amount || zero) },
+              ),
+          ),
+        )
+      }),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function convertDsr(
+  txHelpers$: Observable<TxHelpers>,
+  change: (ch: DsrCreationChange) => void,
+  { amount, allowance, walletAddress, sDaiBalance }: DsrDepositState,
+) {
+  const resolvedAmount = amount?.gt(sDaiBalance) ? sDaiBalance : amount
+
+  txHelpers$
+    .pipe(
+      first(),
+      switchMap(({ sendWithGasEstimation }) => {
+        return sendWithGasEstimation(
+          savingsDaiConvert as any,
           {
-            kind: TxMetaKind.dsrJoin,
-            proxyAddress: proxyAddress!,
-            amount: amount!,
+            kind: TxMetaKind.savingsDaiConvert,
+            walletAddress,
+            amount: resolvedAmount!,
           } as any,
         ).pipe(
           transactionToX<DsrCreationChange, DsrJoinData>(
@@ -49,8 +108,8 @@ export function depositDsr(
                 { kind: 'allowance', allowance: allowance?.minus(amount || zero) },
               ),
           ),
-        ),
-      ),
+        )
+      }),
     )
     .subscribe((ch) => change(ch))
 }

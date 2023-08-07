@@ -84,13 +84,11 @@ import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { resolveENSName$ } from 'blockchain/ens'
-import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
-  compareBigNumber,
   ContextConnected,
   createAccount$,
   createContext$,
@@ -172,7 +170,7 @@ import { currentContent } from 'features/content'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
 import { createDsrHistory$ } from 'features/dsr/helpers/dsrHistory'
-import { chi, dsr, Pie, pie } from 'features/dsr/helpers/potCalls'
+import { chi, dsr, Pie, pie, SavingDaiData } from 'features/dsr/helpers/potCalls'
 import { createDsr$ } from 'features/dsr/utils/createDsr'
 import { createProxyAddress$ as createDsrProxyAddress$ } from 'features/dsr/utils/proxy'
 import {
@@ -294,6 +292,7 @@ export type TxData =
   | CreateDPMAccount
   | OasisActionsTxData
   | ClaimAjnaRewardsTxData
+  | SavingDaiData
 
 export type AutomationTxData =
   | AutomationBotAddTriggerData
@@ -681,16 +680,6 @@ export function setupAppContext() {
     (item) => item,
   )
 
-  const daiBalance$ = memoize(
-    (addressFromUrl: string) =>
-      context$.pipe(
-        switchMap((context) => {
-          return everyBlock$(createTokenBalance$(context, 'DAI', addressFromUrl), compareBigNumber)
-        }),
-      ),
-    (item) => item,
-  )
-
   const potPie$ = memoize(
     (addressFromUrl: string) =>
       combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
@@ -717,7 +706,7 @@ export function setupAppContext() {
         txHelpers$,
         proxyAddressDsrObservable$(addressFromUrl),
         allowance$,
-        daiBalance$(addressFromUrl),
+        balancesInfoArray$(['DAI', 'SDAI'], addressFromUrl),
         daiDeposit$(addressFromUrl),
         potDsr$,
         dsr$(addressFromUrl),
