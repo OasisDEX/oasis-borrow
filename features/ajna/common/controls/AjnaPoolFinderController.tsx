@@ -1,12 +1,12 @@
+
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { isAddress } from 'ethers/lib/utils'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
-import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import React, { useMemo, useState } from 'react'
+import React, {   useState } from 'react'
 import { Box, Flex, Grid, Input, SxStyleProp, Text } from 'theme-ui'
 
 const inputStyles: SxStyleProp = {
@@ -18,12 +18,25 @@ const inputStyles: SxStyleProp = {
   borderRadius: 'medium',
 }
 
-function validateParams(collateralAddress: string, poolAddress: string, quoteAddress: string) {
+function validateParams({
+  collateralAddress,
+  poolAddress,
+  quoteAddress,
+}: {
+  collateralAddress: string
+  poolAddress: string
+  quoteAddress: string
+}) {
   const errors: string[] = []
 
-  if (poolAddress) {
-    if (!isAddress(poolAddress)) errors.push('Pool address is not valid contract address.')
-  }
+  if (!poolAddress && !collateralAddress && !quoteAddress)
+    errors.push('Specify at least one of the addresses')
+  if (poolAddress && !isAddress(poolAddress))
+    errors.push('Pool address is not valid contract address.')
+  if (collateralAddress && !isAddress(collateralAddress))
+    errors.push('Collateral address is not valid contract address.')
+  if (quoteAddress && !isAddress(quoteAddress))
+    errors.push('Quote address is not valid contract address.')
 
   return errors
 }
@@ -36,31 +49,27 @@ export function AjnaPoolFinderController() {
   const [quoteAddress, setQuoteAddress] = useState<string>('')
   const [errors, setErrors] = useState<string[]>([])
 
-  const [identifiedTokensData] = useObservable(
-    useMemo(() => identifiedTokens$(['0xa168ef12e32933485199983bef1fa6fe55a29bdf']), []),
-  )
-
-  console.log('identifiedTokensData')
-  console.log(identifiedTokensData)
-
   useDebouncedEffect(
     async () => {
-      if (poolAddress || collateralAddress || quoteAddress) {
-        const validation = validateParams(collateralAddress, poolAddress, quoteAddress)
+      const validation = validateParams({
+        collateralAddress,
+        poolAddress,
+        quoteAddress,
+      })
 
-        setErrors(validation)
-        if (validation.length === 0) {
-          const data = await searchAjnaPool({
-            collateralAddress,
-            poolAddress,
-            quoteAddress,
-          })
+      setErrors(validation)
+      if (validation.length === 0) {
+        const data = await searchAjnaPool({
+          collateralAddress,
+          poolAddress,
+          quoteAddress,
+        })
+        // const identifiedTokens = identifiedTokens$.sub
 
-          console.log(data)
-        }
-      } else setErrors([])
+        console.log(data)
+      }
     },
-    [poolAddress],
+    [collateralAddress, poolAddress, quoteAddress],
     250,
   )
 
@@ -85,11 +94,21 @@ export function AjnaPoolFinderController() {
           </Flex>
           <Box sx={{ pt: '12px' }}>OR</Box>
           <Flex sx={{ flexDirection: 'column', rowGap: 3 }}>
-            <Input sx={inputStyles} placeholder="Collateral token symbol or address" />
-            <Input sx={inputStyles} placeholder="Quote token symbol or address" />
+            <Input
+              sx={inputStyles}
+              placeholder="Collateral token address"
+              value={collateralAddress}
+              onChange={(e) => setCollateralAddress(e.target.value)}
+            />
+            <Input
+              sx={inputStyles}
+              placeholder="Quote token address"
+              value={quoteAddress}
+              onChange={(e) => setQuoteAddress(e.target.value)}
+            />
           </Flex>
         </Grid>
-        {errors.length > 0 && <Text as="p">{errors.join('\n')}</Text>}
+        {errors.length > 0 && errors.map((error) => <Text as="p">{error}</Text>)}
       </AnimatedWrapper>
     </WithConnection>
   )
