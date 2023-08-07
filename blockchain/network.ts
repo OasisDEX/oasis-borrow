@@ -59,9 +59,7 @@ export function createContext$(
   return web3ContextConnected$.pipe(
     map((web3Context) => {
       const networkData = networksById[web3Context.chainId]
-      const web3ProviderGetPastLogs = new Web3(
-        getNetworkRpcEndpoint(NetworkIds.MAINNET, web3Context.chainId),
-      )
+      const web3ProviderGetPastLogs = new Web3(getNetworkRpcEndpoint(web3Context.chainId))
 
       return {
         ...networkData,

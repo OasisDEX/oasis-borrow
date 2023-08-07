@@ -1,10 +1,8 @@
-import { usePrevious } from '@react-hooks-library/core'
 import { ConnectorEvent } from '@web3-react/types'
-import { NetworkConfigHexId, NetworkHexIds, NetworkIds } from 'blockchain/networks'
+import { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
 import { useModalContext } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import { useReducto } from 'helpers/useReducto'
-import { useRouter } from 'next/router'
 import React, { createContext, useCallback, useContext, useEffect } from 'react'
 
 import { getNetworksFromPageNetwork } from './get-networks-from-page-network'
@@ -12,8 +10,8 @@ import { UnsupportedNetworkModal } from './unsupported-network-modal'
 import { useBridgeConnector } from './use-bridge-connector'
 import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
+import { useSafaftyReload } from './use-safafty-reload'
 import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
-import { useDebugWalletState } from './wallet-state/use-debug-wallet-state'
 import {
   areThePageNetworksTheSame,
   WalletManagementStateStatus,
@@ -56,32 +54,6 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
   },
 })
 
-/*
- * I don't like this solution,
- * but it's the only way I found to make it work.
- * The problem is that some components strictly depend on Mainnet or Goerli,
- * so the only way to refresh them is to reload the page.
- */
-export function useSafaftyReload({ walletNetworkHexId }: WalletManagementState) {
-  const previuosWalletNetworkHexId = usePrevious(walletNetworkHexId)
-  const { reload } = useRouter()
-
-  useEffect(() => {
-    if (
-      walletNetworkHexId === NetworkHexIds.MAINNET &&
-      previuosWalletNetworkHexId === NetworkHexIds.GOERLI
-    ) {
-      reload()
-    }
-    if (
-      walletNetworkHexId === NetworkHexIds.GOERLI &&
-      previuosWalletNetworkHexId === NetworkHexIds.MAINNET
-    ) {
-      reload()
-    }
-  }, [reload, previuosWalletNetworkHexId, walletNetworkHexId])
-}
-
 export const useWeb3OnBoardConnectorContext = () => useContext(web3OnBoardConnectorContext)
 
 function InternalProvider({ children }: WithChildren) {
@@ -101,7 +73,6 @@ function InternalProvider({ children }: WithChildren) {
     connecting,
   } = useBridgeConnector()
 
-  useDebugWalletState({ state })
   useSafaftyReload(state)
 
   const { openModal, closeModal } = useModalContext()

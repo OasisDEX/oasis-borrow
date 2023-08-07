@@ -133,8 +133,7 @@ export const filterNetworksAccordingToSavedNetwork =
     return isTestnetNetworkHexId(customNetworkHexId) ? network.testnet : !network.testnet
   }
 
-export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: NetworkIds) {
-  const isTestnet = connectedChainId ? isTestnetNetworkId(connectedChainId) : false
+export function getNetworkRpcEndpoint(networkId: NetworkIds) {
   const isForkSet = isForkSetForNetworkId(networkId)
   if (!networksById[networkId]) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
@@ -143,9 +142,7 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
     const networkName = networksById[networkId].name
     return forkSettings[networkName]!.url
   }
-  return isTestnet
-    ? networksById[networksById[networkId].testnetId!].rpcUrl
-    : networksById[networkId].rpcUrl
+  return networksById[networkId].rpcUrl
 }
 
 export function getNetworkById(networkId: NetworkIds) {
