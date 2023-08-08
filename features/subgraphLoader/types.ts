@@ -14,6 +14,7 @@ export type Subgraphs = {
     getAjnaPoolsData: {}
     getAjnaEarnPositionNftId: { walletAddress: string }
     getAjnaClaimedRewards: { walletAddress: string }
+    searchAjnaPool: { collateralAddress: string; poolAddress: string; quoteAddress: string }
   }
   TempGraph: {
     tempMethod: undefined
@@ -72,6 +73,13 @@ export type SubgraphsResponses = {
     }>
     getAjnaEarnPositionNftId: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
     getAjnaClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
+    searchAjnaPool: SubgraphBaseResponse<{
+      pools: {
+        address: string
+        collateralAddress: string
+        quoteTokenAddress: string
+      }[]
+    }>
   }
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>
