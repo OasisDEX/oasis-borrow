@@ -9,48 +9,53 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ContentCardLUPProps {
+interface ContentCardThresholdPriceProps {
   isLoading?: boolean
   priceFormat: string
+  thresholdPrice: BigNumber
+  afterThresholdPrice?: BigNumber
   lup?: BigNumber
-  afterLup?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
-export function ContentCardLUP({
+export function ContentCardThresholdPrice({
   isLoading,
   priceFormat,
+  thresholdPrice,
+  afterThresholdPrice,
   lup,
-  afterLup,
   changeVariant = 'positive',
-}: ContentCardLUPProps) {
+}: ContentCardThresholdPriceProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    lup: lup ? formatCryptoBalance(lup) : 'n/a',
-    afterLup: lup && afterLup && formatCryptoBalance(afterLup),
+    thresholdPrice: formatCryptoBalance(thresholdPrice),
+    afterThresholdPrice: afterThresholdPrice && formatCryptoBalance(afterThresholdPrice),
+    lup: lup && formatCryptoBalance(lup),
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('ajna.position-page.borrow.common.overview.lowest-utilization-price'),
-    value: `${formatted.lup}`,
-    ...(lup && {
-      unit: priceFormat,
-    }),
+    title: t('ajna.position-page.borrow.common.overview.threshold-price'),
+    value: `${formatted.thresholdPrice}`,
+    unit: priceFormat,
     change: {
       isLoading,
-      value: afterLup && `${formatted.afterLup} ${priceFormat}`,
+      value: afterThresholdPrice && `${formatted.afterThresholdPrice} ${priceFormat}`,
       variant: changeVariant,
     },
     modal: (
       <AjnaDetailsSectionContentSimpleModal
-        title={t('ajna.position-page.borrow.common.overview.lowest-utilization-price')}
+        title={t('ajna.position-page.borrow.common.overview.threshold-price')}
         description={t(
-          'ajna.position-page.borrow.common.overview.lowest-utilization-price-modal-desc',
+          'ajna.position-page.borrow.common.overview.threshold-price-modal-desc',
         )}
         value={`${formatted.lup} ${lup ? priceFormat : ''}`}
       />
     ),
+  }
+
+  if (lup) {
+    contentCardSettings.footnote = `LUP: ${formatted.lup} ${priceFormat}`
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

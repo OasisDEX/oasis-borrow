@@ -6,8 +6,8 @@ import { ContentFooterItemsBorrow } from 'features/ajna/positions/borrow/compone
 import { ContentCardCollateralLocked } from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
 import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
-import { ContentCardLUP } from 'features/ajna/positions/common/components/contentCards/ContentCardLUP'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
+import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
@@ -65,33 +65,35 @@ export function AjnaBorrowOverviewController() {
         notifications={notifications}
         content={
           <DetailsSectionContentCardWrapper>
+            <ContentCardLiquidationPrice
+              isLoading={isSimulationLoading}
+              priceFormat={priceFormat}
+              liquidationPrice={liquidationPrice}
+              afterLiquidationPrice={afterLiquidationPrice}
+              changeVariant={changeVariant}
+              {...(!isOracless && {
+                belowCurrentPrice,
+              })}
+            />
             {isOracless ? (
-              <ContentCardLUP
+              <ContentCardThresholdPrice
+                thresholdPrice={position.thresholdPrice}
+                afterThresholdPrice={simulation?.thresholdPrice}
                 priceFormat={priceFormat}
                 {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
                   lup: position.pool.lup,
                 })}
               />
             ) : (
-              <>
-                <ContentCardLiquidationPrice
-                  isLoading={isSimulationLoading}
-                  priceFormat={priceFormat}
-                  liquidationPrice={liquidationPrice}
-                  afterLiquidationPrice={afterLiquidationPrice}
-                  belowCurrentPrice={belowCurrentPrice}
-                  changeVariant={changeVariant}
-                />
-                <ContentCardLoanToValue
-                  isLoading={isSimulationLoading}
-                  loanToValue={position.riskRatio.loanToValue}
-                  afterLoanToValue={simulation?.riskRatio.loanToValue}
-                  {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
-                    dynamicMaxLtv: position.maxRiskRatio.loanToValue,
-                  })}
-                  changeVariant={changeVariant}
-                />
-              </>
+              <ContentCardLoanToValue
+                isLoading={isSimulationLoading}
+                loanToValue={position.riskRatio.loanToValue}
+                afterLoanToValue={simulation?.riskRatio.loanToValue}
+                {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
+                  dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+                })}
+                changeVariant={changeVariant}
+              />
             )}
             <ContentCardCollateralLocked
               isLoading={isSimulationLoading}

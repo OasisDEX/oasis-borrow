@@ -2680,8 +2680,8 @@
             "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price.",
             "loan-to-value": "Loan to value",
             "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
-            "lowest-utilization-price": "Lowest Utilization Price",
-            "lowest-utilization-price-modal-desc": "This is the value where your position is eligible to be moved into the liquidation queue. However, it will only be profitable for liquidators if the price reaches your liquidation price. This value is determined by market utilization. You remain in control of your liquidation price.",
+            "threshold-price": "Threshold Price",
+            "threshold-price-modal-desc": "This is the value where your position is eligible to be moved into the liquidation queue. However, it will only be profitable for liquidators if the price reaches your liquidation price. This value is determined by market utilization. You remain in control of your liquidation price.",
             "position-debt": "Position debt",
             "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
