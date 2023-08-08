@@ -10,7 +10,7 @@ import { UnsupportedNetworkModal } from './unsupported-network-modal'
 import { useBridgeConnector } from './use-bridge-connector'
 import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
-import { useSafaftyReload } from './use-safafty-reload'
+import { useSafetyReload } from './use-safety-reload'
 import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
 import {
   areThePageNetworksTheSame,
@@ -73,7 +73,7 @@ function InternalProvider({ children }: WithChildren) {
     connecting,
   } = useBridgeConnector()
 
-  useSafaftyReload(state)
+  useSafetyReload(state)
 
   const { openModal, closeModal } = useModalContext()
   const { setChain, connectedChain } = useChainSetter()

@@ -12,7 +12,7 @@ import { WalletManagementState } from './wallet-state'
  * The problem is that some components strictly depend on Mainnet or Goerli,
  * so the only way to refresh them is to reload the page.
  */
-export function useSafaftyReload({ walletNetworkHexId }: WalletManagementState) {
+export function useSafetyReload({ walletNetworkHexId }: WalletManagementState) {
   const previuosWalletNetworkHexId = usePrevious(walletNetworkHexId)
   const { reload } = useRouter()
   const [, setNetwork] = useLegacyDefaultChain()
