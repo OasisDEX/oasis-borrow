@@ -1,11 +1,7 @@
 import { Tokens } from '@prisma/client'
-import {
-  extendTokensContracts,
-  getNetworkContracts,
-  pruneTokensContracts,
-} from 'blockchain/contracts'
+import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { getToken, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
+import { getToken, getTokenGuarded, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
 import { uniq } from 'lodash'
 import { combineLatest, from, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
@@ -35,7 +31,6 @@ export const identifyTokens$ = (
 ): Observable<IdentifiedTokens> =>
   combineLatest(context$, once$).pipe(
     switchMap(([context]) => {
-      void pruneTokensContracts()
       const contracts = getNetworkContracts(context.chainId)
 
       let identifiedTokens: Tokens[] = []
@@ -46,8 +41,10 @@ export const identifyTokens$ = (
 
         const localTokens = uniq(
           Object.keys(tokensContracts)
-            .filter((token) =>
-              tokensAddresses.includes(tokensContracts[token].address.toLowerCase()),
+            .filter(
+              (token) =>
+                tokensAddresses.includes(tokensContracts[token].address.toLowerCase()) &&
+                getTokenGuarded(token),
             )
             .map((token) => (token === 'WETH' ? 'ETH' : token)),
         )
