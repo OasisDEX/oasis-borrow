@@ -1,8 +1,6 @@
 import {
   enableNetworksSet,
-  getOppositeNetworkHexIdByHexId,
-  mainnetNetworkParameter,
-  NetworkConfigHexId,
+  NetworkIdToNetworkHexIds,
   NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
@@ -35,8 +33,8 @@ const renderSeparator = () => {
 }
 
 export function NavigationNetworkSwitcherOrb() {
-  const { connect, connecting, setChain } = useConnection()
-  const { wallet } = useWalletManagement()
+  const { connecting, toggleBetweenMainnetAndTestnet, setChain } = useConnection()
+  const { wallet, chainId } = useWalletManagement()
   const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
   const { openModal } = useModalContext()
@@ -44,13 +42,9 @@ export function NavigationNetworkSwitcherOrb() {
   const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
 
-  const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain))
-  }
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,
   )
-  const { hexId: customNetworkHexId } = mainnetNetworkParameter
 
   return (
     <NavigationOrb customIcon={NavigationNetworkSwitcherIcon}>
@@ -70,7 +64,7 @@ export function NavigationNetworkSwitcherOrb() {
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
-                  : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
+                  : filterNetworksAccordingToSavedNetwork(NetworkIdToNetworkHexIds(chainId)),
               )
               .map((network) => (
                 <NetworkButton
@@ -91,7 +85,7 @@ export function NavigationNetworkSwitcherOrb() {
                   <Button
                     variant="bean"
                     sx={{ fontSize: 2 }}
-                    onClick={() => toggleChains(connectedChain ?? customNetworkHexId)}
+                    onClick={() => toggleBetweenMainnetAndTestnet()}
                   >
                     <Box sx={{ width: '100%' }}>
                       {(() => {
@@ -100,7 +94,7 @@ export function NavigationNetworkSwitcherOrb() {
                             isTestnet(connectedChain) ? 'main net 🏠' : 'test net 🌲'
                           }`
                         }
-                        if (isTestnetNetworkHexId(customNetworkHexId)) {
+                        if (isTestnetNetworkHexId(NetworkIdToNetworkHexIds(chainId))) {
                           return 'Change to main net 🏠'
                         }
                         return 'Change to test net 🌲'

@@ -2,12 +2,15 @@ import { NetworkConnector } from '@web3-react/network-connector'
 import { enableNetworksSet, NetworkConfig, NetworkIds } from 'blockchain/networks'
 import { useMemo } from 'react'
 
+import { useLegacyDefaultChain } from './use-legacy-default-chain'
+
 export type NetworkConnectorState = {
   networkConnector: NetworkConnector
   networkConfigs: Partial<Record<NetworkIds, NetworkConfig>>
 }
 
 export function useNetworkConnector(): NetworkConnectorState {
+  const [defaultChain] = useLegacyDefaultChain()
   return useMemo(() => {
     const networkConfigs: Partial<Record<NetworkIds, NetworkConfig>> = {}
     const urls: { [chainId: number]: string } = {}
@@ -18,9 +21,10 @@ export function useNetworkConnector(): NetworkConnectorState {
     return {
       networkConnector: new NetworkConnector({
         urls,
-        defaultChainId: 1,
+        defaultChainId: defaultChain,
       }),
       networkConfigs,
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

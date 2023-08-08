@@ -26,16 +26,16 @@ import { GraphQLClient } from 'graphql-request'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
-// TODO - ŁW - Implement tests for this file
-
 async function loadTriggerDataFromCache({
   positionId,
   proxyAddress,
   cacheApi,
+  chainId,
 }: {
   positionId: number
   cacheApi: string
   proxyAddress?: string
+  chainId: NetworkIds
 }): Promise<TriggersData> {
   const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
@@ -47,6 +47,7 @@ async function loadTriggerDataFromCache({
     isAutomationDataLoaded: true,
     isAutomationEnabled: activeTriggersForVault.length > 0,
     triggers: activeTriggersForVault,
+    chainId,
   }
 }
 
@@ -60,6 +61,7 @@ export interface TriggerRecord {
 export interface TriggersData {
   isAutomationDataLoaded: boolean
   isAutomationEnabled: boolean
+  chainId: NetworkIds
   triggers?: TriggerRecord[]
 }
 
@@ -76,6 +78,7 @@ export function createAutomationTriggersData(
         positionId: id.toNumber(),
         proxyAddress: proxies.dpmProxy?.proxy,
         cacheApi: getNetworkContracts(NetworkIds.MAINNET, context.chainId).cacheApi,
+        chainId: context.chainId,
       })
     }),
     distinctUntilChanged((s1, s2) => {

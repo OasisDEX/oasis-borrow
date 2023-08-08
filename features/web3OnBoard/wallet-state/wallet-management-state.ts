@@ -17,7 +17,7 @@ export type WalletManagementStateContext = {
   walletNetworkHexId?: NetworkConfigHexId
   pageNetworkHexIds?: NetworkConfigHexId[]
   networkConnector?: NetworkConnector
-  networkConnectorNetworkId?: NetworkIds
+  networkConnectorNetworkId: NetworkIds
 }
 
 export type WalletManagementState =

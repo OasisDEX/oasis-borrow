@@ -346,7 +346,7 @@ const refreshInterval = 1000 * 60
 
 export function setupAppContext() {
   const once$ = of(undefined).pipe(shareReplay(1))
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$()
+  const [web3Context$, setupWeb3Context$] = createWeb3Context$()
 
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
@@ -1404,7 +1404,6 @@ export function setupAppContext() {
     identifiedTokens$,
     chainContext$,
     positionIdFromDpmProxy$,
-    switchChains,
     exchangeQuote$,
   }
 }

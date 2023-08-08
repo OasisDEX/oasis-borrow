@@ -8,19 +8,20 @@ export function Connection({
   walletConnect,
   chainId,
   pageChainId,
+  includeTestNet,
 }: WithChildren & {
   walletConnect: boolean
   chainId?: NetworkConfigHexId
   pageChainId?: NetworkConfigHexId
+  includeTestNet?: boolean
 }) {
   const { connect, setPageNetworks } = useConnection()
 
+  useEffect(() => {}, [pageChainId, setPageNetworks])
   useEffect(() => {
-    setPageNetworks(pageChainId ? [pageChainId] : undefined)
-  }, [pageChainId, setPageNetworks])
-  useEffect(() => {
-    if (walletConnect) connect(chainId)
-  }, [walletConnect, chainId, connect])
+    setPageNetworks(pageChainId ? [pageChainId] : undefined, includeTestNet)
+    if (walletConnect) connect(chainId, includeTestNet)
+  }, [walletConnect, chainId, connect, setPageNetworks, pageChainId, includeTestNet])
 
   return children
 }

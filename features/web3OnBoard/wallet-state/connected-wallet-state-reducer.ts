@@ -1,3 +1,4 @@
+import { getOppositeNetworkHexIdByHexId } from 'blockchain/networks'
 import { Reducer } from 'react'
 import { match, P } from 'ts-pattern'
 
@@ -8,7 +9,10 @@ import {
   WalletManagementStateStatus,
 } from './wallet-management-state'
 import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
-import { canTransitWithNetworkHexId } from './wallet-state-guards'
+import {
+  canTransitWithNetworkHexId,
+  shouldSendChangeNetworkOnConnected,
+} from './wallet-state-guards'
 
 export const connectedWalletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state: WalletManagementState,
@@ -26,8 +30,13 @@ export const connectedWalletStateReducer: Reducer<WalletManagementState, WalletS
     .with(
       {
         type: WalletStateEventType.changeChain,
-        desiredNetworkHexId: P.when((hexId) => hexId !== state.walletNetworkHexId),
       },
+      (event) =>
+        shouldSendChangeNetworkOnConnected(
+          event.desiredNetworkHexId,
+          state,
+          event.couldBeConnectedToTestNet ?? false,
+        ),
       (event) => {
         return {
           ...state,
@@ -36,6 +45,13 @@ export const connectedWalletStateReducer: Reducer<WalletManagementState, WalletS
         }
       },
     )
+    .with({ type: WalletStateEventType.toggleBetweenMainnetAndTestnet }, () => {
+      return {
+        ...state,
+        desiredNetworkHexId: getOppositeNetworkHexIdByHexId(state.walletNetworkHexId),
+        status: WalletManagementStateStatus.settingChain,
+      }
+    })
     .with(
       {
         type: WalletStateEventType.walletNetworkChanged,
