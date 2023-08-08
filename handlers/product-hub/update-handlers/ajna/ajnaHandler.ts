@@ -48,8 +48,6 @@ async function getAjnaPoolData(
             },
           ]
         } catch (e) {
-          console.warn('Token address not found within context', e)
-
           return v
         }
       }, [])
