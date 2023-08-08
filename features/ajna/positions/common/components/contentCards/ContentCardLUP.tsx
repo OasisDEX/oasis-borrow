@@ -10,17 +10,25 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardLUPProps {
-  priceFormat: string
   isLoading?: boolean
+  priceFormat: string
   lup?: BigNumber
+  afterLup?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
-export function ContentCardLUP({ priceFormat, lup }: ContentCardLUPProps) {
+export function ContentCardLUP({
+  isLoading,
+  priceFormat,
+  lup,
+  afterLup,
+  changeVariant = 'positive',
+}: ContentCardLUPProps) {
   const { t } = useTranslation()
 
   const formatted = {
     lup: lup ? formatCryptoBalance(lup) : 'n/a',
+    afterLup: lup && afterLup && formatCryptoBalance(afterLup),
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -29,6 +37,11 @@ export function ContentCardLUP({ priceFormat, lup }: ContentCardLUPProps) {
     ...(lup && {
       unit: priceFormat,
     }),
+    change: {
+      isLoading,
+      value: afterLup && `${formatted.afterLup} ${priceFormat}`,
+      variant: changeVariant,
+    },
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.borrow.common.overview.lowest-utilization-price')}

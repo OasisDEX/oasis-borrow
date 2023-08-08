@@ -65,17 +65,6 @@ export function AjnaBorrowOverviewController() {
         notifications={notifications}
         content={
           <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
-              isLoading={isSimulationLoading}
-              priceFormat={priceFormat}
-              liquidationPrice={liquidationPrice}
-              afterLiquidationPrice={afterLiquidationPrice}
-              isOracless={isOracless}
-              changeVariant={changeVariant}
-              {...(!isOracless && {
-                belowCurrentPrice,
-              })}
-            />
             {isOracless ? (
               <ContentCardLUP
                 priceFormat={priceFormat}
@@ -84,15 +73,25 @@ export function AjnaBorrowOverviewController() {
                 })}
               />
             ) : (
-              <ContentCardLoanToValue
-                isLoading={isSimulationLoading}
-                loanToValue={position.riskRatio.loanToValue}
-                afterLoanToValue={simulation?.riskRatio.loanToValue}
-                {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
-                  dynamicMaxLtv: position.maxRiskRatio.loanToValue,
-                })}
-                changeVariant={changeVariant}
-              />
+              <>
+                <ContentCardLiquidationPrice
+                  isLoading={isSimulationLoading}
+                  priceFormat={priceFormat}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  belowCurrentPrice={belowCurrentPrice}
+                  changeVariant={changeVariant}
+                />
+                <ContentCardLoanToValue
+                  isLoading={isSimulationLoading}
+                  loanToValue={position.riskRatio.loanToValue}
+                  afterLoanToValue={simulation?.riskRatio.loanToValue}
+                  {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
+                    dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+                  })}
+                  changeVariant={changeVariant}
+                />
+              </>
             )}
             <ContentCardCollateralLocked
               isLoading={isSimulationLoading}
