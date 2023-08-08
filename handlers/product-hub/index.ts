@@ -1,4 +1,4 @@
-import { Protocol } from '@prisma/client'
+import { Prisma,PrismaPromise, Protocol } from '@prisma/client'
 import { networks } from 'blockchain/networks'
 import { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
@@ -118,34 +118,29 @@ export async function updateProductHubData(
         }))
       }),
     )
-
-    try {
-      !dryRun &&
-        (await prisma.productHubItems.deleteMany({
-          where: {
-            protocol: {
-              in: dataHandlersPromiseList.map(({ name }) => name),
-            },
+    const txItems: PrismaPromise<Prisma.BatchPayload>[] = []
+    txItems.push(
+      prisma.productHubItems.deleteMany({
+        where: {
+          protocol: {
+            in: dataHandlersPromiseList.map(({ name }) => name),
           },
-        }))
-    } catch (error) {
-      return res.status(502).json({
-        errorMessage: 'Error removing old Product Hub data',
-        // @ts-ignore
-        error: error.toString(),
-        data: dataHandlersPromiseList,
-        dryRun,
-      })
-    }
+        },
+      }),
+    )
 
     const createData = flatten([
       ...dataHandlersPromiseList.map(({ data }) => data),
     ]) as ProductHubItemWithFlattenTooltip[]
+
+    txItems.push(
+      prisma.productHubItems.createMany({
+        data: createData,
+      }),
+    )
+
     try {
-      !dryRun &&
-        (await prisma.productHubItems.createMany({
-          data: createData,
-        }))
+      !dryRun && (await prisma.$transaction(txItems))
     } catch (error) {
       return res.status(502).json({
         errorMessage: 'Error updating Product Hub data',
