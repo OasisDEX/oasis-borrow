@@ -13,9 +13,8 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Flex, Input, Spinner, SxStyleProp, Text } from 'theme-ui'
-import React from 'react'
 
 interface OraclessPoolResult {
   collateralAddress: string
