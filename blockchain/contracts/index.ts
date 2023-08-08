@@ -70,6 +70,11 @@ export function extendTokensContracts(tokens: Tokens[]): void {
     }
   })
 }
+export function pruneTokensContracts(): void {
+  Object.keys(extendedTokensContracts).forEach((key) => {
+    delete extendedTokensContracts[key]
+  })
+}
 
 export function ensureContractsExist(
   chainId: NetworkIds,
