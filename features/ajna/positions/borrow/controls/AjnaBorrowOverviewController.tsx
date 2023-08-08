@@ -77,9 +77,11 @@ export function AjnaBorrowOverviewController() {
             />
             {isOracless ? (
               <ContentCardThresholdPrice
+                isLoading={isSimulationLoading}
                 thresholdPrice={position.thresholdPrice}
                 afterThresholdPrice={simulation?.thresholdPrice}
                 priceFormat={priceFormat}
+                changeVariant={changeVariant}
                 {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
                   lup: position.pool.lup,
                 })}

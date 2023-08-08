@@ -39,10 +39,12 @@ function ContentCardThresholdPriceModal({ thresholdPrice }: ContentCardThreshold
           TP ={' '}
           {t('ajna.position-page.borrow.common.overview.threshold-price-modal-desc-formula-part-1')}
           <br />
-          {'\u00A0'}{'\u00A0'} ={' '}
+          {'\u00A0'}
+          {'\u00A0'} ={' '}
           {t('ajna.position-page.borrow.common.overview.threshold-price-modal-desc-formula-part-2')}
           <br />
-          {'\u00A0'}{'\u00A0'} = {thresholdPrice}
+          {'\u00A0'}
+          {'\u00A0'} = {thresholdPrice}
         </code>
       </Card>
       <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
