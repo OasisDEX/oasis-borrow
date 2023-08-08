@@ -1,0 +1,13 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "E2E tests",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+		"test:gui": "npx playwright test --project=chromium"
+	},
+  "devDependencies": {
+    "@guardianui/test": "^1.0.4"
+  }
+}
