@@ -5,8 +5,15 @@ import { NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { OraclessPoolResult } from 'features/poolFinder/types'
+import {
+  productHubAjnaRewardsTooltip,
+  productHubEmptyPoolMaxLtvTooltip,
+  productHubEmptyPoolWeeklyApyTooltip,
+  productHubOraclessLtvTooltip,
+} from 'features/productHub/content'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
@@ -65,6 +72,22 @@ export function parsePoolResponse(
           collateralToken: identifiedTokens[collateralAddress].symbol,
           quoteAddress: quoteTokenAddress,
           quoteToken: identifiedTokens[quoteTokenAddress].symbol,
+          tooltips: {
+            ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+              fee: productHubAjnaRewardsTooltip,
+              ...(isPoolNotEmpty && {
+                weeklyNetApy: productHubAjnaRewardsTooltip,
+              }),
+            }),
+            ...(!isOracless &&
+              !isPoolNotEmpty && {
+                maxLtv: productHubEmptyPoolMaxLtvTooltip,
+                weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+              }),
+            ...(isOracless && {
+              maxLtv: productHubOraclessLtvTooltip,
+            }),
+          },
         }
       },
     )

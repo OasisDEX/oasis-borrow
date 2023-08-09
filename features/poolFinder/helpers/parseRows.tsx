@@ -17,8 +17,16 @@ export function parseRows(
   product: ProductHubProductType,
 ): AssetsTableRowData[] {
   return rows.map((row) => {
-    const { collateralAddress, collateralToken, fee, liquidity, maxLtv, quoteAddress, quoteToken } =
-      row
+    const {
+      collateralAddress,
+      collateralToken,
+      fee,
+      liquidity,
+      maxLtv,
+      quoteAddress,
+      quoteToken,
+      tooltips,
+    } = row
 
     const label = `${collateralToken}/${quoteToken}`
     const url = getOraclessProductUrl({
@@ -40,6 +48,7 @@ export function parseRows(
           label,
           liquidity,
           maxLtv,
+          tooltips,
         },
         product,
         quoteToken,
