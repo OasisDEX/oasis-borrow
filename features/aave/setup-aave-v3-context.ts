@@ -35,7 +35,7 @@ import {
   getStrategyInfo$,
 } from './services'
 import { getSupportedTokens } from './strategies'
-import { IStrategyConfig } from './types'
+import { IStrategyConfig, PositionId } from './types'
 
 export function setupAaveV3Context(appContext: AppContext, network: NetworkNames): AaveContext {
   const networkId = networksByName[network].id
