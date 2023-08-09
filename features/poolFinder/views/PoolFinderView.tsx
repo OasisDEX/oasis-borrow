@@ -12,7 +12,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useState } from 'react'
-import { Box, Flex, Input,  SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Input, SxStyleProp, Text } from 'theme-ui'
 
 const inputStyles: SxStyleProp = {
   height: '50px',
@@ -65,32 +65,26 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
                 quoteTokenAddress,
               ]),
             ),
-          ).subscribe(
-            (identifiedTokens) => {
-              setResults({
-                ...results,
-                [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: pools
-                  .filter(
-                    (pool) =>
-                      Object.keys(identifiedTokens).includes(pool.collateralAddress) &&
-                      Object.keys(identifiedTokens).includes(pool.quoteTokenAddress),
-                  )
-                  .map((pool) => ({
-                    collateralAddress: pool.collateralAddress,
-                    collateralToken: identifiedTokens[pool.collateralAddress].symbol,
-                    quoteAddress: pool.quoteTokenAddress,
-                    quoteToken: identifiedTokens[pool.quoteTokenAddress].symbol,
-                  })),
-              })
-              try {
-                identifiedTokensSubscription.unsubscribe()
-              } catch (e) {}
-            },
-            undefined,
-            () => {
-              console.log('complete?')
-            },
-          )
+          ).subscribe((identifiedTokens) => {
+            setResults({
+              ...results,
+              [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: pools
+                .filter(
+                  (pool) =>
+                    Object.keys(identifiedTokens).includes(pool.collateralAddress) &&
+                    Object.keys(identifiedTokens).includes(pool.quoteTokenAddress),
+                )
+                .map((pool) => ({
+                  collateralAddress: pool.collateralAddress,
+                  collateralToken: identifiedTokens[pool.collateralAddress].symbol,
+                  quoteAddress: pool.quoteTokenAddress,
+                  quoteToken: identifiedTokens[pool.quoteTokenAddress].symbol,
+                })),
+            })
+            try {
+              identifiedTokensSubscription.unsubscribe()
+            } catch (e) {}
+          })
         } else {
           setResults({
             ...results,
