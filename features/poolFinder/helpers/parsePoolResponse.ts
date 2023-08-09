@@ -12,7 +12,6 @@ import {
   productHubAjnaRewardsTooltip,
   productHubEmptyPoolMaxLtvTooltip,
   productHubEmptyPoolWeeklyApyTooltip,
-  productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
@@ -35,6 +34,7 @@ export function parsePoolResponse(
         collateralAddress,
         debt,
         interestRate,
+        lendApr,
         lowestUtilizedPrice,
         lowestUtilizedPriceIndex,
         quoteTokenAddress,
@@ -58,16 +58,20 @@ export function parsePoolResponse(
           }).shiftedBy(NEGATIVE_WAD_PRECISION),
         )
         const fee = interestRate.toString()
-
-        console.log(`liquidity: ${liquidity}`)
+        const weeklyNetApy = lendApr.toString()
 
         return {
           ...(isPoolNotEmpty &&
             !isOracless && {
               maxLtv,
             }),
+          ...(isPoolNotEmpty && {
+            weeklyNetApy,
+          }),
           liquidity,
+          earnStrategy: `${collateralToken}/${quoteToken} LP`,
           fee,
+          managementType: 'active',
           collateralAddress: collateralAddress,
           collateralToken: identifiedTokens[collateralAddress].symbol,
           quoteAddress: quoteTokenAddress,
@@ -82,10 +86,9 @@ export function parsePoolResponse(
             ...(!isOracless &&
               !isPoolNotEmpty && {
                 maxLtv: productHubEmptyPoolMaxLtvTooltip,
-                weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
               }),
-            ...(isOracless && {
-              maxLtv: productHubOraclessLtvTooltip,
+            ...(!isPoolNotEmpty && {
+              weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
             }),
           },
         }

@@ -139,15 +139,17 @@ export function parseProduct(
             </>
           ),
         },
-        liquidity: {
-          sortable: liquidity?.toNumber() || 0,
-          value: (
-            <>
-              {resolved.liquidity}
-              {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
-            </>
-          ),
-        },
+        liquidity: !liquidityToken
+          ? {
+              sortable: liquidity?.toNumber() || 0,
+              value: (
+                <>
+                  {resolved.liquidity}
+                  {tooltips?.liquidity && <AssetsTableTooltip {...tooltips.liquidity} />}
+                </>
+              ),
+            }
+          : `${liquidityString} ${liquidityToken}`,
       }
   }
 }

@@ -20,12 +20,15 @@ export function parseRows(
     const {
       collateralAddress,
       collateralToken,
+      earnStrategy,
       fee,
       liquidity,
+      managementType,
       maxLtv,
       quoteAddress,
       quoteToken,
       tooltips,
+      weeklyNetApy,
     } = row
 
     const label = `${collateralToken}/${quoteToken}`
@@ -44,11 +47,14 @@ export function parseRows(
       ),
       ...parseProduct(
         {
+          earnStrategy,
           fee,
           label,
           liquidity,
+          managementType,
           maxLtv,
           tooltips,
+          weeklyNetApy,
         },
         product,
         quoteToken,
