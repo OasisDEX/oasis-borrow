@@ -12,7 +12,7 @@ import React from 'react'
 export function AjnaEarnOverviewOpenController() {
   const { t } = useTranslation()
   const {
-    environment: { quoteToken, quotePrice },
+    environment: { quoteToken, quotePrice, isOracless },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -59,9 +59,12 @@ export function AjnaEarnOverviewOpenController() {
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnOpen
-            totalValueLocked={position.pool.depositSize.times(quotePrice)}
-            apy={position.pool.apr30dAverage}
             days={30}
+            quoteToken={quoteToken}
+            isOracless={isOracless}
+            totalValueLockedUsd={position.pool.depositSize.times(quotePrice)}
+            totalValueLocked={position.pool.depositSize}
+            apy={position.pool.apr30dAverage}
           />
         </DetailsSectionFooterItemWrapper>
       }
