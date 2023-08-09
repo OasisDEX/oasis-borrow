@@ -1,9 +1,9 @@
 import { useAppContext } from 'components/AppContextProvider'
-import { AppLink } from 'components/Links'
-import { TokensGroup } from 'components/TokensGroup'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { PoolFinderTableLoadingState } from 'features/poolFinder/components/PoolFinderTableLoadingState'
+import { PoolFinderContentController } from 'features/poolFinder/controls/PoolFinderContentController'
 import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
-import { getOraclessProductUrl, validateOraclessPayload } from 'features/poolFinder/helpers'
+import { validateOraclessPayload } from 'features/poolFinder/helpers'
 import { OraclessPoolResult } from 'features/poolFinder/types'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -12,7 +12,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useState } from 'react'
-import { Box, Button, Flex, Input, Spinner, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Input,  SxStyleProp, Text } from 'theme-ui'
 
 const inputStyles: SxStyleProp = {
   height: '50px',
@@ -155,39 +155,17 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
               />
             </Flex>
             {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] ? (
-              <>
-                {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`].length > 0 ? (
-                  <Flex sx={{ flexDirection: 'column', rowGap: 2 }}>
-                    {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`].map((pool) => (
-                      <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
-                        <TokensGroup tokens={[pool.collateralToken, pool.quoteToken]} />
-                        <Text as="p" sx={{ fontWeight: 'semiBold' }}>
-                          {pool.collateralToken}/{pool.quoteToken}
-                        </Text>
-                        <AppLink
-                          href={getOraclessProductUrl({ chainId, product: 'borrow', ...pool })}
-                        >
-                          <Button variant="tertiary">Borrow</Button>
-                        </AppLink>
-                        or
-                        <AppLink
-                          href={getOraclessProductUrl({ chainId, product: 'earn', ...pool })}
-                        >
-                          <Button variant="tertiary">Earn</Button>
-                        </AppLink>
-                      </Flex>
-                    ))}
-                  </Flex>
-                ) : (
-                  <Text as="p">No results for provided input.</Text>
-                )}
-              </>
+              <PoolFinderContentController
+                chainId={chainId}
+                selectedProduct={selectedProduct}
+                tableData={results[`${poolAddress}-${collateralAddress}-${quoteAddress}`]}
+              />
             ) : (
               <>
                 {errors.length > 0 ? (
                   errors.map((error) => <Text as="p">{error}</Text>)
                 ) : (
-                  <Spinner />
+                  <PoolFinderTableLoadingState />
                 )}
               </>
             )}

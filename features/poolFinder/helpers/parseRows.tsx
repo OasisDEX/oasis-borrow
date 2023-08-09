@@ -1,16 +1,24 @@
 import { negativeToZero } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { getActionUrl, parseProductNumbers } from 'features/productHub/helpers'
+import { getOraclessProductUrl } from 'features/poolFinder/helpers/getOraclessProductUrl'
+import { OraclessPoolResult } from 'features/poolFinder/types'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
+import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { Trans } from 'react-i18next'
+
+function parseProductNumbers(stringNumbers: (string | undefined)[]): (BigNumber | undefined)[] {
+  return stringNumbers.map((number) => (number ? new BigNumber(number) : undefined))
+}
 
 function parseProduct(
   {
@@ -154,38 +162,34 @@ function parseProduct(
 }
 
 export function parseRows(
-  rows: ProductHubItem[],
+  chainId: NetworkIds,
+  rows: OraclessPoolResult[],
   product: ProductHubProductType,
 ): AssetsTableRowData[] {
   return rows.map((row) => {
-    const { depositToken, label, network, primaryToken, protocol, reverseTokens, secondaryToken } =
-      row
-    const icons = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
-    const asset = product === ProductHubProductType.Earn ? depositToken || primaryToken : label
+    const { collateralAddress, collateralToken, quoteAddress, quoteToken } = row
 
-    if (reverseTokens) icons.reverse()
-
-    const url = getActionUrl({ ...row, product: [product] })
-    const urlDisabled = url === '/'
+    const url = getOraclessProductUrl({
+      chainId,
+      product: 'borrow',
+      collateralAddress,
+      collateralToken,
+      quoteAddress,
+      quoteToken,
+    })
 
     return {
-      [product === ProductHubProductType.Earn ? 'depositToken' : 'collateralDebt']: (
-        <AssetsTableDataCellAsset asset={asset} icons={icons} />
+      collateralQuote: (
+        <AssetsTableDataCellAsset
+          asset={`${collateralToken}/${quoteToken}`}
+          icons={[collateralToken, quoteToken]}
+        />
       ),
-      ...parseProduct(row, product),
+      // ...parseProduct(row, product),
       protocolNetwork: (
-        <ProtocolLabel
-          network={Array.isArray(network) ? network[0] : network}
-          protocol={protocol}
-        />
+        <ProtocolLabel network={NetworkNames.ethereumMainnet} protocol={LendingProtocol.Ajna} />
       ),
-      action: (
-        <AssetsTableDataCellAction
-          cta={urlDisabled ? 'Coming soon' : upperFirst(product)}
-          link={url}
-          disabled={urlDisabled}
-        />
-      ),
+      action: <AssetsTableDataCellAction cta={upperFirst(product)} link={url} />,
     }
   })
 }
