@@ -18,7 +18,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const { t } = useTranslation()
 
   const {
-    environment: { quoteToken, collateralPrice, quotePrice, isShort, priceFormat },
+    environment: { quoteToken, collateralPrice, quotePrice, isShort, priceFormat, isOracless },
     steps: { isFlowStateReady },
     tx: { txDetails, isTxSuccess },
   } = useAjnaGeneralContext()
@@ -92,12 +92,16 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
           change: formatted.afterLendingPrice,
           isLoading,
         },
-        {
-          label: t('max-ltv-to-lend-at'),
-          value: formatted.maxLtv,
-          change: formatted.afterMaxLtv,
-          isLoading,
-        },
+        ...(!isOracless
+          ? [
+              {
+                label: t('max-ltv-to-lend-at'),
+                value: formatted.maxLtv,
+                change: formatted.afterMaxLtv,
+                isLoading,
+              },
+            ]
+          : []),
         ...(withAjnaFee
           ? [
               {
