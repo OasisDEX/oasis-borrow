@@ -59,7 +59,15 @@ const calculateTotalEarningsAndPnl = (
 export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, isShort, owner, priceFormat, quoteToken, quotePrice },
+    environment: {
+      collateralToken,
+      isShort,
+      owner,
+      priceFormat,
+      quoteToken,
+      quotePrice,
+      isOracless,
+    },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -106,17 +114,19 @@ export function AjnaEarnOverviewManageController() {
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
             netValue={position.quoteTokenAmount}
-            netValueUSD={position.quoteTokenAmount.times(quotePrice)}
+            netValueUSD={!isOracless ? position.quoteTokenAmount.times(quotePrice) : undefined}
             afterNetValue={simulation?.quoteTokenAmount}
           />
-          <ContentCardMaxLendingLTV
-            isLoading={isSimulationLoading}
-            price={position.price}
-            quoteToken={quoteToken}
-            collateralToken={collateralToken}
-            maxLendingPercentage={position.maxRiskRatio.loanToValue}
-            afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
-          />
+          {!isOracless && (
+            <ContentCardMaxLendingLTV
+              isLoading={isSimulationLoading}
+              price={position.price}
+              quoteToken={quoteToken}
+              collateralToken={collateralToken}
+              maxLendingPercentage={position.maxRiskRatio.loanToValue}
+              afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
+            />
+          )}
           <ContentCardPositionLendingPrice
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
@@ -151,6 +161,7 @@ export function AjnaEarnOverviewManageController() {
                   )
                 : undefined
             }
+            isOracless={isOracless}
           />
         </DetailsSectionFooterItemWrapper>
       }

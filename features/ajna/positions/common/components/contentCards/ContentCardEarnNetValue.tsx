@@ -14,7 +14,7 @@ interface ContentCardEarnNetValueProps {
   quoteToken: string
   netValue: BigNumber
   afterNetValue?: BigNumber
-  netValueUSD: BigNumber
+  netValueUSD?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
@@ -31,7 +31,7 @@ export function ContentCardEarnNetValue({
   const formatted = {
     netValue: formatCryptoBalance(netValue),
     afterNetValue: afterNetValue && `${formatCryptoBalance(afterNetValue)} ${quoteToken}`,
-    netValueUSD: `$${formatAmount(netValueUSD, 'USD')}`,
+    netValueUSD: netValueUSD && `$${formatAmount(netValueUSD, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -52,7 +52,7 @@ export function ContentCardEarnNetValue({
     ),
   }
 
-  if (!netValueUSD.isZero()) {
+  if (!netValueUSD?.isZero()) {
     contentCardSettings.footnote = formatted.netValueUSD
   }
 
