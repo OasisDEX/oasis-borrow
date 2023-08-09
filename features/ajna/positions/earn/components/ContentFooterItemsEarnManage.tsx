@@ -16,6 +16,7 @@ interface ContentFooterItemsEarnOpenProps {
   availableToWithdraw: BigNumber
   projectedAnnualReward: BigNumber
   afterAvailableToWithdraw?: BigNumber
+  isOracless: boolean
   isLoading?: boolean
   changeVariant?: ChangeVariantType
 }
@@ -26,6 +27,7 @@ export function ContentFooterItemsEarnManage({
   owner,
   availableToWithdraw,
   afterAvailableToWithdraw,
+  isOracless,
   isLoading,
   changeVariant = 'positive',
 }: ContentFooterItemsEarnOpenProps) {
@@ -66,7 +68,7 @@ export function ContentFooterItemsEarnManage({
           />
         }
       />
-      {isPoolWithRewards({ collateralToken, quoteToken }) && (
+      {isPoolWithRewards({ collateralToken, quoteToken }) && !isOracless && (
         <>
           <DetailsSectionFooterItem
             title={t('ajna.position-page.earn.manage.overview.projected-annual-reward')}

@@ -1,24 +1,37 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatFiatBalance,
+} from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentFooterItemsEarnOpenProps {
-  totalValueLocked?: BigNumber
   days: number
+  quoteToken: string
+  isOracless: boolean
+  totalValueLocked?: BigNumber
+  totalValueLockedUsd?: BigNumber
   apy?: BigNumber
 }
 
 export function ContentFooterItemsEarnOpen({
-  totalValueLocked,
-  apy,
   days,
+  quoteToken,
+  isOracless,
+  totalValueLocked,
+  totalValueLockedUsd,
+  apy,
 }: ContentFooterItemsEarnOpenProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    totalValueLocked: totalValueLocked ? `$${formatCryptoBalance(totalValueLocked)}` : '-',
+    totalValueLocked: totalValueLocked
+      ? `${formatCryptoBalance(totalValueLocked)} ${quoteToken}`
+      : '-',
+    totalValueLockedUsd: totalValueLockedUsd ? `$${formatFiatBalance(totalValueLockedUsd)}` : '-',
     apy: apy ? `${formatDecimalAsPercent(apy)}` : '-',
   }
 
@@ -26,7 +39,7 @@ export function ContentFooterItemsEarnOpen({
     <>
       <DetailsSectionFooterItem
         title={t('total-value-locked')}
-        value={formatted.totalValueLocked}
+        value={isOracless ? formatted.totalValueLocked : formatted.totalValueLockedUsd}
       />
       <DetailsSectionFooterItem title={t('average-apy-in-days', { days })} value={formatted.apy} />
     </>
