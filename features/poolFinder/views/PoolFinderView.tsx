@@ -1,10 +1,12 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { TokensGroup } from 'components/TokensGroup'
-import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
 import { getOraclessProductUrl, validateOraclessPayload } from 'features/poolFinder/helpers'
 import { OraclessPoolResult } from 'features/poolFinder/types'
+import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
+import { ProductHubProductType } from 'features/productHub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
@@ -22,10 +24,15 @@ const inputStyles: SxStyleProp = {
   borderRadius: 'medium',
 }
 
-export const PoolFinderView: FC = () => {
+interface PoolFinderViewProps {
+  product: ProductHubProductType
+}
+
+export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   const { context$, identifiedTokens$ } = useAppContext()
 
   const [context] = useObservable(context$)
+  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
   const [poolAddress, setPoolAddress] = useState<string>('')
   const [collateralAddress, setCollateralAddress] = useState<string>('')
@@ -98,7 +105,23 @@ export const PoolFinderView: FC = () => {
 
   return (
     <>
-      <AjnaHeader title="Ajna pool finder" intro="Lorem ipsum dolor sit amet" />
+      <Box
+        sx={{
+          position: 'relative',
+          my: [3, null, '48px'],
+          textAlign: 'center',
+          zIndex: 3,
+        }}
+      >
+        <PoolFinderNaturalLanguageSelectorController
+          gradient={['#f154db', '#974eea']}
+          product={product}
+          onChange={(_selectedProduct) => {
+            setSelectedProduct(_selectedProduct)
+          }}
+        />
+        <ProductHubIntro selectedProduct={selectedProduct} />
+      </Box>
       <WithLoadingIndicator value={[context]}>
         {([{ chainId }]) => (
           <>

@@ -8,7 +8,7 @@ import { Text } from 'theme-ui'
 
 interface ProductHubIntroProps {
   selectedProduct: ProductHubProductType
-  selectedToken: string
+  selectedToken?: string
 }
 
 export const ProductHubIntro: FC<ProductHubIntroProps> = ({ selectedProduct }) => {
