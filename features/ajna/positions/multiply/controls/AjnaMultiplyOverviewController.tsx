@@ -9,6 +9,7 @@ import { ContentCardNetValue } from 'features/ajna/positions/common/components/c
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -136,7 +137,9 @@ export function AjnaMultiplyOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      <AjnaTokensBannerController flow={flow} />
+      {isPoolWithRewards({ collateralToken, quoteToken }) && (
+        <AjnaTokensBannerController flow={flow} />
+      )}
     </Grid>
   )
 }
