@@ -66,6 +66,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'DAI',
     product: ETHDAIAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
+    pills: [],
   })
   const promoCardETHUSDCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'ETH',
@@ -85,7 +86,6 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'USDC',
     product: SDAIUSDCAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
-    pills: [],
   })
   const promoCardTBTCWBTCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'TBTC',
