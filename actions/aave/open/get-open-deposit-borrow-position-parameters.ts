@@ -5,7 +5,7 @@ import { OpenAaveDepositBorrowParameters } from 'actions/aave/types'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
-import { ProxyType } from 'features/aave/common'
+import { ProxyType } from 'features/aave/types'
 
 function assertNetwork(networkId: NetworkIds): asserts networkId is NetworkIds.MAINNET {
   if (networkId !== NetworkIds.MAINNET) {

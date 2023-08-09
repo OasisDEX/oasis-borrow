@@ -1,1 +1,0 @@
-export { StrategyInformationContainer } from './StrategyInformationContainer'

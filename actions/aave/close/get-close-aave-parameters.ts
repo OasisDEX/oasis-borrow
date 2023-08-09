@@ -3,7 +3,7 @@ import { getTokenAddresses } from 'actions/aave/get-token-addresses'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave/helpers'
 import { CloseAaveParameters } from 'actions/aave/types'
 import { getRpcProvider } from 'blockchain/networks'
-import { ProxyType } from 'features/aave/common'
+import { ProxyType } from 'features/aave/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function getCloseAaveParameters({

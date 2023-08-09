@@ -1,4 +1,4 @@
-import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
+import { StopLossTwoTxRequirement } from 'features/aave/components'
 import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
 import { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'

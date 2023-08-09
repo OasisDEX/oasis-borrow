@@ -137,8 +137,8 @@ import {
   createProxyConsumed$,
   createReadPositionCreatedEvents$,
   getLastCreatedPositionForProxy$,
-} from 'features/aave/services/readPositionCreatedEvents'
-import { PositionId } from 'features/aave/types'
+} from 'features/aave/services'
+import { PositionId } from 'features/aave/types/position-id'
 import { createAccountData } from 'features/account/AccountData'
 import {
   getAjnaPosition$,

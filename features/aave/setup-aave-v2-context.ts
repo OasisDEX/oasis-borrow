@@ -13,23 +13,23 @@ import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { AaveContext } from './aave-context'
-import { IStrategyConfig } from './common'
-import {
-  getAdjustAaveParametersMachine,
-  getCloseAaveParametersMachine,
-  getDepositBorrowAaveMachine,
-  getOpenDepositBorrowAaveMachine,
-} from './common/services/getParametersMachines'
-import { getStrategyInfo$ } from './common/services/getStrategyInfo'
-import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
-import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
-import { getSupportedTokens } from './strategy-config'
+import {
+  getAaveSupportedTokenBalances$,
+  getAdjustAaveParametersMachine,
+  getCloseAaveParametersMachine,
+  getDepositBorrowAaveMachine,
+  getOpenDepositBorrowAaveMachine,
+  getOpenMultiplyAaveParametersMachine,
+  getStrategyInfo$,
+} from './services'
+import { getSupportedTokens } from './strategies'
+import { IStrategyConfig } from './types'
 
 export function setupAaveV2Context(appContext: AppContext): AaveContext {
   const {

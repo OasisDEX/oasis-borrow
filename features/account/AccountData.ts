@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { PositionCreated } from 'features/aave/services'
 import { Web3Context } from 'features/web3Context'
 import { startWithDefault } from 'helpers/operators'
 import { combineLatest, Observable } from 'rxjs'

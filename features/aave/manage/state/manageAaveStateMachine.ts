@@ -11,6 +11,8 @@ import {
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
+import { getTxTokenAndAmount } from 'features/aave/helpers'
+import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
   BaseAaveContext,
   BaseAaveEvent,
@@ -20,10 +22,8 @@ import {
   ManageTokenInput,
   ProxyType,
   RefTransactionMachine,
-} from 'features/aave/common'
-import { getTxTokenAndAmount } from 'features/aave/helpers'
-import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
-import { PositionId } from 'features/aave/types'
+} from 'features/aave/types'
+import { PositionId } from 'features/aave/types/position-id'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {

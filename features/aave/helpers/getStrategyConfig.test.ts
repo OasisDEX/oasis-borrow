@@ -1,6 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { PositionId } from 'features/aave/types'
+import { PositionCreated } from 'features/aave/services'
+import { PositionId } from 'features/aave/types/position-id'
 import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { Observable, of } from 'rxjs'
 

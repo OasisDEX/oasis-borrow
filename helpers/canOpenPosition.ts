@@ -1,6 +1,6 @@
 import { ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { UserInput } from 'features/aave/common/BaseAaveContext'
+import { UserInput } from 'features/aave/types'
 import { allDefined } from 'helpers/allDefined'
 
 import { zero } from './zero'

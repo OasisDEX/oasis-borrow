@@ -16,16 +16,16 @@ import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
 import { AutomationTxData } from 'components/AppContext'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  ProxyType,
   RefTransactionMachine,
-} from 'features/aave/common/BaseAaveContext'
-import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
+} from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import {
   AutomationAddTriggerData,

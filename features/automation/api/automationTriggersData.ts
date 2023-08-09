@@ -4,7 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context, every5Seconds$ } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
-import { PositionId } from 'features/aave/types'
+import { PositionId } from 'features/aave/types/position-id'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
 import {
   AutoBSTriggerData,

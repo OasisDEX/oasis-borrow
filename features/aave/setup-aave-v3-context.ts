@@ -18,15 +18,6 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { AaveContext } from './aave-context'
-import { IStrategyConfig } from './common'
-import {
-  getAdjustAaveParametersMachine,
-  getCloseAaveParametersMachine,
-  getDepositBorrowAaveMachine,
-  getOpenDepositBorrowAaveMachine,
-} from './common/services/getParametersMachines'
-import { getStrategyInfo$ } from './common/services/getStrategyInfo'
-import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
 import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from './helpers'
 import {
@@ -34,9 +25,17 @@ import {
   getManageAaveV3PositionStateMachineServices,
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
-import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
-import { getSupportedTokens } from './strategy-config'
-import { PositionId } from './types'
+import {
+  getAaveSupportedTokenBalances$,
+  getAdjustAaveParametersMachine,
+  getCloseAaveParametersMachine,
+  getDepositBorrowAaveMachine,
+  getOpenDepositBorrowAaveMachine,
+  getOpenMultiplyAaveParametersMachine,
+  getStrategyInfo$,
+} from './services'
+import { getSupportedTokens } from './strategies'
+import { IStrategyConfig } from './types'
 
 export function setupAaveV3Context(appContext: AppContext, network: NetworkNames): AaveContext {
   const networkId = networksByName[network].id

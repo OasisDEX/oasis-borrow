@@ -1,6 +1,6 @@
 import { IPosition, PositionType } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { ProxyType } from 'features/aave/common'
+import { ProxyType } from 'features/aave/types'
 import { AaveLendingProtocol } from 'lendingProtocols'
 import { NetworkIds } from '../../../blockchain/networks'
 
