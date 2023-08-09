@@ -2597,7 +2597,7 @@
                 "There is an origination fee when borrowing to avoid rapid changes in rates.",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
               ],
-              "borrow-oracless": [
+              "oracless": [
                 "This asset pair is not supported by Summer.fi, no price feed information will be available.",
                 "Always do your own research and ensure you have specified the correct token contract address.",
                 "Monitor your position closely and ensure you understand the risks before proceeding."
