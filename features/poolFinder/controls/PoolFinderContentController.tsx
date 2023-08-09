@@ -4,7 +4,7 @@ import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContaine
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
 import { parseRows } from 'features/poolFinder/helpers'
 import { OraclessPoolResult } from 'features/poolFinder/types'
-import {  ProductHubProductType } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import React, { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
