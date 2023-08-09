@@ -12,6 +12,7 @@ import {
   productHubAjnaRewardsTooltip,
   productHubEmptyPoolMaxLtvTooltip,
   productHubEmptyPoolWeeklyApyTooltip,
+  productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
@@ -89,6 +90,9 @@ export function parsePoolResponse(
               }),
             ...(!isPoolNotEmpty && {
               weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+            }),
+            ...(isOracless && {
+              maxLtv: productHubOraclessLtvTooltip,
             }),
           },
         }
