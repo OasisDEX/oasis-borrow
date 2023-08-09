@@ -54,7 +54,7 @@ async function getPositionCreatedEventForProxyAddress(
     null,
   )
 
-  return dpmWithPositionCreatedEvent.getLogs(filter)
+  return await dpmWithPositionCreatedEvent.getLogs(filter)
 }
 
 function mapEvent(
