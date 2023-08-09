@@ -1370,6 +1370,7 @@ export function setupAppContext() {
     totalValueLocked$,
     yieldsChange$,
     tokenPriceUSD$,
+    tokenPriceUSDStatic$,
     userReferral$,
     checkReferralLocal$,
     balanceInfo$,
