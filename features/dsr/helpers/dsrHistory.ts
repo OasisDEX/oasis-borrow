@@ -73,9 +73,7 @@ function createEventTypeHistory$(
   proxyAddress: string,
   kind: DsrEventKind,
 ): Observable<DsrEvent> {
-  const web3ProviderGetPastLogs = new Web3(
-    getNetworkRpcEndpoint(NetworkIds.MAINNET, context.chainId),
-  )
+  const web3ProviderGetPastLogs = new Web3(getNetworkRpcEndpoint(context.chainId))
 
   const potEvents$ = fromPromise(
     web3ProviderGetPastLogs.eth.getPastLogs({

@@ -4142,6 +4142,18 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
+"@react-hooks-library/core@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@react-hooks-library/core/-/core-0.5.1.tgz#b73f3e2b303c4f3b31c09a0f5ff20471c437a117"
+  integrity sha512-YVXPeopEuXb9UR/YCaRfRgsDi/2K7OahdI+XHqT7WX8l706f73egbsOpicNEYAI+pfvOjr5XblPGJV/LJMrL7Q==
+  dependencies:
+    "@react-hooks-library/shared" "0.5.1"
+
+"@react-hooks-library/shared@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@react-hooks-library/shared/-/shared-0.5.1.tgz#6d900e7e9f77827819ebb1a1d865c8d6cb6f10de"
+  integrity sha512-pBX36Yh7dwIMQWx3m4zUCM7ytdTb+X+KAWE00ZOgBWSr7JRiRhRntFXIfdj0R/osQo4PdbDS4bf6SeodkUE/5Q==
+
 "@remix-run/router@1.6.2":
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.6.2.tgz#bbe75f8c59e0b7077584920ce2cc76f8f354934d"
@@ -18412,6 +18424,11 @@ ts-node@10.9.1, ts-node@^10.9.1:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
+
+ts-pattern@4:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/ts-pattern/-/ts-pattern-4.3.0.tgz#7a995b39342f1b00d1507c2d2f3b90ea16e178a6"
+  integrity sha512-pefrkcd4lmIVR0LA49Imjf9DYLK8vtWhqBPA3Ya1ir8xCW0O2yjL9dsCVvI7pCodLC5q7smNpEtDR2yVulQxOg==
 
 ts-toolbelt@^6.15.1:
   version "6.15.5"

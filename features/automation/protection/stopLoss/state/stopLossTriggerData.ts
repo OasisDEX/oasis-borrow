@@ -69,12 +69,16 @@ export function extractStopLossData(
 ): StopLossTriggerData {
   const defaultState = overwriteDefault || defaultStopLossData
   if (data.triggers && data.triggers.length > 0) {
-    const stopLossTriggersData = getTriggersByType(data.triggers, [
-      TriggerType.StopLossToCollateral,
-      TriggerType.StopLossToDai,
-      TriggerType.AaveStopLossToDebtV2,
-      TriggerType.AaveStopLossToCollateralV2,
-    ])
+    const stopLossTriggersData = getTriggersByType(
+      data.triggers,
+      [
+        TriggerType.StopLossToCollateral,
+        TriggerType.StopLossToDai,
+        TriggerType.AaveStopLossToDebtV2,
+        TriggerType.AaveStopLossToCollateralV2,
+      ],
+      data.chainId,
+    )
 
     if (stopLossTriggersData.length) {
       return pickTriggerWithHighestStopLossLevel(stopLossTriggersData)

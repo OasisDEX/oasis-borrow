@@ -7,7 +7,7 @@ import { useConnection } from './useConnection'
 
 export function ConnectButton() {
   const { t } = useTranslation()
-  const { connecting, connect } = useConnection({ initialConnect: false })
+  const { connecting, connect } = useConnection()
 
   return (
     <div>

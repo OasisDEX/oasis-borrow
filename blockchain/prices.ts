@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { getNetworkId } from 'features/web3Context'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from 'rxjs'
@@ -52,26 +51,28 @@ export function createGasPrice$(
     switchMap(([, { web3 }]) =>
       combineLatest(context$, bindNodeCallback(web3.eth.getBlockNumber)()),
     ),
-    switchMap(([{ web3 }, blockNumber]) => {
-      return combineLatest(blockNativeRequest$, bindNodeCallback(web3.eth.getBlock)(blockNumber))
+    switchMap(([{ web3, chainId }, blockNumber]) => {
+      return combineLatest(
+        blockNativeRequest$,
+        bindNodeCallback(web3.eth.getBlock)(blockNumber),
+        of(chainId),
+      )
     }),
-    map(([blockNativeResp, block]): GasPriceParams => {
+    map(([blockNativeResp, block, chainId]): GasPriceParams => {
       const blockNative = blockNativeResp as GasPriceParams
       const gasFees = {
         maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
         maxPriorityFeePerGas: minersTip,
       } as GasPriceParams
 
-      const network = getNetworkId()
-
       // Increase maxFeePerGas by 20% when on goerli
-      if (network === NetworkIds.GOERLI) {
+      if (chainId === NetworkIds.GOERLI) {
         gasFees.maxFeePerGas = new BigNumber((block as any).baseFeePerGas)
           .multipliedBy(1.15)
           .plus(minersTip)
       }
 
-      if (blockNative.maxFeePerGas.gt(0) && network !== NetworkIds.GOERLI) {
+      if (blockNative.maxFeePerGas.gt(0) && chainId !== NetworkIds.GOERLI) {
         gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
         gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
           blockNative.maxPriorityFeePerGas,

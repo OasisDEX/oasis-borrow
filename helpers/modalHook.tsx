@@ -20,8 +20,20 @@ export type ModalOpener = <M extends React.ComponentType<any>, P extends React.C
 
 type ModalOpenerWithClose = ModalOpener & WithClose
 
-const ModalContext = React.createContext<ModalOpenerWithClose>(() => {
-  console.warn('ModalContext not setup properly ')
+export interface ModalState {
+  openModal: ModalOpenerWithClose
+  closeModal: () => void
+  modal: Modal | undefined
+}
+
+const ModalContext = React.createContext<ModalState>({
+  openModal: () => {
+    console.warn('ModalContext not setup properly ')
+  },
+  closeModal: () => {
+    console.warn('ModalContext not setup properly ')
+  },
+  modal: undefined,
 })
 
 export function ModalProvider(props: { children?: React.ReactNode }) {
@@ -30,7 +42,7 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   function close() {
     setModal(undefined)
   }
-  const modalContextValue: ModalOpenerWithClose = (modal, modalProps) => {
+  const openModal: ModalOpenerWithClose = (modal, modalProps) => {
     setModal({
       modalComponent: modal,
       modalComponentProps: modalProps,
@@ -38,9 +50,16 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   }
   // Adding this to the context so that we can close the modal from anywhere
   // without having to pass the close function down the component tree
-  modalContextValue.close = close
+  openModal.close = close
+
   return (
-    <ModalContext.Provider value={modalContextValue}>
+    <ModalContext.Provider
+      value={{
+        openModal,
+        closeModal: close,
+        modal: TheModal,
+      }}
+    >
       {props.children}
       {TheModal &&
         ReactDOM.createPortal(
@@ -51,6 +70,13 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   )
 }
 
+/**
+ * @deprecated use useModalContext instead. This is only here for backwards compatibility. New hook contains handler for closing and reference for actual modal.
+ */
 export function useModal(): ModalOpenerWithClose {
+  return useContext(ModalContext).openModal
+}
+
+export function useModalContext(): ModalState {
   return useContext(ModalContext)
 }
