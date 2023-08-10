@@ -4,6 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { PoolFinderTableLoadingState } from 'features/poolFinder/components/PoolFinderTableLoadingState'
 import { PoolFinderContentController } from 'features/poolFinder/controls/PoolFinderContentController'
+import { PoolFinderFormController } from 'features/poolFinder/controls/PoolFinderFormController'
 import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
 import { parsePoolResponse, validateOraclessPayload } from 'features/poolFinder/helpers'
 import { OraclessPoolResult } from 'features/poolFinder/types'
@@ -15,7 +16,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useMemo, useState } from 'react'
-import { Box, Flex, Input, SxStyleProp, Text } from 'theme-ui'
+import { Box,   SxStyleProp, Text } from 'theme-ui'
 
 const inputStyles: SxStyleProp = {
   height: '50px',
@@ -122,35 +123,15 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         />
         <ProductHubIntro selectedProduct={selectedProduct} />
       </Box>
-      <Flex
-        sx={{
-          flexDirection: 'column',
-          rowGap: 2,
-          justifyItems: 'center',
-          alignItems: 'center',
-          mb: '48px',
-        }}
-      >
-        <Input
-          sx={inputStyles}
-          placeholder="Pool address"
-          value={poolAddress}
-          onChange={(e) => setPoolAddress(e.target.value.toLowerCase())}
+      <Box sx={{ maxWidth: '804px', mx: 'auto', mb: '48px' }}>
+        <PoolFinderFormController
+          onChange={(_poolAddress, _collateralAddress, _quoteAddress) => {
+            setPoolAddress(_poolAddress)
+            setCollateralAddress(_collateralAddress)
+            setQuoteAddress(_quoteAddress)
+          }}
         />
-        <Box>OR</Box>
-        <Input
-          sx={inputStyles}
-          placeholder="Collateral token address"
-          value={collateralAddress}
-          onChange={(e) => setCollateralAddress(e.target.value.toLowerCase())}
-        />
-        <Input
-          sx={inputStyles}
-          placeholder="Quote token address"
-          value={quoteAddress}
-          onChange={(e) => setQuoteAddress(e.target.value.toLowerCase())}
-        />
-      </Flex>
+      </Box>
       <WithErrorHandler error={[tokenPriceUSDError]}>
         <WithLoadingIndicator
           value={[context, tokenPriceUSDData]}
