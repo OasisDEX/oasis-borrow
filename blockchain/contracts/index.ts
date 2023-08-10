@@ -56,7 +56,7 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   }
 
   const tokens =
-    finalNetworkId === NetworkIds.MAINNET
+    finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
       ? {
           ...extendedTokensContracts,
           ...(contracts.tokens as {}),
