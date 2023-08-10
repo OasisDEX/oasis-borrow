@@ -16,17 +16,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useMemo, useState } from 'react'
-import { Box,   SxStyleProp, Text } from 'theme-ui'
-
-const inputStyles: SxStyleProp = {
-  height: '50px',
-  maxWidth: '460px',
-  p: 3,
-  fontSize: 2,
-  border: '1px solid',
-  borderColor: 'neutral20',
-  borderRadius: 'medium',
-}
+import { Box,  Text } from 'theme-ui'
 
 interface PoolFinderViewProps {
   product: ProductHubProductType
