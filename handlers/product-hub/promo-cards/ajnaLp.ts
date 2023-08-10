@@ -6,6 +6,7 @@ import {
 import {
   getAjnaPromoCards,
   promoCardHowToUseBorrowOnAjna,
+  promoCardLearnAboutMultiply,
   promoCardsWhatAreAjnaRewards,
   promoCardWhatIsEarnOnAjna,
 } from 'handlers/product-hub/promo-cards/collections'
@@ -21,6 +22,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
     promoCardWLDUSDCAjnaBorrow,
+    promoCardYFIDAIAjnaBorrow,
     promoCardCBETHETHAjnaMultiply,
     promoCardETHGHOAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
@@ -30,6 +32,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardWSTETHDAIAjnaMultiply,
     promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
+    promoCardYFIDAIAjnaMultiply,
     promoCardCBETHGHOAjnaEarn,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
@@ -62,6 +65,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         ],
         DAI: [
           promoCardSDAIUSDCAjnaBorrow,
+          promoCardHowToUseBorrowOnAjna,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        YFI: [
+          promoCardYFIDAIAjnaBorrow,
           promoCardHowToUseBorrowOnAjna,
           promoCardsWhatAreAjnaRewards,
         ],
@@ -102,6 +110,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         DAI: [
           promoCardWBTCDAIAjnaMultiply,
           promoCardWSTETHDAIAjnaMultiply,
+          promoCardsWhatAreAjnaRewards,
+        ],
+        YFI: [
+          promoCardYFIDAIAjnaMultiply,
+          promoCardLearnAboutMultiply,
           promoCardsWhatAreAjnaRewards,
         ],
         GHO: [

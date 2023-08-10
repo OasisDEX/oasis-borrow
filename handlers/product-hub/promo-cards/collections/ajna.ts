@@ -49,6 +49,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
   const WSTETHDAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WSTETH', 'DAI'])
   const WSTETHGHOAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WSTETH', 'GHO'])
   const WSTETHUSDCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WSTETH', 'USDC'])
+  const YFIDAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['YFI', 'DAI'])
 
   const CBETHGHOAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['GHO', 'CBETH'])
   const ETHUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
@@ -133,6 +134,12 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     ...commonBorrowPromoCardPayload,
     pills: [],
   })
+  const promoCardYFIDAIAjnaBorrow = parseBorrowPromoCard({
+    collateralToken: 'YFI',
+    debtToken: 'DAI',
+    product: YFIDAIAjnaBorrowishProduct,
+    ...commonBorrowPromoCardPayload,
+  })
 
   const promoCardCBETHETHAjnaMultiply = parseMultiplyPromoCard({
     collateralToken: 'CBETH',
@@ -202,6 +209,13 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'USDC',
     product: WSTETHUSDCAjnaBorrowishProduct,
     pills: [getAjnaTokensPill(), getLongTokenPill('WSTETH')],
+    ...commonPromoCardPayload,
+  })
+  const promoCardYFIDAIAjnaMultiply = parseMultiplyPromoCard({
+    collateralToken: 'YFI',
+    debtToken: 'DAI',
+    product: YFIDAIAjnaBorrowishProduct,
+    pills: [getAjnaTokensPill(), getLongTokenPill('YFI')],
     ...commonPromoCardPayload,
   })
 
@@ -282,6 +296,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     promoCardWBTCUSDCAjnaBorrow,
     promoCardWLDUSDCAjnaBorrow,
     promoCardWSTETHGHOAjnaBorrow,
+    promoCardYFIDAIAjnaBorrow,
     promoCardCBETHETHAjnaMultiply,
     promoCardETHGHOAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
@@ -292,6 +307,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     promoCardWSTETHDAIAjnaMultiply,
     promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
+    promoCardYFIDAIAjnaMultiply,
     promoCardCBETHGHOAjnaEarn,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
