@@ -14,7 +14,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
-import React, { FC, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import { Box, Flex, Input, SxStyleProp, Text } from 'theme-ui'
 
 const inputStyles: SxStyleProp = {
@@ -36,7 +36,10 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
 
   const [context] = useObservable(context$)
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
-    tokenPriceUSDStatic$(Object.keys(getNetworkContracts(NetworkIds.MAINNET).tokens)),
+    useMemo(
+      () => tokenPriceUSDStatic$(Object.keys(getNetworkContracts(NetworkIds.MAINNET).tokens)),
+      [],
+    ),
   )
 
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)

@@ -2,7 +2,7 @@ import { HeaderSelector } from 'components/HeaderSelector'
 import { productHubOptionsMapFiltered } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import React, { FC, useRef } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 interface PoolFinderNaturalLanguageSelectorControllerProps {
@@ -15,15 +15,7 @@ export const PoolFinderNaturalLanguageSelectorController: FC<
   PoolFinderNaturalLanguageSelectorControllerProps
 > = ({ gradient, product, onChange }) => {
   const { t } = useTranslation()
-
-  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(
-    ProductHubProductType.Borrow,
-  )
   const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    onChange && onChange(selectedProduct)
-  }, [selectedProduct])
 
   return (
     <Box ref={ref}>
@@ -38,9 +30,7 @@ export const PoolFinderNaturalLanguageSelectorController: FC<
           ]).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}
-          onChange={(selected) => {
-            setSelectedProduct(selected.value as ProductHubProductType)
-          }}
+          onChange={(selected) => onChange && onChange(selected.value as ProductHubProductType)}
         />
         , how about that?
       </Heading>
