@@ -177,8 +177,8 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'DAI/ETH',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long DAI',
+    multiplyStrategyType: 'short',
+    multiplyStrategy: 'Short ETH',
   },
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
@@ -188,8 +188,8 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'DAI/WBTC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long DAI',
+    multiplyStrategyType: 'short',
+    multiplyStrategy: 'Short WBTC',
   },
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
@@ -232,8 +232,8 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'USDC/ETH',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long USDC',
+    multiplyStrategyType: 'short',
+    multiplyStrategy: 'Short ETH',
   },
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
@@ -243,8 +243,8 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'USDC/WBTC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long USDC',
+    multiplyStrategyType: 'short',
+    multiplyStrategy: 'Short WBTC',
   },
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
@@ -265,5 +265,7 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'WSTETH/DAI',
+    multiplyStrategyType: 'long',
+    multiplyStrategy: 'Long WSTETH',
   },
 ]
