@@ -6,6 +6,7 @@ import {
 import {
   getAjnaPromoCards,
   promoCardHowToUseBorrowOnAjna,
+  promoCardLearnAboutMultiply,
   promoCardsWhatAreAjnaRewards,
   promoCardWhatIsEarnOnAjna,
 } from 'handlers/product-hub/promo-cards/collections'
@@ -113,6 +114,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         ],
         YFI: [
           promoCardYFIDAIAjnaMultiply,
+          promoCardLearnAboutMultiply,
           promoCardsWhatAreAjnaRewards,
         ],
         GHO: [
