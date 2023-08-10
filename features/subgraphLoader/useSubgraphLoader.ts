@@ -1,6 +1,6 @@
 import { NetworkIds } from 'blockchain/networks'
 import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
-import { getNetworkId } from 'features/web3Context'
+import { getLegacyDefaultChain } from 'features/web3OnBoard'
 import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
 
@@ -20,7 +20,7 @@ export async function loadSubgraph<
   params: P = {} as P,
   networkId?: NetworkIds,
 ): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
-  const resolvedNetworkId = networkId || (getNetworkId() as NetworkIds)
+  const resolvedNetworkId = networkId ?? getLegacyDefaultChain()
   const response = await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/subgraph`, {
     method: 'POST',
     body: JSON.stringify({

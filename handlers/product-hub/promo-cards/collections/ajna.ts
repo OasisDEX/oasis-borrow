@@ -49,6 +49,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
   const WSTETHDAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WSTETH', 'DAI'])
   const WSTETHGHOAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WSTETH', 'GHO'])
   const WSTETHUSDCAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['WSTETH', 'USDC'])
+  const YFIDAIAjnaBorrowishProduct = findByTokenPair(ajnaBorrowishProducts, ['YFI', 'DAI'])
 
   const CBETHGHOAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['GHO', 'CBETH'])
   const ETHUSDCAjnaEarnProduct = findByTokenPair(ajnaEarnProducts, ['USDC', 'ETH'])
@@ -66,6 +67,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'DAI',
     product: ETHDAIAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
+    pills: [],
   })
   const promoCardETHUSDCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'ETH',
@@ -85,7 +87,6 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'USDC',
     product: SDAIUSDCAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
-    pills: [],
   })
   const promoCardTBTCWBTCAjnaBorrow = parseBorrowPromoCard({
     collateralToken: 'TBTC',
@@ -132,6 +133,12 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     product: WSTETHGHOAjnaBorrowishProduct,
     ...commonBorrowPromoCardPayload,
     pills: [],
+  })
+  const promoCardYFIDAIAjnaBorrow = parseBorrowPromoCard({
+    collateralToken: 'YFI',
+    debtToken: 'DAI',
+    product: YFIDAIAjnaBorrowishProduct,
+    ...commonBorrowPromoCardPayload,
   })
 
   const promoCardCBETHETHAjnaMultiply = parseMultiplyPromoCard({
@@ -202,6 +209,13 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     debtToken: 'USDC',
     product: WSTETHUSDCAjnaBorrowishProduct,
     pills: [getAjnaTokensPill(), getLongTokenPill('WSTETH')],
+    ...commonPromoCardPayload,
+  })
+  const promoCardYFIDAIAjnaMultiply = parseMultiplyPromoCard({
+    collateralToken: 'YFI',
+    debtToken: 'DAI',
+    product: YFIDAIAjnaBorrowishProduct,
+    pills: [getAjnaTokensPill(), getLongTokenPill('YFI')],
     ...commonPromoCardPayload,
   })
 
@@ -282,6 +296,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     promoCardWBTCUSDCAjnaBorrow,
     promoCardWLDUSDCAjnaBorrow,
     promoCardWSTETHGHOAjnaBorrow,
+    promoCardYFIDAIAjnaBorrow,
     promoCardCBETHETHAjnaMultiply,
     promoCardETHGHOAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
@@ -292,6 +307,7 @@ export function getAjnaPromoCards(table: ProductHubItem[]) {
     promoCardWSTETHDAIAjnaMultiply,
     promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
+    promoCardYFIDAIAjnaMultiply,
     promoCardCBETHGHOAjnaEarn,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,

@@ -1,9 +1,6 @@
 import {
   enableNetworksSet,
-  getOppositeNetworkHexIdByHexId,
-  mainnetNetworkParameter,
-  NetworkConfigHexId,
-  NetworkIds,
+  NetworkIdToNetworkHexIds,
   NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
@@ -14,9 +11,9 @@ import {
   isTestnetEnabled,
   isTestnetNetworkHexId,
 } from 'blockchain/networks'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import { useModal } from 'helpers/modalHook'
+import { useModalContext } from 'helpers/modalHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useState } from 'react'
 import { Box, Button } from 'theme-ui'
@@ -36,28 +33,22 @@ const renderSeparator = () => {
 }
 
 export function NavigationNetworkSwitcherOrb() {
-  const { connectedChain, connect, connecting } = useConnection({
-    initialConnect: false,
-  })
+  const { connecting, toggleBetweenMainnetAndTestnet, setChain } = useConnection()
+  const { wallet, chainId } = useWalletManagement()
+  const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
-  const openModal = useModal()
+  const { openModal } = useModalContext()
 
   const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
-  const useArbitrum = useFeatureToggle('UseNetworkSwitcherArbitrum')
-  const useOptimism = useFeatureToggle('UseNetworkSwitcherOptimism')
 
-  const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
-  }
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,
   )
-  const { hexId: customNetworkHexId } = mainnetNetworkParameter
 
   return (
     <NavigationOrb customIcon={NavigationNetworkSwitcherIcon}>
-      {(_isOpen) => (
+      {() => (
         <>
           <Box
             sx={{
@@ -73,22 +64,13 @@ export function NavigationNetworkSwitcherOrb() {
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
-                  : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
+                  : filterNetworksAccordingToSavedNetwork(NetworkIdToNetworkHexIds(chainId)),
               )
-              .filter((network) => {
-                if (network.id === NetworkIds.OPTIMISMMAINNET && !useOptimism) {
-                  return false
-                }
-                if (network.id === NetworkIds.ARBITRUMMAINNET && !useArbitrum) {
-                  return false
-                }
-                return true
-              })
               .map((network) => (
                 <NetworkButton
-                  key={network.id}
+                  key={network.hexId}
                   network={network}
-                  connect={connect}
+                  setChain={setChain}
                   connecting={connecting}
                   currentNetworkName={currentNetworkName}
                   currentHoverNetworkName={currentHoverNetworkName}
@@ -103,7 +85,7 @@ export function NavigationNetworkSwitcherOrb() {
                   <Button
                     variant="bean"
                     sx={{ fontSize: 2 }}
-                    onClick={() => toggleChains(connectedChain ?? customNetworkHexId)}
+                    onClick={() => toggleBetweenMainnetAndTestnet()}
                   >
                     <Box sx={{ width: '100%' }}>
                       {(() => {
@@ -112,7 +94,7 @@ export function NavigationNetworkSwitcherOrb() {
                             isTestnet(connectedChain) ? 'main net 🏠' : 'test net 🌲'
                           }`
                         }
-                        if (isTestnetNetworkHexId(customNetworkHexId)) {
+                        if (isTestnetNetworkHexId(NetworkIdToNetworkHexIds(chainId))) {
                           return 'Change to main net 🏠'
                         }
                         return 'Change to test net 🌲'

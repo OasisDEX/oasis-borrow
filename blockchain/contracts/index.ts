@@ -39,6 +39,8 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   const networkConfig = networkSetById[correctNetworkId]
   let contracts: Record<string, unknown> = allNetworksContracts[correctNetworkId]
 
+  let finalNetworkId = correctNetworkId
+
   if (!contracts && networkConfig.isCustomFork) {
     const parentConfig = networkConfig.getParentNetwork()
     if (!parentConfig) {
@@ -46,18 +48,33 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
         `Can't find parent network for ${correctNetworkId} chain  even though it's a custom fork`,
       )
     }
+    finalNetworkId = parentConfig.id
     contracts = allNetworksContracts[parentConfig.id]
   }
   if (!contracts) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
 
+  const contractsForWithToknes = contracts
+
+  ensureTokensExist(finalNetworkId, contractsForWithToknes)
+
+  // ETH needs to be first because we use the `WETH` address in that configuration. To ensure that ETH is placed before WETH, we put it at the top of the list.
+  const tokens: Record<string, ContractDesc> =
+    finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
+      ? {
+          ETH: contractsForWithToknes.tokens.ETH,
+          ...contractsForWithToknes.tokens,
+          ...extendedTokensContracts,
+        }
+      : {
+          ETH: contractsForWithToknes.tokens.ETH,
+          ...contractsForWithToknes.tokens,
+        }
+
   return {
     ...contracts,
-    tokens: {
-      ...(contracts.tokens as {}),
-      ...extendedTokensContracts,
-    },
+    tokens,
   } as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
 }
 

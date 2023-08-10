@@ -43,6 +43,7 @@ export function HeaderSelector({
   const selectRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   function setDropdownPosition() {
     if (selectRef.current && dropdownRef.current && parentRef.current) {
@@ -133,14 +134,15 @@ export function HeaderSelector({
       >
         <Flex
           ref={dropdownRef}
-          as="ul"
           sx={{
-            rowGap: 2,
-            flexDirection: 'column',
             width: '100%',
             maxWidth: '360px',
             mt: '12px',
             p: 3,
+            pr:
+              scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
+                ? 2
+                : 3,
             bg: 'neutral10',
             border: '1px solid',
             borderColor: 'neutral20',
@@ -149,7 +151,6 @@ export function HeaderSelector({
             opacity: isOpen ? 1 : 0,
             transform: isOpen ? 'translateY(0)' : 'translateY(-5px)',
             transition: 'opacity 200ms, transform 200ms',
-            listStyle: 'none',
             fontFamily: 'body',
             lineHeight: 'body',
             letterSpacing: 0,
@@ -158,70 +159,107 @@ export function HeaderSelector({
             zIndex: 2,
           }}
         >
-          {options.map((option, i) => (
-            <Flex
-              key={i}
-              as="li"
-              sx={{
-                position: 'relative',
-                minHeight: '52px',
-                px: '12px',
-                py: 2,
-                borderRadius: 'medium',
-                cursor: 'pointer',
-                transition: 'background-color 200ms',
-                alignItems: 'center',
-                bg: selected.value === option.value ? 'neutral30' : 'transparent',
-                '&:hover': {
-                  bg: 'neutral30',
-                  svg: {
-                    opacity: 1,
+          <Flex
+            ref={scrollRef}
+            as="ul"
+            sx={{
+              listStyle: 'none',
+              m: 0,
+              pl: 0,
+              pr:
+                scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
+                  ? 2
+                  : 0,
+              maxHeight: '382px',
+              width: '100%',
+              rowGap: 2,
+              flexDirection: 'column',
+              overflowY: 'auto',
+              '&::-webkit-scrollbar': {
+                width: '6px',
+                borderRadius: 'large',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: 'secondary100',
+                borderRadius: 'large',
+              },
+              '&::-webkit-scrollbar-track': {
+                backgroundColor:
+                  scrollRef.current &&
+                  scrollRef.current.scrollHeight > scrollRef.current.offsetHeight
+                    ? 'secondary60'
+                    : 'transparent',
+                borderRadius: 'large',
+              },
+            }}
+          >
+            {options.map((option, i) => (
+              <Flex
+                key={i}
+                as="li"
+                sx={{
+                  position: 'relative',
+                  ...(!option.icon && {
+                    minHeight: '52px',
+                  }),
+                  px: '12px',
+                  py: 2,
+                  borderRadius: 'medium',
+                  cursor: 'pointer',
+                  transition: 'background-color 200ms',
+                  alignItems: 'center',
+                  bg: selected.value === option.value ? 'neutral30' : 'transparent',
+                  '&:hover': {
+                    bg: 'neutral30',
+                    svg: {
+                      opacity: 1,
+                    },
                   },
-                },
-              }}
-              onClick={() => {
-                setIsOpen(false)
-                setSelected(option)
-                if (onChange) onChange(option)
-              }}
-            >
-              {option.icon && (
-                <Icon
-                  size={36}
-                  sx={{
-                    flexShrink: 0,
-                    mr: 3,
-                  }}
-                  name={Array.isArray(option.icon) ? option.icon[0] : option.icon}
-                />
-              )}
-              {Array.isArray(option.icon) && (
-                <Icon
-                  size={36}
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    m: 'auto',
-                    opacity: selected.value === option.value ? 1 : 0,
-                    transition: '200ms opacity',
-                    transform: 'scale(1.05)',
-                  }}
-                  name={option.icon[1]}
-                />
-              )}
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Text as="span" sx={{ fontSize: withHeaders ? 3 : 2, fontWeight: 'semiBold' }}>
-                  {option.title}
-                </Text>
-                {option.description && (
-                  <Text as="span" sx={{ fontSize: 2 }}>
-                    {option.description}
-                  </Text>
+                }}
+                onClick={() => {
+                  setIsOpen(false)
+                  setSelected(option)
+                  if (onChange) onChange(option)
+                }}
+              >
+                {option.icon && (
+                  <Icon
+                    size={36}
+                    sx={{
+                      flexShrink: 0,
+                      mr: 3,
+                    }}
+                    name={Array.isArray(option.icon) ? option.icon[0] : option.icon}
+                  />
                 )}
+                {Array.isArray(option.icon) && (
+                  <Icon
+                    size={36}
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      bottom: 0,
+                      m: 'auto',
+                      opacity: selected.value === option.value ? 1 : 0,
+                      transition: '200ms opacity',
+                      transform: 'scale(1.05)',
+                    }}
+                    name={option.icon[1]}
+                  />
+                )}
+                <Flex sx={{ flexDirection: 'column' }}>
+                  <Text as="span" sx={{ fontSize: withHeaders ? 3 : 2, fontWeight: 'semiBold' }}>
+                    {option.title}
+                  </Text>
+                  {option.description && (
+                    <Text as="span" sx={{ fontSize: 2 }}>
+                      {option.description}
+                    </Text>
+                  )}
+                </Flex>
               </Flex>
-            </Flex>
-          ))}
+            ))}
+          </Flex>
         </Flex>
       </Flex>
     </Box>

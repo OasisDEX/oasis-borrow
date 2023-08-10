@@ -81,7 +81,7 @@ export function AjnaFormView({
     },
     validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
-  const { connect } = useConnection({ initialConnect: false })
+  const { connect } = useConnection()
   const ajnaSuppressValidationEnabled = useFeatureToggle('AjnaSuppressValidation')
 
   const txHandler = useAjnaTxHandler()

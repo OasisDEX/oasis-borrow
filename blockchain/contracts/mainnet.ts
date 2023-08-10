@@ -179,6 +179,7 @@ export const mainnetContracts = {
     'WSTETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHETH),
     'WSTETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, mainnet.ajna.AjnaRewardsManager),
   // TODO update address

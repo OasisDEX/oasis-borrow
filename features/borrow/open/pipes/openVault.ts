@@ -39,7 +39,6 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
-import { getNetworkName } from 'features/web3Context'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { TxError } from 'helpers/types'
@@ -378,10 +377,8 @@ export function createOpenVault$(
                     }
 
                     const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
-
-                    const network = getNetworkName()
                     const withStopLossStage = stopLossWriteEnabled
-                      ? isSupportedAutomationIlk(network, ilk)
+                      ? isSupportedAutomationIlk(context.chainId, ilk)
                       : false
 
                     const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)

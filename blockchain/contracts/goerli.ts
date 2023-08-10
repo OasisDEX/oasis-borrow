@@ -187,6 +187,7 @@ export const goerliContracts: MainnetContracts = {
     'WSTETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHETH),
     'WSTETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, goerli.ajna.AjnaRewardsManager),
   // TODO update address

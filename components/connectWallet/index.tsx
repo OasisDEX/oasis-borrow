@@ -7,16 +7,23 @@ import { Connection } from './Connection'
 export const WithConnection = ({
   children,
   pageChainId,
-}: WithChildren & { pageChainId?: NetworkConfigHexId }) => (
-  <Connection walletConnect={false} pageChainId={pageChainId}>
+  includeTestNet,
+}: WithChildren & { pageChainId?: NetworkConfigHexId; includeTestNet?: boolean }) => (
+  <Connection walletConnect={false} pageChainId={pageChainId} includeTestNet={includeTestNet}>
     {children}
   </Connection>
 )
 export const WithWalletConnection = ({
   children,
   chainId,
-}: WithChildren & { chainId: NetworkConfigHexId }) => (
-  <Connection walletConnect={true} chainId={chainId} pageChainId={chainId}>
+  includeTestNet,
+}: WithChildren & { chainId: NetworkConfigHexId; includeTestNet?: boolean }) => (
+  <Connection
+    walletConnect={true}
+    chainId={chainId}
+    pageChainId={chainId}
+    includeTestNet={includeTestNet}
+  >
     {children}
   </Connection>
 )

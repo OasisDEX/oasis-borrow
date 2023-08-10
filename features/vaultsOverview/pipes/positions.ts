@@ -16,7 +16,6 @@ import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { getNetworkId } from 'features/web3Context'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { zero } from 'helpers/zero'
@@ -387,7 +386,7 @@ export function createAavePosition$(
     environment
   return context$.pipe(
     switchMap((context) => {
-      return getNetworkId() !== NetworkIds.GOERLI
+      return context.chainId !== NetworkIds.GOERLI
         ? combineLatest(
             proxyAddressesProvider.userDpmProxies$(walletAddress),
             getStethEthAaveV2DsProxyEarnPosition$(
