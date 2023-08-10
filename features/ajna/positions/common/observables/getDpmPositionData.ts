@@ -78,7 +78,7 @@ const filterPositionWhenUrlParamsDefined = ({
       collateralTokenSymbol: collateralTokenSymbol === 'WETH' ? 'ETH' : collateralTokenSymbol,
       debtTokenSymbol: debtTokenSymbol === 'WETH' ? 'ETH' : debtTokenSymbol,
     }))
-    .filter(
+    ?.filter(
       (position) =>
         position.proxyAddress.toLowerCase() === proxy.toLowerCase() &&
         ((position.collateralTokenSymbol === collateralToken &&
