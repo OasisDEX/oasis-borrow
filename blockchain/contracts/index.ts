@@ -55,14 +55,21 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
 
-  const tokens =
+  const contractsForWithToknes = contracts
+
+  ensureTokensExist(finalNetworkId, contractsForWithToknes)
+
+  // ETH needs to be first because we use the `WETH` address in that configuration. To ensure that ETH is placed before WETH, we put it at the top of the list.
+  const tokens: Record<string, ContractDesc> =
     finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
       ? {
+          ETH: contractsForWithToknes.tokens.ETH,
           ...extendedTokensContracts,
-          ...(contracts.tokens as {}),
+          ...contractsForWithToknes.tokens,
         }
       : {
-          ...(contracts.tokens as {}),
+          ETH: contractsForWithToknes.tokens.ETH,
+          ...contractsForWithToknes.tokens,
         }
 
   return {
