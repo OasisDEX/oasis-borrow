@@ -1,4 +1,3 @@
-// tests/example.spec.ts
 import { test } from '@guardianui/test'
 
 test.describe('Ajna', () => {
@@ -20,7 +19,7 @@ test.describe('Ajna', () => {
   //   // Do something after each test
   // })
 
-  test('Should create an Ajna position', async ({ page }) => {
+  test('Should create an Ajna position', async ({ page, gui }) => {
     await page.getByRole('button', { name: 'Borrow' }).nth(0).click()
 
     //
@@ -34,9 +33,20 @@ test.describe('Ajna', () => {
     await page.getByRole('button', { name: 'I understand' }).click()
 
     await page.locator('input[placeholder="0 ETH"]').type('100')
+    //
+    await page.pause()
+    //
     await page.getByRole('button', { name: 'Create Smart DeFi account' }).click()
+
     // A new 'Create Smart DeFi account' button is displayed
-    await page.getByRole('button', { name: 'Create Smart DeFi account' }).click()
+    // Confirm action
+    await gui.validateContractInteraction(
+      'button:has-text("Create Smart DeFi account")',
+      '0xf7b75183a2829843db06266c114297dfbfaee2b6',
+      // '0xB63cac384247597756545b500253ff8E607a8020',
+      // '0xca71c36d26f515ad0cce1d806b231cbc1185cdfc',
+    )
+    // await page.getByRole('button', { name: 'Create Smart DeFi account' }).click()
 
     await page.pause()
   })
