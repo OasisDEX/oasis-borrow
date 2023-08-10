@@ -64,8 +64,8 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
     finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
       ? {
           ETH: contractsForWithToknes.tokens.ETH,
-          ...extendedTokensContracts,
           ...contractsForWithToknes.tokens,
+          ...extendedTokensContracts,
         }
       : {
           ETH: contractsForWithToknes.tokens.ETH,
