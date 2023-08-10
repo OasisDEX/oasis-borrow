@@ -1,4 +1,5 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { NetworkHexIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -83,7 +84,7 @@ export function AjnaProductController({
   if (redirect) void push(redirect)
 
   return (
-    <WithConnection>
+    <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <AjnaWrapper>
