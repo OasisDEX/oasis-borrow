@@ -238,7 +238,19 @@ export const subgraphMethodsRecord: {
         }
       ) {
         address
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
         collateralAddress
+        debt
+        interestRate
+        lendApr
+        lup
+        lupIndex
         quoteTokenAddress
       }
     }

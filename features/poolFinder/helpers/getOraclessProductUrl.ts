@@ -1,11 +1,14 @@
 import { NetworkIds } from 'blockchain/networks'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaProduct } from 'features/ajna/common/types'
-import { OraclessPoolResult } from 'features/poolFinder/types'
 
-interface GetOraclessUrlParams extends OraclessPoolResult {
-  product: AjnaProduct
+interface GetOraclessUrlParams {
   chainId: NetworkIds
+  collateralAddress: string
+  collateralToken: string
+  product: AjnaProduct
+  quoteAddress: string
+  quoteToken: string
 }
 
 export function getOraclessProductUrl({
