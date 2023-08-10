@@ -11,12 +11,17 @@ import React from 'react'
 export function AjnaEarnFormContentDeposit() {
   const { t } = useTranslation()
   const {
-    environment: { quotePrice, quoteToken, quoteBalance },
+    environment: { quotePrice, quoteToken, quoteBalance, quotePrecision, isOracless },
   } = useAjnaGeneralContext()
   const {
     form: {
       dispatch,
       state: { depositAmount },
+    },
+    position: {
+      currentPosition: {
+        position: { pool },
+      },
     },
     validation: { isFormValid },
   } = useAjnaProductContext('earn')
@@ -29,9 +34,13 @@ export function AjnaEarnFormContentDeposit() {
         token={quoteToken}
         tokenPrice={quotePrice}
         maxAmount={quoteBalance}
+        tokenPrecision={quotePrecision}
       />
       <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>
-        <AjnaEarnSlider isDisabled={!depositAmount} />
+        <AjnaEarnSlider
+          isDisabled={!depositAmount}
+          nestedManualInput={!(isOracless && pool.lowestUtilizedPriceIndex.isZero())}
+        />
       </PillAccordion>
       {isFormValid && (
         <AjnaFormContentSummary>

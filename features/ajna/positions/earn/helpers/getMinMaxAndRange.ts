@@ -10,6 +10,7 @@ export const getMinMaxAndRange = ({
   lowestUtilizedPriceIndex,
   mostOptimisticMatchingPrice,
   marketPrice,
+  isOracless,
   offset, // 0 - 1, percentage value
 }: {
   highestThresholdPrice: BigNumber
@@ -17,9 +18,11 @@ export const getMinMaxAndRange = ({
   lowestUtilizedPriceIndex: BigNumber
   mostOptimisticMatchingPrice: BigNumber
   marketPrice: BigNumber
+  isOracless: boolean
   offset: number
 }) => {
   // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
+  // for oraceless we don't show slider in this case. so logic is not adjusted for that occasion
   if (lowestUtilizedPriceIndex.eq(zero)) {
     const defaultRange = [marketPrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
 
@@ -69,7 +72,7 @@ export const getMinMaxAndRange = ({
   const range = [
     ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
   ]
-    .filter((item) => item.lt(marketPrice))
+    .filter((item) => (isOracless ? true : item.lt(marketPrice)))
     .sort((a, b) => a.toNumber() - b.toNumber())
     .map((item) => item.decimalPlaces(18))
 
