@@ -4,7 +4,6 @@ import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
-import { AjnaProductHubIntro } from 'features/ajna/common/components/AjnaProductHubIntro'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useConnection } from 'features/web3OnBoard'
@@ -81,9 +80,6 @@ export function AjnaHomepageView() {
           initialProtocol={[LendingProtocol.Ajna]}
           product={ProductHubProductType.Borrow}
           promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'AjnaLP'}
-          intro={(selectedProduct, selectedToken) => (
-            <AjnaProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
-          )}
         />
       </Box>
       <Flex

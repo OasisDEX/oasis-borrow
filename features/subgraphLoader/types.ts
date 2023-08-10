@@ -3,6 +3,7 @@ import { AjnaBorrowerEventsResponse, AjnaHistoryResponse } from 'features/ajna/h
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
 import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
+import { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
 
 export type Subgraphs = {
@@ -74,11 +75,7 @@ export type SubgraphsResponses = {
     getAjnaEarnPositionNftId: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
     getAjnaClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
     searchAjnaPool: SubgraphBaseResponse<{
-      pools: {
-        address: string
-        collateralAddress: string
-        quoteTokenAddress: string
-      }[]
+      pools: SearchAjnaPoolResponse[]
     }>
   }
   TempGraph: {

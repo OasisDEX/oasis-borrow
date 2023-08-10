@@ -1,5 +1,30 @@
+import BigNumber from 'bignumber.js'
+import { NEGATIVE_WAD_PRECISION } from 'components/constants'
+import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+
+export type SearchAjnaPoolResponse = Pick<
+  AjnaPoolDataResponse,
+  | 'address'
+  | 'buckets'
+  | 'collateralAddress'
+  | 'debt'
+  | 'interestRate'
+  | 'lendApr'
+  | 'lup'
+  | 'lupIndex'
+  | 'quoteTokenAddress'
+>
+
+export interface SearchAjnaPoolData
+  extends Omit<SearchAjnaPoolResponse, 'debt' | 'interestRate' | 'lendApr' | 'lup' | 'lupIndex'> {
+  debt: BigNumber
+  interestRate: BigNumber
+  lendApr: BigNumber
+  lowestUtilizedPrice: BigNumber
+  lowestUtilizedPriceIndex: number
+}
 
 interface SearchAjnaPoolParams {
   collateralAddress?: string
@@ -32,7 +57,14 @@ export const searchAjnaPool = async ({
     )
 
   return {
-    pools,
+    pools: pools.map(({ debt, interestRate, lendApr, lup, lupIndex, ...pool }) => ({
+      ...pool,
+      debt: new BigNumber(debt).shiftedBy(NEGATIVE_WAD_PRECISION),
+      interestRate: new BigNumber(interestRate).shiftedBy(NEGATIVE_WAD_PRECISION),
+      lendApr: new BigNumber(lendApr).shiftedBy(NEGATIVE_WAD_PRECISION),
+      lowestUtilizedPrice: new BigNumber(lup).shiftedBy(NEGATIVE_WAD_PRECISION),
+      lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
+    })),
     size: response?.pools?.length || 0,
   }
 }
