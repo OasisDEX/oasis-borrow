@@ -6,10 +6,10 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { ethers } from 'ethers'
+import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
-import { IStrategyConfig } from 'features/aave/common'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { positionIdIsAddress } from 'features/aave/types'
+import { PositionCreated } from 'features/aave/services'
+import { IStrategyConfig } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
@@ -145,7 +145,7 @@ function buildAaveViewModel(
     resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
-    positionIdIsAddress(positionId)
+    isAddress(positionId)
       ? of(undefined)
       : observables.automationTriggersData$(new BigNumber(positionId)),
   ).pipe(
@@ -208,7 +208,7 @@ function buildAaveViewModel(
           debtToken,
           title: title,
           url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, //TODO: Proper network handling
-          id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
+          id: isAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,
           liquidationPrice,

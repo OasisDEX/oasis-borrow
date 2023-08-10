@@ -20,17 +20,16 @@ import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectio
 import { Skeleton } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
-import { ManagePositionAvailableActions } from 'features/aave/common'
-import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
-import { ConnectedSidebarSection } from 'features/aave/common/components/connected-sidebar-section'
-import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
-import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
+import { StopLossAaveErrorMessage } from 'features/aave/components/StopLossAaveErrorMessage'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
   ManageAaveContext,
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
+import { ManagePositionAvailableActions } from 'features/aave/types'
+import { isAllowanceNeeded } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'

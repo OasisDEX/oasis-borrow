@@ -11,11 +11,10 @@ import {
 } from 'lendingProtocols/aaveCommon'
 import { Observable } from 'rxjs'
 
-import { IStrategyConfig } from './common'
 import { ProxiesRelatedWithPosition } from './helpers'
 import { ManageAaveStateMachine } from './manage/state'
 import { OpenAaveStateMachine } from './open/state'
-import { PositionId } from './types'
+import { IStrategyConfig, PositionId } from './types'
 
 type AaveTotalValueLocked = {
   totalValueLocked: BigNumber

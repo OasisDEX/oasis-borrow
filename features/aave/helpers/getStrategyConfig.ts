@@ -1,12 +1,8 @@
 import { NetworkNames, networksByName } from 'blockchain/networks'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import {
-  getLastCreatedPositionForProxy,
-  PositionCreated,
-} from 'features/aave/services/readPositionCreatedEvents'
-import { PositionId } from 'features/aave/types'
+import { getLastCreatedPositionForProxy, PositionCreated } from 'features/aave/services'
+import { IStrategyConfig, PositionId } from 'features/aave/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'

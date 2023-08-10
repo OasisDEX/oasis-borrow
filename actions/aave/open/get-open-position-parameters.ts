@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
-import { ProxyType } from 'features/aave/common'
+import { ProxyType } from 'features/aave/types'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 async function openPosition(

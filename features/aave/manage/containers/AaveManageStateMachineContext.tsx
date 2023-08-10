@@ -1,7 +1,6 @@
 import { useInterpret } from '@xstate/react'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
-import { PositionId } from 'features/aave/types'
+import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
 import { env } from 'process'
 import React from 'react'
 
