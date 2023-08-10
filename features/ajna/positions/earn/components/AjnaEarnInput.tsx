@@ -24,7 +24,6 @@ interface AjnaEarnInputButtonProps {
 }
 interface AjnaEarnInputProps {
   disabled?: boolean
-  range: BigNumber[]
 }
 
 const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, onClick }) => {
@@ -90,8 +89,7 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
-  console.log('range', range)
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
   const { t } = useTranslation()
   const {
     environment: { priceFormat, quoteToken, isShort },

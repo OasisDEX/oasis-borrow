@@ -7,10 +7,7 @@ import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnI
 import { AJNA_LUP_MOMP_OFFSET, lendingPriceColors } from 'features/ajna/positions/earn/consts'
 import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
-import {
-  mappedRawAjnaBuckets,
-  snapToPredefinedValues,
-} from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
+import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -134,11 +131,11 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
             priceFormat,
           })}
         >
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} range={range} />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} />
         </PillAccordion>
       ) : (
         <Box sx={{ mt: 3 }}>
-          <AjnaEarnInput disabled={isDisabled || isFormFrozen} range={mappedRawAjnaBuckets} />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} />
         </Box>
       )}
     </>
