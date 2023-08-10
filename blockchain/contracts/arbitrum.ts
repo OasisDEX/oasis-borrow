@@ -173,6 +173,7 @@ export const arbitrumContracts: MainnetContracts = {
     'WSTETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHETH),
     'WSTETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, arbitrum.ajna.AjnaRewardsManager),
   // TODO update address

@@ -78,6 +78,12 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'DAI',
     icon: getToken('DAI').iconCircle,
   },
+  YFI: {
+    title: 'Yearn',
+    description: 'YFI',
+    value: 'YFI',
+    icon: getToken('YFI').iconCircle,
+  },
   GHO: {
     title: 'GHO stablecoin',
     description: 'GHO',
@@ -106,6 +112,7 @@ export const productHubOptionsMap: {
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
+      YFI: productHubTokenOptions.YFI,
       GHO: productHubTokenOptions.GHO,
       WLD: productHubTokenOptions.WLD,
     },
@@ -117,6 +124,7 @@ export const productHubOptionsMap: {
       ETH: productHubTokenOptions.ETH,
       BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      YFI: productHubTokenOptions.YFI,
       DAI: productHubTokenOptions.DAI,
       GHO: productHubTokenOptions.GHO,
     },

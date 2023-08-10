@@ -11,6 +11,7 @@ import {
   promoCardEarnOnYourAssets,
   promoCardFullySelfCustodial,
   promoCardLearnAboutBorrow,
+  promoCardLearnAboutMultiply,
   promoCardsWhatAreAjnaRewards,
 } from 'handlers/product-hub/promo-cards/collections'
 
@@ -41,12 +42,14 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardUSDCWBTCAjnaBorrow,
     promoCardWBTCUSDCAjnaBorrow,
     promoCardWLDUSDCAjnaBorrow,
+    promoCardYFIDAIAjnaBorrow,
     promoCardETHGHOAjnaMultiply,
     promoCardUSDCETHAjnaMultiply,
     promoCardWBTCGHOAjnaMultiply,
     promoCardWBTCUSDCAjnaMultiply,
     promoCardWSTETHGHOAjnaMultiply,
     promoCardWSTETHUSDCAjnaMultiply,
+    promoCardYFIDAIAjnaMultiply,
     promoCardCBETHGHOAjnaEarn,
     promoCardETHUSDCAjnaEarn,
     promoCardUSDCETHAjnaEarn,
@@ -66,6 +69,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         BTC: [promoCardWBTCCMakerBorrow, promoCardWBTCBMakerBorrow, promoCardWBTCUSDCAjnaBorrow],
         USDC: [promoCardUSDCETHAjnaBorrow, promoCardUSDCWBTCAjnaBorrow, promoCardLearnAboutBorrow],
         DAI: [promoCardSDAIUSDCAjnaBorrow, promoCardLearnAboutBorrow, promoCardsWhatAreAjnaRewards],
+        YFI: [promoCardYFIDAIAjnaBorrow, promoCardLearnAboutBorrow, promoCardsWhatAreAjnaRewards],
         GHO: [promoCardGHODAIAjnaBorrow, promoCardLearnAboutBorrow, promoCardsWhatAreAjnaRewards],
         WLD: [promoCardWLDUSDCAjnaBorrow, promoCardLearnAboutBorrow, promoCardsWhatAreAjnaRewards],
       },
@@ -96,6 +100,11 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
           promoCardWSTETHAMakerMultiply,
           promoCardETHBMakerMultiply,
           promoCardWBTCBMakerMultiply,
+        ],
+        YFI: [
+          promoCardYFIDAIAjnaMultiply,
+          promoCardLearnAboutMultiply,
+          promoCardsWhatAreAjnaRewards,
         ],
         GHO: [
           promoCardETHGHOAjnaMultiply,

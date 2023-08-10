@@ -195,6 +195,7 @@ export const optimismContracts: OptimismContracts = {
     'WSTETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHETH),
     'WSTETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
   // TODO update address
