@@ -6,7 +6,7 @@ import {
   adjustRiskView,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProxyType } from 'features/aave/types'
+import { IStrategyConfig, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -41,6 +41,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.arbitrumMainnet,
@@ -72,6 +73,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.arbitrumMainnet,
@@ -103,5 +105,6 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3Arbitrum',
     availableActions: ['close'],
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
 ]

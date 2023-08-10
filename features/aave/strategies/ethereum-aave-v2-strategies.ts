@@ -1,12 +1,10 @@
 import { ethereumMainnetHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import {
-  AaveBorrowManageComponent,
   AaveManageHeader,
   AaveMultiplyManageComponent,
   AaveOpenHeader,
   AavePositionHeaderNoDetails,
   adjustRiskView,
-  DebtInput,
   headerWithDetails,
   ManageSectionComponent,
   SimulateSectionComponent,
@@ -14,49 +12,13 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
-import { IStrategyConfig, ProductType, ProxyType } from 'features/aave/types'
+import { IStrategyConfig, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveEarnFaqV2 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailable } from './all-actions-available'
 
-const supportedAaveBorrowCollateralTokens = ['ETH', 'WBTC']
-export const ethereumAaveV2BorrowStrategies: Array<IStrategyConfig> = [
-  ...supportedAaveBorrowCollateralTokens.map((collateral) => {
-    return {
-      network: NetworkNames.ethereumMainnet,
-      networkId: NetworkIds.MAINNET,
-      networkHexId: ethereumMainnetHexId,
-      name: `borrow-against-${collateral}`,
-      urlSlug: collateral,
-      proxyType: ProxyType.DpmProxy,
-      viewComponents: {
-        headerOpen: AaveOpenHeader,
-        headerManage: AaveManageHeader,
-        headerView: AaveManageHeader,
-        simulateSection: AaveBorrowManageComponent,
-        vaultDetailsManage: AaveBorrowManageComponent,
-        vaultDetailsView: AaveBorrowManageComponent,
-        secondaryInput: DebtInput,
-        positionInfo: AaveMultiplyFaq,
-        sidebarTitle: 'open-borrow.sidebar.title',
-        sidebarButton: 'open-borrow.sidebar.open-btn',
-      },
-      tokens: {
-        collateral: collateral,
-        debt: 'USDC',
-        deposit: collateral,
-      },
-      riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-      featureToggle: 'AaveBorrow' as const,
-      type: 'Borrow' as ProductType,
-      protocol: LendingProtocol.AaveV2 as AaveLendingProtocol,
-      availableActions: allActionsAvailable,
-      executeTransactionWith: 'web3' as const,
-    }
-  }),
-]
 export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
   {
     network: NetworkNames.ethereumMainnet,
@@ -88,6 +50,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'web3',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -119,6 +82,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'web3',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -150,6 +114,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'web3',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -181,6 +146,6 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV2ProductCard',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'web3',
+    strategyType: StrategyType.Long,
   },
-  ...ethereumAaveV2BorrowStrategies,
 ]
