@@ -7,6 +7,7 @@ import {
   NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
+import { getAddress, isAddress } from 'ethers/lib/utils'
 import { ConnectionKind } from 'features/web3Context'
 
 interface ConnectorUpdate {
@@ -80,7 +81,9 @@ export class BridgeConnector extends AbstractConnector {
     const networkConfig = networkSetByHexId[hexChainId]
 
     const networkName = networkConfig?.name as NetworkNames
-    const account = this.wallet.accounts[0].address
+    const account = isAddress(this.wallet.accounts[0].address)
+      ? getAddress(this.wallet.accounts[0].address)
+      : ''
     const provider = this.wallet.provider
 
     return { chainId, account, provider, hexChainId, networkName }

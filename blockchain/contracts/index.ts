@@ -39,6 +39,8 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   const networkConfig = networkSetById[correctNetworkId]
   let contracts: Record<string, unknown> = allNetworksContracts[correctNetworkId]
 
+  let finalNetworkId = correctNetworkId
+
   if (!contracts && networkConfig.isCustomFork) {
     const parentConfig = networkConfig.getParentNetwork()
     if (!parentConfig) {
@@ -46,18 +48,26 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
         `Can't find parent network for ${correctNetworkId} chain  even though it's a custom fork`,
       )
     }
+    finalNetworkId = parentConfig.id
     contracts = allNetworksContracts[parentConfig.id]
   }
   if (!contracts) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
 
+  const tokens =
+    finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
+      ? {
+          ...extendedTokensContracts,
+          ...(contracts.tokens as {}),
+        }
+      : {
+          ...(contracts.tokens as {}),
+        }
+
   return {
     ...contracts,
-    tokens: {
-      ...(contracts.tokens as {}),
-      ...extendedTokensContracts,
-    },
+    tokens,
   } as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
 }
 

@@ -162,7 +162,10 @@ export function AutomationContextProvider({
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
       tokenMarketPrice: tokenPriceResolved,
-      chainId: context.chainId,
+      chainId:
+        context.chainId === NetworkIds.GOERLI || context.chainId === NetworkIds.MAINNET
+          ? context.chainId
+          : NetworkIds.MAINNET,
     }),
     [
       context.status,
