@@ -28,9 +28,11 @@ jobs:
           ref: main
           fetch-depth: 0
 
+        # Check that the commit hash entered by the user is in the list of commits no older than 2 weeks
+        # the commit hash is compared to the 7 char short hash as is in github
       - name: Validate commit_hash
         run: |
-          VALID_HASH=$(env -i git log --max-count=10 --no-walk --tags --pretty='%h' --decorate=full | grep ${{ github.event.inputs.commit_hash }})
+          VALID_HASH=$(env -i git log --since='2 weeks ago' --pretty='%h' --abbrev=7 | grep ${{ github.event.inputs.commit_hash }})
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
