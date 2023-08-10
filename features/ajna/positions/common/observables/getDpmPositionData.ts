@@ -72,17 +72,23 @@ const filterPositionWhenUrlParamsDefined = ({
   proxy: string
   quoteToken: string
 }) =>
-  positions?.filter(
-    (position) =>
-      position.proxyAddress.toLowerCase() === proxy.toLowerCase() &&
-      ((position.collateralTokenSymbol === collateralToken &&
-        position.debtTokenSymbol === quoteToken) ||
-        (position.collateralTokenAddress.toLowerCase() === collateralToken &&
-          position.debtTokenAddress.toLowerCase() === quoteToken)) &&
-      (product.toLowerCase() === 'earn'
-        ? position.positionType.toLowerCase() === product.toLowerCase()
-        : true),
-  )[0]
+  positions
+    ?.map(({ collateralTokenSymbol, debtTokenSymbol, ...position }) => ({
+      ...position,
+      collateralTokenSymbol: collateralTokenSymbol === 'WETH' ? 'ETH' : collateralTokenSymbol,
+      debtTokenSymbol: debtTokenSymbol === 'WETH' ? 'ETH' : debtTokenSymbol,
+    }))
+    .filter(
+      (position) =>
+        position.proxyAddress.toLowerCase() === proxy.toLowerCase() &&
+        ((position.collateralTokenSymbol === collateralToken &&
+          position.debtTokenSymbol === quoteToken) ||
+          (position.collateralTokenAddress.toLowerCase() === collateralToken &&
+            position.debtTokenAddress.toLowerCase() === quoteToken)) &&
+        (product.toLowerCase() === 'earn'
+          ? position.positionType.toLowerCase() === product.toLowerCase()
+          : true),
+    )[0]
 
 const filterPositionWhenUrlParamsNotDefined = ({
   positions,
