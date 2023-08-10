@@ -16,7 +16,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useMemo, useState } from 'react'
-import { Box,  Text } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 interface PoolFinderViewProps {
   product: ProductHubProductType
@@ -35,6 +35,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
 
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
+  const [resultsKey, setResultsKey] = useState<string>('')
   const [poolAddress, setPoolAddress] = useState<string>('')
   const [collateralAddress, setCollateralAddress] = useState<string>('')
   const [quoteAddress, setQuoteAddress] = useState<string>('')
@@ -52,7 +53,8 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
       if (
         context?.chainId &&
         tokenPriceUSDData &&
-        !results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] &&
+        resultsKey &&
+        !results[resultsKey] &&
         validation.length === 0
       ) {
         const { pools, size } = await searchAjnaPool({
@@ -71,7 +73,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
           ).subscribe((identifiedTokens) => {
             setResults({
               ...results,
-              [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: parsePoolResponse(
+              [resultsKey]: parsePoolResponse(
                 context.chainId,
                 identifiedTokens,
                 pools,
@@ -85,12 +87,12 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         } else {
           setResults({
             ...results,
-            [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: [],
+            [resultsKey]: [],
           })
         }
       }
     },
-    [context?.chainId, collateralAddress, poolAddress, quoteAddress, tokenPriceUSDData],
+    [context?.chainId, collateralAddress, poolAddress, resultsKey, quoteAddress, tokenPriceUSDData],
     250,
   )
 
@@ -113,12 +115,17 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         />
         <ProductHubIntro selectedProduct={selectedProduct} />
       </Box>
-      <Box sx={{ maxWidth: '804px', mx: 'auto', mb: '48px' }}>
+      <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
         <PoolFinderFormController
           onChange={(_poolAddress, _collateralAddress, _quoteAddress) => {
             setPoolAddress(_poolAddress)
             setCollateralAddress(_collateralAddress)
             setQuoteAddress(_quoteAddress)
+            setResultsKey(
+              _poolAddress || _collateralAddress || _quoteAddress
+                ? `${_poolAddress}-${_collateralAddress}-${_quoteAddress}`
+                : '',
+            )
           }}
         />
       </Box>
@@ -128,23 +135,23 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
           customLoader={<PoolFinderTableLoadingState />}
         >
           {([{ chainId }]) => (
-            <>
-              {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] ? (
+            <Box sx={{ mt: '48px' }}>
+              {results[resultsKey] ? (
                 <PoolFinderContentController
                   chainId={chainId}
                   selectedProduct={selectedProduct}
-                  tableData={results[`${poolAddress}-${collateralAddress}-${quoteAddress}`]}
+                  tableData={results[resultsKey]}
                 />
               ) : (
                 <>
-                  {errors.length > 0 ? (
+                  {resultsKey && errors.length > 0 ? (
                     errors.map((error) => <Text as="p">{error}</Text>)
                   ) : (
-                    <PoolFinderTableLoadingState />
+                    <>{resultsKey && <PoolFinderTableLoadingState />}</>
                   )}
                 </>
               )}
-            </>
+            </Box>
           )}
         </WithLoadingIndicator>
       </WithErrorHandler>
