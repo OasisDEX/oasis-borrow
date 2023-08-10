@@ -186,6 +186,19 @@ function InternalProvider({ children }: WithChildren) {
     }
   }, [state, disconnect, dispatch])
 
+  useEffect(() => {
+    if (
+      state.status === WalletManagementStateStatus.connected &&
+      state.pageNetworkHexIds &&
+      !state.pageNetworkHexIds.includes(state.walletNetworkHexId)
+    ) {
+      dispatch({
+        type: WalletStateEventType.changeChain,
+        desiredNetworkHexId: state.pageNetworkHexIds[0],
+      })
+    }
+  }, [state.pageNetworkHexIds, state.status])
+
   return (
     <web3OnBoardConnectorContext.Provider
       value={{
