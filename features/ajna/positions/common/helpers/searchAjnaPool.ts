@@ -27,33 +27,36 @@ export interface SearchAjnaPoolData
 }
 
 interface SearchAjnaPoolParams {
-  collateralAddress?: string
-  poolAddress?: string
-  quoteAddress?: string
+  collateralAddress?: string[]
+  poolAddress?: string[]
+  quoteAddress?: string[]
 }
 
 export const searchAjnaPool = async ({
-  collateralAddress,
-  poolAddress,
-  quoteAddress,
+  collateralAddress = [],
+  poolAddress = [],
+  quoteAddress = [],
 }: SearchAjnaPoolParams) => {
+  const caseSensitiveCollateralAddress = collateralAddress.map((address) => address.toLowerCase())
+  const caseSensitivePoolAddress = poolAddress.map((address) => address.toLowerCase())
+  const caseSensitiveQuoteAddress = quoteAddress.map((address) => address.toLowerCase())
   const { response } = (await loadSubgraph('Ajna', 'searchAjnaPool', {
-    collateralAddress: collateralAddress?.toLowerCase() || '',
-    poolAddress: poolAddress?.toLowerCase() || '',
-    quoteAddress: quoteAddress?.toLowerCase() || '',
+    collateralAddress: caseSensitiveCollateralAddress,
+    poolAddress: caseSensitivePoolAddress,
+    quoteAddress: caseSensitiveQuoteAddress,
   })) as SubgraphsResponses['Ajna']['searchAjnaPool']
 
   let pools = response?.pools || []
 
-  if (poolAddress)
-    pools = pools.filter((pool) => pool.address.toLowerCase() === poolAddress.toLowerCase())
-  if (collateralAddress)
-    pools = pools.filter(
-      (pool) => pool.collateralAddress.toLowerCase() === collateralAddress.toLowerCase(),
+  if (poolAddress.length)
+    pools = pools.filter((pool) => caseSensitivePoolAddress.includes(pool.address.toLowerCase()))
+  if (collateralAddress.length)
+    pools = pools.filter((pool) =>
+      caseSensitiveCollateralAddress.includes(pool.collateralAddress.toLowerCase()),
     )
-  if (quoteAddress)
-    pools = pools.filter(
-      (pool) => pool.quoteTokenAddress.toLowerCase() === quoteAddress.toLowerCase(),
+  if (quoteAddress.length)
+    pools = pools.filter((pool) =>
+      caseSensitiveQuoteAddress.includes(pool.quoteTokenAddress.toLowerCase()),
     )
 
   return {

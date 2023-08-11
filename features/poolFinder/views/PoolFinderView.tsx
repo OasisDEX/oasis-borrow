@@ -6,7 +6,8 @@ import { PoolFinderTableLoadingState } from 'features/poolFinder/components/Pool
 import { PoolFinderContentController } from 'features/poolFinder/controls/PoolFinderContentController'
 import { PoolFinderFormController } from 'features/poolFinder/controls/PoolFinderFormController'
 import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
-import { parsePoolResponse, validateOraclessPayload } from 'features/poolFinder/helpers'
+import { parsePoolResponse } from 'features/poolFinder/helpers'
+import { getOraclessTokenAddress } from 'features/poolFinder/helpers/getOraclessTokenAddress'
 import { OraclessPoolResult } from 'features/poolFinder/types'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -16,7 +17,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useMemo, useState } from 'react'
-import { Box, Text } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 interface PoolFinderViewProps {
   product: ProductHubProductType
@@ -37,30 +38,25 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
   const [resultsKey, setResultsKey] = useState<string>('')
   const [poolAddress, setPoolAddress] = useState<string>('')
-  const [collateralAddress, setCollateralAddress] = useState<string>('')
-  const [quoteAddress, setQuoteAddress] = useState<string>('')
-  const [errors, setErrors] = useState<string[]>([])
+  const [collateralToken, setCollateralToken] = useState<string>('')
+  const [quoteToken, setQuoteToken] = useState<string>('')
 
   useDebouncedEffect(
     async () => {
-      const validation = validateOraclessPayload({
-        collateralAddress,
-        poolAddress,
-        quoteAddress,
-      })
+      const tokensAddresses = await getOraclessTokenAddress({ collateralToken, quoteToken })
 
-      setErrors(validation)
       if (
+        (tokensAddresses.collateralToken.addresses.length ||
+          tokensAddresses.quoteToken.addresses.length) &&
         context?.chainId &&
         tokenPriceUSDData &&
         resultsKey &&
-        !results[resultsKey] &&
-        validation.length === 0
+        !results[resultsKey]
       ) {
         const { pools, size } = await searchAjnaPool({
-          collateralAddress,
-          poolAddress,
-          quoteAddress,
+          collateralAddress: tokensAddresses.collateralToken.addresses,
+          poolAddress: poolAddress ? [poolAddress] : [],
+          quoteAddress: tokensAddresses.quoteToken.addresses,
         })
         if (size > 0) {
           const identifiedTokensSubscription = identifiedTokens$(
@@ -92,7 +88,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         }
       }
     },
-    [context?.chainId, collateralAddress, poolAddress, resultsKey, quoteAddress, tokenPriceUSDData],
+    [context?.chainId, collateralToken, poolAddress, resultsKey, quoteToken, tokenPriceUSDData],
     250,
   )
 
@@ -118,9 +114,9 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
       <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
         <PoolFinderFormController
           onChange={(addresses) => {
-            setCollateralAddress(addresses.collateralAddress)
+            setCollateralToken(addresses.collateralAddress)
             setPoolAddress(addresses.poolAddress)
-            setQuoteAddress(addresses.quoteAddress)
+            setQuoteToken(addresses.quoteAddress)
             setResultsKey(
               addresses.collateralAddress || addresses.poolAddress || addresses.quoteAddress
                 ? Object.values(addresses).join('-')
@@ -143,13 +139,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
                   tableData={results[resultsKey]}
                 />
               ) : (
-                <>
-                  {resultsKey && errors.length > 0 ? (
-                    errors.map((error) => <Text as="p">{error}</Text>)
-                  ) : (
-                    <>{resultsKey && <PoolFinderTableLoadingState />}</>
-                  )}
-                </>
+                <>{resultsKey && <PoolFinderTableLoadingState />}</>
               )}
             </Box>
           )}

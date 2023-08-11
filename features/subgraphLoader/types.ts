@@ -15,7 +15,7 @@ export type Subgraphs = {
     getAjnaPoolsData: {}
     getAjnaEarnPositionNftId: { walletAddress: string }
     getAjnaClaimedRewards: { walletAddress: string }
-    searchAjnaPool: { collateralAddress: string; poolAddress: string; quoteAddress: string }
+    searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
   }
   TempGraph: {
     tempMethod: undefined

@@ -39,6 +39,7 @@ export const PoolFinderAddressInput: FC<PoolFinderAddressInputProps> = ({
       </Label>
       <Input
         id={label}
+        autoComplete="off"
         placeholder={placeholder}
         value={value}
         sx={{

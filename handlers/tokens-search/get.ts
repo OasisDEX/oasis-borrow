@@ -6,20 +6,20 @@ import * as z from 'zod'
 const getTokens = cacheObject(getTokensList, 60 * 60, 'tokens-list')
 
 const paramsSchema = z.object({
-  query: z.string(),
+  query: z.array(z.string()),
 })
 
 export async function get(req: NextApiRequest, res: NextApiResponse) {
   const { query } = paramsSchema.parse(req.body)
 
-  const caseSensitiveQuery = query.toLowerCase()
+  const caseSensitiveQuery = query.map((item) => item.toLowerCase())
   const tokensList = await getTokens()
 
   const response = tokensList?.data.tokens
-    .filter(
-      ({ name, symbol }) =>
-        name.toLowerCase().includes(caseSensitiveQuery) ||
-        symbol.toLowerCase().includes(caseSensitiveQuery),
+    .filter(({ name, symbol }) =>
+      caseSensitiveQuery.find(
+        (item) => name.toLowerCase().includes(item) || symbol.toLowerCase().includes(item),
+      ),
     )
     .reduce<{ [key: string]: string }>(
       (total, { address, symbol }) => ({
