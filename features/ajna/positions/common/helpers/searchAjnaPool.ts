@@ -59,15 +59,12 @@ export const searchAjnaPool = async ({
       caseSensitiveQuoteAddress.includes(pool.quoteTokenAddress.toLowerCase()),
     )
 
-  return {
-    pools: pools.map(({ debt, interestRate, lendApr, lup, lupIndex, ...pool }) => ({
+  return pools.map(({ debt, interestRate, lendApr, lup, lupIndex, ...pool }) => ({
       ...pool,
       debt: new BigNumber(debt).shiftedBy(NEGATIVE_WAD_PRECISION),
       interestRate: new BigNumber(interestRate).shiftedBy(NEGATIVE_WAD_PRECISION),
       lendApr: new BigNumber(lendApr).shiftedBy(NEGATIVE_WAD_PRECISION),
       lowestUtilizedPrice: new BigNumber(lup).shiftedBy(NEGATIVE_WAD_PRECISION),
       lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
-    })),
-    size: response?.pools?.length || 0,
-  }
+    }))
 }
