@@ -338,7 +338,7 @@ export function parseAjnaEarnPositionRows(
         icons: [collateralToken, quoteToken],
         id: vaultId,
         netValue: earnPosition.netValue,
-        pnl: earnPosition.pnl,
+        pnl: earnPosition.pnl.withoutFees,
         liquidity,
         liquidityToken: quoteToken,
         // TODO: should get chainId from the source event so it works in the generic way for all chains
