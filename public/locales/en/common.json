@@ -2888,7 +2888,8 @@
       },
       "pool-finder": {
         "no-results": "There are no items matching your criteria.",
-        "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can create one by yourself."
+        "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can create one by yourself.",
+        "no-results-suggest-address": "Try searching for a pool by providing token address instead of its name or symbol. If you are missing a pool you would like to see, you can create one by yourself."
       }
     }
   },

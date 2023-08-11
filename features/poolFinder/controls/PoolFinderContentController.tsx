@@ -2,6 +2,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
+import { isAddress } from 'ethers/lib/utils'
 import { parseRows } from 'features/poolFinder/helpers'
 import { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -16,6 +17,7 @@ interface PoolFinderContentControllerProps {
 }
 
 export const PoolFinderContentController: FC<PoolFinderContentControllerProps> = ({
+  addresses: { collateralAddress, quoteAddress },
   chainId,
   selectedProduct,
   tableData,
@@ -34,7 +36,12 @@ export const PoolFinderContentController: FC<PoolFinderContentControllerProps> =
       ) : (
         <AssetsTableNoResults
           header={t('ajna.oracless.pool-finder.no-results')}
-          content={t('ajna.oracless.pool-finder.no-results-description')}
+          content={t(
+            (collateralAddress && !isAddress(collateralAddress)) ||
+              (quoteAddress && !isAddress(quoteAddress))
+              ? 'ajna.oracless.pool-finder.no-results-suggest-address'
+              : 'ajna.oracless.pool-finder.no-results-description',
+          )}
         />
       )}
     </AssetsTableContainer>
