@@ -13,8 +13,6 @@ export function validateOraclessPayload({
 }: ValidateOraclessPayloadParams) {
   const errors: string[] = []
 
-  if (!poolAddress && !collateralAddress && !quoteAddress)
-    errors.push('Specify at least one of the addresses')
   if (poolAddress && !isAddress(poolAddress))
     errors.push('Pool address is not valid contract address.')
   if (collateralAddress && !isAddress(collateralAddress))
