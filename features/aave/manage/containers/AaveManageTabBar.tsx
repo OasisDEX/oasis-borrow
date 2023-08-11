@@ -3,7 +3,7 @@ import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
-import { isAaveHistorySupported } from 'features/aave/helpers/aaveHistorySupport'
+import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
@@ -59,7 +59,7 @@ export function AaveManageTabBar({
       ? state.context.transition?.simulation.position
       : undefined
 
-  const historyIsSupported = isAaveHistorySupported(chainId)
+  const historyIsSupported = isAaveHistorySupported(state.context.strategyConfig.networkId)
 
   return (
     <TabBar
