@@ -5,18 +5,11 @@ interface GetOraclessTokenAddressParams {
   quoteToken: string
 }
 
-interface TokenSearchResponse {
-  addresses: string[]
-  tokens?: TokenSearchResponse
-}
-
-async function tokensSearch(query: string): Promise<TokenSearchResponse> {
+async function tokensSearch(query: string): Promise<string[]> {
   if (isAddress(query)) {
-    return {
-      addresses: [query],
-    }
+    return [query]
   } else if (query.length > 2) {
-    const tokens = await (
+    return await (
       await fetch(`/api/tokens-search`, {
         method: 'POST',
         headers: {
@@ -27,15 +20,8 @@ async function tokensSearch(query: string): Promise<TokenSearchResponse> {
         }),
       })
     ).json()
-
-    return {
-      addresses: Object.values(tokens),
-      tokens,
-    }
   } else {
-    return {
-      addresses: [],
-    }
+    return []
   }
 }
 
@@ -43,8 +29,8 @@ export async function getOraclessTokenAddress({
   collateralToken,
   quoteToken,
 }: GetOraclessTokenAddressParams): Promise<{
-  collateralToken: TokenSearchResponse
-  quoteToken: TokenSearchResponse
+  collateralToken: string[]
+  quoteToken: string[]
 }> {
   return {
     collateralToken: await tokensSearch(collateralToken),

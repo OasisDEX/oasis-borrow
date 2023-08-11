@@ -53,13 +53,19 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
 
         if (
           addresses.poolAddress ||
-          tokensAddresses.collateralToken.addresses.length ||
-          tokensAddresses.quoteToken.addresses.length
+          tokensAddresses.collateralToken.length ||
+          tokensAddresses.quoteToken.length
         ) {
           const pools = await searchAjnaPool({
-            collateralAddress: tokensAddresses.collateralToken.addresses,
+            collateralAddress: [
+              ...(addresses.collateralAddress ? [addresses.collateralAddress] : []),
+              ...(tokensAddresses.collateralToken.length ? tokensAddresses.collateralToken : []),
+            ],
             poolAddress: addresses.poolAddress ? [addresses.poolAddress] : [],
-            quoteAddress: tokensAddresses.quoteToken.addresses,
+            quoteAddress: [
+              ...(addresses.quoteAddress ? [addresses.quoteAddress] : []),
+              ...(tokensAddresses.quoteToken.length ? tokensAddresses.quoteToken : []),
+            ],
           })
 
           if (pools.length) {
