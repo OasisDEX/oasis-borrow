@@ -2,7 +2,7 @@ import { NetworkIds, NetworkNames, optimismMainnetHexId } from 'blockchain/netwo
 import { AaveManageHeader, AaveOpenHeader, adjustRiskView } from 'features/aave/components'
 import { AaveMultiplyManageComponent } from 'features/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProxyType } from 'features/aave/types'
+import { IStrategyConfig, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -39,6 +39,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3Optimism',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.optimismMainnet,
@@ -70,6 +71,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3Optimism',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.optimismMainnet,
@@ -101,5 +103,6 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3Optimism',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
 ]
