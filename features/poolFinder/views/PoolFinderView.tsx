@@ -7,9 +7,8 @@ import { PoolFinderTableLoadingState } from 'features/poolFinder/components/Pool
 import { PoolFinderContentController } from 'features/poolFinder/controls/PoolFinderContentController'
 import { PoolFinderFormController } from 'features/poolFinder/controls/PoolFinderFormController'
 import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
-import { parsePoolResponse } from 'features/poolFinder/helpers'
-import { getOraclessTokenAddress } from 'features/poolFinder/helpers/getOraclessTokenAddress'
-import { OraclessPoolResult } from 'features/poolFinder/types'
+import { getOraclessTokenAddress, parsePoolResponse } from 'features/poolFinder/helpers'
+import { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubProductType } from 'features/productHub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -38,22 +37,28 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
   const [resultsKey, setResultsKey] = useState<string>('')
-  const [poolAddress, setPoolAddress] = useState<string>('')
-  const [collateralToken, setCollateralToken] = useState<string>('')
-  const [quoteToken, setQuoteToken] = useState<string>('')
+  const [addresses, setAddresses] = useState<PoolFinderFormState>({
+    collateralAddress: '',
+    poolAddress: '',
+    quoteAddress: '',
+  })
 
   useDebouncedEffect(
     async () => {
       if (context?.chainId && tokenPriceUSDData && resultsKey && !results[resultsKey]) {
-        const tokensAddresses = await getOraclessTokenAddress({ collateralToken, quoteToken })
+        const tokensAddresses = await getOraclessTokenAddress({
+          collateralToken: addresses.collateralAddress,
+          quoteToken: addresses.quoteAddress,
+        })
 
         if (
+          addresses.poolAddress ||
           tokensAddresses.collateralToken.addresses.length ||
           tokensAddresses.quoteToken.addresses.length
         ) {
           const pools = await searchAjnaPool({
             collateralAddress: tokensAddresses.collateralToken.addresses,
-            poolAddress: poolAddress ? [poolAddress] : [],
+            poolAddress: addresses.poolAddress ? [addresses.poolAddress] : [],
             quoteAddress: tokensAddresses.quoteToken.addresses,
           })
 
@@ -93,7 +98,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         }
       }
     },
-    [context?.chainId, collateralToken, poolAddress, resultsKey, quoteToken, tokenPriceUSDData],
+    [addresses, context?.chainId, resultsKey, tokenPriceUSDData],
     250,
   )
 
@@ -126,9 +131,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
               <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
                 <PoolFinderFormController
                   onChange={(addresses) => {
-                    setCollateralToken(addresses.collateralAddress)
-                    setPoolAddress(addresses.poolAddress)
-                    setQuoteToken(addresses.quoteAddress)
+                    setAddresses(addresses)
                     setResultsKey(
                       addresses.collateralAddress || addresses.poolAddress || addresses.quoteAddress
                         ? Object.values(addresses).join('-')
@@ -140,6 +143,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
               <Box sx={{ mt: '48px' }}>
                 {results[resultsKey] ? (
                   <PoolFinderContentController
+                    addresses={addresses}
                     chainId={chainId}
                     selectedProduct={selectedProduct}
                     tableData={results[resultsKey]}

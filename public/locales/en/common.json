@@ -2599,11 +2599,6 @@
                 "There is an origination fee when borrowing to avoid rapid changes in rates.",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
               ],
-              "oracless": [
-                "This asset pair is not supported by Summer.fi, no price feed information will be available.",
-                "Always do your own research and ensure you have specified the correct token contract address.",
-                "Monitor your position closely and ensure you understand the risks before proceeding."
-              ],
               "multiply": [
                 "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
                 "There is an origination fee when borrowing (or multiplying) to avoid rapid changes in rates.",
@@ -2614,6 +2609,11 @@
                 "Your position will lend only against one asset.",
                 "Failure to monitor and adjust your position may result in holding the collateral asset",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ],
+              "oracless": [
+                "This asset pair is not supported by Summer.fi, no price feed information will be available.",
+                "Always do your own research and ensure you have specified the correct token contract address.",
+                "Monitor your position closely and ensure you understand the risks before proceeding."
               ]
             }
           },
@@ -2872,6 +2872,12 @@
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position and in this pool. The maximum risk will be determined by lenders in the pool.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
+    },
+    "oracless": {
+      "pool-finder": {
+        "no-results": "There are no items matching your criteria.",
+        "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can create one by yourself."
+      }
     }
   },
   "product-hub": {
