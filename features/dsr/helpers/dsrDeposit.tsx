@@ -228,10 +228,8 @@ function addTransitions(
       txHash: state.depositTxHash,
       network: getNetworkById(chainId).name,
       walletType,
-      action: {
-        depositSuccess: 'deposit',
-        withdrawSuccess: 'withdraw',
-      }[state.stage],
+      isMintingSDai: state.isMintingSDai,
+      operation: state.operation,
     })
     return {
       ...state,
