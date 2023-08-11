@@ -1,4 +1,9 @@
-import { ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
+import {
+  IOpenDepositBorrowStrategy,
+  ISimplePositionTransition,
+  IStrategy,
+  PositionTransition,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters, estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
 import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
@@ -52,7 +57,11 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 export type TransactionParametersStateMachineResponseEvent =
   | {
       type: 'STRATEGY_RECEIVED'
-      transition?: ISimplePositionTransition | PositionTransition | IStrategy
+      transition?:
+        | ISimplePositionTransition
+        | PositionTransition
+        | IStrategy
+        | IOpenDepositBorrowStrategy
     }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
