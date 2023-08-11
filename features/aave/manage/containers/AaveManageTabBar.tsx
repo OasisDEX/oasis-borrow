@@ -1,7 +1,9 @@
 import { useActor } from '@xstate/react'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
+import { DisabledHistoryControl } from 'components/vault/HistoryControl'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
+import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
@@ -56,6 +58,8 @@ export function AaveManageTabBar({
       ? state.context.transition?.simulation.position
       : undefined
 
+  const historyIsSupported = isAaveHistorySupported(state.context.strategyConfig.networkId)
+
   return (
     <TabBar
       variant="underline"
@@ -103,6 +107,19 @@ export function AaveManageTabBar({
               },
             ]
           : []),
+        ...(historyIsSupported === undefined
+          ? []
+          : historyIsSupported
+          ? [
+              // Implement HistoryControl for AAVE V3
+            ]
+          : [
+              {
+                value: 'history',
+                label: t('system.history'),
+                content: <DisabledHistoryControl />,
+              },
+            ]),
       ]}
     />
   )
