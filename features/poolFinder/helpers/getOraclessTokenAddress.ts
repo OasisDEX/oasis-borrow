@@ -1,4 +1,5 @@
 import { isAddress } from 'ethers/lib/utils'
+import { SearchTokensResponse } from 'features/poolFinder/types'
 
 interface GetOraclessTokenAddressParams {
   collateralToken: string
@@ -10,7 +11,7 @@ async function tokensSearch(query: string): Promise<string[]> {
     return [query]
   } else {
     if (query.length > 2) {
-      const response = Object.values(
+      const response = (
         (await (
           await fetch(`/api/tokens-search`, {
             method: 'POST',
@@ -21,8 +22,8 @@ async function tokensSearch(query: string): Promise<string[]> {
               query: [query],
             }),
           })
-        ).json()) as { [key: string]: string },
-      )
+        ).json()) as SearchTokensResponse[]
+      ).map(({ address }) => address)
 
       return response.length ? response : [query]
     } else return query.length ? [query] : []

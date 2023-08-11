@@ -1,5 +1,10 @@
 import { ProductHubItemTooltips, ProductHubManagementType } from 'features/productHub/types'
 
+export interface SearchTokensResponse {
+  symbol: string
+  address: string
+}
+
 export interface PoolFinderFormState {
   poolAddress: string
   collateralAddress: string
