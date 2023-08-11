@@ -60,11 +60,11 @@ export const searchAjnaPool = async ({
     )
 
   return pools.map(({ debt, interestRate, lendApr, lup, lupIndex, ...pool }) => ({
-      ...pool,
-      debt: new BigNumber(debt).shiftedBy(NEGATIVE_WAD_PRECISION),
-      interestRate: new BigNumber(interestRate).shiftedBy(NEGATIVE_WAD_PRECISION),
-      lendApr: new BigNumber(lendApr).shiftedBy(NEGATIVE_WAD_PRECISION),
-      lowestUtilizedPrice: new BigNumber(lup).shiftedBy(NEGATIVE_WAD_PRECISION),
-      lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
-    }))
+    ...pool,
+    debt: new BigNumber(debt).shiftedBy(NEGATIVE_WAD_PRECISION),
+    interestRate: new BigNumber(interestRate).shiftedBy(NEGATIVE_WAD_PRECISION),
+    lendApr: new BigNumber(lendApr).shiftedBy(NEGATIVE_WAD_PRECISION),
+    lowestUtilizedPrice: new BigNumber(lup).shiftedBy(NEGATIVE_WAD_PRECISION),
+    lowestUtilizedPriceIndex: parseInt(lupIndex, 10),
+  }))
 }
