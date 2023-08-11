@@ -21,7 +21,10 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
         (item) => name.toLowerCase().includes(item) || symbol.toLowerCase().includes(item),
       ),
     )
-    .map(({ symbol, address }) => [symbol, address])
+    .map(({ symbol, address }) => ({
+      symbol,
+      address,
+    }))
 
   return res.status(200).json(response)
 }
