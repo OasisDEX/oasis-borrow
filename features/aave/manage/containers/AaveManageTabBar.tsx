@@ -31,7 +31,6 @@ export function AaveManageTabBar({
   const {
     automationTriggersData: { isAutomationDataLoaded },
     triggerData: { stopLossTriggerData },
-    environmentData: { chainId },
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
