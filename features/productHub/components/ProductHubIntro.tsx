@@ -24,7 +24,7 @@ export const ProductHubIntro: FC<ProductHubIntroProps> = ({ selectedProduct }) =
       }}
     >
       {t(`product-hub.intro.${selectedProduct}`)}{' '}
-      <AppLink href={productHubLinksMap[selectedProduct]}>
+      <AppLink href={productHubLinksMap[selectedProduct]} sx={{ pr: 3 }}>
         <WithArrow
           variant="paragraph2"
           sx={{
