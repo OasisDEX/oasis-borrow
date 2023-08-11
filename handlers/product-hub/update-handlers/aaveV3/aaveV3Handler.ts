@@ -15,6 +15,7 @@ import { GraphQLClient } from 'graphql-request'
 // import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
+import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
 import { flatten } from 'lodash'
 import { curry } from 'ramda'
 
@@ -98,9 +99,18 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const graphQlProvider = new GraphQLClient(
     getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
   )
-  const yieldsPromisesMap = {
+
+  const emptyYields = (_risk: RiskRatio, _fields: FilterYieldFieldsType[]) => {
+    return Promise.resolve<AaveYieldsResponse>({})
+  }
+  const yieldsPromisesMap: Record<
+    string,
+    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveYieldsResponse>
+  > = {
     // a crude map, but it works for now since we only have one earn product
     'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
+    'CBETH/ETH': emptyYields,
+    'RETH/ETH': emptyYields,
   }
   // getting the APYs
   const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
