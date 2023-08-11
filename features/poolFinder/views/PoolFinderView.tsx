@@ -46,20 +46,16 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   useDebouncedEffect(
     async () => {
       if (context?.chainId && tokenPriceUSDData && resultsKey && !results[resultsKey]) {
-        const tokensAddresses = await getOraclessTokenAddress({
+        const { collateralToken, quoteToken } = await getOraclessTokenAddress({
           collateralToken: addresses.collateralAddress,
           quoteToken: addresses.quoteAddress,
         })
 
-        if (
-          addresses.poolAddress ||
-          tokensAddresses.collateralToken.length ||
-          tokensAddresses.quoteToken.length
-        ) {
+        if (addresses.poolAddress || collateralToken.length || quoteToken.length) {
           const pools = await searchAjnaPool({
-            collateralAddress: tokensAddresses.collateralToken,
+            collateralAddress: collateralToken,
             poolAddress: addresses.poolAddress ? [addresses.poolAddress] : [],
-            quoteAddress: tokensAddresses.quoteToken,
+            quoteAddress: quoteToken,
           })
 
           if (pools.length) {

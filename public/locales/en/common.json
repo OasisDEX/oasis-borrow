@@ -2874,6 +2874,12 @@
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
     },
     "oracless": {
+      "form": {
+        "pool-address": "Pool address",
+        "collateral-token": "Collateral token",
+        "quote-token": "Quote token",
+        "placeholder": "Symbol, name or address"
+      },
       "pool-finder": {
         "no-results": "There are no items matching your criteria.",
         "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can create one by yourself."

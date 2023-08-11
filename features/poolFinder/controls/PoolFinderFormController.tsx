@@ -3,6 +3,7 @@ import { PoolFinderReplacer } from 'features/poolFinder/components/PoolFinderRep
 import { PoolFinderFormState } from 'features/poolFinder/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
+import { useTranslation } from 'next-i18next'
 import React, { FC, useState } from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 
@@ -11,6 +12,7 @@ interface PoolFinderFormControllerProps {
 }
 
 export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ onChange }) => {
+  const { t } = useTranslation()
   const [addresses, setAddresses] = useState<PoolFinderFormState>({
     collateralAddress: '',
     poolAddress: '',
@@ -43,7 +45,7 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
         }}
       >
         <PoolFinderAddressInput
-          label="Pool Address"
+          label={t('ajna.oracless.form.pool-address')}
           placeholder="0×232b…x8482"
           value={addresses.poolAddress}
           onChange={(value) => {
@@ -58,8 +60,8 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
           }}
         />
         <PoolFinderAddressInput
-          label="Collateral Token"
-          placeholder="Symbol or addres"
+          label={t('ajna.oracless.form.collateral-token')}
+          placeholder={t('ajna.oracless.form.placeholder')}
           value={addresses.collateralAddress}
           onChange={(value) => {
             setAddresses({
@@ -73,8 +75,8 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
           }}
         />
         <PoolFinderAddressInput
-          label="Quote token"
-          placeholder="Symbol or addres"
+          label={t('ajna.oracless.form.quote-token')}
+          placeholder={t('ajna.oracless.form.placeholder')}
           value={addresses.quoteAddress}
           onChange={(value) => {
             setAddresses({
