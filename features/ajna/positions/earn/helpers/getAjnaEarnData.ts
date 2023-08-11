@@ -8,9 +8,9 @@ const defaultResponse = {
   lps: zero,
   priceIndex: null,
   nftID: null,
-  cumulativeDeposit: zero,
-  cumulativeFees: zero,
-  cumulativeWithdraw: zero,
+  earnCumulativeQuoteTokenDeposit: zero,
+  earnCumulativeFeesInQuoteToken: zero,
+  earnCumulativeQuoteTokenWithdraw: zero,
 }
 
 export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
@@ -29,9 +29,15 @@ export const getAjnaEarnData: GetEarnData = async (proxy: string) => {
     const anyPositionForCumulatives = response.account.earnPositions[0]
 
     const cumulativeValues = {
-      cumulativeDeposit: new BigNumber(anyPositionForCumulatives.account.cumulativeDeposit),
-      cumulativeFees: new BigNumber(anyPositionForCumulatives.account.cumulativeFees),
-      cumulativeWithdraw: new BigNumber(anyPositionForCumulatives.account.cumulativeWithdraw),
+      earnCumulativeQuoteTokenDeposit: new BigNumber(
+        anyPositionForCumulatives.account.earnCumulativeQuoteTokenDeposit,
+      ),
+      earnCumulativeFeesInQuoteToken: new BigNumber(
+        anyPositionForCumulatives.account.earnCumulativeFeesInQuoteToken,
+      ),
+      earnCumulativeQuoteTokenWithdraw: new BigNumber(
+        anyPositionForCumulatives.account.earnCumulativeQuoteTokenWithdraw,
+      ),
     }
 
     if (!earnPosition) {

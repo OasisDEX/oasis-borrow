@@ -39,6 +39,9 @@ export const subgraphMethodsRecord: {
         cumulativeDeposit
         cumulativeFees
         cumulativeWithdraw
+        earnCumulativeFeesInQuoteToken
+        earnCumulativeQuoteTokenDeposit
+        earnCumulativeQuoteTokenWithdraw
       }
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
@@ -201,9 +204,9 @@ export const subgraphMethodsRecord: {
             id
           }
           account {
-            cumulativeDeposit
-            cumulativeFees
-            cumulativeWithdraw
+            earnCumulativeFeesInQuoteToken
+            earnCumulativeQuoteTokenDeposit
+            earnCumulativeQuoteTokenWithdraw
           }
         }
       }

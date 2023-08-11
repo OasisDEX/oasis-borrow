@@ -2768,7 +2768,8 @@
             "total-ajna-rewards": "Total AJNA rewards",
             "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. This is the total amount across all your portfolio positions. These are claimable weekly after tokens are released.",
             "total-earnings": "Total earnings",
-            "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. This takes into account the gas fees spent in ETH, calculated in {{quoteToken}} for each transaction."
+            "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. The total earnings you have made from this position excluding any gas costs are:",
+            "total-earnings-modal-sub-desc": "Including gas costs, your net earnings on this pool are:"
           },
           "notifications": {
             "deposit-is-not-withdrawable": {

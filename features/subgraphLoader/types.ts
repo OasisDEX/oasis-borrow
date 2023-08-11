@@ -35,6 +35,9 @@ export type SubgraphsResponses = {
         cumulativeDeposit: number
         cumulativeFees: number
         cumulativeWithdraw: number
+        earnCumulativeFeesInQuoteToken: number
+        earnCumulativeQuoteTokenDeposit: number
+        earnCumulativeQuoteTokenWithdraw: number
       }
       auctions: {
         alreadyTaken: boolean
@@ -65,9 +68,9 @@ export type SubgraphsResponses = {
           index: number
           nft: { id: string } | null
           account: {
-            cumulativeDeposit: number
-            cumulativeFees: number
-            cumulativeWithdraw: number
+            earnCumulativeQuoteTokenDeposit: number
+            earnCumulativeFeesInQuoteToken: number
+            earnCumulativeQuoteTokenWithdraw: number
           }
         }[]
       }
