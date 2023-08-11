@@ -73,6 +73,7 @@ export interface IStrategyConfig {
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
     secondaryInput: SecondaryInput
+    adjustRiskInput: SecondaryInput
     positionInfo: PositionInfo
     sidebarTitle: string
     sidebarButton: string

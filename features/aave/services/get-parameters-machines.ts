@@ -4,9 +4,7 @@ import {
   getAdjustPositionParameters,
   getCloseAaveParameters,
   getManagePositionParameters,
-  getOpenDepositBorrowPositionParameters,
   ManageAaveParameters,
-  OpenAaveDepositBorrowParameters,
 } from 'actions/aave'
 import { NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
@@ -53,20 +51,5 @@ export function getDepositBorrowAaveMachine(
     (parameters: ManageAaveParameters) => getManagePositionParameters(parameters),
     networkId,
     'depositBorrow',
-  )
-}
-
-export function getOpenDepositBorrowAaveMachine(
-  txHelpers$: Observable<TxHelpers>,
-  gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
-  networkId: NetworkIds,
-) {
-  return createTransactionParametersStateMachine(
-    txHelpers$,
-    gasPriceEstimation$,
-    (parameters: OpenAaveDepositBorrowParameters) =>
-      getOpenDepositBorrowPositionParameters(parameters),
-    networkId,
-    'openDepositBorrow',
   )
 }

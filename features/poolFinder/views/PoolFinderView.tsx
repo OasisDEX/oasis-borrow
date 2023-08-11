@@ -4,6 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { PoolFinderTableLoadingState } from 'features/poolFinder/components/PoolFinderTableLoadingState'
 import { PoolFinderContentController } from 'features/poolFinder/controls/PoolFinderContentController'
+import { PoolFinderFormController } from 'features/poolFinder/controls/PoolFinderFormController'
 import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
 import { parsePoolResponse, validateOraclessPayload } from 'features/poolFinder/helpers'
 import { OraclessPoolResult } from 'features/poolFinder/types'
@@ -15,17 +16,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useMemo, useState } from 'react'
-import { Box, Flex, Input, SxStyleProp, Text } from 'theme-ui'
-
-const inputStyles: SxStyleProp = {
-  height: '50px',
-  maxWidth: '460px',
-  p: 3,
-  fontSize: 2,
-  border: '1px solid',
-  borderColor: 'neutral20',
-  borderRadius: 'medium',
-}
+import { Box, Text } from 'theme-ui'
 
 interface PoolFinderViewProps {
   product: ProductHubProductType
@@ -44,6 +35,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
 
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
+  const [resultsKey, setResultsKey] = useState<string>('')
   const [poolAddress, setPoolAddress] = useState<string>('')
   const [collateralAddress, setCollateralAddress] = useState<string>('')
   const [quoteAddress, setQuoteAddress] = useState<string>('')
@@ -61,7 +53,8 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
       if (
         context?.chainId &&
         tokenPriceUSDData &&
-        !results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] &&
+        resultsKey &&
+        !results[resultsKey] &&
         validation.length === 0
       ) {
         const { pools, size } = await searchAjnaPool({
@@ -80,7 +73,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
           ).subscribe((identifiedTokens) => {
             setResults({
               ...results,
-              [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: parsePoolResponse(
+              [resultsKey]: parsePoolResponse(
                 context.chainId,
                 identifiedTokens,
                 pools,
@@ -94,12 +87,12 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         } else {
           setResults({
             ...results,
-            [`${poolAddress}-${collateralAddress}-${quoteAddress}`]: [],
+            [resultsKey]: [],
           })
         }
       }
     },
-    [context?.chainId, collateralAddress, poolAddress, quoteAddress, tokenPriceUSDData],
+    [context?.chainId, collateralAddress, poolAddress, resultsKey, quoteAddress, tokenPriceUSDData],
     250,
   )
 
@@ -122,58 +115,43 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         />
         <ProductHubIntro selectedProduct={selectedProduct} />
       </Box>
-      <Flex
-        sx={{
-          flexDirection: 'column',
-          rowGap: 2,
-          justifyItems: 'center',
-          alignItems: 'center',
-          mb: '48px',
-        }}
-      >
-        <Input
-          sx={inputStyles}
-          placeholder="Pool address"
-          value={poolAddress}
-          onChange={(e) => setPoolAddress(e.target.value.toLowerCase())}
+      <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
+        <PoolFinderFormController
+          onChange={(addresses) => {
+            setCollateralAddress(addresses.collateralAddress)
+            setPoolAddress(addresses.poolAddress)
+            setQuoteAddress(addresses.quoteAddress)
+            setResultsKey(
+              addresses.collateralAddress || addresses.poolAddress || addresses.quoteAddress
+                ? Object.values(addresses).join('-')
+                : '',
+            )
+          }}
         />
-        <Box>OR</Box>
-        <Input
-          sx={inputStyles}
-          placeholder="Collateral token address"
-          value={collateralAddress}
-          onChange={(e) => setCollateralAddress(e.target.value.toLowerCase())}
-        />
-        <Input
-          sx={inputStyles}
-          placeholder="Quote token address"
-          value={quoteAddress}
-          onChange={(e) => setQuoteAddress(e.target.value.toLowerCase())}
-        />
-      </Flex>
+      </Box>
       <WithErrorHandler error={[tokenPriceUSDError]}>
         <WithLoadingIndicator
           value={[context, tokenPriceUSDData]}
           customLoader={<PoolFinderTableLoadingState />}
         >
           {([{ chainId }]) => (
-            <>
-              {results[`${poolAddress}-${collateralAddress}-${quoteAddress}`] ? (
+            <Box sx={{ mt: '48px' }}>
+              {results[resultsKey] ? (
                 <PoolFinderContentController
                   chainId={chainId}
                   selectedProduct={selectedProduct}
-                  tableData={results[`${poolAddress}-${collateralAddress}-${quoteAddress}`]}
+                  tableData={results[resultsKey]}
                 />
               ) : (
                 <>
-                  {errors.length > 0 ? (
+                  {resultsKey && errors.length > 0 ? (
                     errors.map((error) => <Text as="p">{error}</Text>)
                   ) : (
-                    <PoolFinderTableLoadingState />
+                    <>{resultsKey && <PoolFinderTableLoadingState />}</>
                   )}
                 </>
               )}
-            </>
+            </Box>
           )}
         </WithLoadingIndicator>
       </WithErrorHandler>

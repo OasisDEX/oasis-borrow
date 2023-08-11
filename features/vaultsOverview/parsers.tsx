@@ -183,6 +183,32 @@ export function parseMakerEarnPositionRows(
     }),
   )
 }
+
+export function parseAaveBorrowPositionRows(positions: AavePosition[]): PositionTableBorrowRow[] {
+  return positions.map((position) => ({
+    asset: `${position.token}/${position.debtToken}`,
+    collateralLocked: position.lockedCollateral,
+    collateralToken: position.token,
+    debt: position.debt,
+    debtToken: position.debtToken,
+    icons: [position.token, position.debtToken],
+    id: position.id.toString(),
+    network: networksById[position.chainId].name,
+    protocol: position.protocol,
+    riskRatio: {
+      level: position.riskRatio.loanToValue,
+      isAtRiskDanger: position.isAtRiskDanger,
+      isAtRiskWarning: position.isAtRiskWarning,
+      type: 'LTV',
+    },
+    stopLossData: position.stopLossData,
+    autoSellData: position.autoSellData,
+    isOwner: position.isOwner,
+    url: position.url,
+    variable: position.variableBorrowRate,
+  }))
+}
+
 export function parseAaveMultiplyPositionRows(
   positions: AavePosition[],
 ): PositionTableMultiplyRow[] {

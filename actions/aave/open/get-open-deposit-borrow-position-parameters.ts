@@ -1,11 +1,12 @@
-import { ISimplePositionTransition, Network } from '@oasisdex/dma-library'
-import { strategies } from '@oasisdex/dma-library'
+import { IOpenDepositBorrowStrategy, strategies } from '@oasisdex/dma-library'
 import { getTokenAddresses } from 'actions/aave/get-token-addresses'
+import { networkIdToLibraryNetwork } from 'actions/aave/helpers'
 import { OpenAaveDepositBorrowParameters } from 'actions/aave/types'
+import { getOnChainPosition } from 'actions/aave/view'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
-import { ProxyType } from 'features/aave/types'
+import { LendingProtocol } from 'lendingProtocols'
 
 function assertNetwork(networkId: NetworkIds): asserts networkId is NetworkIds.MAINNET {
   if (networkId !== NetworkIds.MAINNET) {
@@ -14,7 +15,7 @@ function assertNetwork(networkId: NetworkIds): asserts networkId is NetworkIds.M
 }
 export async function getOpenDepositBorrowPositionParameters(
   args: OpenAaveDepositBorrowParameters,
-): Promise<ISimplePositionTransition> {
+): Promise<IOpenDepositBorrowStrategy> {
   const {
     collateralToken,
     debtToken,
@@ -23,13 +24,12 @@ export async function getOpenDepositBorrowPositionParameters(
     borrowAmount,
     proxyAddress,
     userAddress,
-    proxyType,
     networkId,
   } = args
 
   assertNetwork(networkId)
 
-  type types = Parameters<typeof strategies.aave.v2.openDepositAndBorrowDebt>
+  type types = Parameters<typeof strategies.aave.v3.openDepositBorrow>
 
   const libArgs: types[0] = {
     slippage,
@@ -43,17 +43,29 @@ export async function getOpenDepositBorrowPositionParameters(
     },
     amountCollateralToDepositInBaseUnit: amountToWei(collateralAmount, collateralToken),
     amountDebtToBorrowInBaseUnit: amountToWei(borrowAmount, debtToken),
-    positionType: 'Borrow' as const,
+    entryToken: {
+      symbol: collateralToken,
+      precision: getToken(collateralToken).precision,
+    },
   }
+
+  const onChainPosition = await getOnChainPosition({
+    networkId,
+    proxyAddress,
+    collateralToken,
+    debtToken,
+    protocol: LendingProtocol.AaveV3,
+  })
 
   const deps: types[1] = {
     addresses: getTokenAddresses(networkId),
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,
     user: userAddress,
-    isDPMProxy: proxyType === ProxyType.DpmProxy,
-    network: 'mainnet' as Network,
+    network: networkIdToLibraryNetwork(networkId),
+    positionType: 'Borrow' as const,
+    currentPosition: onChainPosition,
   }
 
-  return await strategies.aave.v2.openDepositAndBorrowDebt(libArgs, deps)
+  return await strategies.aave.v3.openDepositBorrow(libArgs, deps)
 }

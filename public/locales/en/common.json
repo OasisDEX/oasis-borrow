@@ -275,7 +275,7 @@
         "liquidity": "The current available liquidity allowing increases of positions.",
         "net-usd-value": "The current net value of the position based on the oracle price of the collateral in the position minus the debt.",
         "pnl": "The current profit or loss percentage of your position, including incurred gas costs. For a more detailed look on the profit and loss, please check the position.",
-        "protection": "Indicates if a any Protection feature has been set up for this position. If not, you can activate it on the Protection page by clicking the button.",
+        "protection": "Indicates if any Protection feature has been set up for this position. If not, you can activate it on the Protection page by clicking the button.",
         "variable": "The variable annual rate paid over the debt in this position. This can be changed by the governance body of the protocol.",
         "vault-debt": "The amount of dai debt in this position"
       },
