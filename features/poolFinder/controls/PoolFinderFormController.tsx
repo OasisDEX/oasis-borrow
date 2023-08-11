@@ -1,18 +1,21 @@
 import { PoolFinderAddressInput } from 'features/poolFinder/components/PoolFinderAddressInput'
 import { PoolFinderReplacer } from 'features/poolFinder/components/PoolFinderReplacer'
+import { PoolFinderFormState } from 'features/poolFinder/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import React, { FC, useState } from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 
 interface PoolFinderFormControllerProps {
-  onChange: (poolAddress: string, collateralAddress: string, quoteAddress: string) => void
+  onChange: (addresses: PoolFinderFormState) => void
 }
 
 export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ onChange }) => {
-  const [poolAddress, setPoolAddress] = useState<string>('')
-  const [collateralAddress, setCollateralAddress] = useState<string>('')
-  const [quoteAddress, setQuoteAddress] = useState<string>('')
+  const [addresses, setAddresses] = useState<PoolFinderFormState>({
+    collateralAddress: '',
+    poolAddress: '',
+    quoteAddress: '',
+  })
 
   return (
     <Flex
@@ -42,39 +45,61 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
         <PoolFinderAddressInput
           label="Pool Address"
           placeholder="0×232b…x8482"
-          value={poolAddress}
+          value={addresses.poolAddress}
           onChange={(value) => {
-            setPoolAddress(value)
-            onChange(value, collateralAddress, quoteAddress)
+            setAddresses({
+              ...addresses,
+              poolAddress: value,
+            })
+            onChange({
+              ...addresses,
+              poolAddress: value,
+            })
           }}
         />
         <PoolFinderAddressInput
           label="Collateral Token"
           placeholder="Symbol or addres"
-          value={collateralAddress}
+          value={addresses.collateralAddress}
           onChange={(value) => {
-            setCollateralAddress(value)
-            onChange(poolAddress, value, quoteAddress)
+            setAddresses({
+              ...addresses,
+              collateralAddress: value,
+            })
+            onChange({
+              ...addresses,
+              collateralAddress: value,
+            })
           }}
         />
         <PoolFinderAddressInput
           label="Quote token"
           placeholder="Symbol or addres"
-          value={quoteAddress}
+          value={addresses.quoteAddress}
           onChange={(value) => {
-            setQuoteAddress(value)
-            onChange(poolAddress, collateralAddress, value)
+            setAddresses({
+              ...addresses,
+              quoteAddress: value,
+            })
+            onChange({
+              ...addresses,
+              quoteAddress: value,
+            })
           }}
         />
         <PoolFinderReplacer
-          isVisible={Boolean(collateralAddress || quoteAddress)}
+          isVisible={Boolean(addresses.collateralAddress || addresses.quoteAddress)}
           onClick={() => {
-            const storedCollateralAddress = collateralAddress
-            const storedQuoteAddress = quoteAddress
-
-            setCollateralAddress(storedQuoteAddress)
-            setQuoteAddress(storedCollateralAddress)
-            onChange(poolAddress, storedQuoteAddress, storedCollateralAddress)
+            setAddresses({
+              ...addresses,
+              collateralAddress: addresses.quoteAddress,
+              quoteAddress: addresses.collateralAddress,
+            })
+            onChange({
+              ...addresses,
+              collateralAddress: addresses.quoteAddress,
+              quoteAddress: addresses.collateralAddress,
+            })
           }}
         />
       </Grid>

@@ -117,13 +117,13 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
       </Box>
       <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
         <PoolFinderFormController
-          onChange={(_poolAddress, _collateralAddress, _quoteAddress) => {
-            setPoolAddress(_poolAddress)
-            setCollateralAddress(_collateralAddress)
-            setQuoteAddress(_quoteAddress)
+          onChange={(addresses) => {
+            setCollateralAddress(addresses.collateralAddress)
+            setPoolAddress(addresses.poolAddress)
+            setQuoteAddress(addresses.quoteAddress)
             setResultsKey(
-              _poolAddress || _collateralAddress || _quoteAddress
-                ? `${_poolAddress}-${_collateralAddress}-${_quoteAddress}`
+              addresses.collateralAddress || addresses.poolAddress || addresses.quoteAddress
+                ? Object.values(addresses).join('-')
                 : '',
             )
           }}
