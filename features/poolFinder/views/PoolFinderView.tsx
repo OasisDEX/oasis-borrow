@@ -2,12 +2,13 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { useAppContext } from 'components/AppContextProvider'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { PoolFinderFormLoadingState } from 'features/poolFinder/components/PoolFinderFormLoadingState'
 import { PoolFinderTableLoadingState } from 'features/poolFinder/components/PoolFinderTableLoadingState'
 import { PoolFinderContentController } from 'features/poolFinder/controls/PoolFinderContentController'
 import { PoolFinderFormController } from 'features/poolFinder/controls/PoolFinderFormController'
 import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
-import { parsePoolResponse, validateOraclessPayload } from 'features/poolFinder/helpers'
-import { OraclessPoolResult } from 'features/poolFinder/types'
+import { getOraclessTokenAddress, parsePoolResponse } from 'features/poolFinder/helpers'
+import { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubProductType } from 'features/productHub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -16,7 +17,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useMemo, useState } from 'react'
-import { Box, Text } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 interface PoolFinderViewProps {
   product: ProductHubProductType
@@ -36,54 +37,55 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
   const [resultsKey, setResultsKey] = useState<string>('')
-  const [poolAddress, setPoolAddress] = useState<string>('')
-  const [collateralAddress, setCollateralAddress] = useState<string>('')
-  const [quoteAddress, setQuoteAddress] = useState<string>('')
-  const [errors, setErrors] = useState<string[]>([])
+  const [addresses, setAddresses] = useState<PoolFinderFormState>({
+    collateralAddress: '',
+    poolAddress: '',
+    quoteAddress: '',
+  })
 
   useDebouncedEffect(
     async () => {
-      const validation = validateOraclessPayload({
-        collateralAddress,
-        poolAddress,
-        quoteAddress,
-      })
-
-      setErrors(validation)
-      if (
-        context?.chainId &&
-        tokenPriceUSDData &&
-        resultsKey &&
-        !results[resultsKey] &&
-        validation.length === 0
-      ) {
-        const { pools, size } = await searchAjnaPool({
-          collateralAddress,
-          poolAddress,
-          quoteAddress,
+      if (context?.chainId && tokenPriceUSDData && resultsKey && !results[resultsKey]) {
+        const { collateralToken, quoteToken } = await getOraclessTokenAddress({
+          collateralToken: addresses.collateralAddress,
+          quoteToken: addresses.quoteAddress,
         })
-        if (size > 0) {
-          const identifiedTokensSubscription = identifiedTokens$(
-            uniq(
-              pools.flatMap(({ collateralAddress, quoteTokenAddress }) => [
-                collateralAddress,
-                quoteTokenAddress,
-              ]),
-            ),
-          ).subscribe((identifiedTokens) => {
+
+        if (addresses.poolAddress || collateralToken.length || quoteToken.length) {
+          const pools = await searchAjnaPool({
+            collateralAddress: collateralToken,
+            poolAddress: addresses.poolAddress ? [addresses.poolAddress] : [],
+            quoteAddress: quoteToken,
+          })
+
+          if (pools.length) {
+            const identifiedTokensSubscription = identifiedTokens$(
+              uniq(
+                pools.flatMap(({ collateralAddress, quoteTokenAddress }) => [
+                  collateralAddress,
+                  quoteTokenAddress,
+                ]),
+              ),
+            ).subscribe((identifiedTokens) => {
+              setResults({
+                ...results,
+                [resultsKey]: parsePoolResponse(
+                  context.chainId,
+                  identifiedTokens,
+                  pools,
+                  tokenPriceUSDData,
+                ),
+              })
+              try {
+                identifiedTokensSubscription.unsubscribe()
+              } catch (e) {}
+            })
+          } else {
             setResults({
               ...results,
-              [resultsKey]: parsePoolResponse(
-                context.chainId,
-                identifiedTokens,
-                pools,
-                tokenPriceUSDData,
-              ),
+              [resultsKey]: [],
             })
-            try {
-              identifiedTokensSubscription.unsubscribe()
-            } catch (e) {}
-          })
+          }
         } else {
           setResults({
             ...results,
@@ -92,7 +94,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         }
       }
     },
-    [context?.chainId, collateralAddress, poolAddress, resultsKey, quoteAddress, tokenPriceUSDData],
+    [addresses, context?.chainId, resultsKey, tokenPriceUSDData],
     250,
   )
 
@@ -115,43 +117,38 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         />
         <ProductHubIntro selectedProduct={selectedProduct} />
       </Box>
-      <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
-        <PoolFinderFormController
-          onChange={(addresses) => {
-            setCollateralAddress(addresses.collateralAddress)
-            setPoolAddress(addresses.poolAddress)
-            setQuoteAddress(addresses.quoteAddress)
-            setResultsKey(
-              addresses.collateralAddress || addresses.poolAddress || addresses.quoteAddress
-                ? Object.values(addresses).join('-')
-                : '',
-            )
-          }}
-        />
-      </Box>
       <WithErrorHandler error={[tokenPriceUSDError]}>
         <WithLoadingIndicator
           value={[context, tokenPriceUSDData]}
-          customLoader={<PoolFinderTableLoadingState />}
+          customLoader={<PoolFinderFormLoadingState />}
         >
           {([{ chainId }]) => (
-            <Box sx={{ mt: '48px' }}>
-              {results[resultsKey] ? (
-                <PoolFinderContentController
-                  chainId={chainId}
-                  selectedProduct={selectedProduct}
-                  tableData={results[resultsKey]}
+            <>
+              <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
+                <PoolFinderFormController
+                  onChange={(addresses) => {
+                    setAddresses(addresses)
+                    setResultsKey(
+                      addresses.collateralAddress || addresses.poolAddress || addresses.quoteAddress
+                        ? Object.values(addresses).join('-')
+                        : '',
+                    )
+                  }}
                 />
-              ) : (
-                <>
-                  {resultsKey && errors.length > 0 ? (
-                    errors.map((error) => <Text as="p">{error}</Text>)
-                  ) : (
-                    <>{resultsKey && <PoolFinderTableLoadingState />}</>
-                  )}
-                </>
-              )}
-            </Box>
+              </Box>
+              <Box sx={{ mt: '48px' }}>
+                {results[resultsKey] ? (
+                  <PoolFinderContentController
+                    addresses={addresses}
+                    chainId={chainId}
+                    selectedProduct={selectedProduct}
+                    tableData={results[resultsKey]}
+                  />
+                ) : (
+                  <>{resultsKey && <PoolFinderTableLoadingState />}</>
+                )}
+              </Box>
+            </>
           )}
         </WithLoadingIndicator>
       </WithErrorHandler>

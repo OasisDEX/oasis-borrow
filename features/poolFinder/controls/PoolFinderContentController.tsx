@@ -3,12 +3,13 @@ import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTa
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
 import { parseRows } from 'features/poolFinder/helpers'
-import { OraclessPoolResult } from 'features/poolFinder/types'
+import { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import React, { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface PoolFinderContentControllerProps {
+  addresses: PoolFinderFormState
   chainId: NetworkIds
   selectedProduct: ProductHubProductType
   tableData: OraclessPoolResult[]
@@ -32,8 +33,8 @@ export const PoolFinderContentController: FC<PoolFinderContentControllerProps> =
         <AssetsResponsiveTable rows={rows} />
       ) : (
         <AssetsTableNoResults
-          header={t('discover.table.no-items')}
-          content={t('discover.table.no-items-description')}
+          header={t('ajna.oracless.pool-finder.no-results')}
+          content={t('ajna.oracless.pool-finder.no-results-description')}
         />
       )}
     </AssetsTableContainer>

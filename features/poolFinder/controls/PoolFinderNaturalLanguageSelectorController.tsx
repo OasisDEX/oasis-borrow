@@ -32,7 +32,7 @@ export const PoolFinderNaturalLanguageSelectorController: FC<
           withHeaders={true}
           onChange={(selected) => onChange && onChange(selected.value as ProductHubProductType)}
         />
-        , how about that?
+        {t('ajna.oracless.nls')}
       </Heading>
     </Box>
   )
