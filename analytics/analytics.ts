@@ -12,6 +12,7 @@ import { formatPrecision } from 'helpers/formatters/format'
 import { camelCase, upperFirst } from 'lodash'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
+import { match, P } from 'ts-pattern'
 
 type PropertyNameType = '$initial_referrer' | '$user_id'
 
@@ -1156,7 +1157,7 @@ export const trackingEvents = {
     event: EventTypes.InputChange | EventTypes.ButtonClick,
     eventData: {
       depositAmount: number
-      action?: 'deposit' | 'withdraw'
+      operation?: 'deposit' | 'withdraw' | 'convert'
       txHash?: string
       network?: string
       walletType?: string
@@ -1167,6 +1168,7 @@ export const trackingEvents = {
       section: CommonAnalyticsSections.Form,
       page: Pages.DAISavingsRate,
       product: ProductType.EARN,
+      txHash,
     }
     if (event === EventTypes.InputChange) {
       !mixpanel.has_opted_out_tracking() &&
@@ -1178,12 +1180,19 @@ export const trackingEvents = {
           eventData: { txHash, ...eventDataRest },
         })
     }
+
+    const eventId = match(eventDataRest.operation)
+      .with('deposit', () => 'ConfirmDeposit')
+      .with('withdraw', () => 'ConfirmWithdraw')
+      .with('convert', () => 'ConfirmConvert')
+      .with(P._, () => 'Undefiend')
+      .run()
+
     if (event === EventTypes.ButtonClick) {
       mixpanelInternalAPI(event, {
         ...eventCommons,
         id: {
-          [EventTypes.ButtonClick]:
-            eventData.action === 'deposit' ? 'ConfirmDeposit' : 'ConfirmWithdraw',
+          [EventTypes.ButtonClick]: eventId,
         },
         eventData: mixpanel.has_opted_out_tracking() ? { txHash } : { txHash, ...eventDataRest },
       })

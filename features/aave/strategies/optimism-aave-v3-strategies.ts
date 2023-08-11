@@ -6,7 +6,7 @@ import { IStrategyConfig, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
-import { allActionsAvailable } from './all-actions-available'
+import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
 
 export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
   {
@@ -24,6 +24,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -37,7 +38,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
-    availableActions: allActionsAvailable,
+    availableActions: allActionsAvailableInMultiply,
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
   },
@@ -56,6 +57,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -69,7 +71,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
-    availableActions: allActionsAvailable,
+    availableActions: allActionsAvailableInMultiply,
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
   },
@@ -88,6 +90,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -101,7 +104,7 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Optimism',
-    availableActions: allActionsAvailable,
+    availableActions: allActionsAvailableInMultiply,
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
   },

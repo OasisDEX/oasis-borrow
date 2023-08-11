@@ -1463,6 +1463,10 @@
       "header": "What are the risks",
       "content": "Find out about the underlying creation of the position, the risks, where your capital is at and more in the FAQ section.",
       "button": "Learn more"
+    },
+    "history-coming-soon": {
+      "header": "History support coming soon",
+      "description": "We currently don't support AAVE history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
     }
   },
   "view": "View",
