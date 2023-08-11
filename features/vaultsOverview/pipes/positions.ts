@@ -1,3 +1,4 @@
+import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
@@ -70,12 +71,15 @@ export function createMakerPositions$(
 }
 
 export type AavePosition = Position & {
+  debt: BigNumber
   netValue: BigNumber
   liquidationPrice: BigNumber
+  variableBorrowRate: BigNumber
   fundingCost: BigNumber
   lockedCollateral: BigNumber
   id: string
   multiple: BigNumber
+  riskRatio: IRiskRatio
   isOwner: boolean
   type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
@@ -85,6 +89,8 @@ export type AavePosition = Position & {
   debtToken: string
   protocol: AaveLendingProtocol
   chainId: NetworkIds
+  isAtRiskDanger: boolean
+  isAtRiskWarning: boolean
 }
 
 export function createPositions$(
@@ -211,8 +217,11 @@ function buildAaveViewModel(
           id: isAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,
+          riskRatio: position.riskRatio,
+          debt: debtNotWei,
           liquidationPrice,
           fundingCost,
+          variableBorrowRate,
           contentsUsd: netValueUsd,
           isOwner,
           lockedCollateral: collateralNotWei,
@@ -221,6 +230,8 @@ function buildAaveViewModel(
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,
+          isAtRiskDanger: false,
+          isAtRiskWarning: false,
         }
       },
     ),
@@ -313,6 +324,8 @@ function buildAaveV3OnlyViewModel(
         id: positionId,
         netValue: netValueUsd,
         multiple: position.riskRatio.multiple,
+        riskRatio: position.riskRatio,
+        debt: debtNotWei,
         liquidationPrice,
         fundingCost,
         contentsUsd: netValueUsd,
@@ -323,6 +336,9 @@ function buildAaveV3OnlyViewModel(
         stopLossData: undefined,
         protocol,
         chainId,
+        variableBorrowRate,
+        isAtRiskDanger: false,
+        isAtRiskWarning: false,
       }
     }),
   )

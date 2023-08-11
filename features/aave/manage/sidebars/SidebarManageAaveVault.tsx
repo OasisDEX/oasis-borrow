@@ -635,7 +635,7 @@ export function SidebarManageAaveVault() {
 
   const dropdownConfig = getDropdownConfig({ state, send })
 
-  const SecondaryInputComponent = state.context.strategyConfig.viewComponents.secondaryInput
+  const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
 
   switch (true) {
     case state.matches('frontend.editing'):
@@ -648,7 +648,7 @@ export function SidebarManageAaveVault() {
           }
           content={
             <Grid gap={3}>
-              <SecondaryInputComponent
+              <AdjustRisk
                 state={state}
                 onChainPosition={state.context.protocolData?.position}
                 isLoading={loading}
@@ -674,14 +674,6 @@ export function SidebarManageAaveVault() {
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')
-            },
-          }}
-          textButton={{
-            isLoading: false,
-            disabled: isLocked(state),
-            label: t('manage-earn.aave.vault-form.close'),
-            action: () => {
-              send('CLOSE_POSITION')
             },
           }}
           dropdown={dropdownConfig}

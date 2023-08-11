@@ -17,7 +17,7 @@ import { AaveEarnFaqV2 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
-import { allActionsAvailable } from './all-actions-available'
+import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
 
 export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
   {
@@ -35,6 +35,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       secondaryInput: adjustRiskView(adjustRiskSliders.stethEth),
+      adjustRiskInput: adjustRiskView(adjustRiskSliders.stethEth),
       positionInfo: AaveEarnFaqV2,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
@@ -48,7 +49,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     type: 'Earn',
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailable,
+    availableActions: allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },
@@ -67,6 +68,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -80,7 +82,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailable,
+    availableActions: allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },
@@ -99,6 +101,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -112,7 +115,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailable,
+    availableActions: allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },
@@ -131,6 +134,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
@@ -144,7 +148,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
     featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailable,
+    availableActions: allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },
