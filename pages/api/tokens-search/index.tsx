@@ -1,4 +1,4 @@
-import { get } from 'handlers/tokens-by-symbol/get'
+import { get } from 'handlers/tokens-search/get'
 import { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {

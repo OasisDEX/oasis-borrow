@@ -12,10 +12,15 @@ const paramsSchema = z.object({
 export async function get(req: NextApiRequest, res: NextApiResponse) {
   const { query } = paramsSchema.parse(req.body)
 
+  const caseSensitiveQuery = query.toLowerCase()
   const tokensList = await getTokens()
 
   const response = tokensList?.data.tokens
-    .filter(({ name, symbol }) => name.includes(query) || symbol.includes(query))
+    .filter(
+      ({ name, symbol }) =>
+        name.toLowerCase().includes(caseSensitiveQuery) ||
+        symbol.toLowerCase().includes(caseSensitiveQuery),
+    )
     .reduce<{ [key: string]: string }>(
       (total, { address, symbol }) => ({
         ...total,
