@@ -10,7 +10,7 @@ async function tokensSearch(query: string): Promise<string[]> {
     return [query]
   } else {
     if (query.length > 2) {
-      const response = Object.values(
+      const response = (
         (await (
           await fetch(`/api/tokens-search`, {
             method: 'POST',
@@ -21,8 +21,8 @@ async function tokensSearch(query: string): Promise<string[]> {
               query: [query],
             }),
           })
-        ).json()) as { [key: string]: string },
-      )
+        ).json()) as [string, string][]
+      ).map(([, address]) => address)
 
       return response.length ? response : [query]
     } else return query.length ? [query] : []
