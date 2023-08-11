@@ -2874,6 +2874,7 @@
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
     },
     "oracless": {
+      "nls": "using Ajna",
       "form": {
         "pool-address": "Pool address",
         "collateral-token": "Collateral token",

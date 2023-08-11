@@ -39,6 +39,7 @@ export const PoolFinderAddressInput: FC<PoolFinderAddressInputProps> = ({
       </Label>
       <Input
         id={label}
+        type="text"
         autoComplete="off"
         placeholder={placeholder}
         value={value}
@@ -54,7 +55,7 @@ export const PoolFinderAddressInput: FC<PoolFinderAddressInputProps> = ({
             color: 'primary30',
           },
         }}
-        onChange={(e) => onChange(e.target.value.toLowerCase())}
+        onChange={(e) => onChange(e.target.value)}
       />
     </Box>
   )
