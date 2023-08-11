@@ -1,17 +1,17 @@
 import { Protocol } from '@prisma/client'
-import BigNumber from 'bignumber.js'
 import { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'
-import { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/types'
+import { IStrategyConfig, ManageAaveHeaderProps, StrategyType } from 'features/aave/types'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { map } from 'rxjs/operators'
 
 function AaveHeader({
   strategyConfig,
@@ -25,35 +25,45 @@ function AaveHeader({
   shareButton?: boolean
 }) {
   const { t } = useTranslation()
-  const { getAaveAssetsPrices$, chainlinkUSDCUSDOraclePrice$ } = useAaveContext(
-    strategyConfig.protocol,
-    strategyConfig.network,
-  )
+  const { getAaveAssetsPrices$ } = useAaveContext(strategyConfig.protocol, strategyConfig.network)
   const [positionTokenPrices, positionTokenPricesError] = useObservable(
     getAaveAssetsPrices$({
       tokens: [strategyConfig.tokens.debt, strategyConfig.tokens.collateral],
-    }),
-  )
-  const [chainlinkUSDCUSDPrice, chainlinkUSDCUSDPriceError] = useObservable(
-    chainlinkUSDCUSDOraclePrice$,
+    }).pipe(
+      map(([debtTokenPrice, collateralTokenPrice]) => {
+        const positionPrice =
+          strategyConfig.strategyType === StrategyType.Long
+            ? collateralTokenPrice.div(debtTokenPrice)
+            : debtTokenPrice.div(collateralTokenPrice)
+        const priceFormat =
+          strategyConfig.strategyType === StrategyType.Long
+            ? `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
+            : `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
+        return {
+          positionPrice,
+          priceFormat,
+        }
+      }),
+    ),
   )
 
+  // {
+  //   label: t('ajna.position-page.common.headline.current-market-price', {
+  //     collateralToken,
+  //   }),
+  //     value: `${formatCryptoBalance(
+  //   isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
+  // )} ${priceFormat}`,
+  // },
+
   const detailsList: HeadlineDetailsProp[] = []
-  if (positionTokenPrices && chainlinkUSDCUSDPrice) {
-    const [debtTokenPrice, collateralTokenPrice] = positionTokenPrices
-    detailsList.push(
-      {
-        label: t('system.current-token-price', { token: strategyConfig.tokens.collateral }),
-        value: `$${formatAmount(
-          collateralTokenPrice.div(debtTokenPrice).times(chainlinkUSDCUSDPrice),
-          'USD',
-        )}`,
-      },
-      {
-        label: t('system.current-token-price', { token: strategyConfig.tokens.debt }),
-        value: `$${formatAmount(new BigNumber(chainlinkUSDCUSDPrice), 'USDC')}`,
-      },
-    )
+  if (positionTokenPrices) {
+    detailsList.push({
+      label: t('aave.header.current-market-price'),
+      value: `${formatCryptoBalance(positionTokenPrices.positionPrice)} ${
+        positionTokenPrices.priceFormat
+      }`,
+    })
   }
 
   const protocol: ProtocolLabelProps = {
@@ -62,7 +72,7 @@ function AaveHeader({
   }
 
   return (
-    <WithErrorHandler error={[positionTokenPricesError, chainlinkUSDCUSDPriceError]}>
+    <WithErrorHandler error={[positionTokenPricesError]}>
       <VaultHeadline
         header={t(headerLabelString, { ...strategyConfig.tokens })}
         tokens={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}

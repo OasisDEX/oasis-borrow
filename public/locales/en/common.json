@@ -1237,6 +1237,7 @@
     "header-aave-open": "Open {{collateral}}/{{debt}} Aave position",
     "header-aave-view": "Aave {{collateral}}/{{debt}}",
     "header-aave-view-id": "Aave {{collateral}}/{{debt}} Vault {{vaultId}}",
+    "header-current-market-price": "Current Market Price",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
     "open-vault": "Open {{ilk}} Vault",
@@ -2957,5 +2958,10 @@
   "navigation-network": {
     "l2beat-title": "Learn about L2s",
     "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
+  },
+  "aave": {
+    "header": {
+      "current-market-price": "Current Market Price"
+    }
   }
 }

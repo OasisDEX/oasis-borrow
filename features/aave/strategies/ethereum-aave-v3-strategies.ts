@@ -15,31 +15,31 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
-import { IStrategyConfig, ProductType, ProxyType } from 'features/aave/types'
+import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailable } from './all-actions-available'
 
-type tokenPair = { collateral: string; debt: string }
+type tokenPair = { collateral: string; debt: string; strategyType: StrategyType }
 
 const availableTokenPairs: tokenPair[] = [
-  { collateral: 'CBETH', debt: 'ETH' },
-  { collateral: 'DAI', debt: 'ETH' },
-  { collateral: 'DAI', debt: 'WBTC' },
-  { collateral: 'ETH', debt: 'DAI' },
-  { collateral: 'ETH', debt: 'USDC' },
-  { collateral: 'RETH', debt: 'DAI' },
-  { collateral: 'RETH', debt: 'ETH' },
-  { collateral: 'RETH', debt: 'USDC' },
-  { collateral: 'USDC', debt: 'ETH' },
-  { collateral: 'USDC', debt: 'WBTC' },
-  { collateral: 'WBTC', debt: 'DAI' },
-  { collateral: 'WBTC', debt: 'USDC' },
-  { collateral: 'WSTETH', debt: 'DAI' },
-  { collateral: 'WSTETH', debt: 'ETH' },
-  { collateral: 'WSTETH', debt: 'USDC' },
+  { collateral: 'CBETH', debt: 'ETH', strategyType: StrategyType.Long },
+  { collateral: 'DAI', debt: 'ETH', strategyType: StrategyType.Short },
+  { collateral: 'DAI', debt: 'WBTC', strategyType: StrategyType.Short },
+  { collateral: 'ETH', debt: 'DAI', strategyType: StrategyType.Long },
+  { collateral: 'ETH', debt: 'USDC', strategyType: StrategyType.Long },
+  { collateral: 'RETH', debt: 'DAI', strategyType: StrategyType.Long },
+  { collateral: 'RETH', debt: 'ETH', strategyType: StrategyType.Long },
+  { collateral: 'RETH', debt: 'USDC', strategyType: StrategyType.Long },
+  { collateral: 'USDC', debt: 'ETH', strategyType: StrategyType.Short },
+  { collateral: 'USDC', debt: 'WBTC', strategyType: StrategyType.Short },
+  { collateral: 'WBTC', debt: 'DAI', strategyType: StrategyType.Long },
+  { collateral: 'WBTC', debt: 'USDC', strategyType: StrategyType.Long },
+  { collateral: 'WSTETH', debt: 'DAI', strategyType: StrategyType.Long },
+  { collateral: 'WSTETH', debt: 'ETH', strategyType: StrategyType.Long },
+  { collateral: 'WSTETH', debt: 'USDC', strategyType: StrategyType.Long },
 ]
 
 const borrowStrategies = availableTokenPairs.map((pair) => {
@@ -73,6 +73,7 @@ const borrowStrategies = availableTokenPairs.map((pair) => {
     protocol: LendingProtocol.AaveV3 as AaveLendingProtocol,
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers' as const,
+    strategyType: pair.strategyType,
   }
 })
 
@@ -109,6 +110,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     availableActions: allActionsAvailable,
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
 
   {
@@ -142,6 +144,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     availableActions: allActionsAvailable,
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -174,6 +177,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     availableActions: allActionsAvailable,
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
 
   {
@@ -206,6 +210,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3MultiplyETHusdc',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -237,6 +242,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3MultiplycbETHusdc',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -268,6 +274,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3MultiplywBTCusdc',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -299,6 +306,7 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3MultiplywstETHusdc',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -330,5 +338,6 @@ export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
     featureToggle: 'AaveV3MultiplyrETHusdc',
     availableActions: allActionsAvailable,
     executeTransactionWith: 'ethers',
+    strategyType: StrategyType.Long,
   },
 ]

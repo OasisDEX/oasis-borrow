@@ -53,6 +53,11 @@ export enum ProxyType {
   DpmProxy = 'DpmProxy',
 }
 
+export enum StrategyType {
+  Short = 'short',
+  Long = 'long',
+}
+
 export interface IStrategyConfig {
   network: NetworkNames
   networkId: NetworkIds
@@ -87,4 +92,5 @@ export interface IStrategyConfig {
   featureToggle?: Feature
   defaultSlippage?: BigNumber
   executeTransactionWith: 'web3' | 'ethers'
+  strategyType: StrategyType
 }
