@@ -21,7 +21,7 @@ import { DepreciatedServices, TxData, TxHelpers$ } from './types'
 export function setupMainContext() {
   console.log('Main context setup')
   const once$ = of(undefined).pipe(shareReplay(1))
-  const [web3Context$, setupWeb3Context$, switchChains] = createWeb3Context$()
+  const [web3Context$, setupWeb3Context$] = createWeb3Context$()
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
   const [onEveryBlock$, everyBlock$] = createOnEveryBlock$(web3ContextConnected$)
@@ -66,7 +66,6 @@ export function setupMainContext() {
     oracleContext$,
     send,
     setupWeb3Context$,
-    switchChains,
     txHelpers$,
     web3Context$,
     web3ContextConnected$,

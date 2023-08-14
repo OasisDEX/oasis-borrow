@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/context/types'
 import React, { ChangeEvent } from 'react'
 import { Box } from 'theme-ui'
 

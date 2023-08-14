@@ -1035,6 +1035,7 @@ export function setupProductContext(
     reclaimCollateral$,
     strategyConfig$,
     tokenPriceUSD$,
+    tokenPriceUSDStatic$,
     totalValueLocked$,
     userDpmProxies$,
     userDpmProxy$,

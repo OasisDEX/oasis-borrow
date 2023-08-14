@@ -1,6 +1,7 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { PoolFinderFormLoadingState } from 'features/poolFinder/components/PoolFinderFormLoadingState'
 import { PoolFinderTableLoadingState } from 'features/poolFinder/components/PoolFinderTableLoadingState'
@@ -24,7 +25,8 @@ interface PoolFinderViewProps {
 }
 
 export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
-  const { context$, identifiedTokens$, tokenPriceUSDStatic$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { identifiedTokens$, tokenPriceUSDStatic$ } = useProductContext()
 
   const [context] = useObservable(context$)
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
