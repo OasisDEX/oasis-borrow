@@ -64,6 +64,21 @@ function WithStrategy({
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
+  // const chainId = aaveManageStateMachine.context?.web3Context?.chainId || 0
+  // const vaultFromApi$ = useMemo(
+  //   () =>
+  //     getVaultFromApi$(
+  //       positionId.vaultId || 0,
+  //       chainId,
+  //       strategyConfig?.protocol || LendingProtocol.AaveV3,
+  //     ).pipe(take(1)),
+  //   [positionId.vaultId, chainId, strategyConfig?.protocol],
+  // )
+  //
+  // const [vaultFromApi, vaultFromApiError] = useObservable(vaultFromApi$)
+  // console.log('vaultFromApiError', vaultFromApiError)
+  // console.log('vault-type', vaultFromApi?.type)
+
   if (strategyConfigError) {
     console.warn(
       `Strategy config not found for network: ${network} and positionId`,

@@ -486,6 +486,8 @@ export function SidebarOpenAaveVault() {
     case state.matches('frontend.stopLossTxFailure'):
       return <StopLossTxFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):
+    case state.matches('frontend.savePositionToDb'):
+    case state.matches('frontend.finalized'):
       return <OpenAaveSuccessStateView state={state} send={send} isLoading={loading} />
     default: {
       return <>{JSON.stringify(state.value)}</>

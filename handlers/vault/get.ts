@@ -11,7 +11,6 @@ const paramsSchema = z.object({
 
 export async function getVault(req: NextApiRequest, res: NextApiResponse) {
   const params = paramsSchema.parse(req.query)
-  console.log('params', params)
   const vault = await selectVaultByIdAndChainId({
     vault_id: parseInt(params.id, 10),
     chain_id: parseInt(params.chainId),
@@ -25,6 +24,7 @@ export async function getVault(req: NextApiRequest, res: NextApiResponse) {
       vaultId: vault.vault_id,
       type: vault.type,
       ownerAddress: vault.owner_address,
+      protocol: vault.protocol,
       chainId: vault.chain_id,
     })
   }
