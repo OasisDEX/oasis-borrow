@@ -34,7 +34,7 @@ import {
   createProxyConsumed$,
   createReadPositionCreatedEvents$,
   PositionCreated,
-} from 'features/aave/services/readPositionCreatedEvents'
+} from 'features/aave/services'
 import { AccountDetails, createAccountData } from 'features/account/AccountData'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$, UserReferralState } from 'features/referralOverview/user'
