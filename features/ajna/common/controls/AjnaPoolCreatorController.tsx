@@ -8,6 +8,7 @@ import { amountToWad } from 'blockchain/utils'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
+import { DetailsSection } from 'components/DetailsSection'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
 import { TokensGroup } from 'components/TokensGroup'
@@ -19,11 +20,12 @@ import { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { handleTransaction, TxDetails } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
+import { TextInput } from 'helpers/TextInput'
 import { zero } from 'helpers/zero'
 import { inRange } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
-import { Button, Flex, Input, Spinner } from 'theme-ui'
+import { Box, Button, Flex, Grid, Spinner } from 'theme-ui'
 
 export function AjnaPoolCreatorController() {
   const { context$, txHelpers$ } = useAppContext()
@@ -31,7 +33,7 @@ export function AjnaPoolCreatorController() {
   const [txHelpersData] = useObservable(txHelpers$)
 
   const [boundries, setBoundries] = useState<PoolCreatorBoundries>()
-  const [txDetails, setTxDetails] = useState<TxDetails>()
+  const [, setTxDetails] = useState<TxDetails>()
   const [collateralAddress, setCollateralAddress] = useState<string>(
     '0xeb089cfb6d839c0d6fa9dc55fc6826e69a4c22b1',
   )
@@ -59,73 +61,101 @@ export function AjnaPoolCreatorController() {
   return (
     <WithConnection>
       <AnimatedWrapper sx={{ mb: 5 }}>
-        <AjnaHeader title="Ajna Pool Creator" intro="Lorem ipsum dolor sit amet" />
-        <Input value={collateralAddress} onChange={(e) => setCollateralAddress(e.target.value)} />
-        <Input value={quoteAddress} onChange={(e) => setQuoteAddress(e.target.value)} />
-        <WithLoadingIndicator
-          value={[context, txHelpersData, boundries]}
-          customLoader={<>Loading</>}
-        >
-          {([, txHelpers, { min, max }]) => (
-            <>
-              <SliderValuePicker
-                disabled={false}
-                lastValue={interestRate}
-                minBoundry={min}
-                leftLabel="Pool's Interest rate"
-                leftBoundry={interestRate}
-                leftBoundryFormatter={(value) => `${value.toFixed(1)}%`}
-                leftBottomLabel={`Minimum ${min}%`}
-                rightBottomLabel={`Up to ${max}%`}
-                maxBoundry={max}
-                onChange={(value) => setInterestRate(value)}
-                step={0.1}
+        <AjnaHeader
+          title="Ajna Pool Creator"
+          intro="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maybe some explanation what is going on here? Link to knowledge base?"
+        />
+        <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
+          <WithLoadingIndicator
+            value={[context, txHelpersData, boundries]}
+            customLoader={<>Loading</>}
+          >
+            {([, txHelpers, { min, max }]) => (
+              <DetailsSection
+                title="Configure new Ajna pool"
+                content={
+                  <Grid gap={3}>
+                    <TextInput
+                      label="Collateral token address"
+                      placeholder="0×232b…x8482"
+                      value={collateralAddress}
+                      onChange={(value) => setCollateralAddress(value)}
+                    />
+                    <TextInput
+                      label="Quote token address"
+                      placeholder="0×232b…x8482"
+                      value={quoteAddress}
+                      onChange={(value) => setQuoteAddress(value)}
+                    />
+                    <SliderValuePicker
+                      disabled={false}
+                      lastValue={interestRate}
+                      minBoundry={min}
+                      leftLabel="Pool's Interest rate"
+                      leftBoundry={interestRate}
+                      leftBoundryFormatter={(value) => `${value.toFixed(1)}%`}
+                      leftBottomLabel={`Minimum ${min}%`}
+                      rightBottomLabel={`Up to ${max}%`}
+                      maxBoundry={max}
+                      onChange={(value) => setInterestRate(value)}
+                      step={0.1}
+                    />
+                    <MessageCard messages={errors} type="error" withBullet={errors.length > 1} />
+                    {isReady && collateralToken && quoteToken && (
+                      <Flex>
+                        You're about to create a
+                        <TokensGroup tokens={[collateralToken, quoteToken]} />
+                        <strong>
+                          {collateralToken}/{quoteToken}
+                        </strong>{' '}
+                        pool
+                      </Flex>
+                    )}
+                  </Grid>
+                }
+                footer={
+                  <Flex sx={{ justifyContent: 'flex-end' }}>
+                    <Button
+                      disabled={!isReady}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '240px',
+                      }}
+                      onClick={() => {
+                        txHelpers
+                          .sendWithGasEstimation(deployAjnaPool, {
+                            kind: TxMetaKind.deployAjnaPool,
+                            collateralAddress,
+                            quoteAddress,
+                            interestRate: amountToWad(interestRate.div(100)).toString(),
+                          })
+                          .pipe(
+                            takeWhileInclusive(
+                              (txState) => !takeUntilTxState.includes(txState.status),
+                            ),
+                          )
+                          .subscribe((txState) => {
+                            handleTransaction({
+                              txState,
+                              ethPrice: zero,
+                              setTxDetails,
+                            })
+                          })
+                      }}
+                    >
+                      {isLoading && (
+                        <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />
+                      )}
+                      Create
+                    </Button>
+                  </Flex>
+                }
               />
-              <MessageCard messages={errors} type="error" withBullet={errors.length > 1} />
-              {isReady && collateralToken && quoteToken && (
-                <Flex>
-                  You're about to create a
-                  <TokensGroup tokens={[collateralToken, quoteToken]} />
-                  <strong>
-                    {collateralToken}/{quoteToken}
-                  </strong>{' '}
-                  pool
-                </Flex>
-              )}
-              <Button
-                disabled={!isReady}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '240px',
-                }}
-                onClick={() => {
-                  txHelpers
-                    .sendWithGasEstimation(deployAjnaPool, {
-                      kind: TxMetaKind.deployAjnaPool,
-                      collateralAddress,
-                      quoteAddress,
-                      interestRate: amountToWad(interestRate.div(100)).toString(),
-                    })
-                    .pipe(
-                      takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)),
-                    )
-                    .subscribe((txState) => {
-                      handleTransaction({
-                        txState,
-                        ethPrice: zero,
-                        setTxDetails,
-                      })
-                    })
-                }}
-              >
-                {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}
-                Create
-              </Button>
-            </>
-          )}
-        </WithLoadingIndicator>
+            )}
+          </WithLoadingIndicator>
+        </Box>
       </AnimatedWrapper>
     </WithConnection>
   )
