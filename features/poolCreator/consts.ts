@@ -1,0 +1,1 @@
+export const DEFAULT_POOL_INTEREST_RATE = 2.5

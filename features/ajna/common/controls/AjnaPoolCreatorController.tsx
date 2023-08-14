@@ -9,16 +9,21 @@ import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { MessageCard } from 'components/MessageCard'
+import { TokensGroup } from 'components/TokensGroup'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
+import { DEFAULT_POOL_INTEREST_RATE } from 'features/poolCreator/consts'
+import { usePoolCreatorData } from 'features/poolCreator/hooks/usePoolCreatorData'
 import { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { handleTransaction, TxDetails } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
+import { inRange } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
-import { Button, Input } from 'theme-ui'
+import { Button, Flex, Input, Spinner } from 'theme-ui'
 
 export function AjnaPoolCreatorController() {
   const { context$, txHelpers$ } = useAppContext()
@@ -33,30 +38,22 @@ export function AjnaPoolCreatorController() {
   const [quoteAddress, setQuoteAddress] = useState<string>(
     '0x10aa0cf12aab305bd77ad8f76c037e048b12513b',
   )
-  const [interestRate, setInterestRate] = useState<BigNumber>(new BigNumber(2.5))
+  const [interestRate, setInterestRate] = useState<BigNumber>(
+    new BigNumber(DEFAULT_POOL_INTEREST_RATE),
+  )
 
-  useEffect(() => {
-    console.log(`collateralAddress: ${collateralAddress}`)
-    console.log(`quoteAddress: ${quoteAddress}`)
-    console.log(`interestRate: ${interestRate}`)
-    console.log(amountToWad(interestRate.div(100)).toString())
-  }, [collateralAddress, quoteAddress, interestRate])
-  useEffect(() => {
-    console.log(txDetails)
-  }, [txDetails])
-
-  useEffect(() => {
-    console.log(`collateralAddress: ${collateralAddress}`)
-    console.log(`quoteAddress: ${quoteAddress}`)
-    console.log(`interestRate: ${interestRate}`)
-    console.log(amountToWad(interestRate.div(100)).toString())
-  }, [collateralAddress, quoteAddress, interestRate])
+  const { collateralToken, errors, isLoading, isReady, quoteToken } = usePoolCreatorData({
+    collateralAddress,
+    quoteAddress,
+  })
 
   useEffect(() => {
     if (context?.chainId)
-      void getAjnaPoolInterestRateBoundaries(context.chainId).then((response) =>
-        setBoundries(response),
-      )
+      void getAjnaPoolInterestRateBoundaries(context.chainId).then(({ min, max }) => {
+        setBoundries({ min, max })
+        if (!inRange(DEFAULT_POOL_INTEREST_RATE, min.toNumber(), max.toNumber()))
+          setInterestRate(max.minus(min).div(3).decimalPlaces(1, BigNumber.ROUND_HALF_DOWN))
+      })
   }, [context?.chainId])
 
   return (
@@ -75,15 +72,34 @@ export function AjnaPoolCreatorController() {
                 disabled={false}
                 lastValue={interestRate}
                 minBoundry={min}
-                leftBoundry={min}
-                leftBoundryFormatter={(value) => `${value.toString()}%`}
+                leftLabel="Pool's Interest rate"
+                leftBoundry={interestRate}
+                leftBoundryFormatter={(value) => `${value.toFixed(1)}%`}
+                leftBottomLabel={`Minimum ${min}%`}
+                rightBottomLabel={`Up to ${max}%`}
                 maxBoundry={max}
-                rightBoundry={max}
-                rightBoundryFormatter={(value) => `${value.toString()}%`}
                 onChange={(value) => setInterestRate(value)}
                 step={0.1}
               />
+              <MessageCard messages={errors} type="error" withBullet={errors.length > 1} />
+              {isReady && collateralToken && quoteToken && (
+                <Flex>
+                  You're about to create a
+                  <TokensGroup tokens={[collateralToken, quoteToken]} />
+                  <strong>
+                    {collateralToken}/{quoteToken}
+                  </strong>{' '}
+                  pool
+                </Flex>
+              )}
               <Button
+                disabled={!isReady}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '240px',
+                }}
                 onClick={() => {
                   txHelpers
                     .sendWithGasEstimation(deployAjnaPool, {
@@ -104,7 +120,8 @@ export function AjnaPoolCreatorController() {
                     })
                 }}
               >
-                Send
+                {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}
+                Create
               </Button>
             </>
           )}

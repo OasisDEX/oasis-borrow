@@ -8,8 +8,8 @@ export interface SliderValuePickerProps {
   sliderPercentageFill?: BigNumber
   leftBoundry: BigNumber
   leftBoundryFormatter: (input: BigNumber) => TranslateStringType | JSX.Element
-  rightBoundry: BigNumber
-  rightBoundryFormatter: (input: BigNumber) => TranslateStringType | JSX.Element
+  rightBoundry?: BigNumber
+  rightBoundryFormatter?: (input: BigNumber) => TranslateStringType | JSX.Element
   onChange: (input: BigNumber) => void
   minBoundry: BigNumber
   maxBoundry: BigNumber
@@ -62,12 +62,14 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
             {props.leftBoundryFormatter(props.leftBoundry)}
           </Text>
         </Grid>
-        <Grid gap={2} sx={{ textAlign: 'right' }}>
-          {props.rightLabel && <Text as="span">{props.rightLabel}</Text>}
-          <Text as="span" variant="boldParagraph1" sx={props.rightBoundryStyling}>
-            {props.rightBoundryFormatter(props.rightBoundry)}
-          </Text>
-        </Grid>
+        {props.rightBoundry && props.rightBoundryFormatter && (
+          <Grid gap={2} sx={{ textAlign: 'right' }}>
+            {props.rightLabel && <Text as="span">{props.rightLabel}</Text>}
+            <Text as="span" variant="boldParagraph1" sx={props.rightBoundryStyling}>
+              {props.rightBoundryFormatter(props.rightBoundry)}
+            </Text>
+          </Grid>
+        )}
       </Flex>
       <Box my={1}>
         <Slider
