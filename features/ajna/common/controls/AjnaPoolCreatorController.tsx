@@ -25,7 +25,7 @@ import { zero } from 'helpers/zero'
 import { inRange } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
-import { Box, Button, Flex, Grid, Spinner } from 'theme-ui'
+import { Box, Button, Flex, Grid, Spinner, Text } from 'theme-ui'
 
 export function AjnaPoolCreatorController() {
   const { context$, txHelpers$ } = useAppContext()
@@ -110,13 +110,26 @@ export function AjnaPoolCreatorController() {
                       </Box>
                     )}
                     {isReady && collateralToken && quoteToken && (
-                      <Flex>
-                        You're about to create a
-                        <TokensGroup tokens={[collateralToken, quoteToken]} />
-                        <strong>
-                          {collateralToken}/{quoteToken}
-                        </strong>{' '}
-                        pool
+                      <Flex
+                        sx={{
+                          p: 3,
+                          backgroundColor: 'neutral30',
+                          borderRadius: 'medium',
+                        }}
+                      >
+                        <Text
+                          variant="paragraph3"
+                          sx={{ display: 'flex', alignItems: 'center', fontWeight: 'semiBold' }}
+                        >
+                          You're about to create a
+                          <Flex sx={{ alignItems: 'center', mx: 1 }}>
+                            <TokensGroup tokens={[collateralToken, quoteToken]} sx={{ mr: 1 }} />
+                            <Text as="strong">
+                              {collateralToken}/{quoteToken}
+                            </Text>
+                          </Flex>
+                          pool
+                        </Text>
                       </Flex>
                     )}
                   </Grid>
