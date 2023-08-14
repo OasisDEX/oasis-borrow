@@ -7,20 +7,20 @@ import { AjnaErc20PoolFactory } from 'types/web3-v1-contracts'
 
 export interface DeployAjnaPoolTxData extends TxMeta {
   kind: TxMetaKind.deployAjnaPool
-  collateralToken: string
-  quoteToken: string
-  interestRate: number
+  collateralAddress: string
+  quoteAddress: string
+  interestRate: string
 }
 
-export const claimAjnaRewards: TransactionDef<DeployAjnaPoolTxData> = {
+export const deployAjnaPool: TransactionDef<DeployAjnaPoolTxData> = {
   call: (_, { contract, chainId }) => {
     return contract<AjnaErc20PoolFactory>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaRewardsClaimer,
+      getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaERC20PoolFactory,
     ).methods.deployPool
   },
   prepareArgs: (data) => {
-    const { collateralToken, quoteToken, interestRate } = data
+    const { collateralAddress, quoteAddress, interestRate } = data
 
-    return [collateralToken, quoteToken, interestRate]
+    return [collateralAddress, quoteAddress, interestRate]
   },
 }
