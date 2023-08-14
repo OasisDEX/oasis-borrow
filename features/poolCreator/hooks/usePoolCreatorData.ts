@@ -22,17 +22,21 @@ export function usePoolCreatorData({ collateralAddress, quoteAddress }: usePoolC
   const [errors, setErrors] = useState<string[]>([])
 
   useEffect(() => {
-    setErrors([
-      ...(!isAddress(collateralAddress)
-        ? ['Collateral token address is not valid contract address']
-        : []),
-      ...(!isAddress(quoteAddress) ? ['Quote token address is not valid contract address'] : []),
-      ...(collateralAddress === quoteAddress ? ['Collateral and token addresses has to be different'] : []),
-    ])
+    const errors = []
+
+    if (collateralAddress.length && !isAddress(collateralAddress))
+      errors.push('Collateral token address is not valid contract address')
+    if (quoteAddress.length && !isAddress(quoteAddress))
+      errors.push('Quote token address is not valid contract address')
+    if (collateralAddress.length && quoteAddress.length && collateralAddress === quoteAddress)
+      errors.push('Collateral and token addresses has to be different')
+
+    setErrors(errors)
     setIsLoading(true)
     setIsReady(false)
     cancelablePromise?.cancel()
   }, [collateralAddress, quoteAddress])
+
   useDebouncedEffect(
     () => {
       if (

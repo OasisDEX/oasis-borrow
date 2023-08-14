@@ -44,7 +44,7 @@ export function AjnaPoolCreatorController() {
     new BigNumber(DEFAULT_POOL_INTEREST_RATE),
   )
 
-  const { collateralToken, errors, isLoading, isReady, quoteToken } = usePoolCreatorData({
+  const { collateralToken, errors, isError, isLoading, isReady, quoteToken } = usePoolCreatorData({
     collateralAddress,
     quoteAddress,
   })
@@ -100,7 +100,15 @@ export function AjnaPoolCreatorController() {
                       onChange={(value) => setInterestRate(value)}
                       step={0.1}
                     />
-                    <MessageCard messages={errors} type="error" withBullet={errors.length > 1} />
+                    {isError && (
+                      <Box sx={{ mt: 2 }}>
+                        <MessageCard
+                          messages={errors}
+                          type="error"
+                          withBullet={errors.length > 1}
+                        />
+                      </Box>
+                    )}
                     {isReady && collateralToken && quoteToken && (
                       <Flex>
                         You're about to create a
