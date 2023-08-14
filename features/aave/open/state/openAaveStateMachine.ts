@@ -419,6 +419,19 @@ export function createOpenAaveStateMachine(
             },
             txSuccess: {
               entry: ['killTransactionMachine', 'killStopLossStateMachine'],
+              after: {
+                0: 'savePositionToDb',
+              },
+            },
+            savePositionToDb: {
+              invoke: {
+                src: 'savePositionToDb$',
+                id: 'savePositionToDb$',
+                onDone: 'finalized',
+                onError: 'finalized',
+              },
+            },
+            finalized: {
               type: 'final',
             },
           },
