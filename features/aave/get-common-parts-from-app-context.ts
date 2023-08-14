@@ -18,9 +18,8 @@ import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
 
-import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
-import { getOperationExecutorTransactionMachine } from './common/services/getTransactionMachine'
 import { getProxiesRelatedWithPosition$ } from './helpers'
+import { getAvailableDPMProxy$, getOperationExecutorTransactionMachine } from './services'
 import { PositionId } from './types'
 
 export function getCommonPartsFromProductContext(

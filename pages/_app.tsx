@@ -25,8 +25,7 @@ import { TopBanner } from 'components/TopBanner'
 import { WithArrow } from 'components/WithArrow'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
-import { initWeb3OnBoard } from 'features/web3OnBoard/initWeb3OnBoard'
-import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
+import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
@@ -210,9 +209,9 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
             <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
               <MainContextProvider>
                 <DeferedContextProvider context={mainContext}>
-                  <Web3OnBoardConnectorProvider>
-                    <Web3ReactProvider {...{ getLibrary }}>
-                      <ModalProvider>
+                  <ModalProvider>
+                    <Web3OnBoardConnectorProvider>
+                      <Web3ReactProvider {...{ getLibrary }}>
                         <HeadTags />
                         {seoTags}
                         <SetupWeb3Context>
@@ -235,9 +234,9 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                             </SharedUIProvider>
                           </NotificationSocketProvider>
                         </SetupWeb3Context>
-                      </ModalProvider>
-                    </Web3ReactProvider>
-                  </Web3OnBoardConnectorProvider>
+                      </Web3ReactProvider>
+                    </Web3OnBoardConnectorProvider>
+                  </ModalProvider>
                 </DeferedContextProvider>
               </MainContextProvider>
             </Web3OnboardProvider>

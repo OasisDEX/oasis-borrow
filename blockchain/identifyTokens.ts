@@ -1,7 +1,8 @@
 import { Tokens } from '@prisma/client'
 import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { getToken, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
+import { getToken, getTokenGuarded, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
+import { uniq } from 'lodash'
 import { combineLatest, from, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -15,7 +16,7 @@ function reduceIdentifiedTokens(
 ) {
   return {
     ...total,
-    [address]: {
+    [address.toLowerCase()]: {
       precision,
       name,
       symbol,
@@ -38,8 +39,14 @@ export const identifyTokens$ = (
       if ('tokens' in contracts) {
         const tokensContracts = contracts.tokens
 
-        const localTokens = Object.keys(tokensContracts).filter((token) =>
-          tokensAddresses.includes(tokensContracts[token].address),
+        const localTokens = uniq(
+          Object.keys(tokensContracts)
+            .filter(
+              (token) =>
+                tokensAddresses.includes(tokensContracts[token].address.toLowerCase()) &&
+                getTokenGuarded(token),
+            )
+            .map((token) => (token === 'WETH' ? 'ETH' : token)),
         )
         localTokensAddresses = localTokens.map((token) =>
           tokensContracts[token].address.toLowerCase(),

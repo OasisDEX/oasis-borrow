@@ -8,13 +8,14 @@ export {
   loadStrategyFromTokens,
   loadStrategyFromUrl,
   convertDefaultRiskRatioToActualRiskRatio,
-  ManageCollateralActionsEnum,
-  ManageDebtActionsEnum,
   isSupportedStrategy,
-} from './strategy-config'
+} from './strategies'
 export {
   aaveContext,
   AaveContextProvider,
   useAaveContext,
   isAaveContextAvailable,
 } from './aave-context-provider'
+export { wstethRiskRatio } from './constants'
+export { ManageDebtActionsEnum } from './types/manage-debt-actions-enum'
+export { ManageCollateralActionsEnum } from './types/manage-collateral-actions-enum'

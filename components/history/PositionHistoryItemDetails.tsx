@@ -1,8 +1,8 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
-import { AaveHistoryEvent } from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -15,19 +15,21 @@ import React, { FC } from 'react'
 import { PositionHistoryRow } from './PositionHistoryRow'
 
 interface PositionHistoryItemDetailsProps {
-  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>
   collateralToken: string
-  quoteToken: string
+  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>
+  isOracless?: boolean
   isShort?: boolean
   priceFormat?: string
+  quoteToken: string
 }
 
 export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = ({
-  event,
   collateralToken,
-  quoteToken,
+  event,
+  isOracless,
   isShort,
   priceFormat,
+  quoteToken,
 }) => {
   const { t } = useTranslation()
 
@@ -58,7 +60,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatCryptoBalance(event.debtAfter)} {quoteToken}
         </PositionHistoryRow>
       )}
-      {event.ltvBefore && event.ltvAfter && (
+      {!isOracless && event.ltvBefore && event.ltvAfter && (
         <PositionHistoryRow label={t('position-history.ltv')}>
           {formatDecimalAsPercent(
             isShort ? normalizeValue(one.div(event.ltvBefore)) : event.ltvBefore,
@@ -86,11 +88,18 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {priceFormat || `${collateralToken}/${quoteToken}`}
         </PositionHistoryRow>
       )}
-      {'originationFee' in event && event.originationFee?.gt(zero) && (
+      {!isOracless && 'originationFee' in event && event.originationFee?.gt(zero) && (
         <PositionHistoryRow label={t('position-history.origination-fee')}>
           {formatFiatBalance(event.originationFee)} USD
         </PositionHistoryRow>
       )}
+      {isOracless &&
+        'originationFeeInQuoteToken' in event &&
+        event.originationFeeInQuoteToken?.gt(zero) && (
+          <PositionHistoryRow label={t('position-history.origination-fee')}>
+            {formatFiatBalance(event.originationFeeInQuoteToken)} {quoteToken}
+          </PositionHistoryRow>
+        )}
       {event.moveQuoteFromPrice && event.moveQuoteToPrice && (
         <PositionHistoryRow label={t('position-history.lending-price')}>
           {formatFiatBalance(
@@ -150,9 +159,14 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.collateralTokenPriceUSD)} USD
         </PositionHistoryRow>
       )}
-      {event.totalFee && (
+      {!isOracless && event.totalFee && (
         <PositionHistoryRow label={t('position-history.total-fees')}>
           {formatFiatBalance(event.totalFee)} USD
+        </PositionHistoryRow>
+      )}
+      {isOracless && event.totalFeeInQuoteToken && (
+        <PositionHistoryRow label={t('position-history.total-fees')}>
+          {formatFiatBalance(event.totalFeeInQuoteToken)} {quoteToken}
         </PositionHistoryRow>
       )}
       {/* AUCTION events */}

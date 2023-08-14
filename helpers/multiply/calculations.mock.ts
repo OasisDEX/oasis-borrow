@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { one, zero } from 'helpers/zero'
 
@@ -52,6 +53,7 @@ export const mockedMultiplyEvents: VaultHistoryEvent[] = [
     marketPrice: new BigNumber(2000),
     depositDai: new BigNumber(0),
     gasFee: new BigNumber(0.01),
+    chainId: NetworkIds.MAINNET,
   },
   {
     ...multiplyBaseEvent,
@@ -63,6 +65,7 @@ export const mockedMultiplyEvents: VaultHistoryEvent[] = [
     marketPrice: new BigNumber(2005),
     depositDai: new BigNumber(0),
     gasFee: new BigNumber(0.0375),
+    chainId: NetworkIds.MAINNET,
   },
   {
     token: 'ETH',
@@ -85,6 +88,7 @@ export const mockedMultiplyEvents: VaultHistoryEvent[] = [
     ethPrice: new BigNumber(2650),
     marketPrice: new BigNumber(2700),
     gasFee: new BigNumber(0.02225),
+    chainId: NetworkIds.MAINNET,
   },
   {
     token: 'ETH',
@@ -118,5 +122,6 @@ export const mockedMultiplyEvents: VaultHistoryEvent[] = [
     ethPrice: new BigNumber(2650),
     marketPrice: new BigNumber(2650),
     gasFee: new BigNumber(0.02825),
+    chainId: NetworkIds.MAINNET,
   },
 ]

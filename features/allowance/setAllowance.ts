@@ -1,6 +1,8 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { Observable, of } from 'rxjs'
@@ -46,8 +48,14 @@ export function setAllowance(
 export function setDsrAllowance(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: AllowanceChanges) => void,
-  state: StateDependencies,
+  state: StateDependencies & {
+    isMintingSDai: boolean
+  },
 ) {
+  const {
+    tokens: { SDAI },
+  } = getNetworkContracts(NetworkIds.MAINNET)
+
   txHelpers$
     .pipe(
       first(),
@@ -55,7 +63,7 @@ export function setDsrAllowance(
         sendWithGasEstimation(approve, {
           kind: TxMetaKind.approve,
           token: state.token,
-          spender: state.proxyAddress!,
+          spender: state.isMintingSDai ? SDAI.address : state.proxyAddress!,
           amount: state.allowanceAmount!,
         }).pipe(
           transactionToX<AllowanceChanges, ApproveData>(

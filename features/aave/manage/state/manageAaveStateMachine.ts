@@ -11,6 +11,8 @@ import {
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
+import { getTxTokenAndAmount } from 'features/aave/helpers'
+import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
   BaseAaveContext,
   BaseAaveEvent,
@@ -20,10 +22,8 @@ import {
   ManageTokenInput,
   ProxyType,
   RefTransactionMachine,
-} from 'features/aave/common'
-import { getTxTokenAndAmount } from 'features/aave/helpers'
-import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
-import { PositionId } from 'features/aave/types'
+} from 'features/aave/types'
+import { PositionId } from 'features/aave/types/position-id'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
@@ -246,7 +246,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
-              entry: ['reset'],
+              entry: ['reset', 'killCurrentParametersMachine', 'spawnDepositBorrowMachine'],
               on: {
                 NEXT_STEP: [
                   {
@@ -280,7 +280,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageDebt: {
-              entry: ['reset'],
+              entry: ['reset', 'killCurrentParametersMachine', 'spawnDepositBorrowMachine'],
               on: {
                 NEXT_STEP: [
                   {
@@ -498,8 +498,6 @@ export function createManageAaveStateMachine(
           cond: 'canChangePosition',
           target: 'frontend.manageCollateral',
           actions: [
-            'killCurrentParametersMachine',
-            'spawnDepositBorrowMachine',
             'resetTokenActionValue',
             'updateCollateralTokenAction',
             'setTransactionTokenToCollateral',
@@ -508,13 +506,7 @@ export function createManageAaveStateMachine(
         MANAGE_DEBT: {
           cond: 'canChangePosition',
           target: 'frontend.manageDebt',
-          actions: [
-            'killCurrentParametersMachine',
-            'spawnDepositBorrowMachine',
-            'resetTokenActionValue',
-            'updateDebtTokenAction',
-            'setTransactionTokenToDebt',
-          ],
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction', 'setTransactionTokenToDebt'],
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',

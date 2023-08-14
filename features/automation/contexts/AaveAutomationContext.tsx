@@ -1,6 +1,6 @@
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { ManageAaveContext } from 'features/aave/manage/state'
+import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { getAutomationAavePositionData } from 'features/automation/common/context/getAutomationAavePositionData'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
 import { createGetAaveStopLossMetadata } from 'features/automation/metadata/aave/stopLossMetadata'

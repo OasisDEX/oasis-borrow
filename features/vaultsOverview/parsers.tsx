@@ -183,6 +183,32 @@ export function parseMakerEarnPositionRows(
     }),
   )
 }
+
+export function parseAaveBorrowPositionRows(positions: AavePosition[]): PositionTableBorrowRow[] {
+  return positions.map((position) => ({
+    asset: `${position.token}/${position.debtToken}`,
+    collateralLocked: position.lockedCollateral,
+    collateralToken: position.token,
+    debt: position.debt,
+    debtToken: position.debtToken,
+    icons: [position.token, position.debtToken],
+    id: position.id.toString(),
+    network: networksById[position.chainId].name,
+    protocol: position.protocol,
+    riskRatio: {
+      level: position.riskRatio.loanToValue,
+      isAtRiskDanger: position.isAtRiskDanger,
+      isAtRiskWarning: position.isAtRiskWarning,
+      type: 'LTV',
+    },
+    stopLossData: position.stopLossData,
+    autoSellData: position.autoSellData,
+    isOwner: position.isOwner,
+    url: position.url,
+    variable: position.variableBorrowRate,
+  }))
+}
+
 export function parseAaveMultiplyPositionRows(
   positions: AavePosition[],
 ): PositionTableMultiplyRow[] {
@@ -313,29 +339,41 @@ export function parseAjnaMultiplyPositionRows(
 export function parseAjnaEarnPositionRows(
   positions: AjnaPositionDetails[],
 ): PositionTableEarnRow[] {
-  return positions.map(({ details: { collateralToken, vaultId, quoteToken }, position }) => {
-    const earnPosition = position as AjnaEarnPosition
-    const liquidity = negativeToZero(
-      getPoolLiquidity({
-        buckets: position.pool.buckets,
-        debt: position.pool.debt,
-      }),
-    )
+  return positions.map(
+    ({
+      details: { collateralToken, vaultId, quoteToken, collateralTokenAddress, quoteTokenAddress },
+      position,
+    }) => {
+      const earnPosition = position as AjnaEarnPosition
+      const liquidity = negativeToZero(
+        getPoolLiquidity({
+          buckets: position.pool.buckets,
+          debt: position.pool.debt,
+        }),
+      )
+      const isOracless = isPoolOracless({
+        collateralToken,
+        quoteToken,
+      })
+      const poolUrl = isOracless
+        ? `${collateralTokenAddress}-${quoteTokenAddress}`
+        : `${collateralToken}-${quoteToken}`
 
-    return {
-      asset: `${collateralToken}/${quoteToken}`,
-      icons: [collateralToken, quoteToken],
-      id: vaultId,
-      netValue: earnPosition.netValue,
-      pnl: earnPosition.pnl,
-      liquidity,
-      liquidityToken: quoteToken,
-      // TODO: should get chainId from the source event so it works in the generic way for all chains
-      network: NetworkNames.ethereumMainnet,
-      protocol: LendingProtocol.Ajna,
-      url: `/ethereum/ajna/earn/${collateralToken}-${quoteToken}/${vaultId}`,
-    }
-  })
+      return {
+        asset: `${collateralToken}/${quoteToken}`,
+        icons: [collateralToken, quoteToken],
+        id: vaultId,
+        netValue: earnPosition.netValue,
+        pnl: earnPosition.pnl.withoutFees,
+        liquidity,
+        liquidityToken: quoteToken,
+        // TODO: should get chainId from the source event so it works in the generic way for all chains
+        network: NetworkNames.ethereumMainnet,
+        protocol: LendingProtocol.Ajna,
+        url: `/ethereum/ajna/earn/${poolUrl}/${vaultId}`,
+      }
+    },
+  )
 }
 export function parseDsrEarnPosition({
   address,

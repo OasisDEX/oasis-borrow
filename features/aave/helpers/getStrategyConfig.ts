@@ -1,8 +1,8 @@
-import { NetworkNames } from 'blockchain/networks'
+import { NetworkNames, networksByName } from 'blockchain/networks'
+import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { PositionId } from 'features/aave/types'
+import { getLastCreatedPositionForProxy, PositionCreated } from 'features/aave/services'
+import { IStrategyConfig, PositionId } from 'features/aave/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'
@@ -61,5 +61,34 @@ export function getStrategyConfig$(
       }
     }),
     distinctUntilChanged(isEqual),
+  )
+}
+
+export async function getAaveV3StrategyConfig(
+  positionId: PositionId,
+  networkName: NetworkNames,
+): Promise<IStrategyConfig> {
+  const { vaultId } = positionId
+
+  const networkId = networksByName[networkName].id
+
+  if (vaultId === undefined) {
+    throw new Error(`Can't load strategy config for position without vaultId. VaultId: ${vaultId}`)
+  }
+
+  const dmpProxy = await getUserDpmProxy(vaultId, networkId)
+  if (!dmpProxy) {
+    throw new Error(`Can't load strategy config for position without dmpProxy. VaultId: ${vaultId}`)
+  }
+  const lastCreatedPosition = await getLastCreatedPositionForProxy(dmpProxy.proxy, networkId)
+
+  if (!lastCreatedPosition) {
+    throw new Error(`Can't load strategy config for position without dmpProxy. VaultId: ${vaultId}`)
+  }
+  return loadStrategyFromTokens(
+    lastCreatedPosition.collateralTokenSymbol,
+    lastCreatedPosition.debtTokenSymbol,
+    networkName,
+    lastCreatedPosition.protocol,
   )
 }

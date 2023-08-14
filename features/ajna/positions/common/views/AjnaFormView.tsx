@@ -41,7 +41,17 @@ export function AjnaFormView({
   const [context] = useObservable(context$)
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, dpmProxy, flow, isOwner, product, quoteToken },
+    environment: {
+      collateralToken,
+      dpmProxy,
+      flow,
+      isOwner,
+      product,
+      quoteToken,
+      isOracless,
+      quoteAddress,
+      collateralAddress,
+    },
     steps: {
       currentStep,
       editingStep,
@@ -71,7 +81,7 @@ export function AjnaFormView({
     },
     validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
-  const { connect } = useConnection({ initialConnect: false })
+  const { connect } = useConnection()
   const ajnaSuppressValidationEnabled = useFeatureToggle('AjnaSuppressValidation')
 
   const txHandler = useAjnaTxHandler()
@@ -156,6 +166,9 @@ export function AjnaFormView({
     resolvedId,
     walletAddress,
     product: product.toLowerCase(),
+    isOracless,
+    quoteAddress,
+    collateralAddress,
     collateralToken,
     quoteToken,
   })

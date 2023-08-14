@@ -60,7 +60,7 @@ export function createSendTransactionAbstractContext<A extends TxMeta, CC extend
     { call, prepareArgs, options }: TransactionDefAbstractContext<B, CC>,
     args: B,
   ): Observable<TxState<B>> => {
-    return send(context.account, context.id as unknown as string, args, () =>
+    return send(context.account, context.chainId as unknown as string, args, () =>
       call
         ? call(
             args,

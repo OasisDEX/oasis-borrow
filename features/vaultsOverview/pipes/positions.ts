@@ -1,3 +1,4 @@
+import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
@@ -6,17 +7,16 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { ethers } from 'ethers'
+import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
-import { IStrategyConfig } from 'features/aave/common'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { positionIdIsAddress } from 'features/aave/types'
+import { PositionCreated } from 'features/aave/services'
+import { IStrategyConfig } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { getNetworkId } from 'features/web3Context'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { zero } from 'helpers/zero'
@@ -71,12 +71,15 @@ export function createMakerPositions$(
 }
 
 export type AavePosition = Position & {
+  debt: BigNumber
   netValue: BigNumber
   liquidationPrice: BigNumber
+  variableBorrowRate: BigNumber
   fundingCost: BigNumber
   lockedCollateral: BigNumber
   id: string
   multiple: BigNumber
+  riskRatio: IRiskRatio
   isOwner: boolean
   type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
@@ -86,6 +89,8 @@ export type AavePosition = Position & {
   debtToken: string
   protocol: AaveLendingProtocol
   chainId: NetworkIds
+  isAtRiskDanger: boolean
+  isAtRiskWarning: boolean
 }
 
 export function createPositions$(
@@ -146,7 +151,7 @@ function buildAaveViewModel(
     resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
-    positionIdIsAddress(positionId)
+    isAddress(positionId)
       ? of(undefined)
       : observables.automationTriggersData$(new BigNumber(positionId)),
   ).pipe(
@@ -209,11 +214,14 @@ function buildAaveViewModel(
           debtToken,
           title: title,
           url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, //TODO: Proper network handling
-          id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
+          id: isAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,
+          riskRatio: position.riskRatio,
+          debt: debtNotWei,
           liquidationPrice,
           fundingCost,
+          variableBorrowRate,
           contentsUsd: netValueUsd,
           isOwner,
           lockedCollateral: collateralNotWei,
@@ -222,6 +230,8 @@ function buildAaveViewModel(
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,
+          isAtRiskDanger: false,
+          isAtRiskWarning: false,
         }
       },
     ),
@@ -314,6 +324,8 @@ function buildAaveV3OnlyViewModel(
         id: positionId,
         netValue: netValueUsd,
         multiple: position.riskRatio.multiple,
+        riskRatio: position.riskRatio,
+        debt: debtNotWei,
         liquidationPrice,
         fundingCost,
         contentsUsd: netValueUsd,
@@ -324,6 +336,9 @@ function buildAaveV3OnlyViewModel(
         stopLossData: undefined,
         protocol,
         chainId,
+        variableBorrowRate,
+        isAtRiskDanger: false,
+        isAtRiskWarning: false,
       }
     }),
   )
@@ -387,7 +402,7 @@ export function createAavePosition$(
     environment
   return context$.pipe(
     switchMap((context) => {
-      return getNetworkId() !== NetworkIds.GOERLI
+      return context.chainId !== NetworkIds.GOERLI
         ? combineLatest(
             proxyAddressesProvider.userDpmProxies$(walletAddress),
             getStethEthAaveV2DsProxyEarnPosition$(

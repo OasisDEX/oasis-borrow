@@ -3,29 +3,30 @@ import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
+import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
 import { Skeleton } from 'components/Skeleton'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
-import { AaveHistoryEvent } from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 
-import { PositionHistoryItem } from './PositionHistoryItem'
-
 interface PositionHistoryProps {
-  historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]
   collateralToken: string
-  quoteToken: string
+  historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]
+  isOracless?: boolean
   isShort?: boolean
   priceFormat?: string
+  quoteToken: string
 }
 
 export const PositionHistory: FC<PositionHistoryProps> = ({
-  historyEvents,
-  quoteToken,
   collateralToken,
+  historyEvents,
+  isOracless = false,
   isShort = false,
   priceFormat,
+  quoteToken,
 }) => {
   const { context$ } = useMainContext()
   const [context] = useObservable(context$)
@@ -40,14 +41,15 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
         <DefinitionList>
           {historyEvents.map((item) => (
             <PositionHistoryItem
-              item={item}
+              collateralToken={collateralToken}
               etherscanUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url}
               ethtxUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).ethtx.url}
-              key={`${item.id}-${item.txHash}`}
+              isOracless={isOracless}
               isShort={isShort}
+              item={item}
+              key={`${item.id}-${item.txHash}`}
               priceFormat={priceFormat}
               quoteToken={quoteToken}
-              collateralToken={collateralToken}
             />
           ))}
         </DefinitionList>

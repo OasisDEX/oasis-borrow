@@ -31,11 +31,10 @@ import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLog
 import { spotIlk } from 'blockchain/calls/spot'
 import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
-import { createTokenBalance$ } from 'blockchain/erc20'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
-import { compareBigNumber, every10Seconds$ } from 'blockchain/network'
+import { every10Seconds$ } from 'blockchain/network'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { createOraclePriceData$, createTokenPriceInUSD$, tokenPrices$ } from 'blockchain/prices'
 import {
@@ -62,8 +61,8 @@ import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import {
   createReadPositionCreatedEvents$,
   getLastCreatedPositionForProxy$,
-} from 'features/aave/services/readPositionCreatedEvents'
-import { PositionId } from 'features/aave/types'
+} from 'features/aave/services'
+import { PositionId } from 'features/aave/types/position-id'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
@@ -432,16 +431,6 @@ export function setupProductContext(
     (item) => item,
   )
 
-  const daiBalance$ = memoize(
-    (addressFromUrl: string) =>
-      context$.pipe(
-        switchMap((context) => {
-          return everyBlock$(createTokenBalance$(context, 'DAI', addressFromUrl), compareBigNumber)
-        }),
-      ),
-    (item) => item,
-  )
-
   const potPie$ = memoize(
     (addressFromUrl: string) =>
       combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
@@ -468,7 +457,7 @@ export function setupProductContext(
         txHelpers$,
         proxyAddressDsrObservable$(addressFromUrl),
         allowance$,
-        daiBalance$(addressFromUrl),
+        balancesInfoArray$(['DAI', 'SDAI'], addressFromUrl),
         daiDeposit$(addressFromUrl),
         potDsr$,
         dsr$(addressFromUrl),
@@ -1011,6 +1000,7 @@ export function setupProductContext(
     balancesFromAddressInfoArray$,
     balancesInfoArray$,
     bonus$,
+    chainContext$,
     commonTransactionServices,
     contextForAddress$,
     daiEthTokenPrice$,

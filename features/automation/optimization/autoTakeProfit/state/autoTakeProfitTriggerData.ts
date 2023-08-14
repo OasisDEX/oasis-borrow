@@ -31,10 +31,11 @@ export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
 
 export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTriggerData {
   if (data.triggers && data.triggers.length > 0) {
-    const autoTakeProfitTriggersData = getTriggersByType(data.triggers, [
-      TriggerType.AutoTakeProfitToCollateral,
-      TriggerType.AutoTakeProfitToDai,
-    ])
+    const autoTakeProfitTriggersData = getTriggersByType(
+      data.triggers,
+      [TriggerType.AutoTakeProfitToCollateral, TriggerType.AutoTakeProfitToDai],
+      data.chainId,
+    )
 
     if (autoTakeProfitTriggersData.length) {
       return pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData)

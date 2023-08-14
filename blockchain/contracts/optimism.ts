@@ -181,7 +181,7 @@ export const optimismContracts: OptimismContracts = {
     'RETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHETH),
     'RETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHUSDC),
-    // 'SDAI-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SDAIUSDC),
+    'SDAI-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SDAIUSDC),
     'TBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_TBTCUSDC),
     'TBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_TBTCWBTC),
     'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCETH),
@@ -195,6 +195,7 @@ export const optimismContracts: OptimismContracts = {
     'WSTETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHETH),
     'WSTETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
   // TODO update address

@@ -54,6 +54,7 @@ export interface AutomationEnvironmentData {
   ethMarketPrice: BigNumber
   nextCollateralPrice: BigNumber
   tokenMarketPrice: BigNumber
+  chainId: NetworkIds
 }
 
 export interface AutomationCommonData {
@@ -164,9 +165,14 @@ export function AutomationContextProvider({
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
       tokenMarketPrice: tokenPriceResolved,
+      chainId:
+        context.chainId === NetworkIds.GOERLI || context.chainId === NetworkIds.MAINNET
+          ? context.chainId
+          : NetworkIds.MAINNET,
     }),
     [
       context.status,
+      context.chainId,
       ethAndTokenPricesData['ETH'].toString(),
       tokenPriceResolved.toString(),
       ethBalance.toString(),
@@ -184,7 +190,10 @@ export function AutomationContextProvider({
   }
 
   const initialAutoContext = {
-    automationTriggersData: automationTriggersDataInitialState,
+    automationTriggersData: {
+      ...automationTriggersDataInitialState,
+      chainId: environmentData.chainId,
+    },
     environmentData,
     positionData,
     protocol,
@@ -252,8 +261,10 @@ export function AutomationContextProvider({
   })
 
   useEffect(() => {
-    const resolvedAutomationTriggersData =
-      automationTriggersData || automationTriggersDataInitialState
+    const resolvedAutomationTriggersData = {
+      ...(automationTriggersData ?? automationTriggersDataInitialState),
+      chainId: environmentData.chainId,
+    }
     const update = {
       automationTriggersData: resolvedAutomationTriggersData,
       environmentData,

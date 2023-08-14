@@ -1,11 +1,8 @@
-import { networkTabTitleIconMap, useCustomNetworkParameter } from 'blockchain/networks'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getRandomString } from 'helpers/getRandomString'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import React from 'react'
 import { useTheme } from 'theme/useThemeUI'
 
@@ -47,9 +44,6 @@ export function PageSEOTags({
   twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
   const { t } = useTranslation()
-  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
-  const [web3OnboardNetworkParameter] = useCustomNetworkParameter()
-  const { query } = useRouter()
 
   const OGImages = {
     [INTERNAL_LINKS.borrow]: {
@@ -68,20 +62,9 @@ export function PageSEOTags({
     ogImage,
     twitterImage,
   }
-  const properNetworkIconMap = useNetworkSwitcher
-    ? networkTabTitleIconMap
-    : { fork: '👷 ', goerli: '🌲 ' }
-  const networkParameter = useNetworkSwitcher
-    ? web3OnboardNetworkParameter?.network
-    : (query.network as string)
-  const forkCheck =
-    networkParameter && networkParameter.includes('test')
-      ? 'fork'
-      : (networkParameter as keyof typeof properNetworkIconMap)
 
-  const tabTitle = `${
-    networkParameter && properNetworkIconMap[forkCheck] ? properNetworkIconMap[forkCheck] : ''
-  }${titleParams ? t(title, titleParams) : t(title)}`
+  // TODO: Add Icon to the title
+  const tabTitle = `${titleParams ? t(title, titleParams) : t(title)}`
 
   return (
     <Head>

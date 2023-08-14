@@ -15,23 +15,22 @@ import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { AaveContext } from './aave-context'
-import { IStrategyConfig } from './common'
-import {
-  getAdjustAaveParametersMachine,
-  getCloseAaveParametersMachine,
-  getDepositBorrowAaveMachine,
-  getOpenDepositBorrowAaveMachine,
-} from './common/services/getParametersMachines'
-import { getStrategyInfo$ } from './common/services/getStrategyInfo'
-import { getOpenMultiplyAaveParametersMachine } from './common/services/state-machines'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
-import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
-import { getSupportedTokens } from './strategy-config'
+import {
+  getAaveSupportedTokenBalances$,
+  getAdjustAaveParametersMachine,
+  getCloseAaveParametersMachine,
+  getDepositBorrowAaveMachine,
+  getOpenAaveParametersMachine,
+  getStrategyInfo$,
+} from './services'
+import { getSupportedTokens } from './strategies'
+import { IStrategyConfig } from './types'
 
 export function setupAaveV2Context(
   mainContext: MainContext,
@@ -101,7 +100,7 @@ export function setupAaveV2Context(
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
-  const openMultiplyAaveParameters = getOpenMultiplyAaveParametersMachine(
+  const openMultiplyAaveParameters = getOpenAaveParametersMachine(
     txHelpers$,
     gasEstimation$,
     NetworkIds.MAINNET,
@@ -117,11 +116,6 @@ export function setupAaveV2Context(
     NetworkIds.MAINNET,
   )
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(
-    txHelpers$,
-    gasEstimation$,
-    NetworkIds.MAINNET,
-  )
-  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(
     txHelpers$,
     gasEstimation$,
     NetworkIds.MAINNET,
@@ -165,7 +159,6 @@ export function setupAaveV2Context(
   const aaveStateMachine = getOpenAaveStateMachine(
     openAaveStateMachineServices,
     openMultiplyAaveParameters,
-    openDepositBorrowAaveMachine,
     proxyStateMachine,
     dpmAccountStateMachine,
     allowanceStateMachine,

@@ -2,10 +2,11 @@ import { Tokens } from '@prisma/client'
 import erc20 from 'blockchain/abi/erc20.json'
 import { getRpcProvider } from 'blockchain/networks'
 import { ethers } from 'ethers'
-import getConfig from 'next/config'
+import { getTokensList } from 'handlers/getTokensList'
+import { cacheObject } from 'helpers/api/cacheObject'
 import { prisma } from 'server/prisma'
 
-const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
+const getTokens = cacheObject(getTokensList, 60 * 60, 'tokens-list')
 
 export const readTokensFromDb = async (addresses: string[], chainId: number) =>
   prisma.tokens.findMany({
@@ -51,19 +52,17 @@ export const readTokensFromBlockchain = async ({
 }
 
 export const readTokensFromApi = async (tokens: string[]): Promise<Tokens[]> => {
-  const query = tokens.reduce<string>(
-    (total, token, i) => `${total}${i > 0 ? '&' : ''}token=${token}`,
-    '?',
-  )
-  const tokensFromApi = await fetch(`${basePath}/api/external-tokens-info${query}`).then((resp) =>
-    resp.json(),
-  )
+  const tokensList = await getTokens()
 
-  return Object.keys(tokensFromApi).map((address) => ({
-    address: address.toLowerCase(),
-    chain_id: tokensFromApi[address].chainId,
-    symbol: tokensFromApi[address].symbol,
-    precision: tokensFromApi[address].precision,
-    name: tokensFromApi[address].name,
-  }))
+  return (
+    tokensList?.data.tokens
+      .filter(({ address }) => tokens.includes(address.toLowerCase()))
+      .map(({ address, chainId, decimals, name, symbol }) => ({
+        address: address.toLowerCase(),
+        chain_id: chainId,
+        symbol,
+        precision: decimals,
+        name,
+      })) || []
+  )
 }

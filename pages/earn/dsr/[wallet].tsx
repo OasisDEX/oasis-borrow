@@ -29,7 +29,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
   return (
     <ProductContextHandler>
       <WithFeatureToggleRedirect feature="DaiSavingsRate">
-        <WithConnection pageChainId={ethereumMainnetHexId}>
+        <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>
               <PageSEOTags

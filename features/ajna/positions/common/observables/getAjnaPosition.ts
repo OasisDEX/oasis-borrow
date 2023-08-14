@@ -5,7 +5,7 @@ import { Context } from 'blockchain/network'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { PositionCreated } from 'features/aave/services'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
@@ -164,8 +164,8 @@ export function getAjnaPositionsWithDetails$(
                         isOracless ? one : tokenPrice[debtTokenSymbol],
                         {
                           collateralToken: collateralTokenSymbol,
-                          quoteTokenAddress: debtTokenAddress,
                           collateralTokenAddress,
+                          hasMultiplePositions: false,
                           product: (positionType === 'Earn'
                             ? positionType
                             : vaultsFromApi[vaultId] || positionType
@@ -173,6 +173,7 @@ export function getAjnaPositionsWithDetails$(
                           protocol,
                           proxy: proxyAddress,
                           quoteToken: debtTokenSymbol,
+                          quoteTokenAddress: debtTokenAddress,
                           user: walletAddress,
                           vaultId,
                         },

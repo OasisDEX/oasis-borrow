@@ -187,9 +187,6 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
   const [termsAcceptance] = useObservable(termsAcceptance$)
 
   const { disconnect, wallet } = useWalletManagement()
-  const disconnectHandler = async () => {
-    await disconnect()
-  }
 
   if (
     userReferral?.state === 'newUser' &&
@@ -224,7 +221,7 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
             case 'jwtInvalidProgress':
             case 'jwtInvalidWaiting4Acceptance':
             case 'acceptanceSaveInProgress':
-              return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnectHandler} />
+              return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnect} />
             case 'acceptanceCheckFailed':
             case 'jwtAuthFailed':
             case 'jwtAuthRejected':

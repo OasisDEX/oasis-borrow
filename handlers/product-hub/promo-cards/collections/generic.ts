@@ -35,9 +35,9 @@ export const promoCardLearnAboutBorrow = {
 
 export const promoCardLearnAboutMultiply = {
   icon: 'selectMultiply',
-  title: { key: 'product-hub.promo-cards.get-to-know-multiply' },
+  title: { key: 'product-hub.promo-cards.what-is-multiply' },
   description: {
-    key: 'product-hub.promo-cards.learn-how-to-use-multiply-to-optimize-your-position',
+    key: 'product-hub.promo-cards.increase-or-decrease-the-exposure-to-your-collateral-asset-in-one-transaction',
   },
   link: { href: EXTERNAL_LINKS.KB.WHAT_IS_MULTIPLY, label: { key: 'Learn more' } },
 }

@@ -24,7 +24,6 @@ interface AjnaEarnInputButtonProps {
 }
 interface AjnaEarnInputProps {
   disabled?: boolean
-  range: BigNumber[]
 }
 
 const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, onClick }) => {
@@ -90,7 +89,7 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
   )
 }
 
-export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
   const { t } = useTranslation()
   const {
     environment: { priceFormat, quoteToken, isShort },
@@ -107,8 +106,9 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled, range }) => {
   const clickHandler = (variant: AjnaEarnInputButtonVariant) => {
     const snappedValue = snapToPredefinedValues(manualAmount)
     let index = mappedAjnaBuckets.indexOf(snappedValue)
-    if (variant === '+') index = Math.max(0, index - 1)
-    if (variant === '-') index = Math.max(range.length - 1, index + 1)
+
+    if (variant === '+') index = index - 1
+    if (variant === '-') index = index + 1
 
     const selectedValue = mappedAjnaBuckets.at(index) || zero
 

@@ -9,7 +9,6 @@ import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { getNetworkName } from 'features/web3Context'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -31,9 +30,10 @@ export function GetProtectionBannerControl({
   const setHash = useHash()[1]
   const {
     triggerData: { stopLossTriggerData },
+    environmentData: { chainId },
   } = useAutomationContext()
 
-  const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
+  const isAllowedForAutomation = isSupportedAutomationIlk(chainId, ilk)
 
   return !stopLossTriggerData.isStopLossEnabled && isAllowedForAutomation && !debt.isZero() ? (
     <>

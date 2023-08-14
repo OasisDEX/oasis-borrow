@@ -1,5 +1,4 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
-import { getNetworkId } from 'features/web3Context'
 import { decode } from 'jsonwebtoken'
 import getConfig from 'next/config'
 import { Observable, of } from 'rxjs'
@@ -31,6 +30,7 @@ export function jwtAuthGetToken(address: string): JWToken | undefined | 'invalid
 
 export function jwtAuthSetupToken$(
   web3: Web3,
+  chainId: number,
   account: string,
   isGnosisSafe: boolean,
 ): Observable<JWToken> {
@@ -39,7 +39,7 @@ export function jwtAuthSetupToken$(
     return of('invalid')
   }
   if (token === undefined) {
-    return fromPromise(requestJWT(web3, account, isGnosisSafe))
+    return fromPromise(requestJWT(web3, chainId, account, isGnosisSafe))
   }
   return of(token)
 }
@@ -84,11 +84,15 @@ async function getGnosisSafeDetails(
   return { challenge: newChallenge, safeTxHash, dataToSign }
 }
 
-async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
+async function requestJWT(
+  web3: Web3,
+  chainId: number,
+  account: string,
+  isGnosisSafe: boolean,
+): Promise<string> {
   const web3Instance = web3
   const addressForSignature = account
 
-  const chainId = getNetworkId()
   const challenge = await requestChallenge(account, isGnosisSafe).toPromise()
 
   if (isGnosisSafe) {

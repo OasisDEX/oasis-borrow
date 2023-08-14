@@ -38,6 +38,8 @@ export const AJNA_POOLS_WITH_REWARDS = [
   'ETH-USDC',
   'RETH-DAI',
   'RETH-ETH',
+  'SDAI-USDC',
+  'TBTC-USDC',
   'USDC-ETH',
   'USDC-WBTC',
   'WBTC-DAI',
@@ -45,6 +47,7 @@ export const AJNA_POOLS_WITH_REWARDS = [
   'WSTETH-DAI',
   'WSTETH-ETH',
   'WSTETH-USDC',
+  'YFI-DAI',
 ]
 export const AJNA_SHORT_POSITION_COLLATERALS = ['DAI', 'USDC']
 export const AJNA_TOKENS_WITH_MULTIPLY = [
@@ -54,6 +57,8 @@ export const AJNA_TOKENS_WITH_MULTIPLY = [
   'ETH',
   'GHO',
   'RETH',
+  'SDAI',
   'USDC',
   'WBTC',
+  'YFI',
 ]

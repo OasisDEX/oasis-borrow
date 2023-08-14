@@ -6,7 +6,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { DsProxy, DssProxyActionsDsr, McdPot } from 'types/web3-v1-contracts'
+import { DsProxy, DssProxyActionsDsr, McdPot, SavingsDai } from 'types/web3-v1-contracts'
 
 export const pie: CallDef<string, BigNumber> = {
   call: (_, { contract, chainId }) =>
@@ -61,6 +61,42 @@ export const join: TransactionDef<DsrJoinData> = {
           amountToWei(amount, getToken('DAI').precision).toFixed(0),
         )
         .encodeABI(),
+    ]
+  },
+}
+
+export type SavingDaiData = {
+  kind: TxMetaKind.savingsDaiDeposit
+  walletAddress: string
+  amount: BigNumber
+}
+
+export const savingsDaiDeposit: TransactionDef<SavingDaiData> = {
+  call: (_, { contract, chainId }) => {
+    const {
+      tokens: { SDAI },
+    } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+    return contract<SavingsDai>(SDAI).methods.deposit
+  },
+  prepareArgs: (data) => {
+    const { amount, walletAddress } = data
+    return [amountToWei(amount, getToken('SDAI').precision).toFixed(0), walletAddress]
+  },
+}
+
+export const savingsDaiConvert: TransactionDef<SavingDaiData> = {
+  call: (_, { contract, chainId }) => {
+    const {
+      tokens: { SDAI },
+    } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+    return contract<SavingsDai>(SDAI).methods.redeem
+  },
+  prepareArgs: (data) => {
+    const { amount, walletAddress } = data
+    return [
+      amountToWei(amount, getToken('SDAI').precision).toFixed(0),
+      walletAddress,
+      walletAddress,
     ]
   },
 }

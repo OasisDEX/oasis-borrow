@@ -1,7 +1,7 @@
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
-import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import { PositionCreated } from 'features/aave/services'
 import { PositionId } from 'features/aave/types'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { isEqual } from 'lodash'
@@ -11,6 +11,7 @@ import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rx
 export interface DpmPositionData extends UserDpmAccount {
   collateralToken: string
   collateralTokenAddress: string
+  hasMultiplePositions: boolean
   product: string
   protocol: string
   quoteToken: string
@@ -71,17 +72,23 @@ const filterPositionWhenUrlParamsDefined = ({
   proxy: string
   quoteToken: string
 }) =>
-  positions?.filter(
-    (position) =>
-      position.proxyAddress.toLowerCase() === proxy.toLowerCase() &&
-      ((position.collateralTokenSymbol === collateralToken &&
-        position.debtTokenSymbol === quoteToken) ||
-        (position.collateralTokenAddress.toLowerCase() === collateralToken &&
-          position.debtTokenAddress.toLowerCase() === quoteToken)) &&
-      (product.toLowerCase() === 'earn'
-        ? position.positionType.toLowerCase() === product.toLowerCase()
-        : true),
-  )[0]
+  positions
+    ?.map(({ collateralTokenSymbol, debtTokenSymbol, ...position }) => ({
+      ...position,
+      collateralTokenSymbol: collateralTokenSymbol === 'WETH' ? 'ETH' : collateralTokenSymbol,
+      debtTokenSymbol: debtTokenSymbol === 'WETH' ? 'ETH' : debtTokenSymbol,
+    }))
+    ?.filter(
+      (position) =>
+        position.proxyAddress.toLowerCase() === proxy.toLowerCase() &&
+        ((position.collateralTokenSymbol === collateralToken &&
+          position.debtTokenSymbol === quoteToken) ||
+          (position.collateralTokenAddress.toLowerCase() === collateralToken &&
+            position.debtTokenAddress.toLowerCase() === quoteToken)) &&
+        (product.toLowerCase() === 'earn'
+          ? position.positionType.toLowerCase() === product.toLowerCase()
+          : true),
+    )[0]
 
 const filterPositionWhenUrlParamsNotDefined = ({
   positions,
@@ -108,6 +115,12 @@ export function getDpmPositionDataV2$(
       ),
     ),
     switchMap(([dpmProxy, positions]) => {
+      const hasMultiplePositions = Boolean(
+        positions &&
+          positions.filter(
+            (item) => item.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase(),
+          ).length > 1,
+      )
       const proxyPosition =
         collateralToken && quoteToken && product && dpmProxy
           ? filterPositionWhenUrlParamsDefined({
@@ -125,9 +138,10 @@ export function getDpmPositionDataV2$(
         dpmProxy && proxyPosition
           ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], proxyPosition.protocol)
           : of(undefined),
+        of(hasMultiplePositions),
       )
     }),
-    map(([dpmProxy, position, vaultsFromApi]) =>
+    map(([dpmProxy, position, vaultsFromApi, hasMultiplePositions]) =>
       dpmProxy && position && vaultsFromApi
         ? {
             ...dpmProxy,
@@ -140,6 +154,7 @@ export function getDpmPositionDataV2$(
             protocol: position.protocol,
             quoteToken: position.debtTokenSymbol,
             quoteTokenAddress: position.debtTokenAddress,
+            hasMultiplePositions,
           }
         : null,
     ),
@@ -167,6 +182,7 @@ export function getStaticDpmPositionData$({
     startWith({
       collateralToken,
       collateralTokenAddress,
+      hasMultiplePositions: false,
       product,
       protocol,
       proxy: ethers.constants.AddressZero,

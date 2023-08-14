@@ -55,6 +55,7 @@ export interface PositionHistoryResponse {
   swapToToken: string
   timestamp: string
   totalFee: string
+  totalFeeInQuoteToken: string
   txHash: string
   withdrawnUSD: string
 }
@@ -110,6 +111,7 @@ export type PositionHistoryEvent = {
   swapToToken: string
   timestamp: number
   totalFee: BigNumber
+  totalFeeInQuoteToken: BigNumber
   txHash: string
   withdrawnUSD: BigNumber
 }

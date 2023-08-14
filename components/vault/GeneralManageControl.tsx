@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -19,9 +20,9 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
+  const { chainId } = useWalletManagement()
 
   const account = context?.status === 'connected' ? context.account : ''
-  const chainId = context?.chainId
 
   useEffect(() => {
     return () => {
@@ -41,16 +42,13 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
           <MakerAutomationContext generalManageVault={generalManageVault}>
             <GeneralManageLayout
               generalManageVault={generalManageVault}
-              followButton={
-                chainId
-                  ? {
-                      followerAddress: account,
-                      vaultId: id,
-                      chainId: chainId,
-                      protocol: 'maker',
-                    }
-                  : undefined
-              }
+              followButton={{
+                followerAddress: account,
+                vaultId: id,
+                chainId: chainId,
+                protocol: 'maker',
+              }}
+              chainId={chainId}
             />
           </MakerAutomationContext>
         )}

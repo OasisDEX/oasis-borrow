@@ -1,7 +1,7 @@
 import { useActor } from '@xstate/react'
 import { useAaveContext } from 'features/aave'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
+import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
 import { AavePositionNoticesView } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'

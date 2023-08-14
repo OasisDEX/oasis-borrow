@@ -1,4 +1,4 @@
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/common/ajnaUnifiedHistoryEvent'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 
 export const mapAjnaEarnEvents = (
   events: AjnaUnifiedHistoryEvent[],
@@ -9,6 +9,7 @@ export const mapAjnaEarnEvents = (
       txHash: event.txHash,
       timestamp: event.timestamp,
       totalFee: event.totalFee,
+      totalFeeInQuoteToken: event.totalFee,
       debtAddress: event.debtAddress,
       collateralAddress: event.collateralAddress,
       addOrRemovePrice: event.addOrRemovePrice,

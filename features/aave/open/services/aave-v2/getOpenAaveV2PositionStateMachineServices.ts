@@ -5,15 +5,16 @@ import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { OpenAaveStateMachineServices } from 'features/aave/open/state'
+import { getPricesFeed$ } from 'features/aave/services'
 import {
   contextToEthersTransactions,
   IStrategyInfo,
+  ProxyType,
   StrategyTokenAllowance,
   StrategyTokenBalance,
-} from 'features/aave/common/BaseAaveContext'
-import { getPricesFeed$ } from 'features/aave/common/services/getPricesFeed'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { OpenAaveStateMachineServices } from 'features/aave/open/state'
+} from 'features/aave/types'
+import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'

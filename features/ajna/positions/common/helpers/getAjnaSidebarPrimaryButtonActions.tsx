@@ -19,6 +19,9 @@ export function getAjnaSidebarPrimaryButtonActions({
   collateralToken,
   quoteToken,
   walletAddress,
+  quoteAddress,
+  collateralAddress,
+  isOracless,
 }: {
   currentStep: string
   editingStep: string
@@ -35,7 +38,10 @@ export function getAjnaSidebarPrimaryButtonActions({
   onUpdated: () => void
   product: string
   collateralToken: string
+  collateralAddress: string
   quoteToken: string
+  quoteAddress: string
+  isOracless: boolean
   resolvedId?: string
   walletAddress?: string
 }) {
@@ -43,7 +49,11 @@ export function getAjnaSidebarPrimaryButtonActions({
     case !walletAddress && currentStep === editingStep:
       return { action: onDisconnected }
     case isTxSuccess && flow === 'open':
-      return { url: `/ethereum/ajna/${product}/${collateralToken}-${quoteToken}/${resolvedId}` }
+      const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
+      const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
+      return {
+        url: `/ethereum/ajna/${product}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
+      }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }
     case isTransitionWaitingForApproval:

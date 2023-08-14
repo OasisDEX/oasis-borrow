@@ -4,17 +4,17 @@ import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
+import { getPricesFeed$ } from 'features/aave/services'
 import {
   contextToEthersTransactions,
   IStrategyConfig,
   IStrategyInfo,
   StrategyTokenAllowance,
   StrategyTokenBalance,
-} from 'features/aave/common'
-import { getPricesFeed$ } from 'features/aave/common/services/getPricesFeed'
-import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
-import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
-import { PositionId } from 'features/aave/types'
+} from 'features/aave/types'
+import { PositionId } from 'features/aave/types/position-id'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'

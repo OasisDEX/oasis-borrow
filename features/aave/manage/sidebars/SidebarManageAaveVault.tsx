@@ -20,17 +20,16 @@ import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectio
 import { Skeleton } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
-import { ManagePositionAvailableActions } from 'features/aave/common'
-import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
-import { ConnectedSidebarSection } from 'features/aave/common/components/connected-sidebar-section'
-import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
-import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
+import { StopLossAaveErrorMessage } from 'features/aave/components/StopLossAaveErrorMessage'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
   ManageAaveContext,
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
+import { ManagePositionAvailableActions } from 'features/aave/types'
+import { isAllowanceNeeded } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -636,7 +635,7 @@ export function SidebarManageAaveVault() {
 
   const dropdownConfig = getDropdownConfig({ state, send })
 
-  const SecondaryInputComponent = state.context.strategyConfig.viewComponents.secondaryInput
+  const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
 
   switch (true) {
     case state.matches('frontend.editing'):
@@ -649,7 +648,7 @@ export function SidebarManageAaveVault() {
           }
           content={
             <Grid gap={3}>
-              <SecondaryInputComponent
+              <AdjustRisk
                 state={state}
                 onChainPosition={state.context.protocolData?.position}
                 isLoading={loading}
@@ -675,14 +674,6 @@ export function SidebarManageAaveVault() {
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')
-            },
-          }}
-          textButton={{
-            isLoading: false,
-            disabled: isLocked(state),
-            label: t('manage-earn.aave.vault-form.close'),
-            action: () => {
-              send('CLOSE_POSITION')
             },
           }}
           dropdown={dropdownConfig}

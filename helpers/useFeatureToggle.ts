@@ -26,6 +26,7 @@ export type Feature =
   | 'AaveV3Protection'
   | 'AaveV3ProtectionWrite'
   | 'Ajna'
+  | 'AjnaPoolFinder'
   | 'AjnaMultiply'
   | 'AjnaSafetySwitch'
   | 'AjnaSuppressValidation'
@@ -51,6 +52,7 @@ export type Feature =
   | 'SwapWidget'
   | '🌞'
   | 'ProxyReveal'
+  | 'AaveV3Borrow'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -75,6 +77,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3Protection: true,
   AaveV3ProtectionWrite: true,
   Ajna: true,
+  AjnaPoolFinder: true,
   AjnaMultiply: true,
   AjnaSafetySwitch: false,
   AjnaSuppressValidation: false,
@@ -99,6 +102,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3MultiplywstETHusdc: true,
   SwapWidget: true,
   ProxyReveal: false,
+  AaveV3Borrow: false,
   '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
 }
 

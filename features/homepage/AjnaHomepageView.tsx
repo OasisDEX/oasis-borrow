@@ -4,7 +4,6 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
-import { AjnaProductHubIntro } from 'features/ajna/common/components/AjnaProductHubIntro'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useConnection } from 'features/web3OnBoard'
@@ -53,9 +52,7 @@ export function AjnaHomepageView() {
   const { t } = useTranslation()
   const { context$ } = useMainContext()
   const [context] = useObservable(context$)
-  const { connecting, connect } = useConnection({
-    initialConnect: false,
-  })
+  const { connecting, connect } = useConnection()
   const { isConnected } = useAccount()
 
   return (
@@ -83,9 +80,6 @@ export function AjnaHomepageView() {
           initialProtocol={[LendingProtocol.Ajna]}
           product={ProductHubProductType.Borrow}
           promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'AjnaLP'}
-          intro={(selectedProduct, selectedToken) => (
-            <AjnaProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
-          )}
         />
       </Box>
       <Flex
@@ -133,11 +127,7 @@ export function AjnaHomepageView() {
               {t('ajna.landing-banner.button-label')}
             </AppLink>
           ) : (
-            <Button
-              variant="primary"
-              sx={{ px: '40px' }}
-              onClick={async () => connecting || (await connect())}
-            >
+            <Button variant="primary" sx={{ px: '40px' }} onClick={() => connecting || connect()}>
               {t('connect-wallet')} →
             </Button>
           )

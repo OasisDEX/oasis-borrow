@@ -1,6 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/dma-library'
 import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave'
+import { OpenAaveParameters } from 'actions/aave/types'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
@@ -15,16 +16,16 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  ProxyType,
   RefTransactionMachine,
-} from 'features/aave/common/BaseAaveContext'
-import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
+} from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import {
   AutomationAddTriggerData,
@@ -65,9 +66,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
   refTransactionMachine?: RefTransactionMachine
-  refParametersMachine?:
-    | ActorRefFrom<TransactionParametersStateMachine<OpenMultiplyAaveParameters>>
-    | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
+  refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
   refStopLossMachine?: ActorRefFrom<TransactionStateMachine<AutomationTxData>>
   hasOpenedPosition?: boolean
   positionRelativeAddress?: string
@@ -95,8 +94,7 @@ export type OpenAaveEvent =
   | DMPAccountStateMachineResultEvents
 
 export function createOpenAaveStateMachine(
-  openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
-  openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>,
+  openPostionStateMachine: TransactionParametersStateMachine<OpenAaveParameters>,
   proxyStateMachine: ProxyStateMachine,
   dmpAccountStateMachine: DPMAccountStateMachine,
   allowanceStateMachine: AllowanceStateMachine,
@@ -647,28 +645,15 @@ export function createOpenAaveStateMachine(
           return undefined
         }),
         spawnParametersMachine: assign((context) => {
-          if (context.strategyConfig.type === 'Borrow') {
-            return {
-              refParametersMachine: spawn(
-                openDepositBorrowTransactionParametersMachine.withContext({
-                  ...openDepositBorrowTransactionParametersMachine.context,
-                  runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
-                  signer: (context.web3Context as ContextConnected)?.transactionProvider,
-                }),
-                'transactionParameters',
-              ),
-            }
-          } else {
-            return {
-              refParametersMachine: spawn(
-                openMultiplyParametersMachine.withContext({
-                  ...openMultiplyParametersMachine.context,
-                  runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
-                  signer: (context.web3Context as ContextConnected)?.transactionProvider,
-                }),
-                'transactionParameters',
-              ),
-            }
+          return {
+            refParametersMachine: spawn(
+              openPostionStateMachine.withContext({
+                ...openPostionStateMachine.context,
+                runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
+                signer: (context.web3Context as ContextConnected)?.transactionProvider,
+              }),
+              'transactionParameters',
+            ),
           }
         }),
         spawnTransactionMachine: assign((context) => ({
@@ -710,7 +695,6 @@ export function createOpenAaveStateMachine(
               collateralToken: context.strategyConfig.tokens.collateral,
               debtToken: context.tokens.debt,
               depositToken: context.tokens.deposit,
-              token: context.tokens.deposit,
               context: context.web3Context!,
               slippage: getSlippage(context),
               proxyType: context.strategyConfig.proxyType,

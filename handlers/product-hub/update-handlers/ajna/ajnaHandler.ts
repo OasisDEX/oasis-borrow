@@ -7,11 +7,17 @@ import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import {
   AjnaPoolsTableData,
-  getAjnaPoolsTableData,
-} from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+  getAjnaPoolsData,
+} from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
+import {
+  productHubAjnaRewardsTooltip,
+  productHubEmptyPoolMaxLtvTooltip,
+  productHubEmptyPoolMaxMultipleTooltip,
+  productHubEmptyPoolWeeklyApyTooltip,
+} from 'features/productHub/content'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import {
@@ -34,7 +40,7 @@ async function getAjnaPoolData(
   )
 
   try {
-    return (await getAjnaPoolsTableData(networkId))
+    return (await getAjnaPoolsData(networkId))
       .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>((v, pool) => {
         try {
           return [
@@ -48,8 +54,6 @@ async function getAjnaPoolData(
             },
           ]
         } catch (e) {
-          console.warn('Token address not found within context', e)
-
           return v
         }
       }, [])
@@ -107,18 +111,6 @@ async function getAjnaPoolData(
           const managementType = 'active'
           const weeklyNetApy = lendApr.toString()
 
-          const ajnaRewardsTooltip = {
-            content: {
-              title: {
-                key: 'ajna.product-hub-tooltips.this-pool-is-earning-ajna-tokens',
-              },
-              description: {
-                key: 'ajna.product-hub-tooltips.rewards-available-soon',
-              },
-            },
-            icon: 'sparks',
-          }
-
           return {
             table: [
               ...v.table,
@@ -152,39 +144,15 @@ async function getAjnaPoolData(
                 // }),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
-                    fee: ajnaRewardsTooltip,
+                    fee: productHubAjnaRewardsTooltip,
                     ...(isPoolNotEmpty && {
-                      weeklyNetApy: ajnaRewardsTooltip,
+                      weeklyNetApy: productHubAjnaRewardsTooltip,
                     }),
                   }),
                   ...(!isPoolNotEmpty && {
-                    maxLtv: {
-                      content: {
-                        description: {
-                          key: 'ajna.product-hub-tooltips.no-max-ltv',
-                        },
-                      },
-                      icon: 'question_o',
-                      iconColor: 'neutral80',
-                    },
-                    maxMultiply: {
-                      content: {
-                        description: {
-                          key: 'ajna.product-hub-tooltips.no-max-multiple',
-                        },
-                      },
-                      icon: 'question_o',
-                      iconColor: 'neutral80',
-                    },
-                    weeklyNetApy: {
-                      content: {
-                        description: {
-                          key: 'ajna.product-hub-tooltips.no-weekly-apy',
-                        },
-                      },
-                      icon: 'question_o',
-                      iconColor: 'neutral80',
-                    },
+                    maxLtv: productHubEmptyPoolMaxLtvTooltip,
+                    maxMultiply: productHubEmptyPoolMaxMultipleTooltip,
+                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
                   }),
                 },
               },
@@ -207,18 +175,10 @@ async function getAjnaPoolData(
                 tooltips: {
                   ...(isPoolNotEmpty &&
                     isPoolWithRewards({ collateralToken, quoteToken }) && {
-                      weeklyNetApy: ajnaRewardsTooltip,
+                      weeklyNetApy: productHubAjnaRewardsTooltip,
                     }),
                   ...(!isPoolNotEmpty && {
-                    weeklyNetApy: {
-                      content: {
-                        description: {
-                          key: 'ajna.product-hub-tooltips.no-weekly-apy',
-                        },
-                      },
-                      icon: 'question_o',
-                      iconColor: 'neutral80',
-                    },
+                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
                   }),
                 },
               },

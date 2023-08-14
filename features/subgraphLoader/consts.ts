@@ -33,114 +33,16 @@ export const subgraphsRecord: SubgraphsRecord = {
 export const subgraphMethodsRecord: {
   [key in keyof (Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string
 } = {
-  getEarnData: gql`
-    query getAccount($dpmProxyAddress: ID!) {
-      account(id: $dpmProxyAddress) {
-        earnPositions {
-          lps
-          index
-          nft {
-            id
-          }
-          account {
-            cumulativeDeposit
-            cumulativeFees
-            cumulativeWithdraw
-          }
-        }
-      }
-    }
-  `,
-  getPositionCumulatives: gql`
+  getAjnaPositionAggregatedData: gql`
     query getAccount($dpmProxyAddress: ID!) {
       account(id: $dpmProxyAddress) {
         cumulativeDeposit
         cumulativeFees
         cumulativeWithdraw
+        earnCumulativeFeesInQuoteToken
+        earnCumulativeQuoteTokenDeposit
+        earnCumulativeQuoteTokenWithdraw
       }
-    }
-  `,
-  getPoolAddress: gql`
-    query getPools($collateralAddress: ID!, $quoteAddress: ID!) {
-      pools(where: { collateralAddress: $collateralAddress, quoteTokenAddress: $quoteAddress }) {
-        address
-      }
-    }
-  `,
-  getPoolData: gql`
-    query getPool($poolAddress: ID!) {
-      pool(id: $poolAddress) {
-        address
-        collateralAddress
-        quoteTokenAddress
-        htp
-        hpb
-        lup
-        htpIndex
-        hpbIndex
-        lupIndex
-        momp
-        debt
-        depositSize
-        interestRate
-        apr30dAverage
-        dailyPercentageRate30dAverage
-        monthlyPercentageRate30dAverage
-        poolMinDebtAmount
-        poolCollateralization
-        poolActualUtilization
-        poolTargetUtilization
-        currentBurnEpoch
-        pendingInflator
-        lendApr
-        borrowApr
-        buckets {
-          price
-          index
-          quoteTokens
-          collateral
-          bucketLPs
-        }
-      }
-    }
-  `,
-  getPoolsTableData: gql`
-    {
-      pools {
-        collateralAddress
-        quoteTokenAddress
-        dailyPercentageRate30dAverage
-        debt
-        depositSize
-        interestRate
-        poolMinDebtAmount
-        lup
-        lupIndex
-        htp
-        htpIndex
-        lendApr
-        borrowApr
-        buckets {
-          price
-          index
-          quoteTokens
-          collateral
-          bucketLPs
-        }
-      }
-    }
-  `,
-  getNftIds: gql`
-    query getNfts($walletAddress: ID!) {
-      nfts(where: { user_: { id: $walletAddress }, staked: true }) {
-        id
-        staked
-        currentReward
-      }
-    }
-  `,
-  getPositionAuction: gql`
-    query getPositionAuction($dpmProxyAddress: ID!) {
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
         alreadyTaken
@@ -148,10 +50,19 @@ export const subgraphMethodsRecord: {
         debtToCover
         collateral
       }
-    }
-  `,
-  getHistory: gql`
-    query getHistory($dpmProxyAddress: ID!) {
+      borrowerEvents(where: { account_: { id: $dpmProxyAddress } }) {
+        id
+        kind
+        timestamp
+        txHash
+        settledDebt
+        debtToCover
+        collateralForLiquidation
+        remainingCollateral
+        auction {
+          id
+        }
+      }
       oasisEvents(where: { account_: { id: $dpmProxyAddress } }) {
         depositTransfers {
           amount
@@ -211,25 +122,139 @@ export const subgraphMethodsRecord: {
         txHash
         withdrawnUSD
       }
-      borrowerEvents(where: { account_: { id: $dpmProxyAddress } }) {
-        id
-        kind
-        timestamp
-        txHash
-        settledDebt
-        debtToCover
-        collateralForLiquidation
-        remainingCollateral
-        auction {
-          id
+    }
+  `,
+  getAjnaPoolAddress: gql`
+    query getPools($collateralAddress: ID!, $quoteAddress: ID!) {
+      pools(where: { collateralAddress: $collateralAddress, quoteTokenAddress: $quoteAddress }) {
+        address
+      }
+    }
+  `,
+  getAjnaPoolData: gql`
+    query getPool($poolAddress: ID!) {
+      pool(id: $poolAddress) {
+        address
+        collateralAddress
+        quoteTokenAddress
+        htp
+        hpb
+        lup
+        htpIndex
+        hpbIndex
+        lupIndex
+        momp
+        debt
+        depositSize
+        interestRate
+        apr30dAverage
+        dailyPercentageRate30dAverage
+        monthlyPercentageRate30dAverage
+        poolMinDebtAmount
+        poolCollateralization
+        poolActualUtilization
+        poolTargetUtilization
+        currentBurnEpoch
+        pendingInflator
+        lendApr
+        borrowApr
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
         }
       }
     }
   `,
-  getClaimedRewards: gql`
+  getAjnaPoolsData: gql`
+    {
+      pools {
+        collateralAddress
+        quoteTokenAddress
+        dailyPercentageRate30dAverage
+        debt
+        depositSize
+        interestRate
+        poolMinDebtAmount
+        lup
+        lupIndex
+        htp
+        htpIndex
+        lendApr
+        borrowApr
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
+      }
+    }
+  `,
+  getAjnaEarnPositionData: gql`
+    query getAccount($dpmProxyAddress: ID!) {
+      account(id: $dpmProxyAddress) {
+        earnPositions {
+          lps
+          index
+          nft {
+            id
+          }
+          account {
+            earnCumulativeFeesInQuoteToken
+            earnCumulativeQuoteTokenDeposit
+            earnCumulativeQuoteTokenWithdraw
+          }
+        }
+      }
+    }
+  `,
+  getAjnaEarnPositionNftId: gql`
+    query getNfts($walletAddress: ID!) {
+      nfts(where: { user_: { id: $walletAddress }, staked: true }) {
+        id
+        staked
+        currentReward
+      }
+    }
+  `,
+  getAjnaClaimedRewards: gql`
     query getClaimed($walletAddress: ID!) {
       claimeds(where: { user: $walletAddress }) {
         amount
+      }
+    }
+  `,
+  searchAjnaPool: gql`
+    query searchPool($collateralAddress: [ID]!, $poolAddress: [ID]!, $quoteAddress: [ID]!) {
+      pools(
+        first: 111
+        where: {
+          or: [
+            { address_in: $poolAddress }
+            { collateralAddress_in: $collateralAddress }
+            { quoteTokenAddress_in: $quoteAddress }
+          ]
+        }
+      ) {
+        address
+        buckets {
+          price
+          index
+          quoteTokens
+          collateral
+          bucketLPs
+        }
+        collateralAddress
+        debt
+        interestRate
+        lendApr
+        lup
+        lupIndex
+        quoteTokenAddress
       }
     }
   `,

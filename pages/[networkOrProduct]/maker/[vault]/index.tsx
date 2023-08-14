@@ -34,7 +34,7 @@ function Vault({ id }: { id: string }) {
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 
   return (
-    <WithConnection pageChainId={ethereumMainnetHexId}>
+    <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}

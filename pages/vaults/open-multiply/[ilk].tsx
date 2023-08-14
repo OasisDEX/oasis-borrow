@@ -35,7 +35,7 @@ function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
     <ProductContextHandler>
-      <WithWalletConnection chainId={ethereumMainnetHexId}>
+      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags

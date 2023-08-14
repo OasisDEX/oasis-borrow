@@ -32,7 +32,7 @@ export function AjnaFormContentRisk() {
         iconColor="primary100"
         items={[
           ...(isOracless
-            ? t(`ajna.position-page.common.form.risk.bullet-points.${product}-oracless`, {
+            ? t(`ajna.position-page.common.form.risk.bullet-points.oracless`, {
                 returnObjects: true,
               })
             : []),

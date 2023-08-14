@@ -2,16 +2,17 @@ import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
-import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
-import { ConnectedSidebarSection } from 'features/aave/common/components/connected-sidebar-section'
-import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
-import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
-import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
-import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import {
+  ConnectedSidebarSection,
+  OpenAaveStopLossInformation,
+  StopLossTwoTxRequirement,
+  StrategyInformationContainer,
+} from 'features/aave/components'
 import { hasUserInteracted } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
+import { isAllowanceNeeded, ProxyType } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'

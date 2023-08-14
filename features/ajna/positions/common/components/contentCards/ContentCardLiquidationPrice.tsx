@@ -16,7 +16,6 @@ interface ContentCardLiquidationPriceProps {
   liquidationPrice: BigNumber
   afterLiquidationPrice?: BigNumber
   belowCurrentPrice?: BigNumber
-  isOracless?: boolean
   changeVariant?: ChangeVariantType
 }
 

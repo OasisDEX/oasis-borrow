@@ -26,6 +26,7 @@ interface DsrViewProps {
   context: Context
   potTotalValueLocked?: BigNumber
   apy: BigNumber
+  dsr: BigNumber
 }
 
 const isLoadingCollection = [
@@ -46,6 +47,7 @@ export function DsrView({
   context,
   potTotalValueLocked,
   apy,
+  dsr,
 }: DsrViewProps) {
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
@@ -89,15 +91,19 @@ export function DsrView({
                 <Box>
                   <DsrDetailsSection
                     apy={apy}
+                    dsr={dsr}
                     depositAmount={dsrDepositState.amount}
                     netValue={netValue}
                     earnings={earnings}
+                    operation={dsrDepositState.operation}
+                    isMintingSDai={dsrDepositState.isMintingSDai}
                   />
                 </Box>
                 <Box>
                   <DsrSideBar
                     activeTab={dsrDepositState.operation}
                     daiBalance={dsrDepositState.daiBalance}
+                    sDaiBalance={dsrDepositState.sDaiBalance}
                     onDepositAmountChange={handleAmountChange(dsrDepositState.change!)}
                     depositInputValue={dsrDepositState.amount}
                     withDrawInputValue={dsrDepositState.amount}
@@ -110,6 +116,7 @@ export function DsrView({
                     isLoading={isLoading}
                     proxyAddress={dsrDepositState.proxyAddress}
                     daiAllowance={dsrDepositState.allowance}
+                    daiWalletAllowance={dsrDepositState.daiWalletAllowance}
                     isOwner={isOwner}
                     operationChange={dsrDepositState.operationChange}
                     netValue={netValue}
@@ -134,7 +141,6 @@ export function DsrView({
             label: t('system.faq'),
             content: (
               <Card variant="faq">
-                {/* TODO: Chris to add the DSR Faq */}
                 <DsrFaq />
               </Card>
             ),

@@ -3,21 +3,17 @@ import { NetworkConnector } from '@web3-react/network-connector'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { ethers } from 'ethers'
 import { BridgeConnector } from 'features/web3OnBoard'
-import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard/web3OnBoardConnectorProvider'
+import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard'
 import { isEqual } from 'lodash'
 import { useEffect } from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
 
-import { Web3Context, Web3ContextConnectedReadonly } from './types'
+import { Web3Context } from './types'
 
 export type BalanceOfMethod = (address: string) => { call: () => Promise<string> }
 
-type createWeb3ContextReturnType = [
-  Observable<Web3Context>,
-  () => void,
-  (chainId: number, context: Web3ContextConnectedReadonly) => void,
-]
+type createWeb3ContextReturnType = [Observable<Web3Context>, () => void]
 
 export function createWeb3Context$(): createWeb3ContextReturnType {
   const web3Context$ = new ReplaySubject<Web3Context>(1)
@@ -31,9 +27,7 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     const { connector, library, activate, chainId, account, deactivate } = context
 
     const {
-      connector: bridgeConnector,
-      networkConnector,
-      networkConfig,
+      state: { connector: bridgeConnector, networkConnector, networkConnectorNetworkId, status },
     } = useWeb3OnBoardConnectorContext()
 
     useEffect(() => {
@@ -49,18 +43,18 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     }, [bridgeConnector, deactivate, connector])
 
     useEffect(() => {
-      if (library && bridgeConnector && bridgeConnector.chainId === chainId && account) {
+      if (library && bridgeConnector) {
         push({
           status: 'connected',
           connectionKind: 'injected',
           web3: library as any,
           chainId: bridgeConnector.chainId,
           connectionMethod: 'web3-onboard',
-          account: account,
+          account: bridgeConnector.connectedAccount,
           magicLinkEmail: undefined,
           walletLabel: bridgeConnector.wallet.label,
           transactionProvider: new ethers.providers.Web3Provider(
-            bridgeConnector.basicInfo.provider,
+            bridgeConnector.connectorInformation.provider,
           ).getSigner(),
         })
       }
@@ -73,30 +67,23 @@ export function createWeb3Context$(): createWeb3ContextReturnType {
     }, [networkConnector, activate, bridgeConnector, connector])
 
     useEffect(() => {
-      if (connector instanceof NetworkConnector && library && networkConfig) {
+      if (
+        connector &&
+        connector instanceof NetworkConnector &&
+        library &&
+        networkConnectorNetworkId
+      ) {
         push({
           status: 'connectedReadonly',
           connectionKind: 'network',
           web3: library as any,
           connectionMethod: 'web3-onboard',
-          chainId: networkConfig.id,
+          chainId: networkConnectorNetworkId,
           walletLabel: undefined,
         })
       }
-    }, [library, networkConfig, connector])
+    }, [networkConnectorNetworkId, library, connector, status])
   }
 
-  function switchChains(_nextChainId: number, context: Web3ContextConnectedReadonly) {
-    push({
-      status: context.status,
-      connectionKind: context.connectionKind,
-      web3: context.web3,
-      chainId: _nextChainId,
-      connectionMethod: context.connectionMethod,
-      walletLabel: context.walletLabel,
-    })
-    // this is currently not being used
-  }
-
-  return [web3Context$.pipe(distinctUntilChanged(isEqual)), useWeb3Context$, switchChains]
+  return [web3Context$.pipe(distinctUntilChanged(isEqual)), useWeb3Context$]
 }

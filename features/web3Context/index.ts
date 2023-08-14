@@ -1,4 +1,4 @@
-export { contract, getNetworkId, getNetworkName } from './network'
+export { contract } from './network'
 export type { ContractDesc } from './network'
 export type {
   AccountWithBalances,

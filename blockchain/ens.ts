@@ -3,14 +3,12 @@ import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { Context } from './network'
-import { getNetworkRpcEndpoint, NetworkIds } from './networks'
+import { getNetworkRpcEndpoint } from './networks'
 
 export function resolveENSName$(context$: Observable<Context>, address: string) {
   return context$.pipe(
     switchMap(async (context) => {
-      const provider = new ethers.providers.JsonRpcProvider(
-        getNetworkRpcEndpoint(NetworkIds.MAINNET, context.chainId),
-      )
+      const provider = new ethers.providers.JsonRpcProvider(getNetworkRpcEndpoint(context.chainId))
       return await provider
         .lookupAddress(address)
         .catch((err: Error) =>
