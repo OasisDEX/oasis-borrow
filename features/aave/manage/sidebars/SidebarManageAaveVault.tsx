@@ -724,10 +724,7 @@ export function SidebarManageAaveVault() {
   const dropdownConfig = getDropdownConfig({ state, send })
 
   const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
-  console.log('=======')
-  console.log('STRAT CONF', state.context.strategyConfig)
-  console.log('STATE', state.value)
-  console.log('dropdownConfig', dropdownConfig)
+
   switch (true) {
     case state.matches('frontend.editing'):
       return (

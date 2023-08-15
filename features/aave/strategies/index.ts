@@ -60,18 +60,10 @@ export function loadStrategyFromTokens(
   // Aave uses WETH gateway for ETH (we have ETH strategy specified)
   // so we have to convert that on the fly just to find the strategy
   // this is then converted back to WETH using wethToEthAddress
-  console.log('-----------')
-  console.log('collateralToken', collateralToken)
-  console.log('debtToken', debtToken)
-  console.log('networkName', networkName)
-  console.log('protocol', protocol)
-  console.log('vaultType', vaultType)
   const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
   const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
   const strategy = strategies.find((s) => {
     const matchesVaultType = !vaultType || vaultType.toLowerCase() === s.type.toLowerCase()
-
-    console.log('matchesVaultType', matchesVaultType)
     return (
       s.tokens.collateral === actualCollateralToken &&
       s.tokens.debt === actualDebtToken &&
@@ -80,8 +72,7 @@ export function loadStrategyFromTokens(
       matchesVaultType
     )
   })
-
-  console.log('strategy', strategy)
+  
   if (!strategy) {
     throw new Error(
       `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken}) for protocol: ${protocol} on network: ${networkName}`,

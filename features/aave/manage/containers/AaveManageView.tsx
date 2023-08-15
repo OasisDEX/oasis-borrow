@@ -51,6 +51,7 @@ function AaveManageContainer({
         <Box mb={4}>
           <AavePositionNoticesView />
         </Box>
+        {/* TODO: Is causing endless re-rendering. Investigate bug. Is in dev currently */}
         {/*<Header strategyConfig={strategyConfig} positionId={state.context.positionId} />*/}
         <AaveManageTabBar
           strategyConfig={strategyConfig}
@@ -71,8 +72,6 @@ export function AaveManagePositionView({
     strategyConfig.protocol,
     strategyConfig.network,
   )
-  console.log('<<<>>>')
-  console.log(strategyConfig.type)
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
     getAaveReserveData$({ token: strategyConfig.tokens.debt }),
   )

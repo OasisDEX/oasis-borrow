@@ -191,8 +191,7 @@ export function getManageAaveV3PositionStateMachineServices(
     },
     savePositionToDb$: (context) => {
       const chainId = context.web3Context?.chainId
-      console.log('====== <> ======')
-      console.log('savePositionToDb$')
+
       if (!chainId) {
         return throwError(new Error('No chainId available - save position unsuccessful'))
       }
@@ -207,12 +206,10 @@ export function getManageAaveV3PositionStateMachineServices(
         context.strategyConfig.type === 'Borrow'
           ? VaultType.Borrow
           : context.strategyConfig.type === 'Multiply'
-            ? VaultType.Multiply
-            : context.strategyConfig.type === 'Earn'
-              ? VaultType.Earn
-              : undefined
-
-      console.log('updatedVaultType', updatedVaultType)
+          ? VaultType.Multiply
+          : context.strategyConfig.type === 'Earn'
+          ? VaultType.Earn
+          : undefined
 
       return getPositionIdFromDpmProxy$(of({ chainId }), proxy).pipe(
         switchMap((positionId) => {
@@ -221,11 +218,7 @@ export function getManageAaveV3PositionStateMachineServices(
           }
 
           const token = jwtAuthGetToken(user)
-          console.log('positionId', positionId)
-          console.log('token', token)
-          console.log('updatedVaultType', updatedVaultType)
-          console.log('chainId', chainId)
-          console.log('LendingProtocol.AaveV3', LendingProtocol.AaveV3)
+
           if (!token) {
             return throwError(new Error('No token available - save position unsuccessful'))
           }
@@ -236,7 +229,6 @@ export function getManageAaveV3PositionStateMachineServices(
             chainId,
             LendingProtocol.AaveV3,
           ).subscribe()
-          console.log('emitting switch success')
 
           return of({ type: 'SWITCH_SUCCESS' })
         }),

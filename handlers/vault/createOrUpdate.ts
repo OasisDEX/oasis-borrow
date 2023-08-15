@@ -15,7 +15,7 @@ const vaultSchema = z.object({
 
 export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
   const params = vaultSchema.parse(req.body)
-  console.log('params', params)
+
   const user = getUserFromRequest(req)
 
   const vaultData = {
@@ -25,8 +25,6 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     chain_id: params.chainId,
     protocol: params.protocol,
   }
-
-  console.log('vaultData', vaultData)
 
   const insertQuery = `INSERT INTO vault (vault_id, chain_id, type, owner_address, protocol) VALUES (${vaultData.vault_id},${vaultData.chain_id},'${vaultData.type}','${vaultData.owner_address}', '${vaultData.protocol}')`
   const updateQuery = `UPDATE vault SET type='${vaultData.type}' WHERE vault_id=${vaultData.vault_id} AND chain_id=${vaultData.chain_id} AND protocol='${vaultData.protocol}'`
@@ -41,7 +39,6 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     if (vault === null) {
       await prisma.$executeRawUnsafe(insertQuery)
     } else {
-      console.log('updateQuery', updateQuery)
       await prisma.$executeRawUnsafe(updateQuery)
     }
     return res.status(200).send('OK')
