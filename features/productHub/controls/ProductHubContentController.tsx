@@ -4,6 +4,9 @@ import { ProductHubTableController } from 'features/productHub/controls/ProductH
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
 import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
 import {
+  useProductHubBanner,
+} from 'features/productHub/hooks/useProductHubBanner'
+import {
   ProductHubFilters,
   ProductHubItem,
   ProductHubProductType,
@@ -36,6 +39,10 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 }) => {
   const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+
+  const banner = useProductHubBanner({
+    product: selectedProduct,
+  })
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
@@ -74,6 +81,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         onChange={onChange}
       />
       <ProductHubTableController
+        banner={banner}
         rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
       />
     </AssetsTableContainer>
