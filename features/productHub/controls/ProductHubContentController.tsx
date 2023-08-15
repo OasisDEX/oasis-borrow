@@ -3,9 +3,7 @@ import { ProductHubFiltersController } from 'features/productHub/controls/Produc
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
 import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
-import {
-  useProductHubBanner,
-} from 'features/productHub/hooks/useProductHubBanner'
+import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
 import {
   ProductHubFilters,
   ProductHubItem,

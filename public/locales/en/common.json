@@ -2975,8 +2975,8 @@
     },
     "banners": {
       "pool-finder": {
-        "title": "Looking for a custom pool",
-        "description": "Find any pool on Ajna and open an oracle-less {{product}} position",
+        "title": "Looking for a custom pool?",
+        "description": "Find any pool on Ajna and open an oracle-less {{product}} position.",
         "cta": "Search custom pools"
       }
     }
