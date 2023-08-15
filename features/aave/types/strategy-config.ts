@@ -20,7 +20,6 @@ type VaultDetails = (
 
 type SecondaryInput = (props: SecondaryInputProps) => JSX.Element
 
-
 type PositionInfo = () => JSX.Element
 
 export type AaveHeaderProps = {
@@ -30,7 +29,6 @@ export type AaveHeaderProps = {
 export type ManageAaveHeaderProps = AaveHeaderProps & {
   positionId: PositionId
 }
-
 
 export type SecondaryInputProps = BaseViewProps<EventsRaisedFromSecondaryInput> & {
   viewLocked?: boolean // locks whole view
@@ -46,7 +44,6 @@ type EventsRaisedFromSecondaryInput =
 }
   | { type: 'SET_DEBT'; debt: BigNumber }
   | BaseAaveEvent
-
 
 export enum ProxyType {
   DsProxy = 'DsProxy',

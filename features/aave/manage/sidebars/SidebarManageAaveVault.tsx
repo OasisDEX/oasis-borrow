@@ -28,7 +28,7 @@ import {
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
-import { ManagePositionAvailableActions } from 'features/aave/types'
+import { ManagePositionAvailableActions, ProductType } from 'features/aave/types'
 import { isAllowanceNeeded } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
@@ -39,7 +39,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 import { Sender } from 'xstate'
@@ -227,6 +227,69 @@ function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
     )
   }
   return context.balance?.collateral.balance || zero
+}
+
+function ManageAaveSaveSwitchFailureStateView({ state, send }: ManageAaveStateProps) {
+  const productType = state.context.strategyConfig.type
+  useEffect(() => {
+    if (productType === 'Borrow') {
+      send({ type: 'RETRY_BORROW_SWITCH' })
+    } else if (productType === 'Multiply') {
+      send({ type: 'RETRY_MULTIPLY_SWITCH' })
+    } else if (productType === 'Earn') {
+      send({ type: 'RETRY_EARN_SWITCH' })
+    }
+  }, [productType])
+
+  return null
+}
+
+function ManageAaveSwitchingStateView({ state }: ManageAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('manage-earn.aave.vault-form.switching-title', {
+      type: state.context.strategyConfig.type,
+    }),
+    content: (
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('manage-earn.aave.vault-form.switching-description')}
+      </Text>
+    ),
+    primaryButton: {
+      isLoading: true,
+      disabled: true,
+      label: t('manage-earn.aave.vault-form.confirm-btn'),
+    },
+  }
+
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
+}
+
+function ManageAaveSwitchStateView({
+  state,
+  send,
+  productType,
+}: ManageAaveStateProps & { productType: ProductType }) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('manage-earn.aave.vault-form.confirm-switch', { type: productType }),
+    content: (
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('manage-earn.aave.vault-form.switch-description', { productType })}
+      </Text>
+    ),
+    primaryButton: {
+      isLoading: false,
+      disabled: false,
+      label: t('manage-earn.aave.vault-form.confirm-btn'),
+      action: () => send({ type: 'SWITCH_CONFIRMED', productType: productType }),
+    },
+    textButton: textButtonReturningToAdjust({ state, send }).textButton,
+  }
+
+  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
 function GetReviewingSidebarProps({
@@ -600,7 +663,32 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
         }
       },
     },
+    'switch-to-borrow': {
+      label: t('system.actions.multiply.switch-to-borrow'),
+      icon: 'circle_close',
+      panel: 'confirmSwitch',
+      action: () => {
+        send('SWITCH_TO_BORROW')
+      },
+    },
+    'switch-to-multiply': {
+      label: t('system.actions.borrow.switch-to-multiply'),
+      icon: 'circle_close',
+      panel: 'confirmSwitch',
+      action: () => {
+        send('SWITCH_TO_MULTIPLY')
+      },
+    },
+    'switch-to-earn': {
+      label: t('system.actions.borrow.switch-to-earn'),
+      icon: 'circle_close',
+      panel: 'confirmSwitch',
+      action: () => {
+        send('SWITCH_TO_EARN')
+      },
+    },
   }
+
   const strategyAvailableActions = state.context.strategyConfig.availableActions.map(
     (action) => itemPerAction[action],
   )
@@ -636,7 +724,10 @@ export function SidebarManageAaveVault() {
   const dropdownConfig = getDropdownConfig({ state, send })
 
   const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
-
+  console.log('=======')
+  console.log('STRAT CONF', state.context.strategyConfig)
+  console.log('STATE', state.value)
+  console.log('dropdownConfig', dropdownConfig)
   switch (true) {
     case state.matches('frontend.editing'):
       return (
@@ -705,6 +796,17 @@ export function SidebarManageAaveVault() {
           }}
         />
       )
+    case state.matches('frontend.savePositionToDb'):
+    case state.matches('frontend.switching'):
+      return <ManageAaveSwitchingStateView state={state} send={send} />
+    case state.matches('frontend.saveSwitchFailure'):
+      return <ManageAaveSaveSwitchFailureStateView state={state} send={send} />
+    case state.matches('frontend.switchToBorrow'):
+      return <ManageAaveSwitchStateView state={state} send={send} productType={'Borrow'} />
+    case state.matches('frontend.switchToMultiply'):
+      return <ManageAaveSwitchStateView state={state} send={send} productType={'Multiply'} />
+    case state.matches('frontend.switchToEarn'):
+      return <ManageAaveSwitchStateView state={state} send={send} productType={'Earn'} />
     case state.matches('frontend.txInProgress'):
     case state.matches('frontend.txInProgressEthers'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />

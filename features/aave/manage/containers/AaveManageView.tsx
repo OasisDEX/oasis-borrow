@@ -51,7 +51,7 @@ function AaveManageContainer({
         <Box mb={4}>
           <AavePositionNoticesView />
         </Box>
-        <Header strategyConfig={strategyConfig} positionId={state.context.positionId} />
+        {/*<Header strategyConfig={strategyConfig} positionId={state.context.positionId} />*/}
         <AaveManageTabBar
           strategyConfig={strategyConfig}
           aaveReserveState={aaveReserveState}
@@ -71,6 +71,8 @@ export function AaveManagePositionView({
     strategyConfig.protocol,
     strategyConfig.network,
   )
+  console.log('<<<>>>')
+  console.log(strategyConfig.type)
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
     getAaveReserveData$({ token: strategyConfig.tokens.debt }),
   )

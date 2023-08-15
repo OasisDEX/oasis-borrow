@@ -6,9 +6,9 @@ import { VaultType } from 'features/generalManageVault/vaultType'
 import { LendingProtocol } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, EMPTY, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, map, startWith, switchMap } from 'rxjs/operators'
+import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
@@ -87,6 +87,17 @@ export function getVaultFromApi$(
   ownerAddress: string
   type: VaultType
 }> {
+  console.log('GET VAULT FROM API')
+  console.log('vaultId', vaultId)
+  console.log('chainId', chainId)
+  if (chainId === 0 || chainId < 1) {
+    console.error('Invalid chainId')
+    return EMPTY
+  }
+  if (vaultId === 0 || vaultId < 1) {
+    console.error('Invalid vaultId')
+    return EMPTY
+  }
   return ajax({
     url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
@@ -102,6 +113,9 @@ export function getVaultFromApi$(
         protocol: string
         ownerAddress: string
       }
+
+      console.log('RESPONSE FROM API', { vaultId, type, chainId, ownerAddress, protocol })
+
       return { vaultId, type, chainId, ownerAddress, protocol }
     }),
   )
@@ -114,6 +128,8 @@ export function saveVaultUsingApi$(
   chainId: number,
   protocol: string,
 ): Observable<void> {
+  console.log('SAVE VAULT USING API', { id, token, vaultType, chainId, protocol })
+  console.log('url', `${basePath}/api/vault`)
   return ajax({
     url: `${basePath}/api/vault`,
     method: 'POST',
@@ -127,5 +143,16 @@ export function saveVaultUsingApi$(
       chainId,
       protocol: protocol.toLowerCase(),
     },
-  }).pipe(map((_) => {}))
+  }).pipe(
+    tap((_) => {
+      console.log('Vault saved[tap]', _)
+    }),
+    map((_) => {
+      console.log('Vault saved', _)
+    }),
+    catchError((err) => {
+      console.error('Error saving vault', err)
+      return EMPTY
+    }),
+  )
 }

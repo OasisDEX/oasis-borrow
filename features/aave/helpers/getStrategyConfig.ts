@@ -3,6 +3,7 @@ import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
 import { getLastCreatedPositionForProxy, PositionCreated } from 'features/aave/services'
 import { IStrategyConfig, PositionId } from 'features/aave/types'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { LendingProtocol } from 'lendingProtocols'
 import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'
@@ -17,6 +18,7 @@ export function getStrategyConfig$(
   lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated | undefined>,
   positionId: PositionId,
   networkName: NetworkNames,
+  vaultType?: VaultType,
 ): Observable<IStrategyConfig> {
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {
@@ -40,6 +42,7 @@ export function getStrategyConfig$(
           lastCreatedPosition.debtTokenSymbol,
           networkName,
           lastCreatedPosition.protocol,
+          vaultType,
         )
       }
       if (aaveUserConfigurations === undefined) {
@@ -49,13 +52,37 @@ export function getStrategyConfig$(
       switch (true) {
         // For aave v3 we should have the event.
         case aaveUserConfigurations.hasAssets(['STETH'], ['ETH', 'WETH']):
-          return loadStrategyFromTokens('STETH', 'ETH', networkName, LendingProtocol.AaveV2)
+          return loadStrategyFromTokens(
+            'STETH',
+            'ETH',
+            networkName,
+            LendingProtocol.AaveV2,
+            vaultType,
+          )
         case aaveUserConfigurations.hasAssets(['ETH', 'WETH'], ['USDC']):
-          return loadStrategyFromTokens('ETH', 'USDC', networkName, LendingProtocol.AaveV2)
+          return loadStrategyFromTokens(
+            'ETH',
+            'USDC',
+            networkName,
+            LendingProtocol.AaveV2,
+            vaultType,
+          )
         case aaveUserConfigurations.hasAssets(['WBTC'], ['USDC']):
-          return loadStrategyFromTokens('WBTC', 'USDC', networkName, LendingProtocol.AaveV2)
+          return loadStrategyFromTokens(
+            'WBTC',
+            'USDC',
+            networkName,
+            LendingProtocol.AaveV2,
+            vaultType,
+          )
         case aaveUserConfigurations.hasAssets(['STETH'], ['USDC']):
-          return loadStrategyFromTokens('STETH', 'USDC', networkName, LendingProtocol.AaveV2)
+          return loadStrategyFromTokens(
+            'STETH',
+            'USDC',
+            networkName,
+            LendingProtocol.AaveV2,
+            vaultType,
+          )
         default:
           throw new Error(`User doesn't have assets supported in the app`)
       }
@@ -67,6 +94,7 @@ export function getStrategyConfig$(
 export async function getAaveV3StrategyConfig(
   positionId: PositionId,
   networkName: NetworkNames,
+  vaultType?: VaultType,
 ): Promise<IStrategyConfig> {
   const { vaultId } = positionId
 
@@ -90,5 +118,6 @@ export async function getAaveV3StrategyConfig(
     lastCreatedPosition.debtTokenSymbol,
     networkName,
     lastCreatedPosition.protocol,
+    vaultType,
   )
 }

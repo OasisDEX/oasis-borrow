@@ -5,4 +5,6 @@ export const allActionsAvailableBorrow: ManagePositionAvailableActions[] = [
   'manage-debt',
   'adjust',
   'close',
+  'switch-to-multiply',
+  'switch-to-earn',
 ]

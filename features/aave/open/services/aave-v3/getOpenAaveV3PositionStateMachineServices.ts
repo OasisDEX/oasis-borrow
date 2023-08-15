@@ -243,15 +243,19 @@ export function getOpenAaveV3PositionStateMachineServices(
           if (!positionId || !vaultType || !proxy || !user) {
             return throwError(new Error('No enough data provided to save position'))
           }
-          return saveVaultUsingApi$(
+          const token = jwtAuthGetToken(user)
+          if (!token) {
+            return throwError(new Error('No token available - save position unsuccessful'))
+          }
+          saveVaultUsingApi$(
             new BigNumber(positionId),
-            <string>jwtAuthGetToken(user),
+            token,
             vaultType,
             chainId,
             LendingProtocol.AaveV3,
-          )
+          ).subscribe()
+          return of({ type: 'SAVE_POSITION_SUCCESS' })
         }),
-        map(() => ({ type: 'SAVE_POSITION_SUCCESS' })),
         catchError((error) => {
           console.error('Error saving to the DB:', error)
           return of({ type: 'SAVE_POSITION_ERROR', error })

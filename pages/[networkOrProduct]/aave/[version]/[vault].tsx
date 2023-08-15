@@ -7,17 +7,19 @@ import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { PositionId } from 'features/aave/types/position-id'
+import { getVaultFromApi$ } from 'features/shared/vaultApi'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
 import { AaveLendingProtocol, checkIfAave } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
@@ -56,28 +58,22 @@ function WithStrategy({
 }) {
   const { push } = useRouter()
   const { t } = useTranslation()
+  const { chainId } = useAccount()
+  const vaultFromApi$ = useMemo(
+    () => getVaultFromApi$(positionId.vaultId || 0, chainId || 0, protocol),
+    [positionId.vaultId, chainId, protocol],
+  )
+  const [vaultFromApi] = useObservable(vaultFromApi$)
   const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
     protocol,
     network,
   )
-  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId, network))
+  const [strategyConfig, strategyConfigError] = useObservable(
+    strategyConfig$(positionId, network, vaultFromApi?.type),
+  )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
-  // const chainId = aaveManageStateMachine.context?.web3Context?.chainId || 0
-  // const vaultFromApi$ = useMemo(
-  //   () =>
-  //     getVaultFromApi$(
-  //       positionId.vaultId || 0,
-  //       chainId,
-  //       strategyConfig?.protocol || LendingProtocol.AaveV3,
-  //     ).pipe(take(1)),
-  //   [positionId.vaultId, chainId, strategyConfig?.protocol],
-  // )
-  //
-  // const [vaultFromApi, vaultFromApiError] = useObservable(vaultFromApi$)
-  // console.log('vaultFromApiError', vaultFromApiError)
-  // console.log('vault-type', vaultFromApi?.type)
 
   if (strategyConfigError) {
     console.warn(

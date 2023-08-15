@@ -5,4 +5,5 @@ export const allActionsAvailableInMultiply: ManagePositionAvailableActions[] = [
   'manage-debt',
   'manage-collateral',
   'close',
+  'switch-to-borrow',
 ]

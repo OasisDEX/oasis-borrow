@@ -1160,7 +1160,8 @@
       "borrow": {
         "edit-dai": "Manage DAI",
         "edit-collateral": "Manage collateral ({{token}})",
-        "switch-to-multiply": "Switch to Multiply"
+        "switch-to-multiply": "Switch to Multiply",
+        "switch-to-earn": "Switch to Earn"
       },
       "multiply": {
         "adjust": "Adjust",
@@ -1174,7 +1175,8 @@
         "borrow-debt": "Borrow debt"
       },
       "earn": {
-        "vault-overview": "Vault overview"
+        "vault-overview": "Vault overview",
+        "switch-to-borrow": "Switch to Borrow"
       }
     },
     "cards": {
@@ -2327,6 +2329,8 @@
         "close": "Close vault",
         "confirm-btn": "Confirm",
         "close-description": "To close your position, all your collateral will be sold to pay back the outstanding debt. The remaining {{closeToToken}} will be sent to your address.",
+        "switch-description": "You're about to switch your positions product type to {{productType}}. This will give you access to metrics and functionality specific to {{productType}} products.",
+        "switching-description": "Position reloading with new product type. This may take a moment.",
         "stop-close": "Not right now",
         "token-amount-after-closing": "{{token}} after closing",
         "retry-btn": "Retry",
@@ -2334,7 +2338,9 @@
         "adjust-description": "You are about to adjust the risk level of your vault. Please confirm the changes below.",
         "back-to-editing": "Back to editing",
         "success-title": "Success!",
-        "position-adjusted-btn": "OK"
+        "position-adjusted-btn": "OK",
+        "switching-title": "Switching position type to {{type}}",
+        "confirm-switch": "Switch position type to {{type}}"
       }
     }
   },

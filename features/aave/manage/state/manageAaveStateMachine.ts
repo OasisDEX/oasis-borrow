@@ -20,6 +20,7 @@ import {
   getSlippage,
   isAllowanceNeeded,
   ManageTokenInput,
+  ProductType,
   ProxyType,
   RefTransactionMachine,
 } from 'features/aave/types'
@@ -67,6 +68,17 @@ export type ManageAaveEvent =
   | { type: 'RETRY' }
   | { type: 'NEXT_STEP' }
   | { type: 'START_TRANSACTION' }
+  | { type: 'SWITCH_TO_BORROW' }
+  | { type: 'SWITCH_TO_MULTIPLY' }
+  | { type: 'SWITCH_TO_EARN' }
+  | { type: 'RETRY_BORROW_SWITCH' }
+  | { type: 'RETRY_MULTIPLY_SWITCH' }
+  | { type: 'RETRY_EARN_SWITCH' }
+  | {
+      type: 'SWITCH_CONFIRMED'
+      productType: ProductType
+    }
+  | { type: 'SWITCH_SUCCESS' }
   | {
       type: 'POSITION_PROXY_ADDRESS_RECEIVED'
       proxyAddress: string
@@ -345,6 +357,51 @@ export function createManageAaveStateMachine(
                 },
               },
             },
+            switchToBorrow: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            switchToMultiply: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            switchToEarn: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            savePositionToDb: {
+              invoke: {
+                src: 'savePositionToDb$',
+                onDone: {
+                  target: 'switching',
+                },
+                onError: {
+                  target: 'saveSwitchFailure',
+                },
+              },
+            },
+            switching: {
+              entry: ['reloadPage'],
+            },
+            saveSwitchFailure: {
+              on: {
+                RETRY_BORROW_SWITCH: 'switchToBorrow',
+                RETRY_MULTIPLY_SWITCH: 'switchToMultiply',
+                RETRY_EARN_SWITCH: 'switchToEarn',
+              },
+            },
             reviewingAdjusting: {
               entry: ['riskRatioConfirmEvent'],
               on: {
@@ -532,6 +589,15 @@ export function createManageAaveStateMachine(
           target: ['background.debouncing'],
           actions: 'updateContext',
         },
+        SWITCH_TO_BORROW: {
+          target: 'frontend.switchToBorrow',
+        },
+        SWITCH_TO_MULTIPLY: {
+          target: 'frontend.switchToMultiply',
+        },
+        SWITCH_TO_EARN: {
+          target: 'frontend.switchToEarn',
+        },
       },
     },
     {
@@ -692,6 +758,18 @@ export function createManageAaveStateMachine(
           }
           return undefined
         }),
+        updateStrategyConfigType: assign((context, event) => {
+          return {
+            ...context,
+            strategyConfig: {
+              ...context.strategyConfig,
+              type: event.productType,
+            },
+          }
+        }),
+        reloadPage: () => {
+          window.location.reload()
+        },
         spawnDepositBorrowMachine: assign((context) => ({
           refParametersMachine: spawn(
             depositBorrowAaveMachine.withContext({

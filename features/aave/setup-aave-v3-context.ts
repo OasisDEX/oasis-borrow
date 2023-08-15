@@ -5,6 +5,7 @@ import { TokenBalances } from 'blockchain/tokens'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { AppContext } from 'components/AppContext'
 import dayjs from 'dayjs'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { one } from 'helpers/zero'
@@ -200,10 +201,13 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
   const strategyConfig$: (
     positionId: PositionId,
     networkName: NetworkNames,
+    vaultType?: VaultType,
   ) => Observable<IStrategyConfig> = memoize(
-    (positionId: PositionId, networkName: NetworkNames) =>
-      of(undefined).pipe(switchMap(() => getAaveV3StrategyConfig(positionId, networkName))),
-    (positionId, networkName) => JSON.stringify({ positionId, networkName }),
+    (positionId: PositionId, networkName: NetworkNames, vaultType) =>
+      of(undefined).pipe(
+        switchMap(() => getAaveV3StrategyConfig(positionId, networkName, vaultType)),
+      ),
+    (positionId, networkName, vaultType) => JSON.stringify({ positionId, networkName, vaultType }),
   )
 
   return {
