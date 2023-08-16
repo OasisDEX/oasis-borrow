@@ -1,4 +1,4 @@
-import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
+import { isSupportedNetwork, NetworkNames, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
@@ -13,8 +13,8 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { hexToDecimal } from 'helpers/hex-to-decimal'
 import { useObservable } from 'helpers/observableHook'
-import { useAccount } from 'helpers/useAccount'
 import { AaveLendingProtocol, checkIfAave } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
@@ -49,17 +49,17 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function WithStrategy({
-                        positionId,
-                        protocol,
-                        network,
-                      }: {
+  positionId,
+  protocol,
+  network,
+}: {
   positionId: PositionId
   protocol: AaveLendingProtocol
   network: NetworkNames
 }) {
   const { push } = useRouter()
   const { t } = useTranslation()
-  const { chainId } = useAccount()
+  const chainId = hexToDecimal(networksByName[network].hexId)
 
   const vaultFromApi$ = useMemo(
     () => getVaultFromApi$(positionId.vaultId || 0, chainId || 0, protocol),
@@ -97,7 +97,7 @@ function WithStrategy({
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
         value={[strategyConfig, proxiesRelatedWithPosition]}
-        customLoader={<VaultContainerSpinner/>}
+        customLoader={<VaultContainerSpinner />}
       >
         {([_strategyConfig, _proxies]) => (
           <ManageAaveStateMachineContextProvider
@@ -118,7 +118,7 @@ function WithStrategy({
               url={`/aave/v3/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
-              <BackgroundLight/>
+              <BackgroundLight />
               <AaveManagePositionView
                 address={_proxies.walletAddress}
                 strategyConfig={_strategyConfig}
@@ -143,10 +143,10 @@ function safeGetAddress(address: string | undefined) {
 }
 
 function Position({
-                    vault,
-                    protocol,
-                    network,
-                  }: {
+  vault,
+  protocol,
+  network,
+}: {
   vault: string
   network: NetworkNames
   protocol: AaveLendingProtocol
