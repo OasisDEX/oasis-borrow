@@ -75,6 +75,7 @@ export interface PositionTableEarnRow extends PositionTableRow {
   liquidity?: BigNumber | string
   liquidityToken: string
   netValue?: BigNumber
+  netValueInToken?: boolean
   pnl?: BigNumber
 }
 
@@ -175,6 +176,7 @@ export function parseMakerEarnPositionRows(
       liquidity: ilkDebtAvailable,
       liquidityToken: 'DAI',
       netValue: value,
+      netValueInToken: false,
       pnl: calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100),
       // TODO: should get chainId from the source event so it works in the generic way for all chains
       network: NetworkNames.ethereumMainnet,
@@ -252,6 +254,7 @@ export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTa
     liquidity,
     liquidityToken: 'USDC',
     netValue,
+    netValueInToken: false,
     network: networksById[chainId].name,
     protocol,
     url,
@@ -364,6 +367,7 @@ export function parseAjnaEarnPositionRows(
         icons: [collateralToken, quoteToken],
         id: vaultId,
         netValue: earnPosition.netValue,
+        netValueInToken: isOracless,
         pnl: earnPosition.pnl.withoutFees,
         liquidity,
         liquidityToken: quoteToken,
@@ -515,10 +519,26 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
 }
 export function getEarnPositionRows(rows: PositionTableEarnRow[]): AssetsTableRowData[] {
   return rows.map(
-    ({ asset, icons, id, liquidity, liquidityToken, netValue, network, pnl, protocol, url }) => ({
+    ({
+      asset,
+      icons,
+      id,
+      liquidity,
+      liquidityToken,
+      netValue,
+      netValueInToken,
+      network,
+      pnl,
+      protocol,
+      url,
+    }) => ({
       asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
       netValue: BigNumber.isBigNumber(netValue) ? (
-        `$${formatCryptoBalance(netValue)}`
+        netValueInToken ? (
+          `${formatCryptoBalance(netValue)} ${liquidityToken}`
+        ) : (
+          `$${formatCryptoBalance(netValue)}`
+        )
       ) : (
         <AssetsTableDataCellInactive>{netValue}</AssetsTableDataCellInactive>
       ),
