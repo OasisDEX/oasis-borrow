@@ -49,10 +49,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function WithStrategy({
-  positionId,
-  protocol,
-  network,
-}: {
+                        positionId,
+                        protocol,
+                        network,
+                      }: {
   positionId: PositionId
   protocol: AaveLendingProtocol
   network: NetworkNames
@@ -60,6 +60,7 @@ function WithStrategy({
   const { push } = useRouter()
   const { t } = useTranslation()
   const { chainId } = useAccount()
+
   const vaultFromApi$ = useMemo(
     () => getVaultFromApi$(positionId.vaultId || 0, chainId || 0, protocol),
     [positionId.vaultId, chainId, protocol],
@@ -96,7 +97,7 @@ function WithStrategy({
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
         value={[strategyConfig, proxiesRelatedWithPosition]}
-        customLoader={<VaultContainerSpinner />}
+        customLoader={<VaultContainerSpinner/>}
       >
         {([_strategyConfig, _proxies]) => (
           <ManageAaveStateMachineContextProvider
@@ -117,7 +118,7 @@ function WithStrategy({
               url={`/aave/v3/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
-              <BackgroundLight />
+              <BackgroundLight/>
               <AaveManagePositionView
                 address={_proxies.walletAddress}
                 strategyConfig={_strategyConfig}
@@ -142,10 +143,10 @@ function safeGetAddress(address: string | undefined) {
 }
 
 function Position({
-  vault,
-  protocol,
-  network,
-}: {
+                    vault,
+                    protocol,
+                    network,
+                  }: {
   vault: string
   network: NetworkNames
   protocol: AaveLendingProtocol

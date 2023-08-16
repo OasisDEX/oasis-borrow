@@ -247,15 +247,15 @@ export function getOpenAaveV3PositionStateMachineServices(
           if (!token) {
             return throwError(new Error('No token available - save position unsuccessful'))
           }
-          saveVaultUsingApi$(
+          return saveVaultUsingApi$(
             new BigNumber(positionId),
             token,
             vaultType,
             chainId,
             LendingProtocol.AaveV3,
-          ).subscribe()
-          return of({ type: 'SAVE_POSITION_SUCCESS' })
+          )
         }),
+        map(() => ({ type: 'SAVE_POSITION_SUCCESS' })),
         catchError((error) => {
           console.error('Error saving to the DB:', error)
           return of({ type: 'SAVE_POSITION_ERROR', error })

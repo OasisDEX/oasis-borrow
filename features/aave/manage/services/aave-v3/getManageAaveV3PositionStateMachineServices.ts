@@ -190,7 +190,7 @@ export function getManageAaveV3PositionStateMachineServices(
       )
     },
     savePositionToDb$: (context) => {
-      const chainId = context.web3Context?.chainId
+      const chainId = context.strategyConfig.networkId
 
       if (!chainId) {
         return throwError(new Error('No chainId available - save position unsuccessful'))
@@ -215,16 +215,15 @@ export function getManageAaveV3PositionStateMachineServices(
           if (!token) {
             return throwError(new Error('No token available - save position unsuccessful'))
           }
-          saveVaultUsingApi$(
+          return saveVaultUsingApi$(
             new BigNumber(positionId),
             token,
             updatedVaultType,
             chainId,
             LendingProtocol.AaveV3,
-          ).subscribe()
-
-          return of({ type: 'SWITCH_SUCCESS', productType: updatedVaultType })
+          )
         }),
+        map(() => ({ type: 'SWITCH_SUCCESS', productType: updatedVaultType })),
         catchError((error) => {
           console.error('Error saving to the DB:', error)
           return throwError(error)
