@@ -212,5 +212,9 @@ export function getOpenAaveV2PositionStateMachineServices(
         distinctUntilChanged(isEqual),
       )
     },
+    savePositionToDb$: () => {
+      // TODO: replace with actual implementation.
+      return of({ type: 'SWITCH_SUCCESS' })
+    },
   }
 }

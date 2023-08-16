@@ -915,6 +915,12 @@ export function createManageAaveStateMachine(
                 return { type: 'MANAGE_DEBT' }
               case 'close':
                 return { type: 'CLOSE_POSITION' }
+              case 'switch-to-borrow':
+                return { type: 'SWITCH_TO_BORROW' }
+              case 'switch-to-multiply':
+                return { type: 'SWITCH_TO_MULTIPLY' }
+              case 'switch-to-earn':
+                return { type: 'SWITCH_TO_EARN' }
             }
           },
           { delay: 0 },

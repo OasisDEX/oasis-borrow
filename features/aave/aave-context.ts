@@ -32,8 +32,8 @@ export type AaveContext = AaveServices & {
   strategyConfig$: (
     positionId: PositionId,
     networkName: NetworkNames,
-    /* Accepts optional vaultType to further filter retrieved strategy assuming the product type has changed since position creation */
-    vaultType?: VaultType,
+    /* Accepts vaultType to further filter retrieved strategy assuming the product type has changed since position creation */
+    vaultType: VaultType,
   ) => Observable<IStrategyConfig>
   updateStrategyConfig?: (
     positionId: PositionId,

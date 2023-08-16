@@ -7,6 +7,7 @@ import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { PositionId } from 'features/aave/types/position-id'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { getVaultFromApi$ } from 'features/shared/vaultApi'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -70,8 +71,9 @@ function WithStrategy({
     aaveManageStateMachine,
     proxiesRelatedWithPosition$,
   } = useAaveContext(protocol, network)
+  // Use VaultType.Borrow as fallback
   const [strategyConfig, strategyConfigError] = useObservable(
-    strategyConfig$(positionId, network, vaultFromApi?.type),
+    strategyConfig$(positionId, network, vaultFromApi?.type || VaultType.Borrow),
   )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),

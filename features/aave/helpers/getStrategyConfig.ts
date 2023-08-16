@@ -18,7 +18,7 @@ export function getStrategyConfig$(
   lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated | undefined>,
   positionId: PositionId,
   networkName: NetworkNames,
-  vaultType?: VaultType,
+  vaultType: VaultType,
 ): Observable<IStrategyConfig> {
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {

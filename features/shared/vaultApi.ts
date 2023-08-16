@@ -7,7 +7,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { combineLatest, EMPTY, Observable } from 'rxjs'
-import { ajax, AjaxResponse } from 'rxjs/ajax'
+import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
@@ -121,7 +121,7 @@ export function saveVaultUsingApi$(
   vaultType: VaultType,
   chainId: number,
   protocol: string,
-): Observable<AjaxResponse> {
+): Observable<void> {
   return ajax({
     url: `${basePath}/api/vault`,
     method: 'POST',
@@ -135,5 +135,9 @@ export function saveVaultUsingApi$(
       chainId,
       protocol: protocol.toLowerCase(),
     },
-  })
+  }).pipe(
+    map(() => {
+      console.log('Vault saved')
+    }),
+  )
 }
