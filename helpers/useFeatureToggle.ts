@@ -20,8 +20,6 @@ export type Feature =
   | 'UpdatedPnL'
   | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
-  | 'AaveBorrow'
-  | 'AaveV3EarnWSTETH'
   | 'FollowVaults'
   | 'AaveV3Protection'
   | 'AaveV3ProtectionWrite'
@@ -39,20 +37,14 @@ export type Feature =
   | 'UseNetworkSwitcherArbitrum'
   | 'UseNetworkSwitcherOptimism'
   | 'UseNetworkRowProductCard'
-  | 'AaveV3Optimism'
   | 'AaveV3Arbitrum'
-  | 'AaveV3MultiplycbETHusdc'
-  | 'AaveV3MultiplywBTCusdc'
-  | 'AaveV3MultiplywstETHusdc'
-  | 'AaveV3MultiplyETHusdc'
-  | 'AaveV3MultiplyrETHusdc'
+  | 'AaveV3Borrow'
   | 'AaveV3EarnrETHeth'
   | 'AaveV3EarncbETHeth'
-  | 'AaveV2ProductCard'
+  | 'AaveV3Multiply'
   | 'SwapWidget'
   | '🌞'
   | 'ProxyReveal'
-  | 'AaveV3Borrow'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -71,8 +63,6 @@ const configuredFeatures: Record<Feature, boolean> = {
   UpdatedPnL: false,
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: true,
-  AaveBorrow: false,
-  AaveV3EarnWSTETH: true,
   FollowVaults: true,
   AaveV3Protection: true,
   AaveV3ProtectionWrite: true,
@@ -90,19 +80,13 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcherArbitrum: false,
   UseNetworkSwitcherOptimism: true,
   UseNetworkRowProductCard: false,
-  AaveV3Optimism: true,
   AaveV3Arbitrum: false,
-  AaveV2ProductCard: true,
-  AaveV3MultiplycbETHusdc: true,
-  AaveV3MultiplywBTCusdc: true,
-  AaveV3MultiplyETHusdc: true,
   AaveV3EarncbETHeth: false,
-  AaveV3MultiplyrETHusdc: true,
   AaveV3EarnrETHeth: false,
-  AaveV3MultiplywstETHusdc: true,
+  AaveV3Borrow: false,
+  AaveV3Multiply: false,
   SwapWidget: true,
   ProxyReveal: false,
-  AaveV3Borrow: false,
   '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
 }
 
