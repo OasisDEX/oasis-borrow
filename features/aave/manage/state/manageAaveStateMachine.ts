@@ -33,6 +33,7 @@ import {
   TransactionParametersStateMachineEvent,
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
+import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, assign, createMachine, send, sendTo, spawn, StateFrom } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -774,14 +775,7 @@ export function createManageAaveStateMachine(
         }),
         updateStrategyConfig: assign((context) => {
           const newTemporaryProductType = context.strategyConfig.type
-          const updatedVaultType =
-            newTemporaryProductType === 'Borrow'
-              ? VaultType.Borrow
-              : newTemporaryProductType === 'Multiply'
-              ? VaultType.Multiply
-              : newTemporaryProductType === 'Earn'
-              ? VaultType.Earn
-              : undefined
+          const updatedVaultType = productToVaultType(newTemporaryProductType)
 
           if (context.updateStrategyConfig && updatedVaultType) {
             context.updateStrategyConfig(updatedVaultType)

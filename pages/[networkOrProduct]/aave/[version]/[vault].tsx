@@ -73,7 +73,8 @@ function WithStrategy({
   } = useAaveContext(protocol, network)
   // Use VaultType.Borrow as fallback
   const [strategyConfig, strategyConfigError] = useObservable(
-    strategyConfig$(positionId, network, vaultFromApi?.type || VaultType.Borrow),
+    /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
+    strategyConfig$(positionId, network, vaultFromApi?.type || VaultType.Unknown),
   )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),

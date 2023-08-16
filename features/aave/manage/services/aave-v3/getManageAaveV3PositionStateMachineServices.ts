@@ -12,12 +12,12 @@ import { getPricesFeed$ } from 'features/aave/services'
 import { contextToEthersTransactions, IStrategyConfig } from 'features/aave/types'
 import { IStrategyInfo, StrategyTokenAllowance, StrategyTokenBalance } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
+import { productToVaultType } from 'helpers/productToVaultType'
 import { LendingProtocol } from 'lendingProtocols'
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
@@ -202,14 +202,7 @@ export function getManageAaveV3PositionStateMachineServices(
         return throwError(new Error('No proxy available - save position unsuccessful'))
       }
 
-      const updatedVaultType =
-        context.strategyConfig.type === 'Borrow'
-          ? VaultType.Borrow
-          : context.strategyConfig.type === 'Multiply'
-          ? VaultType.Multiply
-          : context.strategyConfig.type === 'Earn'
-          ? VaultType.Earn
-          : undefined
+      const updatedVaultType = productToVaultType(context.strategyConfig.type)
 
       return getPositionIdFromDpmProxy$(of({ chainId }), proxy).pipe(
         switchMap((positionId) => {
