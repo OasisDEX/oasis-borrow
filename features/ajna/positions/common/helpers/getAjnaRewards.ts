@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networks'
 import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
@@ -8,10 +9,13 @@ export interface AjnaClaimedReward {
   amount: number
 }
 
-type GetAjnaRewards = (walletAddress: string) => Promise<AjnaClaimedReward[]>
+type GetAjnaRewards = (walletAddress: string, networkId: NetworkIds) => Promise<AjnaClaimedReward[]>
 
-export const getAjnaRewards: GetAjnaRewards = async (walletAddress: string) => {
-  const { response } = (await loadSubgraph('Ajna', 'getAjnaClaimedRewards', {
+export const getAjnaRewards: GetAjnaRewards = async (
+  walletAddress: string,
+  networkId: NetworkIds,
+) => {
+  const { response } = (await loadSubgraph('Ajna', 'getAjnaClaimedRewards', networkId, {
     walletAddress: walletAddress.toLowerCase(),
   })) as SubgraphsResponses['Ajna']['getAjnaClaimedRewards']
 

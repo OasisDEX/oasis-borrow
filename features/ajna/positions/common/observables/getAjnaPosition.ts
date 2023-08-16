@@ -50,7 +50,7 @@ export function getAjnaPosition$(
         proxyAddress: proxy,
         poolAddress:
           collateralAddress && quoteAddress
-            ? await getAjnaPoolAddress(collateralAddress, quoteAddress)
+            ? await getAjnaPoolAddress(collateralAddress, quoteAddress, context.chainId)
             : ajnaPoolPairs[`${collateralToken}-${quoteToken}` as keyof typeof ajnaPoolPairs]
                 .address,
       }
@@ -59,7 +59,7 @@ export function getAjnaPosition$(
         poolInfoAddress: ajnaPoolInfo.address,
         rewardsManagerAddress: ajnaRewardsManager.address,
         provider: getRpcProvider(context.chainId),
-        getPoolData: getAjnaPoolData,
+        getPoolData: getAjnaPoolData(context.chainId),
       }
 
       switch (product as AjnaProduct) {
@@ -69,7 +69,7 @@ export function getAjnaPosition$(
         case 'earn':
           return await views.ajna.getEarnPosition(commonPayload, {
             ...commonDependency,
-            getEarnData: getAjnaEarnData,
+            getEarnData: getAjnaEarnData(context.chainId),
           })
       }
     }),

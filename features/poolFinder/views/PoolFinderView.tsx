@@ -52,7 +52,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         })
 
         if (addresses.poolAddress || collateralToken.length || quoteToken.length) {
-          const pools = await searchAjnaPool({
+          const pools = await searchAjnaPool(context.chainId, {
             collateralAddress: collateralToken,
             poolAddress: addresses.poolAddress ? [addresses.poolAddress] : [],
             quoteAddress: quoteToken,
