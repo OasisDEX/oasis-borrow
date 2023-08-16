@@ -772,7 +772,7 @@ export function createManageAaveStateMachine(
             },
           }
         }),
-        updateStrategyConfig: assign((context, event) => {
+        updateStrategyConfig: assign((context) => {
           const newTemporaryProductType = context.strategyConfig.type
           const updatedVaultType =
             newTemporaryProductType === 'Borrow'
