@@ -15,7 +15,6 @@ const vaultSchema = z.object({
 
 export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
   const params = vaultSchema.parse(req.body)
-
   const user = getUserFromRequest(req)
 
   const vaultData = {

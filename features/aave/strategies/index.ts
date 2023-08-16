@@ -63,6 +63,7 @@ export function loadStrategyFromTokens(
   const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
   const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
   const strategy = strategies.find((s) => {
+    /* Enhances for strategies to be filtered by product type */
     const matchesVaultType = !vaultType || vaultType.toLowerCase() === s.type.toLowerCase()
     return (
       s.tokens.collateral === actualCollateralToken &&
@@ -72,7 +73,7 @@ export function loadStrategyFromTokens(
       matchesVaultType
     )
   })
-  
+
   if (!strategy) {
     throw new Error(
       `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken}) for protocol: ${protocol} on network: ${networkName}`,
