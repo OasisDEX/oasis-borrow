@@ -62,6 +62,32 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'CBETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3Borrow',
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3Multiply',
+      },
+    },
+  },
+  {
+    collateral: 'CBETH',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3Borrow',
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3Multiply',
+      },
+    },
+  },
+  {
     collateral: 'DAI',
     debt: 'ETH',
     strategyType: StrategyType.Short,
@@ -316,7 +342,8 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       protocol: LendingProtocol.AaveV3,
       availableActions: allActionsAvailableInMultiply,
       executeTransactionWith: 'ethers',
-      strategyType: StrategyType.Long,
+      strategyType: config.strategyType,
+      featureToggle: config.productTypes.Multiply.featureToggle,
     }
   })
 

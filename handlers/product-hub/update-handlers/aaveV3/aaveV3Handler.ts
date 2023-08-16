@@ -16,7 +16,6 @@ import { GraphQLClient } from 'graphql-request'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
-import { flatten } from 'lodash'
 import { curry } from 'ramda'
 
 import { aaveV3ProductHubProducts } from './aaveV3Products'
@@ -40,13 +39,13 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
   const primaryTokensList = [
     ...new Set(
-      flatten(
-        currentNetworkProducts.map((product) =>
+      currentNetworkProducts
+        .map((product) =>
           product.depositToken
             ? [product.primaryToken, product.depositToken]
             : [product.primaryToken],
-        ),
-      ),
+        )
+        .flatMap((tokens) => tokens),
     ),
   ]
   const secondaryTokensList = [
@@ -144,13 +143,13 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       table: aaveV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =
           aaveV3TokensData[product.network]
-        const { secondaryToken, primaryToken, depositToken, label } = product
-        const { liquidity, fee } = tokensReserveData.find(
-          (data) => data[depositToken || secondaryToken],
-        )![depositToken || secondaryToken]
+        const { secondaryToken, primaryToken, label } = product
+        const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
+          secondaryToken
+        ]
         const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
         const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-          (data) => data[primaryToken],
+          (data) => data && data[primaryToken],
         )![primaryToken]
         return {
           ...product,
