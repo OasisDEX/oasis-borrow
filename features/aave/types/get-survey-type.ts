@@ -2,11 +2,11 @@ import { ProductType } from './is-supported-product-type'
 
 export function getSurveyType(value: ProductType): 'earn' | 'multiply' | 'borrow' {
   switch (value) {
-    case 'Earn':
+    case ProductType.Earn:
       return 'earn'
-    case 'Multiply':
+    case ProductType.Multiply:
       return 'multiply'
-    case 'Borrow':
+    case ProductType.Borrow:
       return 'borrow'
   }
 }

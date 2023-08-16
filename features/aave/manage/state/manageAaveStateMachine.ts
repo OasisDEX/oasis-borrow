@@ -1,7 +1,5 @@
 import { IPosition } from '@oasisdex/dma-library'
 import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
-import { trackingEvents } from 'analytics/analytics'
-import { ProductType as AnalyticsProductType } from 'analytics/common'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -177,7 +175,7 @@ export function createManageAaveStateMachine(
               },
             },
             loading: {
-              entry: ['requestParameters', 'riskRatioEvent'],
+              entry: ['requestParameters'],
               on: {
                 STRATEGY_RECEIVED: {
                   target: 'idle',
@@ -275,7 +273,6 @@ export function createManageAaveStateMachine(
                   {
                     cond: 'validTransactionParameters',
                     target: 'txInProgress',
-                    actions: ['closePositionTransactionEvent'],
                   },
                 ],
                 BACK_TO_EDITING: {
@@ -409,7 +406,6 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingAdjusting: {
-              entry: ['riskRatioConfirmEvent'],
               on: {
                 BACK_TO_EDITING: {
                   target: 'editing',
@@ -428,13 +424,7 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
-              entry: [
-                'closePositionEvent',
-                'reset',
-                // 'killCurrentParametersMachine', -> including this breaks machine when selecting close from drop-down
-                'spawnCloseParametersMachine',
-                'requestParameters',
-              ],
+              entry: ['reset', 'spawnCloseParametersMachine', 'requestParameters'],
               on: {
                 NEXT_STEP: [
                   {
@@ -444,7 +434,6 @@ export function createManageAaveStateMachine(
                   {
                     cond: 'validClosingTransactionParameters',
                     target: 'txInProgress',
-                    actions: ['closePositionTransactionEvent'],
                   },
                 ],
                 BACK_TO_EDITING: {
@@ -670,31 +659,6 @@ export function createManageAaveStateMachine(
           strategy: undefined,
           transition: undefined,
         })),
-        riskRatioEvent: (context) => {
-          context.userInput.riskRatio?.loanToValue &&
-            context.strategyConfig.type &&
-            trackingEvents.earn.aaveAdjustRiskSliderAction(
-              'MoveSlider',
-              context.userInput.riskRatio.loanToValue,
-              context.strategyConfig.type as AnalyticsProductType,
-            )
-        },
-        riskRatioConfirmEvent: (context) => {
-          context.userInput.riskRatio?.loanToValue &&
-            context.strategyConfig.type &&
-            trackingEvents.earn.aaveAdjustRiskSliderAction(
-              'ConfirmRisk',
-              context.userInput.riskRatio.loanToValue,
-              context.strategyConfig.type as AnalyticsProductType,
-            )
-        },
-        // riskRatioConfirmTransactionEvent: (context) => {
-        //   trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
-        //     context.userInput.riskRatio!.loanToValue,
-        //   )
-        // },
-        closePositionEvent: trackingEvents.earn.stETHClosePositionConfirm,
-        closePositionTransactionEvent: trackingEvents.earn.stETHClosePositionConfirmTransaction,
         requestParameters: send(
           (
             context,

@@ -26,9 +26,7 @@ const getAaveStrategyUrl = ({
   return !search?.urlSlug ||
     (!bypassFeatureFlag && search?.featureToggle && !getFeatureToggle(search?.featureToggle))
     ? '/'
-    : `/${network}/aave/${aaveVersion}/${product!.join('') /* should be only one for aave */}/${
-        search!.urlSlug
-      }`
+    : `/${network}/aave/${aaveVersion}/${search.type.toLocaleLowerCase()}/${search!.urlSlug}`
 }
 
 export function getActionUrl({

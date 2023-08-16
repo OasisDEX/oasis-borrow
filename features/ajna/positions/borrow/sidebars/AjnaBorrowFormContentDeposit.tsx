@@ -49,14 +49,9 @@ export function AjnaBorrowFormContentDeposit() {
         tokenPrice={collateralPrice}
         tokenPrecision={collateralPrecision}
       />
-      <AjnaFormFieldGenerate
-        dispatchAmount={dispatch}
-        isDisabled={!depositAmount || depositAmount?.lte(0)}
-        maxAmount={debtMax}
-        minAmount={debtMin}
-      />
+      <AjnaFormFieldGenerate dispatchAmount={dispatch} maxAmount={debtMax} minAmount={debtMin} />
       {generateAmount && <AjnaBorrowOriginationFee />}
-      {depositAmount && (
+      {(depositAmount || generateAmount) && (
         <AjnaFormContentSummary>
           <AjnaBorrowFormOrder />
         </AjnaFormContentSummary>

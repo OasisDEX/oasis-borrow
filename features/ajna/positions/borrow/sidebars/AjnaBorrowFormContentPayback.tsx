@@ -24,7 +24,7 @@ export function AjnaBorrowFormContentPayback() {
   const {
     form: {
       dispatch,
-      state: { paybackAmount },
+      state: { paybackAmount, withdrawAmount },
     },
     position: {
       currentPosition: { position, simulation },
@@ -53,13 +53,12 @@ export function AjnaBorrowFormContentPayback() {
       />
       <AjnaFormFieldWithdraw
         dispatchAmount={dispatch}
-        isDisabled={!paybackAmount || paybackAmount?.lte(0)}
         maxAmount={collateralMax}
         token={collateralToken}
         tokenPrice={collateralPrice}
         tokenPrecision={collateralPrecision}
       />
-      {paybackAmount && (
+      {(paybackAmount || withdrawAmount) && (
         <AjnaFormContentSummary>
           <AjnaBorrowFormOrder />
         </AjnaFormContentSummary>
