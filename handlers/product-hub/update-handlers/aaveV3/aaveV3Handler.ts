@@ -15,7 +15,7 @@ import { GraphQLClient } from 'graphql-request'
 // import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
-import { flatten } from 'lodash'
+import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
 import { curry } from 'ramda'
 
 import { aaveV3ProductHubProducts } from './aaveV3Products'
@@ -39,13 +39,13 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
   const primaryTokensList = [
     ...new Set(
-      flatten(
-        currentNetworkProducts.map((product) =>
+      currentNetworkProducts
+        .map((product) =>
           product.depositToken
             ? [product.primaryToken, product.depositToken]
             : [product.primaryToken],
-        ),
-      ),
+        )
+        .flatMap((tokens) => tokens),
     ),
   ]
   const secondaryTokensList = [
@@ -98,9 +98,18 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const graphQlProvider = new GraphQLClient(
     getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
   )
-  const yieldsPromisesMap = {
+
+  const emptyYields = (_risk: RiskRatio, _fields: FilterYieldFieldsType[]) => {
+    return Promise.resolve<AaveYieldsResponse>({})
+  }
+  const yieldsPromisesMap: Record<
+    string,
+    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveYieldsResponse>
+  > = {
     // a crude map, but it works for now since we only have one earn product
     'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
+    'CBETH/ETH': emptyYields,
+    'RETH/ETH': emptyYields,
   }
   // getting the APYs
   const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
@@ -134,13 +143,13 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       table: aaveV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =
           aaveV3TokensData[product.network]
-        const { secondaryToken, primaryToken, depositToken, label } = product
-        const { liquidity, fee } = tokensReserveData.find(
-          (data) => data[depositToken || secondaryToken],
-        )![depositToken || secondaryToken]
+        const { secondaryToken, primaryToken, label } = product
+        const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
+          secondaryToken
+        ]
         const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
         const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-          (data) => data[primaryToken],
+          (data) => data && data[primaryToken],
         )![primaryToken]
         return {
           ...product,

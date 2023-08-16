@@ -138,13 +138,13 @@ function isFormValid({
           switch (action) {
             case 'open-borrow':
             case 'deposit-borrow':
-              return !!depositAmount?.gt(0)
+              return !!depositAmount?.gt(0) || !!generateAmount?.gt(0)
             case 'withdraw-borrow':
-              return !!withdrawAmount?.gt(0)
+              return !!withdrawAmount?.gt(0) || !!paybackAmount?.gt(0)
             case 'generate-borrow':
-              return !!generateAmount?.gt(0)
+              return !!generateAmount?.gt(0) || !!depositAmount?.gt(0)
             case 'payback-borrow':
-              return !!paybackAmount?.gt(0)
+              return !!paybackAmount?.gt(0) || !!withdrawAmount?.gt(0)
             case 'switch-borrow':
               return true
             default:

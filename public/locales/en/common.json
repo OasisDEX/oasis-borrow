@@ -2819,13 +2819,13 @@
       "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet.",
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
-      "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
-      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
+      "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would make your position eligible for liquidation. Please enter a lower amount.",
+      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would make your position eligible for liquidation. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
       "after-lup-index-bigger-than-htp-index-deposit": "You cannot adjust this position as there is not enough available liquidity in the pool. Please wait for more available liquidity.",
       "after-lup-index-bigger-than-htp-index-withdraw": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
-      "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the minimum required by the pool. Please enter an amount at least equal to the minimum borrow amount.",
+      "debt-less-then-dust-limit": "The minimum debt for a position in this pool is {{minDebtAmount}}. Please update the parameters of this action to ensure the position has debt above {{minDebtAmount}} or no debt",
       "debt-less-then-dust-limit-multiply": "Minimum debt generated is below the pool minimum. Please increase your deposit size or increase the LTV (if available).",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
@@ -2972,6 +2972,13 @@
       "strategies": "Strategies",
       "networks": "Networks",
       "protocols": "Protocols"
+    },
+    "banners": {
+      "pool-finder": {
+        "title": "Looking for a custom pool?",
+        "description": "Find any pool on Ajna and open an oracle-less {{product}} position.",
+        "cta": "Search custom pools"
+      }
     }
   },
   "navigation-network": {

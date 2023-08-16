@@ -25,7 +25,7 @@ export function AjnaBorrowFormContentGenerate() {
   const {
     form: {
       dispatch,
-      state: { generateAmount },
+      state: { generateAmount, depositAmount },
     },
     position: {
       currentPosition: { position, simulation },
@@ -49,15 +49,14 @@ export function AjnaBorrowFormContentGenerate() {
       />
       <AjnaFormFieldDeposit
         dispatchAmount={dispatch}
-        isDisabled={!generateAmount || generateAmount?.lte(0)}
         maxAmount={collateralBalance}
         token={collateralToken}
         tokenPrice={collateralPrice}
         tokenPrecision={collateralPrecision}
       />
-      {generateAmount && (
+      {generateAmount && <AjnaBorrowOriginationFee />}
+      {(generateAmount || depositAmount) && (
         <>
-          <AjnaBorrowOriginationFee />
           <AjnaFormContentSummary>
             <AjnaBorrowFormOrder />
           </AjnaFormContentSummary>
