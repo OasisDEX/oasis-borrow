@@ -26,7 +26,7 @@ describe('getStrategyConfig', () => {
       lastCreatedPositionForProxy$,
       { walletAddress: '0x123' },
       NetworkNames.ethereumMainnet,
-      VaultType.Borrow,
+      VaultType.Earn,
     )
 
     observable$.subscribe((strategy) => {
