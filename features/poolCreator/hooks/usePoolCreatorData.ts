@@ -1,25 +1,39 @@
+
+import { getAjnaPoolInterestRateBoundaries } from 'blockchain/calls/ajnaErc20PoolFactory'
+import { NetworkIds } from 'blockchain/networks'
 import CancelablePromise, { cancelable } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { isAddress } from 'ethers/lib/utils'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
 
 interface usePoolCreatorDataProps {
+  chainId?: NetworkIds
   collateralAddress: string
   quoteAddress: string
 }
 
-export function usePoolCreatorData({ collateralAddress, quoteAddress }: usePoolCreatorDataProps) {
+export function usePoolCreatorData({
+  chainId,
+  collateralAddress,
+  quoteAddress,
+}: usePoolCreatorDataProps) {
   const { identifiedTokens$ } = useAppContext()
 
   const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<any>>()
+  const [boundries, setBoundries] = useState<PoolCreatorBoundries>()
   const [collateralToken, setCollateralToken] = useState<string>('')
   const [quoteToken, setQuoteToken] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isReady, setIsReady] = useState<boolean>(false)
   const [errors, setErrors] = useState<string[]>([])
+
+  useEffect(() => {
+    if (chainId) void getAjnaPoolInterestRateBoundaries(chainId).then(setBoundries)
+  }, [chainId])
 
   useEffect(() => {
     const errors = []
@@ -86,6 +100,7 @@ export function usePoolCreatorData({ collateralAddress, quoteAddress }: usePoolC
   )
 
   return {
+    boundries,
     collateralToken,
     errors,
     isError: errors.length > 0,

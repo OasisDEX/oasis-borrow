@@ -2985,6 +2985,18 @@
     "l2beat-title": "Learn about L2s",
     "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
   },
+  "pool-creator": {
+    "header": {
+      "title": "Ajna Pool Creator",
+      "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maybe some explanation what is going on here? Link to knowledge base?"
+    },
+    "form": {
+      "title": "Configure new Ajna pool",
+      "collateral-token-address": "Collateral token address",
+      "quote-token-address": "Quote token address",
+      "pools-interest-rate": "Pool's interest rate"
+    }
+  },
   "aave": {
     "header": {
       "current-market-price": "Current Market Price"
