@@ -24,7 +24,7 @@ export function AssetsTableBanner({
         boxShadow: 'vaultDetailsCard',
       }}
     >
-      <Box sx={{ flexShrink: 0, svg: { display: 'block' } }}>{icon}</Box>
+      <Flex sx={{ flexShrink: 0, svg: { display: 'block' } }}>{icon}</Flex>
       <Box>
         <Heading as="h3" variant="boldParagraph2">
           {title}
