@@ -230,7 +230,7 @@ export function getManageAaveV3PositionStateMachineServices(
             LendingProtocol.AaveV3,
           ).subscribe()
 
-          return of({ type: 'SWITCH_SUCCESS' })
+          return of({ type: 'SWITCH_SUCCESS', productType: updatedVaultType })
         }),
         catchError((error) => {
           console.error('Error saving to the DB:', error)

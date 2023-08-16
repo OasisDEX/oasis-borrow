@@ -25,6 +25,7 @@ import {
   RefTransactionMachine,
 } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
@@ -49,6 +50,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   proxyAddress?: string
   ownerAddress?: string
   positionCreatedBy: ProxyType
+  updateStrategyConfig?: (vaultType: VaultType) => void
 }
 
 function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -385,6 +387,7 @@ export function createManageAaveStateMachine(
               invoke: {
                 src: 'savePositionToDb$',
                 onDone: {
+                  actions: 'updateStrategyConfig',
                   target: 'switching',
                 },
                 onError: {
@@ -393,7 +396,9 @@ export function createManageAaveStateMachine(
               },
             },
             switching: {
-              entry: ['reloadPage'],
+              after: {
+                1000: 'editing',
+              },
             },
             saveSwitchFailure: {
               on: {
@@ -767,9 +772,25 @@ export function createManageAaveStateMachine(
             },
           }
         }),
-        reloadPage: () => {
-          window.location.reload()
-        },
+        updateStrategyConfig: assign((context, event) => {
+          const newTemporaryProductType = context.strategyConfig.type
+          const updatedVaultType =
+            newTemporaryProductType === 'Borrow'
+              ? VaultType.Borrow
+              : newTemporaryProductType === 'Multiply'
+              ? VaultType.Multiply
+              : newTemporaryProductType === 'Earn'
+              ? VaultType.Earn
+              : undefined
+
+          if (context.updateStrategyConfig && updatedVaultType) {
+            context.updateStrategyConfig(updatedVaultType)
+          }
+
+          return {
+            ...context,
+          }
+        }),
         spawnDepositBorrowMachine: assign((context) => ({
           refParametersMachine: spawn(
             depositBorrowAaveMachine.withContext({

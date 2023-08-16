@@ -64,10 +64,12 @@ function WithStrategy({
     [positionId.vaultId, chainId, protocol],
   )
   const [vaultFromApi] = useObservable(vaultFromApi$)
-  const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
-    protocol,
-    network,
-  )
+  const {
+    strategyConfig$,
+    updateStrategyConfig,
+    aaveManageStateMachine,
+    proxiesRelatedWithPosition$,
+  } = useAaveContext(protocol, network)
   const [strategyConfig, strategyConfigError] = useObservable(
     strategyConfig$(positionId, network, vaultFromApi?.type),
   )
@@ -84,6 +86,10 @@ function WithStrategy({
     void push(INTERNAL_LINKS.notFound)
     return <></>
   }
+
+  const _updateStrategyConfig = updateStrategyConfig
+    ? updateStrategyConfig(positionId, network)
+    : undefined
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
@@ -95,6 +101,7 @@ function WithStrategy({
             machine={aaveManageStateMachine}
             positionId={positionId}
             strategy={_strategyConfig}
+            updateStrategyConfig={_updateStrategyConfig}
           >
             <PageSEOTags
               title="seo.title-product-w-tokens"
