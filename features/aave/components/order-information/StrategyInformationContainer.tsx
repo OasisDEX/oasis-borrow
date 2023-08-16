@@ -6,7 +6,7 @@ import {
   PositionTransition,
 } from '@oasisdex/dma-library'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
-import { getSlippage, StrategyTokenBalance } from 'features/aave/types'
+import { getSlippage, ProductType, StrategyTokenBalance } from 'features/aave/types'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
@@ -57,10 +57,12 @@ export function StrategyInformationContainer({
 }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { transition, currentPosition, balance } = state.context
+  const { transition, currentPosition, balance, strategyConfig } = state.context
 
   const simulationHasSwap =
     transitionHasSwap(transition) && transition?.simulation.swap?.toTokenAmount.gt(zero)
+
+  const shouldShowMultiplyInformation = strategyConfig.type !== ProductType.Borrow
 
   return transition && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
@@ -86,11 +88,13 @@ export function StrategyInformationContainer({
           changeSlippage={changeSlippageSource}
         />
       )}
-      <MultiplyInformation
-        {...state.context}
-        transactionParameters={transition}
-        currentPosition={currentPosition}
-      />
+      {shouldShowMultiplyInformation && (
+        <MultiplyInformation
+          {...state.context}
+          transactionParameters={transition}
+          currentPosition={currentPosition}
+        />
+      )}
       <OutstandingDebtInformation
         currentPosition={currentPosition}
         newPosition={transition.simulation.position}
