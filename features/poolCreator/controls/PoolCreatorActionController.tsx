@@ -6,13 +6,13 @@ import React, { FC } from 'react'
 import { Button, Spinner } from 'theme-ui'
 
 interface PoolCreatorActionControllerProps {
-  isFormReady: boolean
+  isFormValid: boolean
   isLoading: boolean
   onSubmit: () => void
 }
 
 export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> = ({
-  isFormReady,
+  isFormValid,
   isLoading,
   onSubmit,
 }) => {
@@ -20,7 +20,7 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
 
   const { connect } = useConnection()
   const { isConnected } = useAccount()
-  const isDisabled = isConnected && !isFormReady
+  const isDisabled = isConnected && !isFormValid
 
   return (
     <Button

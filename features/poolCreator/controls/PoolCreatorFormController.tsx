@@ -17,7 +17,7 @@ interface PoolCreatorFormControllerProps {
   collateralToken: string
   errors: AjnaValidationItem[]
   form: ReturnType<typeof usePoolCreatorFormReducto>
-  isFormReady: boolean
+  isFormValid: boolean
   isLoading: boolean
   maxInterestRate: BigNumber
   minInterestRate: BigNumber
@@ -32,7 +32,7 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
     updateState,
   },
   isLoading,
-  isFormReady,
+  isFormValid,
   minInterestRate,
   maxInterestRate,
   quoteToken,
@@ -83,7 +83,7 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
         step={INTEREST_RATE_STEP}
       />
       <MessageCard messages={errorsWithTranslations} type="error" withBullet={errors.length > 1} />
-      {isFormReady && (
+      {isFormValid && (
         <PoolCreatorFormOrder
           interestRate={interestRate}
           isLoading={isLoading}

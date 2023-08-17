@@ -1,3 +1,4 @@
+
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
@@ -36,7 +37,7 @@ export const searchAjnaPool = async ({
   collateralAddress = [],
   poolAddress = [],
   quoteAddress = [],
-}: SearchAjnaPoolParams) => {
+}: SearchAjnaPoolParams): Promise<SearchAjnaPoolData[]> => {
   const caseSensitiveCollateralAddress = collateralAddress.map((address) => address.toLowerCase())
   const caseSensitivePoolAddress = poolAddress.map((address) => address.toLowerCase())
   const caseSensitiveQuoteAddress = quoteAddress.map((address) => address.toLowerCase())
