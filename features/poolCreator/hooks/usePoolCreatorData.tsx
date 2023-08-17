@@ -142,6 +142,8 @@ export function usePoolCreatorData({
 
         promise
           .then(([pools, identifiedTokens]) => {
+            const tokensKeys = Object.keys(identifiedTokens)
+
             if (pools.length) {
               setErrors([
                 {
@@ -187,6 +189,19 @@ export function usePoolCreatorData({
                   },
                 },
               ])
+            } else if (tokensKeys.length < 2) {
+              const identifyingErrors: AjnaValidationItem[] = []
+
+              if (!tokensKeys.includes(collateralAddress))
+                identifyingErrors.push({
+                  message: { translationKey: 'collateral-is-not-erc20' },
+                })
+              if (!tokensKeys.includes(quoteAddress))
+                identifyingErrors.push({
+                  message: { translationKey: 'quote-is-not-erc20' },
+                })
+
+              setErrors(identifyingErrors)
             } else {
               setCollateralToken(identifiedTokens[collateralAddress].symbol)
               setQuoteToken(identifiedTokens[quoteAddress].symbol)
