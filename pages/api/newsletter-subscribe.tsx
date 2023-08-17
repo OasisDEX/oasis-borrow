@@ -1,17 +1,17 @@
 // import md5 from 'crypto-js/md5'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-const AUTHORIZATION_HEADER = `Basic ${Buffer.from(
-  `apikey:${process.env.MAILCHIMP_API_KEY}`,
-).toString('base64')}`
+// const AUTHORIZATION_HEADER = `Basic ${Buffer.from(
+//   `apikey:${process.env.MAILCHIMP_API_KEY}`,
+// ).toString('base64')}`
 
-const SUBSCRIBERS_ENDPOINT = `${process.env.MAILCHIMP_ENDPOINT}/members`
+// const SUBSCRIBERS_ENDPOINT = `${process.env.MAILCHIMP_ENDPOINT}/members`
 
-type UserStatus = 'pending' | 'subscribed' | 'unsubscribed' | 'cleaned' | 'transactional'
+// type UserStatus = 'pending' | 'subscribed' | 'unsubscribed' | 'cleaned' | 'transactional'
 
 // change to pending if there is need for opt-in confirm email
 // change to subscribed if there is no need for opt-in
-const INITIAL_USER_STATUS: UserStatus = 'subscribed'
+// const INITIAL_USER_STATUS: UserStatus = 'subscribed'
 
 const handler = async function (req: NextApiRequest, res: NextApiResponse) {
   return res.status(500).json({ error: 'unknown' })
