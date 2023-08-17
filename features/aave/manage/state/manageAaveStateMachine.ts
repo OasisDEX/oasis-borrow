@@ -28,8 +28,8 @@ import {
   RefTransactionMachine,
 } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { AaveHistoryEvent } from 'features/ajna/history/types'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
@@ -95,6 +95,7 @@ export type ManageAaveEvent =
     }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
+  | { type: 'HISTORY_UPDATED'; historyEvents: AaveHistoryEvent[] }
   | BaseAaveEvent
 
 export function createManageAaveStateMachine(
@@ -157,6 +158,10 @@ export function createManageAaveStateMachine(
         {
           src: 'allowance$',
           id: 'allowance$',
+        },
+        {
+          src: 'history',
+          id: 'history',
         },
       ],
       id: 'manageAaveStateMachine',
@@ -525,7 +530,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext', 'updateLegacyTokenBalance'],
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
+          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendHistoryRequest'],
         },
         WEB3_CONTEXT_CHANGED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendSigner'],
@@ -603,6 +608,9 @@ export function createManageAaveStateMachine(
         },
         SWITCH_TO_EARN: {
           target: 'frontend.switchToEarn',
+        },
+        HISTORY_UPDATED: {
+          actions: 'updateContext',
         },
       },
     },
@@ -905,6 +913,12 @@ export function createManageAaveStateMachine(
             }
           },
         ),
+        sendHistoryRequest: sendTo('history', (context) => {
+          return {
+            type: 'PROXY_RECEIVED',
+            proxyAddress: context.proxyAddress,
+          }
+        }),
       },
     },
   )
