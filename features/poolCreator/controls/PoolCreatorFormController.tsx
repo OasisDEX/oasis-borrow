@@ -4,6 +4,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
 import { AjnaValidationItem } from 'features/ajna/common/types'
+import { TxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
 import { PoolCreatorFormOrder } from 'features/poolCreator/components/PoolCreatorFormOrder'
 import { INTEREST_RATE_STEP } from 'features/poolCreator/consts'
 import { usePoolCreatorFormReducto } from 'features/poolCreator/state/poolCreatorFormReducto'
@@ -22,6 +23,7 @@ interface PoolCreatorFormControllerProps {
   maxInterestRate: BigNumber
   minInterestRate: BigNumber
   quoteToken: string
+  txStatuses: TxStatuses
 }
 
 export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
@@ -36,8 +38,11 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
   minInterestRate,
   maxInterestRate,
   quoteToken,
+  txStatuses: { isTxInProgress, isTxWaitingForApproval },
 }) => {
   const { t } = useTranslation()
+
+  const isFormDisabled = isTxInProgress || isTxWaitingForApproval
 
   const errorsWithTranslations = errors.map(
     ({ message: { component, params, translationKey } }) => {
@@ -55,6 +60,7 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
       <TextInput
         large
         muted
+        disabled={isFormDisabled}
         label={t('pool-creator.form.collateral-token-address')}
         placeholder={formatAddress(getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address)}
         value={collateralAddress}
@@ -63,13 +69,14 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
       <TextInput
         large
         muted
+        disabled={isFormDisabled}
         label={t('pool-creator.form.quote-token-address')}
         placeholder={formatAddress(getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address)}
         value={quoteAddress}
         onChange={(value) => updateState('quoteAddress', value)}
       />
       <SliderValuePicker
-        disabled={false}
+        disabled={isFormDisabled}
         largeBoundry
         lastValue={interestRate}
         minBoundry={minInterestRate}

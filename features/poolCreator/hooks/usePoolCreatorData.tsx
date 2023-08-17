@@ -4,13 +4,17 @@ import {
   getAjnaPoolInterestRateBoundaries,
 } from 'blockchain/calls/ajnaErc20PoolFactory'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { IdentifiedTokens } from 'blockchain/identifyTokens'
+import { NetworkIds } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
 import CancelablePromise, { cancelable } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { AjnaValidationItem } from 'features/ajna/common/types'
+import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
+import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
 import {
   searchAjnaPool,
   SearchAjnaPoolData,
@@ -22,7 +26,7 @@ import { handleTransaction, TxDetails } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
-import { Trans } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { first } from 'rxjs/operators'
@@ -39,12 +43,13 @@ export function usePoolCreatorData({
   interestRate,
   quoteAddress,
 }: usePoolCreatorDataProps) {
+  const { t } = useTranslation()
   const { context$, identifiedTokens$, txHelpers$ } = useAppContext()
 
   const [context] = useObservable(context$)
   const [txHelpers] = useObservable(txHelpers$)
 
-  const [, setTxDetails] = useState<TxDetails>()
+  const [txDetails, setTxDetails] = useState<TxDetails>()
   const [cancelablePromise, setCancelablePromise] =
     useState<CancelablePromise<[SearchAjnaPoolData[], IdentifiedTokens]>>()
 
@@ -73,6 +78,15 @@ export function usePoolCreatorData({
         })
       })
   }
+
+  const txStatuses = getTxStatuses(txDetails?.txStatus)
+  const txSidebarStatus = getAjnaSidebarTransactionStatus({
+    etherscan: getNetworkContracts(NetworkIds.MAINNET, context?.chainId).etherscan.url,
+    isTxInProgress: txStatuses.isTxInProgress,
+    isTxSuccess: txStatuses.isTxSuccess,
+    text: t(txStatuses.isTxSuccess ? 'success' : 'in progress', { collateralToken, quoteToken }),
+    txDetails,
+  })?.at(0)
 
   useEffect(() => {
     if (context?.chainId) void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
@@ -197,5 +211,7 @@ export function usePoolCreatorData({
     isFormValid,
     onSubmit,
     quoteToken,
+    txSidebarStatus,
+    txStatuses,
   }
 }

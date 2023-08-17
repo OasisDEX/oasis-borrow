@@ -33,6 +33,8 @@ export function AjnaPoolCreatorController() {
     isLoading,
     onSubmit,
     quoteToken,
+    txSidebarStatus,
+    txStatuses,
   } = usePoolCreatorData({
     collateralAddress,
     interestRate,
@@ -59,6 +61,7 @@ export function AjnaPoolCreatorController() {
                     maxInterestRate={max}
                     minInterestRate={min}
                     quoteToken={quoteToken}
+                    txStatuses={txStatuses}
                   />
                 }
                 footer={
@@ -66,6 +69,8 @@ export function AjnaPoolCreatorController() {
                     isFormValid={isFormValid}
                     isLoading={isLoading}
                     onSubmit={onSubmit}
+                    txSidebarStatus={txSidebarStatus}
+                    txStatuses={txStatuses}
                   />
                 }
               />

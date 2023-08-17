@@ -1,6 +1,14 @@
 import { TxStatus } from '@oasisdex/transactions'
 
-export function getTxStatuses(txStatus?: TxStatus) {
+export interface TxStatuses {
+  isTxStarted: boolean
+  isTxError: boolean
+  isTxWaitingForApproval: boolean
+  isTxInProgress: boolean
+  isTxSuccess: boolean
+}
+
+export function getTxStatuses(txStatus?: TxStatus): TxStatuses {
   return {
     isTxStarted: !!txStatus,
     isTxError:
