@@ -64,7 +64,10 @@ export function loadStrategyFromTokens(
   const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
   const strategy = strategies.find((s) => {
     /* Enhances for strategies to be filtered by product type */
-    const matchesVaultType = !vaultType || vaultType.toLowerCase() === s.type.toLowerCase()
+    const matchesVaultType =
+      vaultType === undefined ||
+      vaultType === VaultType.Unknown ||
+      vaultType.toLowerCase() === s.type.toLowerCase()
     return (
       s.tokens.collateral === actualCollateralToken &&
       s.tokens.debt === actualDebtToken &&
