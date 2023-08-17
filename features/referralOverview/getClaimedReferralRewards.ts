@@ -6,7 +6,9 @@ export interface ClaimedReferralRewards {
   week: number
 }
 
-export async function getClaimedReferralRewards(walletAddress: string): Promise<ClaimedReferralRewards[]> {
+export async function getClaimedReferralRewards(
+  walletAddress: string,
+): Promise<ClaimedReferralRewards[]> {
   const { response } = (await loadSubgraph('Referral', 'getClaimedReferralRewards', {
     walletAddress: walletAddress.toLowerCase(),
   })) as SubgraphsResponses['Referral']['getClaimedReferralRewards']
@@ -16,8 +18,6 @@ export async function getClaimedReferralRewards(walletAddress: string): Promise<
   }
 
   throw new Error(
-    `No claimeds data found for address: ${walletAddress}, Response: ${JSON.stringify(
-      response,
-    )}`,
+    `No claimeds data found for address: ${walletAddress}, Response: ${JSON.stringify(response)}`,
   )
 }

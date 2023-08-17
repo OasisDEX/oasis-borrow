@@ -87,7 +87,7 @@ export type SubgraphsResponses = {
   }
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>
-  },
+  }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{
       claimeds: ClaimedReferralRewards[]
