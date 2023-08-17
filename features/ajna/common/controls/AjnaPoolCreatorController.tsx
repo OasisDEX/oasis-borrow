@@ -61,7 +61,7 @@ export function AjnaPoolCreatorController() {
                 title={t('pool-creator.form.title')}
                 loose
                 content={
-                  <Grid gap={3}>
+                  <Grid gap={4}>
                     <PoolCreatorFormController
                       form={form}
                       minInterestRate={min}

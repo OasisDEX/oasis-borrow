@@ -110,7 +110,7 @@ export function DetailsSectionTitle({
         }}
       >
         {typeof children === 'string' ? (
-          <Heading as="p" variant="boldParagraph2">
+          <Heading as="p" variant={loose ? 'boldParagraph1' : 'boldParagraph2'}>
             {children}
           </Heading>
         ) : (

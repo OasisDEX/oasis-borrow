@@ -2994,7 +2994,9 @@
       "title": "Configure new Ajna pool",
       "collateral-token-address": "Collateral token address",
       "quote-token-address": "Quote token address",
-      "pools-interest-rate": "Pool's interest rate"
+      "pools-interest-rate": "Pool's interest rate",
+      "min-interest-rate": "Min. {{minInterestRate}}%",
+      "max-interest-rate": "Up to. {{maxInterestRate}}%"
     }
   },
   "aave": {

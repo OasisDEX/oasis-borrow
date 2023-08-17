@@ -5,6 +5,8 @@ interface TextInputProps {
   disabled?: boolean
   hasError?: boolean
   label: string
+  large?: boolean
+  muted?: boolean
   placeholder?: string
   value: string
   onChange: (value: string) => void
@@ -14,6 +16,8 @@ export function TextInput({
   disabled,
   hasError,
   label,
+  large,
+  muted,
   placeholder,
   value,
   onChange,
@@ -27,7 +31,14 @@ export function TextInput({
         transition: 'opacity 200ms',
       }}
     >
-      <Label variant="text.paragraph4" sx={{ pb: 2, fontWeight: 'semiBold' }}>
+      <Label
+        variant={large ? 'text.paragraph3' : 'text.paragraph4'}
+        sx={{
+          pb: 2,
+          color: muted ? 'neutral80' : 'primary100',
+          fontWeight: muted ? 'regular' : 'semiBold',
+        }}
+      >
         {label}
       </Label>
       <Input
@@ -41,6 +52,7 @@ export function TextInput({
           border: '1px solid',
           borderRadius: 'medium',
           color: 'primary100',
+          fontSize: muted ? 3 : 4,
           fontWeight: 'semiBold',
           borderColor: hasError ? 'critical100' : 'neutral20',
           transition: 'box-shadow 200ms, border-color 200ms',
