@@ -2998,6 +2998,10 @@
       "min-interest-rate": "Min. {{minInterestRate}}%",
       "max-interest-rate": "Up to. {{maxInterestRate}}%"
     },
+    "order-information": {
+      "pool": "Pool",
+      "initial-interest-rate": "Initial interest rate"
+    },
     "validations": {
       "collateral-is-not-address": "Collateral token address is not valid contract address.",
       "quote-is-not-address": "Quote token address is not valid contract address.",

@@ -5,7 +5,6 @@ import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { DetailsSection } from 'components/DetailsSection'
-import { TokensGroup } from 'components/TokensGroup'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { DEFAULT_POOL_INTEREST_RATE } from 'features/poolCreator/consts'
@@ -19,7 +18,7 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
-import { Box, Button, Flex, Grid, Spinner, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Spinner } from 'theme-ui'
 
 export function AjnaPoolCreatorController() {
   const { t } = useTranslation()
@@ -31,21 +30,20 @@ export function AjnaPoolCreatorController() {
   const [, setTxDetails] = useState<TxDetails>()
 
   const form = usePoolCreatorFormReducto({
-    collateralAddress: '0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6',
+    collateralAddress: '0xeb089cfb6d839c0d6fa9dc55fc6826e69a4c22b1',
     interestRate: DEFAULT_POOL_INTEREST_RATE,
-    quoteAddress: '0x6fb5ef893d44f4f88026430d82d4ef269543cb23',
+    quoteAddress: '0x10aa0cf12aab305bd77ad8f76c037e048b12513b',
   })
   const {
     state: { collateralAddress, interestRate, quoteAddress },
   } = form
 
-  const { boundries, collateralToken, errors, isLoading, isReady, quoteToken } = usePoolCreatorData(
-    {
+  const { boundries, collateralToken, errors, isFormReady, isLoading, quoteToken } =
+    usePoolCreatorData({
       chainId: context?.chainId,
       collateralAddress,
       quoteAddress,
-    },
-  )
+    })
 
   return (
     <WithConnection>
@@ -63,40 +61,21 @@ export function AjnaPoolCreatorController() {
                 content={
                   <Grid gap={4}>
                     <PoolCreatorFormController
-                      form={form}
-                      minInterestRate={min}
-                      maxInterestRate={max}
+                      collateralToken={collateralToken}
                       errors={errors}
+                      form={form}
+                      isFormReady={isFormReady}
+                      isLoading={isLoading}
+                      maxInterestRate={max}
+                      minInterestRate={min}
+                      quoteToken={quoteToken}
                     />
-                    {isReady && collateralToken && quoteToken && (
-                      <Flex
-                        sx={{
-                          p: 3,
-                          backgroundColor: 'neutral30',
-                          borderRadius: 'medium',
-                        }}
-                      >
-                        <Text
-                          variant="paragraph3"
-                          sx={{ display: 'flex', alignItems: 'center', fontWeight: 'semiBold' }}
-                        >
-                          You're about to create a
-                          <Flex sx={{ alignItems: 'center', mx: 1 }}>
-                            <TokensGroup tokens={[collateralToken, quoteToken]} sx={{ mr: 1 }} />
-                            <Text as="strong">
-                              {collateralToken}/{quoteToken}
-                            </Text>
-                          </Flex>
-                          pool
-                        </Text>
-                      </Flex>
-                    )}
                   </Grid>
                 }
                 footer={
                   <Flex sx={{ justifyContent: 'flex-end' }}>
                     <Button
-                      disabled={!isReady}
+                      disabled={!isFormReady}
                       sx={{
                         display: 'flex',
                         alignItems: 'center',

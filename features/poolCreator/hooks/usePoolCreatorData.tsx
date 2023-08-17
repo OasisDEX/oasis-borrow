@@ -32,7 +32,7 @@ export function usePoolCreatorData({
   const [collateralToken, setCollateralToken] = useState<string>('')
   const [quoteToken, setQuoteToken] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isReady, setIsReady] = useState<boolean>(false)
+  const [isFormReady, setIsFormReady] = useState<boolean>(false)
   const [errors, setErrors] = useState<AjnaValidationItem[]>([])
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export function usePoolCreatorData({
 
     setErrors(localErrors)
     setIsLoading(true)
-    setIsReady(false)
+    setIsFormReady(false)
     cancelablePromise?.cancel()
   }, [collateralAddress, quoteAddress])
 
@@ -132,7 +132,7 @@ export function usePoolCreatorData({
             } else {
               setCollateralToken(identifiedTokens[collateralAddress].symbol)
               setQuoteToken(identifiedTokens[quoteAddress].symbol)
-              setIsReady(true)
+              setIsFormReady(true)
             }
           })
           .catch(() => {
@@ -154,7 +154,7 @@ export function usePoolCreatorData({
     collateralToken,
     errors,
     isLoading,
-    isReady,
+    isFormReady,
     quoteToken,
   }
 }

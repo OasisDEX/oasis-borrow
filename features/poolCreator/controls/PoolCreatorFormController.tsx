@@ -4,6 +4,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
 import { AjnaValidationItem } from 'features/ajna/common/types'
+import { PoolCreatorFormOrder } from 'features/poolCreator/components/PoolCreatorFormOrder'
 import { INTEREST_RATE_STEP } from 'features/poolCreator/consts'
 import { usePoolCreatorFormReducto } from 'features/poolCreator/state/poolCreatorFormReducto'
 import { formatAddress } from 'helpers/formatters/format'
@@ -12,20 +13,28 @@ import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 
 interface PoolCreatorFormControllerProps {
+  collateralToken: string
   errors: AjnaValidationItem[]
   form: ReturnType<typeof usePoolCreatorFormReducto>
-  minInterestRate: BigNumber
+  isFormReady: boolean
+  isLoading: boolean
   maxInterestRate: BigNumber
+  minInterestRate: BigNumber
+  quoteToken: string
 }
 
 export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
+  collateralToken,
   errors,
   form: {
     state: { collateralAddress, interestRate, quoteAddress },
     updateState,
   },
+  isLoading,
+  isFormReady,
   minInterestRate,
   maxInterestRate,
+  quoteToken,
 }) => {
   const { t } = useTranslation()
 
@@ -73,6 +82,14 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
         step={INTEREST_RATE_STEP}
       />
       <MessageCard messages={errorsWithTranslations} type="error" withBullet={errors.length > 1} />
+      {isFormReady && (
+        <PoolCreatorFormOrder
+          interestRate={interestRate}
+          isLoading={isLoading}
+          collateralToken={collateralToken}
+          quoteToken={quoteToken}
+        />
+      )}
     </>
   )
 }
