@@ -13,6 +13,7 @@ export interface OpenMultiplyAaveParameters {
   slippage: BigNumber
   proxyAddress: string
   userAddress: string
+  token?: string
   proxyType: ProxyType
   positionType: 'Multiply' | 'Earn',
   protocol: AaveLendingProtocol

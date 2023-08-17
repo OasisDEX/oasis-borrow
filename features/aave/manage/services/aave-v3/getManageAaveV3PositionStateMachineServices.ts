@@ -4,6 +4,7 @@ import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
+import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
 import { TxHelpers } from 'components/AppContext'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
@@ -11,13 +12,17 @@ import { getPricesFeed$ } from 'features/aave/services'
 import { contextToEthersTransactions, IStrategyConfig } from 'features/aave/types'
 import { IStrategyInfo, StrategyTokenAllowance, StrategyTokenBalance } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
+import { jwtAuthGetToken } from 'features/shared/jwt'
+import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
+import { productToVaultType } from 'helpers/productToVaultType'
+import { LendingProtocol } from 'lendingProtocols'
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of, throwError } from 'rxjs'
+import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 
 export function getManageAaveV3PositionStateMachineServices(
@@ -182,6 +187,47 @@ export function getManageAaveV3PositionStateMachineServices(
           allowance: allowance,
         })),
         distinctUntilChanged(isEqual),
+      )
+    },
+    savePositionToDb$: (context) => {
+      const chainId = context.strategyConfig.networkId
+
+      if (!chainId) {
+        return throwError(new Error('No chainId available - save position unsuccessful'))
+      }
+
+      const user = context.ownerAddress
+      const proxy = context.proxyAddress
+      if (!proxy) {
+        return throwError(new Error('No proxy available - save position unsuccessful'))
+      }
+
+      const updatedVaultType = productToVaultType(context.strategyConfig.type)
+
+      return getPositionIdFromDpmProxy$(of({ chainId }), proxy).pipe(
+        switchMap((positionId) => {
+          if (!positionId || !updatedVaultType || !proxy || !user) {
+            return throwError(new Error('No enough data provided to save position'))
+          }
+
+          const token = jwtAuthGetToken(user)
+
+          if (!token) {
+            return throwError(new Error('No token available - save position unsuccessful'))
+          }
+          return saveVaultUsingApi$(
+            new BigNumber(positionId),
+            token,
+            updatedVaultType,
+            chainId,
+            LendingProtocol.AaveV3,
+          )
+        }),
+        map(() => ({ type: 'SWITCH_SUCCESS', productType: updatedVaultType })),
+        catchError((error) => {
+          console.error('Error saving to the DB:', error)
+          return throwError(error)
+        }),
       )
     },
   }

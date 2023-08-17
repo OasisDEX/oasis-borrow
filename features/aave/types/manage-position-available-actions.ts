@@ -3,3 +3,6 @@ export type ManagePositionAvailableActions =
   | 'manage-debt'
   | 'manage-collateral'
   | 'close'
+  | 'switch-to-borrow'
+  | 'switch-to-multiply'
+  | 'switch-to-earn'

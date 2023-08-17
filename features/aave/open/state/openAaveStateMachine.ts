@@ -24,6 +24,7 @@ import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  ProductType,
   ProxyType,
   RefTransactionMachine,
 } from 'features/aave/types'
@@ -419,6 +420,19 @@ export function createOpenAaveStateMachine(
             },
             txSuccess: {
               entry: ['killTransactionMachine', 'killStopLossStateMachine'],
+              after: {
+                0: 'savePositionToDb',
+              },
+            },
+            savePositionToDb: {
+              invoke: {
+                src: 'savePositionToDb$',
+                id: 'savePositionToDb$',
+                onDone: 'finalized',
+                onError: 'finalized',
+              },
+            },
+            finalized: {
               type: 'final',
             },
           },
@@ -506,7 +520,7 @@ export function createOpenAaveStateMachine(
         }) =>
           useFeatureToggle('AaveV3ProtectionWrite') &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
-          strategyConfig.type === 'Multiply' &&
+          strategyConfig.type === ProductType.Multiply &&
           canOpenPosition({
             userInput,
             hasOpenedPosition,
@@ -702,6 +716,7 @@ export function createOpenAaveStateMachine(
               protocol: context.strategyConfig.protocol,
               userAddress: context.web3Context?.account ?? ethNullAddress,
               networkId: context.strategyConfig.networkId,
+              token: context.tokens.deposit,
             }
             if (context.strategyConfig.type === 'Borrow') {
               return {

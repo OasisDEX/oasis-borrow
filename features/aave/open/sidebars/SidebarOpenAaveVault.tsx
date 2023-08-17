@@ -12,7 +12,7 @@ import { hasUserInteracted } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
-import { isAllowanceNeeded, ProxyType } from 'features/aave/types'
+import { isAllowanceNeeded, ProductType, ProxyType } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
@@ -310,7 +310,8 @@ function EditingStateViewSidebarPrimaryButton({
     isSupportedAaveAutomationTokenPair(
       state.context.strategyConfig.tokens.collateral,
       state.context.strategyConfig.tokens.debt,
-    )
+    ) &&
+    state.context.strategyConfig.type === ProductType.Multiply
 
   function getLabel() {
     if (!hasProxy) {
@@ -486,6 +487,8 @@ export function SidebarOpenAaveVault() {
     case state.matches('frontend.stopLossTxFailure'):
       return <StopLossTxFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):
+    case state.matches('frontend.savePositionToDb'):
+    case state.matches('frontend.finalized'):
       return <OpenAaveSuccessStateView state={state} send={send} isLoading={loading} />
     default: {
       return <>{JSON.stringify(state.value)}</>
