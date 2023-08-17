@@ -87,7 +87,7 @@ export function getTopEarnersFromApi$(): Observable<User[] | null> {
     }),
   )
 }
-export function getWeeklyClaimsFromApi$(
+export function getReferralRewardsFromApi$(
   address: string,
   trigger$: Subject<void>,
 ): Observable<WeeklyClaim[] | null> {

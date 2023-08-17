@@ -28,10 +28,22 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+  Referral: {
+    [NetworkIds.MAINNET]: '',
+    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: '',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.OPTIMISMGOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.EMPTYNET]: '',
+  },
 }
 
 export const subgraphMethodsRecord: {
-  [key in keyof (Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string
+  [key in keyof (Subgraphs['Ajna'] & Subgraphs['TempGraph'] & Subgraphs['Referral'])]: string
 } = {
   getAjnaPositionAggregatedData: gql`
     query getAccount($dpmProxyAddress: ID!) {
@@ -259,4 +271,14 @@ export const subgraphMethodsRecord: {
     }
   `,
   tempMethod: '',
+  getClaimedReferralRewards: gql`
+    query getClaimeds($walletAddress: String!) {
+      claimeds(where: { user: $walletAddress }) {
+        week {
+          id
+          week
+        }
+      }
+    }
+  `
 }

@@ -197,9 +197,9 @@ import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimColl
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$ } from 'features/referralOverview/user'
 import {
+  getReferralRewardsFromApi$,
   getReferralsFromApi$,
   getUserFromApi$,
-  getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
 import {
   BalanceInfo,
@@ -1115,7 +1115,7 @@ export function setupAppContext() {
     txHelpers$,
     getUserFromApi$,
     getReferralsFromApi$,
-    getWeeklyClaimsFromApi$,
+    getReferralRewardsFromApi$,
     checkReferralLocalStorage$,
   )
 
