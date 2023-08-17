@@ -75,8 +75,16 @@ export function parsePoolResponse(
           managementType: 'active',
           collateralAddress: collateralAddress,
           collateralToken: identifiedTokens[collateralAddress].symbol,
+          collateralTokenIcon:
+            identifiedTokens[collateralAddress].source === 'blockchain'
+              ? collateralAddress
+              : collateralToken,
           quoteAddress: quoteTokenAddress,
           quoteToken: identifiedTokens[quoteTokenAddress].symbol,
+          quoteTokenIcon:
+            identifiedTokens[quoteTokenAddress].source === 'blockchain'
+              ? quoteTokenAddress
+              : quoteToken,
           tooltips: {
             ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
               fee: productHubAjnaRewardsTooltip,
