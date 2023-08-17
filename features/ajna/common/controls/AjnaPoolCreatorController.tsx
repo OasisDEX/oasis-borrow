@@ -16,9 +16,9 @@ export function AjnaPoolCreatorController() {
   const { t } = useTranslation()
 
   const form = usePoolCreatorFormReducto({
-    collateralAddress: '0xeb089cfb6d839c0d6fa9dc55fc6826e69a4c22b1',
+    collateralAddress: '',
     interestRate: DEFAULT_POOL_INTEREST_RATE,
-    quoteAddress: '0x10aa0cf12aab305bd77ad8f76c037e048b12513b',
+    quoteAddress: '',
   })
   const {
     state: { collateralAddress, interestRate, quoteAddress },
@@ -66,8 +66,10 @@ export function AjnaPoolCreatorController() {
                 }
                 footer={
                   <PoolCreatorActionController
+                    collateralAddress={collateralAddress}
                     isFormValid={isFormValid}
                     isLoading={isLoading}
+                    quoteAddress={quoteAddress}
                     onSubmit={onSubmit}
                     txSidebarStatus={txSidebarStatus}
                     txStatuses={txStatuses}

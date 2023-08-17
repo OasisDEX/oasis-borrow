@@ -3009,6 +3009,10 @@
       "collateral-equals-quote": "Collateral and token addresses has to be different.",
       "pool-already-exists": "<0>{{collateralToken}}/{{quoteToken}}</0> pool already exists - you can use this pool directly to either <1>Borrow →</1> or <2>Earn →</2>",
       "unknown-error": "There was an unknown error, please try again later."
+    },
+    "transaction": {
+      "progress": "Creating {{collateralToken}}/{{quoteToken}} Ajna pool",
+      "success": "{{collateralToken}}/{{quoteToken}} Ajna pool was created"
     }
   },
   "aave": {

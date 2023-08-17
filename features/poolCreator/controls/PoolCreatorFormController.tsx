@@ -9,10 +9,11 @@ import { PoolCreatorFormOrder } from 'features/poolCreator/components/PoolCreato
 import { INTEREST_RATE_STEP } from 'features/poolCreator/consts'
 import { usePoolCreatorFormReducto } from 'features/poolCreator/state/poolCreatorFormReducto'
 import { formatAddress } from 'helpers/formatters/format'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TextInput } from 'helpers/TextInput'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
-import { Grid } from 'theme-ui'
+import { Flex, Grid, Image } from 'theme-ui'
 
 interface PoolCreatorFormControllerProps {
   collateralToken: string
@@ -38,7 +39,7 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
   minInterestRate,
   maxInterestRate,
   quoteToken,
-  txStatuses: { isTxInProgress, isTxWaitingForApproval },
+  txStatuses: { isTxInProgress, isTxSuccess, isTxWaitingForApproval },
 }) => {
   const { t } = useTranslation()
 
@@ -57,39 +58,51 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
 
   return (
     <Grid gap={4}>
-      <TextInput
-        large
-        muted
-        disabled={isFormDisabled}
-        label={t('pool-creator.form.collateral-token-address')}
-        placeholder={formatAddress(getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address)}
-        value={collateralAddress}
-        onChange={(value) => updateState('collateralAddress', value)}
-      />
-      <TextInput
-        large
-        muted
-        disabled={isFormDisabled}
-        label={t('pool-creator.form.quote-token-address')}
-        placeholder={formatAddress(getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address)}
-        value={quoteAddress}
-        onChange={(value) => updateState('quoteAddress', value)}
-      />
-      <SliderValuePicker
-        disabled={isFormDisabled}
-        largeBoundry
-        lastValue={interestRate}
-        minBoundry={minInterestRate}
-        leftLabel={t('pool-creator.form.pools-interest-rate')}
-        rightBoundry={interestRate}
-        rightBoundryFormatter={(value) => `${value.toFixed(1)}%`}
-        leftBottomLabel={t('pool-creator.form.min-interest-rate', { minInterestRate })}
-        rightBottomLabel={t('pool-creator.form.max-interest-rate', { maxInterestRate })}
-        maxBoundry={maxInterestRate}
-        onChange={(value) => updateState('interestRate', value)}
-        step={INTEREST_RATE_STEP}
-      />
-      <MessageCard messages={errorsWithTranslations} type="error" withBullet={errors.length > 1} />
+      {isTxSuccess ? (
+        <Flex sx={{ justifyContent: 'center' }}>
+          <Image src={staticFilesRuntimeUrl('/static/img/generic-success-icon.svg')} />
+        </Flex>
+      ) : (
+        <>
+          <TextInput
+            large
+            muted
+            disabled={isFormDisabled}
+            label={t('pool-creator.form.collateral-token-address')}
+            placeholder={formatAddress(getNetworkContracts(NetworkIds.MAINNET).tokens.ETH.address)}
+            value={collateralAddress}
+            onChange={(value) => updateState('collateralAddress', value)}
+          />
+          <TextInput
+            large
+            muted
+            disabled={isFormDisabled}
+            label={t('pool-creator.form.quote-token-address')}
+            placeholder={formatAddress(getNetworkContracts(NetworkIds.MAINNET).tokens.USDC.address)}
+            value={quoteAddress}
+            onChange={(value) => updateState('quoteAddress', value)}
+          />
+          <SliderValuePicker
+            disabled={isFormDisabled}
+            largeBoundry
+            lastValue={interestRate}
+            minBoundry={minInterestRate}
+            leftLabel={t('pool-creator.form.pools-interest-rate')}
+            rightBoundry={interestRate}
+            rightBoundryFormatter={(value) => `${value.toFixed(1)}%`}
+            leftBottomLabel={t('pool-creator.form.min-interest-rate', { minInterestRate })}
+            rightBottomLabel={t('pool-creator.form.max-interest-rate', { maxInterestRate })}
+            maxBoundry={maxInterestRate}
+            onChange={(value) => updateState('interestRate', value)}
+            step={INTEREST_RATE_STEP}
+          />
+          <MessageCard
+            messages={errorsWithTranslations}
+            type="error"
+            withBullet={errors.length > 1}
+          />
+        </>
+      )}
       {isFormValid && (
         <PoolCreatorFormOrder
           interestRate={interestRate}

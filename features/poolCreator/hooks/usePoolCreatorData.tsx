@@ -84,7 +84,12 @@ export function usePoolCreatorData({
     etherscan: getNetworkContracts(NetworkIds.MAINNET, context?.chainId).etherscan.url,
     isTxInProgress: txStatuses.isTxInProgress,
     isTxSuccess: txStatuses.isTxSuccess,
-    text: t(txStatuses.isTxSuccess ? 'success' : 'in progress', { collateralToken, quoteToken }),
+    text: t(
+      txStatuses.isTxSuccess
+        ? 'pool-creator.transaction.success'
+        : 'pool-creator.transaction.progress',
+      { collateralToken, quoteToken },
+    ),
     txDetails,
   })?.at(0)
 

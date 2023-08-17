@@ -1,3 +1,4 @@
+import { AppLink } from 'components/Links'
 import {
   SidebarSectionStatus,
   SidebarSectionStatusProps,
@@ -7,21 +8,25 @@ import { useConnection } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
-import { Button, Grid, Spinner } from 'theme-ui'
+import { Button, Flex, Grid, Spinner } from 'theme-ui'
 
 interface PoolCreatorActionControllerProps {
+  collateralAddress: string
   isFormValid: boolean
   isLoading: boolean
+  quoteAddress: string
   txSidebarStatus?: SidebarSectionStatusProps
   txStatuses: TxStatuses
   onSubmit: () => void
 }
 
 export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> = ({
+  collateralAddress,
   isFormValid,
   isLoading,
+  quoteAddress,
   txSidebarStatus,
-  txStatuses: { isTxError, isTxInProgress, isTxWaitingForApproval },
+  txStatuses: { isTxError, isTxInProgress, isTxSuccess, isTxWaitingForApproval },
   onSubmit,
 }) => {
   const { t } = useTranslation()
@@ -41,24 +46,52 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
 
   return (
     <Grid gap={3}>
-      <Button
-        disabled={isPrimaryButtonDisabled}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-        }}
-        onClick={() => {
-          if (isConnected) onSubmit()
-          else void connect()
-        }}
-      >
-        {isPrimaryButtonLoading && (
-          <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />
-        )}
-        {primaryButtonLabel}
-      </Button>
+      {isTxSuccess ? (
+        <Flex sx={{ columnGap: 3 }}>
+          <AppLink
+            href={`/ethereum/ajna/earn/${collateralAddress}-${quoteAddress}`}
+            sx={{ width: '100%' }}
+          >
+            <Button
+              variant="action"
+              sx={{
+                width: '100%',
+                height: '52px',
+                fontSize: '18px',
+                borderRadius: 'round',
+              }}
+            >
+              {t('nav.earn')}
+            </Button>
+          </AppLink>
+          <AppLink
+            href={`/ethereum/ajna/borrow/${collateralAddress}-${quoteAddress}`}
+            sx={{ width: '100%' }}
+          >
+            <Button sx={{ width: '100%', height: '52px' }}>{t('nav.borrow')}</Button>
+          </AppLink>
+        </Flex>
+      ) : (
+        <Button
+          disabled={isPrimaryButtonDisabled}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '52px',
+            width: '100%',
+          }}
+          onClick={() => {
+            if (isConnected) onSubmit()
+            else void connect()
+          }}
+        >
+          {isPrimaryButtonLoading && (
+            <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />
+          )}
+          {primaryButtonLabel}
+        </Button>
+      )}
       {txSidebarStatus && <SidebarSectionStatus {...txSidebarStatus} />}
     </Grid>
   )
