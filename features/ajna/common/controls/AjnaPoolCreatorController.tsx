@@ -5,7 +5,6 @@ import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet'
 import { DetailsSection } from 'components/DetailsSection'
-import { MessageCard } from 'components/MessageCard'
 import { TokensGroup } from 'components/TokensGroup'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
@@ -32,20 +31,21 @@ export function AjnaPoolCreatorController() {
   const [, setTxDetails] = useState<TxDetails>()
 
   const form = usePoolCreatorFormReducto({
-    collateralAddress: '0xeb089cfb6d839c0d6fa9dc55fc6826e69a4c22b1',
+    collateralAddress: '0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6',
     interestRate: DEFAULT_POOL_INTEREST_RATE,
-    quoteAddress: '0x10aa0cf12aab305bd77ad8f76c037e048b12513b',
+    quoteAddress: '0x6fb5ef893d44f4f88026430d82d4ef269543cb23',
   })
   const {
     state: { collateralAddress, interestRate, quoteAddress },
   } = form
 
-  const { boundries, collateralToken, errors, isError, isLoading, isReady, quoteToken } =
-    usePoolCreatorData({
+  const { boundries, collateralToken, errors, isLoading, isReady, quoteToken } = usePoolCreatorData(
+    {
       chainId: context?.chainId,
       collateralAddress,
       quoteAddress,
-    })
+    },
+  )
 
   return (
     <WithConnection>
@@ -66,16 +66,8 @@ export function AjnaPoolCreatorController() {
                       form={form}
                       minInterestRate={min}
                       maxInterestRate={max}
+                      errors={errors}
                     />
-                    {isError && (
-                      <Box sx={{ mt: 2 }}>
-                        <MessageCard
-                          messages={errors}
-                          type="error"
-                          withBullet={errors.length > 1}
-                        />
-                      </Box>
-                    )}
                     {isReady && collateralToken && quoteToken && (
                       <Flex
                         sx={{

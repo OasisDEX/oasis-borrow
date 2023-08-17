@@ -2997,6 +2997,13 @@
       "pools-interest-rate": "Pool's interest rate",
       "min-interest-rate": "Min. {{minInterestRate}}%",
       "max-interest-rate": "Up to. {{maxInterestRate}}%"
+    },
+    "validations": {
+      "collateral-is-not-address": "Collateral token address is not valid contract address.",
+      "quote-is-not-address": "Quote token address is not valid contract address.",
+      "collateral-equals-quote": "Collateral and token addresses has to be different.",
+      "pool-already-exists": "<0>{{collateralToken}}/{{quoteToken}}</0> pool already exists - you can use this pool directly to either <1>Borrow →</1> or <2>Earn →</2>",
+      "unknown-error": "There was an unknown error, please try again later."
     }
   },
   "aave": {

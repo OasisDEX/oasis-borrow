@@ -1,14 +1,18 @@
-
 import { getAjnaPoolInterestRateBoundaries } from 'blockchain/calls/ajnaErc20PoolFactory'
 import { NetworkIds } from 'blockchain/networks'
 import CancelablePromise, { cancelable } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
+import { AjnaValidationItem } from 'features/ajna/common/types'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { PoolCreatorBoundries } from 'features/poolCreator/types'
+import { getOraclessProductUrl } from 'features/poolFinder/helpers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
+import { Trans } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
+import { Text } from 'theme-ui'
 
 interface usePoolCreatorDataProps {
   chainId?: NetworkIds
@@ -29,23 +33,29 @@ export function usePoolCreatorData({
   const [quoteToken, setQuoteToken] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isReady, setIsReady] = useState<boolean>(false)
-  const [errors, setErrors] = useState<string[]>([])
+  const [errors, setErrors] = useState<AjnaValidationItem[]>([])
 
   useEffect(() => {
     if (chainId) void getAjnaPoolInterestRateBoundaries(chainId).then(setBoundries)
   }, [chainId])
 
   useEffect(() => {
-    const errors = []
+    const localErrors: AjnaValidationItem[] = []
 
     if (collateralAddress.length && !isAddress(collateralAddress))
-      errors.push('Collateral token address is not valid contract address')
+      localErrors.push({
+        message: { translationKey: 'collateral-is-not-address' },
+      })
     if (quoteAddress.length && !isAddress(quoteAddress))
-      errors.push('Quote token address is not valid contract address')
+      localErrors.push({
+        message: { translationKey: 'quote-is-not-address' },
+      })
     if (collateralAddress.length && quoteAddress.length && collateralAddress === quoteAddress)
-      errors.push('Collateral and token addresses has to be different')
+      localErrors.push({
+        message: { translationKey: 'collateral-equals-quote' },
+      })
 
-    setErrors(errors)
+    setErrors(localErrors)
     setIsLoading(true)
     setIsReady(false)
     cancelablePromise?.cancel()
@@ -76,7 +86,48 @@ export function usePoolCreatorData({
           .then(([pools, identifiedTokens]) => {
             if (pools.length) {
               setErrors([
-                `Pool ${identifiedTokens[collateralAddress].symbol}/${identifiedTokens[quoteAddress].symbol} already exist`,
+                {
+                  message: {
+                    component: (
+                      <Trans
+                        i18nKey="pool-creator.validations.pool-already-exists"
+                        values={{
+                          collateralToken: identifiedTokens[collateralAddress].symbol,
+                          quoteToken: identifiedTokens[quoteAddress].symbol,
+                        }}
+                        components={[
+                          <Text as="span" sx={{ fontWeight: 'semiBold' }} />,
+                          ...(chainId
+                            ? [
+                                <AppLink
+                                  sx={{ color: 'inherit' }}
+                                  href={getOraclessProductUrl({
+                                    chainId,
+                                    collateralAddress,
+                                    collateralToken: identifiedTokens[collateralAddress].symbol,
+                                    product: 'borrow',
+                                    quoteAddress,
+                                    quoteToken: identifiedTokens[quoteAddress].symbol,
+                                  })}
+                                />,
+                                <AppLink
+                                  sx={{ color: 'inherit' }}
+                                  href={getOraclessProductUrl({
+                                    chainId,
+                                    collateralAddress,
+                                    collateralToken: identifiedTokens[collateralAddress].symbol,
+                                    product: 'earn',
+                                    quoteAddress,
+                                    quoteToken: identifiedTokens[quoteAddress].symbol,
+                                  })}
+                                />,
+                              ]
+                            : []),
+                        ]}
+                      />
+                    ),
+                  },
+                },
               ])
             } else {
               setCollateralToken(identifiedTokens[collateralAddress].symbol)
@@ -84,9 +135,8 @@ export function usePoolCreatorData({
               setIsReady(true)
             }
           })
-          .catch((error) => {
-            console.log(error)
-            setErrors(['There was an unknown error, please try again later'])
+          .catch(() => {
+            setErrors([{ message: { translationKey: 'unknown-error' } }])
           })
           .finally(() => {
             setIsLoading(false)
@@ -103,7 +153,6 @@ export function usePoolCreatorData({
     boundries,
     collateralToken,
     errors,
-    isError: errors.length > 0,
     isLoading,
     isReady,
     quoteToken,
