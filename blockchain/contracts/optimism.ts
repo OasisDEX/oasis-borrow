@@ -89,7 +89,8 @@ export const optimismContracts: OptimismContracts = {
   mcdSpot: contractDesc(mcdSpot, optimism.maker.common.Spot),
   mcdDog: contractDesc(mcdDog, optimism.maker.common.Dog),
   mcdJoinDai: contractDesc(mcdJoinDai, optimism.maker.joins.MCD_JOIN_DAI),
-
+  // Update the Redeemer Merkel contact address
+  // https://github.com/OasisDEX/oasis-earn-sc/blob/dev/packages/deploy-configurations/configs/optimism.conf.ts#L265C16-L265C28
   merkleRedeemer: contractDesc(merkleRedeemer, optimism.common.MerkleRedeemer),
   dssCharter: contractDesc(dssCharter, optimism.common.DssCharter),
   dssCdpManager: contractDesc(dssCdpManager, optimism.maker.common.CdpManager),

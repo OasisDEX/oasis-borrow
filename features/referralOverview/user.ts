@@ -62,6 +62,7 @@ export function createUserReferral$(
         getReferralsFromApi$(web3Context.account),
         getWeeklyClaimsFromApi$(web3Context.account, trigger$),
         checkReferralLocalStorage$(),
+        // todo I need to change this to a subgraph
         getClaimedClaims(new GraphQLClient(cacheApi), web3Context.account),
         txHelpers$,
       ).pipe(
@@ -82,8 +83,8 @@ export function createUserReferral$(
             (item) => !claimedWeeks.includes(item.week_number),
           )
           const totalClaims = weeklyClaims
-            ? weeklyClaims.reduce((p, c) => p.plus(c.amount), zero)
-            : zero
+          ? weeklyClaims.reduce((p, c) => p.plus(c.amount), zero)
+          : zero
           const claimsOut = {
             weeks: filteredWeeklyClaims?.map((item) => new BigNumber(item.week_number)),
             amounts: filteredWeeklyClaims?.map((item) => new BigNumber(item.amount)),
