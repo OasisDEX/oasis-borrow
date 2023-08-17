@@ -1,7 +1,8 @@
-import { ProductType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 
-export function productToVaultType(productType: ProductType) {
+export function productToVaultType(
+  productType: 'Borrow' | 'Multiply' | 'Earn',
+): VaultType | undefined {
   return productType === 'Borrow'
     ? VaultType.Borrow
     : productType === 'Multiply'

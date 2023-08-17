@@ -28,8 +28,7 @@ import {
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
-import { ManagePositionAvailableActions, ProductType } from 'features/aave/types'
-import { isAllowanceNeeded } from 'features/aave/types'
+import { isAllowanceNeeded, ManagePositionAvailableActions, ProductType } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -799,11 +798,15 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.saveSwitchFailure'):
       return <ManageAaveSaveSwitchFailureStateView state={state} send={send} />
     case state.matches('frontend.switchToBorrow'):
-      return <ManageAaveSwitchStateView state={state} send={send} productType={'Borrow'} />
+      return (
+        <ManageAaveSwitchStateView state={state} send={send} productType={ProductType.Borrow} />
+      )
     case state.matches('frontend.switchToMultiply'):
-      return <ManageAaveSwitchStateView state={state} send={send} productType={'Multiply'} />
+      return (
+        <ManageAaveSwitchStateView state={state} send={send} productType={ProductType.Multiply} />
+      )
     case state.matches('frontend.switchToEarn'):
-      return <ManageAaveSwitchStateView state={state} send={send} productType={'Earn'} />
+      return <ManageAaveSwitchStateView state={state} send={send} productType={ProductType.Earn} />
     case state.matches('frontend.txInProgress'):
     case state.matches('frontend.txInProgressEthers'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />

@@ -15,12 +15,7 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
-import {
-  IStrategyConfig,
-  ProductType,
-  ProxyType,
-  StrategyType,
-} from 'features/aave/types'
+import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { Feature } from 'helpers/useFeatureToggle'
