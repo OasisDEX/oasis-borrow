@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
@@ -14,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 export function AjnaMultiplyFormController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, flow, quoteToken },
+    environment: { collateralToken, flow, quoteToken, collateralTokenIcon, quoteTokenIcon },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -50,7 +49,7 @@ export function AjnaMultiplyFormController() {
               }),
               panel: 'collateral',
               shortLabel: collateralToken,
-              icon: getToken(collateralToken).iconCircle,
+              tokenIcon: collateralTokenIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
@@ -64,7 +63,7 @@ export function AjnaMultiplyFormController() {
               }),
               panel: 'quote',
               shortLabel: quoteToken,
-              icon: getToken(quoteToken).iconCircle,
+              tokenIcon: quoteTokenIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
