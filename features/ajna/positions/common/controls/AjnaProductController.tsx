@@ -66,6 +66,7 @@ export function AjnaProductController({
     errors,
     isOracless,
     tokensPrecision,
+    tokensSource,
   } = useAjnaData({
     collateralToken,
     id,
@@ -147,6 +148,7 @@ export function AjnaProductController({
                         isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]
                       }
                       collateralToken={dpmPosition.collateralToken}
+                      collateralTokenSource={tokensSource.collateralToken}
                       {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
                       ethBalance={ethBalance}
                       ethPrice={tokenPriceUSD.ETH}
@@ -161,6 +163,7 @@ export function AjnaProductController({
                       quotePrecision={quotePrecision}
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
+                      quoteTokenSource={tokensSource.quoteToken}
                       steps={steps[dpmPosition.product as AjnaProduct][flow]}
                       gasPrice={gasPrice}
                       slippage={slippage}

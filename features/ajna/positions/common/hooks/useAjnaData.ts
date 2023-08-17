@@ -182,6 +182,18 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : undefined
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
+  const tokensSource = useMemo(() => {
+    return identifiedTokensData && isOracless
+      ? {
+          collateralToken: identifiedTokensData[collateralToken].source || 'blockchain',
+          quoteToken: identifiedTokensData[quoteToken].source || 'blockchain',
+        }
+      : {
+          collateralToken: 'local',
+          quoteToken: 'local',
+        }
+  }, [identifiedTokensData, collateralToken, quoteToken, isOracless])
+
   return {
     data: {
       ajnaPositionAggregatedData,
@@ -206,5 +218,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     ],
     isOracless,
     tokensPrecision,
+    tokensSource,
   }
 }

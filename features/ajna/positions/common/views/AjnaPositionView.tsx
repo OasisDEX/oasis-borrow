@@ -41,6 +41,8 @@ export function AjnaPositionView({
       quotePrice,
       quoteToken,
       dpmProxy,
+      collateralTokenSource,
+      quoteTokenSource,
     },
   } = useAjnaGeneralContext()
 
@@ -59,6 +61,8 @@ export function AjnaPositionView({
           id,
           product,
           quoteToken,
+          collateralTokenSource,
+          quoteTokenSource,
         })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[
@@ -77,7 +81,9 @@ export function AjnaPositionView({
             : []),
         ]}
         handleClick={
-          proxyReveal ? () => console.log(`DPM proxy: ${dpmProxy?.toLowerCase()}`) : undefined
+          proxyReveal
+            ? () => console.log(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
+            : undefined
         }
       />
       <TabBar

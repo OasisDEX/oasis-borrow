@@ -363,6 +363,7 @@ model Tokens {
   symbol    String
   precision Int
   chain_id  Int
+  source    String
 
   @@unique([address, chain_id], name: "address_chain_id_unique_id")
   @@map("tokens")
