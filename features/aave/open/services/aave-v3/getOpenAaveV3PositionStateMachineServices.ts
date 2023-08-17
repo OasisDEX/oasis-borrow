@@ -217,7 +217,7 @@ export function getOpenAaveV3PositionStateMachineServices(
       )
     },
     savePositionToDb$: (context) => {
-      const chainId = context.web3Context?.chainId
+      const chainId = context.strategyConfig.networkId
 
       if (!chainId) {
         return throwError(new Error('No chainId available - save position unsuccessful'))
