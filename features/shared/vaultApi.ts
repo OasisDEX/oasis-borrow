@@ -6,7 +6,7 @@ import { VaultType } from 'features/generalManageVault/vaultType'
 import { LendingProtocol } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, EMPTY, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
@@ -28,20 +28,14 @@ export function checkVaultTypeUsingApi$(
       }
 
       return getVaultFromApi$(
-        positionInfo.id,
-        new BigNumber(context.chainId),
+        positionInfo.id.toNumber(),
+        context.chainId,
         positionInfo.protocol,
       ).pipe(
-        map((resp) => {
-          if (Object.keys(resp).length === 0) {
-            return VaultType.Borrow
-          } else {
-            const vaultResponse = resp as {
-              vaultId: BigNumber
-              type: VaultType
-            }
-            return vaultResponse.type as VaultType
-          }
+        map((vault) => vault.type),
+        catchError(() => {
+          // If any error occurs during the AJAX request, return Borrow type
+          return of(VaultType.Borrow)
         }),
       )
     }),
@@ -83,17 +77,24 @@ export function checkMultipleVaultsFromApi$(
 }
 
 export function getVaultFromApi$(
-  vaultId: BigNumber,
-  chainId: BigNumber,
+  vaultId: number,
+  chainId: number,
   protocol: LendingProtocol,
-): Observable<
-  | {
-      vaultId: BigNumber
-      type: VaultType
-      chainId: BigNumber
-    }
-  | {}
-> {
+): Observable<{
+  vaultId: number
+  chainId: number
+  protocol: string
+  ownerAddress: string
+  type: VaultType
+}> {
+  if (chainId === 0 || chainId < 1) {
+    console.error('Invalid chainId')
+    return EMPTY
+  }
+  if (vaultId === 0 || vaultId < 1) {
+    console.error('Invalid vaultId')
+    return EMPTY
+  }
   return ajax({
     url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
@@ -102,19 +103,14 @@ export function getVaultFromApi$(
     },
   }).pipe(
     map((resp) => {
-      const { vaultId, type, chainId, protocol } = resp.response as {
+      const { vaultId, type, chainId, ownerAddress, protocol } = resp.response as {
         vaultId: number
         type: VaultType
         chainId: number
         protocol: string
+        ownerAddress: string
       }
-      return { vaultId, type, chainId, protocol }
-    }),
-    catchError((err) => {
-      if (err.xhr.status === 404) {
-        return of({})
-      }
-      throw err
+      return { vaultId, type, chainId, ownerAddress, protocol }
     }),
   )
 }
@@ -139,5 +135,9 @@ export function saveVaultUsingApi$(
       chainId,
       protocol: protocol.toLowerCase(),
     },
-  }).pipe(map((_) => {}))
+  }).pipe(
+    map(() => {
+      console.log('Vault saved')
+    }),
+  )
 }

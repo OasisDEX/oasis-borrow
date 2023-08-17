@@ -25,6 +25,7 @@ export async function getVault(req: NextApiRequest, res: NextApiResponse) {
       vaultId: vault.vault_id,
       type: vault.type,
       ownerAddress: vault.owner_address,
+      protocol: vault.protocol,
       chainId: vault.chain_id,
     })
   }

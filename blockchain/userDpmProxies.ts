@@ -171,7 +171,7 @@ export async function getUserDpmProxy(
 }
 
 export function getPositionIdFromDpmProxy$(
-  context$: Observable<Context>,
+  context$: Observable<{ chainId: NetworkIds }>,
   dpmProxy: string,
 ): Observable<string | undefined> {
   return context$.pipe(
