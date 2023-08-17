@@ -8,7 +8,11 @@ import {
 } from 'blockchain/calls/operationExecutor'
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
+import {
+  loadStrategyFromTokens,
+  ManageCollateralActionsEnum,
+  ManageDebtActionsEnum,
+} from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
@@ -17,6 +21,7 @@ import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  IStrategyConfig,
   ManageTokenInput,
   ProductType,
   ProxyType,
@@ -87,6 +92,7 @@ export type ManageAaveEvent =
       effectiveProxyAddress: string
     }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
+  | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | BaseAaveEvent
 
 export function createManageAaveStateMachine(
@@ -504,6 +510,9 @@ export function createManageAaveStateMachine(
         },
       },
       on: {
+        STRATEGTY_UPDATED: {
+          actions: ['updateContext'],
+        },
         PRICES_RECEIVED: {
           actions: 'updateContext',
         },
@@ -608,7 +617,7 @@ export function createManageAaveStateMachine(
           web3Context!.account === ownerAddress,
         isAllowanceNeeded,
         canAdjustPosition: ({ strategyConfig }) =>
-          strategyConfig.availableActions.includes('adjust'),
+          strategyConfig.availableActions().includes('adjust'),
         isEthersTransaction: ({ strategyConfig }) =>
           strategyConfig.executeTransactionWith === 'ethers',
       },
@@ -729,25 +738,27 @@ export function createManageAaveStateMachine(
           return undefined
         }),
         updateStrategyConfigType: assign((context, event) => {
+          const currentStrategy = context.strategyConfig
+          const newStrategy = loadStrategyFromTokens(
+            currentStrategy.tokens.collateral,
+            currentStrategy.tokens.debt,
+            currentStrategy.network,
+            currentStrategy.protocol,
+            productToVaultType(event.productType),
+          )
           return {
             ...context,
-            strategyConfig: {
-              ...context.strategyConfig,
-              type: event.productType,
-            },
+            strategyConfig: newStrategy,
           }
         }),
-        updateStrategyConfig: assign((context) => {
+        updateStrategyConfig: pure((context) => {
           const newTemporaryProductType = context.strategyConfig.type
           const updatedVaultType = productToVaultType(newTemporaryProductType)
 
           if (context.updateStrategyConfig && updatedVaultType) {
             context.updateStrategyConfig(updatedVaultType)
           }
-
-          return {
-            ...context,
-          }
+          return undefined
         }),
         spawnDepositBorrowMachine: assign((context) => ({
           refParametersMachine: spawn(
@@ -862,7 +873,7 @@ export function createManageAaveStateMachine(
         }),
         setInitialState: send(
           (context) => {
-            const firstAction = context.strategyConfig.availableActions[0]
+            const firstAction = context.strategyConfig.availableActions()[0]
 
             switch (firstAction) {
               case 'adjust':

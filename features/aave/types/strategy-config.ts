@@ -75,7 +75,7 @@ export interface IStrategyConfig {
     sidebarTitle: string
     sidebarButton: string
   }
-  availableActions: ManagePositionAvailableActions[]
+  availableActions: () => ManagePositionAvailableActions[]
   tokens: {
     collateral: string
     debt: string

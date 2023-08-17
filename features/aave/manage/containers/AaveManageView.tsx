@@ -30,7 +30,7 @@ function AaveManageContainer({
   strategyConfig: IStrategyConfig
   address: string
 }) {
-  // const Header = strategyConfig.viewComponents.headerManage
+  const Header = strategyConfig.viewComponents.headerManage
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
 
@@ -51,8 +51,7 @@ function AaveManageContainer({
         <Box mb={4}>
           <AavePositionNoticesView />
         </Box>
-        {/* TODO: Is causing endless re-rendering. Investigate bug. Is in dev currently */}
-        {/*<Header strategyConfig={strategyConfig} positionId={state.context.positionId} />*/}
+        <Header strategyConfig={strategyConfig} positionId={state.context.positionId} />
         <AaveManageTabBar
           strategyConfig={strategyConfig}
           aaveReserveState={aaveReserveState}

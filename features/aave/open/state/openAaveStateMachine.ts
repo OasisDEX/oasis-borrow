@@ -24,6 +24,7 @@ import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  ProductType,
   ProxyType,
   RefTransactionMachine,
 } from 'features/aave/types'
@@ -519,7 +520,7 @@ export function createOpenAaveStateMachine(
         }) =>
           useFeatureToggle('AaveV3ProtectionWrite') &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
-          strategyConfig.type === 'Multiply' &&
+          strategyConfig.type === ProductType.Multiply &&
           canOpenPosition({
             userInput,
             hasOpenedPosition,

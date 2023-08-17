@@ -26,7 +26,7 @@ function AaveHeader({
   const { getAaveAssetsPrices$ } = useAaveContext(strategyConfig.protocol, strategyConfig.network)
   const [positionTokenPrices, positionTokenPricesError] = useObservable(
     getAaveAssetsPrices$({
-      tokens: [strategyConfig.tokens.debt, strategyConfig.tokens.collateral],
+      tokens: [strategyConfig.tokens.collateral, strategyConfig.tokens.debt],
     }),
   )
 

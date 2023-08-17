@@ -688,9 +688,9 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
   }
 
-  const strategyAvailableActions = state.context.strategyConfig.availableActions.map(
-    (action) => itemPerAction[action],
-  )
+  const strategyAvailableActions = state.context.strategyConfig
+    .availableActions()
+    .map((action) => itemPerAction[action])
 
   const dropdownConfig: SidebarSectionHeaderDropdown = {
     disabled: false,
