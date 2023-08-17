@@ -104,13 +104,12 @@ function AaveOpenContainer({
   aaveStateMachine: OpenAaveStateMachine
   config: IStrategyConfig
 }) {
-  // TODO: re-enable header once https://github.com/OasisDEX/oasis-borrow/pull/2717 is merged
-  // const Header = config.viewComponents.headerOpen
+  const Header = config.viewComponents.headerOpen
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine} config={config}>
       <Container variant="vaultPageContainer">
         <AavePositionNotice />
-        {/*<Header strategyConfig={config} />*/}
+        <Header strategyConfig={config} />
         <TabSectionComponent strategyConfig={config} />
         <Survey for="earn" />
       </Container>
