@@ -29,6 +29,7 @@ import {
 } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
@@ -55,6 +56,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   ownerAddress?: string
   positionCreatedBy: ProxyType
   updateStrategyConfig?: (vaultType: VaultType) => void
+  historyEvents: AaveHistoryEvent[]
 }
 
 function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
