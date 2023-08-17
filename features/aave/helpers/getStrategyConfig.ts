@@ -120,11 +120,16 @@ export async function getAaveV3StrategyConfig(
   if (!lastCreatedPosition) {
     throw new Error(`Can't load strategy config for position without dmpProxy. VaultId: ${vaultId}`)
   }
+  const _vaultType =
+    vaultType === undefined || vaultType === VaultType.Unknown
+      ? productToVaultType(lastCreatedPosition.positionType)
+      : vaultType
+
   return loadStrategyFromTokens(
     lastCreatedPosition.collateralTokenSymbol,
     lastCreatedPosition.debtTokenSymbol,
     networkName,
     lastCreatedPosition.protocol,
-    vaultType,
+    _vaultType,
   )
 }
