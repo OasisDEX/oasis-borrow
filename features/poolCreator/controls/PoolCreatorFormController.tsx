@@ -11,6 +11,7 @@ import { formatAddress } from 'helpers/formatters/format'
 import { TextInput } from 'helpers/TextInput'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
+import { Grid } from 'theme-ui'
 
 interface PoolCreatorFormControllerProps {
   collateralToken: string
@@ -50,7 +51,7 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
   )
 
   return (
-    <>
+    <Grid gap={4}>
       <TextInput
         large
         muted
@@ -90,6 +91,6 @@ export const PoolCreatorFormController: FC<PoolCreatorFormControllerProps> = ({
           quoteToken={quoteToken}
         />
       )}
-    </>
+    </Grid>
   )
 }
