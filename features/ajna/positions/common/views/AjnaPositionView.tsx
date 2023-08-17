@@ -41,8 +41,8 @@ export function AjnaPositionView({
       quotePrice,
       quoteToken,
       dpmProxy,
-      collateralTokenSource,
-      quoteTokenSource,
+      collateralTokenIcon,
+      quoteTokenIcon,
     },
   } = useAjnaGeneralContext()
 
@@ -61,8 +61,8 @@ export function AjnaPositionView({
           id,
           product,
           quoteToken,
-          collateralTokenSource,
-          quoteTokenSource,
+          collateralTokenIcon,
+          quoteTokenIcon,
         })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[

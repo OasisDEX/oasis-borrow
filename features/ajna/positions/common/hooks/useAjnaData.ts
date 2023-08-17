@@ -182,17 +182,30 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : undefined
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
-  const tokensSource = useMemo(() => {
-    return identifiedTokensData && isOracless
+  const tokensIconsData = useMemo(() => {
+    return collateralToken && quoteToken
       ? {
-          collateralToken: identifiedTokensData[collateralToken].source || 'blockchain',
-          quoteToken: identifiedTokensData[quoteToken].source || 'blockchain',
+          collateralToken,
+          quoteToken,
         }
-      : {
-          collateralToken: 'local',
-          quoteToken: 'local',
+      : dpmPositionData && isOracless && identifiedTokensData
+      ? {
+          collateralToken:
+            identifiedTokensData[dpmPositionData.collateralToken].source === 'blockchain'
+              ? dpmPositionData.collateralTokenAddress
+              : dpmPositionData.collateralToken,
+          quoteToken:
+            identifiedTokensData[dpmPositionData.quoteToken].source === 'blockchain'
+              ? dpmPositionData.quoteTokenAddress
+              : dpmPositionData.quoteToken,
         }
-  }, [identifiedTokensData, collateralToken, quoteToken, isOracless])
+      : dpmPositionData
+      ? {
+          collateralToken: dpmPositionData.collateralToken,
+          quoteToken: dpmPositionData.quoteToken,
+        }
+      : undefined
+  }, [identifiedTokensData, collateralToken, quoteToken, isOracless, dpmPositionData])
 
   return {
     data: {
@@ -204,6 +217,7 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       gasPriceData,
       tokenPriceUSDData,
       userSettingsData,
+      tokensIconsData,
     },
     errors: [
       ajnaPositionAggregatedError,
@@ -218,6 +232,5 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     ],
     isOracless,
     tokensPrecision,
-    tokensSource,
   }
 }
