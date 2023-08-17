@@ -17,7 +17,6 @@ import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'featur
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
 import {
   IStrategyConfig,
-  ManagePositionAvailableActions,
   ProductType,
   ProxyType,
   StrategyType,
@@ -342,7 +341,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
 //   }
 // }
 
-export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
+// export const ethereumAaveV3Strategies: Array<IStrategyConfig> = [
 const multiplyStategies: IStrategyConfig[] = availableTokenPairs
   .filter(hasMultiplyProductType)
   .map((config) => {
