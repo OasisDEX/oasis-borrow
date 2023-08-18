@@ -73,13 +73,12 @@ model WeeklyClaim {
 }
 
 model MerkleTree {
-  week_number  Int       @unique
-  start_block  Int?
-  end_block    Int?
-  timestamp    DateTime? @default(now())
-  tree_root    String
-  snapshot     String?
-  tx_processed Boolean   @default(false)
+  week_number Int       @unique
+  start_block Int?
+  end_block   Int?
+  timestamp   DateTime? @default(now())
+  tree_root   String
+  snapshot    String?
 
   @@map("merkle_tree")
 }
