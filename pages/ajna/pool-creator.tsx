@@ -1,14 +1,24 @@
+import { NetworkHexIds } from 'blockchain/networks'
+import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoolCreatorController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
+import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 function AjnaPoolCreatorPage() {
   return (
-    <WithFeatureToggleRedirect feature="AjnaPoolFinder">
-      <AjnaPoolCreatorController />
-    </WithFeatureToggleRedirect>
+    <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
+      <WithTermsOfService>
+        <WithWalletAssociatedRisk>
+          <WithFeatureToggleRedirect feature="AjnaPoolFinder">
+            <AjnaPoolCreatorController />
+          </WithFeatureToggleRedirect>
+        </WithWalletAssociatedRisk>
+      </WithTermsOfService>
+    </WithConnection>
   )
 }
 
