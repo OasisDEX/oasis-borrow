@@ -35,6 +35,7 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
         borderColor: 'neutral20',
         borderRadius: 'circle',
         boxShadow: 'buttonMenu',
+        backgroundColor: 'neutral10',
       }}
     >
       <Box sx={{ width: '48px', flexShrink: 0 }}>
