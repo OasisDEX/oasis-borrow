@@ -1,4 +1,3 @@
-import { NetworkHexIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoolCreatorController'
@@ -10,7 +9,7 @@ import React from 'react'
 
 function AjnaPoolCreatorPage() {
   return (
-    <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
+    <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <WithFeatureToggleRedirect feature="AjnaPoolFinder">
