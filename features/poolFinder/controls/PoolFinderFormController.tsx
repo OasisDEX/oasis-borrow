@@ -53,7 +53,7 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
         }}
       >
         <PoolFinderAddressInput
-          label={t('ajna.oracless.form.pool-address')}
+          label={t('pool-finder.form.pool-address')}
           placeholder={formatAddress(
             getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs['ETH-USDC'].address,
           )}
@@ -72,8 +72,8 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
           }}
         />
         <PoolFinderAddressInput
-          label={t('ajna.oracless.form.collateral-token')}
-          placeholder={t('ajna.oracless.form.placeholder')}
+          label={t('pool-finder.form.collateral-token')}
+          placeholder={t('pool-finder.form.token-placeholder')}
           type="token"
           chainId={chainId}
           value={addresses.collateralAddress}
@@ -89,8 +89,8 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
           }}
         />
         <PoolFinderAddressInput
-          label={t('ajna.oracless.form.quote-token')}
-          placeholder={t('ajna.oracless.form.placeholder')}
+          label={t('pool-finder.form.quote-token')}
+          placeholder={t('pool-finder.form.token-placeholder')}
           value={addresses.quoteAddress}
           type="token"
           chainId={chainId}

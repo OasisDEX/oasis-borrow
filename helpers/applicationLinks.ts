@@ -20,6 +20,7 @@ export const INTERNAL_LINKS = {
   ajnaMultiply: '/ajna/multiply',
   ajnaRewards: '/ajna/rewards',
   ajnaPoolFinder: '/ajna/pool-finder',
+  ajnaPoolCreator: '/ajna/pool-creator',
 }
 
 export const EXTERNAL_LINKS = {
