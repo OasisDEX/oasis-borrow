@@ -126,6 +126,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
             <>
               <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
                 <PoolFinderFormController
+                  chainId={chainId}
                   onChange={(addresses) => {
                     setAddresses(addresses)
                     setResultsKey(
