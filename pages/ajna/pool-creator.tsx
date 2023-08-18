@@ -1,3 +1,4 @@
+import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoolCreatorController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
@@ -8,13 +9,15 @@ import React from 'react'
 
 function AjnaPoolCreatorPage() {
   return (
-    <WithTermsOfService>
-      <WithWalletAssociatedRisk>
-        <WithFeatureToggleRedirect feature="AjnaPoolFinder">
-          <AjnaPoolCreatorController />
-        </WithFeatureToggleRedirect>
-      </WithWalletAssociatedRisk>
-    </WithTermsOfService>
+    <WithConnection>
+      <WithTermsOfService>
+        <WithWalletAssociatedRisk>
+          <WithFeatureToggleRedirect feature="AjnaPoolFinder">
+            <AjnaPoolCreatorController />
+          </WithFeatureToggleRedirect>
+        </WithWalletAssociatedRisk>
+      </WithTermsOfService>
+    </WithConnection>
   )
 }
 
