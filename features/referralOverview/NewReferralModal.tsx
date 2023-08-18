@@ -1,3 +1,4 @@
+import { addressToEnsNameMainnet } from 'blockchain/ens'
 import { ReferralModal } from 'components/ReferralModal'
 import { SuccessfulJoinModal } from 'components/SuccessfullJoinModal'
 import { UserReferralState } from 'features/referralOverview/user'
@@ -6,7 +7,7 @@ import { jwtAuthGetToken } from 'features/shared/jwt'
 import { useConnection } from 'features/web3OnBoard'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface NewReferralModalProps {
   account?: string | null
@@ -22,6 +23,14 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
   const { t } = useTranslation()
   const [success, setSuccess] = useState(false)
   const { connect } = useConnection()
+  const [refEnsName, setRefEnsName] = useState<string | null | false>(null)
+  useEffect(() => {
+    if (userReferral && userReferral.referrer) {
+      void addressToEnsNameMainnet(userReferral.referrer).then((res) => {
+        setRefEnsName(res === null ? false : res)
+      })
+    }
+  }, [userReferral])
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 
@@ -49,12 +58,11 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
           topButton={{ text: t('connect-wallet'), func: () => connect() }}
         />
       )}
-      {!success && userReferral && userReferral.state === 'newUser' && (
+      {!success && userReferral && userReferral.state === 'newUser' && refEnsName !== null && (
         <ReferralModal
-          heading={`${t('ref.modal.you-have-been-ref')} ${formatAddress(
-            userReferral.referrer!,
-            6,
-          )}`}
+          heading={`${t('ref.modal.you-have-been-ref')} ${
+            refEnsName || formatAddress(userReferral.referrer!, 6)
+          }`}
           topButton={{
             text: t('ref.modal.accept'),
             func: () => createUser({ hasAccepted: true, isReferred: true }),
