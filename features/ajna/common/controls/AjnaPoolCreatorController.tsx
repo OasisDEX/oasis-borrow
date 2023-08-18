@@ -54,8 +54,10 @@ export function AjnaPoolCreatorController() {
             <Trans
               i18nKey="pool-creator.header.intro"
               components={{
-                1: <AppLink href={EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_CREATE_A_POOL} sx={{ pr: 3 }} />,
-                2: (
+                AppLink: (
+                  <AppLink href={EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_CREATE_A_POOL} sx={{ pr: 3 }} />
+                ),
+                WithArrow: (
                   <WithArrow
                     variant="paragraph2"
                     sx={{
