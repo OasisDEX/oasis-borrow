@@ -73,6 +73,8 @@ export function VaultHeadline({
             flexShrink: 0,
             alignItems: 'center',
             columnGap: 2,
+            flexWrap: 'wrap',
+            maxWidth: '100%',
           }}
         >
           {tokens.length > 0 && (

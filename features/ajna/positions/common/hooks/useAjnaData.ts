@@ -182,6 +182,31 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : undefined
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
+  const tokensIconsData = useMemo(() => {
+    return collateralToken && quoteToken
+      ? {
+          collateralToken,
+          quoteToken,
+        }
+      : dpmPositionData && isOracless && identifiedTokensData
+      ? {
+          collateralToken:
+            identifiedTokensData[dpmPositionData.collateralToken].source === 'blockchain'
+              ? dpmPositionData.collateralTokenAddress
+              : dpmPositionData.collateralToken,
+          quoteToken:
+            identifiedTokensData[dpmPositionData.quoteToken].source === 'blockchain'
+              ? dpmPositionData.quoteTokenAddress
+              : dpmPositionData.quoteToken,
+        }
+      : dpmPositionData
+      ? {
+          collateralToken: dpmPositionData.collateralToken,
+          quoteToken: dpmPositionData.quoteToken,
+        }
+      : undefined
+  }, [identifiedTokensData, collateralToken, quoteToken, isOracless, dpmPositionData])
+
   return {
     data: {
       ajnaPositionAggregatedData,
@@ -192,6 +217,7 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       gasPriceData,
       tokenPriceUSDData,
       userSettingsData,
+      tokensIconsData,
     },
     errors: [
       ajnaPositionAggregatedError,

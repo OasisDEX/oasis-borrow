@@ -12,7 +12,7 @@ export interface IdentifiedTokens {
 
 function reduceIdentifiedTokens(
   total: IdentifiedTokens,
-  { address, name, precision, symbol }: Tokens,
+  { address, name, precision, symbol, source }: Tokens,
 ) {
   return {
     ...total,
@@ -20,6 +20,7 @@ function reduceIdentifiedTokens(
       precision,
       name,
       symbol,
+      source,
     },
   }
 }
@@ -58,6 +59,7 @@ export const identifyTokens$ = (
           precision: getToken(token).precision,
           address: tokensContracts[token].address,
           chain_id: context.chainId,
+          source: 'local',
         }))
 
         if (tokensAddresses.length === localTokensAddresses.length)

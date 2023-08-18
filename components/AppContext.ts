@@ -4,6 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory'
 import { ClaimAjnaRewardsTxData } from 'blockchain/calls/ajnaRewardsClaimer'
 import {
   AutomationBotAddTriggerData,
@@ -293,6 +294,7 @@ export type TxData =
   | OasisActionsTxData
   | ClaimAjnaRewardsTxData
   | SavingDaiData
+  | DeployAjnaPoolTxData
 
 export type AutomationTxData =
   | AutomationBotAddTriggerData
