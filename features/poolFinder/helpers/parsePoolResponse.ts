@@ -75,13 +75,13 @@ export function parsePoolResponse(
           managementType: 'active',
           collateralAddress: collateralAddress,
           collateralToken: identifiedTokens[collateralAddress].symbol,
-          collateralTokenIcon:
+          collateralIcon:
             identifiedTokens[collateralAddress].source === 'blockchain'
               ? collateralAddress
               : collateralToken,
           quoteAddress: quoteTokenAddress,
           quoteToken: identifiedTokens[quoteTokenAddress].symbol,
-          quoteTokenIcon:
+          quoteIcon:
             identifiedTokens[quoteTokenAddress].source === 'blockchain'
               ? quoteTokenAddress
               : quoteToken,

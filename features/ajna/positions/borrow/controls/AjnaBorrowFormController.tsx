@@ -15,7 +15,7 @@ import React from 'react'
 export function AjnaBorrowFormController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, flow, quoteToken, collateralTokenIcon, quoteTokenIcon },
+    environment: { collateralToken, flow, quoteToken, collateralIcon, quoteIcon },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -42,7 +42,7 @@ export function AjnaBorrowFormController() {
               }),
               panel: 'collateral',
               shortLabel: collateralToken,
-              tokenIcon: collateralTokenIcon,
+              tokenIcon: collateralIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
@@ -56,7 +56,7 @@ export function AjnaBorrowFormController() {
               }),
               panel: 'quote',
               shortLabel: quoteToken,
-              tokenIcon: quoteTokenIcon,
+              tokenIcon: quoteIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')

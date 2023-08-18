@@ -12,7 +12,7 @@ import React from 'react'
 export function AjnaEarnOverviewOpenController() {
   const { t } = useTranslation()
   const {
-    environment: { quoteToken, quotePrice, isOracless, quoteTokenIcon },
+    environment: { quoteToken, quotePrice, isOracless, quoteIcon },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -42,11 +42,7 @@ export function AjnaEarnOverviewOpenController() {
   return (
     <DetailsSection
       title={
-        <SimulateTitle
-          token={quoteTokenIcon}
-          tokenSymbol={quoteToken}
-          depositAmount={depositAmount}
-        />
+        <SimulateTitle token={quoteIcon} tokenSymbol={quoteToken} depositAmount={depositAmount} />
       }
       notifications={notifications}
       content={

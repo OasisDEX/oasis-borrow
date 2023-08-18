@@ -12,8 +12,8 @@ interface AjnaBorrowHeadlinePropsParams {
   quoteToken?: string
   collateralAddress?: string
   quoteAddress?: string
-  collateralTokenIcon?: string
-  quoteTokenIcon?: string
+  collateralIcon?: string
+  quoteIcon?: string
 }
 
 export function getAjnaHeadlineProps({
@@ -22,23 +22,23 @@ export function getAjnaHeadlineProps({
   id,
   product,
   quoteToken,
-  collateralTokenIcon,
-  quoteTokenIcon,
+  collateralIcon,
+  quoteIcon,
 }: AjnaBorrowHeadlinePropsParams) {
   const { t } = useTranslation()
 
   return {
     ...(collateralToken &&
       quoteToken &&
-      collateralTokenIcon &&
-      quoteTokenIcon && {
+      collateralIcon &&
+      quoteIcon && {
         header: t(`ajna.position-page.common.headline.${flow}`, {
           collateralToken,
           id,
           product: upperFirst(product),
           quoteToken,
         }),
-        tokens: [collateralTokenIcon, quoteTokenIcon],
+        tokens: [collateralIcon, quoteIcon],
         protocol: {
           network: NetworkNames.ethereumMainnet,
           protocol: LendingProtocol.Ajna,

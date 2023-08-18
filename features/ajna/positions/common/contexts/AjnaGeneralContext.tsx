@@ -33,7 +33,7 @@ interface AjnaGeneralContextProviderProps {
   collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
-  collateralTokenIcon: string
+  collateralIcon: string
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
@@ -48,7 +48,7 @@ interface AjnaGeneralContextProviderProps {
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
-  quoteTokenIcon: string
+  quoteIcon: string
   steps: AjnaSidebarStep[]
   gasPrice: GasPriceParams
   slippage: BigNumber

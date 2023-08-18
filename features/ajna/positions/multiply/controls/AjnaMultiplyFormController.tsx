@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 export function AjnaMultiplyFormController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, flow, quoteToken, collateralTokenIcon, quoteTokenIcon },
+    environment: { collateralToken, flow, quoteToken, collateralIcon, quoteIcon },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -49,7 +49,7 @@ export function AjnaMultiplyFormController() {
               }),
               panel: 'collateral',
               shortLabel: collateralToken,
-              tokenIcon: collateralTokenIcon,
+              tokenIcon: collateralIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
@@ -63,7 +63,7 @@ export function AjnaMultiplyFormController() {
               }),
               panel: 'quote',
               shortLabel: quoteToken,
-              tokenIcon: quoteTokenIcon,
+              tokenIcon: quoteIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')

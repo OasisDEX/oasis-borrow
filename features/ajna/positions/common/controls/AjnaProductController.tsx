@@ -110,8 +110,8 @@ export function AjnaProductController({
                       flow,
                       product: dpmPositionData?.product as AjnaProduct,
                       quoteToken: dpmPositionData?.quoteToken,
-                      collateralTokenIcon: tokensIconsData?.collateralToken,
-                      quoteTokenIcon: tokensIconsData?.quoteToken,
+                      collateralIcon: tokensIconsData?.collateralToken,
+                      quoteIcon: tokensIconsData?.quoteToken,
                       id,
                     })}
                   />
@@ -152,7 +152,7 @@ export function AjnaProductController({
                         isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]
                       }
                       collateralToken={dpmPosition.collateralToken}
-                      collateralTokenIcon={tokensIconsData.collateralToken}
+                      collateralIcon={tokensIconsData.collateralToken}
                       {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
                       ethBalance={ethBalance}
                       ethPrice={tokenPriceUSD.ETH}
@@ -167,7 +167,7 @@ export function AjnaProductController({
                       quotePrecision={quotePrecision}
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
-                      quoteTokenIcon={tokensIconsData.quoteToken}
+                      quoteIcon={tokensIconsData.quoteToken}
                       steps={steps[dpmPosition.product as AjnaProduct][flow]}
                       gasPrice={gasPrice}
                       slippage={slippage}

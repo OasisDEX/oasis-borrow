@@ -29,8 +29,8 @@ export function parseRows(
       quoteToken,
       tooltips,
       weeklyNetApy,
-      collateralTokenIcon,
-      quoteTokenIcon,
+      collateralIcon,
+      quoteIcon,
     } = row
 
     const label = `${collateralToken}/${quoteToken}`
@@ -45,7 +45,7 @@ export function parseRows(
 
     return {
       collateralQuote: (
-        <AssetsTableDataCellAsset asset={label} icons={[collateralTokenIcon, quoteTokenIcon]} />
+        <AssetsTableDataCellAsset asset={label} icons={[collateralIcon, quoteIcon]} />
       ),
       ...parseProduct(
         {
