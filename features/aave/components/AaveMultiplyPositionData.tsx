@@ -11,6 +11,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { displayMultiple } from 'helpers/display-multiple'
@@ -22,6 +23,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
+import { LiquidationPriceCard } from './LiquidationPriceCard'
+import { NetValueCard } from './NetValueCard'
+
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
   nextPosition?: IPosition
@@ -32,6 +36,7 @@ type AaveMultiplyPositionDataProps = {
   debtTokenReserveConfigurationData: ReserveConfigurationData
   aaveHistory: VaultHistoryEvent[]
   isAutomationAvailable?: boolean
+  strategyType: StrategyType
 }
 
 export function AaveMultiplyPositionData({
@@ -44,6 +49,7 @@ export function AaveMultiplyPositionData({
   debtTokenReserveConfigurationData,
   aaveHistory,
   isAutomationAvailable,
+  strategyType,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
 
@@ -65,13 +71,6 @@ export function AaveMultiplyPositionData({
       debtTokenReserveData.variableBorrowRate,
     )
 
-  const belowCurrentPricePercentage = formatDecimalAsPercent(
-    currentPositionThings.liquidationPrice
-      .minus(collateralTokenPrice)
-      .dividedBy(collateralTokenPrice)
-      .absoluteValue(),
-  )
-
   const netBorrowCostInUSDC = currentPositionThings.debt
     .times(debtTokenPrice)
     .times(NaNIsZero(currentPositionThings.netBorrowCostPercentage))
@@ -92,63 +91,16 @@ export function AaveMultiplyPositionData({
         title={t('system.overview')}
         content={
           <DetailsSectionContentCardWrapper>
-            <DetailsSectionContentCard
-              title={t('system.liquidation-price')}
-              value={`${formatPrecision(currentPositionThings.liquidationPrice, 2)} ${
-                currentPosition.debt.symbol
-              }`}
-              change={
-                nextPositionThings && {
-                  variant: nextPositionThings.liquidationPrice.gte(
-                    currentPositionThings.liquidationPrice,
-                  )
-                    ? 'positive'
-                    : 'negative',
-                  value: `$${formatPrecision(
-                    NaNIsZero(nextPositionThings.liquidationPrice),
-                    2,
-                  )} ${t('after')}`,
-                }
-              }
-              footnote={
-                !currentPositionThings.liquidationPrice.isNaN() &&
-                !currentPositionThings.liquidationPrice.eq(zero)
-                  ? `${t('manage-earn-vault.below-current-price', {
-                      percentage: belowCurrentPricePercentage,
-                    })}`
-                  : undefined
-              }
-              modal={
-                <Grid gap={2}>
-                  <Heading variant="header4">
-                    {t('aave-position-modal.liquidation-price.first-header')}
-                  </Heading>
-                  <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                    {t('aave-position-modal.liquidation-price.first-description-line')}
-                  </Text>
-                  <Card as="p" variant="vaultDetailsCardModal">
-                    {`${formatPrecision(NaNIsZero(currentPositionThings.liquidationPrice), 2)} ${
-                      currentPosition.debt.symbol
-                    }`}
-                  </Card>
-                  {!currentPositionThings.liquidationPrice.isNaN() && (
-                    <Text as="p" variant="paragraph3" sx={{ mt: 1 }}>
-                      {t('aave-position-modal.liquidation-price.second-description-line', {
-                        percent: belowCurrentPricePercentage,
-                      })}
-                    </Text>
-                  )}
-                  <Heading variant="header4">
-                    {t('aave-position-modal.liquidation-price.second-header')}
-                  </Heading>
-                  <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                    {t('aave-position-modal.liquidation-price.third-description-line')}
-                  </Text>
-                  <Card as="p" variant="vaultDetailsCardModal">
-                    {formatDecimalAsPercent(debtTokenReserveConfigurationData.liquidationBonus)}
-                  </Card>
-                </Grid>
-              }
+            <LiquidationPriceCard
+              currentPositionThings={currentPositionThings}
+              position={currentPosition}
+              strategyType={strategyType}
+              nextPositionThings={nextPositionThings}
+              collateralTokenPrice={collateralTokenPrice}
+              debtTokenPrice={debtTokenPrice}
+              collateralTokenReserveData={collateralTokenReserveData}
+              debtTokenReserveData={debtTokenReserveData}
+              debtTokenReserveConfigurationData={debtTokenReserveConfigurationData}
             />
             <ContentCardLtv
               loanToValue={currentPosition.riskRatio.loanToValue}
@@ -210,19 +162,11 @@ export function AaveMultiplyPositionData({
                 </Grid>
               }
             />
-            <DetailsSectionContentCard
-              title={t('system.net-value')}
-              value={`${formatPrecision(currentPositionThings.netValue, 2)} ${
-                currentPosition.debt.symbol
-              }`}
-              change={
-                nextPositionThings && {
-                  variant: nextPositionThings.netValue.gt(currentPositionThings.netValue)
-                    ? 'positive'
-                    : 'negative',
-                  value: `${formatPrecision(nextPositionThings.netValue, 2)} ${t('after')}`,
-                }
-              }
+            <NetValueCard
+              strategyType={strategyType}
+              currentPositionThings={currentPositionThings}
+              currentPosition={currentPosition}
+              nextPositionThings={nextPositionThings}
             />
           </DetailsSectionContentCardWrapper>
         }

@@ -802,7 +802,8 @@
     "liquidation-price": {
       "first-header": "Liquidation Price",
       "second-header": "Liquidation Penalty",
-      "first-description-line": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+      "first-description-line-long": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+      "first-description-line-short": "The Liquidation Price is the debt price at which a position will be liquidated. This number is denominated in collateral",
       "second-description-line": "This is {{percent}} below current price",
       "third-description-line": "The liquidation penalty is the % that will be added to the debt as a penalty in case of liquidation."
     },
