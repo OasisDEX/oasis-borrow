@@ -1,4 +1,3 @@
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface ClaimedReferralRewards {
@@ -9,9 +8,9 @@ export interface ClaimedReferralRewards {
 export async function getClaimedReferralRewards(
   walletAddress: string,
 ): Promise<ClaimedReferralRewards[]> {
-  const { response } = (await loadSubgraph('Referral', 'getClaimedReferralRewards', {
+  const { response } = await loadSubgraph('Referral', 'getClaimedReferralRewards', {
     walletAddress: walletAddress.toLowerCase(),
-  })) as SubgraphsResponses['Referral']['getClaimedReferralRewards']
+  })
 
   if (response && 'claimeds' in response) {
     return response.claimeds
