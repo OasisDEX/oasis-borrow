@@ -2995,7 +2995,7 @@
   "pool-creator": {
     "header": {
       "title": "Ajna Pool Creator",
-      "intro": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi. <0><1>Find out more here[link to kb]</1></0>"
+      "intro": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi. <1><2>Find out more here</2></1>"
     },
     "form": {
       "title": "Configure new Ajna pool",
