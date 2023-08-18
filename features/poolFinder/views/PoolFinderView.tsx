@@ -17,7 +17,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import React, { FC, useMemo, useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 interface PoolFinderViewProps {
   product: ProductHubProductType
@@ -123,7 +123,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
           customLoader={<PoolFinderFormLoadingState />}
         >
           {([{ chainId }]) => (
-            <>
+            <Grid gap="48px">
               <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
                 <PoolFinderFormController
                   chainId={chainId}
@@ -137,19 +137,17 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
                   }}
                 />
               </Box>
-              <Box sx={{ mt: '48px' }}>
-                {results[resultsKey] ? (
-                  <PoolFinderContentController
-                    addresses={addresses}
-                    chainId={chainId}
-                    selectedProduct={selectedProduct}
-                    tableData={results[resultsKey]}
-                  />
-                ) : (
-                  <>{resultsKey && <PoolFinderTableLoadingState />}</>
-                )}
-              </Box>
-            </>
+              {results[resultsKey] ? (
+                <PoolFinderContentController
+                  addresses={addresses}
+                  chainId={chainId}
+                  selectedProduct={selectedProduct}
+                  tableData={results[resultsKey]}
+                />
+              ) : (
+                <>{resultsKey && <PoolFinderTableLoadingState />}</>
+              )}
+            </Grid>
           )}
         </WithLoadingIndicator>
       </WithErrorHandler>
