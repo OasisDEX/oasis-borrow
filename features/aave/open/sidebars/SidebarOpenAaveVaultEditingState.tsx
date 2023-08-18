@@ -1,6 +1,8 @@
+import { getToken } from 'blockchain/tokensMetadata'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { handleNumericInput } from 'helpers/input'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -23,18 +25,19 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
         hasAuxiliary={true}
         auxiliaryAmount={state.context.auxiliaryAmount}
         hasError={false}
-        maxAmount={state.context.tokenBalance}
+        maxAmount={state.context.balance?.deposit.balance}
         showMax={true}
         maxAmountLabel={t('balance')}
         onSetMax={() => {
-          send({ type: 'SET_AMOUNT', amount: state.context.tokenBalance! })
+          send({ type: 'SET_AMOUNT', amount: state.context.balance?.deposit.balance ?? zero })
         }}
         onChange={handleNumericInput((amount) => {
           send({ type: 'SET_AMOUNT', amount })
         })}
         currencyCode={state.context.tokens.deposit}
+        currencyDigits={getToken(state.context.tokens.deposit)?.digits}
         disabled={false}
-        tokenUsdPrice={state.context.collateralPrice}
+        tokenUsdPrice={state.context.balance?.deposit.price}
       />
     </Grid>
   )

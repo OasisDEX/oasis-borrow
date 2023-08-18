@@ -14,7 +14,7 @@ import React from 'react'
 export function AjnaEarnFormController() {
   const { t } = useTranslation()
   const {
-    environment: { flow, quoteToken, collateralToken },
+    environment: { flow, quoteToken, collateralToken, quoteIcon, collateralIcon },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -58,7 +58,7 @@ export function AjnaEarnFormController() {
                 }),
                 panel: 'liquidity',
                 shortLabel: quoteToken,
-                tokenIcon: quoteToken,
+                tokenIcon: quoteIcon,
                 action: () => {
                   dispatch({ type: 'reset' })
                   updateState('uiDropdown', 'liquidity')
@@ -72,7 +72,7 @@ export function AjnaEarnFormController() {
                       label: t('system.claim-collateral'),
                       panel: 'claim-collateral',
                       shortLabel: collateralToken,
-                      tokenIcon: collateralToken,
+                      tokenIcon: collateralIcon,
                       iconShrink: 2,
                       action: () => {
                         dispatch({ type: 'reset' })

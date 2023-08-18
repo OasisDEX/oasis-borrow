@@ -9,10 +9,11 @@ import { Box, Flex, Heading, Text } from 'theme-ui'
 
 interface SimulateTitleProps {
   token: string
+  tokenSymbol?: string
   depositAmount?: BigNumber
 }
 
-export function SimulateTitle({ token, depositAmount }: SimulateTitleProps) {
+export function SimulateTitle({ token, tokenSymbol, depositAmount }: SimulateTitleProps) {
   const tokenConfig = getTokenGuarded(token)
 
   return (
@@ -47,7 +48,7 @@ export function SimulateTitle({ token, depositAmount }: SimulateTitleProps) {
             color: 'primary100',
           }}
         >
-          {`${formatCryptoBalance(depositAmount || zero)} ${token}`}
+          {`${formatCryptoBalance(depositAmount || zero)} ${tokenSymbol || token}`}
         </Heading>
         <Text
           variant="paragraph3"

@@ -75,6 +75,7 @@ export function AaveBorrowManageComponent({
         ]) => {
           return (
             <AaveBorrowPositionData
+              strategyType={strategyConfig.strategyType}
               currentPosition={_currentPosition}
               collateralTokenPrice={_collateralTokenPrice}
               collateralTokenReserveData={_collateralTokenReserveData}

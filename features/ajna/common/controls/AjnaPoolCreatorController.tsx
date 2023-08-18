@@ -1,6 +1,8 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { DetailsSection } from 'components/DetailsSection'
+import { AppLink } from 'components/Links'
+import { WithArrow } from 'components/WithArrow'
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { PoolCreatorLoadingState } from 'features/poolCreator/components/PoolCreatorLoadingState'
 import { DEFAULT_POOL_INTEREST_RATE } from 'features/poolCreator/consts'
@@ -8,8 +10,9 @@ import { PoolCreatorActionController } from 'features/poolCreator/controls/PoolC
 import { PoolCreatorFormController } from 'features/poolCreator/controls/PoolCreatorFormController'
 import { usePoolCreatorData } from 'features/poolCreator/hooks/usePoolCreatorData'
 import { usePoolCreatorFormReducto } from 'features/poolCreator/state/poolCreatorFormReducto'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
 
@@ -45,7 +48,30 @@ export function AjnaPoolCreatorController() {
   return (
     <WithConnection>
       <AnimatedWrapper sx={{ mb: 5 }}>
-        <AjnaHeader title={t('pool-creator.header.title')} intro={t('pool-creator.header.intro')} />
+        <AjnaHeader
+          title={t('pool-creator.header.title')}
+          intro={
+            <Trans
+              i18nKey="pool-creator.header.intro"
+              components={{
+                AppLink: (
+                  <AppLink href={EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_CREATE_A_POOL} sx={{ pr: 3 }} />
+                ),
+                WithArrow: (
+                  <WithArrow
+                    variant="paragraph2"
+                    sx={{
+                      display: 'inline-block',
+                      fontSize: 3,
+                      color: 'interactive100',
+                      fontWeight: 'regular',
+                    }}
+                  />
+                ),
+              }}
+            />
+          }
+        />
         <Box sx={{ maxWidth: '584px', mx: 'auto' }}>
           <WithLoadingIndicator
             value={[boundries, isFormReady]}
