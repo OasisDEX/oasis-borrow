@@ -83,7 +83,7 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
           }}
           onClick={() => {
             if (isConnected) onSubmit()
-            else void connect()
+            else connect()
           }}
         >
           {isPrimaryButtonLoading && (

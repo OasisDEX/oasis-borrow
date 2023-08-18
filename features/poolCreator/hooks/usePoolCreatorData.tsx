@@ -27,13 +27,12 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { first } from 'rxjs/operators'
 import { Text } from 'theme-ui'
 
-interface usePoolCreatorDataProps {
+interface UsePoolCreatorDataProps {
   collateralAddress: string
   interestRate: BigNumber
   quoteAddress: string
@@ -43,7 +42,7 @@ export function usePoolCreatorData({
   collateralAddress,
   interestRate,
   quoteAddress,
-}: usePoolCreatorDataProps) {
+}: UsePoolCreatorDataProps) {
   const { t } = useTranslation()
   const { context$, identifiedTokens$, txHelpers$ } = useAppContext()
 

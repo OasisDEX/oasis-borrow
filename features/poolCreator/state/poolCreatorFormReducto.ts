@@ -12,7 +12,7 @@ type PoolCreatorFormAction = ReductoActions<PoolCreatorFormState, {}>
 export function usePoolCreatorFormReducto(defaults: PoolCreatorFormState) {
   const { dispatch, state, updateState } = useReducto<PoolCreatorFormState, PoolCreatorFormAction>({
     defaults,
-    reducer: (state: PoolCreatorFormState) => state,
+    reducer: (_state: PoolCreatorFormState) => _state,
   })
 
   return {
