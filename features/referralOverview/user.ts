@@ -5,13 +5,12 @@ import BigNumber from 'bignumber.js'
 import { claimMultiple, ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
+import { getClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards'
 import { Web3Context } from 'features/web3Context'
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { first, map, share, startWith, switchMap } from 'rxjs/operators'
-
-import { getClaimedReferralRewards } from './getClaimedReferralRewards'
 
 export enum ClaimTxnState {
   PENDING = 'PENDING',
