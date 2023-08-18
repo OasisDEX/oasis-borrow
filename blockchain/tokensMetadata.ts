@@ -36,9 +36,10 @@ export interface TokenConfig {
   protocol: LendingProtocol
   chain: MainNetworkNames
   oracleTicker?: string
+  source?: string
 }
 
-export type SimplifiedTokenConfig = Pick<TokenConfig, 'name' | 'precision' | 'symbol'>
+export type SimplifiedTokenConfig = Pick<TokenConfig, 'name' | 'precision' | 'symbol' | 'source'>
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>

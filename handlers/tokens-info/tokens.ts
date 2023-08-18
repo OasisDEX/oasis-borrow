@@ -46,6 +46,7 @@ export const readTokensFromBlockchain = async ({
         symbol,
         precision,
         chain_id: chainId,
+        source: 'blockchain',
       }))
     }),
   )
@@ -63,6 +64,7 @@ export const readTokensFromApi = async (tokens: string[]): Promise<Tokens[]> => 
         symbol,
         precision: decimals,
         name,
+        source: 'api',
       })) || []
   )
 }
