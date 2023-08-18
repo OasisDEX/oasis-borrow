@@ -6,6 +6,10 @@ import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjn
 import { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
 
+interface AaveHistoryEvent {
+
+}
+
 export type Subgraphs = {
   Ajna: {
     getAjnaEarnPositionData: { dpmProxyAddress: string }
@@ -16,6 +20,11 @@ export type Subgraphs = {
     getAjnaEarnPositionNftId: { walletAddress: string }
     getAjnaClaimedRewards: { walletAddress: string }
     searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
+  }
+  Aave: {
+    getAaveHistory: {
+      positionEvents: AaveHistoryEvent[]
+    }
   }
   TempGraph: {
     tempMethod: undefined
@@ -80,7 +89,12 @@ export type SubgraphsResponses = {
     searchAjnaPool: SubgraphBaseResponse<{
       pools: SearchAjnaPoolResponse[]
     }>
-  }
+  },
+  Aave: {
+    getAaveHistory: SubgraphBaseResponse<{
+      positionEvents: AaveHistoryEvent[]
+    }>
+  },
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>
   }
@@ -100,4 +114,4 @@ export type SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: ''
   }
 }
-export type SubgraphMethodsRecord = { [key in keyof Subgraphs['Ajna' & 'Temp']]: string }
+export type SubgraphMethodsRecord = { [key in keyof(Subgraphs['Aave'] & Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string }

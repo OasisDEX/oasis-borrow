@@ -1,5 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
-import { Subgraphs, SubgraphsRecord } from 'features/subgraphLoader/types'
+import { SubgraphMethodsRecord, Subgraphs, SubgraphsRecord } from 'features/subgraphLoader/types'
 import { gql } from 'graphql-request'
 import getConfig from 'next/config'
 
@@ -8,6 +8,18 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
     [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
     [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrlGoerli,
+    [NetworkIds.ARBITRUMMAINNET]: '',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: '',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
+  Aave: {
+    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrl,
+    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrl,
+    [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
@@ -30,9 +42,7 @@ export const subgraphsRecord: SubgraphsRecord = {
   },
 }
 
-export const subgraphMethodsRecord: {
-  [key in keyof (Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string
-} = {
+export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaPositionAggregatedData: gql`
     query getAccount($dpmProxyAddress: ID!) {
       account(id: $dpmProxyAddress) {
@@ -255,6 +265,25 @@ export const subgraphMethodsRecord: {
         lup
         lupIndex
         quoteTokenAddress
+      }
+    }
+  `,
+  getAaveHistory: gql`
+    query AavePositionHistory($account: String) {
+      positionEvents(where: {account: $account}) {
+        kind
+        account
+        debtToken {
+          address
+          symbol
+        }
+        collateralToken {
+          address
+          symbol
+        }
+        debtDelta
+        debtBefore
+        debtAfter
       }
     }
   `,

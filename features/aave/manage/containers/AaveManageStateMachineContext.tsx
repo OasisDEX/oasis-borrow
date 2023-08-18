@@ -2,6 +2,7 @@ import { useInterpret } from '@xstate/react'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { env } from 'process'
 import React from 'react'
 
@@ -25,6 +26,8 @@ function setupManageAaveStateContext({
 }) {
   const positionCreatedBy =
     positionId.vaultId !== undefined ? ProxyType.DpmProxy : ProxyType.DsProxy
+
+  // TODO: add history events here
 
   const stateMachine = useInterpret(
     machine.withContext({
