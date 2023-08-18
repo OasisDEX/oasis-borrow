@@ -26,4 +26,5 @@ export enum TxMetaKind {
   dsrExitAll = 'dsrExitAll',
   libraryCall = 'libraryCall',
   claimAjnaRewards = 'claimAjnaRewards',
+  deployAjnaPool = 'deployAjnaPool',
 }

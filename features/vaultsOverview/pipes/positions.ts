@@ -210,11 +210,10 @@ function buildAaveViewModel(
         }`
 
         const { loanToValue } = position.riskRatio
-        const { liquidationThreshold } = position.category
         const { maxLoanToValue } = position.category
-        const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(3))
+        const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(0.03))
 
-        const isDanger = loanToValue.gte(liquidationThreshold)
+        const isDanger = loanToValue.gte(maxLoanToValue)
         const isWarning = loanToValue.gte(warnignThreshold)
 
         return {
