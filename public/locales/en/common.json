@@ -2996,15 +2996,15 @@
   "pool-creator": {
     "header": {
       "title": "Ajna Pool Creator",
-      "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maybe some explanation what is going on here? Link to knowledge base?"
+      "intro": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi. <AppLink><WithArrow>Find out more here</WithArrow></AppLink>"
     },
     "form": {
       "title": "Configure new Ajna pool",
       "collateral-token-address": "Collateral token address",
       "quote-token-address": "Quote token address",
-      "pools-interest-rate": "Pool's interest rate",
+      "pools-interest-rate": "Initial pool interest rate",
       "min-interest-rate": "Min. {{minInterestRate}}%",
-      "max-interest-rate": "Up to. {{maxInterestRate}}%",
+      "max-interest-rate": "Up to {{maxInterestRate}}%",
       "submit": "Create pool"
     },
     "order-information": {
@@ -3013,10 +3013,10 @@
     },
     "validations": {
       "collateral-is-not-address": "Collateral token address is not valid contract address.",
-      "collateral-is-not-erc20": "Collateral token address is not valid ERC20 token.",
+      "collateral-is-not-erc20": "Collateral token address is not valid ERC-20 token.",
       "quote-is-not-address": "Quote token address is not valid contract address.",
-      "quote-is-not-erc20": "Quote token address is not valid ERC20 token.",
-      "collateral-equals-quote": "Collateral and token addresses has to be different.",
+      "quote-is-not-erc20": "Quote token address is not valid ERC-20 token.",
+      "collateral-equals-quote": "Collateral and Quote token addresses cannot be the same.",
       "pool-already-exists": "<0>{{collateralToken}}/{{quoteToken}}</0> pool already exists - you can use this pool directly to either <1>Borrow →</1> or <2>Earn →</2>",
       "unknown-error": "There was an unknown error, please try again later."
     },
