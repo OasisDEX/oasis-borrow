@@ -716,6 +716,7 @@ export function createOpenAaveStateMachine(
               protocol: context.strategyConfig.protocol,
               userAddress: context.web3Context?.account ?? ethNullAddress,
               networkId: context.strategyConfig.networkId,
+              token: context.tokens.deposit,
             }
             if (context.strategyConfig.type === 'Borrow') {
               return {

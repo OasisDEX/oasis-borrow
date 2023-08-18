@@ -36,7 +36,7 @@ export const searchAjnaPool = async ({
   collateralAddress = [],
   poolAddress = [],
   quoteAddress = [],
-}: SearchAjnaPoolParams) => {
+}: SearchAjnaPoolParams): Promise<SearchAjnaPoolData[]> => {
   const caseSensitiveCollateralAddress = collateralAddress.map((address) => address.toLowerCase())
   const caseSensitivePoolAddress = poolAddress.map((address) => address.toLowerCase())
   const caseSensitiveQuoteAddress = quoteAddress.map((address) => address.toLowerCase())
