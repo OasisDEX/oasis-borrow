@@ -5,6 +5,7 @@ import { TokenBalances } from 'blockchain/tokens'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { AccountContext } from 'components/context/AccountContextProvider'
 import dayjs from 'dayjs'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { MainContext } from 'helpers/context/MainContext'
@@ -16,8 +17,8 @@ import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines
 import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { merge, Observable, of, Subject } from 'rxjs'
+import { filter, switchMap } from 'rxjs/operators'
 
 import { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
@@ -37,6 +38,12 @@ import {
 } from './services'
 import { getSupportedTokens } from './strategies'
 import { IStrategyConfig, PositionId } from './types'
+
+export type StrategyUpdateParams = {
+  positionId: PositionId
+  networkName: NetworkNames
+  vaultType?: VaultType
+}
 
 export function setupAaveV3Context(
   mainContext: MainContext,
@@ -201,14 +208,39 @@ export function setupAaveV3Context(
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
+  const strategyUpdateTrigger = new Subject<StrategyUpdateParams>()
   const strategyConfig$: (
     positionId: PositionId,
     networkName: NetworkNames,
+    vaultType?: VaultType,
   ) => Observable<IStrategyConfig> = memoize(
-    (positionId: PositionId, networkName: NetworkNames) =>
-      of(undefined).pipe(switchMap(() => getAaveV3StrategyConfig(positionId, networkName))),
-    (positionId, networkName) => JSON.stringify({ positionId, networkName }),
+    (positionId: PositionId, networkName: NetworkNames, vaultType) =>
+      merge(
+        // Subsequent updates from within x-state
+        strategyUpdateTrigger.pipe(
+          filter(
+            (params) => params.positionId === positionId && params.networkName === networkName,
+          ),
+        ),
+        // The initial trigger from WithStrategy
+        of({ positionId, networkName, vaultType }),
+      ).pipe(
+        switchMap((params) =>
+          getAaveV3StrategyConfig(params.positionId, params.networkName, params.vaultType),
+        ),
+      ),
+    (positionId, networkName, vaultType) => JSON.stringify({ positionId, networkName, vaultType }),
   )
+
+  function updateStrategyConfig(positionId: PositionId, networkName: NetworkNames) {
+    return (vaultType: VaultType) => {
+      strategyUpdateTrigger.next({
+        positionId: positionId,
+        networkName: networkName,
+        vaultType: vaultType,
+      })
+    }
+  }
 
   return {
     ...protocols[LendingProtocol.AaveV3][networkId],
@@ -217,6 +249,7 @@ export function setupAaveV3Context(
     aaveTotalValueLocked$,
     aaveEarnYieldsQuery,
     strategyConfig$,
+    updateStrategyConfig,
     proxiesRelatedWithPosition$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,

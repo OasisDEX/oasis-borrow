@@ -12,7 +12,7 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
-import { IStrategyConfig, ProxyType, StrategyType } from 'features/aave/types'
+import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveEarnFaqV2 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
@@ -46,10 +46,9 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: adjustRiskSliders.stethEth.riskRatios,
-    type: 'Earn',
+    type: ProductType.Earn,
     protocol: LendingProtocol.AaveV2,
-    featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailableInMultiply,
+    availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },
@@ -79,10 +78,9 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: 'Multiply',
+    type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV2,
-    featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailableInMultiply,
+    availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },
@@ -112,10 +110,9 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: 'Multiply',
+    type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV2,
-    featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailableInMultiply,
+    availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },
@@ -145,10 +142,9 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       deposit: 'WBTC',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: 'Multiply',
+    type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV2,
-    featureToggle: 'AaveV2ProductCard',
-    availableActions: allActionsAvailableInMultiply,
+    availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
   },

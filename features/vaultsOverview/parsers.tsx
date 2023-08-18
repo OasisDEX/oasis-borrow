@@ -198,7 +198,7 @@ export function parseAaveBorrowPositionRows(positions: AavePosition[]): Position
     network: networksById[position.chainId].name,
     protocol: position.protocol,
     riskRatio: {
-      level: position.riskRatio.loanToValue,
+      level: position.riskRatio.loanToValue.times(100),
       isAtRiskDanger: position.isAtRiskDanger,
       isAtRiskWarning: position.isAtRiskWarning,
       type: 'LTV',
@@ -207,7 +207,7 @@ export function parseAaveBorrowPositionRows(positions: AavePosition[]): Position
     autoSellData: position.autoSellData,
     isOwner: position.isOwner,
     url: position.url,
-    variable: position.variableBorrowRate,
+    variable: position.variableBorrowRate.times(100),
   }))
 }
 

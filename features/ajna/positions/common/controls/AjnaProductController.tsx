@@ -62,6 +62,7 @@ export function AjnaProductController({
       gasPriceData,
       tokenPriceUSDData,
       userSettingsData,
+      tokensIconsData,
     },
     errors,
     isOracless,
@@ -100,6 +101,7 @@ export function AjnaProductController({
                   ajnaPositionAggregatedData,
                   userSettingsData,
                   tokensPrecision,
+                  tokensIconsData,
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -108,6 +110,8 @@ export function AjnaProductController({
                       flow,
                       product: dpmPositionData?.product as AjnaProduct,
                       quoteToken: dpmPositionData?.quoteToken,
+                      collateralIcon: tokensIconsData?.collateralToken,
+                      quoteIcon: tokensIconsData?.quoteToken,
                       id,
                     })}
                   />
@@ -123,6 +127,7 @@ export function AjnaProductController({
                   { auction, history, cumulatives },
                   { slippage },
                   { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
+                  tokensIconsData,
                 ]) => (
                   <>
                     <PageSEOTags
@@ -147,6 +152,7 @@ export function AjnaProductController({
                         isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]
                       }
                       collateralToken={dpmPosition.collateralToken}
+                      collateralIcon={tokensIconsData.collateralToken}
                       {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
                       ethBalance={ethBalance}
                       ethPrice={tokenPriceUSD.ETH}
@@ -161,6 +167,7 @@ export function AjnaProductController({
                       quotePrecision={quotePrecision}
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
+                      quoteIcon={tokensIconsData.quoteToken}
                       steps={steps[dpmPosition.product as AjnaProduct][flow]}
                       gasPrice={gasPrice}
                       slippage={slippage}

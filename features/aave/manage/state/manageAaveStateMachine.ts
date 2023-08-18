@@ -1,7 +1,5 @@
 import { IPosition } from '@oasisdex/dma-library'
 import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
-import { trackingEvents } from 'analytics/analytics'
-import { ProductType as AnalyticsProductType } from 'analytics/common'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -10,7 +8,11 @@ import {
 } from 'blockchain/calls/operationExecutor'
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
+import {
+  loadStrategyFromTokens,
+  ManageCollateralActionsEnum,
+  ManageDebtActionsEnum,
+} from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
@@ -19,11 +21,14 @@ import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  IStrategyConfig,
   ManageTokenInput,
+  ProductType,
   ProxyType,
   RefTransactionMachine,
 } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
@@ -31,6 +36,7 @@ import {
   TransactionParametersStateMachineEvent,
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
+import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, assign, createMachine, send, sendTo, spawn, StateFrom } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -48,6 +54,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   proxyAddress?: string
   ownerAddress?: string
   positionCreatedBy: ProxyType
+  updateStrategyConfig?: (vaultType: VaultType) => void
 }
 
 function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -67,6 +74,17 @@ export type ManageAaveEvent =
   | { type: 'RETRY' }
   | { type: 'NEXT_STEP' }
   | { type: 'START_TRANSACTION' }
+  | { type: 'SWITCH_TO_BORROW' }
+  | { type: 'SWITCH_TO_MULTIPLY' }
+  | { type: 'SWITCH_TO_EARN' }
+  | { type: 'RETRY_BORROW_SWITCH' }
+  | { type: 'RETRY_MULTIPLY_SWITCH' }
+  | { type: 'RETRY_EARN_SWITCH' }
+  | {
+      type: 'SWITCH_CONFIRMED'
+      productType: ProductType
+    }
+  | { type: 'SWITCH_SUCCESS' }
   | {
       type: 'POSITION_PROXY_ADDRESS_RECEIVED'
       proxyAddress: string
@@ -74,6 +92,7 @@ export type ManageAaveEvent =
       effectiveProxyAddress: string
     }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
+  | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | BaseAaveEvent
 
 export function createManageAaveStateMachine(
@@ -162,7 +181,7 @@ export function createManageAaveStateMachine(
               },
             },
             loading: {
-              entry: ['requestParameters', 'riskRatioEvent'],
+              entry: ['requestParameters'],
               on: {
                 STRATEGY_RECEIVED: {
                   target: 'idle',
@@ -260,7 +279,6 @@ export function createManageAaveStateMachine(
                   {
                     cond: 'validTransactionParameters',
                     target: 'txInProgress',
-                    actions: ['closePositionTransactionEvent'],
                   },
                 ],
                 BACK_TO_EDITING: {
@@ -345,8 +363,55 @@ export function createManageAaveStateMachine(
                 },
               },
             },
+            switchToBorrow: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            switchToMultiply: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            switchToEarn: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            savePositionToDb: {
+              invoke: {
+                src: 'savePositionToDb$',
+                onDone: {
+                  actions: 'updateStrategyConfig',
+                  target: 'switching',
+                },
+                onError: {
+                  target: 'saveSwitchFailure',
+                },
+              },
+            },
+            switching: {
+              after: {
+                1000: 'editing',
+              },
+            },
+            saveSwitchFailure: {
+              on: {
+                RETRY_BORROW_SWITCH: 'switchToBorrow',
+                RETRY_MULTIPLY_SWITCH: 'switchToMultiply',
+                RETRY_EARN_SWITCH: 'switchToEarn',
+              },
+            },
             reviewingAdjusting: {
-              entry: ['riskRatioConfirmEvent'],
               on: {
                 BACK_TO_EDITING: {
                   target: 'editing',
@@ -365,13 +430,7 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
-              entry: [
-                'closePositionEvent',
-                'reset',
-                // 'killCurrentParametersMachine', -> including this breaks machine when selecting close from drop-down
-                'spawnCloseParametersMachine',
-                'requestParameters',
-              ],
+              entry: ['reset', 'spawnCloseParametersMachine', 'requestParameters'],
               on: {
                 NEXT_STEP: [
                   {
@@ -381,7 +440,6 @@ export function createManageAaveStateMachine(
                   {
                     cond: 'validClosingTransactionParameters',
                     target: 'txInProgress',
-                    actions: ['closePositionTransactionEvent'],
                   },
                 ],
                 BACK_TO_EDITING: {
@@ -452,6 +510,9 @@ export function createManageAaveStateMachine(
         },
       },
       on: {
+        STRATEGTY_UPDATED: {
+          actions: ['updateContext'],
+        },
         PRICES_RECEIVED: {
           actions: 'updateContext',
         },
@@ -532,6 +593,15 @@ export function createManageAaveStateMachine(
           target: ['background.debouncing'],
           actions: 'updateContext',
         },
+        SWITCH_TO_BORROW: {
+          target: 'frontend.switchToBorrow',
+        },
+        SWITCH_TO_MULTIPLY: {
+          target: 'frontend.switchToMultiply',
+        },
+        SWITCH_TO_EARN: {
+          target: 'frontend.switchToEarn',
+        },
       },
     },
     {
@@ -547,7 +617,7 @@ export function createManageAaveStateMachine(
           web3Context!.account === ownerAddress,
         isAllowanceNeeded,
         canAdjustPosition: ({ strategyConfig }) =>
-          strategyConfig.availableActions.includes('adjust'),
+          strategyConfig.availableActions().includes('adjust'),
         isEthersTransaction: ({ strategyConfig }) =>
           strategyConfig.executeTransactionWith === 'ethers',
       },
@@ -598,31 +668,6 @@ export function createManageAaveStateMachine(
           strategy: undefined,
           transition: undefined,
         })),
-        riskRatioEvent: (context) => {
-          context.userInput.riskRatio?.loanToValue &&
-            context.strategyConfig.type &&
-            trackingEvents.earn.aaveAdjustRiskSliderAction(
-              'MoveSlider',
-              context.userInput.riskRatio.loanToValue,
-              context.strategyConfig.type as AnalyticsProductType,
-            )
-        },
-        riskRatioConfirmEvent: (context) => {
-          context.userInput.riskRatio?.loanToValue &&
-            context.strategyConfig.type &&
-            trackingEvents.earn.aaveAdjustRiskSliderAction(
-              'ConfirmRisk',
-              context.userInput.riskRatio.loanToValue,
-              context.strategyConfig.type as AnalyticsProductType,
-            )
-        },
-        // riskRatioConfirmTransactionEvent: (context) => {
-        //   trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
-        //     context.userInput.riskRatio!.loanToValue,
-        //   )
-        // },
-        closePositionEvent: trackingEvents.earn.stETHClosePositionConfirm,
-        closePositionTransactionEvent: trackingEvents.earn.stETHClosePositionConfirmTransaction,
         requestParameters: send(
           (
             context,
@@ -689,6 +734,29 @@ export function createManageAaveStateMachine(
         killTransactionMachine: pure((context) => {
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
+          }
+          return undefined
+        }),
+        updateStrategyConfigType: assign((context, event) => {
+          const currentStrategy = context.strategyConfig
+          const newStrategy = loadStrategyFromTokens(
+            currentStrategy.tokens.collateral,
+            currentStrategy.tokens.debt,
+            currentStrategy.network,
+            currentStrategy.protocol,
+            productToVaultType(event.productType),
+          )
+          return {
+            ...context,
+            strategyConfig: newStrategy,
+          }
+        }),
+        updateStrategyConfig: pure((context) => {
+          const newTemporaryProductType = context.strategyConfig.type
+          const updatedVaultType = productToVaultType(newTemporaryProductType)
+
+          if (context.updateStrategyConfig && updatedVaultType) {
+            context.updateStrategyConfig(updatedVaultType)
           }
           return undefined
         }),
@@ -805,7 +873,7 @@ export function createManageAaveStateMachine(
         }),
         setInitialState: send(
           (context) => {
-            const firstAction = context.strategyConfig.availableActions[0]
+            const firstAction = context.strategyConfig.availableActions()[0]
 
             switch (firstAction) {
               case 'adjust':
@@ -816,6 +884,12 @@ export function createManageAaveStateMachine(
                 return { type: 'MANAGE_DEBT' }
               case 'close':
                 return { type: 'CLOSE_POSITION' }
+              case 'switch-to-borrow':
+                return { type: 'SWITCH_TO_BORROW' }
+              case 'switch-to-multiply':
+                return { type: 'SWITCH_TO_MULTIPLY' }
+              case 'switch-to-earn':
+                return { type: 'SWITCH_TO_EARN' }
             }
           },
           { delay: 0 },

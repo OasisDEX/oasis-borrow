@@ -6,7 +6,7 @@ import {
   adjustRiskView,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProxyType, StrategyType } from 'features/aave/types'
+import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -37,10 +37,10 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: 'Multiply',
+    type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Arbitrum',
-    availableActions: ['close'],
+    availableActions: () => ['close'],
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
   },
@@ -70,10 +70,10 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
       deposit: 'WSTETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: 'Multiply',
+    type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Arbitrum',
-    availableActions: ['close'],
+    availableActions: () => ['close'],
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
   },
@@ -103,10 +103,10 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
       deposit: 'WBTC',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: 'Multiply',
+    type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3Arbitrum',
-    availableActions: ['close'],
+    availableActions: () => ['close'],
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
   },

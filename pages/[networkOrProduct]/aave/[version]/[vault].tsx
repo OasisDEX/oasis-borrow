@@ -1,4 +1,4 @@
-import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
+import { isSupportedNetwork, NetworkNames, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
@@ -8,17 +8,20 @@ import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { PositionId } from 'features/aave/types/position-id'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { getVaultFromApi$ } from 'features/shared/vaultApi'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { hexToDecimal } from 'helpers/hex-to-decimal'
 import { useObservable } from 'helpers/observableHook'
 import { AaveLendingProtocol, checkIfAave } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
@@ -57,14 +60,27 @@ function WithStrategy({
 }) {
   const { push } = useRouter()
   const { t } = useTranslation()
-  const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
-    protocol,
-    network,
+  const chainId = hexToDecimal(networksByName[network].hexId)
+
+  const vaultFromApi$ = useMemo(
+    () => getVaultFromApi$(positionId.vaultId || 0, chainId || 0, protocol),
+    [positionId.vaultId, chainId, protocol],
   )
-  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId, network))
+  const [vaultFromApi] = useObservable(vaultFromApi$)
+  const {
+    strategyConfig$,
+    updateStrategyConfig,
+    aaveManageStateMachine,
+    proxiesRelatedWithPosition$,
+  } = useAaveContext(protocol, network)
+  const [strategyConfig, strategyConfigError] = useObservable(
+    /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
+    strategyConfig$(positionId, network, vaultFromApi?.type || VaultType.Unknown),
+  )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
+
   if (strategyConfigError) {
     console.warn(
       `Strategy config not found for network: ${network} and positionId`,
@@ -74,6 +90,10 @@ function WithStrategy({
     void push(INTERNAL_LINKS.notFound)
     return <></>
   }
+
+  const _updateStrategyConfig = updateStrategyConfig
+    ? updateStrategyConfig(positionId, network)
+    : undefined
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
@@ -85,6 +105,7 @@ function WithStrategy({
             machine={aaveManageStateMachine}
             positionId={positionId}
             strategy={_strategyConfig}
+            updateStrategyConfig={_updateStrategyConfig}
           >
             <PageSEOTags
               title="seo.title-product-w-tokens"

@@ -24,7 +24,7 @@ export function AjnaBorrowFormContentWithdraw() {
   const {
     form: {
       dispatch,
-      state: { withdrawAmount },
+      state: { withdrawAmount, paybackAmount },
     },
     position: {
       currentPosition: { position, simulation },
@@ -55,11 +55,10 @@ export function AjnaBorrowFormContentWithdraw() {
       />
       <AjnaFormFieldPayback
         dispatchAmount={dispatch}
-        isDisabled={!withdrawAmount || withdrawAmount?.lte(0)}
         maxAmount={paybackMax}
         maxAmountLabel={quoteBalance.lt(debtAmount) ? 'balance' : 'max'}
       />
-      {withdrawAmount && (
+      {(withdrawAmount || paybackAmount) && (
         <AjnaFormContentSummary>
           <AjnaBorrowFormOrder />
         </AjnaFormContentSummary>

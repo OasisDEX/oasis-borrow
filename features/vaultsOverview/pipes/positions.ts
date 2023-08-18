@@ -209,6 +209,13 @@ function buildAaveViewModel(
           protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
         }`
 
+        const { loanToValue } = position.riskRatio
+        const { maxLoanToValue } = position.category
+        const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(0.03))
+
+        const isDanger = loanToValue.gte(maxLoanToValue)
+        const isWarning = loanToValue.gte(warnignThreshold)
+
         return {
           token: collateralToken,
           debtToken,
@@ -230,8 +237,8 @@ function buildAaveViewModel(
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,
-          isAtRiskDanger: false,
-          isAtRiskWarning: false,
+          isAtRiskDanger: isDanger,
+          isAtRiskWarning: isWarning,
         }
       },
     ),
@@ -316,6 +323,14 @@ function buildAaveV3OnlyViewModel(
         protocol === LendingProtocol.AaveV2 ? 'V2' : `V3 ${strategyConfig.network}`
       }`
 
+      const { loanToValue } = position.riskRatio
+      const { liquidationThreshold } = position.category
+      const { maxLoanToValue } = position.category
+      const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(3))
+
+      const isDanger = loanToValue.gte(liquidationThreshold)
+      const isWarning = loanToValue.gte(warnignThreshold)
+
       return {
         token: collateralToken,
         debtToken,
@@ -337,8 +352,8 @@ function buildAaveV3OnlyViewModel(
         protocol,
         chainId,
         variableBorrowRate,
-        isAtRiskDanger: false,
-        isAtRiskWarning: false,
+        isAtRiskDanger: isDanger,
+        isAtRiskWarning: isWarning,
       }
     }),
   )

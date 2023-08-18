@@ -116,10 +116,11 @@ function NewsletterForm({ small }: { small?: boolean }) {
           height: small ? '38px' : 'initial',
           justifyContent: 'space-between',
           px: 2,
+          opacity: 0.7,
         }}
       >
         <Input
-          placeholder={t('newsletter.placeholder') as string}
+          placeholder={t('newsletter.placeholder-disabled') as string}
           sx={{
             bg: 'neutral10',
             borderRadius: 'inherit',
@@ -131,6 +132,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           }}
           value={email}
           maxLength={320}
+          disabled
           onChange={(e) => {
             change({ kind: 'email', email: e.target.value })
           }}
@@ -156,9 +158,10 @@ function NewsletterForm({ small }: { small?: boolean }) {
             '&:hover svg': {
               transform: 'translateX(4px)',
             },
+            pointerEvents: 'none',
           }}
           type="submit"
-          disabled={!submit}
+          disabled
         >
           {stage === 'inProgress' ? (
             <AppSpinner sx={{ color: 'primary100' }} variant="styles.spinner.large" />
