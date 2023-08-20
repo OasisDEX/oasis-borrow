@@ -8,15 +8,15 @@ export interface ClaimedReferralRewards {
 export async function getClaimedReferralRewards(
   walletAddress: string,
 ): Promise<ClaimedReferralRewards[]> {
-  const { response } = await loadSubgraph('Referral', 'getClaimedReferralRewards', {
+  const res = await loadSubgraph('Referral', 'getClaimedReferralRewards', {
     walletAddress: walletAddress.toLowerCase(),
   })
 
-  if (response && 'claimeds' in response) {
-    return response.claimeds
+  if (res.success) {
+    return res.response.claimeds
   }
 
   throw new Error(
-    `No claimeds data found for address: ${walletAddress}, Response: ${JSON.stringify(response)}`,
+    `Request failed, Error: ${JSON.stringify(res.error)}`
   )
 }
