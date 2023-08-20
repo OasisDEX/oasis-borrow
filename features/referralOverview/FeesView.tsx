@@ -1,15 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
+import { NetworkHexIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
+import { ClaimTxnState, UserReferralState } from 'features/referralOverview/user'
+import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
+import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import { is } from 'ramda'
+import React, { useCallback } from 'react'
 import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
-
-import { ClaimTxnState, UserReferralState } from './user'
-import { createUserUsingApi$ } from './userApi'
 
 interface Props {
   context: Context
@@ -24,7 +26,6 @@ export function FeesView({ userReferral }: Props) {
   const { t } = useTranslation()
 
   // move to pipe
-
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 
@@ -43,6 +44,18 @@ export function FeesView({ userReferral }: Props) {
         })
     }
   }
+
+  const { setChain } = useConnection()
+  const { wallet } = useWalletManagement()
+
+  const isOnOptimism = NetworkHexIds.OPTIMISMMAINNET === wallet?.chainHexId
+
+  const switchToOptimism = useCallback(() => {
+    if (!isOnOptimism) {
+      // todo this should show confirmation modal
+      setChain(NetworkHexIds.OPTIMISMMAINNET)
+    }
+  }, [isOnOptimism, setChain])
 
   return (
     <Box
@@ -111,9 +124,13 @@ export function FeesView({ userReferral }: Props) {
                 userReferral.claimTxnState === ClaimTxnState.PENDING ||
                 userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
               }
-              onClick={() =>
-                userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
-              }
+              onClick={() => {
+                if (isOnOptimism) {
+                  userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
+                } else {
+                  switchToOptimism()
+                }
+              }}
               sx={{ p: '4px', minWidth: ['100%', '138px', '138px'] }}
             >
               <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center' }}>
