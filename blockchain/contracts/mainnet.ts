@@ -183,7 +183,8 @@ export const mainnetContracts = {
     'YFI-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaOraclessPoolPairs: {
-    'CBETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTC),
+    'YIELDBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, mainnet.ajna.AjnaRewardsManager),
   // TODO update address
