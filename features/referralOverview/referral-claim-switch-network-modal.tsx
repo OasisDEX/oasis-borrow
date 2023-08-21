@@ -1,6 +1,7 @@
 import { NetworkHexIds } from 'blockchain/networks'
-import { Modal } from 'components/Modal'
+import { Modal, ModalCloseIcon } from 'components/Modal'
 import { useConnection } from 'features/web3OnBoard'
+import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
@@ -9,14 +10,16 @@ import { Button, Flex, Grid, Image, Text } from 'theme-ui'
 export function ReferralClaimSwitchNetworkModal() {
   const { t } = useTranslation()
   const { setChain } = useConnection()
+  const { closeModal } = useModalContext()
 
   const switchToOptimism = useCallback(() => {
     setChain(NetworkHexIds.OPTIMISMMAINNET)
   }, [setChain])
 
   return (
-    <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={close}>
+    <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={closeModal}>
       <Grid p={4} sx={{ mt: '32px' }}>
+        <ModalCloseIcon close={closeModal} />
         <Flex sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <Image src={staticFilesRuntimeUrl('/static/img/switch_wallet_optimism.svg')} mb="16px" />
           <Text mb="8px" sx={{ lineHeight: 1.5 }} variant="header4">
