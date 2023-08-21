@@ -59,7 +59,7 @@ export function createUserReferral$(
         getReferralsFromApi$(web3Context.account),
         getReferralRewardsFromApi$(web3Context.account, trigger$),
         checkReferralLocalStorage$(),
-        getClaimedReferralRewards(web3Context.account),
+        getClaimedReferralRewards(web3Context.chainId, web3Context.account),
         txHelpers$,
       ).pipe(
         switchMap(([user, referrals, referralRewards, referrer, claimedReferralRewards]) => {
