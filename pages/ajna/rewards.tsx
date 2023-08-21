@@ -1,7 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
 import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { AjnaRewardsController } from 'features/ajna/common/controls/AjnaRewardsController'
-import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
+import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -13,9 +13,7 @@ function AjnaRewardsPage() {
       <WithConnection>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
-            <AjnaWrapper>
-              <AjnaRewardsController />
-            </AjnaWrapper>
+            <AjnaRewardsController />
           </WithWalletAssociatedRisk>
         </WithTermsOfService>
       </WithConnection>

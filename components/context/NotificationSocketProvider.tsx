@@ -14,7 +14,6 @@ import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { uiChanges } from 'helpers/uiChanges'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import getConfig from 'next/config'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import io, { Socket } from 'socket.io-client'
@@ -35,7 +34,6 @@ export function NotificationSocketProvider({ children }: WithChildren) {
     return null
   }
 
-  const notificationsToggle = useFeatureToggle('Notifications')
   const { context$ } = useMainContext()
   const [context] = useObservable(context$)
   const [socket, setSocket] = useState<Socket | undefined>(undefined)
@@ -63,7 +61,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
   } = prepareNotificationMessageHandlers(uiChanges)
 
   useEffect(() => {
-    if (jwtToken && notificationsToggle) {
+    if (jwtToken) {
       if (jwtToken !== token && socket) {
         socket.disconnect()
         setSocket(undefined)

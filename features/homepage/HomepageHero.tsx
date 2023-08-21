@@ -79,6 +79,7 @@ export const HomepageHero = () => {
   const { data: oasisStats } = useOasisStats()
   const { isConnected } = useAccount()
   const referralLocal = checkReferralLocalStorage()
+  const referralsEnabled = useFeatureToggle('Referrals')
 
   useEffect(() => {
     if (!localReferral && referralsEnabled) {
@@ -90,14 +91,12 @@ export const HomepageHero = () => {
     }
   }, [referralLocal, router.isReady])
 
-  const referralsEnabled = useFeatureToggle('Referrals')
-  const notificationsEnabled = useFeatureToggle('Notifications')
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   return (
     <Container>
       {referralsEnabled && landedWithRef && <NewReferralModal />}
-      {(referralsEnabled || notificationsEnabled) && (
+      {referralsEnabled && (
         <FunctionalContextHandler>
           <TermsOfServiceReferral />
         </FunctionalContextHandler>

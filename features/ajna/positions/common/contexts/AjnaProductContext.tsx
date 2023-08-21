@@ -185,6 +185,7 @@ export function AjnaProductContextProvider({
       quoteBalance,
       quotePrecision,
       quoteToken,
+      isOracless,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -261,6 +262,7 @@ export function AjnaProductContextProvider({
         collateralToken,
         dispatch: form.dispatch,
         updateState: form.updateState,
+        isOracless,
       }),
     [quoteToken, collateralToken, position],
   )

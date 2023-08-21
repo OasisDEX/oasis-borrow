@@ -72,7 +72,6 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export function HomepageView() {
-  const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { t } = useTranslation()
   const { data: oasisStats } = useOasisStats()
@@ -164,7 +163,7 @@ export function HomepageView() {
       <Box sx={{ mt: 7 }}>
         <ProductHubView
           product={ProductHubProductType.Earn}
-          promoCardsCollection={!ajnaEnabled || ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
+          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
           limitRows={10}
         />
       </Box>

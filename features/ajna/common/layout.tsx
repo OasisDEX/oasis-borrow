@@ -1,4 +1,3 @@
-import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { Footer } from 'components/Footer'
 import { PageSEOTags } from 'components/HeadTags'
 import { WithAnnouncementLayout } from 'components/layouts/WithAnnouncementLayout'
@@ -7,12 +6,6 @@ import React, { PropsWithChildren } from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { ThemeProvider } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
-
-interface AjnaLayoutProps {}
-
-export function AjnaWrapper({ children }: PropsWithChildren<AjnaLayoutProps>) {
-  return <WithFeatureToggleRedirect feature="Ajna">{children}</WithFeatureToggleRedirect>
-}
 
 export function AjnaLayout({ children }: PropsWithChildren<{}>) {
   return (

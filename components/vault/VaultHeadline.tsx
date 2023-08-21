@@ -11,7 +11,6 @@ import {
   FollowButtonControl,
   FollowButtonControlProps,
 } from 'features/follow/controllers/FollowButtonControl'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { ReactNode } from 'react'
 import { Flex } from 'theme-ui'
 
@@ -38,8 +37,6 @@ export function VaultHeadline({
   handleClick,
   protocol,
 }: VaultHeadlineProps) {
-  const followVaultEnabled = useFeatureToggle('FollowVaults')
-
   return (
     <Flex
       sx={{
@@ -101,17 +98,13 @@ export function VaultHeadline({
               <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
             </Flex>
           )}
-          {followVaultEnabled && (
-            <>
-              {followButton && <FollowButtonControl {...followButton} />}
-              {shareButton && (
-                <ShareButton
-                  text={twitterSharePositionText}
-                  url={document.location.href.replace(document.location.hash, '')}
-                  via={twitterSharePositionVia}
-                />
-              )}
-            </>
+          {followButton && <FollowButtonControl {...followButton} />}
+          {shareButton && (
+            <ShareButton
+              text={twitterSharePositionText}
+              url={document.location.href.replace(document.location.hash, '')}
+              via={twitterSharePositionVia}
+            />
           )}
         </Flex>
       </Heading>
