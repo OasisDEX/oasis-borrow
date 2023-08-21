@@ -1,3 +1,5 @@
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
@@ -37,6 +39,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   limitRows,
 }) => {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const ajnaPoolFinderEnabled = useFeatureToggle('AjnaPoolFinder')
 
   const { chainId } = useWalletManagement()
 
@@ -46,11 +49,20 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter((row) => {
-        if (row.protocol === LendingProtocol.Ajna) return !ajnaSafetySwitchOn
-        else return true
+      tableData.filter(({ label, protocol }) => {
+        let isAvailable = true
+
+        if (ajnaSafetySwitchOn && protocol === LendingProtocol.Ajna) isAvailable = false
+        if (
+          !ajnaPoolFinderEnabled &&
+          Object.keys(
+            getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaOraclessPoolPairs,
+          ).includes(label.replace('/', '-'))
+        )
+          isAvailable = false
+        return isAvailable
       }),
-    [ajnaSafetySwitchOn, tableData],
+    [ajnaPoolFinderEnabled, ajnaSafetySwitchOn, chainId, tableData],
   )
   const dataMatchedByNL = useMemo(
     () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),
