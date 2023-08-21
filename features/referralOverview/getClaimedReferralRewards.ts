@@ -8,9 +8,10 @@ export interface ClaimedReferralRewards {
 }
 
 export async function getClaimedReferralRewards(
+  networkId: number,
   walletAddress: string,
 ): Promise<ClaimedReferralRewards[]> {
-  const res = await loadSubgraph('Referral', 'getClaimedReferralRewards', {
+  const res = await loadSubgraph('Referral', 'getClaimedReferralRewards', networkId, {
     walletAddress: walletAddress.toLowerCase(),
   })
 
