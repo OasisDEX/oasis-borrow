@@ -73,6 +73,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       )}
       {event.liquidationPriceBefore && event.liquidationPriceAfter && (
         <PositionHistoryRow label={t('position-history.liquidation-price')}>
+          {event.liquidationPriceBefore && <>
           {formatCryptoBalance(
             isShort
               ? normalizeValue(one.div(event.liquidationPriceBefore))
@@ -80,6 +81,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           )}{' '}
           {priceFormat || `${collateralToken}/${quoteToken}`}
           <VaultChangesInformationArrow />
+          </>}
           {formatCryptoBalance(
             isShort
               ? normalizeValue(one.div(event.liquidationPriceAfter))

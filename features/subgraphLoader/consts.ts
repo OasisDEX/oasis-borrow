@@ -269,23 +269,67 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   getAaveHistory: gql`
-    query AavePositionHistory($dpmProxyAddress: String) {
-      positionEvents(where: {account: $dpmProxyAddress}) {
-        kind
-        account
-        debtToken {
-          address
-          symbol
-        }
-        collateralToken {
-          address
-          symbol
-        }
-        debtDelta
-        debtBefore
-        debtAfter
-      }
+  query AavePositionHistory($dpmProxyAddress: String) {
+    positionEvents(where: {account: $dpmProxyAddress}) {
+      depositTransfers {
+    		amount
+        token
+  		}
+  	withdrawTransfers {
+    	amount
+      token
+  	},
+    blockNumber,
+    collateralAddress,
+    collateralAfter,
+    collateralBefore,
+    collateralDelta,
+    collateralOraclePrice,
+    collateralToken {
+      symbol 
     }
+    collateralTokenPriceUSD 
+    debtAddress 
+    debtAfter 
+    debtBefore 
+    debtDelta 
+    debtOraclePrice 
+    debtToken {
+      symbol 
+    }
+    debtTokenPriceUSD 
+    depositedUSD 
+    ethPrice 
+    gasFeeUSD 
+    gasPrice 
+    gasUsed 
+    id 
+    kind 
+    liquidationPriceAfter 
+    liquidationPriceBefore 
+    ltvAfter 
+    ltvBefore 
+    marketPrice 
+    multipleAfter 
+    multipleBefore 
+    netValueAfter 
+    netValueBefore 
+    summerFee 
+    summerFeeToken 
+    summerFeeUSD 
+    swapFromAmount 
+    swapFromToken 
+    swapToAmount 
+    swapToToken 
+    timestamp 
+    totalFee  
+    txHash 
+    withdrawnUSD
+    timestamp
+    txHash
+    blockNumber
+    }
+  }
   `,
   tempMethod: '',
 }

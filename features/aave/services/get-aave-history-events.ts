@@ -9,7 +9,6 @@ export async function getAaveHistoryEvents(
   _proxyAdrress: string,
   _networkId: NetworkIds,
 ): Promise<AaveHistoryEvent[]> {
-  console.log("GETTING HISTORY")
   const resposne = await loadSubgraph(
     "Aave",
     "getAaveHistory",
@@ -19,7 +18,6 @@ export async function getAaveHistoryEvents(
   )
 
   if (resposne.success) {
-    console.log("SUSSESS")
     return resposne.response.positionEvents.map(event => ({
       depositAmount: event.depositTransfers[0] ? new BigNumber(event.depositTransfers[0].amount) : zero,
       withdrawAmount: event.withdrawTransfers[0] ? new BigNumber(event.withdrawTransfers[0].amount) : zero,
@@ -64,7 +62,7 @@ export async function getAaveHistoryEvents(
       moveQuoteFromPrice: zero,
       moveQuoteToPrice: zero,
       addOrRemovePrice: zero,
-      isOpen: false,
+      isOpen: event.kind === 'AAVEOpenDepositBorrow' || event.kind === 'OpenAAVEPosition',
       totalFeeInQuoteToken: zero,
       swapFromAmount: new BigNumber(event.swapFromAmount),
       swapFromToken: event.swapFromToken,
