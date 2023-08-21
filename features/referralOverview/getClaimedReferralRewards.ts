@@ -1,7 +1,7 @@
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface ClaimedReferralRewards {
-  week:{
+  week: {
     id: string
     week: string
   }
@@ -18,7 +18,5 @@ export async function getClaimedReferralRewards(
     return res.response.claimeds
   }
 
-  throw new Error(
-    `Request failed, Error: ${JSON.stringify(res.error)}`
-  )
+  throw new Error(`Request failed, Error: ${JSON.stringify(res.error)}`)
 }

@@ -125,8 +125,7 @@ export function FeesView({ userReferral }: Props) {
                 if (isOnOptimism) {
                   userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
                 } else {
-                  openModal(ReferralClaimSwitchNetworkModal, {
-                  })
+                  openModal(ReferralClaimSwitchNetworkModal, {})
                 }
               }}
               sx={{ p: '4px', minWidth: ['100%', '138px', '138px'] }}
