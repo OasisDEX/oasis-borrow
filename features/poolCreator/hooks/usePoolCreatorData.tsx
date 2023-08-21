@@ -9,7 +9,8 @@ import { IdentifiedTokens } from 'blockchain/identifyTokens'
 import { NetworkIds } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
 import CancelablePromise, { cancelable } from 'cancelable-promise'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { AjnaValidationItem } from 'features/ajna/common/types'
@@ -44,7 +45,8 @@ export function usePoolCreatorData({
   quoteAddress,
 }: UsePoolCreatorDataProps) {
   const { t } = useTranslation()
-  const { context$, identifiedTokens$, txHelpers$ } = useAppContext()
+  const { context$, txHelpers$ } = useMainContext()
+  const { identifiedTokens$ } = useProductContext()
 
   const [context] = useObservable(context$)
   const [txHelpers] = useObservable(txHelpers$)
