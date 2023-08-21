@@ -79,6 +79,8 @@ export function AjnaBorrowOverviewController() {
               <ContentCardThresholdPrice
                 isLoading={isSimulationLoading}
                 thresholdPrice={position.thresholdPrice}
+                debtAmount={position.debtAmount}
+                collateralAmount={position.collateralAmount}
                 afterThresholdPrice={simulation?.thresholdPrice}
                 priceFormat={priceFormat}
                 changeVariant={changeVariant}

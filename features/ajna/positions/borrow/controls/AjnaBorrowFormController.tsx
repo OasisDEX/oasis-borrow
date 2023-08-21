@@ -8,7 +8,6 @@ import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -25,9 +24,6 @@ export function AjnaBorrowFormController() {
       updateState,
     },
   } = useAjnaProductContext('borrow')
-
-  // TODO: remove when Ajna Multiply feature flag is no longer needed
-  const ajnaMultiplyEnabled = useFeatureToggle('AjnaMultiply')
 
   return (
     <AjnaFormView
@@ -64,7 +60,7 @@ export function AjnaBorrowFormController() {
                 updateState('action', 'generate-borrow')
               },
             },
-            ...(isPoolSupportingMultiply({ collateralToken, quoteToken }) && ajnaMultiplyEnabled
+            ...(isPoolSupportingMultiply({ collateralToken, quoteToken })
               ? [
                   {
                     label: t('system.actions.borrow.switch-to-multiply'),

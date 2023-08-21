@@ -2678,6 +2678,14 @@
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
+          "near-lup": {
+            "title": "Your position's threshold price is approaching the LUP",
+            "message": "Adjust your position to ensure it stays below the LUP in order to avoid being eligible for liquidation"
+          },
+          "above-lup": {
+            "title": "Your position is eligible for liquidation",
+            "message": "Adjust your position to ensure the Threshold price stays below the LUP in order to avoid being eligible for liquidation"
+          },
           "read-more": "Read more about Ajna Liquidations"
         }
       },
@@ -2698,10 +2706,9 @@
             "threshold-price-modal-desc-part-1": "By taking the debt token amount and dividing it by the collateral token amount, the loan’s threshold price, TP, can be calculated.",
             "threshold-price-modal-desc-part-2": "Your loan will be eligible to be kicked into the liquidation queue if the pool's Lowest Utilization Price (LUP) is less than your Threshold price.",
             "threshold-price-modal-desc-part-3": "To avoid liquidation, always ensure your TP < LUP",
-            "threshold-price-modal-desc-formula-part-1": "debt amount / collateral amount",
-            "threshold-price-modal-desc-formula-part-2": "[loan debt] / [loan collateral]",
-            "threshold-price-modal-desc-explanation-part-1": "Threshold Price = [Position TP]",
-            "threshold-price-modal-desc-explanation-part-2": "Lowest Utilization Price = [Pool LUP]",
+            "threshold-price-modal-desc-formula": "debt amount / collateral amount",
+            "threshold-price-modal-desc-explanation-tp": "Threshold Price =",
+            "threshold-price-modal-desc-explanation-lup": "Lowest Utilization Price =",
             "position-debt": "Position debt",
             "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
