@@ -158,9 +158,13 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     useMemo(
       () =>
         dpmPositionData && ajnaPositionData
-          ? getAjnaPositionAggregatedData$({ dpmPositionData, position: ajnaPositionData })
+          ? getAjnaPositionAggregatedData$({
+              dpmPositionData,
+              position: ajnaPositionData,
+              networkId: context?.chainId ?? NetworkIds.MAINNET,
+            })
           : EMPTY,
-      [dpmPositionData, ajnaPositionData],
+      [dpmPositionData, ajnaPositionData, context?.chainId],
     ),
   )
 

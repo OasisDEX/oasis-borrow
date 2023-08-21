@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import {
   AjnaUnifiedHistoryEvent,
@@ -35,8 +36,9 @@ export interface AjnaPositionAggregatedData {
 
 export const getAjnaPositionAggregatedData = async (
   proxy: string,
+  networkId: NetworkIds,
 ): Promise<AjnaPositionAggregatedData> => {
-  const { response } = (await loadSubgraph('Ajna', 'getAjnaPositionAggregatedData', {
+  const { response } = (await loadSubgraph('Ajna', 'getAjnaPositionAggregatedData', networkId, {
     dpmProxyAddress: proxy.toLowerCase(),
   })) as SubgraphsResponses['Ajna']['getAjnaPositionAggregatedData']
   const errors = []

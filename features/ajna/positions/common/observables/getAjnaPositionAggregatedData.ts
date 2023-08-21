@@ -1,4 +1,5 @@
 import { AjnaEarnPosition } from '@oasisdex/dma-library'
+import { NetworkIds } from 'blockchain/networks'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import {
@@ -128,13 +129,15 @@ function parseAggregatedDataHistory({
 export const getAjnaPositionAggregatedData$ = ({
   dpmPositionData,
   position,
+  networkId,
 }: {
   dpmPositionData: DpmPositionData
   position: AjnaGenericPosition
+  networkId: NetworkIds
 }): Observable<AjnaPositionAggregatedDataResponse> => {
   const { proxy } = dpmPositionData
 
-  return from(getAjnaPositionAggregatedData(proxy)).pipe(
+  return from(getAjnaPositionAggregatedData(proxy, networkId)).pipe(
     map(({ auctions, cumulatives, history }) => ({
       auction: parseAggregatedDataAuction({ auctions, dpmPositionData, history, position }),
       cumulatives,

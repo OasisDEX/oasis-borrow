@@ -33,7 +33,7 @@ export const ajnaOpenEarn = ({
     },
     {
       ...dependencies,
-      getEarnData: getAjnaEarnData,
+      getEarnData: getAjnaEarnData(chainId),
       rewardsManagerAddress: getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaRewardsManager
         .address,
     },
