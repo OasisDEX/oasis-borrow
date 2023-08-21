@@ -84,5 +84,5 @@ export const useMainnetEnsNames = (addresses?: string[]) => {
       })
   }, [addresses?.sort().join(',')]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return ensNames
+  return [ensNames]
 }

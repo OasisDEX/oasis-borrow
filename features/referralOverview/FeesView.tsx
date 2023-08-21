@@ -25,7 +25,7 @@ export interface UpsertUser {
 export function FeesView({ userReferral }: Props) {
   const { t } = useTranslation()
   const [ensReferrerName] = useMainnetEnsName(userReferral?.referrer)
-  const ensReferredNames = useMainnetEnsNames(userReferral.referrals)
+  const [ensReferredNames] = useMainnetEnsNames(userReferral.referrals)
   // move to pipe
 
   const createUser = async (upsertUser: UpsertUser) => {
