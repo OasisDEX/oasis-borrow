@@ -12,12 +12,13 @@ import { catchError, map, shareReplay, startWith, switchMap } from 'rxjs/operato
 import { PositionCreated__factory } from 'types/ethers-contracts'
 import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
+export type PositionType = 'Borrow' | 'Multiply' | 'Earn'
 export type PositionCreated = {
   collateralTokenSymbol: string
   collateralTokenAddress: string
   debtTokenSymbol: string
   debtTokenAddress: string
-  positionType: 'Borrow' | 'Multiply' | 'Earn'
+  positionType: PositionType
   protocol: LendingProtocol
   chainId: NetworkIds
   proxyAddress: string
