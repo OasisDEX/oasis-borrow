@@ -14,6 +14,7 @@ interface DetailsSectionProps {
   badge?: boolean
   buttons?: DetailsSectionButtons
   content: ReactNode
+  loose?: boolean
   footer?: ReactNode
   title?: ReactNode
   notifications?: DetailsSectionNotificationItem[]
@@ -23,6 +24,7 @@ export function DetailsSection({
   badge,
   buttons,
   content,
+  loose,
   footer,
   notifications,
   title,
@@ -49,15 +51,15 @@ export function DetailsSection({
         }}
       >
         {title && typeof title === 'string' && (
-          <DetailsSectionTitle badge={badge} buttons={buttons}>
+          <DetailsSectionTitle badge={badge} buttons={buttons} loose={loose}>
             {title}
           </DetailsSectionTitle>
         )}
         {title && typeof title !== 'string' && title}
         <Box
           sx={{
-            px: [3, null, '24px'],
-            py: '24px',
+            px: [3, null, loose ? 4 : '24px'],
+            py: loose ? 4 : '24px',
           }}
         >
           {content}
@@ -65,7 +67,8 @@ export function DetailsSection({
         {footer && (
           <Box
             sx={{
-              p: [3, null, '24px'],
+              px: [3, null, loose ? 4 : '24px'],
+              py: [3, null, '24px'],
               borderTop: 'lightMuted',
             }}
           >
@@ -80,19 +83,21 @@ interface DetailsSectionTitleProps {
   badge?: boolean
   buttons?: DetailsSectionButtons
   children: ReactNode
+  loose?: boolean
 }
 
 export function DetailsSectionTitle({
   badge,
   buttons,
   children,
+  loose,
 }: PropsWithChildren<DetailsSectionTitleProps>) {
   return (
     <Flex
       sx={{
         flexDirection: ['column', null, 'row'],
         justifyContent: 'space-between',
-        mx: [3, null, '24px'],
+        mx: [3, null, loose ? 4 : '24px'],
         pt: 3,
         pb: ['24px', null, 3],
         borderBottom: 'lightMuted',
@@ -105,7 +110,7 @@ export function DetailsSectionTitle({
         }}
       >
         {typeof children === 'string' ? (
-          <Heading as="p" variant="boldParagraph2">
+          <Heading as="p" variant={loose ? 'boldParagraph1' : 'boldParagraph2'}>
             {children}
           </Heading>
         ) : (

@@ -26,7 +26,7 @@ export function AssetsTableNoResults({ header, content }: AssetsTableNoResultsPr
       <Heading variant="boldParagraph2" sx={{ mt: 4, mb: 1 }}>
         {header}
       </Heading>
-      <Text as="p" variant="paragraph2" sx={{ m: 0, color: 'neutral80' }}>
+      <Text as="p" variant="paragraph2" sx={{ m: 0, maxWidth: '804px', color: 'neutral80' }}>
         {content}
       </Text>
     </Flex>

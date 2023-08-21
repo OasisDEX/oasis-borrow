@@ -272,7 +272,12 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
-              entry: ['reset', 'killCurrentParametersMachine', 'spawnDepositBorrowMachine'],
+              entry: [
+                'reset',
+                'killCurrentParametersMachine',
+                'spawnDepositBorrowMachine',
+                'setActiveCollateralAction',
+              ],
               on: {
                 NEXT_STEP: [
                   {
@@ -578,23 +583,21 @@ export function createManageAaveStateMachine(
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',
-          target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
+          actions: ['resetTokenActionValue', 'updateCollateralTokenAction', 'reset'],
         },
         UPDATE_CLOSING_ACTION: {
           cond: 'canChangePosition',
           target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['resetTokenActionValue', 'updateClosingAction'],
+          actions: ['resetTokenActionValue', 'updateClosingAction', 'reset'],
         },
         UPDATE_DEBT_TOKEN_ACTION: {
           cond: 'canChangePosition',
-          target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction', 'reset'],
         },
         UPDATE_TOKEN_ACTION_VALUE: {
           cond: 'canChangePosition',
           target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['updateTokenActionValue'],
+          actions: ['updateTokenActionValue', 'reset'],
         },
         USE_SLIPPAGE: {
           target: ['background.debouncing'],
@@ -628,7 +631,8 @@ export function createManageAaveStateMachine(
         isAllowanceNeeded,
         canAdjustPosition: ({ strategyConfig }) =>
           strategyConfig.availableActions().includes('adjust'),
-        isEthersTransaction: ({ strategyConfig }) =>
+        isEthersTransaction: ({ strategyConfig, proxyAddress, transition }) =>
+          allDefined(proxyAddress, transition) &&
           strategyConfig.executeTransactionWith === 'ethers',
       },
       actions: {
@@ -646,6 +650,16 @@ export function createManageAaveStateMachine(
             closingToken,
           },
         })),
+        setActiveCollateralAction: assign(({ manageTokenInput }) => {
+          return {
+            manageTokenInput: {
+              ...manageTokenInput,
+              manageTokenAction:
+                manageTokenInput?.manageTokenAction ??
+                ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+            },
+          }
+        }),
         updateCollateralTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
           manageTokenInput: {
             ...manageTokenInput,

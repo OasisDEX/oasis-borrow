@@ -65,6 +65,6 @@ export type BaseAaveEvent =
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
-  | { type: 'SET_DEBT'; debt: BigNumber }
+  | { type: 'SET_DEBT'; debt?: BigNumber }
   | AaveOpenPositionWithStopLossEvents
   | { type: 'CREATED_MACHINE'; refTransactionMachine: RefTransactionMachine }

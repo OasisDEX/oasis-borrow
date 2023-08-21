@@ -25,7 +25,7 @@ export const useProductHubBanner = ({
         product: startCase(product),
       }),
       cta: t('product-hub.banners.pool-finder.cta'),
-      link: INTERNAL_LINKS.ajnaPoolFinder,
+      link: `${INTERNAL_LINKS.ajnaPoolFinder}/${product}`,
       icon: <Image src={poolFinderIcon} />,
     }
   }

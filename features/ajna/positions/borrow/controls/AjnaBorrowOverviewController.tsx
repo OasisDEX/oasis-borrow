@@ -54,7 +54,7 @@ export function AjnaBorrowOverviewController() {
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
-  const changeVariant = getBorrowishChangeVariant(simulation)
+  const changeVariant = getBorrowishChangeVariant({ simulation, isOracless })
 
   const originationFee = getOriginationFee(position, simulation)
 
@@ -79,6 +79,8 @@ export function AjnaBorrowOverviewController() {
               <ContentCardThresholdPrice
                 isLoading={isSimulationLoading}
                 thresholdPrice={position.thresholdPrice}
+                debtAmount={position.debtAmount}
+                collateralAmount={position.collateralAmount}
                 afterThresholdPrice={simulation?.thresholdPrice}
                 priceFormat={priceFormat}
                 changeVariant={changeVariant}
