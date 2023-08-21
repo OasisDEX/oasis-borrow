@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { addressToEnsNameMainnet } from 'blockchain/ens'
+import { useMainnetEnsName } from 'blockchain/ens'
 import { AppLink } from 'components/Links'
+import { isAddress } from 'ethers/lib/utils'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
 
@@ -45,7 +46,7 @@ function ReferralLink({ address }: Props) {
         sx={{ fontSize: 4, flex: '1 1 auto', my: '12px' }}
         variant="inText"
       >
-        {`${window.origin}/?ref=${formatAddress(address, 6)}`}
+        {`${window.origin}/?ref=${isAddress(address) ? formatAddress(address, 6) : address}`}
       </AppLink>
       <Textarea
         ref={clipboardAddressContentRef}
@@ -79,18 +80,7 @@ function ReferralLink({ address }: Props) {
 
 export function ReferralsView({ address }: Props) {
   const { t } = useTranslation()
-  const [ensName, setEnsName] = useState('')
-  useEffect(() => {
-    if (address) {
-      addressToEnsNameMainnet('0xE9c245293DAC615c11A5bF26FCec91C3617645E4')
-        .then((ensName) => {
-          ensName !== null && setEnsName(ensName)
-        })
-        .catch((error) => {
-          console.error('Error getting ensName for referral', address, error)
-        })
-    }
-  }, [address])
+  const [ensName] = useMainnetEnsName(address)
   return (
     <Box
       sx={{
@@ -120,8 +110,7 @@ export function ReferralsView({ address }: Props) {
         >
           <Box>
             <Text variant="text.paragraph2">{t('ref.link')}</Text>
-            <ReferralLink address={address} />
-            {ensName && <ReferralLink address={ensName} />}
+            <ReferralLink address={ensName || address} />
             <Box sx={{ pt: '12px' }}>
               <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
                 {t('ref.explanation')}

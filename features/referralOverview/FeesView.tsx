@@ -1,6 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
 import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
+import { isAddress } from 'ethers/lib/utils'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -22,7 +24,8 @@ export interface UpsertUser {
 
 export function FeesView({ userReferral }: Props) {
   const { t } = useTranslation()
-
+  const [ensReferrerName] = useMainnetEnsName(userReferral?.referrer)
+  const ensReferredNames = useMainnetEnsNames(userReferral.referrals)
   // move to pipe
 
   const createUser = async (upsertUser: UpsertUser) => {
@@ -169,7 +172,9 @@ export function FeesView({ userReferral }: Props) {
                           fontVariantLigatures: 'no-contextual',
                         }}
                       >
-                        {item}{' '}
+                        {ensReferredNames[item] !== null && !isAddress(ensReferredNames[item])
+                          ? `${ensReferredNames[item]}`
+                          : formatAddress(item, 6)}{' '}
                       </Text>
                     </Box>
                     <Box sx={{ pt: '16px' }}>
@@ -248,13 +253,19 @@ export function FeesView({ userReferral }: Props) {
                     fontVariantLigatures: 'no-contextual',
                   }}
                 >
-                  {userReferral?.referrer && !userReferral.invitePending && userReferral.referrer}{' '}
+                  {userReferral?.referrer &&
+                    !userReferral.invitePending &&
+                    `${ensReferrerName !== null ? ensReferrerName : userReferral.referrer}`}{' '}
                   {!userReferral?.referrer &&
                     !userReferral.invitePending &&
                     t(`ref.you-were-not-referred`)}
                   {userReferral?.referrer &&
                     userReferral.invitePending &&
-                    `${t('ref.you-have-been-invited')} ${formatAddress(userReferral.referrer, 6)}`}
+                    `${t('ref.you-have-been-invited')} ${
+                      ensReferrerName !== null
+                        ? ensReferrerName
+                        : formatAddress(userReferral.referrer, 6)
+                    }`}
                 </Text>
               </Box>
               <Box>

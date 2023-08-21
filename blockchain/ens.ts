@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { useMemo, useState } from 'react'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -40,4 +41,48 @@ export async function ensNameToAddressMainnet(address: string) {
     console.warn(`Error looking up ENS name for address: ${err.message}`)
     return null
   })
+}
+
+export const useMainnetEnsName = (address?: string | null) => {
+  const [ensName, setEnsName] = useState<string | null>(address || null)
+
+  useMemo(() => {
+    if (!address) return
+    addressToEnsNameMainnet(address)
+      .then((name) => {
+        name !== null && setEnsName(name)
+      })
+      .catch((err: Error) => {
+        console.warn(`Error looking up ENS name for address: ${err.message}`)
+      })
+  }, [address])
+
+  return [ensName]
+}
+
+export const useMainnetEnsNames = (addresses?: string[]) => {
+  const firstAddressesList: { [key: string]: string } = {}
+  addresses?.forEach((address) => {
+    firstAddressesList[address] = address
+  })
+  const [ensNames, setEnsNames] = useState<{ [key: string]: string }>(firstAddressesList)
+
+  useMemo(() => {
+    if (!addresses || !addresses.length) return
+    Promise.all(addresses.map((address) => addressToEnsNameMainnet(address)))
+      .then((names) => {
+        const newEnsNames: { [key: string]: string } = {}
+        names.forEach((name, index) => {
+          name !== null
+            ? (newEnsNames[addresses[index]] = name)
+            : (newEnsNames[addresses[index]] = addresses[index])
+        })
+        setEnsNames(newEnsNames)
+      })
+      .catch((err: Error) => {
+        console.warn(`Error looking up ENS name for address: ${err.message}`)
+      })
+  }, [addresses?.sort().join(',')]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return ensNames
 }
