@@ -20,13 +20,12 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
   const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1] - 1}px)`)
 
   const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
-  const swapWidgetFeatureToggle = useFeatureToggle('SwapWidget')
 
   return (
     <>
       {isConnected ? (
         <>
-          {isViewBelowXl && swapWidgetFeatureToggle && <SwapWidgetOrb />}
+          {isViewBelowXl && <SwapWidgetOrb />}
           {isViewBelowXl && <MyPositionsOrb />}
           <NotificationsOrb />
           {useNetworkSwitcher && <NavigationNetworkSwitcherOrb />}

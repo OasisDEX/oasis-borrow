@@ -802,7 +802,8 @@
     "liquidation-price": {
       "first-header": "Liquidation Price",
       "second-header": "Liquidation Penalty",
-      "first-description-line": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+      "first-description-line-long": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+      "first-description-line-short": "The Liquidation Price is the debt price at which a position will be liquidated. This number is denominated in collateral",
       "second-description-line": "This is {{percent}} below current price",
       "third-description-line": "The liquidation penalty is the % that will be added to the debt as a penalty in case of liquidation."
     },
@@ -2681,6 +2682,14 @@
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
+          "near-lup": {
+            "title": "Your position's threshold price is approaching the LUP",
+            "message": "Adjust your position to ensure it stays below the LUP in order to avoid being eligible for liquidation"
+          },
+          "above-lup": {
+            "title": "Your position is eligible for liquidation",
+            "message": "Adjust your position to ensure the Threshold price stays below the LUP in order to avoid being eligible for liquidation"
+          },
           "read-more": "Read more about Ajna Liquidations"
         }
       },
@@ -2701,10 +2710,9 @@
             "threshold-price-modal-desc-part-1": "By taking the debt token amount and dividing it by the collateral token amount, the loan’s threshold price, TP, can be calculated.",
             "threshold-price-modal-desc-part-2": "Your loan will be eligible to be kicked into the liquidation queue if the pool's Lowest Utilization Price (LUP) is less than your Threshold price.",
             "threshold-price-modal-desc-part-3": "To avoid liquidation, always ensure your TP < LUP",
-            "threshold-price-modal-desc-formula-part-1": "debt amount / collateral amount",
-            "threshold-price-modal-desc-formula-part-2": "[loan debt] / [loan collateral]",
-            "threshold-price-modal-desc-explanation-part-1": "Threshold Price = [Position TP]",
-            "threshold-price-modal-desc-explanation-part-2": "Lowest Utilization Price = [Pool LUP]",
+            "threshold-price-modal-desc-formula": "debt amount / collateral amount",
+            "threshold-price-modal-desc-explanation-tp": "Threshold Price =",
+            "threshold-price-modal-desc-explanation-lup": "Lowest Utilization Price =",
             "position-debt": "Position debt",
             "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
@@ -2888,20 +2896,6 @@
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
-    },
-    "oracless": {
-      "nls": "using Ajna",
-      "form": {
-        "pool-address": "Pool address",
-        "collateral-token": "Collateral token",
-        "quote-token": "Quote token",
-        "placeholder": "Symbol, name or address"
-      },
-      "pool-finder": {
-        "no-results": "There are no items matching your criteria.",
-        "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can create one by yourself.",
-        "no-results-suggest-address": "Try searching for a pool by providing token address instead of its name or symbol. If you are missing a pool you would like to see, you can create one by yourself."
-      }
     }
   },
   "product-hub": {
@@ -2996,18 +2990,34 @@
     "l2beat-title": "Learn about L2s",
     "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
   },
+  "pool-finder": {
+    "header": {
+      "using-ajna": "using Ajna"
+    },
+    "form": {
+      "pool-address": "Pool address",
+      "collateral-token": "Collateral token",
+      "quote-token": "Quote token",
+      "token-placeholder": "Symbol, name or address"
+    },
+    "validation": {
+      "no-results": "There are no items matching your criteria.",
+      "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can <AppLink>create one by yourself →</AppLink>",
+      "no-results-suggest-address": "Try searching for a pool by providing token address instead of its name or symbol. If you are missing a pool you would like to see, you can <AppLink>create one by yourself →</AppLink>"
+    }
+  },
   "pool-creator": {
     "header": {
       "title": "Ajna Pool Creator",
-      "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maybe some explanation what is going on here? Link to knowledge base?"
+      "intro": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi. <AppLink><WithArrow>Find out more here</WithArrow></AppLink>"
     },
     "form": {
       "title": "Configure new Ajna pool",
       "collateral-token-address": "Collateral token address",
       "quote-token-address": "Quote token address",
-      "pools-interest-rate": "Pool's interest rate",
+      "pools-interest-rate": "Initial pool interest rate",
       "min-interest-rate": "Min. {{minInterestRate}}%",
-      "max-interest-rate": "Up to. {{maxInterestRate}}%",
+      "max-interest-rate": "Up to {{maxInterestRate}}%",
       "submit": "Create pool"
     },
     "order-information": {
@@ -3016,10 +3026,10 @@
     },
     "validations": {
       "collateral-is-not-address": "Collateral token address is not valid contract address.",
-      "collateral-is-not-erc20": "Collateral token address is not valid ERC20 token.",
+      "collateral-is-not-erc20": "Collateral token address is not valid ERC-20 token.",
       "quote-is-not-address": "Quote token address is not valid contract address.",
-      "quote-is-not-erc20": "Quote token address is not valid ERC20 token.",
-      "collateral-equals-quote": "Collateral and token addresses has to be different.",
+      "quote-is-not-erc20": "Quote token address is not valid ERC-20 token.",
+      "collateral-equals-quote": "Collateral and Quote token addresses cannot be the same.",
       "pool-already-exists": "<0>{{collateralToken}}/{{quoteToken}}</0> pool already exists - you can use this pool directly to either <1>Borrow →</1> or <2>Earn →</2>",
       "unknown-error": "There was an unknown error, please try again later."
     },

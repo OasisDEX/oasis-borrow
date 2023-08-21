@@ -35,7 +35,6 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   limitRows,
 }) => {
-  const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
 
   const banner = useProductHubBanner({
@@ -45,10 +44,10 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   const dataMatchedToFeatureFlags = useMemo(
     () =>
       tableData.filter((row) => {
-        if (row.protocol === LendingProtocol.Ajna) return ajnaEnabled && !ajnaSafetySwitchOn
+        if (row.protocol === LendingProtocol.Ajna) return !ajnaSafetySwitchOn
         else return true
       }),
-    [ajnaEnabled, ajnaSafetySwitchOn, tableData],
+    [ajnaSafetySwitchOn, tableData],
   )
   const dataMatchedByNL = useMemo(
     () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),
