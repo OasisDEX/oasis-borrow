@@ -91,7 +91,6 @@ export const HomepageHero = () => {
   }, [checkReferralLocal, router.isReady])
 
   const referralsEnabled = useFeatureToggle('Referrals')
-  const notificationsEnabled = useFeatureToggle('Notifications')
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   return (
@@ -99,7 +98,7 @@ export const HomepageHero = () => {
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
-      {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
+      {referralsEnabled && <TermsOfService userReferral={userReferral} />}
       <Flex
         sx={{
           height: 'auto',

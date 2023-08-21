@@ -18,7 +18,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
@@ -347,8 +346,6 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
 }
 
 export function AssetsAndPositionsOverview({ address }: { address: string }) {
-  const followVaultsEnabled = useFeatureToggle('FollowVaults')
-
   const { positionsOverviewSummary$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
 
@@ -360,7 +357,7 @@ export function AssetsAndPositionsOverview({ address }: { address: string }) {
     <WithErrorHandler error={[positionOverviewSummaryError]}>
       <WithLoadingIndicator
         value={[positionsOverviewSummary]}
-        {...(followVaultsEnabled && { customLoader: <AssetsAndPositionsOverviewLoadingState /> })}
+        customLoader={<AssetsAndPositionsOverviewLoadingState />}
       >
         {([_positionsOverviewSummary]) => <AssetsAndPositionsView {..._positionsOverviewSummary} />}
       </WithLoadingIndicator>
