@@ -1,9 +1,7 @@
-import { Address } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { env } from 'process'
 import React from 'react'
 

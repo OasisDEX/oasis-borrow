@@ -53,6 +53,13 @@ export interface PositionHistoryResponse {
   totalFee: string
   txHash: string
   withdrawnUSD: string
+  trigger: Trigger | null
+}
+
+export interface Trigger {
+  id: string
+  decodedData: string[]
+  decodedDataNames: string[]
 }
 
 export type PositionHistoryEvent = {
@@ -101,4 +108,5 @@ export type PositionHistoryEvent = {
   totalFee: BigNumber
   txHash: string
   withdrawnUSD: BigNumber
+  trigger: Trigger | null
 }

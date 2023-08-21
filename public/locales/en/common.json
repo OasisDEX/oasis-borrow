@@ -492,6 +492,9 @@
     "net-value": "Net value",
     "increase-multiple": "Increase multiple",
     "decrease-multiple": "Decrease multiple",
+    "max-coverage": "Max coverage",
+    "sl-level": "Stop loss level",
+    "swaped": "Swapped",
     "automation": {
       "stop-loss-collateral-added": "Stop loss to collateral added",
       "stop-loss-collateral-removed": "Stop loss to collateral removed",

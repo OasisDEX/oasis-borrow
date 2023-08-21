@@ -84,12 +84,12 @@ export type SubgraphsResponses = {
     searchAjnaPool: SubgraphBaseResponse<{
       pools: SearchAjnaPoolResponse[]
     }>
-  },
+  }
   Aave: {
     getAaveHistory: SubgraphBaseResponse<{
       positionEvents: PositionHistoryResponse[]
     }>
-  },
+  }
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>
   }
@@ -109,4 +109,6 @@ export type SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: ''
   }
 }
-export type SubgraphMethodsRecord = { [key in keyof(Subgraphs['Aave'] & Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string }
+export type SubgraphMethodsRecord = {
+  [key in keyof (Subgraphs['Aave'] & Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string
+}

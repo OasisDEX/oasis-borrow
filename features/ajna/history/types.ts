@@ -23,13 +23,13 @@ export interface AjnaBorrowerEventsResponse {
 export interface AjnaHistoryEvent extends PositionHistoryEvent {
   originationFee: BigNumber
   originationFeeInQuoteToken: BigNumber
-  quoteTokensAfter: BigNumber,
-  quoteTokensBefore: BigNumber,
-  quoteTokensDelta: BigNumber,
-  quoteTokensMoved: BigNumber,
-  moveQuoteFromPrice: BigNumber,
-  moveQuoteToPrice: BigNumber,
-  addOrRemovePrice: BigNumber,
+  quoteTokensAfter: BigNumber
+  quoteTokensBefore: BigNumber
+  quoteTokensDelta: BigNumber
+  quoteTokensMoved: BigNumber
+  moveQuoteFromPrice: BigNumber
+  moveQuoteToPrice: BigNumber
+  addOrRemovePrice: BigNumber
   totalFeeInQuoteToken: BigNumber
 }
 
