@@ -233,7 +233,7 @@ export function getManageAaveV3PositionStateMachineServices(
         }),
       )
     },
-    history: (context) => async (callback, _onReceive) => {
+    historyCallback: (context) => (callback, _onReceive) => {
       const isProxyReceiveEvent = (
         event: EventObject,
       ): event is { type: 'PROXY_RECEIVED'; proxyAddress: string } => {

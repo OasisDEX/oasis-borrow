@@ -120,6 +120,10 @@ export function createManageAaveStateMachine(
       predictableActionArguments: true,
       invoke: [
         {
+          id: 'historyCallback',
+          src: 'historyCallback',
+        },
+        {
           src: 'getBalance',
           id: 'getBalance',
         },
@@ -158,10 +162,6 @@ export function createManageAaveStateMachine(
         {
           src: 'allowance$',
           id: 'allowance$',
-        },
-        {
-          src: 'history',
-          id: 'history',
         },
       ],
       id: 'manageAaveStateMachine',
@@ -535,7 +535,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext', 'updateLegacyTokenBalance'],
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendHistoryRequest'],
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         WEB3_CONTEXT_CHANGED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendSigner'],
@@ -550,7 +550,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext'],
         },
         POSITION_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
+          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendHistoryRequest'],
         },
         UPDATE_PROTOCOL_DATA: {
           actions: ['updateContext'],
@@ -927,7 +927,7 @@ export function createManageAaveStateMachine(
             }
           },
         ),
-        sendHistoryRequest: sendTo('history', (context) => {
+        sendHistoryRequest: sendTo('historyCallback', (context) => {
           return {
             type: 'PROXY_RECEIVED',
             proxyAddress: context.proxyAddress,

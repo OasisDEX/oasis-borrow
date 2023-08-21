@@ -189,7 +189,7 @@ export function getManageAaveV2PositionStateMachineServices(
         distinctUntilChanged(isEqual),
       )
     },
-    history: () => () => {},
+    historyCallback: () => () => {},
     savePositionToDb$: () => {
       // TODO: replace with actual implementation.
       return of({ type: 'SWITCH_SUCCESS' })
