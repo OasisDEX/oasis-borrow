@@ -34,8 +34,8 @@ export function ReferralLandingSummary() {
   return (
     <WithErrorHandler error={[contextError, userReferralError]}>
       <WithLoadingIndicator value={[context, userReferral]}>
-        {([context, userReferral]) => (
-          <ReferralLanding context={context} userReferral={userReferral} />
+        {([context, _userReferral]) => (
+          <ReferralLanding context={context} userReferral={_userReferral} />
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>

@@ -1,3 +1,4 @@
+import { useMainnetEnsName } from 'blockchain/ens'
 import { ReferralModal } from 'components/ReferralModal'
 import { SuccessfulJoinModal } from 'components/SuccessfullJoinModal'
 import { UserReferralState } from 'features/referralOverview/user'
@@ -22,6 +23,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
   const { t } = useTranslation()
   const [success, setSuccess] = useState(false)
   const { connect } = useConnection()
+  const [refEnsName] = useMainnetEnsName(userReferral?.referrer)
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 
@@ -49,12 +51,11 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
           topButton={{ text: t('connect-wallet'), func: () => connect() }}
         />
       )}
-      {!success && userReferral && userReferral.state === 'newUser' && (
+      {!success && userReferral && userReferral.state === 'newUser' && refEnsName !== null && (
         <ReferralModal
-          heading={`${t('ref.modal.you-have-been-ref')} ${formatAddress(
-            userReferral.referrer!,
-            6,
-          )}`}
+          heading={`${t('ref.modal.you-have-been-ref')} ${
+            refEnsName || formatAddress(userReferral.referrer!, 6)
+          }`}
           topButton={{
             text: t('ref.modal.accept'),
             func: () => createUser({ hasAccepted: true, isReferred: true }),
