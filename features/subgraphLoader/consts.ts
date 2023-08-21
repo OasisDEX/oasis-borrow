@@ -29,13 +29,13 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: '',
   },
   Referral: {
-    [NetworkIds.MAINNET]: '',
+    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
     [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.GOERLI]: '',
-    [NetworkIds.ARBITRUMMAINNET]: '',
-    [NetworkIds.ARBITRUMGOERLI]: '',
-    [NetworkIds.POLYGONMAINNET]: '',
-    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.ARBITRUMMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.ARBITRUMGOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.POLYGONMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.POLYGONMUMBAI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
     [NetworkIds.OPTIMISMMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
     [NetworkIds.OPTIMISMGOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
     [NetworkIds.EMPTYNET]: '',
@@ -272,7 +272,7 @@ export const subgraphMethodsRecord: {
   `,
   tempMethod: '',
   getClaimedReferralRewards: gql`
-    query getClaimeds($walletAddress: String!) {
+    query getClaimed($walletAddress: String!) {
       claimeds(where: { user: $walletAddress }) {
         week {
           id
@@ -280,5 +280,5 @@ export const subgraphMethodsRecord: {
         }
       }
     }
-  `,
+  `
 }
