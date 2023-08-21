@@ -73,9 +73,7 @@ export const useMainnetEnsNames = (addresses?: string[]) => {
       .then((names) => {
         const newEnsNames: { [key: string]: string } = {}
         names.forEach((name, index) => {
-          name !== null
-            ? (newEnsNames[addresses[index]] = name)
-            : (newEnsNames[addresses[index]] = addresses[index])
+          newEnsNames[addresses[index]] = name !== null ? name : addresses[index]
         })
         setEnsNames(newEnsNames)
       })
