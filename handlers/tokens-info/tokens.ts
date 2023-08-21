@@ -43,7 +43,7 @@ export const readTokensFromBlockchain = async ({
       ]).then(([name, symbol, precision]) => ({
         address: address.toLowerCase(),
         name,
-        symbol,
+        symbol: symbol.toUpperCase(),
         precision,
         chain_id: chainId,
         source: 'blockchain',
@@ -61,7 +61,7 @@ export const readTokensFromApi = async (tokens: string[]): Promise<Tokens[]> => 
       .map(({ address, chainId, decimals, name, symbol }) => ({
         address: address.toLowerCase(),
         chain_id: chainId,
-        symbol,
+        symbol: symbol.toUpperCase(),
         precision: decimals,
         name,
         source: 'api',
