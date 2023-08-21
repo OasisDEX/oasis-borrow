@@ -2885,20 +2885,6 @@
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
-    },
-    "oracless": {
-      "nls": "using Ajna",
-      "form": {
-        "pool-address": "Pool address",
-        "collateral-token": "Collateral token",
-        "quote-token": "Quote token",
-        "placeholder": "Symbol, name or address"
-      },
-      "pool-finder": {
-        "no-results": "There are no items matching your criteria.",
-        "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can create one by yourself.",
-        "no-results-suggest-address": "Try searching for a pool by providing token address instead of its name or symbol. If you are missing a pool you would like to see, you can create one by yourself."
-      }
     }
   },
   "product-hub": {
@@ -2992,6 +2978,22 @@
   "navigation-network": {
     "l2beat-title": "Learn about L2s",
     "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
+  },
+  "pool-finder": {
+    "header": {
+      "using-ajna": "using Ajna"
+    },
+    "form": {
+      "pool-address": "Pool address",
+      "collateral-token": "Collateral token",
+      "quote-token": "Quote token",
+      "token-placeholder": "Symbol, name or address"
+    },
+    "validation": {
+      "no-results": "There are no items matching your criteria.",
+      "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can <AppLink>create one by yourself →</AppLink>",
+      "no-results-suggest-address": "Try searching for a pool by providing token address instead of its name or symbol. If you are missing a pool you would like to see, you can <AppLink>create one by yourself →</AppLink>"
+    }
   },
   "pool-creator": {
     "header": {

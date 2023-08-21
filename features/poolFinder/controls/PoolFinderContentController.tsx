@@ -2,12 +2,14 @@ import { NetworkIds } from 'blockchain/networks'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
+import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { parseRows } from 'features/poolFinder/helpers'
 import { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import React, { FC, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
 interface PoolFinderContentControllerProps {
   addresses: PoolFinderFormState
@@ -35,13 +37,20 @@ export const PoolFinderContentController: FC<PoolFinderContentControllerProps> =
         <AssetsResponsiveTable rows={rows} />
       ) : (
         <AssetsTableNoResults
-          header={t('ajna.oracless.pool-finder.no-results')}
-          content={t(
-            (collateralAddress && !isAddress(collateralAddress)) ||
-              (quoteAddress && !isAddress(quoteAddress))
-              ? 'ajna.oracless.pool-finder.no-results-suggest-address'
-              : 'ajna.oracless.pool-finder.no-results-description',
-          )}
+          header={t('pool-finder.validation.no-results')}
+          content={
+            <Trans
+              i18nKey={
+                (collateralAddress && !isAddress(collateralAddress)) ||
+                (quoteAddress && !isAddress(quoteAddress))
+                  ? 'pool-finder.validation.no-results-suggest-address'
+                  : 'pool-finder.validation.no-results-description'
+              }
+              components={{
+                AppLink: <AppLink href={INTERNAL_LINKS.ajnaPoolCreator} sx={{ fontSize: 3 }} />,
+              }}
+            />
+          }
         />
       )}
     </AssetsTableContainer>
