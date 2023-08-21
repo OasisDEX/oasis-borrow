@@ -40,6 +40,4 @@ export type AjnaBorrowerEvent = {
 }
 
 // TODO to be removed when implementing aave history, dummy aave history interface
-export interface AaveHistoryEvent extends PositionHistoryEvent {
-  aaveStuff: BigNumber
-}
+export interface AaveHistoryEvent extends PositionHistoryEvent {}

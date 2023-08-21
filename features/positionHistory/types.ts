@@ -13,14 +13,18 @@ export interface PositionHistoryResponse {
   collateralBefore: string
   collateralDelta: string
   collateralOraclePrice: string
-  collateralToken: string
+  collateralToken: {
+    symbol: string
+  }
   collateralTokenPriceUSD: string
   debtAddress: string
   debtAfter: string
   debtBefore: string
   debtDelta: string
   debtOraclePrice: string
-  debtToken: string
+  debtToken: {
+    symbol: string
+  }
   debtTokenPriceUSD: string
   depositedUSD: string
   ethPrice: string
@@ -38,24 +42,15 @@ export interface PositionHistoryResponse {
   multipleBefore: string
   netValueAfter: string
   netValueBefore: string
-  oasisFee: string
-  oasisFeeToken: string
-  oasisFeeUSD: string
-  quoteTokensAfter: string
-  quoteTokensBefore: string
-  quoteTokensDelta: string
-  quoteTokensMoved: string
-  moveQuoteFromIndex: string
-  moveQuoteToIndex: string
-  addOrRemoveIndex: string
-  isOpen: boolean
+  summerFee: string
+  summerFeeToken: string
+  summerFeeUSD: string
   swapFromAmount: string
   swapFromToken: string
   swapToAmount: string
   swapToToken: string
   timestamp: string
   totalFee: string
-  totalFeeInQuoteToken: string
   txHash: string
   withdrawnUSD: string
 }

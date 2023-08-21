@@ -269,8 +269,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   getAaveHistory: gql`
-    query AavePositionHistory($account: String) {
-      positionEvents(where: {account: $account}) {
+    query AavePositionHistory($dpmProxyAddress: String) {
+      positionEvents(where: {account: $dpmProxyAddress}) {
         kind
         account
         debtToken {

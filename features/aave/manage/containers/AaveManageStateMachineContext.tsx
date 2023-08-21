@@ -1,3 +1,4 @@
+import { Address } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
@@ -26,8 +27,6 @@ function setupManageAaveStateContext({
 }) {
   const positionCreatedBy =
     positionId.vaultId !== undefined ? ProxyType.DpmProxy : ProxyType.DsProxy
-
-  // TODO: add history events here
 
   const stateMachine = useInterpret(
     machine.withContext({

@@ -31,6 +31,17 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
 
+  console.log(`
+  
+  HISTORY EVENTS: 
+
+
+  ${historyEvents.length}
+  
+  
+  
+  `)
+
   const { t } = useTranslation()
   return !context ? (
     <Skeleton height="440px" />
