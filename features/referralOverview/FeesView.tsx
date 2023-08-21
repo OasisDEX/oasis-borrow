@@ -123,7 +123,7 @@ export function FeesView({ userReferral }: Props) {
               }
               onClick={() => {
                 if (isOnOptimism) {
-                  userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
+                  userReferral.performClaimMultiple && userReferral.performClaimMultiple()
                 } else {
                   openModal(ReferralClaimSwitchNetworkModal, {})
                 }
