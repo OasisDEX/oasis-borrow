@@ -172,7 +172,9 @@ export function FeesView({ userReferral }: Props) {
                           fontVariantLigatures: 'no-contextual',
                         }}
                       >
-                        {ensReferredNames[item] !== null && !isAddress(ensReferredNames[item])
+                        {ensReferredNames[item] &&
+                        ensReferredNames[item] !== null &&
+                        !isAddress(ensReferredNames[item])
                           ? `${ensReferredNames[item]}`
                           : formatAddress(item, 6)}{' '}
                       </Text>
