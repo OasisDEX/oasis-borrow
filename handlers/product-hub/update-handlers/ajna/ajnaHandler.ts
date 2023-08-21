@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
-import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import {
   AjnaPoolsTableData,
   getAjnaPoolsData,
@@ -17,6 +17,7 @@ import {
   productHubEmptyPoolMaxLtvTooltip,
   productHubEmptyPoolMaxMultipleTooltip,
   productHubEmptyPoolWeeklyApyTooltip,
+  productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
@@ -32,35 +33,41 @@ async function getAjnaPoolData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
   tickers: Tickers,
 ): Promise<ProductHubHandlerResponseData> {
-  const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
-  const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))
-  const prices = tokens.reduce<Tickers>(
+  const poolContracts = {
+    ...getNetworkContracts(networkId).ajnaPoolPairs,
+    ...getNetworkContracts(networkId).ajnaOraclessPoolPairs,
+  }
+  const poolAddresses = [
+    ...Object.values(getNetworkContracts(networkId).ajnaPoolPairs),
+    ...Object.values(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
+  ].map((contract) => contract.address)
+  const prices = uniq(
+    Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
+  ).reduce<Tickers>(
     (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
     {},
   )
 
   try {
     return (await getAjnaPoolsData(networkId))
-      .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>((v, pool) => {
-        try {
-          return [
-            ...v,
-            {
-              pair: [
-                getTokenSymbolFromAddress(networkId, pool.collateralAddress),
-                getTokenSymbolFromAddress(networkId, pool.quoteTokenAddress),
-              ],
-              pool,
-            },
-          ]
-        } catch (e) {
-          return v
-        }
-      }, [])
-      .filter(({ pair: [collateralToken, quoteToken] }) =>
-        supportedPairs.includes(`${collateralToken}-${quoteToken}`),
+      .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>(
+        (v, pool) =>
+          poolAddresses.includes(pool.address)
+            ? [
+                ...v,
+                {
+                  pair: (
+                    Object.keys(poolContracts).find(
+                      (key) =>
+                        poolContracts[key as keyof typeof poolContracts].address === pool.address,
+                    ) as string
+                  ).split('-') as [string, string],
+                  pool,
+                },
+              ]
+            : v,
+        [],
       )
-      .sort((a, b) => (`${a.pair[0]}-${a.pair[1]}` > `${b.pair[0]}-${b.pair[1]}` ? 1 : -1))
       .reduce<ProductHubHandlerResponseData>(
         (
           v,
@@ -77,12 +84,13 @@ async function getAjnaPoolData(
           },
         ) => {
           const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
+          const isOracless = isPoolOracless({ chainId: networkId, collateralToken, quoteToken })
           const isShort = isShortPosition({ collateralToken })
           // Temporary hidden yield loops products until APY solution is found
           // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const isWithMultiply = isPoolSupportingMultiply({ collateralToken, quoteToken })
-          const collateralPrice = prices[collateralToken]
-          const quotePrice = prices[quoteToken]
+          const collateralPrice = isOracless ? one : prices[collateralToken]
+          const quotePrice = isOracless ? one : prices[quoteToken]
           const marketPrice = collateralPrice.div(quotePrice)
           const label = `${collateralToken}/${quoteToken}`
           const network = networksById[networkId].name as ProductHubSupportedNetworks
@@ -129,10 +137,11 @@ async function getAjnaPoolData(
                 ...getTokenGroup(quoteToken, 'secondary'),
                 fee,
                 liquidity,
-                ...(isPoolNotEmpty && {
-                  maxLtv,
-                  maxMultiply,
-                }),
+                ...(!isPoolNotEmpty &&
+                  isOracless && {
+                    maxLtv,
+                    maxMultiply,
+                  }),
                 multiplyStrategy,
                 multiplyStrategyType,
                 // ...(isYieldLoop && {
@@ -149,10 +158,16 @@ async function getAjnaPoolData(
                       weeklyNetApy: productHubAjnaRewardsTooltip,
                     }),
                   }),
+                  ...(!isOracless &&
+                    !isPoolNotEmpty && {
+                      maxLtv: productHubEmptyPoolMaxLtvTooltip,
+                      maxMultiply: productHubEmptyPoolMaxMultipleTooltip,
+                    }),
                   ...(!isPoolNotEmpty && {
-                    maxLtv: productHubEmptyPoolMaxLtvTooltip,
-                    maxMultiply: productHubEmptyPoolMaxMultipleTooltip,
                     weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                  }),
+                  ...(isOracless && {
+                    maxLtv: productHubOraclessLtvTooltip,
                   }),
                 },
               },

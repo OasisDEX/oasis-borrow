@@ -56,7 +56,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
       uniq(data.map((item) => item.secondaryToken)).map((item) => ({
         label: item,
         value: item,
-        icon: getToken(item).iconCircle,
+        icon: getToken('ETH').iconCircle,
       })),
     [data],
   )
@@ -74,7 +74,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
       ).map((item) => ({
         label: item,
         value: item,
-        icon: getToken(item).iconCircle,
+        icon: getToken('ETH').iconCircle,
       })),
     [data, selectedToken],
   )
