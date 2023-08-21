@@ -6,88 +6,68 @@ type ConfiguredFeatures = Record<Feature, boolean>
 export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
-  | 'StopLossRead'
-  | 'StopLossWrite'
-  | 'StopLossOpenFlow'
-  | 'BatchCache'
-  | 'ReadOnlyBasicBS'
-  | 'Notifications'
-  | 'Referrals'
-  | 'ConstantMultipleReadOnly'
-  | 'DisableSidebarScroll'
-  | 'ProxyCreationDisabled'
-  | 'AutoTakeProfit'
-  | 'UpdatedPnL'
-  | 'ReadOnlyAutoTakeProfit'
-  | 'DiscoverOasis'
-  | 'FollowVaults'
-  | 'AaveV3Protection'
-  | 'AaveV3ProtectionWrite'
-  | 'Ajna'
-  | 'AjnaPoolFinder'
-  | 'AjnaMultiply'
-  | 'AjnaSafetySwitch'
-  | 'AjnaSuppressValidation'
-  | 'DaiSavingsRate'
-  | 'FollowAAVEVaults'
-  | 'Sillyness'
-  | 'UseNetworkSwitcher'
-  | 'UseNetworkSwitcherForks'
-  | 'UseNetworkSwitcherTestnets'
-  | 'UseNetworkSwitcherArbitrum'
-  | 'UseNetworkSwitcherOptimism'
-  | 'UseNetworkRowProductCard'
+  | '🌞'
   | 'AaveV3Arbitrum'
   | 'AaveV3Borrow'
-  | 'AaveV3EarnrETHeth'
   | 'AaveV3EarncbETHeth'
+  | 'AaveV3EarnrETHeth'
   | 'AaveV3Multiply'
-  | 'SwapWidget'
-  | '🌞'
+  | 'AaveV3Protection'
+  | 'AaveV3ProtectionWrite'
+  | 'AjnaPoolFinder'
+  | 'AjnaSafetySwitch'
+  | 'AjnaSuppressValidation'
+  | 'ConstantMultipleReadOnly'
+  | 'DaiSavingsRate'
+  | 'DisableSidebarScroll'
+  | 'FollowAAVEVaults'
+  | 'ProxyCreationDisabled'
   | 'ProxyReveal'
+  | 'ReadOnlyAutoTakeProfit'
+  | 'ReadOnlyBasicBS'
+  | 'Referrals'
+  | 'Sillyness'
+  | 'StopLossOpenFlow'
+  | 'StopLossRead'
+  | 'StopLossWrite'
+  | 'UseNetworkSwitcher'
+  | 'UseNetworkSwitcherArbitrum'
+  | 'UseNetworkSwitcherForks'
+  | 'UseNetworkSwitcherOptimism'
+  | 'UseNetworkSwitcherTestnets'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
-  StopLossRead: true,
-  StopLossWrite: true,
-  BatchCache: false,
-  StopLossOpenFlow: false,
-  ReadOnlyBasicBS: false,
-  Notifications: true,
-  Referrals: true,
-  ConstantMultipleReadOnly: false,
-  DisableSidebarScroll: false,
-  ProxyCreationDisabled: false,
-  AutoTakeProfit: true,
-  UpdatedPnL: false,
-  ReadOnlyAutoTakeProfit: false,
-  DiscoverOasis: true,
-  FollowVaults: true,
-  AaveV3Protection: true,
-  AaveV3ProtectionWrite: true,
-  Ajna: true,
-  AjnaPoolFinder: false,
-  AjnaMultiply: true,
-  AjnaSafetySwitch: false,
-  AjnaSuppressValidation: false,
-  DaiSavingsRate: true,
-  FollowAAVEVaults: false,
-  Sillyness: false,
-  UseNetworkSwitcher: true,
-  UseNetworkSwitcherForks: false,
-  UseNetworkSwitcherTestnets: false,
-  UseNetworkSwitcherArbitrum: false,
-  UseNetworkSwitcherOptimism: true,
-  UseNetworkRowProductCard: false,
+  '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
   AaveV3Arbitrum: false,
+  AaveV3Borrow: false,
   AaveV3EarncbETHeth: false,
   AaveV3EarnrETHeth: false,
-  AaveV3Borrow: false,
   AaveV3Multiply: false,
-  SwapWidget: true,
+  AaveV3Protection: true,
+  AaveV3ProtectionWrite: true,
+  AjnaPoolFinder: false,
+  AjnaSafetySwitch: false,
+  AjnaSuppressValidation: false,
+  ConstantMultipleReadOnly: false,
+  DaiSavingsRate: true,
+  DisableSidebarScroll: false,
+  FollowAAVEVaults: false,
+  ProxyCreationDisabled: false,
   ProxyReveal: false,
-  '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
+  ReadOnlyAutoTakeProfit: false,
+  ReadOnlyBasicBS: false,
+  Referrals: true,
+  Sillyness: false,
+  StopLossOpenFlow: false,
+  StopLossRead: true,
+  StopLossWrite: true,
+  UseNetworkSwitcher: true,
+  UseNetworkSwitcherArbitrum: false,
+  UseNetworkSwitcherForks: false,
+  UseNetworkSwitcherOptimism: true,
+  UseNetworkSwitcherTestnets: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

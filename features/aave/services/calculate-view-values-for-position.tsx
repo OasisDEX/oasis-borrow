@@ -2,6 +2,7 @@ import { IPosition } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { NaNIsZero } from 'helpers/nanIsZero'
+import { one, zero } from 'helpers/zero'
 
 export function calculateViewValuesForPosition(
   position: IPosition,
@@ -22,11 +23,18 @@ export function calculateViewValuesForPosition(
   // (collateral_amount * collateral_token_oracle_price - debt_token_amount * debt_token_oracle_price) / USDC_oracle_price
   const netValue = collateral.times(collateralTokenPrice).minus(debt.times(debtTokenPrice))
 
+  const netValueInCollateralToken = netValue.div(collateralTokenPrice)
+  const netValueInDebtToken = netValue.div(debtTokenPrice)
+
   const totalExposure = collateral
 
-  const liquidationPrice = NaNIsZero(
+  const liquidationPriceInDebt = NaNIsZero(
     debt.div(collateral.times(position.category.liquidationThreshold)),
   )
+
+  const liquidationPriceInCollateral = liquidationPriceInDebt.isZero()
+    ? zero
+    : NaNIsZero(one.div(liquidationPriceInDebt))
 
   const costOfBorrowingDebt = debtVariableBorrowRate.times(debt).times(debtTokenPrice)
   const profitFromProvidingCollateral = collateralLiquidityRate
@@ -41,8 +49,11 @@ export function calculateViewValuesForPosition(
     debt,
     buyingPower,
     netValue,
+    netValueInCollateralToken,
+    netValueInDebtToken,
     totalExposure,
-    liquidationPrice,
+    liquidationPriceInDebt,
+    liquidationPriceInCollateral,
     netBorrowCostPercentage,
   }
 }
