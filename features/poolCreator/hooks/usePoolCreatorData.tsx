@@ -192,19 +192,19 @@ export function usePoolCreatorData({
             } else if (tokensKeys.length < 2) {
               const identifyingErrors: AjnaValidationItem[] = []
 
-              if (!tokensKeys.includes(collateralAddress))
+              if (!tokensKeys.includes(collateralAddress.toLowerCase()))
                 identifyingErrors.push({
                   message: { translationKey: 'collateral-is-not-erc20' },
                 })
-              if (!tokensKeys.includes(quoteAddress))
+              if (!tokensKeys.includes(quoteAddress.toLowerCase()))
                 identifyingErrors.push({
                   message: { translationKey: 'quote-is-not-erc20' },
                 })
 
               setErrors(identifyingErrors)
             } else {
-              setCollateralToken(identifiedTokens[collateralAddress].symbol)
-              setQuoteToken(identifiedTokens[quoteAddress].symbol)
+              setCollateralToken(identifiedTokens[collateralAddress.toLowerCase()].symbol)
+              setQuoteToken(identifiedTokens[quoteAddress.toLowerCase()].symbol)
               setIsFormValid(true)
             }
           })

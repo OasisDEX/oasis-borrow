@@ -1,6 +1,9 @@
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { PoolFinderAddressInput } from 'features/poolFinder/components/PoolFinderAddressInput'
 import { PoolFinderReplacer } from 'features/poolFinder/components/PoolFinderReplacer'
 import { PoolFinderFormState } from 'features/poolFinder/types'
+import { formatAddress } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { useTranslation } from 'next-i18next'
@@ -8,10 +11,14 @@ import React, { FC, useState } from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 
 interface PoolFinderFormControllerProps {
+  chainId: NetworkIds
   onChange: (addresses: PoolFinderFormState) => void
 }
 
-export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ onChange }) => {
+export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
+  chainId,
+  onChange,
+}) => {
   const { t } = useTranslation()
   const [addresses, setAddresses] = useState<PoolFinderFormState>({
     collateralAddress: '',
@@ -28,6 +35,7 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
         borderColor: 'neutral20',
         borderRadius: 'circle',
         boxShadow: 'buttonMenu',
+        backgroundColor: 'neutral10',
       }}
     >
       <Box sx={{ width: '48px', flexShrink: 0 }}>
@@ -45,8 +53,12 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
         }}
       >
         <PoolFinderAddressInput
-          label={t('ajna.oracless.form.pool-address')}
-          placeholder="0×232b…x8482"
+          label={t('pool-finder.form.pool-address')}
+          placeholder={formatAddress(
+            getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs['ETH-USDC'].address,
+          )}
+          type="address"
+          chainId={chainId}
           value={addresses.poolAddress}
           onChange={(value) => {
             setAddresses({
@@ -60,8 +72,10 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
           }}
         />
         <PoolFinderAddressInput
-          label={t('ajna.oracless.form.collateral-token')}
-          placeholder={t('ajna.oracless.form.placeholder')}
+          label={t('pool-finder.form.collateral-token')}
+          placeholder={t('pool-finder.form.token-placeholder')}
+          type="token"
+          chainId={chainId}
           value={addresses.collateralAddress}
           onChange={(value) => {
             setAddresses({
@@ -75,9 +89,11 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ on
           }}
         />
         <PoolFinderAddressInput
-          label={t('ajna.oracless.form.quote-token')}
-          placeholder={t('ajna.oracless.form.placeholder')}
+          label={t('pool-finder.form.quote-token')}
+          placeholder={t('pool-finder.form.token-placeholder')}
           value={addresses.quoteAddress}
+          type="token"
+          chainId={chainId}
           onChange={(value) => {
             setAddresses({
               ...addresses,

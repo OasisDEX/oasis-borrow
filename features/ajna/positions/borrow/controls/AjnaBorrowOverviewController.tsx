@@ -54,7 +54,7 @@ export function AjnaBorrowOverviewController() {
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
-  const changeVariant = getBorrowishChangeVariant(simulation)
+  const changeVariant = getBorrowishChangeVariant({ simulation, isOracless })
 
   const originationFee = getOriginationFee(position, simulation)
 
