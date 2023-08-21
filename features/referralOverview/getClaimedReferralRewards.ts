@@ -1,8 +1,10 @@
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface ClaimedReferralRewards {
-  id: string
-  week: number
+  week:{
+    id: string
+    week: string
+  }
 }
 
 export async function getClaimedReferralRewards(

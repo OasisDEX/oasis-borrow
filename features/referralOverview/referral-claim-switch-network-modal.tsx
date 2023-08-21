@@ -4,7 +4,7 @@ import { useConnection } from 'features/web3OnBoard'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
-import { Button, Flex, Image, Text } from 'theme-ui'
+import { Button, Flex, Grid, Image, Text } from 'theme-ui'
 
 export function ReferralClaimSwitchNetworkModal() {
   const { t } = useTranslation()
@@ -15,9 +15,9 @@ export function ReferralClaimSwitchNetworkModal() {
   }, [setChain])
 
   return (
-    <>
-      <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={close}>
-        <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+    <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={close}>
+      <Grid p={4} sx={{ mt: '32px' }}>
+        <Flex sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <Image src={staticFilesRuntimeUrl('/static/img/switch_wallet_optimism.svg')} mb="16px" />
           <Text mb="8px" sx={{ lineHeight: 1.5 }} variant="header4">
             {t('ref.modal.switch-network-heading')}
@@ -38,8 +38,8 @@ export function ReferralClaimSwitchNetworkModal() {
           >
             {t('ref.modal.switch-network-button-text')}
           </Button>
-        </Flex>
-      </Modal>
-    </>
+        </Flex>{' '}
+      </Grid>
+    </Modal>
   )
 }

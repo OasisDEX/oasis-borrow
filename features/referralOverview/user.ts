@@ -75,14 +75,13 @@ export function createUserReferral$(
           const referralsOut = referrals?.map((r) => r.address)
 
           const claimedWeeksIds = claimedReferralRewards.map((item) =>
-            Number(item.week),
+            Number(item.week.week),
           ) as number[]
+
           const dueReferralRewards = referralRewards?.filter(
             (reward) => !claimedWeeksIds.includes(reward.week_number),
           )
-          const totalClaims = referralRewards
-            ? referralRewards.reduce((p, c) => p.plus(c.amount), zero)
-            : zero
+
           const claimsOut = {
             weeks: dueReferralRewards?.map((item) => new BigNumber(item.week_number)),
             amounts: dueReferralRewards?.map((item) => new BigNumber(item.amount)),
@@ -138,6 +137,12 @@ export function createUserReferral$(
             startWith(undefined),
           )
 
+          const totalAmountRaw = referralRewards
+            ? referralRewards.reduce((p, c) => p.plus(c.amount), zero)
+            : zero
+          const totalClaimRaw =
+            claimsOut.amounts == null ? zero : claimsOut.amounts.reduce((p, c) => p.plus(c), zero)
+
           return combineLatest(
             ClaimTxnState$,
             of({
@@ -149,15 +154,8 @@ export function createUserReferral$(
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               performClaimMultiple: claimAllFunction,
-              totalAmount: formatAmount(amountFromWei(new BigNumber(totalClaims)), 'USD'),
-              totalClaim: claimsOut.amounts
-                ? formatAmount(
-                    amountFromWei(
-                      claimsOut.amounts.reduce((p, c) => p.plus(c), new BigNumber('0')),
-                    ),
-                    'USD',
-                  )
-                : '0.00',
+              totalAmount: formatAmount(amountFromWei(new BigNumber(totalAmountRaw)), 'USD'),
+              totalClaim: formatAmount(amountFromWei(totalClaimRaw), 'USD'),
             }),
           ).pipe(
             map(([txStatus, userState]) => ({
