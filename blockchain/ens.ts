@@ -12,7 +12,7 @@ export function resolveENSName$(context$: Observable<Context>, address: string) 
       const provider = new ethers.providers.JsonRpcBatchProvider(
         getNetworkRpcEndpoint(context.chainId),
       )
-      return await provider
+      return provider
         .lookupAddress(address)
         .catch((err: Error) =>
           console.warn(`Error looking up ENS name for address: ${err.message}`),
@@ -22,22 +22,22 @@ export function resolveENSName$(context$: Observable<Context>, address: string) 
 }
 
 // address => ens name
-export async function addressToEnsNameMainnet(ensName: string) {
+export async function addressToEnsNameMainnet(address: string) {
   const provider = new ethers.providers.JsonRpcBatchProvider(
     getNetworkRpcEndpoint(NetworkIds.MAINNET),
   )
-  return await provider.lookupAddress(ensName).catch((err: Error) => {
-    console.warn(`Error looking up ENS name for address: ${ensName}/${err.message}`)
+  return provider.lookupAddress(address).catch((err: Error) => {
+    console.warn(`Error looking up ENS name for address: ${address}/${err.message}`)
     return null
   })
 }
 
 // ens name => address
-export async function ensNameToAddressMainnet(address: string) {
+export async function ensNameToAddressMainnet(ensName: string) {
   const provider = new ethers.providers.JsonRpcBatchProvider(
     getNetworkRpcEndpoint(NetworkIds.MAINNET),
   )
-  return await provider.resolveName(address).catch((err: Error) => {
+  return provider.resolveName(ensName).catch((err: Error) => {
     console.warn(`Error looking up ENS name for address: ${err.message}`)
     return null
   })
@@ -61,11 +61,11 @@ export const useMainnetEnsName = (address?: string | null) => {
 }
 
 export const useMainnetEnsNames = (addresses?: string[]) => {
-  const firstAddressesList: { [key: string]: string } = {}
+  const initialAddressesList: { [key: string]: string } = {}
   addresses?.forEach((address) => {
-    firstAddressesList[address] = address
+    initialAddressesList[address] = address
   })
-  const [ensNames, setEnsNames] = useState<{ [key: string]: string }>(firstAddressesList)
+  const [ensNames, setEnsNames] = useState<{ [key: string]: string }>(initialAddressesList)
 
   useMemo(() => {
     if (!addresses || !addresses.length) return
