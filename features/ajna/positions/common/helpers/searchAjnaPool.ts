@@ -33,12 +33,10 @@ interface SearchAjnaPoolParams {
   quoteAddress?: string[]
 }
 
-export const searchAjnaPool = async (networkId: NetworkIds,
-{
-  collateralAddress = [],
-  poolAddress = [],
-  quoteAddress = [],
-}: SearchAjnaPoolParams): Promise<SearchAjnaPoolData[]> => {
+export const searchAjnaPool = async (
+  networkId: NetworkIds,
+  { collateralAddress = [], poolAddress = [], quoteAddress = [] }: SearchAjnaPoolParams,
+): Promise<SearchAjnaPoolData[]> => {
   const caseSensitiveCollateralAddress = collateralAddress.map((address) => address.toLowerCase())
   const caseSensitivePoolAddress = poolAddress.map((address) => address.toLowerCase())
   const caseSensitiveQuoteAddress = quoteAddress.map((address) => address.toLowerCase())
