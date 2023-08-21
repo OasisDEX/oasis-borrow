@@ -11,37 +11,34 @@ import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
-import { ActionPills } from 'components/ActionPills'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
-import { MessageCard } from 'components/MessageCard'
 import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { Skeleton } from 'components/Skeleton'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
-import { StopLossAaveErrorMessage } from 'features/aave/components/StopLossAaveErrorMessage'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
   ManageAaveContext,
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
-import { isAllowanceNeeded, ManagePositionAvailableActions, ProductType } from 'features/aave/types'
+import { ManagePositionAvailableActions, ProductType } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getAaveStrategyUrl } from 'helpers/getAaveStrategyUrl'
-import { handleNumericInput } from 'helpers/input'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import { curry } from 'ramda'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 import { Sender } from 'xstate'
+
+import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
+import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
 
 export interface ManageAaveAutomation {
   stopLoss: {
@@ -51,15 +48,15 @@ export interface ManageAaveAutomation {
   }
 }
 
-interface ManageAaveStateProps {
+export interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
   readonly send: Sender<ManageAaveEvent>
   readonly automation?: ManageAaveAutomation
 }
 
-type WithDropdownConfig<T> = T & { dropdownConfig?: SidebarSectionHeaderDropdown }
+export type WithDropdownConfig<T> = T & { dropdownConfig?: SidebarSectionHeaderDropdown }
 
-function isLoading(state: ManageAaveStateMachineState) {
+export function isLoading(state: ManageAaveStateMachineState) {
   return (
     state.matches('background.loading') ||
     state.matches('background.debouncing') ||
@@ -68,12 +65,12 @@ function isLoading(state: ManageAaveStateMachineState) {
   )
 }
 
-function isLocked(state: ManageAaveStateMachineState) {
+export function isLocked(state: ManageAaveStateMachineState) {
   const { ownerAddress, web3Context } = state.context
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 
-function textButtonReturningToAdjust({
+export function textButtonReturningToAdjust({
   state,
   send,
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'textButton'> {
@@ -89,13 +86,13 @@ function textButtonReturningToAdjust({
   return {}
 }
 
-function transitionHasSwap(
+export function transitionHasSwap(
   transition?: ISimplePositionTransition | PositionTransition | IStrategy,
 ): transition is PositionTransition {
   return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
 }
 
-function getAmountReceivedAfterClose(
+export function getAmountReceivedAfterClose(
   strategy:
     | PositionTransition
     | ISimplePositionTransition
@@ -131,7 +128,7 @@ function getAmountReceivedAfterClose(
   return toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
 }
 
-function BalanceAfterClose({ state }: ManageAaveStateProps) {
+export function BalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
   const closingToken = state.context.manageTokenInput!.closingToken!
   const isCloseToCollateral = closingToken === state.context.currentPosition?.collateral.symbol
@@ -192,7 +189,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
-function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
+export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
   if (context.currentPosition === undefined) {
     return zero
   }
@@ -216,7 +213,7 @@ function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
   return currentDebt.lte(currentBalance) ? currentDebt : currentBalance
 }
 
-function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
+export function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
   if (
     context.manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
   ) {
@@ -228,7 +225,7 @@ function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
   return context.balance?.collateral.balance || zero
 }
 
-function ManageAaveSaveSwitchFailureStateView({ state, send }: ManageAaveStateProps) {
+export function ManageAaveSaveSwitchFailureStateView({ state, send }: ManageAaveStateProps) {
   const productType = state.context.strategyConfig.type
   useEffect(() => {
     if (productType === 'Borrow') {
@@ -243,7 +240,7 @@ function ManageAaveSaveSwitchFailureStateView({ state, send }: ManageAaveStatePr
   return null
 }
 
-function ManageAaveSwitchingStateView({ state }: ManageAaveStateProps) {
+export function ManageAaveSwitchingStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -265,7 +262,7 @@ function ManageAaveSwitchingStateView({ state }: ManageAaveStateProps) {
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
-function ManageAaveSwitchStateView({
+export function ManageAaveSwitchStateView({
   state,
   send,
   productType,
@@ -286,241 +283,6 @@ function ManageAaveSwitchStateView({
       action: () => send({ type: 'SWITCH_CONFIRMED', productType: productType }),
     },
     textButton: textButtonReturningToAdjust({ state, send }).textButton,
-  }
-
-  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
-}
-
-function GetReviewingSidebarProps({
-  state,
-  send,
-  automation,
-}: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
-  const { t } = useTranslation()
-  const { collateral, debt } = state.context.tokens
-  const stopLossError = automation?.stopLoss.stopLossError
-
-  const updateClosingAction = (closingToken: string) => {
-    if (closingToken === state.context.manageTokenInput?.closingToken) return
-    send({ type: 'UPDATE_CLOSING_ACTION', closingToken })
-  }
-
-  const updateCollateralTokenAction = (manageTokenAction: ManageCollateralActionsEnum) => {
-    send({ type: 'UPDATE_COLLATERAL_TOKEN_ACTION', manageTokenAction })
-  }
-  const updateDebtTokenAction = (manageTokenAction: ManageDebtActionsEnum) => {
-    send({ type: 'UPDATE_DEBT_TOKEN_ACTION', manageTokenAction })
-  }
-  const updateTokenActionValue = (manageTokenActionValue?: BigNumber) => {
-    send({ type: 'UPDATE_TOKEN_ACTION_VALUE', manageTokenActionValue })
-  }
-
-  const closeToToken = state.context.manageTokenInput?.closingToken
-
-  switch (true) {
-    case state.matches('frontend.reviewingClosing'):
-      return {
-        title: closeToToken
-          ? t('manage-earn.aave.vault-form.close-position-to', { token: closeToToken })
-          : t('manage-earn.aave.vault-form.close-position'),
-        content: (
-          <Grid gap={3}>
-            <ActionPills
-              active={closeToToken || ''}
-              items={[collateral, debt].map((token) => ({
-                id: token,
-                label: t('close-to', { token }),
-                action: () => curry(updateClosingAction)(token),
-              }))}
-            />
-            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('manage-earn.aave.vault-form.close-description', { closeToToken })}
-            </Text>
-            {closeToToken && <BalanceAfterClose state={state} send={send} />}
-            {closeToToken && (
-              <StrategyInformationContainer
-                state={state}
-                changeSlippageSource={(from) => {
-                  send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-                }}
-              />
-            )}
-          </Grid>
-        ),
-      }
-    case state.matches('frontend.manageCollateral'):
-      const maxCollateralAmount = calculateMaxCollateralAmount(state.context)
-      const amountCollateralTooHigh = maxCollateralAmount.lt(
-        state.context.manageTokenInput?.manageTokenActionValue || zero,
-      )
-      return {
-        title: t('system.manage-collateral'),
-        content: (
-          <Grid gap={3}>
-            <ActionPills
-              active={state.context.manageTokenInput?.manageTokenAction!}
-              items={Object.values(ManageCollateralActionsEnum).map((action) => ({
-                id: action,
-                label: t(`system.actions.multiply.${action}`),
-                action: () => curry(updateCollateralTokenAction)(action),
-              }))}
-            />
-            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('system.manage-collateral')}
-            </Text>
-            <VaultActionInput
-              action="Enter"
-              currencyCode={collateral}
-              currencyDigits={getToken(collateral).digits}
-              maxAmountLabel={t('balance')}
-              maxAmount={maxCollateralAmount}
-              showMax={true}
-              onSetMax={() => {
-                updateTokenActionValue(maxCollateralAmount)
-              }}
-              amount={state.context.manageTokenInput?.manageTokenActionValue}
-              onChange={handleNumericInput(updateTokenActionValue)}
-              hasError={false}
-            />
-            {stopLossError && <StopLossAaveErrorMessage />}
-            {amountCollateralTooHigh && (
-              <MessageCard
-                messages={
-                  state.context.manageTokenInput?.manageTokenAction ===
-                  ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
-                    ? [
-                        t('vault-errors.withdraw-amount-exceeds-free-collateral', {
-                          maxWithdrawAmount: formatCryptoBalance(maxCollateralAmount),
-                          token: state.context.tokens.collateral,
-                        }),
-                      ]
-                    : [t('vault-errors.deposit-amount-exceeds-collateral-balance')]
-                }
-                type="error"
-              />
-            )}
-            <StrategyInformationContainer
-              state={state}
-              changeSlippageSource={(from) => {
-                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-              }}
-            />
-          </Grid>
-        ),
-      }
-    case state.matches('frontend.manageDebt'):
-      const maxDebtAmount = calculateMaxDebtAmount(state.context)
-      const amountDebtTooHigh = maxDebtAmount.lt(
-        state.context.manageTokenInput?.manageTokenActionValue || zero,
-      )
-      return {
-        title: t('system.manage-debt'),
-        content: (
-          <Grid gap={3}>
-            <ActionPills
-              active={state.context.manageTokenInput?.manageTokenAction!}
-              items={Object.values(ManageDebtActionsEnum).map((action) => ({
-                id: action,
-                label: t(`system.actions.multiply.${action}`),
-                action: () => curry(updateDebtTokenAction)(action),
-              }))}
-            />
-            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('system.manage-debt')}
-            </Text>
-            <VaultActionInput
-              action="Enter"
-              currencyCode={debt}
-              currencyDigits={getToken(debt).digits}
-              maxAmountLabel={t('balance')}
-              maxAmount={maxDebtAmount}
-              showMax={true}
-              onSetMax={() => {
-                updateTokenActionValue(maxDebtAmount)
-              }}
-              amount={state.context.manageTokenInput?.manageTokenActionValue}
-              onChange={handleNumericInput(updateTokenActionValue)}
-              hasError={false}
-            />
-            {stopLossError && <StopLossAaveErrorMessage />}
-            {amountDebtTooHigh && (
-              <MessageCard
-                messages={
-                  state.context.manageTokenInput?.manageTokenAction ===
-                  ManageDebtActionsEnum.PAYBACK_DEBT
-                    ? [
-                        t('vault-errors.payback-amount-exceeds', {
-                          maxPaybackAmount: formatCryptoBalance(maxDebtAmount),
-                          token: state.context.tokens.debt,
-                        }),
-                      ]
-                    : [
-                        t('vault-errors.borrow-amount-exceeds-max', {
-                          maxBorrowAmount: formatCryptoBalance(maxDebtAmount),
-                          token: state.context.tokens.debt,
-                        }),
-                      ]
-                }
-                type="error"
-              />
-            )}
-            <StrategyInformationContainer
-              state={state}
-              changeSlippageSource={(from) => {
-                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-              }}
-            />
-          </Grid>
-        ),
-      }
-    default:
-      return {
-        title: t('manage-earn.aave.vault-form.adjust-title'),
-        content: (
-          <Grid gap={3}>
-            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('manage-earn.aave.vault-form.adjust-description')}
-            </Text>
-            <StrategyInformationContainer
-              state={state}
-              changeSlippageSource={(from) => {
-                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-              }}
-            />
-          </Grid>
-        ),
-      }
-  }
-}
-
-function ManageAaveReviewingStateView({
-  state,
-  send,
-  dropdownConfig,
-  automation,
-}: WithDropdownConfig<ManageAaveStateProps>) {
-  const { t } = useTranslation()
-
-  const allowanceNeeded = isAllowanceNeeded(state.context)
-  // TODO validation suppressed for testing trigger execution
-  const stopLossError = automation?.stopLoss?.stopLossError
-
-  const label = allowanceNeeded
-    ? t('set-allowance-for', {
-        token: state.context.transactionToken || state.context.strategyConfig.tokens.deposit,
-      })
-    : t('manage-earn.aave.vault-form.confirm-btn')
-
-  const sidebarSectionProps: SidebarSectionProps = {
-    ...GetReviewingSidebarProps({ state, send, automation }),
-    primaryButton: {
-      isLoading: false,
-      disabled: !state.can('NEXT_STEP') || isLocked(state) || stopLossError,
-      label: label,
-      action: () => send('NEXT_STEP'),
-    },
-    textButton: textButtonReturningToAdjust({ state, send }).textButton,
-    dropdown: dropdownConfig,
   }
 
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
