@@ -143,7 +143,7 @@
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
-  "smart-proxy-desc": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
+  "smart-proxy-desc": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be send to your address.",
   "create-vault": "Create Vault",
   "create-your-vault": "Create your vault",
   "creating-proxy": "Creating Proxy",
@@ -361,7 +361,7 @@
   "deposit-generate-description-recent-failed": "Failed to deposit and generate from vault {{ id }}",
   "withdraw-payback-description-pending": "Withdrawing {{ withdrawAmount }} {{ token }} and paying back {{ paybackAmount }} DAI to vault {{ id }}",
   "withdraw-payback-description-recent": "Withdrawn {{ withdrawAmount }} {{ token }} and payed back {{ paybackAmount }} DAI to vault {{ id }}",
-  "withdraw-payback-description-recent-failed": "Failed to withdraw and payback to vault {{ id }}",
+  "withdraw-payback-description-recent-failed": "Failed to withdraw and pay back to vault {{ id }}",
   "reclaim-collateral-description-pending": "Reclaiming {{ amount }} {{ token }} from vault {{ id }}",
   "reclaim-collateral-description-recent": "Reclaimed {{ amount }} {{ token }} from vault {{ id }}",
   "reclaim-collateral-description-recent-failed": "Failed to reclaim collateral from vault {{ id }}",
@@ -421,7 +421,7 @@
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
-    "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
+    "payback": "Pay back <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
     "open_multiply_vault": "Opened multiply Vault",
@@ -1172,7 +1172,7 @@
         "switch-to-borrow": "Switch to Borrow",
         "deposit-collateral": "Deposit collateral",
         "withdraw-collateral": "Withdraw collateral",
-        "payback-debt": "Payback debt",
+        "payback-debt": "Pay back debt",
         "borrow-debt": "Borrow debt"
       },
       "earn": {
@@ -1266,15 +1266,15 @@
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "generate-amount-exceeds-dai-yield-from-total-collateral": "The collateralization ratio for this Maker Vault is too low. Please generate less Dai",
     "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collateralization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
-    "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
-    "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
-    "payback-amount-exceeds": "You cannot payback more than {{maxPaybackAmount}} {{token}}",
+    "payback-amount-exceeds-dai-balance": "You cannot pay back more Dai than the amount in your wallet",
+    "payback-amount-exceeds-vault-debt": "You are trying to pay back more than your Dai debt for this Maker Vault",
+    "payback-amount-exceeds": "You cannot pay back more than {{maxPaybackAmount}} {{token}}",
     "borrow-amount-exceeds-max": "You cannot borrow more than {{maxBorrowAmount}} {{token}}",
     "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
     "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
-    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral by choosing 'Manage collateral' option in select.",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
@@ -1300,7 +1300,7 @@
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
-    "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or payback all your debt",
+    "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or pay back all your debt",
     "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
     "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
@@ -1333,7 +1333,7 @@
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
-    "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
+    "closing": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be sent to your address."
   },
   "vault-changes": {
     "order-information": "Order information",
@@ -1357,7 +1357,7 @@
     "borrow": "Borrow",
     "deposit": "Deposit",
     "generate": "Generate",
-    "payback": "Payback",
+    "payback": "Pay back",
     "withdraw": "Withdraw"
   },
   "vault-changed": "Vault changed!",
@@ -1527,7 +1527,7 @@
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
-      "dai": "Generate DAI from the collateral in your vault, or payback DAI. Save gas by combining transactions.",
+      "dai": "Generate DAI from the collateral in your vault, or pay back DAI. Save gas by combining transactions.",
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
       "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "edit-multiply-dai": "This vault can be created by simply <1>depositing DAI</1>. The transaction will create the {{token}} position for you based on this DAI deposit.",
@@ -2668,7 +2668,7 @@
           },
           "being-liquidated": {
             "title": "This position is currently being liquidated",
-            "message": "A penalty of 7% has been applied increasing to the total debt. Liquidators can bid on your collateral to payback the debt. You can still adjust your position, by paying back debt or adding more collateral to remove it from the liquidation auction. <0>Read more about Ajna Liquidations →</0>"
+            "message": "A penalty of 7% has been applied increasing to the total debt. Liquidators can bid on your collateral to pay back the debt. You can still adjust your position, by paying back debt or adding more collateral to remove it from the liquidation auction. <0>Read more about Ajna Liquidations →</0>"
           },
           "got-liquidated": {
             "title": "This position got liquidated. You have collateral to withdraw",
@@ -2835,7 +2835,7 @@
     },
     "validations": {
       "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",
-      "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet.",
+      "payback-amount-exceeds-debt-token-balance": "You cannot pay back more than the amount of debt token in your wallet.",
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would make your position eligible for liquidation. Please enter a lower amount.",

@@ -158,9 +158,13 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     useMemo(
       () =>
         dpmPositionData && ajnaPositionData
-          ? getAjnaPositionAggregatedData$({ dpmPositionData, position: ajnaPositionData })
+          ? getAjnaPositionAggregatedData$({
+              dpmPositionData,
+              position: ajnaPositionData,
+              networkId: context?.chainId ?? NetworkIds.MAINNET,
+            })
           : EMPTY,
-      [dpmPositionData, ajnaPositionData],
+      [dpmPositionData, ajnaPositionData, context?.chainId],
     ),
   )
 
@@ -183,7 +187,7 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
   const tokensIconsData = useMemo(() => {
-    return collateralToken && quoteToken
+    return collateralToken && quoteToken && !isOracless
       ? {
           collateralToken,
           quoteToken,
@@ -191,11 +195,11 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : dpmPositionData && isOracless && identifiedTokensData
       ? {
           collateralToken:
-            identifiedTokensData[dpmPositionData.collateralToken].source === 'blockchain'
+            identifiedTokensData[dpmPositionData.collateralTokenAddress].source === 'blockchain'
               ? dpmPositionData.collateralTokenAddress
               : dpmPositionData.collateralToken,
           quoteToken:
-            identifiedTokensData[dpmPositionData.quoteToken].source === 'blockchain'
+            identifiedTokensData[dpmPositionData.quoteTokenAddress].source === 'blockchain'
               ? dpmPositionData.quoteTokenAddress
               : dpmPositionData.quoteToken,
         }
