@@ -60,7 +60,6 @@ export function AjnaFormView({
       setIsFlowStateReady,
       setNextStep,
       setStep,
-      steps,
     },
     tx: {
       isTxError,
@@ -219,10 +218,6 @@ export function AjnaFormView({
     })
   }, [flowState.availableProxies])
   useEffect(() => setIsFlowStateReady(flowState.isEverythingReady), [flowState.isEverythingReady])
-  useEffect(() => {
-    if (!walletAddress && steps.indexOf(currentStep) > steps.indexOf(editingStep))
-      setStep(editingStep)
-  }, [walletAddress])
 
   return (
     <>
