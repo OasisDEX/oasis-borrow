@@ -2,14 +2,15 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
 import { NetworkHexIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
+import { ReferralClaimSwitchNetworkModal } from 'features/referralOverview/referral-claim-switch-network-modal'
 import { ClaimTxnState, UserReferralState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
-import { useConnection, useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { formatAddress } from 'helpers/formatters/format'
+import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
-import { is } from 'ramda'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
 
@@ -24,6 +25,10 @@ export interface UpsertUser {
 
 export function FeesView({ userReferral }: Props) {
   const { t } = useTranslation()
+  const { openModal } = useModalContext()
+  const { wallet } = useWalletManagement()
+
+  const isOnOptimism = NetworkHexIds.OPTIMISMMAINNET === wallet?.chainHexId
 
   // move to pipe
   const createUser = async (upsertUser: UpsertUser) => {
@@ -44,18 +49,6 @@ export function FeesView({ userReferral }: Props) {
         })
     }
   }
-
-  const { setChain } = useConnection()
-  const { wallet } = useWalletManagement()
-
-  const isOnOptimism = NetworkHexIds.OPTIMISMMAINNET === wallet?.chainHexId
-
-  const switchToOptimism = useCallback(() => {
-    if (!isOnOptimism) {
-      // todo this should show confirmation modal
-      setChain(NetworkHexIds.OPTIMISMMAINNET)
-    }
-  }, [isOnOptimism, setChain])
 
   return (
     <Box
@@ -128,7 +121,8 @@ export function FeesView({ userReferral }: Props) {
                 if (isOnOptimism) {
                   userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
                 } else {
-                  switchToOptimism()
+                  openModal(ReferralClaimSwitchNetworkModal, {
+                  })
                 }
               }}
               sx={{ p: '4px', minWidth: ['100%', '138px', '138px'] }}
