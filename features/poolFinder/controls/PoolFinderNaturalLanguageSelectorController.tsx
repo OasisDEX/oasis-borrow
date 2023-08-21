@@ -27,10 +27,9 @@ export const PoolFinderNaturalLanguageSelectorController: FC<
         <HeaderSelector
           defaultOption={productHubOptionsMap[product].product}
           gradient={gradient}
-          options={Object.values([
-            productHubOptionsMap.borrow,
-            productHubOptionsMap.earn,
-          ]).map((option) => option.product)}
+          options={Object.values([productHubOptionsMap.borrow, productHubOptionsMap.earn]).map(
+            (option) => option.product,
+          )}
           parentRef={ref}
           withHeaders={true}
           onChange={(selected) => {
