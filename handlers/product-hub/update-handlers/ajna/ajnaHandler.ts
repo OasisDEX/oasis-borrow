@@ -137,8 +137,8 @@ async function getAjnaPoolData(
                 ...getTokenGroup(quoteToken, 'secondary'),
                 fee,
                 liquidity,
-                ...(!isPoolNotEmpty &&
-                  isOracless && {
+                ...(isPoolNotEmpty &&
+                  !isOracless && {
                     maxLtv,
                     maxMultiply,
                   }),
