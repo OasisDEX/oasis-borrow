@@ -2,7 +2,7 @@ import { POOL_FINDER_DEFAULT_PRODUCT } from 'features/poolFinder/consts'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import React from 'react'
 
-export default function() {
+export default function () {
   return <></>
 }
 
