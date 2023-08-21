@@ -1,12 +1,13 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
 import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { LendingProtocol } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, EMPTY, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
@@ -28,20 +29,14 @@ export function checkVaultTypeUsingApi$(
       }
 
       return getVaultFromApi$(
-        positionInfo.id,
-        new BigNumber(context.chainId),
+        positionInfo.id.toNumber(),
+        context.chainId,
         positionInfo.protocol,
       ).pipe(
-        map((resp) => {
-          if (Object.keys(resp).length === 0) {
-            return VaultType.Borrow
-          } else {
-            const vaultResponse = resp as {
-              vaultId: BigNumber
-              type: VaultType
-            }
-            return vaultResponse.type as VaultType
-          }
+        map((vault) => vault.type),
+        catchError(() => {
+          // If any error occurs during the AJAX request, return Borrow type
+          return of(VaultType.Borrow)
         }),
       )
     }),
@@ -57,7 +52,9 @@ export function checkMultipleVaultsFromApi$(
   protocol: string,
 ): Observable<CheckMultipleVaultsResponse> {
   return ajax({
-    url: `/api/vaults/${protocol.toLowerCase()}?${vaults.map((vault) => `id=${vault}&`).join('')}`,
+    url: `/api/vaults/1/${protocol.toLowerCase()}?${vaults
+      .map((vault) => `id=${vault}&`)
+      .join('')}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -82,18 +79,63 @@ export function checkMultipleVaultsFromApi$(
   )
 }
 
-export function getVaultFromApi$(
-  vaultId: BigNumber,
-  chainId: BigNumber,
-  protocol: LendingProtocol,
-): Observable<
-  | {
-      vaultId: BigNumber
-      type: VaultType
-      chainId: BigNumber
+export interface ApiVault {
+  vaultId: number
+  chainId: NetworkIds
+  protocol: LendingProtocol
+  ownerAddress: string
+  type: VaultType
+}
+
+export interface ApiVaultsParams {
+  vaultIds: number[]
+  chainId: NetworkIds
+  protocol: LendingProtocol
+}
+
+export async function getApiVaults({
+  vaultIds,
+  protocol,
+  chainId,
+}: ApiVaultsParams): Promise<ApiVault[]> {
+  if (vaultIds.length === 0) {
+    return []
+  }
+  const vaultsQuery = vaultIds.map((id) => `id=${id}`).join('&')
+  try {
+    const response = await fetch(`/api/vaults/${chainId}/${protocol}?${vaultsQuery}`)
+    if (response.status === 404) {
+      return []
     }
-  | {}
-> {
+    const vaults = await response.json()
+    return vaults.vaults.map((vault: Vault) => {
+      return {
+        vaultId: vault.vault_id,
+        chainId: vault.chain_id,
+        protocol: vault.protocol,
+        ownerAddress: vault.owner_address,
+        type: vault.type,
+      }
+    })
+  } catch (error) {
+    console.warn(`Can't obtain vaults from API`, error)
+    return []
+  }
+}
+
+export function getVaultFromApi$(
+  vaultId: number,
+  chainId: number,
+  protocol: LendingProtocol,
+): Observable<ApiVault> {
+  if (chainId === 0 || chainId < 1) {
+    console.error('Invalid chainId')
+    return EMPTY
+  }
+  if (vaultId === 0 || vaultId < 1) {
+    console.error('Invalid vaultId')
+    return EMPTY
+  }
   return ajax({
     url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
@@ -102,19 +144,14 @@ export function getVaultFromApi$(
     },
   }).pipe(
     map((resp) => {
-      const { vaultId, type, chainId, protocol } = resp.response as {
+      const { vaultId, type, chainId, ownerAddress, protocol } = resp.response as {
         vaultId: number
         type: VaultType
-        chainId: number
-        protocol: string
+        chainId: NetworkIds
+        protocol: LendingProtocol
+        ownerAddress: string
       }
-      return { vaultId, type, chainId, protocol }
-    }),
-    catchError((err) => {
-      if (err.xhr.status === 404) {
-        return of({})
-      }
-      throw err
+      return { vaultId, type, chainId, ownerAddress, protocol }
     }),
   )
 }
@@ -139,5 +176,9 @@ export function saveVaultUsingApi$(
       chainId,
       protocol: protocol.toLowerCase(),
     },
-  }).pipe(map((_) => {}))
+  }).pipe(
+    map(() => {
+      console.log('Vault saved')
+    }),
+  )
 }

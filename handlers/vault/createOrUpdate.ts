@@ -8,7 +8,7 @@ import { selectVaultByIdAndChainId } from './get'
 
 const vaultSchema = z.object({
   id: z.number(),
-  type: z.enum(['borrow', 'multiply']),
+  type: z.enum(['borrow', 'multiply', 'earn']),
   chainId: z.number(),
   protocol: z.string(),
 })
@@ -28,7 +28,7 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
   const insertQuery = `INSERT INTO vault (vault_id, chain_id, type, owner_address, protocol) VALUES (${vaultData.vault_id},${vaultData.chain_id},'${vaultData.type}','${vaultData.owner_address}', '${vaultData.protocol}')`
   const updateQuery = `UPDATE vault SET type='${vaultData.type}' WHERE vault_id=${vaultData.vault_id} AND chain_id=${vaultData.chain_id} AND protocol='${vaultData.protocol}'`
 
-  if (params.type !== 'borrow' && params.type !== 'multiply') {
+  if (params.type !== 'borrow' && params.type !== 'multiply' && params.type !== 'earn') {
     return res.status(403).send('Incorrect type of vault')
   }
 

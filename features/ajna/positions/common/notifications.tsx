@@ -1,6 +1,7 @@
-import { AjnaEarnPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
+import { LUPPercentageOffset } from 'features/ajna/common/consts'
 import {
   AjnaFlow,
   AjnaGenericPosition,
@@ -25,7 +26,7 @@ import {
   AjnaMultiplyFormState,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
 import React, { Dispatch, FC } from 'react'
 
@@ -85,6 +86,8 @@ const ajnaNotifications: {
   priceAboveMomp: NotificationCallbackWithParams<PriceAboveMompParams>
   safetySwichOn: NotificationCallbackWithParams<null>
   timeToLiquidation: NotificationCallbackWithParams<TimeToLiquidationParams>
+  nearLup: NotificationCallbackWithParams<null>
+  aboveLup: NotificationCallbackWithParams<null>
 } = {
   priceAboveMomp: ({ action, message }) => ({
     title: {
@@ -239,6 +242,28 @@ const ajnaNotifications: {
     icon: 'liquidation',
     type: 'error',
   }),
+  nearLup: () => ({
+    title: {
+      translationKey: 'ajna.position-page.common.notifications.near-lup.title',
+    },
+    message: {
+      translationKey: 'ajna.position-page.common.notifications.near-lup.message',
+    },
+    icon: 'coins_cross',
+    type: 'warning',
+    closable: true,
+  }),
+  aboveLup: () => ({
+    title: {
+      translationKey: 'ajna.position-page.common.notifications.above-lup.title',
+    },
+    message: {
+      translationKey: 'ajna.position-page.common.notifications.above-lup.message',
+    },
+    icon: 'coins_cross',
+    type: 'error',
+    closable: true,
+  }),
 }
 
 export function getAjnaNotifications({
@@ -251,6 +276,7 @@ export function getAjnaNotifications({
   dispatch,
   updateState,
   product,
+  isOracless,
 }: {
   ajnaSafetySwitchOn: boolean
   flow: AjnaFlow
@@ -267,6 +293,7 @@ export function getAjnaNotifications({
     | AjnaUpdateState<AjnaEarnFormState>
     | AjnaUpdateState<AjnaMultiplyFormState>
   product: AjnaProduct
+  isOracless: boolean
 }) {
   const notifications: DetailsSectionNotificationItem[] = []
 
@@ -278,6 +305,7 @@ export function getAjnaNotifications({
     case 'multiply':
     case 'borrow':
       const borrowishPositionAuction = positionAuction as AjnaBorrowishPositionAuction
+      const borrowishPosition = position as AjnaPosition
 
       if (borrowishPositionAuction.isDuringGraceTime) {
         notifications.push(
@@ -298,6 +326,23 @@ export function getAjnaNotifications({
       if (borrowishPositionAuction.isLiquidated) {
         notifications.push(ajnaNotifications.gotLiquidated(null))
       }
+
+      if (
+        borrowishPosition.thresholdPrice.gt(
+          borrowishPosition.pool.lowestUtilizedPrice.times(one.minus(LUPPercentageOffset)),
+        ) &&
+        isOracless
+      ) {
+        notifications.push(ajnaNotifications.nearLup(null))
+      }
+
+      if (
+        borrowishPosition.thresholdPrice.gt(borrowishPosition.pool.lowestUtilizedPrice) &&
+        isOracless
+      ) {
+        notifications.push(ajnaNotifications.aboveLup(null))
+      }
+
       break
     case 'earn': {
       if (flow === 'manage') {

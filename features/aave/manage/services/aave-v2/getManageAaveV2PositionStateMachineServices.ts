@@ -21,7 +21,7 @@ import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
 import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 
@@ -188,6 +188,10 @@ export function getManageAaveV2PositionStateMachineServices(
         })),
         distinctUntilChanged(isEqual),
       )
+    },
+    savePositionToDb$: () => {
+      // TODO: replace with actual implementation.
+      return of({ type: 'SWITCH_SUCCESS' })
     },
   }
 }

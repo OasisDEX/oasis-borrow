@@ -16,7 +16,6 @@ import {
 } from 'features/productHub/types'
 import { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
@@ -69,56 +68,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(defaultFilters)
 
-  // TODO: remove when Ajna Multiply feature flag is no longer needed
-  const ajnaMultiplyEnabled = useFeatureToggle('AjnaMultiply')
-
-  const filteredData = useMemo(() => {
-    return !data
-      ? undefined
-      : ajnaMultiplyEnabled
-      ? data
-      : {
-          promoCards: {
-            borrow: data.promoCards.borrow,
-            multiply: {
-              default: data.promoCards.multiply.default.filter(
-                (card) =>
-                  !(
-                    card.protocol?.protocol === LendingProtocol.Ajna &&
-                    card.link?.href.includes('multiply')
-                  ),
-              ),
-              tokens: Object.keys(data.promoCards.multiply.tokens).reduce(
-                (total, current) => ({
-                  ...total,
-                  [current]: data.promoCards.multiply.tokens[current].filter(
-                    (card) =>
-                      !(
-                        card.protocol?.protocol === LendingProtocol.Ajna &&
-                        card.link?.href.includes('multiply')
-                      ),
-                  ),
-                }),
-                {},
-              ),
-            },
-            earn: data.promoCards.earn,
-          },
-          table: data.table.map((row) => ({
-            ...row,
-            ...(row.protocol === LendingProtocol.Ajna && {
-              product: row.product.filter((product) => {
-                return (
-                  product === ProductHubProductType.Borrow ||
-                  (product === ProductHubProductType.Earn &&
-                    !row.earnStrategy?.includes('Yield Loop'))
-                )
-              }),
-            }),
-          })),
-        }
-  }, [data, ajnaMultiplyEnabled])
-
   return (
     <Fragment key={product}>
       <Box
@@ -148,7 +97,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
         )}
       </Box>
-      <WithLoadingIndicator value={[filteredData]} customLoader={<ProductHubLoadingState />}>
+      <WithLoadingIndicator value={[data]} customLoader={<ProductHubLoadingState />}>
         {([_data]) => (
           <>
             <ProductHubPromoCardsController

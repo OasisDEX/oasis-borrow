@@ -6,7 +6,7 @@ import {
 } from '@oasisdex/dma-library'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
 import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 export const ajnaOpenBorrow = ({
   state,
@@ -66,10 +66,17 @@ export const ajnaPaybackWithdrawBorrow = ({
 }) => {
   const { withdrawAmount, paybackAmount } = state
 
+  // TODO temporary fix in order to force refresh of neutral price
+  //  and therefore liquidation price on repay-only action
+  const resolvedWithdrawFallback =
+    !withdrawAmount?.gt(zero) && paybackAmount?.gt(zero)
+      ? one.shiftedBy(-commonPayload.collateralTokenPrecision)
+      : zero
+
   return strategies.ajna.borrow.paybackWithdraw(
     {
       ...commonPayload,
-      collateralAmount: withdrawAmount || zero,
+      collateralAmount: withdrawAmount || resolvedWithdrawFallback,
       position: position as AjnaPosition,
       quoteAmount: paybackAmount || zero,
     },

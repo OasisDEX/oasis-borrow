@@ -1,6 +1,7 @@
 import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {
@@ -31,7 +32,13 @@ export type AaveContext = AaveServices & {
   strategyConfig$: (
     positionId: PositionId,
     networkName: NetworkNames,
+    /* Accepts vaultType to further filter retrieved strategy assuming the product type has changed since position creation */
+    vaultType: VaultType,
   ) => Observable<IStrategyConfig>
+  updateStrategyConfig?: (
+    positionId: PositionId,
+    networkName: NetworkNames,
+  ) => (vaultType: VaultType) => void
   proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>
   chainlinkUSDCUSDOraclePrice$: Observable<BigNumber>
   chainLinkETHUSDOraclePrice$: Observable<BigNumber>

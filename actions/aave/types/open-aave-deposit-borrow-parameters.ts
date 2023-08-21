@@ -13,6 +13,7 @@ export interface OpenAaveDepositBorrowParameters {
   borrowAmount: BigNumber
   proxyAddress: string
   userAddress: string
+  token?: string
   proxyType: ProxyType
   protocol: AaveLendingProtocol
   networkId: NetworkIds

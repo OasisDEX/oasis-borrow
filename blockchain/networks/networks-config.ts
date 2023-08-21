@@ -29,6 +29,7 @@ import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.
 import { NetworkHexIds } from './network-hex-ids'
 import { NetworkIds } from './network-ids'
 import { NetworkLabelType, NetworkNames } from './network-names'
+
 export type NetworkConfigHexId = `0x${number | string}`
 
 export const ethereumMainnetHexId: NetworkConfigHexId = NetworkHexIds.MAINNET

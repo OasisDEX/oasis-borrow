@@ -8,7 +8,11 @@ import {
 } from 'blockchain/calls/operationExecutor'
 import { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
+import {
+  loadStrategyFromTokens,
+  ManageCollateralActionsEnum,
+  ManageDebtActionsEnum,
+} from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
@@ -17,11 +21,14 @@ import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
+  IStrategyConfig,
   ManageTokenInput,
+  ProductType,
   ProxyType,
   RefTransactionMachine,
 } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
@@ -29,6 +36,7 @@ import {
   TransactionParametersStateMachineEvent,
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
+import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, assign, createMachine, send, sendTo, spawn, StateFrom } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -46,6 +54,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   proxyAddress?: string
   ownerAddress?: string
   positionCreatedBy: ProxyType
+  updateStrategyConfig?: (vaultType: VaultType) => void
 }
 
 function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -65,6 +74,17 @@ export type ManageAaveEvent =
   | { type: 'RETRY' }
   | { type: 'NEXT_STEP' }
   | { type: 'START_TRANSACTION' }
+  | { type: 'SWITCH_TO_BORROW' }
+  | { type: 'SWITCH_TO_MULTIPLY' }
+  | { type: 'SWITCH_TO_EARN' }
+  | { type: 'RETRY_BORROW_SWITCH' }
+  | { type: 'RETRY_MULTIPLY_SWITCH' }
+  | { type: 'RETRY_EARN_SWITCH' }
+  | {
+      type: 'SWITCH_CONFIRMED'
+      productType: ProductType
+    }
+  | { type: 'SWITCH_SUCCESS' }
   | {
       type: 'POSITION_PROXY_ADDRESS_RECEIVED'
       proxyAddress: string
@@ -72,6 +92,7 @@ export type ManageAaveEvent =
       effectiveProxyAddress: string
     }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
+  | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | BaseAaveEvent
 
 export function createManageAaveStateMachine(
@@ -244,7 +265,12 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
-              entry: ['reset', 'killCurrentParametersMachine', 'spawnDepositBorrowMachine'],
+              entry: [
+                'reset',
+                'killCurrentParametersMachine',
+                'spawnDepositBorrowMachine',
+                'setActiveCollateralAction',
+              ],
               on: {
                 NEXT_STEP: [
                   {
@@ -340,6 +366,54 @@ export function createManageAaveStateMachine(
                     '#manageAaveStateMachine.background.debouncingManage',
                   ],
                 },
+              },
+            },
+            switchToBorrow: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            switchToMultiply: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            switchToEarn: {
+              on: {
+                SWITCH_CONFIRMED: {
+                  target: 'savePositionToDb',
+                  actions: 'updateStrategyConfigType',
+                },
+              },
+            },
+            savePositionToDb: {
+              invoke: {
+                src: 'savePositionToDb$',
+                onDone: {
+                  actions: 'updateStrategyConfig',
+                  target: 'switching',
+                },
+                onError: {
+                  target: 'saveSwitchFailure',
+                },
+              },
+            },
+            switching: {
+              after: {
+                1000: 'editing',
+              },
+            },
+            saveSwitchFailure: {
+              on: {
+                RETRY_BORROW_SWITCH: 'switchToBorrow',
+                RETRY_MULTIPLY_SWITCH: 'switchToMultiply',
+                RETRY_EARN_SWITCH: 'switchToEarn',
               },
             },
             reviewingAdjusting: {
@@ -441,6 +515,9 @@ export function createManageAaveStateMachine(
         },
       },
       on: {
+        STRATEGTY_UPDATED: {
+          actions: ['updateContext'],
+        },
         PRICES_RECEIVED: {
           actions: 'updateContext',
         },
@@ -499,27 +576,34 @@ export function createManageAaveStateMachine(
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',
-          target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
+          actions: ['resetTokenActionValue', 'updateCollateralTokenAction', 'reset'],
         },
         UPDATE_CLOSING_ACTION: {
           cond: 'canChangePosition',
           target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['resetTokenActionValue', 'updateClosingAction'],
+          actions: ['resetTokenActionValue', 'updateClosingAction', 'reset'],
         },
         UPDATE_DEBT_TOKEN_ACTION: {
           cond: 'canChangePosition',
-          target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction', 'reset'],
         },
         UPDATE_TOKEN_ACTION_VALUE: {
           cond: 'canChangePosition',
           target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['updateTokenActionValue'],
+          actions: ['updateTokenActionValue', 'reset'],
         },
         USE_SLIPPAGE: {
           target: ['background.debouncing'],
           actions: 'updateContext',
+        },
+        SWITCH_TO_BORROW: {
+          target: 'frontend.switchToBorrow',
+        },
+        SWITCH_TO_MULTIPLY: {
+          target: 'frontend.switchToMultiply',
+        },
+        SWITCH_TO_EARN: {
+          target: 'frontend.switchToEarn',
         },
       },
     },
@@ -536,8 +620,9 @@ export function createManageAaveStateMachine(
           web3Context!.account === ownerAddress,
         isAllowanceNeeded,
         canAdjustPosition: ({ strategyConfig }) =>
-          strategyConfig.availableActions.includes('adjust'),
-        isEthersTransaction: ({ strategyConfig }) =>
+          strategyConfig.availableActions().includes('adjust'),
+        isEthersTransaction: ({ strategyConfig, proxyAddress, transition }) =>
+          allDefined(proxyAddress, transition) &&
           strategyConfig.executeTransactionWith === 'ethers',
       },
       actions: {
@@ -555,6 +640,16 @@ export function createManageAaveStateMachine(
             closingToken,
           },
         })),
+        setActiveCollateralAction: assign(({ manageTokenInput }) => {
+          return {
+            manageTokenInput: {
+              ...manageTokenInput,
+              manageTokenAction:
+                manageTokenInput?.manageTokenAction ??
+                ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+            },
+          }
+        }),
         updateCollateralTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
           manageTokenInput: {
             ...manageTokenInput,
@@ -653,6 +748,29 @@ export function createManageAaveStateMachine(
         killTransactionMachine: pure((context) => {
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
+          }
+          return undefined
+        }),
+        updateStrategyConfigType: assign((context, event) => {
+          const currentStrategy = context.strategyConfig
+          const newStrategy = loadStrategyFromTokens(
+            currentStrategy.tokens.collateral,
+            currentStrategy.tokens.debt,
+            currentStrategy.network,
+            currentStrategy.protocol,
+            productToVaultType(event.productType),
+          )
+          return {
+            ...context,
+            strategyConfig: newStrategy,
+          }
+        }),
+        updateStrategyConfig: pure((context) => {
+          const newTemporaryProductType = context.strategyConfig.type
+          const updatedVaultType = productToVaultType(newTemporaryProductType)
+
+          if (context.updateStrategyConfig && updatedVaultType) {
+            context.updateStrategyConfig(updatedVaultType)
           }
           return undefined
         }),
@@ -769,7 +887,7 @@ export function createManageAaveStateMachine(
         }),
         setInitialState: send(
           (context) => {
-            const firstAction = context.strategyConfig.availableActions[0]
+            const firstAction = context.strategyConfig.availableActions()[0]
 
             switch (firstAction) {
               case 'adjust':
@@ -780,6 +898,12 @@ export function createManageAaveStateMachine(
                 return { type: 'MANAGE_DEBT' }
               case 'close':
                 return { type: 'CLOSE_POSITION' }
+              case 'switch-to-borrow':
+                return { type: 'SWITCH_TO_BORROW' }
+              case 'switch-to-multiply':
+                return { type: 'SWITCH_TO_MULTIPLY' }
+              case 'switch-to-earn':
+                return { type: 'SWITCH_TO_EARN' }
             }
           },
           { delay: 0 },

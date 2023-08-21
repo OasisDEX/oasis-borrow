@@ -17,6 +17,7 @@ import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { zero } from 'helpers/zero'
@@ -95,16 +96,28 @@ export type AavePosition = Position & {
 
 export function createPositions$(
   makerPositions$: (address: string) => Observable<Position[]>,
-  aavePositions$: (address: string) => Observable<Position[]>,
+  aaveV2MainnetPositions$: (address: string) => Observable<Position[]>,
+  aaveV3MainnetPositions$: (address: string) => Observable<Position[]>,
   optimismPositions$: (address: string) => Observable<Position[]>,
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
-  const _aavePositions$ = aavePositions$(address)
+  const _aaveV2Positions$ = aaveV2MainnetPositions$(address)
+  const _aaveV3Positions$ = aaveV3MainnetPositions$(address)
   const _optimismPositions$ = optimismPositions$(address)
-  return combineLatest(_makerPositions$, _aavePositions$, _optimismPositions$).pipe(
-    map(([makerPositions, aavePositions, optimismPositions]) => {
-      return [...makerPositions, ...aavePositions, ...optimismPositions]
+  return combineLatest(
+    _makerPositions$,
+    _aaveV2Positions$,
+    _aaveV3Positions$,
+    _optimismPositions$,
+  ).pipe(
+    map(([makerPositions, aaveV2Positions, aaveV3MainnetPositions, optimismPositions]) => {
+      return [
+        ...makerPositions,
+        ...aaveV2Positions,
+        ...aaveV3MainnetPositions,
+        ...optimismPositions,
+      ]
     }),
   )
 }
@@ -116,7 +129,6 @@ type ProxyAddressesProvider = {
 
 type BuildPositionArgs = {
   aaveV2: AaveServices
-  aaveV3: AaveServices
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
@@ -130,16 +142,12 @@ function buildAaveViewModel(
 ): Observable<AavePosition | undefined> {
   const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol, chainId } =
     positionCreatedEvent
-  const aaveServiceMap: Record<AaveLendingProtocol, AaveServices> = {
-    [LendingProtocol.AaveV2]: observables.aaveV2,
-    [LendingProtocol.AaveV3]: observables.aaveV3,
-  }
 
   if (!checkIfAave(protocol)) {
     return of(undefined)
   }
 
-  const resolvedAaveServices = aaveServiceMap[protocol]
+  const resolvedAaveServices = observables.aaveV2
 
   return combineLatest(
     resolvedAaveServices.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
@@ -209,6 +217,13 @@ function buildAaveViewModel(
           protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
         }`
 
+        const { loanToValue } = position.riskRatio
+        const { maxLoanToValue } = position.category
+        const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(0.03))
+
+        const isDanger = loanToValue.gte(maxLoanToValue)
+        const isWarning = loanToValue.gte(warnignThreshold)
+
         return {
           token: collateralToken,
           debtToken,
@@ -230,8 +245,8 @@ function buildAaveViewModel(
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,
-          isAtRiskDanger: false,
-          isAtRiskWarning: false,
+          isAtRiskDanger: isDanger,
+          isAtRiskWarning: isWarning,
         }
       },
     ),
@@ -255,7 +270,11 @@ function buildAaveV3OnlyViewModel(
   }
 
   return combineLatest(
-    services.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+    services.aaveProtocolData$(
+      strategyConfig.tokens.collateral,
+      strategyConfig.tokens.debt,
+      proxyAddress,
+    ),
     services.getAaveAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
@@ -316,6 +335,14 @@ function buildAaveV3OnlyViewModel(
         protocol === LendingProtocol.AaveV2 ? 'V2' : `V3 ${strategyConfig.network}`
       }`
 
+      const { loanToValue } = position.riskRatio
+      const { liquidationThreshold } = position.category
+      const { maxLoanToValue } = position.category
+      const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(3))
+
+      const isDanger = loanToValue.gte(liquidationThreshold)
+      const isWarning = loanToValue.gte(warnignThreshold)
+
       return {
         token: collateralToken,
         debtToken,
@@ -331,14 +358,14 @@ function buildAaveV3OnlyViewModel(
         contentsUsd: netValueUsd,
         isOwner,
         lockedCollateral: collateralNotWei,
-        type: mappymap[positionCreatedEvent.positionType],
+        type: mappymap[strategyConfig.type],
         liquidity: liquidity,
         stopLossData: undefined,
         protocol,
         chainId,
         variableBorrowRate,
-        isAtRiskDanger: false,
-        isAtRiskWarning: false,
+        isAtRiskDanger: isDanger,
+        isAtRiskWarning: isWarning,
       }
     }),
   )
@@ -391,11 +418,10 @@ function getStethEthAaveV2DsProxyEarnPosition$(
 // TODO we will need proper handling for Ajna, filtered for now
 const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
 
-export function createAavePosition$(
+export function createAaveV2Position$(
   proxyAddressesProvider: ProxyAddressesProvider,
   environment: CreatePositionEnvironmentPropsType,
   aaveV2: AaveServices,
-  aaveV3: AaveServices,
   walletAddress: string,
 ): Observable<AavePosition[]> {
   const { context$, tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } =
@@ -448,11 +474,11 @@ export function createAavePosition$(
                           return buildAaveViewModel(
                             pce,
                             userProxy.vaultId,
+
                             context,
                             walletAddress,
                             {
                               aaveV2,
-                              aaveV3,
                               tickerPrices$,
                               automationTriggersData$,
                             },
@@ -471,21 +497,39 @@ export function createAavePosition$(
   )
 }
 
-export function createAaveDpmPosition$(
+export function createAaveV3DpmPosition$(
   context$: Observable<Pick<Context, 'account'>>,
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
   tickerPrices$: (tokens: string[]) => Observable<Tickers>,
   readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
+  getApiVaults: (params: ApiVaultsParams) => Promise<ApiVault[]>,
   aaveV3: AaveServices,
   networkId: NetworkIds,
   walletAddress: string,
-) {
+): Observable<AavePosition[]> {
   return combineLatest(
     context$,
     userDpmProxies$(walletAddress),
     readPositionCreatedEvents$(walletAddress),
   ).pipe(
-    switchMap(([{ account }, userDpmProxies, positionCreatedEvents]) => {
+    switchMap(async ([{ account }, userDpmProxies, positionCreatedEvents]) => {
+      const vaultIds = userDpmProxies
+        .map((userProxy) => userProxy.vaultId)
+        .map((id) => Number.parseInt(id))
+      const apiVaults = await getApiVaults({
+        vaultIds,
+        chainId: networkId,
+        protocol: LendingProtocol.AaveV3,
+      })
+
+      return {
+        account,
+        userDpmProxies,
+        positionCreatedEvents,
+        apiVaults,
+      }
+    }),
+    switchMap(({ account, userDpmProxies, positionCreatedEvents, apiVaults }) => {
       const subjects$ = positionCreatedEvents
         .map((pce) => {
           const network = getNetworkById(networkId)
@@ -496,11 +540,18 @@ export function createAaveDpmPosition$(
             return null
           }
 
+          const dpm = userDpmProxies.find((userProxy) => userProxy.proxy === pce.proxyAddress)
+
+          const apiVault = dpm
+            ? apiVaults.find((vault) => vault.vaultId === Number.parseInt(dpm.vaultId))
+            : undefined
+
           const strategyConfig = loadStrategyFromTokens(
             pce.collateralTokenSymbol,
             pce.debtTokenSymbol,
             network.name,
             LendingProtocol.AaveV3,
+            apiVault?.type,
           )
           return {
             event: pce,

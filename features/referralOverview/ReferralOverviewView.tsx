@@ -28,10 +28,10 @@ export function ReferralsSummary({ address }: { address: string }) {
   return (
     <WithErrorHandler error={[contextError, userReferralError]}>
       <WithLoadingIndicator value={[context, userReferral]}>
-        {([context, userReferral]) => (
+        {([context, _userReferral]) => (
           <ReferralOverviewView
             context={context}
-            userReferral={userReferral}
+            userReferral={_userReferral}
             address={checksumAddress}
           />
         )}
