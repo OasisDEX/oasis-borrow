@@ -204,4 +204,9 @@ export const productHubProtocolFilter = [
     value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
     image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
   },
+  {
+    label: lendingProtocolsByName[LendingProtocol.Ajna].label,
+    value: lendingProtocolsByName[LendingProtocol.Ajna].name,
+    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+  },
 ]
