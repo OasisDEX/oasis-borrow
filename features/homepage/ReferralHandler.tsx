@@ -16,7 +16,6 @@ export function ReferralHandler() {
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
 
   const referralsEnabled = useFeatureToggle('Referrals')
-  const notificationsEnabled = useFeatureToggle('Notifications')
   const [landedWithRef, setLandedWithRef] = useState('')
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   useEffect(() => {
@@ -48,7 +47,7 @@ export function ReferralHandler() {
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
-      {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
+      {referralsEnabled && <TermsOfService userReferral={userReferral} />}
     </>
   )
 }
