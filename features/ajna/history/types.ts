@@ -23,6 +23,14 @@ export interface AjnaBorrowerEventsResponse {
 export interface AjnaHistoryEvent extends PositionHistoryEvent {
   originationFee: BigNumber
   originationFeeInQuoteToken: BigNumber
+  quoteTokensAfter: BigNumber,
+  quoteTokensBefore: BigNumber,
+  quoteTokensDelta: BigNumber,
+  quoteTokensMoved: BigNumber,
+  moveQuoteFromPrice: BigNumber,
+  moveQuoteToPrice: BigNumber,
+  addOrRemovePrice: BigNumber,
+  totalFeeInQuoteToken: BigNumber
 }
 
 export type AjnaBorrowerEvent = {
@@ -40,4 +48,13 @@ export type AjnaBorrowerEvent = {
 }
 
 // TODO to be removed when implementing aave history, dummy aave history interface
-export interface AaveHistoryEvent extends PositionHistoryEvent {}
+export interface AaveHistoryEvent extends PositionHistoryEvent {
+  quoteTokensAfter?: undefined
+  quoteTokensBefore?: undefined
+  quoteTokensDelta?: undefined
+  quoteTokensMoved?: undefined
+  moveQuoteFromPrice?: undefined
+  moveQuoteToPrice?: undefined
+  addOrRemovePrice?: undefined
+  totalFeeInQuoteToken?: undefined
+}

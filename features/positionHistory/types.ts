@@ -92,13 +92,6 @@ export type PositionHistoryEvent = {
   oasisFee: BigNumber
   oasisFeeToken: string
   oasisFeeUSD: BigNumber
-  quoteTokensAfter: BigNumber
-  quoteTokensBefore: BigNumber
-  quoteTokensDelta: BigNumber
-  quoteTokensMoved: BigNumber
-  moveQuoteFromPrice: BigNumber
-  moveQuoteToPrice: BigNumber
-  addOrRemovePrice: BigNumber
   isOpen: boolean
   swapFromAmount: BigNumber
   swapFromToken: string
@@ -106,7 +99,6 @@ export type PositionHistoryEvent = {
   swapToToken: string
   timestamp: number
   totalFee: BigNumber
-  totalFeeInQuoteToken: BigNumber
   txHash: string
   withdrawnUSD: BigNumber
 }

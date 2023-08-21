@@ -1,4 +1,3 @@
-import { Address } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { AaveHistoryEvent } from 'features/ajna/history/types'
@@ -55,20 +54,12 @@ export async function getAaveHistoryEvents(
       oasisFee: new BigNumber(event.summerFee),
       oasisFeeToken: event.summerFeeToken,
       oasisFeeUSD: new BigNumber(event.summerFeeUSD),
-      quoteTokensAfter: zero,
-      quoteTokensBefore: zero,
-      quoteTokensDelta: zero,
-      quoteTokensMoved: zero,
-      moveQuoteFromPrice: zero,
-      moveQuoteToPrice: zero,
-      addOrRemovePrice: zero,
       isOpen: event.kind === 'AAVEOpenDepositBorrow' || event.kind === 'OpenAAVEPosition',
-      totalFeeInQuoteToken: zero,
       swapFromAmount: new BigNumber(event.swapFromAmount),
       swapFromToken: event.swapFromToken,
       swapToAmount: new BigNumber(event.swapToAmount),
       swapToToken: event.swapToToken,
-      timestamp: Number(event.timestamp),
+      timestamp: Number(event.timestamp) * 1000,
       totalFee: new BigNumber(event.totalFee),
       txHash: event.txHash,
       withdrawnUSD: new BigNumber(event.withdrawnUSD),

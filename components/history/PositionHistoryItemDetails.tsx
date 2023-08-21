@@ -73,7 +73,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       )}
       {event.liquidationPriceBefore && event.liquidationPriceAfter && (
         <PositionHistoryRow label={t('position-history.liquidation-price')}>
-          {event.liquidationPriceBefore && <>
+          {!event.liquidationPriceBefore.isNaN() && <>
           {formatCryptoBalance(
             isShort
               ? normalizeValue(one.div(event.liquidationPriceBefore))
@@ -146,12 +146,12 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.netValueAfter)} USD
         </PositionHistoryRow>
       )}
-      {event.swapToAmount && (
+      {event.swapToAmount && event.swapToAmount.gt(zero) && (
         <PositionHistoryRow label={t('position-history.bought')}>
           {formatCryptoBalance(event.swapToAmount)} {collateralToken}
         </PositionHistoryRow>
       )}
-      {event.swapFromAmount && (
+      {event.swapFromAmount && event.swapFromAmount.gt(zero) && (
         <PositionHistoryRow label={t('position-history.sold')}>
           {formatCryptoBalance(event.swapFromAmount)} {collateralToken}
         </PositionHistoryRow>
