@@ -2678,6 +2678,14 @@
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
+          "near-lup": {
+            "title": "Your position's threshold price is approaching the LUP",
+            "message": "Adjust your position to ensure it stays below the LUP in order to avoid being eligible for liquidation"
+          },
+          "above-lup": {
+            "title": "Your position is eligible for liquidation",
+            "message": "Adjust your position to ensure the Threshold price stays below the LUP in order to avoid being eligible for liquidation"
+          },
           "read-more": "Read more about Ajna Liquidations"
         }
       },
