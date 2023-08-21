@@ -1,5 +1,5 @@
 import { HeaderSelector } from 'components/HeaderSelector'
-import { productHubOptionsMapFiltered } from 'features/productHub/meta'
+import { productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
@@ -25,11 +25,11 @@ export const PoolFinderNaturalLanguageSelectorController: FC<
       <Heading as="h1" variant="header2" sx={{ position: 'relative', zIndex: 2 }}>
         {t('product-hub.header.i-want-to')}
         <HeaderSelector
-          defaultOption={productHubOptionsMapFiltered[product].product}
+          defaultOption={productHubOptionsMap[product].product}
           gradient={gradient}
           options={Object.values([
-            productHubOptionsMapFiltered.borrow,
-            productHubOptionsMapFiltered.earn,
+            productHubOptionsMap.borrow,
+            productHubOptionsMap.earn,
           ]).map((option) => option.product)}
           parentRef={ref}
           withHeaders={true}

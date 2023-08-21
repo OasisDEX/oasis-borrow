@@ -3,10 +3,8 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
-import { clone } from 'ramda'
 
 export const ALL_ASSETS = 'all assets'
 
@@ -143,21 +141,6 @@ export const productHubOptionsMap: {
   },
 }
 
-const productHubOptionsMapFiltered = clone(productHubOptionsMap)
-
-if (!getFeatureToggle('Ajna')) {
-  delete productHubOptionsMapFiltered.borrow.tokens.USDC
-  delete productHubOptionsMapFiltered.borrow.tokens.GHO
-  delete productHubOptionsMapFiltered.borrow.tokens.WLD
-  delete productHubOptionsMapFiltered.earn.tokens.USDC
-  delete productHubOptionsMapFiltered.earn.tokens.BTC
-  delete productHubOptionsMapFiltered.earn.tokens.GHO
-  delete productHubOptionsMapFiltered.earn.tokens.WLD
-}
-if (!getFeatureToggle('AjnaMultiply')) {
-  delete productHubOptionsMapFiltered.multiply.tokens.GHO
-}
-
 export const productHubStrategyFilter = [
   {
     label: 'Long',
@@ -205,7 +188,7 @@ export const productHubTestNetworkFilter = [
   },
 ]
 
-const productHubProtocolFilter = [
+export const productHubProtocolFilter = [
   {
     label: lendingProtocolsByName[LendingProtocol.Maker].label,
     value: lendingProtocolsByName[LendingProtocol.Maker].name,
@@ -222,13 +205,3 @@ const productHubProtocolFilter = [
     image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
   },
 ]
-
-if (getFeatureToggle('Ajna')) {
-  productHubProtocolFilter.push({
-    label: lendingProtocolsByName[LendingProtocol.Ajna].label,
-    value: lendingProtocolsByName[LendingProtocol.Ajna].name,
-    image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-  })
-}
-
-export { productHubProtocolFilter, productHubOptionsMapFiltered }

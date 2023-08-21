@@ -11,7 +11,6 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { uiChanges } from 'helpers/uiChanges'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
 interface GetAutoFeaturesSidebarDropdownProps {
@@ -73,8 +72,6 @@ export function getAutoFeaturesSidebarDropdown({
   vaultType,
   protocol,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
-  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
-
   const stopLossDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.stop-loss',
     type: 'Protection',
@@ -127,7 +124,7 @@ export function getAutoFeaturesSidebarDropdown({
           ...(vaultType === VaultType.Multiply && isConstantMultipleAvailable
             ? [constantMultipleDropdownItem]
             : []),
-          ...(autoTakeProfitEnabled && isTakeProfitAvailable ? [autoTakeProfitDropdownItem] : []),
+          ...(isTakeProfitAvailable ? [autoTakeProfitDropdownItem] : []),
         ]
       : []),
   ]
