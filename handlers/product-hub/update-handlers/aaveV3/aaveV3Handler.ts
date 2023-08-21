@@ -151,8 +151,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
           (data) => data && data[primaryToken],
         )![primaryToken]
+        const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
+
         return {
           ...product,
+          primaryTokenAddress: tokensAddresses[primaryToken].address,
+          secondaryTokenAddress: tokensAddresses[secondaryToken].address,
           maxMultiply:
             product.label === 'WSTETH/ETH'
               ? wstethRiskRatio.multiple.toString()

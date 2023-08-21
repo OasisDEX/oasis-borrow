@@ -1,8 +1,8 @@
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 // network is added in the handler
-export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
+export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',

@@ -40,7 +40,7 @@ async function getAjnaPoolData(
   const poolAddresses = [
     ...Object.values(getNetworkContracts(networkId).ajnaPoolPairs),
     ...Object.values(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
-  ].map((contract) => contract.address)
+  ].map((contract) => contract.address.toLowerCase())
   const prices = uniq(
     Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
   ).reduce<Tickers>(
@@ -52,14 +52,15 @@ async function getAjnaPoolData(
     return (await getAjnaPoolsData(networkId))
       .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>(
         (v, pool) =>
-          poolAddresses.includes(pool.address)
+          poolAddresses.includes(pool.address.toLowerCase())
             ? [
                 ...v,
                 {
                   pair: (
                     Object.keys(poolContracts).find(
                       (key) =>
-                        poolContracts[key as keyof typeof poolContracts].address === pool.address,
+                        poolContracts[key as keyof typeof poolContracts].address.toLowerCase() ===
+                        pool.address.toLowerCase(),
                     ) as string
                   ).split('-') as [string, string],
                   pool,
@@ -74,12 +75,14 @@ async function getAjnaPoolData(
           {
             pair: [collateralToken, quoteToken],
             pool: {
+              collateralAddress: collateralTokenAddress,
               buckets,
               debt,
               interestRate,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
               lendApr,
+              quoteTokenAddress,
             },
           },
         ) => {
@@ -151,6 +154,8 @@ async function getAjnaPoolData(
                 //     weeklyNetApy,
                 //   }),
                 // }),
+                primaryTokenAddress: collateralTokenAddress.toLowerCase(),
+                secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
                     fee: productHubAjnaRewardsTooltip,
@@ -187,6 +192,8 @@ async function getAjnaPoolData(
                   weeklyNetApy,
                 }),
                 reverseTokens: true,
+                primaryTokenAddress: quoteTokenAddress.toLowerCase(),
+                secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 tooltips: {
                   ...(isPoolNotEmpty &&
                     isPoolWithRewards({ collateralToken, quoteToken }) && {

@@ -10,6 +10,7 @@ import {
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
@@ -37,6 +38,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 }) => {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
 
+  const { chainId } = useWalletManagement()
+
   const banner = useProductHubBanner({
     product: selectedProduct,
   })
@@ -62,7 +65,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [dataMatchedByFilters, selectedProduct],
   )
   const rows = useMemo(
-    () => parseRows(dataSortedByDefault, selectedProduct),
+    () => parseRows(dataSortedByDefault, selectedProduct, chainId),
     [dataSortedByDefault, selectedProduct],
   )
 

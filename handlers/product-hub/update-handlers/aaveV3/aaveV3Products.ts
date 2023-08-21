@@ -1,8 +1,8 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const aaveV3ProductHubProducts: ProductHubItem[] = [
+export const aaveV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
   // ethereum products
   {
     product: [ProductHubProductType.Earn],

@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableRowData } from 'components/assetsTable/types'
@@ -10,6 +11,7 @@ import React from 'react'
 export function parseRows(
   rows: ProductHubItem[],
   product: ProductHubProductType,
+  chainId?: NetworkIds,
 ): AssetsTableRowData[] {
   return rows.map((row) => {
     const { depositToken, label, network, primaryToken, protocol, reverseTokens, secondaryToken } =
@@ -19,7 +21,7 @@ export function parseRows(
 
     if (reverseTokens) icons.reverse()
 
-    const url = getActionUrl({ ...row, product: [product] })
+    const url = getActionUrl({ ...row, chainId, product: [product] })
     const urlDisabled = url === '/'
 
     return {
