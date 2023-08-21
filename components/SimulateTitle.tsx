@@ -36,7 +36,7 @@ export function SimulateTitle({ token, tokenSymbol, depositAmount }: SimulateTit
           }}
         />
       ) : (
-        <GenericTokenIcon size={64} symbol={token} />
+        <GenericTokenIcon size={64} symbol={token} sx={{ mr: 3 }} />
       )}
       <Box>
         <Heading
