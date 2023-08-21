@@ -1,11 +1,19 @@
 import { AjnaPosition } from '@oasisdex/dma-library'
 import { LTVWarningThreshold } from 'features/ajna/common/consts'
 
-export const getBorrowishChangeVariant = (simulation?: AjnaPosition) =>
+export const getBorrowishChangeVariant = ({
+  isOracless,
+  simulation,
+}: {
+  isOracless: boolean
+  simulation?: AjnaPosition
+}) =>
   simulation
-    ? simulation.maxRiskRatio.loanToValue
-        .minus(simulation.riskRatio.loanToValue)
-        .gt(LTVWarningThreshold)
+    ? isOracless
+      ? 'positive'
+      : simulation.maxRiskRatio.loanToValue
+          .minus(simulation.riskRatio.loanToValue)
+          .gt(LTVWarningThreshold)
       ? 'positive'
       : 'negative'
     : 'positive'
