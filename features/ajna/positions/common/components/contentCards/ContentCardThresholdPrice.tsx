@@ -12,18 +12,28 @@ import { Card, Text } from 'theme-ui'
 
 interface ContentCardThresholdPriceModalProps {
   thresholdPrice: string
+  debtAmount: string
+  collateralAmount: string
+  lup?: string
 }
 
 interface ContentCardThresholdPriceProps {
   isLoading?: boolean
   priceFormat: string
   thresholdPrice: BigNumber
+  debtAmount: BigNumber
+  collateralAmount: BigNumber
   afterThresholdPrice?: BigNumber
   lup?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
-function ContentCardThresholdPriceModal({ thresholdPrice }: ContentCardThresholdPriceModalProps) {
+function ContentCardThresholdPriceModal({
+  thresholdPrice,
+  collateralAmount,
+  debtAmount,
+  lup,
+}: ContentCardThresholdPriceModalProps) {
   const { t } = useTranslation()
 
   return (
@@ -36,12 +46,10 @@ function ContentCardThresholdPriceModal({ thresholdPrice }: ContentCardThreshold
         sx={{ my: 2, fontSize: 2, fontWeight: 'regular', lineHeight: 'body' }}
       >
         <code>
-          TP ={' '}
-          {t('ajna.position-page.borrow.common.overview.threshold-price-modal-desc-formula-part-1')}
+          TP = {t('ajna.position-page.borrow.common.overview.threshold-price-modal-desc-formula')}
           <br />
           {'\u00A0'}
-          {'\u00A0'} ={' '}
-          {t('ajna.position-page.borrow.common.overview.threshold-price-modal-desc-formula-part-2')}
+          {'\u00A0'} = {debtAmount} / {collateralAmount}
           <br />
           {'\u00A0'}
           {'\u00A0'} = {thresholdPrice}
@@ -54,12 +62,16 @@ function ContentCardThresholdPriceModal({ thresholdPrice }: ContentCardThreshold
         {t('ajna.position-page.borrow.common.overview.threshold-price-modal-desc-part-3')}
       </Text>
       <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
-        {t(
-          'ajna.position-page.borrow.common.overview.threshold-price-modal-desc-explanation-part-1',
-        )}
-        <br />
-        {t(
-          'ajna.position-page.borrow.common.overview.threshold-price-modal-desc-explanation-part-2',
+        {t('ajna.position-page.borrow.common.overview.threshold-price-modal-desc-explanation-tp')}{' '}
+        {thresholdPrice}
+        {lup && (
+          <>
+            <br />
+            {t(
+              'ajna.position-page.borrow.common.overview.threshold-price-modal-desc-explanation-lup',
+            )}{' '}
+            {lup}
+          </>
         )}
       </Card>
     </>
@@ -70,6 +82,8 @@ export function ContentCardThresholdPrice({
   isLoading,
   priceFormat,
   thresholdPrice,
+  collateralAmount,
+  debtAmount,
   afterThresholdPrice,
   lup,
   changeVariant = 'positive',
@@ -78,6 +92,8 @@ export function ContentCardThresholdPrice({
 
   const formatted = {
     thresholdPrice: formatCryptoBalance(thresholdPrice),
+    collateralAmount: formatCryptoBalance(collateralAmount),
+    debtAmount: formatCryptoBalance(debtAmount),
     afterThresholdPrice: afterThresholdPrice && formatCryptoBalance(afterThresholdPrice),
     lup: lup && formatCryptoBalance(lup),
   }
@@ -95,7 +111,12 @@ export function ContentCardThresholdPrice({
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.borrow.common.overview.threshold-price')}
       >
-        <ContentCardThresholdPriceModal thresholdPrice={formatted.thresholdPrice} />
+        <ContentCardThresholdPriceModal
+          thresholdPrice={formatted.thresholdPrice}
+          collateralAmount={formatted.collateralAmount}
+          debtAmount={formatted.debtAmount}
+          lup={formatted.lup}
+        />
       </AjnaDetailsSectionContentSimpleModal>
     ),
   }
