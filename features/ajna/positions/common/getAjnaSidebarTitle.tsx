@@ -9,17 +9,22 @@ export const getAjnaSidebarTitle = ({
   product,
   isFormFrozen,
   position,
+  isOracless,
 }: {
   currentStep: AjnaSidebarStep
   product: AjnaProduct
   isFormFrozen: boolean
   position: AjnaPosition | AjnaEarnPosition
+  isOracless: boolean
 }) => {
   const { t } = useTranslation()
 
-  const defaultTitle = t(`ajna.position-page.common.form.title.${currentStep}`, {
-    product: upperFirst(product),
-  })
+  const defaultTitle =
+    currentStep === 'risk' && isOracless
+      ? t('ajna.position-page.common.form.title.risk-oracless')
+      : t(`ajna.position-page.common.form.title.${currentStep}`, {
+          product: upperFirst(product),
+        })
 
   switch (product) {
     case 'borrow':
