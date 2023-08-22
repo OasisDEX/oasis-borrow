@@ -49,6 +49,8 @@ export const benefitCardsAnja = [
 
 export function AjnaHomepageView() {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const ajnaPoolFinderEnabled = useFeatureToggle('AjnaPoolFinder')
+
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -77,10 +79,14 @@ export function AjnaHomepageView() {
           isVisible: true,
           translationKey: 'landing.hero.ajna.primary-cta',
         }}
-        secondaryButton={{
-          link: INTERNAL_LINKS.ajnaPoolCreator,
-          translationKey: 'landing.hero.ajna.secondary-cta',
-        }}
+        secondaryButton={
+          ajnaPoolFinderEnabled
+            ? {
+                link: INTERNAL_LINKS.ajnaPoolCreator,
+                translationKey: 'landing.hero.ajna.secondary-cta',
+              }
+            : undefined
+        }
       />
       <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
         <ProductHubView
