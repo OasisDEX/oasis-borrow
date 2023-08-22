@@ -69,12 +69,12 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-earn',
@@ -90,20 +90,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -115,20 +115,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -190,20 +190,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -219,12 +219,12 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -240,20 +240,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -274,7 +274,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-earn',
@@ -290,20 +290,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -365,20 +365,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -394,7 +394,32 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -411,31 +436,6 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'WSTETH',
-    debt: 'DAI',
-    strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
-          },
-        ],
-      },
-    },
-  },
-  {
-    collateral: 'WSTETH',
     debt: 'ETH',
     strategyType: StrategyType.Long,
     productTypes: {
@@ -444,12 +444,12 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-earn',
@@ -469,41 +469,16 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
             featureToggle: undefined,
           },
         ],
       },
-    },
-  },
-  {
-    collateral: 'USDC',
-    debt: 'WSTETH',
-    strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
-          },
-        ],
-      },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
