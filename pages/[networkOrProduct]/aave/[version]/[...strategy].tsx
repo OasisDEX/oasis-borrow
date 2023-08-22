@@ -1,7 +1,7 @@
 import { NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider, ProductContextHandler } from 'components/context'
-import { AppLayout } from 'components/layouts/AppLayout'
+import { AppLayout } from 'components/layouts'
 import { aaveContext, AaveContextProvider, isSupportedStrategy } from 'features/aave'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
 import { getSurveyType, ProductType } from 'features/aave/types'

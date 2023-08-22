@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import { FunctionalContextHandler } from 'components/context'
-import { AppLayout } from 'components/layouts/AppLayout'
+import { AppLayout } from 'components/layouts'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'

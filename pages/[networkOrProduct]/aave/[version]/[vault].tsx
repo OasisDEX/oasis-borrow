@@ -2,7 +2,7 @@ import { isSupportedNetwork, NetworkNames, networksByName } from 'blockchain/net
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/layouts/AppLayout'
+import { AppLayout } from 'components/layouts'
 import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'

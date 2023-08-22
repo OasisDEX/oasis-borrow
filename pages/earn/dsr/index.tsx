@@ -1,6 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/layouts/AppLayout'
+import { AppLayout } from 'components/layouts'
 import { useAccount } from 'helpers/useAccount'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

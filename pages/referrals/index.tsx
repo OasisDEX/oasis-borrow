@@ -1,7 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
 import { TOSContextProvider } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/layouts/AppLayout'
+import { AppLayout } from 'components/layouts'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'

@@ -1,7 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/layouts/AppLayout'
+import { AppLayout } from 'components/layouts'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultOverviewView'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'

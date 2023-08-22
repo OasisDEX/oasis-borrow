@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import { FunctionalContextHandler } from 'components/context'
-import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
+import { LandingPageLayout } from 'components/layouts'
 import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
