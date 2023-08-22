@@ -513,7 +513,9 @@
       },
       "ajna": {
         "headline": "Use the only market-driven lending protocol",
-        "subheader": "On Ajna you can borrow crypto and earn yield. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Summer.fi →</0>"
+        "subheader": "On Ajna you can borrow crypto and earn yield. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Summer.fi →</0>",
+        "primary-cta": "Discover Ajna Pools",
+        "secondary-cta": "Create an Ajna Pool"
       }
     },
     "stats": {
