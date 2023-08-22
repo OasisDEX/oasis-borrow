@@ -74,9 +74,7 @@ export function createUserReferral$(
 
           const referralsOut = referrals?.map((r) => r.address)
 
-          const claimedWeeksIds = claimedReferralRewards.map((item) =>
-            Number(item.week.week),
-          )
+          const claimedWeeksIds = claimedReferralRewards.map((item) => Number(item.week.week))
 
           const dueReferralRewards = referralRewards?.filter(
             (reward) => !claimedWeeksIds.includes(reward.week_number),
