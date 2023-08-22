@@ -22,6 +22,7 @@ import {
   ProxyType,
   StrategyType,
 } from 'features/aave/types'
+import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
@@ -529,7 +530,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
         vaultDetailsView: AaveBorrowManageComponent,
         secondaryInput: DebtInput,
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-        positionInfo: AaveMultiplyFaq,
+        positionInfo: AaveBorrowFaq,
         sidebarTitle: 'open-borrow.sidebar.title',
         sidebarButton: 'open-borrow.sidebar.open-btn',
       },

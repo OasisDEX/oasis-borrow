@@ -45,6 +45,7 @@ export function AjnaFormContentRisk() {
           2: <AppLink href={EXTERNAL_LINKS.AJNA.AUDITS} sx={{ display: 'inline-block' }} />,
           3: <AppLink href={LINKS_MAP[product]} sx={{ display: 'inline-block' }} />,
           4: <WithArrow sx={{ fontWeight: 'regular', color: 'interactive100' }} />,
+          5: <strong />,
         }}
       />
       <Box sx={{ mt: 2, textAlign: 'center' }}>

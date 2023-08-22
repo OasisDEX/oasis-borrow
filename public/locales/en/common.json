@@ -513,7 +513,9 @@
       },
       "ajna": {
         "headline": "Use the only market-driven lending protocol",
-        "subheader": "On Ajna you can borrow crypto and earn yield. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Summer.fi →</0>"
+        "subheader": "On Ajna you can borrow crypto and earn yield. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Summer.fi →</0>",
+        "primary-cta": "Discover Ajna Pools",
+        "secondary-cta": "Create an Ajna Pool"
       }
     },
     "stats": {
@@ -2599,6 +2601,7 @@
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
+            "risk-oracless": "This pool is offered with Ajna Lite UI, things to know:",
             "setup": "Configure your Ajna {{product}} Position",
             "manage": "Manage your Ajna {{product}} Position",
             "transaction": "Confirm your Ajna {{product}} Position",
@@ -2627,9 +2630,9 @@
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
               ],
               "oracless": [
-                "This asset pair is not supported by Summer.fi, no price feed information will be available.",
-                "Always do your own research and ensure you have specified the correct token contract address.",
-                "Monitor your position closely and ensure you understand the risks before proceeding."
+                "<5>Always do your own research and make sure you have selected the correct token contract address<5/>",
+                "This asset pair is supported with Ajna Lite UI, no price feed information will be available",
+                "Monitor your position closely and ensure you understand the risks before proceeding"
               ]
             }
           },
@@ -2981,7 +2984,7 @@
     "banners": {
       "pool-finder": {
         "title": "Looking for a custom pool?",
-        "description": "Find any pool on Ajna and open an oracle-less {{product}} position.",
+        "description": "Find any pool on Ajna and open a position using Ajna lite.",
         "cta": "Search custom pools"
       }
     }

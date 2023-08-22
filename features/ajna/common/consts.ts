@@ -61,5 +61,6 @@ export const AJNA_TOKENS_WITH_MULTIPLY = [
   'SDAI',
   'USDC',
   'WBTC',
+  'WSTETH',
   'YFI',
 ]

@@ -76,13 +76,13 @@ export function parsePoolResponse(
           collateralAddress: collateralAddress,
           collateralToken: identifiedTokens[collateralAddress].symbol,
           collateralIcon:
-            identifiedTokens[collateralAddress].source === 'blockchain'
+            identifiedTokens[collateralAddress.toLowerCase()].source === 'blockchain'
               ? collateralAddress
               : collateralToken,
           quoteAddress: quoteTokenAddress,
           quoteToken: identifiedTokens[quoteTokenAddress].symbol,
           quoteIcon:
-            identifiedTokens[quoteTokenAddress].source === 'blockchain'
+            identifiedTokens[quoteTokenAddress.toLowerCase()].source === 'blockchain'
               ? quoteTokenAddress
               : quoteToken,
           tooltips: {

@@ -4,7 +4,7 @@ import React from 'react'
 
 import en from './en.mdx'
 
-export const AaveMultiplyFaq = () => {
+export const AaveBorrowFaq = () => {
   useScrollToTop()
   return <TranslatedContent content={{ en /* es, pt */ }} />
 }

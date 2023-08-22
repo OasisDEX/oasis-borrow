@@ -12,7 +12,6 @@ import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/Con
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { dsrNotification } from 'content/dsr-notification'
 import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation/common/consts'
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
@@ -74,7 +73,6 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       {autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}
       <DetailsSection
         title={t('system.overview')}
-        notifications={[dsrNotification]}
         content={
           <>
             {shouldShowOverrideAutoBuy && (
