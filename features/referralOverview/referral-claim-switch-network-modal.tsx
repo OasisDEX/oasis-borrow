@@ -41,7 +41,7 @@ export function ReferralClaimSwitchNetworkModal() {
           >
             {t('ref.modal.switch-network-button-text')}
           </Button>
-        </Flex>{' '}
+        </Flex>
       </Grid>
     </Modal>
   )
