@@ -187,8 +187,6 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
   const tokensIconsData = useMemo(() => {
-    console.log('identifiedTokensData', identifiedTokensData)
-    console.log('dpmPositionData', dpmPositionData)
     return collateralToken && quoteToken && !isOracless
       ? {
           collateralToken,
