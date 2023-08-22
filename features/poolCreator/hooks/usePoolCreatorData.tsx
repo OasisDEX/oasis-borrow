@@ -155,8 +155,8 @@ export function usePoolCreatorData({
                       <Trans
                         i18nKey="pool-creator.validations.pool-already-exists"
                         values={{
-                          collateralToken: identifiedTokens[collateralAddress].symbol,
-                          quoteToken: identifiedTokens[quoteAddress].symbol,
+                          collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
+                          quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                         }}
                         components={[
                           <Text as="span" sx={{ fontWeight: 'semiBold' }} />,
@@ -167,10 +167,11 @@ export function usePoolCreatorData({
                                   href={getOraclessProductUrl({
                                     chainId: context.chainId,
                                     collateralAddress,
-                                    collateralToken: identifiedTokens[collateralAddress].symbol,
+                                    collateralToken:
+                                      identifiedTokens[collateralAddress.toLowerCase()].symbol,
                                     product: 'borrow',
                                     quoteAddress,
-                                    quoteToken: identifiedTokens[quoteAddress].symbol,
+                                    quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}
                                 />,
                                 <AppLink
@@ -178,10 +179,11 @@ export function usePoolCreatorData({
                                   href={getOraclessProductUrl({
                                     chainId: context.chainId,
                                     collateralAddress,
-                                    collateralToken: identifiedTokens[collateralAddress].symbol,
+                                    collateralToken:
+                                      identifiedTokens[collateralAddress.toLowerCase()].symbol,
                                     product: 'earn',
                                     quoteAddress,
-                                    quoteToken: identifiedTokens[quoteAddress].symbol,
+                                    quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}
                                 />,
                               ]
