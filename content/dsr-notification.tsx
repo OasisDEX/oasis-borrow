@@ -25,6 +25,7 @@ const DsrNotificationWithLink: FC<DsrNotificationWithLinkProps> = ({ translation
 )
 
 export const dsrNotification: DetailsSectionNotificationItem = {
+  // currently not used anywhere as per story/11261 but im leaving the structure for future use
   title: {
     translationKey: 'dsr.notification.title',
   },
