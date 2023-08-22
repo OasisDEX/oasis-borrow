@@ -4,9 +4,11 @@ import { User, WeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { claimMultiple, ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { TxHelpers } from 'components/AppContext'
-import { getClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards'
 import { Web3Context } from 'features/web3Context'
+import { gql, GraphQLClient } from 'graphql-request'
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
@@ -42,7 +44,7 @@ export function createUserReferral$(
   txHelpers$: Observable<TxHelpers>,
   getUserFromApi$: (address: string, trigger$: Subject<void>) => Observable<User | null>,
   getReferralsFromApi$: (address: string) => Observable<User[] | null>,
-  getReferralRewardsFromApi$: (
+  getWeeklyClaimsFromApi$: (
     address: string,
     trigger$: Subject<void>,
   ) => Observable<WeeklyClaim[] | null>,
@@ -53,16 +55,17 @@ export function createUserReferral$(
       if (web3Context.status !== 'connected') {
         return of({ state: 'walletConnectionInProgress' } as UserReferralState)
       }
+      const { cacheApi } = getNetworkContracts(NetworkIds.MAINNET, web3Context.chainId)
 
       return combineLatest(
         getUserFromApi$(web3Context.account, trigger$),
         getReferralsFromApi$(web3Context.account),
-        getReferralRewardsFromApi$(web3Context.account, trigger$),
+        getWeeklyClaimsFromApi$(web3Context.account, trigger$),
         checkReferralLocalStorage$(),
-        getClaimedReferralRewards(web3Context.chainId, web3Context.account),
+        getClaimedClaims(new GraphQLClient(cacheApi), web3Context.account),
         txHelpers$,
       ).pipe(
-        switchMap(([user, referrals, referralRewards, referrer, claimedReferralRewards]) => {
+        switchMap(([user, referrals, weeklyClaims, referrer, claimedClaims]) => {
           // newUser gets referrer address from local storage, currentUser from the db
           if (!user) {
             return of({
@@ -74,16 +77,17 @@ export function createUserReferral$(
 
           const referralsOut = referrals?.map((r) => r.address)
 
-          const claimedWeeksIds = claimedReferralRewards.map((item) => Number(item.week.week))
-
-          const dueReferralRewards = referralRewards?.filter(
-            (reward) => !claimedWeeksIds.includes(reward.week_number),
+          const claimedWeeks = claimedClaims.map((item) => Number(item.week)) as number[]
+          const filteredWeeklyClaims = weeklyClaims?.filter(
+            (item) => !claimedWeeks.includes(item.week_number),
           )
-
+          const totalClaims = weeklyClaims
+            ? weeklyClaims.reduce((p, c) => p.plus(c.amount), zero)
+            : zero
           const claimsOut = {
-            weeks: dueReferralRewards?.map((item) => new BigNumber(item.week_number)),
-            amounts: dueReferralRewards?.map((item) => new BigNumber(item.amount)),
-            proofs: dueReferralRewards?.map((item) => item.proof),
+            weeks: filteredWeeklyClaims?.map((item) => new BigNumber(item.week_number)),
+            amounts: filteredWeeklyClaims?.map((item) => new BigNumber(item.amount)),
+            proofs: filteredWeeklyClaims?.map((item) => item.proof),
           }
 
           const claimClick$ = new Subject<void>()
@@ -121,7 +125,7 @@ export function createUserReferral$(
             claimClick$.next()
           }
           const performClaimMultiple$: Observable<(() => Observable<ClaimTxnState>) | undefined> =
-            of(referralRewards ? performClaimMultiple : undefined)
+            of(weeklyClaims ? performClaimMultiple : undefined)
 
           const ClaimTxnState$: Observable<ClaimTxnState | undefined> = combineLatest(
             claimClick$,
@@ -135,12 +139,6 @@ export function createUserReferral$(
             startWith(undefined),
           )
 
-          const totalAmountRaw = referralRewards
-            ? referralRewards.reduce((p, c) => p.plus(c.amount), zero)
-            : zero
-          const totalClaimRaw =
-            claimsOut.amounts == null ? zero : claimsOut.amounts.reduce((p, c) => p.plus(c), zero)
-
           return combineLatest(
             ClaimTxnState$,
             of({
@@ -152,8 +150,15 @@ export function createUserReferral$(
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               performClaimMultiple: claimAllFunction,
-              totalAmount: formatAmount(amountFromWei(new BigNumber(totalAmountRaw)), 'USD'),
-              totalClaim: formatAmount(amountFromWei(totalClaimRaw), 'USD'),
+              totalAmount: formatAmount(amountFromWei(new BigNumber(totalClaims)), 'USD'),
+              totalClaim: claimsOut.amounts
+                ? formatAmount(
+                    amountFromWei(
+                      claimsOut.amounts.reduce((p, c) => p.plus(c), new BigNumber('0')),
+                    ),
+                    'USD',
+                  )
+                : '0.00',
             }),
           ).pipe(
             map(([txStatus, userState]) => ({
@@ -166,4 +171,30 @@ export function createUserReferral$(
     }),
     share(),
   )
+}
+
+const claimedClaimsQuery = gql`
+  query allClaimedWeeks($address: String!) {
+    allClaims(filter: { address: { equalTo: $address } }) {
+      nodes {
+        address
+        week
+        amount
+        timestamp
+        txHash
+      }
+    }
+  }
+`
+interface Claim {
+  address: string
+  week: number
+  amount: number
+  timestamp: Date
+  txHash: string
+}
+
+async function getClaimedClaims(client: GraphQLClient, address: string): Promise<Claim[]> {
+  const data = await client.request(claimedClaimsQuery, { address: address.toLocaleLowerCase() })
+  return data.allClaims.nodes
 }
