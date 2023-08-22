@@ -39,9 +39,9 @@ import { AccountDetails, createAccountData } from 'features/account/AccountData'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$, UserReferralState } from 'features/referralOverview/user'
 import {
+  getReferralRewardsFromApi$,
   getReferralsFromApi$,
   getUserFromApi$,
-  getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
 import { createUserSettings$, UserSettingsState } from 'features/userSettings/userSettings'
 import {
@@ -249,9 +249,10 @@ export function AccountContextProvider({ children }: WithChildren) {
         txHelpers$,
         getUserFromApi$,
         getReferralsFromApi$,
-        getWeeklyClaimsFromApi$,
+        getReferralRewardsFromApi$,
         checkReferralLocalStorage$,
       )
+
       const checkReferralLocal$ = checkReferralLocalStorage$()
 
       return {
