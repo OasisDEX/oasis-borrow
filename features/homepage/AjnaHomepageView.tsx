@@ -73,6 +73,14 @@ export function AjnaHomepageView() {
           />
         }
         subheadingWidth="740px"
+        primaryButton={{
+          isVisible: true,
+          translationKey: 'landing.hero.ajna.primary-cta',
+        }}
+        secondaryButton={{
+          link: INTERNAL_LINKS.ajnaPoolCreator,
+          translationKey: 'landing.hero.ajna.secondary-cta',
+        }}
       />
       <Box sx={{ mt: '180px', borderTop: '1px solid', borderColor: 'neutral20' }}>
         <ProductHubView
