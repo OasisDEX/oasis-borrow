@@ -1,4 +1,6 @@
+import { NetworkIds } from 'blockchain/networks'
 import { strategies as aaveStrategyList } from 'features/aave'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
@@ -31,22 +33,38 @@ const getAaveStrategyUrl = ({
 
 export function getActionUrl({
   bypassFeatureFlag = false,
+  chainId,
   earnStrategy,
   label,
   network,
   primaryToken,
+  primaryTokenAddress,
   product,
   protocol,
   secondaryToken,
-}: ProductHubItem & { bypassFeatureFlag?: boolean }): string {
+  secondaryTokenAddress,
+}: ProductHubItem & { bypassFeatureFlag?: boolean; chainId?: NetworkIds }): string {
   switch (protocol) {
     case LendingProtocol.Ajna:
+      const isEarnProduct = product[0] === ProductHubProductType.Earn
+      const collateralToken = isEarnProduct ? secondaryToken : primaryToken
+      const collateralAddress = isEarnProduct ? secondaryTokenAddress : primaryTokenAddress
+      const quoteToken = isEarnProduct ? primaryToken : secondaryToken
+      const quoteAddress = isEarnProduct ? primaryTokenAddress : secondaryTokenAddress
+      const isOracless = isPoolOracless({
+        collateralToken,
+        quoteToken,
+        chainId,
+      })
       const productInUrl =
-        product[0] === ProductHubProductType.Earn && earnStrategy?.includes('Yield Loop')
+        isEarnProduct && earnStrategy?.includes('Yield Loop')
           ? ProductHubProductType.Multiply
           : product
+      const tokensInUrl = isOracless
+        ? `${collateralAddress}-${quoteAddress}`
+        : `${collateralToken}-${quoteToken}`
 
-      return `/ethereum/ajna/${productInUrl}/${label.replace('/', '-')}`
+      return `/ethereum/ajna/${productInUrl}/${tokensInUrl}`
     case LendingProtocol.AaveV2:
       return getAaveStrategyUrl({
         aaveVersion: 'v2',

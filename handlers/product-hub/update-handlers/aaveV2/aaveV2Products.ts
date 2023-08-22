@@ -1,8 +1,8 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const aaveV2ProductHubProducts: ProductHubItem[] = [
+export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
