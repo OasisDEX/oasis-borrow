@@ -533,10 +533,7 @@ export function setupAppContext() {
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
-  const userDpmProxies$ = memoize(
-    curry(getUserDpmProxies$)(context$),
-    (walletAddress) => walletAddress,
-  )
+  const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
 
   const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
   const positionIdFromDpmProxy$ = memoize(
