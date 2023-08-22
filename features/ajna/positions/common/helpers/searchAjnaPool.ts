@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { SubgraphsResponses } from 'features/subgraphLoader/types'
@@ -32,15 +33,14 @@ interface SearchAjnaPoolParams {
   quoteAddress?: string[]
 }
 
-export const searchAjnaPool = async ({
-  collateralAddress = [],
-  poolAddress = [],
-  quoteAddress = [],
-}: SearchAjnaPoolParams): Promise<SearchAjnaPoolData[]> => {
+export const searchAjnaPool = async (
+  networkId: NetworkIds,
+  { collateralAddress = [], poolAddress = [], quoteAddress = [] }: SearchAjnaPoolParams,
+): Promise<SearchAjnaPoolData[]> => {
   const caseSensitiveCollateralAddress = collateralAddress.map((address) => address.toLowerCase())
   const caseSensitivePoolAddress = poolAddress.map((address) => address.toLowerCase())
   const caseSensitiveQuoteAddress = quoteAddress.map((address) => address.toLowerCase())
-  const { response } = (await loadSubgraph('Ajna', 'searchAjnaPool', {
+  const { response } = (await loadSubgraph('Ajna', 'searchAjnaPool', networkId, {
     collateralAddress: caseSensitiveCollateralAddress,
     poolAddress: caseSensitivePoolAddress,
     quoteAddress: caseSensitiveQuoteAddress,

@@ -198,6 +198,10 @@ export const optimismContracts: OptimismContracts = {
     'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YFIDAI),
   },
+  ajnaOraclessPoolPairs: {
+    'YIELDBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDETHETH),
+  },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
   // TODO update address
   ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, optimism.ajna.AjnaRewardsClaimer),

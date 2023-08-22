@@ -17,6 +17,7 @@ import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 import { partnerLogosConfig } from './helpers/constants'
 import { OasisStats } from './OasisStats'
+import { ReferralHandler } from './ReferralHandler'
 import { useOasisStats } from './stats'
 
 function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
@@ -86,6 +87,7 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
+      <ReferralHandler />
       <ImagesSlider items={partnerLogosConfig} />
       <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
         {t('landing.why-oasis.main-header')}

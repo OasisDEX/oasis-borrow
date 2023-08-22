@@ -1,15 +1,20 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
 import { Context } from 'blockchain/network'
+import { NetworkHexIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
+import { isAddress } from 'ethers/lib/utils'
+import { ReferralClaimSwitchNetworkModal } from 'features/referralOverview/referral-claim-switch-network-modal'
+import { ClaimTxnState, UserReferralState } from 'features/referralOverview/user'
+import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { formatAddress } from 'helpers/formatters/format'
+import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
-
-import { ClaimTxnState, UserReferralState } from './user'
-import { createUserUsingApi$ } from './userApi'
 
 interface Props {
   context: Context
@@ -22,9 +27,14 @@ export interface UpsertUser {
 
 export function FeesView({ userReferral }: Props) {
   const { t } = useTranslation()
+  const { openModal } = useModalContext()
+  const { wallet } = useWalletManagement()
 
+  const isOnOptimism = NetworkHexIds.OPTIMISMMAINNET === wallet?.chainHexId
+
+  const [ensReferrerName] = useMainnetEnsName(userReferral?.referrer)
+  const [ensReferredNames] = useMainnetEnsNames(userReferral.referrals)
   // move to pipe
-
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 
@@ -111,9 +121,13 @@ export function FeesView({ userReferral }: Props) {
                 userReferral.claimTxnState === ClaimTxnState.PENDING ||
                 userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
               }
-              onClick={() =>
-                userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
-              }
+              onClick={() => {
+                if (isOnOptimism) {
+                  userReferral.performClaimMultiple && userReferral.performClaimMultiple()
+                } else {
+                  openModal(ReferralClaimSwitchNetworkModal, {})
+                }
+              }}
               sx={{ p: '4px', minWidth: ['100%', '138px', '138px'] }}
             >
               <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center' }}>
@@ -169,7 +183,11 @@ export function FeesView({ userReferral }: Props) {
                           fontVariantLigatures: 'no-contextual',
                         }}
                       >
-                        {item}{' '}
+                        {ensReferredNames[item] &&
+                        ensReferredNames[item] !== null &&
+                        !isAddress(ensReferredNames[item])
+                          ? `${ensReferredNames[item]}`
+                          : formatAddress(item, 6)}{' '}
                       </Text>
                     </Box>
                     <Box sx={{ pt: '16px' }}>
@@ -248,13 +266,19 @@ export function FeesView({ userReferral }: Props) {
                     fontVariantLigatures: 'no-contextual',
                   }}
                 >
-                  {userReferral?.referrer && !userReferral.invitePending && userReferral.referrer}{' '}
+                  {userReferral?.referrer &&
+                    !userReferral.invitePending &&
+                    `${ensReferrerName !== null ? ensReferrerName : userReferral.referrer}`}{' '}
                   {!userReferral?.referrer &&
                     !userReferral.invitePending &&
                     t(`ref.you-were-not-referred`)}
                   {userReferral?.referrer &&
                     userReferral.invitePending &&
-                    `${t('ref.you-have-been-invited')} ${formatAddress(userReferral.referrer, 6)}`}
+                    `${t('ref.you-have-been-invited')} ${
+                      ensReferrerName !== null
+                        ? ensReferrerName
+                        : formatAddress(userReferral.referrer, 6)
+                    }`}
                 </Text>
               </Box>
               <Box>

@@ -1,6 +1,7 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
 import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { LendingProtocol } from 'lendingProtocols'
@@ -51,7 +52,9 @@ export function checkMultipleVaultsFromApi$(
   protocol: string,
 ): Observable<CheckMultipleVaultsResponse> {
   return ajax({
-    url: `/api/vaults/${protocol.toLowerCase()}?${vaults.map((vault) => `id=${vault}&`).join('')}`,
+    url: `/api/vaults/1/${protocol.toLowerCase()}?${vaults
+      .map((vault) => `id=${vault}&`)
+      .join('')}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -76,17 +79,55 @@ export function checkMultipleVaultsFromApi$(
   )
 }
 
+export interface ApiVault {
+  vaultId: number
+  chainId: NetworkIds
+  protocol: LendingProtocol
+  ownerAddress: string
+  type: VaultType
+}
+
+export interface ApiVaultsParams {
+  vaultIds: number[]
+  chainId: NetworkIds
+  protocol: LendingProtocol
+}
+
+export async function getApiVaults({
+  vaultIds,
+  protocol,
+  chainId,
+}: ApiVaultsParams): Promise<ApiVault[]> {
+  if (vaultIds.length === 0) {
+    return []
+  }
+  const vaultsQuery = vaultIds.map((id) => `id=${id}`).join('&')
+  try {
+    const response = await fetch(`/api/vaults/${chainId}/${protocol}?${vaultsQuery}`)
+    if (response.status === 404) {
+      return []
+    }
+    const vaults = await response.json()
+    return vaults.vaults.map((vault: Vault) => {
+      return {
+        vaultId: vault.vault_id,
+        chainId: vault.chain_id,
+        protocol: vault.protocol,
+        ownerAddress: vault.owner_address,
+        type: vault.type,
+      }
+    })
+  } catch (error) {
+    console.warn(`Can't obtain vaults from API`, error)
+    return []
+  }
+}
+
 export function getVaultFromApi$(
   vaultId: number,
   chainId: number,
   protocol: LendingProtocol,
-): Observable<{
-  vaultId: number
-  chainId: number
-  protocol: string
-  ownerAddress: string
-  type: VaultType
-}> {
+): Observable<ApiVault> {
   if (chainId === 0 || chainId < 1) {
     console.error('Invalid chainId')
     return EMPTY
@@ -106,8 +147,8 @@ export function getVaultFromApi$(
       const { vaultId, type, chainId, ownerAddress, protocol } = resp.response as {
         vaultId: number
         type: VaultType
-        chainId: number
-        protocol: string
+        chainId: NetworkIds
+        protocol: LendingProtocol
         ownerAddress: string
       }
       return { vaultId, type, chainId, ownerAddress, protocol }

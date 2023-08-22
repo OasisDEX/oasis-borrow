@@ -1,15 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
-import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
-import { checkReferralLocalStorage } from 'features/referralOverview/referralLocal'
-import TermsOfServiceReferral from 'features/termsOfService/TermsOfServiceReferral'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box, Container, Flex, Grid, Text } from 'theme-ui'
 
 import { Hero } from './common/Hero'
@@ -75,32 +68,10 @@ function ManagedVolumeStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export const HomepageHero = () => {
-  const router = useRouter()
   const { data: oasisStats } = useOasisStats()
   const { isConnected } = useAccount()
-  const referralLocal = checkReferralLocalStorage()
-  const referralsEnabled = useFeatureToggle('Referrals')
-
-  useEffect(() => {
-    if (!localReferral && referralsEnabled) {
-      const linkReferral = router.query.ref as string
-      if (linkReferral) {
-        setLocalReferral(linkReferral)
-        setLandedWithRef(linkReferral)
-      }
-    }
-  }, [referralLocal, router.isReady])
-
-  const [landedWithRef, setLandedWithRef] = useState('')
-  const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   return (
     <Container>
-      {referralsEnabled && landedWithRef && <NewReferralModal />}
-      {referralsEnabled && (
-        <FunctionalContextHandler>
-          <TermsOfServiceReferral />
-        </FunctionalContextHandler>
-      )}
       <Flex
         sx={{
           height: 'auto',

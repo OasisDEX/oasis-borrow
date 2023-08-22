@@ -33,7 +33,7 @@ export function DebtInput(props: SecondaryInputProps) {
   return (
     <Grid gap={3}>
       <VaultActionInput
-        action={'Generate'}
+        action={'Borrow'}
         amount={userInputDebt}
         hasAuxiliary={true}
         auxiliaryAmount={

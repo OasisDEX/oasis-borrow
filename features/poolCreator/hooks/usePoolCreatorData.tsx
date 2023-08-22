@@ -28,7 +28,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { first } from 'rxjs/operators'
 import { Text } from 'theme-ui'
@@ -99,6 +99,8 @@ export function usePoolCreatorData({
     if (context?.chainId) void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
   }, [context?.chainId])
 
+  const chainId = useMemo(() => context?.chainId, [context?.chainId])
+
   useEffect(() => {
     const localErrors: AjnaValidationItem[] = []
 
@@ -126,13 +128,14 @@ export function usePoolCreatorData({
       if (
         isAddress(collateralAddress) &&
         isAddress(quoteAddress) &&
-        collateralAddress !== quoteAddress
+        collateralAddress !== quoteAddress &&
+        chainId
       ) {
         setErrors([])
 
         const promise = cancelable(
           Promise.all([
-            searchAjnaPool({
+            searchAjnaPool(chainId, {
               collateralAddress: [collateralAddress],
               poolAddress: [],
               quoteAddress: [quoteAddress],
@@ -220,7 +223,7 @@ export function usePoolCreatorData({
         setIsLoading(false)
       }
     },
-    [collateralAddress, quoteAddress],
+    [collateralAddress, quoteAddress, chainId],
     250,
   )
 
