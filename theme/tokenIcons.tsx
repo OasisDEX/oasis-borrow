@@ -1348,6 +1348,46 @@ export const tokenIcons = {
     ),
     viewBox: '0 0 32 32',
   },
+  yieldeth_circle_color: {
+    path: (
+      <>
+        <circle cx="13" cy="13" r="13" transform="matrix(1 0 0 -1 3 29)" fill="#17438C" />
+        <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 9 23)" fill="#3682FF" />
+        <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 9 18)" fill="#3682FF" />
+        <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 14 23)" fill="#3682FF" />
+        <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 14 18)" fill="#3682FF" />
+        <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 19 23)" fill="#3682FF" />
+        <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 19 18)" fill="#3682FF" />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M12.7324 10C12.3866 9.4022 11.7403 9 11 9C9.89543 9 9 9.89543 9 11C9 12.1046 9.89543 13 11 13C11.7403 13 12.3866 12.5978 12.7324 12H14.2676C14.6134 12.5978 15.2597 13 16 13C16.7403 13 17.3866 12.5978 17.7324 12H19.2676C19.6134 12.5978 20.2597 13 21 13C22.1046 13 23 12.1046 23 11C23 9.89543 22.1046 9 21 9C20.2597 9 19.6134 9.4022 19.2676 10H17.7324C17.3866 9.4022 16.7403 9 16 9C15.2597 9 14.6134 9.4022 14.2676 10H12.7324Z"
+          fill="#FFBF60"
+        />
+      </>
+    ),
+    viewBox: '0 0 32 32',
+  },
+  yieldbtc_circle_color: {
+    path: (
+      <>
+        <circle cx="16" cy="16" r="13" fill="#17438C" />
+        <circle cx="11" cy="11" r="2" fill="#3682FF" />
+        <circle cx="11" cy="16" r="2" fill="#3682FF" />
+        <circle cx="16" cy="11" r="2" fill="#3682FF" />
+        <circle cx="16" cy="16" r="2" fill="#3682FF" />
+        <circle cx="21" cy="11" r="2" fill="#3682FF" />
+        <circle cx="21" cy="16" r="2" fill="#3682FF" />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M12.7324 22C12.3866 22.5978 11.7403 23 11 23C9.89543 23 9 22.1046 9 21C9 19.8954 9.89543 19 11 19C11.7403 19 12.3866 19.4022 12.7324 20H14.2676C14.6134 19.4022 15.2597 19 16 19C16.7403 19 17.3866 19.4022 17.7324 20H19.2676C19.6134 19.4022 20.2597 19 21 19C22.1046 19 23 19.8954 23 21C23 22.1046 22.1046 23 21 23C20.2597 23 19.6134 22.5978 19.2676 22H17.7324C17.3866 22.5978 16.7403 23 16 23C15.2597 23 14.6134 22.5978 14.2676 22H12.7324Z"
+          fill="#FFBF60"
+        />
+      </>
+    ),
+    viewBox: '0 0 32 32',
+  },
 
   // LP Tokens
   univ2_dai_eth_circles_color: {

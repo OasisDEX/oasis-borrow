@@ -80,6 +80,8 @@ export const tokensMainnet = {
   WETH: contractDesc(erc20, mainnet.common.WETH),
   WLD: contractDesc(erc20, mainnet.common.WLD),
   WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
+  YIELDBTC: contractDesc(erc20, mainnet.common.YIELDBTC),
+  YIELDETH: contractDesc(erc20, mainnet.common.YIELDETH),
   // Used to represent ETH as an ERC20 token
   // See @oasisdex/addresses package for info
   ETH_ACTUAL: contractDesc(erc20, mainnet.common.ETH),

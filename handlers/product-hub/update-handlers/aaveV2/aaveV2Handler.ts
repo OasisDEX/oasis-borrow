@@ -96,8 +96,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           (data) => data[primaryToken],
         )![primaryToken]
         const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
+        const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
+
         return {
           ...product,
+          primaryTokenAddress: tokensAddresses[primaryToken].address,
+          secondaryTokenAddress: tokensAddresses[secondaryToken].address,
           maxMultiply: riskRatio.multiple.toString(),
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
