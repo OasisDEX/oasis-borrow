@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { isSupportedProductType, IStrategyConfig, ProductType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { productToVaultType } from 'helpers/productToVaultType'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { isLendingProtocol, LendingProtocol } from 'lendingProtocols'
@@ -67,7 +68,7 @@ export function loadStrategyFromTokens(
     const matchesVaultType =
       vaultType === undefined ||
       vaultType === VaultType.Unknown ||
-      vaultType.toLowerCase() === s.type.toLowerCase()
+      vaultType === productToVaultType(s.type)
     return (
       s.tokens.collateral === actualCollateralToken &&
       s.tokens.debt === actualDebtToken &&

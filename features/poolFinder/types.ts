@@ -22,4 +22,6 @@ export interface OraclessPoolResult extends ProductHubItemTooltips {
   quoteAddress: string
   quoteToken: string
   weeklyNetApy?: string
+  collateralIcon: string
+  quoteIcon: string
 }

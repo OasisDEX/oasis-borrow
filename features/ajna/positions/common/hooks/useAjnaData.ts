@@ -158,9 +158,13 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
     useMemo(
       () =>
         dpmPositionData && ajnaPositionData
-          ? getAjnaPositionAggregatedData$({ dpmPositionData, position: ajnaPositionData })
+          ? getAjnaPositionAggregatedData$({
+              dpmPositionData,
+              position: ajnaPositionData,
+              networkId: context?.chainId ?? NetworkIds.MAINNET,
+            })
           : EMPTY,
-      [dpmPositionData, ajnaPositionData],
+      [dpmPositionData, ajnaPositionData, context?.chainId],
     ),
   )
 
@@ -182,6 +186,33 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : undefined
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
+  const tokensIconsData = useMemo(() => {
+    return collateralToken && quoteToken && !isOracless
+      ? {
+          collateralToken,
+          quoteToken,
+        }
+      : dpmPositionData && isOracless && identifiedTokensData
+      ? {
+          collateralToken:
+            identifiedTokensData[dpmPositionData.collateralTokenAddress.toLowerCase()].source ===
+            'blockchain'
+              ? dpmPositionData.collateralTokenAddress
+              : dpmPositionData.collateralToken,
+          quoteToken:
+            identifiedTokensData[dpmPositionData.quoteTokenAddress.toLowerCase()].source ===
+            'blockchain'
+              ? dpmPositionData.quoteTokenAddress
+              : dpmPositionData.quoteToken,
+        }
+      : dpmPositionData
+      ? {
+          collateralToken: dpmPositionData.collateralToken,
+          quoteToken: dpmPositionData.quoteToken,
+        }
+      : undefined
+  }, [identifiedTokensData, collateralToken, quoteToken, isOracless, dpmPositionData])
+
   return {
     data: {
       ajnaPositionAggregatedData,
@@ -192,6 +223,7 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       gasPriceData,
       tokenPriceUSDData,
       userSettingsData,
+      tokensIconsData,
     },
     errors: [
       ajnaPositionAggregatedError,

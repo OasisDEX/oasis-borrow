@@ -7,6 +7,7 @@ import * as aaveV3PoolDataProvider from 'blockchain/abi/aave-v3-pool-data-provid
 import * as aaveV3Pool from 'blockchain/abi/aave-v3-pool.json'
 import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
+import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
@@ -189,9 +190,14 @@ export const goerliContracts: MainnetContracts = {
     'WSTETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YFIDAI),
   },
+  ajnaOraclessPoolPairs: {
+    'YIELDBTC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDETHETH),
+  },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, goerli.ajna.AjnaRewardsManager),
   // TODO update address
   ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, goerli.ajna.AjnaRewardsClaimer),
+  ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
   // NOT contracts
   cacheApi: 'https://cache-goerli-staging.staging.summer.fi/api/v1',
   safeConfirmations: 6,

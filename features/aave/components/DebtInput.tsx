@@ -1,4 +1,5 @@
 import { NORMALISED_PRECISION } from 'actions/aave'
+import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromPrecision } from 'blockchain/utils'
 import { MessageCard } from 'components/MessageCard'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
@@ -16,10 +17,12 @@ export function DebtInput(props: SecondaryInputProps) {
   const userInputDebt = state.context.userInput?.debtAmount
   let maxDebt = zero
 
+  const debtDigits = getToken(state.context.tokens.debt)?.digits
+
   if (state.context.transition) {
     maxDebt = amountFromPrecision(
       state.context.transition.simulation.position.maxDebtToBorrowWithCurrentCollateral,
-      NORMALISED_PRECISION, // precision from lib for maxDebtToBorrowWithCurrentCollateral is normalised to 18
+      NORMALISED_PRECISION,
     )
   }
 
@@ -30,7 +33,7 @@ export function DebtInput(props: SecondaryInputProps) {
   return (
     <Grid gap={3}>
       <VaultActionInput
-        action={'Generate'}
+        action={'Borrow'}
         amount={userInputDebt}
         hasAuxiliary={true}
         auxiliaryAmount={
@@ -45,9 +48,10 @@ export function DebtInput(props: SecondaryInputProps) {
           send({ type: 'SET_DEBT', debt: maxDebt })
         }}
         onChange={handleNumericInput((amount) => {
-          send({ type: 'SET_DEBT', debt: amount || zero })
+          send({ type: 'SET_DEBT', debt: amount })
         })}
         currencyCode={state.context.tokens.debt}
+        currencyDigits={debtDigits}
         disabled={false}
         tokenUsdPrice={state.context.balance?.debt.price}
       />

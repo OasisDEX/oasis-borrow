@@ -1,4 +1,4 @@
-import { TranslatedContent } from 'features/content/index'
+import { TranslatedContent } from 'features/content'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import React from 'react'
 

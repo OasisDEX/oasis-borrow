@@ -146,7 +146,6 @@ export function ManageVaultDetails(
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
-  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
 
   const shouldShowOverrideAutoBuy =
     isTriggerEnabled &&
@@ -156,7 +155,7 @@ export function ManageVaultDetails(
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
-      {autoTakeProfitEnabled && <>{autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}</>}
+      {<>{autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}</>}
       <DetailsSection
         title={t('system.overview')}
         notifications={[dsrNotification]}

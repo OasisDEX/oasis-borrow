@@ -112,13 +112,20 @@ async function getMakerData(
     return {
       table: makerProductHubProducts
         .map((product) => {
-          if (product.label === 'CRVV1ETHSTETH-A' && networkId === NetworkIds.GOERLI) {
+          const { secondaryToken, primaryToken, label } = product
+          const tokensAddresses = getNetworkContracts(networkId).tokens
+          const primaryTokenAddress = tokensAddresses[primaryToken].address
+          const secondaryTokenAddress = tokensAddresses[secondaryToken].address
+
+          if (label === 'CRVV1ETHSTETH-A' && networkId === NetworkIds.GOERLI) {
             // CRVV1ETHSTETH-A on goerli has some wonky numbers, skipping that
             return
           }
-          if (product.label === 'DSR') {
+          if (label === 'DSR') {
             return {
               ...product,
+              primaryTokenAddress,
+              secondaryTokenAddress,
               network: networksById[networkId].name as ProductHubSupportedNetworks,
               weeklyNetApy: getYearlyRate(bigNumberify(dsrData) || zero)
                 .decimalPlaces(5, BigNumber.ROUND_UP)
@@ -126,7 +133,7 @@ async function getMakerData(
                 .toString(),
             }
           }
-          const ilk = getIlk(product.label)
+          const ilk = getIlk(label)
           const { liquidityAvailable } = vatIlkData.find((data) => data[ilk])![ilk]
           const { fee } = jugIlkData.find((data) => data[ilk])![ilk]
           const { maxMultiple, maxLtv } = spotIlkData.find((data) => data[ilk])![ilk]
@@ -134,6 +141,8 @@ async function getMakerData(
 
           return {
             ...product,
+            primaryTokenAddress,
+            secondaryTokenAddress,
             network: networksById[networkId].name as ProductHubSupportedNetworks,
             liquidity: liquidity.toString(),
             fee: fee.toString(),

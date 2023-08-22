@@ -58,7 +58,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
   const ltv = position.riskRatio.loanToValue
   const liquidationPrice = simulation?.liquidationPrice || position.liquidationPriceT0Np
 
-  const changeVariant = getBorrowishChangeVariant(simulation)
+  const changeVariant = getBorrowishChangeVariant({ simulation, isOracless: false })
 
   useEffect(() => {
     if (!loanToValue && currentStep === 'setup' && depositAmount) {

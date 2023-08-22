@@ -7,6 +7,7 @@ import * as aaveV3PoolDataProvider from 'blockchain/abi/aave-v3-pool-data-provid
 import * as aaveV3Pool from 'blockchain/abi/aave-v3-pool.json'
 import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
+import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
@@ -181,9 +182,14 @@ export const mainnetContracts = {
     'WSTETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YFIDAI),
   },
+  ajnaOraclessPoolPairs: {
+    'YIELDBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDETHETH),
+  },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, mainnet.ajna.AjnaRewardsManager),
   // TODO update address
   ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, mainnet.ajna.AjnaRewardsClaimer),
+  ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   // not contracts
   cacheApi: mainnetCacheUrl,
   safeConfirmations: 10,

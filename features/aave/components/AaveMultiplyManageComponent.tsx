@@ -89,6 +89,7 @@ export function AaveMultiplyManageComponent({
         ]) => {
           return (
             <AaveMultiplyPositionData
+              strategyType={strategyConfig.strategyType}
               currentPosition={_currentPosition}
               collateralTokenPrice={_collateralTokenPrice}
               collateralTokenReserveData={_collateralTokenReserveData}

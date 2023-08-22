@@ -12,7 +12,7 @@ export interface IdentifiedTokens {
 
 function reduceIdentifiedTokens(
   total: IdentifiedTokens,
-  { address, name, precision, symbol }: Tokens,
+  { address, name, precision, symbol, source }: Tokens,
 ) {
   return {
     ...total,
@@ -20,6 +20,7 @@ function reduceIdentifiedTokens(
       precision,
       name,
       symbol,
+      source,
     },
   }
 }
@@ -43,8 +44,9 @@ export const identifyTokens$ = (
           Object.keys(tokensContracts)
             .filter(
               (token) =>
-                tokensAddresses.includes(tokensContracts[token].address.toLowerCase()) &&
-                getTokenGuarded(token),
+                tokensAddresses
+                  .map((address) => address.toLowerCase())
+                  .includes(tokensContracts[token].address.toLowerCase()) && getTokenGuarded(token),
             )
             .map((token) => (token === 'WETH' ? 'ETH' : token)),
         )
@@ -58,6 +60,7 @@ export const identifyTokens$ = (
           precision: getToken(token).precision,
           address: tokensContracts[token].address,
           chain_id: context.chainId,
+          source: 'local',
         }))
 
         if (tokensAddresses.length === localTokensAddresses.length)

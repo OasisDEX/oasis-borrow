@@ -28,8 +28,17 @@ export function sortByDefault(
     comingSoon: ProductHubItem[]
   }>(
     ({ available, comingSoon }, current) => {
-      const { earnStrategy, label, network, primaryToken, product, protocol, secondaryToken } =
-        current
+      const {
+        earnStrategy,
+        label,
+        network,
+        primaryToken,
+        primaryTokenAddress,
+        product,
+        protocol,
+        secondaryToken,
+        secondaryTokenAddress,
+      } = current
 
       return getActionUrl({
         bypassFeatureFlag: false,
@@ -37,9 +46,11 @@ export function sortByDefault(
         label,
         network,
         primaryToken,
+        primaryTokenAddress,
         product,
         protocol,
         secondaryToken,
+        secondaryTokenAddress,
       }) === '/'
         ? { available, comingSoon: [...comingSoon, current] }
         : { available: [...available, current], comingSoon }

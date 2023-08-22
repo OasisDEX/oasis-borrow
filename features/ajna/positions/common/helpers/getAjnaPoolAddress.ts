@@ -1,10 +1,19 @@
+import { NetworkIds } from 'blockchain/networks'
 import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
-type GetAjnaPoolAddress = (collateralAddress: string, quoteAddress: string) => Promise<string>
+type GetAjnaPoolAddress = (
+  collateralAddress: string,
+  quoteAddress: string,
+  networkId: NetworkIds,
+) => Promise<string>
 
-export const getAjnaPoolAddress: GetAjnaPoolAddress = async (collateralAddress, quoteAddress) => {
-  const { response } = (await loadSubgraph('Ajna', 'getAjnaPoolAddress', {
+export const getAjnaPoolAddress: GetAjnaPoolAddress = async (
+  collateralAddress,
+  quoteAddress,
+  networkId,
+) => {
+  const { response } = (await loadSubgraph('Ajna', 'getAjnaPoolAddress', networkId, {
     collateralAddress: collateralAddress.toLowerCase(),
     quoteAddress: quoteAddress.toLowerCase(),
   })) as SubgraphsResponses['Ajna']['getAjnaPoolAddress']

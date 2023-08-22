@@ -25,10 +25,12 @@ export interface ProductHubItemBasics {
   network: ProductHubSupportedNetworks
   primaryToken: string
   primaryTokenGroup?: string
+  primaryTokenAddress: string
   product: ProductHubProductType[]
   protocol: LendingProtocol
   secondaryToken: string
   secondaryTokenGroup?: string
+  secondaryTokenAddress: string
 }
 
 export interface ProductHubItemDetails {
@@ -55,6 +57,10 @@ export interface ProductHubItemTooltips {
 }
 
 export type ProductHubItem = ProductHubItemBasics & ProductHubItemDetails & ProductHubItemTooltips
+export type ProductHubItemWithoutAddress = Omit<
+  ProductHubItem,
+  'primaryTokenAddress' | 'secondaryTokenAddress'
+>
 
 export type ProductHubItemWithFlattenTooltip = Omit<ProductHubItem, 'tooltips'> & {
   tooltips: string

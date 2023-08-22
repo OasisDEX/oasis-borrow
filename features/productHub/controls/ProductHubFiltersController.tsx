@@ -1,5 +1,4 @@
 import { isTestnetNetworkId } from 'blockchain/networks'
-import { getToken } from 'blockchain/tokensMetadata'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import {
@@ -53,11 +52,13 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
 
   const debtTokens = useMemo(
     () =>
-      uniq(data.map((item) => item.secondaryToken)).map((item) => ({
-        label: item,
-        value: item,
-        icon: getToken(item).iconCircle,
-      })),
+      uniq(data.map((item) => item.secondaryToken))
+        .map((item) => ({
+          label: item,
+          value: item,
+          token: item,
+        }))
+        .sort((a, b) => (a.value > b.value ? 1 : -1)),
     [data],
   )
   const secondaryTokens = useMemo(
@@ -74,7 +75,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
       ).map((item) => ({
         label: item,
         value: item,
-        icon: getToken(item).iconCircle,
+        token: item,
       })),
     [data, selectedToken],
   )

@@ -1,3 +1,5 @@
+import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
@@ -10,6 +12,7 @@ import {
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
@@ -35,8 +38,10 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   limitRows,
 }) => {
-  const ajnaEnabled = useFeatureToggle('Ajna')
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const ajnaPoolFinderEnabled = useFeatureToggle('AjnaPoolFinder')
+
+  const { chainId } = useWalletManagement()
 
   const banner = useProductHubBanner({
     product: selectedProduct,
@@ -44,11 +49,20 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter((row) => {
-        if (row.protocol === LendingProtocol.Ajna) return ajnaEnabled && !ajnaSafetySwitchOn
-        else return true
+      tableData.filter(({ label, protocol }) => {
+        let isAvailable = true
+
+        if (ajnaSafetySwitchOn && protocol === LendingProtocol.Ajna) isAvailable = false
+        if (
+          !ajnaPoolFinderEnabled &&
+          Object.keys(
+            getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaOraclessPoolPairs,
+          ).includes(label.replace('/', '-'))
+        )
+          isAvailable = false
+        return isAvailable
       }),
-    [ajnaEnabled, ajnaSafetySwitchOn, tableData],
+    [ajnaPoolFinderEnabled, ajnaSafetySwitchOn, chainId, tableData],
   )
   const dataMatchedByNL = useMemo(
     () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),
@@ -63,7 +77,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     [dataMatchedByFilters, selectedProduct],
   )
   const rows = useMemo(
-    () => parseRows(dataSortedByDefault, selectedProduct),
+    () => parseRows(dataSortedByDefault, selectedProduct, chainId),
     [dataSortedByDefault, selectedProduct],
   )
 

@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { TokensGroup } from 'components/TokensGroup'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
@@ -11,6 +12,7 @@ export interface GenericMultiselectOption {
   icon?: string
   image?: string
   label: string
+  token?: string
   value: string
 }
 
@@ -26,13 +28,16 @@ function GenericMultiselectIcon({
   icon,
   image,
   label,
+  token,
 }: {
   icon?: string
   image?: string
   label: string
+  token?: string
 }) {
   return (
     <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}>
+      {token && <TokensGroup tokens={[token]} forceSize={32} />}
       {icon && <Icon size={32} name={icon} sx={{ verticalAlign: 'bottom' }} />}
       {image && (
         <Image
@@ -52,6 +57,7 @@ function GenericMultiselectItem({
   isClearing = false,
   isDisabled = false,
   isSelected = false,
+  token,
   label,
   onClick,
   value,
@@ -129,7 +135,9 @@ function GenericMultiselectItem({
           sx={{ mr: 3, opacity: isDisabled ? 0.5 : 1, transition: '200ms opacity' }}
         />
       )}
-      {(icon || image) && <GenericMultiselectIcon label={label} icon={icon} image={image} />}
+      {(icon || image || token) && (
+        <GenericMultiselectIcon label={label} icon={icon} image={image} token={token} />
+      )}
       {label}
     </Box>
   )
