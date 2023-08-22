@@ -187,6 +187,8 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
   }, [isOracless, dpmPositionData, identifiedTokensData, collateralToken, quoteToken])
 
   const tokensIconsData = useMemo(() => {
+    console.log('identifiedTokensData', identifiedTokensData)
+    console.log('dpmPositionData', dpmPositionData)
     return collateralToken && quoteToken && !isOracless
       ? {
           collateralToken,
@@ -195,11 +197,13 @@ export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDa
       : dpmPositionData && isOracless && identifiedTokensData
       ? {
           collateralToken:
-            identifiedTokensData[dpmPositionData.collateralTokenAddress].source === 'blockchain'
+            identifiedTokensData[dpmPositionData.collateralTokenAddress.toLowerCase()].source ===
+            'blockchain'
               ? dpmPositionData.collateralTokenAddress
               : dpmPositionData.collateralToken,
           quoteToken:
-            identifiedTokensData[dpmPositionData.quoteTokenAddress].source === 'blockchain'
+            identifiedTokensData[dpmPositionData.quoteTokenAddress.toLowerCase()].source ===
+            'blockchain'
               ? dpmPositionData.quoteTokenAddress
               : dpmPositionData.quoteToken,
         }
