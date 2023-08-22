@@ -913,7 +913,7 @@ export function setupAppContext() {
         tokenPriceUSDStatic$,
         mainnetAaveV3PositionCreatedEvents$,
         getApiVaults,
-        aaveV3Optimism,
+        aaveV3,
         NetworkIds.MAINNET,
       ),
       (wallet) => wallet,
