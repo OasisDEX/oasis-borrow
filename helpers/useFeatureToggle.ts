@@ -47,7 +47,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3Multiply: false,
   AaveV3Protection: true,
   AaveV3ProtectionWrite: true,
-  AjnaPoolFinder: false,
+  AjnaPoolFinder: true,
   AjnaSafetySwitch: false,
   AjnaSuppressValidation: false,
   ConstantMultipleReadOnly: false,

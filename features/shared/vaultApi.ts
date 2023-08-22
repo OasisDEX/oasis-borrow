@@ -7,9 +7,11 @@ import { VaultType } from 'features/generalManageVault/vaultType'
 import { LendingProtocol } from 'lendingProtocols'
 import getConfig from 'next/config'
 import { of } from 'ramda'
+import { useEffect } from 'react'
 import { combineLatest, EMPTY, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
+import { useFetch } from 'usehooks-ts'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
@@ -121,6 +123,32 @@ export async function getApiVaults({
     console.warn(`Can't obtain vaults from API`, error)
     return []
   }
+}
+
+export function useApiVaults({ vaultIds, protocol, chainId }: ApiVaultsParams): ApiVault[] {
+  const vaultsQuery = vaultIds.map((id) => `id=${id}`).join('&')
+
+  const { data, error } = useFetch<{ vaults: Vault[] }>(
+    `/api/vaults/${chainId}/${protocol}?${vaultsQuery}`,
+  )
+
+  useEffect(() => {
+    if (error) {
+      console.warn(`Can't obtain vaults from API`, error)
+    }
+  }, [error])
+
+  return (
+    data?.vaults.map((vault: Vault) => {
+      return {
+        vaultId: vault.vault_id,
+        chainId: vault.chain_id as NetworkIds,
+        protocol: vault.protocol as LendingProtocol,
+        ownerAddress: vault.owner_address,
+        type: vault.type as VaultType,
+      }
+    }) ?? []
+  )
 }
 
 export function getVaultFromApi$(
