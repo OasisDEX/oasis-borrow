@@ -19,7 +19,7 @@
     "lint": "eslint --ext .ts --ext .tsx .",
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc -p ./tsconfig.test.json --noEmit && tsc -p ./tsconfig.json --noEmit",
-    "typecheck-watch": "tsc -p ./tsconfig.json --noEmit --watch",
+    "typecheck:watch": "tsc -p ./tsconfig.json --noEmit --watch",
     "test": "jest",
     "test:fix": "yarn lint:fix && yarn tsc && yarn format:fix && yarn test && yarn typecheck",
     "typechain:generate": "yarn typechain:generate:web3 && yarn typechain:generate:ethers",
