@@ -44,8 +44,9 @@ export const identifyTokens$ = (
           Object.keys(tokensContracts)
             .filter(
               (token) =>
-                tokensAddresses.includes(tokensContracts[token].address.toLowerCase()) &&
-                getTokenGuarded(token),
+                tokensAddresses
+                  .map((address) => address.toLowerCase())
+                  .includes(tokensContracts[token].address.toLowerCase()) && getTokenGuarded(token),
             )
             .map((token) => (token === 'WETH' ? 'ETH' : token)),
         )
