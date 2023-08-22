@@ -1,5 +1,6 @@
 import { ensNameToAddressMainnet } from 'blockchain/ens'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { useObservable } from 'helpers/observableHook'
@@ -10,7 +11,8 @@ import React, { useEffect, useState } from 'react'
 
 export function ReferralHandler() {
   const { query, isReady } = useRouter()
-  const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { checkReferralLocal$, userReferral$ } = useAccountContext()
   const [context] = useObservable(context$)
   const [userReferral] = useObservable(userReferral$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)

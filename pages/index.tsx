@@ -1,4 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
 import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'
@@ -13,10 +14,12 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 function LandingPage() {
   return (
-    <WithConnection>
-      <HomepageView />
-      <Survey for="homepage" />
-    </WithConnection>
+    <FunctionalContextHandler>
+      <WithConnection>
+        <HomepageView />
+        <Survey for="homepage" />
+      </WithConnection>
+    </FunctionalContextHandler>
   )
 }
 
