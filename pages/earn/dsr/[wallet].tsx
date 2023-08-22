@@ -1,6 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
-import { ProductContextHandler } from 'components/context/ProductContextHandler'
+import { ProductContextHandler } from 'components/context'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'

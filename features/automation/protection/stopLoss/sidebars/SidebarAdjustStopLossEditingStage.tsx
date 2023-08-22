@@ -5,7 +5,7 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { GasEstimation } from 'components/GasEstimation'

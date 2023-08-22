@@ -1,9 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
-import { useAccountContext } from 'components/context/AccountContextProvider'
-import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
-import { useMainContext } from 'components/context/MainContextProvider'
-import { tosContext } from 'components/context/TOSContextProvider'
+import {
+  DeferedContextProvider,
+  tosContext,
+  useAccountContext,
+  useMainContext,
+} from 'components/context'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { jwtAuthGetToken } from 'features/shared/jwt'

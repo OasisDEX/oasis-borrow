@@ -1,7 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ChevronUpDown } from 'components/ChevronUpDown'
-import { useMainContext } from 'components/context/MainContextProvider'
-import { useProductContext } from 'components/context/ProductContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import {
   EstimationError,
   getEstimatedGasFeeTextOld,

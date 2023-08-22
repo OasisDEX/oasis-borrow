@@ -1,5 +1,4 @@
-import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { useAccountContext, useMainContext } from 'components/context'
 import { useObservable } from 'helpers/observableHook'
 
 interface AccountState {

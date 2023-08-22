@@ -2,7 +2,7 @@ import { ISimplePositionTransition, IStrategy, PositionTransition } from '@oasis
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { DimmedList } from 'components/DImmedList'
 import { OpenFlowStopLossSummary } from 'components/OpenFlowStopLossSummary'
 import { StopLossCommonOrderInformation } from 'features/automation/protection/common/controls/StopLossCommonOrderInformation'

@@ -1,6 +1,6 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { useMainContext } from 'components/context'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'

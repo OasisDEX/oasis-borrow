@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
-import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
+import { useNotificationSocket } from 'components/context'
 import React, { LegacyRef } from 'react'
 import { Box, Button } from 'theme-ui'
 

@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { TOSContextProvider } from 'components/context/TOSContextProvider'
+import { TOSContextProvider } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'

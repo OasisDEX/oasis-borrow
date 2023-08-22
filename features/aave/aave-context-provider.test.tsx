@@ -1,9 +1,13 @@
 import { renderHook } from '@testing-library/react'
 import { NetworkNames } from 'blockchain/networks'
-import { accountContext, AccountContextProvider } from 'components/context/AccountContextProvider'
-import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
-import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
-import { productContext } from 'components/context/ProductContextProvider'
+import {
+  accountContext,
+  AccountContextProvider,
+  DeferedContextProvider,
+  mainContext,
+  MainContextProvider,
+  productContext,
+} from 'components/context'
 import { ProductContext } from 'helpers/context/ProductContext'
 import { WithChildren } from 'helpers/types'
 import { LendingProtocol } from 'lendingProtocols'

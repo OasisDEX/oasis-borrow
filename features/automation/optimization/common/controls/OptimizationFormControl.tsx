@@ -1,4 +1,4 @@
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import {
   getAvailableAutomation,
   getShouldRemoveAllowance,

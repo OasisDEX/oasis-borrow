@@ -1,5 +1,5 @@
 import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
-import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
+import { useNotificationSocket } from 'components/context'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
 import { NotificationsCenterContent } from 'components/notifications/NotificationsCenterContent'
 import { NotificationsCenterHeader } from 'components/notifications/NotificationsCenterHeader'

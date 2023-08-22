@@ -1,7 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useMainContext } from 'components/context/MainContextProvider'
-import { useProductContext } from 'components/context/ProductContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { PoolFinderFormLoadingState } from 'features/poolFinder/components/PoolFinderFormLoadingState'
 import { PoolFinderTableLoadingState } from 'features/poolFinder/components/PoolFinderTableLoadingState'

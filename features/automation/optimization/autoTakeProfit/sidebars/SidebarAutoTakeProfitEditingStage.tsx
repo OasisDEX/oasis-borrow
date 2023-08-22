@@ -4,7 +4,7 @@ import {
   Pages,
   trackingEvents,
 } from 'analytics/analytics'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'

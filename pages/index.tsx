@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { FunctionalContextHandler } from 'components/context'
 import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
 import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'

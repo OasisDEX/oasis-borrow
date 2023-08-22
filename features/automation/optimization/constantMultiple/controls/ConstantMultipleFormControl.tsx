@@ -1,5 +1,5 @@
 import { AutomationEventIds, Pages } from 'analytics/analytics'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import {
   calculateMultipleFromTargetCollRatio,

@@ -1,5 +1,4 @@
-import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { useAccountContext, useMainContext } from 'components/context'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { ContextAccountDetails, getShowHeaderSettings } from 'helpers/functions'

@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { useMainContext } from 'components/context'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
 import { PositionHistoryItem } from 'components/history/PositionHistoryItem'

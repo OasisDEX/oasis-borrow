@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useProductContext } from 'components/context/ProductContextProvider'
+import { useProductContext } from 'components/context'
 import {
   ChangeVariantType,
   ContentCardProps,

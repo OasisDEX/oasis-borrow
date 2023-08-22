@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'

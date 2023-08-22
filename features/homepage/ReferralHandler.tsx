@@ -1,6 +1,5 @@
 import { ensNameToAddressMainnet } from 'blockchain/ens'
-import { useAccountContext } from 'components/context/AccountContextProvider'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { useAccountContext, useMainContext } from 'components/context'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { useObservable } from 'helpers/observableHook'

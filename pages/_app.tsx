@@ -11,10 +11,14 @@ import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
-import { accountContext, AccountContextProvider } from 'components/context/AccountContextProvider'
-import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
-import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
-import { NotificationSocketProvider } from 'components/context/NotificationSocketProvider'
+import {
+  accountContext,
+  AccountContextProvider,
+  DeferedContextProvider,
+  mainContext,
+  MainContextProvider,
+  NotificationSocketProvider,
+} from 'components/context'
 import { CookieBanner, SavedSettings } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'

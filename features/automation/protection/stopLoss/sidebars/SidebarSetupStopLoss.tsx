@@ -1,5 +1,4 @@
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
-import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
+import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'

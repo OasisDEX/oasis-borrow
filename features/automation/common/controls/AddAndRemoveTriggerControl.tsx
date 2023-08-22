@@ -3,7 +3,7 @@ import {
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
 import {
   AutomationTxHandlerAnalytics,

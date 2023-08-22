@@ -1,4 +1,4 @@
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import {
   STOP_LOSS_FORM_CHANGE,

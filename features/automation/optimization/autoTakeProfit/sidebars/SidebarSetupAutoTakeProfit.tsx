@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
-import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
+import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'

@@ -1,6 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useMainContext } from 'components/context/MainContextProvider'
-import { useProductContext } from 'components/context/ProductContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'

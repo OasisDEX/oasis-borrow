@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { useMainContext } from 'components/context/MainContextProvider'
-import { useProductContext } from 'components/context/ProductContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'

@@ -6,7 +6,7 @@ import {
 } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { AccountContext } from 'components/context/AccountContextProvider'
+import { AccountContext } from 'components/context'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'

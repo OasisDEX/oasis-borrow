@@ -1,4 +1,4 @@
-import { isMainContextAvailable, useMainContext } from 'components/context/MainContextProvider'
+import { isMainContextAvailable, useMainContext } from 'components/context'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 

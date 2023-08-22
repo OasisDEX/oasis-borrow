@@ -1,4 +1,4 @@
-import { useProductContext } from 'components/context/ProductContextProvider'
+import { useProductContext } from 'components/context'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'

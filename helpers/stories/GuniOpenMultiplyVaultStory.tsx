@@ -1,7 +1,4 @@
-import {
-  isProductContextAvailable,
-  productContext,
-} from 'components/context/ProductContextProvider'
+import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import {

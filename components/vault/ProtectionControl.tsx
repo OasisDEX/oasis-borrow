@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
-import { useMainContext } from 'components/context/MainContextProvider'
+import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import {
   AUTO_SELL_FORM_CHANGE,

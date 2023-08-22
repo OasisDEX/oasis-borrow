@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
+import { GasEstimationContext } from 'components/context'
 import { DimmedList } from 'components/DImmedList'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
 import { Tooltip, useTooltip } from 'components/Tooltip'

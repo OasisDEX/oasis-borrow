@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { FunctionalContextHandler } from 'components/context'
 import {
   DiscoverPageLayout,
   discoverPageLayoutProps,

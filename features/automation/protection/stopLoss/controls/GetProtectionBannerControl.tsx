@@ -7,7 +7,7 @@ import {
 import { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { Banner, bannerGradientPresets } from 'components/Banner'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'

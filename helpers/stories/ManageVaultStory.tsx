@@ -1,8 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {
-  isProductContextAvailable,
-  productContext,
-} from 'components/context/ProductContextProvider'
+import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import {

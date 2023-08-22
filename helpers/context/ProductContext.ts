@@ -52,8 +52,7 @@ import {
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
 import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
-import { AccountContext } from 'components/context/AccountContextProvider'
-import { TOSContext } from 'components/context/TOSContextProvider'
+import { AccountContext, TOSContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'

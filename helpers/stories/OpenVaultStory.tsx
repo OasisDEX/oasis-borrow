@@ -1,7 +1,4 @@
-import {
-  isProductContextAvailable,
-  productContext,
-} from 'components/context/ProductContextProvider'
+import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
 import {
