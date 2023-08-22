@@ -317,10 +317,7 @@ export function setupProductContext(
     (token, address) => `${token.address}_${token.precision}_${address}`,
   )
 
-  const userDpmProxies$ = memoize(
-    curry(getUserDpmProxies$)(context$),
-    (walletAddress) => walletAddress,
-  )
+  const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
 
   const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
   const positionIdFromDpmProxy$ = memoize(

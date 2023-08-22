@@ -188,7 +188,7 @@ export function AjnaFormView({
     txDetails,
   })
 
-  const title = getAjnaSidebarTitle({ currentStep, isFormFrozen, product, position })
+  const title = getAjnaSidebarTitle({ currentStep, isFormFrozen, product, position, isOracless })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title,

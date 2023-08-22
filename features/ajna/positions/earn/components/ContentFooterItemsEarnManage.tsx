@@ -1,3 +1,4 @@
+import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
@@ -35,9 +36,12 @@ export function ContentFooterItemsEarnManage({
   const userAjnaRewards = useAjnaRewards(owner)
 
   const formatted = {
-    availableToWithdraw: `${formatCryptoBalance(availableToWithdraw)} ${quoteToken}`,
+    availableToWithdraw: `${formatCryptoBalance(
+      negativeToZero(availableToWithdraw),
+    )} ${quoteToken}`,
     afterAvailableToWithdraw:
-      afterAvailableToWithdraw && `${formatCryptoBalance(afterAvailableToWithdraw)} ${quoteToken}`,
+      afterAvailableToWithdraw &&
+      `${formatCryptoBalance(negativeToZero(afterAvailableToWithdraw))} ${quoteToken}`,
     // projectedAnnualReward: `${formatDecimalAsPercent(projectedAnnualReward)}`,
     // TODO: replace with value when available
     projectedAnnualReward: 'n/a',
