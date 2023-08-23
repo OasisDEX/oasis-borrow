@@ -37,6 +37,7 @@ export function Tooltip({ children, sx }: { children: ReactNode; sx?: SxStylePro
 }
 
 interface StatefulTooltipProps {
+  inline?: boolean
   tooltip: ReactNode
   children: ReactNode
   tooltipSx?: SxStyleProp
@@ -44,6 +45,7 @@ interface StatefulTooltipProps {
 }
 
 export function StatefulTooltip({
+  inline,
   tooltip,
   tooltipSx,
   containerSx,
@@ -69,6 +71,7 @@ export function StatefulTooltip({
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
       sx={{ display: 'flex', ...containerSx }}
+      {...(inline && { as: 'span' })}
     >
       {children}
       <Tooltip

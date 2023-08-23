@@ -2,13 +2,13 @@ import { AjnaPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 
 interface AjnaBorrowDebtMaxParams {
-  precision: number
+  digits: number
   position: AjnaPosition
   simulation?: AjnaPosition
 }
 
-export function getAjnaBorrowDebtMax({ precision, position, simulation }: AjnaBorrowDebtMaxParams) {
+export function getAjnaBorrowDebtMax({ digits, position, simulation }: AjnaBorrowDebtMaxParams) {
   const maxDebt = position.debtAvailable(simulation?.collateralAmount || position.collateralAmount)
 
-  return maxDebt.decimalPlaces(precision, BigNumber.ROUND_DOWN)
+  return maxDebt.decimalPlaces(digits, BigNumber.ROUND_DOWN)
 }

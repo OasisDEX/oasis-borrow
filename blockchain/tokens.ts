@@ -1,11 +1,11 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { maxUint256, tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
 import { CallObservable } from './calls/observe'
-import { getNetworkContracts } from './contracts'
 import { Context } from './network'
 import { NetworkIds } from './networks'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
@@ -33,11 +33,28 @@ export function createBalance$(
 }
 
 export function createBalanceFromAddress$(
+  updateInterval$: Observable<any>,
+  context$: Observable<Context>,
   tokenBalanceFromAddress$: CallObservable<typeof tokenBalanceFromAddress>,
   token: { address: string; precision: number },
   address: string,
 ) {
-  return tokenBalanceFromAddress$({ ...token, account: address })
+  return context$.pipe(
+    switchMap(({ chainId, web3 }) => {
+      if (
+        token.address.toLowerCase() ===
+        getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.ETH.address.toLowerCase()
+      ) {
+        return updateInterval$.pipe(
+          switchMap(() => bindNodeCallback(web3.eth.getBalance)(address)),
+          map((ethBalance: string) => amountFromWei(new BigNumber(ethBalance))),
+          distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
+          shareReplay(1),
+        )
+      }
+      return tokenBalanceFromAddress$({ ...token, account: address })
+    }),
+  )
 }
 
 export function createCollateralTokens$(

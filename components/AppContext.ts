@@ -530,7 +530,7 @@ export function setupAppContext() {
   )
 
   const balanceFromAddress$ = memoize(
-    curry(createBalanceFromAddress$)(tokenBalanceFromAddress$),
+    curry(createBalanceFromAddress$)(onEveryBlock$, chainContext$, tokenBalanceFromAddress$),
     (token, address) => `${token.address}_${token.precision}_${address}`,
   )
 

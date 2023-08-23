@@ -13,7 +13,7 @@ import React from 'react'
 export function AjnaEarnFormContentWithdraw() {
   const { t } = useTranslation()
   const {
-    environment: { quotePrice, quoteToken, isOracless, quotePrecision },
+    environment: { quotePrice, quoteToken, isOracless, quoteDigits },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -33,7 +33,7 @@ export function AjnaEarnFormContentWithdraw() {
       position,
       simulation,
     }),
-    digits: quotePrecision,
+    digits: quoteDigits,
   })
 
   return (
@@ -44,7 +44,7 @@ export function AjnaEarnFormContentWithdraw() {
         token={quoteToken}
         tokenPrice={quotePrice}
         maxAmount={withdrawMax}
-        tokenPrecision={quotePrecision}
+        tokenDigits={quoteDigits}
       />
       <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>
         <AjnaEarnSlider
