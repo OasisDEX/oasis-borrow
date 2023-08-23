@@ -5,7 +5,7 @@ import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import { AaveHistoryEvent } from 'features/ajna/history/types'
+import { AaveHistoryEvent, hasTrigger } from 'features/ajna/history/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -39,7 +39,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
 
   const automationNames = ['maxCoverage', 'slLevel']
 
-  if (event.kind?.startsWith('AutomationAdded')) {
+  if (event.kind?.startsWith('AutomationAdded') && hasTrigger(event)) {
     return (
       <DefinitionList>
         {event.trigger &&

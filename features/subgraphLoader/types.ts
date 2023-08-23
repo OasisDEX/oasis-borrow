@@ -5,7 +5,7 @@ import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/ge
 import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
 import { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
-import { PositionHistoryResponse } from 'features/positionHistory/types'
+import { AavePositionHistoryResponse } from 'features/positionHistory/types'
 
 export type Subgraphs = {
   Ajna: {
@@ -87,7 +87,7 @@ export type SubgraphsResponses = {
   }
   Aave: {
     getAaveHistory: SubgraphBaseResponse<{
-      positionEvents: PositionHistoryResponse[]
+      positionEvents: AavePositionHistoryResponse[]
     }>
   }
   TempGraph: {

@@ -13,6 +13,66 @@ export interface PositionHistoryResponse {
   collateralBefore: string
   collateralDelta: string
   collateralOraclePrice: string
+  collateralToken: string
+  collateralTokenPriceUSD: string
+  debtAddress: string
+  debtAfter: string
+  debtBefore: string
+  debtDelta: string
+  debtOraclePrice: string
+  debtToken: string
+  debtTokenPriceUSD: string
+  depositedUSD: string
+  ethPrice: string
+  gasFeeUSD: string
+  gasPrice: string
+  gasUsed: string
+  id: string
+  kind: string
+  liquidationPriceAfter: string
+  liquidationPriceBefore: string
+  ltvAfter: string
+  ltvBefore: string
+  marketPrice: string
+  multipleAfter: string
+  multipleBefore: string
+  netValueAfter: string
+  netValueBefore: string
+  oasisFee: string
+  oasisFeeToken: string
+  oasisFeeUSD: string
+  quoteTokensAfter: string
+  quoteTokensBefore: string
+  quoteTokensDelta: string
+  quoteTokensMoved: string
+  moveQuoteFromIndex: string
+  moveQuoteToIndex: string
+  addOrRemoveIndex: string
+  isOpen: boolean
+  swapFromAmount: string
+  swapFromToken: string
+  swapToAmount: string
+  swapToToken: string
+  timestamp: string
+  totalFee: string
+  totalFeeInQuoteToken: string
+  txHash: string
+  withdrawnUSD: string
+}
+
+export interface AavePositionHistoryResponse {
+  depositTransfers: {
+    amount: string
+  }[]
+  withdrawTransfers: {
+    amount: string
+  }[]
+  blockNumber: string
+  collateralAddress: string
+  collateralAfter: string
+  collateralBefore: string
+  collateralDelta: string
+  collateralOraclePrice: string
   collateralToken: {
     symbol: string
   }
@@ -108,5 +168,4 @@ export type PositionHistoryEvent = {
   totalFee: BigNumber
   txHash: string
   withdrawnUSD: BigNumber
-  trigger: Trigger | null
 }
