@@ -1,6 +1,6 @@
 import Lottie from 'react-lottie'
 import { Box } from 'theme-ui'
-import openVaultAnimation from 'theme/lottie/openVaultAnimation.json'
+import openVaultAnimation from 'theme/animations/lottie/openVaultAnimation.json'
 
 const openVaultAnimationOptions = {
   loop: true,
