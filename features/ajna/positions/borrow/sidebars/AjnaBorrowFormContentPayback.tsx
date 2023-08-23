@@ -12,13 +12,7 @@ import React from 'react'
 
 export function AjnaBorrowFormContentPayback() {
   const {
-    environment: {
-      collateralDigits,
-      collateralPrice,
-      quoteDigits,
-      collateralToken,
-      quoteBalance,
-    },
+    environment: { collateralDigits, collateralPrice, quoteDigits, collateralToken, quoteBalance },
   } = useAjnaGeneralContext()
   const {
     form: {
