@@ -1,8 +1,5 @@
-import React from 'react'
-import Lottie from 'react-lottie'
-import { Box, SxStyleProp } from 'theme-ui'
-import addingStopLossAnimation from 'theme/lottie/addingStopLossAnimation.json'
-import openVaultAnimation from 'theme/lottie/openVaultAnimation.json'
+import dynamic from 'next/dynamic'
+import { SxStyleProp } from 'theme-ui'
 
 import { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn } from './keyframes'
 
@@ -40,24 +37,6 @@ export const fadeInAnimationMobile = {
   animationFillMode: 'forwards',
 }
 
-const openVaultAnimationOptions = {
-  loop: true,
-  autoplay: true,
-  animationData: openVaultAnimation,
-  rendererSettings: {
-    preserveAspectRatio: 'xMidYMid slice',
-  },
-}
-
-const addingStopLossAnimationOptions = {
-  loop: true,
-  autoplay: true,
-  animationData: addingStopLossAnimation,
-  rendererSettings: {
-    preserveAspectRatio: 'xMaxYMid slice',
-  },
-}
-
 export function fadeInAnimationDelay(delaySeconds: number): SxStyleProp {
   return {
     ...fadeInAnimation,
@@ -65,18 +44,22 @@ export function fadeInAnimationDelay(delaySeconds: number): SxStyleProp {
   }
 }
 
-export function OpenVaultAnimation() {
-  return (
-    <Box mb={2}>
-      <Lottie options={openVaultAnimationOptions} height={160} width={160} />
-    </Box>
-  )
-}
+export { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn }
 
-export function AddingStopLossAnimation() {
-  return (
-    <Box mb={2}>
-      <Lottie options={addingStopLossAnimationOptions} height={180} width={280} />
-    </Box>
-  )
-}
+export const AddingStopLossAnimation = dynamic(
+  () => {
+    return import('./AddingStopLossAnimation').then((component) => component.default)
+  },
+  {
+    ssr: false,
+  },
+)
+
+export const OpenVaultAnimation = dynamic(
+  () => {
+    return import('./OpenVaultAnimation').then((component) => component.default)
+  },
+  {
+    ssr: false,
+  },
+)
