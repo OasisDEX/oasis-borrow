@@ -150,7 +150,10 @@ import {
   getDpmPositionData$,
   getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  createAutomationTriggersData,
+  TriggersData,
+} from 'features/automation/api/automationTriggersData'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -910,6 +913,7 @@ export function setupAppContext() {
         tokenPriceUSDStatic$,
         mainnetAaveV3PositionCreatedEvents$,
         getApiVaults,
+        automationTriggersData$,
         aaveV3,
         NetworkIds.MAINNET,
       ),
@@ -935,6 +939,7 @@ export function setupAppContext() {
       tokenPriceUSDStatic$,
       optimismReadPositionCreatedEvents$,
       getApiVaults,
+      () => of<TriggersData | undefined>(undefined), // Triggers are not supported on optimism
       aaveV3Optimism,
       NetworkIds.OPTIMISMMAINNET,
     ),
