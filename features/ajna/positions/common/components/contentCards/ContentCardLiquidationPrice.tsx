@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import {
   ChangeVariantType,
   ContentCardProps,
@@ -16,6 +17,7 @@ interface ContentCardLiquidationPriceProps {
   liquidationPrice: BigNumber
   afterLiquidationPrice?: BigNumber
   belowCurrentPrice?: BigNumber
+  withTooltips?: boolean
   changeVariant?: ChangeVariantType
 }
 
@@ -25,6 +27,7 @@ export function ContentCardLiquidationPrice({
   liquidationPrice,
   afterLiquidationPrice,
   belowCurrentPrice,
+  withTooltips,
   changeVariant = 'positive',
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
@@ -41,9 +44,13 @@ export function ContentCardLiquidationPrice({
     unit: `${priceFormat}`,
     change: {
       isLoading,
-      value:
-        afterLiquidationPrice &&
-        `${formatted.afterLiquidationPrice} ${priceFormat} ${t('system.cards.common.after')}`,
+      value: afterLiquidationPrice && [
+        '',
+        `${formatted.afterLiquidationPrice}`,
+        `${priceFormat} ${t('system.cards.common.after')}`,
+      ],
+      tooltip:
+        afterLiquidationPrice && `${afterLiquidationPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
       variant: changeVariant,
     },
     modal: (
@@ -53,6 +60,10 @@ export function ContentCardLiquidationPrice({
         value={`${formatted.liquidationPrice} ${priceFormat}`}
       />
     ),
+  }
+
+  if (withTooltips && !liquidationPrice.isZero()) {
+    contentCardSettings.valueTooltip = `${liquidationPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`
   }
 
   if (belowCurrentPrice && !liquidationPrice.isZero()) {
