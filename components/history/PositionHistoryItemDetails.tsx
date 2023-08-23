@@ -7,7 +7,7 @@ import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInfor
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { AaveHistoryEvent, hasTrigger } from 'features/ajna/history/types'
 import {
-  formatAmount,
+  formatAmountWithPrecision,
   formatCryptoBalance,
   formatDecimalAsPercent,
   formatFiatBalance,
@@ -52,7 +52,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
                 case 'maxCoverage':
                   return (
                     <PositionHistoryRow label={t('position-history.max-coverage')} key={name}>
-                      {formatAmount(new BigNumber(value), quoteToken)}
+                      {formatAmountWithPrecision(new BigNumber(value), quoteToken)} {quoteToken}
                     </PositionHistoryRow>
                   )
                 case 'slLevel':
