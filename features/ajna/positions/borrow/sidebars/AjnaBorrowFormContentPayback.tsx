@@ -14,7 +14,6 @@ export function AjnaBorrowFormContentPayback() {
   const {
     environment: {
       collateralDigits,
-      collateralPrecision,
       collateralPrice,
       quoteDigits,
       collateralToken,
@@ -56,7 +55,7 @@ export function AjnaBorrowFormContentPayback() {
         maxAmount={collateralMax}
         token={collateralToken}
         tokenPrice={collateralPrice}
-        tokenPrecision={collateralPrecision}
+        tokenDigits={collateralDigits}
       />
       {(paybackAmount || withdrawAmount) && (
         <AjnaFormContentSummary>

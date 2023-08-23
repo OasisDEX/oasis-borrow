@@ -14,7 +14,6 @@ export function AjnaBorrowFormContentWithdraw() {
   const {
     environment: {
       collateralDigits,
-      collateralPrecision,
       quoteDigits,
       collateralPrice,
       collateralToken,
@@ -51,7 +50,7 @@ export function AjnaBorrowFormContentWithdraw() {
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
-        tokenPrecision={collateralPrecision}
+        tokenDigits={collateralDigits}
       />
       <AjnaFormFieldPayback
         dispatchAmount={dispatch}
