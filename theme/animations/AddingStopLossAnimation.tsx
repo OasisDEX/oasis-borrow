@@ -1,3 +1,4 @@
+import React from 'react'
 import Lottie from 'react-lottie'
 import { Box } from 'theme-ui'
 import addingStopLossAnimation from 'theme/animations/lottie/addingStopLossAnimation.json'
