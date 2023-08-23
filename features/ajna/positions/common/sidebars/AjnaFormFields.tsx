@@ -21,7 +21,7 @@ interface AjnaFormField<D> {
 
 interface AjnaFormFieldWithDefinedToken {
   token: string
-  tokenPrecision?: number
+  tokenDigits?: number
   tokenPrice: BigNumber
 }
 
@@ -42,7 +42,7 @@ export function AjnaFormFieldDeposit({
   maxAmountLabel = 'balance',
   resetOnClear,
   token,
-  tokenPrecision,
+  tokenDigits,
   tokenPrice,
 }: AjnaFormField<AjnaFormActionsUpdateDeposit> &
   AjnaFormFieldWithDefinedToken &
@@ -60,7 +60,7 @@ export function AjnaFormFieldDeposit({
     <VaultActionInput
       action="Deposit"
       currencyCode={token}
-      currencyDigits={tokenPrecision}
+      currencyDigits={tokenDigits}
       tokenUsdPrice={tokenPrice}
       amount={state.depositAmount}
       auxiliaryAmount={state.depositAmountUSD}
@@ -111,7 +111,7 @@ export function AjnaFormFieldGenerate({
   AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, product, quotePrecision, quotePrice, quoteToken },
+    environment: { isOracless, product, quoteDigits, quotePrice, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -122,7 +122,7 @@ export function AjnaFormFieldGenerate({
     <VaultActionInput
       action="Borrow"
       currencyCode={quoteToken}
-      currencyDigits={quotePrecision}
+      currencyDigits={quoteDigits}
       tokenUsdPrice={quotePrice}
       amount={state.generateAmount}
       auxiliaryAmount={state.generateAmountUSD}
@@ -180,7 +180,7 @@ export function AjnaFormFieldPayback({
 }: AjnaFormField<AjnaFormActionsUpdatePayback> & AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, quotePrecision, quotePrice, quoteToken, product },
+    environment: { isOracless, quoteDigits, quotePrice, quoteToken, product },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
@@ -191,7 +191,7 @@ export function AjnaFormFieldPayback({
     <VaultActionInput
       action="Payback"
       currencyCode={quoteToken}
-      currencyDigits={quotePrecision}
+      currencyDigits={quoteDigits}
       tokenUsdPrice={quotePrice}
       amount={state.paybackAmount}
       auxiliaryAmount={state.paybackAmountUSD}
@@ -237,7 +237,7 @@ export function AjnaFormFieldWithdraw({
   maxAmountLabel = 'max',
   resetOnClear,
   token,
-  tokenPrecision,
+  tokenDigits,
   tokenPrice,
 }: AjnaFormField<AjnaFormActionsUpdateWithdraw> &
   AjnaFormFieldWithDefinedToken &
@@ -256,7 +256,7 @@ export function AjnaFormFieldWithdraw({
     <VaultActionInput
       action="Withdraw"
       currencyCode={token}
-      currencyDigits={tokenPrecision}
+      currencyDigits={tokenDigits}
       tokenUsdPrice={tokenPrice}
       amount={state.withdrawAmount}
       auxiliaryAmount={state.withdrawAmountUSD}
