@@ -46,7 +46,7 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
         fetch(
           `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}`,
         ),
-        getAjnaRewards(resolvedAddress),
+        getAjnaRewards(resolvedAddress, chainId),
       ])
         .then(async ([apiResponse, subgraphResponse]) => {
           const parseApiResponse = (await apiResponse.json()) as Awaited<

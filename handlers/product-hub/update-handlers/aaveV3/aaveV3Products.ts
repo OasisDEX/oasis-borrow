@@ -1,8 +1,8 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const aaveV3ProductHubProducts: ProductHubItem[] = [
+export const aaveV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
   // ethereum products
   {
     product: [ProductHubProductType.Earn],
@@ -356,27 +356,6 @@ export const aaveV3ProductHubProducts: ProductHubItem[] = [
     secondaryToken: 'ETH',
     depositToken: 'USDC',
     label: 'USDC/ETH',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-  },
-  {
-    product: [ProductHubProductType.Multiply],
-    primaryToken: 'USDC',
-    primaryTokenGroup: 'USDC',
-    secondaryToken: 'WSTETH',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'USDC/WSTETH',
-    multiplyStrategyType: 'short',
-    multiplyStrategy: 'Short WSTETH',
-  },
-  {
-    product: [ProductHubProductType.Borrow],
-    primaryToken: 'USDC',
-    primaryTokenGroup: 'USDC',
-    secondaryToken: 'WSTETH',
-    depositToken: 'USDC',
-    label: 'USDC/WSTETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
   },

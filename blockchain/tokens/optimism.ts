@@ -33,4 +33,6 @@ export const tokensOptimism = {
   WETH: contractDesc(erc20, optimism.common.WETH),
   WLD: contractDesc(erc20, optimism.common.WLD),
   WSTETH: contractDesc(erc20, optimism.common.WSTETH),
+  YIELDBTC: contractDesc(erc20, optimism.common.YIELDBTC),
+  YIELDETH: contractDesc(erc20, optimism.common.YIELDETH),
 } as Record<string, ContractDesc>

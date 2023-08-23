@@ -12,9 +12,11 @@ export function getTokenGroup(
     case 'CBETH':
     case 'RETH':
     case 'WSTETH':
+    case 'YIELDETH':
       return { [`${type}TokenGroup`]: 'ETH' }
     case 'TBTC':
     case 'WBTC':
+    case 'YIELDBTC':
       return { [`${type}TokenGroup`]: 'BTC' }
     case 'SDAI':
       return { [`${type}TokenGroup`]: 'DAI' }

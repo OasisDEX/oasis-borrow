@@ -1,14 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
-import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box, Container, Flex, Grid, Text } from 'theme-ui'
 
 import { Hero } from './common/Hero'
@@ -73,32 +68,11 @@ function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats 
 }
 
 export const HomepageHero = () => {
-  const router = useRouter()
-  const { context$, checkReferralLocal$, userReferral$, getOasisStats$ } = useAppContext()
+  const { context$, getOasisStats$ } = useAppContext()
   const [oasisStatsValue] = useObservable(getOasisStats$())
   const [context] = useObservable(context$)
-  const [userReferral] = useObservable(userReferral$)
-  const [checkReferralLocal] = useObservable(checkReferralLocal$)
-
-  useEffect(() => {
-    if (!localReferral && referralsEnabled) {
-      const linkReferral = router.query.ref as string
-      if (linkReferral) {
-        setLocalReferral(linkReferral)
-        setLandedWithRef(linkReferral)
-      }
-    }
-  }, [checkReferralLocal, router.isReady])
-
-  const referralsEnabled = useFeatureToggle('Referrals')
-  const [landedWithRef, setLandedWithRef] = useState('')
-  const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   return (
     <Container>
-      {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
-        <NewReferralModal />
-      )}
-      {referralsEnabled && <TermsOfService userReferral={userReferral} />}
       <Flex
         sx={{
           height: 'auto',

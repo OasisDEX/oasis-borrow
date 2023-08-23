@@ -59,14 +59,14 @@ export async function getAjnaParameters({
 
   const { action, dpmAddress } = state
   const addressesConfig = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
-  const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress)
+  const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress, chainId)
 
   const dependencies: AjnaCommonDependencies = {
     ajnaProxyActions: addressesConfig.ajnaProxyActions.address,
     poolInfoAddress: addressesConfig.ajnaPoolInfo.address,
     provider: rpcProvider,
     WETH: addressesConfig.tokens.ETH.address,
-    getPoolData: getAjnaPoolData,
+    getPoolData: getAjnaPoolData(chainId),
     network: 'mainnet' as Network,
   }
 

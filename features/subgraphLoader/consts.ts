@@ -181,6 +181,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaPoolsData: gql`
     {
       pools {
+        address
         collateralAddress
         quoteTokenAddress
         dailyPercentageRate30dAverage

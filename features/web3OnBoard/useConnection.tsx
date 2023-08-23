@@ -29,6 +29,7 @@ export function useConnection(): Connection {
 export interface Wallet {
   address: string
   chainHexId: NetworkConfigHexId
+  chainId: NetworkIds
 }
 
 export interface WalletManagementState {
@@ -44,7 +45,11 @@ export function useWalletManagement(): WalletManagementState {
     connecting: state.status === 'connecting',
     chainId: state.networkConnectorNetworkId,
     wallet: state.connector
-      ? { address: state.connector.connectedAccount, chainHexId: state.connector.hexChainId }
+      ? {
+          address: state.connector.connectedAccount,
+          chainHexId: state.connector.hexChainId,
+          chainId: state.connector.chainId,
+        }
       : undefined,
   }
 }

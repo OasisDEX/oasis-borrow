@@ -6,6 +6,7 @@ import { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaPoolsDataResponse {
+  address: string
   collateralAddress: string
   quoteTokenAddress: string
   debt: string
@@ -23,6 +24,7 @@ export interface AjnaPoolsDataResponse {
 }
 
 export interface AjnaPoolsTableData {
+  address: string
   collateralAddress: string
   quoteTokenAddress: string
   debt: BigNumber
@@ -39,11 +41,10 @@ export interface AjnaPoolsTableData {
   buckets: Bucket[]
 }
 
-export const getAjnaPoolsData = async (networkId?: NetworkIds): Promise<AjnaPoolsTableData[]> => {
+export const getAjnaPoolsData = async (networkId: NetworkIds): Promise<AjnaPoolsTableData[]> => {
   const { response } = (await loadSubgraph(
     'Ajna',
     'getAjnaPoolsData',
-    {},
     networkId,
   )) as SubgraphsResponses['Ajna']['getAjnaPoolsData']
 
@@ -52,6 +53,7 @@ export const getAjnaPoolsData = async (networkId?: NetworkIds): Promise<AjnaPool
   if (response && 'pools' in response) {
     return response.pools.map(
       ({
+        address,
         buckets,
         collateralAddress,
         dailyPercentageRate30dAverage,
@@ -67,6 +69,7 @@ export const getAjnaPoolsData = async (networkId?: NetworkIds): Promise<AjnaPool
         lendApr,
         borrowApr,
       }) => ({
+        address,
         buckets,
         collateralAddress,
         quoteTokenAddress,

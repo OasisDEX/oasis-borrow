@@ -211,7 +211,7 @@ import {
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
-import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { checkVaultTypeUsingApi$, getApiVaults, saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import {
   getCreateDPMAccountTransactionMachine,
@@ -233,8 +233,9 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
-  createAaveDpmPosition$,
-  createAavePosition$,
+  AavePosition,
+  createAaveV2Position$,
+  createAaveV3DpmPosition$,
   createMakerPositions$,
   createPositions$,
 } from 'features/vaultsOverview/pipes/positions'
@@ -532,10 +533,7 @@ export function setupAppContext() {
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
-  const userDpmProxies$ = memoize(
-    curry(getUserDpmProxies$)(context$),
-    (walletAddress) => walletAddress,
-  )
+  const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
 
   const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
   const positionIdFromDpmProxy$ = memoize(
@@ -871,8 +869,25 @@ export function setupAppContext() {
     ),
   )
 
-  const mainnetAavePositions$ = memoize(
-    curry(createAavePosition$)(
+  const mainnetPositionCreatedEventsForProtocol$ = memoize(
+    (walletAddress: string, protocol: LendingProtocol) => {
+      return mainnetReadPositionCreatedEvents$(walletAddress).pipe(
+        map((events) => events.filter((event) => event.protocol === protocol)),
+      )
+    },
+    (wallet, protocol) => `${wallet}-${protocol}`,
+  )
+
+  const mainnetAaveV2PositionCreatedEvents$ = memoize((walletAddress: string) => {
+    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV2)
+  })
+
+  const mainnetAaveV3PositionCreatedEvents$ = memoize((walletAddress: string) => {
+    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV3)
+  })
+
+  const mainnetAaveV2Positions$: (walletAddress: string) => Observable<AavePosition[]> = memoize(
+    curry(createAaveV2Position$)(
       {
         dsProxy$: proxyAddress$,
         userDpmProxies$: mainnetDpmProxies$,
@@ -881,12 +896,25 @@ export function setupAppContext() {
         tickerPrices$: tokenPriceUSDStatic$,
         context$,
         automationTriggersData$,
-        readPositionCreatedEvents$: mainnetReadPositionCreatedEvents$,
+        readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
       },
       aaveV2,
-      aaveV3,
     ),
   )
+
+  const aaveMainnetAaveV3Positions$: (walletAddress: string) => Observable<AavePosition[]> =
+    memoize(
+      curry(createAaveV3DpmPosition$)(
+        context$,
+        mainnetDpmProxies$,
+        tokenPriceUSDStatic$,
+        mainnetAaveV3PositionCreatedEvents$,
+        getApiVaults,
+        aaveV3,
+        NetworkIds.MAINNET,
+      ),
+      (wallet) => wallet,
+    )
 
   const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
     curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
@@ -900,12 +928,13 @@ export function setupAppContext() {
     ),
   )
 
-  const aaveOptimismPositions$ = memoize(
-    curry(createAaveDpmPosition$)(
+  const aaveOptimismPositions$: (walletAddress: string) => Observable<AavePosition[]> = memoize(
+    curry(createAaveV3DpmPosition$)(
       context$,
       optimismDpmProxies$,
       tokenPriceUSDStatic$,
       optimismReadPositionCreatedEvents$,
+      getApiVaults,
       aaveV3Optimism,
       NetworkIds.OPTIMISMMAINNET,
     ),
@@ -914,18 +943,24 @@ export function setupAppContext() {
 
   const aavePositions$ = memoize((walletAddress: string) => {
     return combineLatest([
-      mainnetAavePositions$(walletAddress),
+      mainnetAaveV2Positions$(walletAddress),
+      aaveMainnetAaveV3Positions$(walletAddress),
       aaveOptimismPositions$(walletAddress),
     ]).pipe(
-      map(([mainnetAavePositions, optimismAavePositions]) => {
-        return [...mainnetAavePositions, ...optimismAavePositions]
+      map(([mainnetAaveV2Positions, mainnetAaveV3Positions, optimismAaveV3Positions]) => {
+        return [...mainnetAaveV2Positions, ...mainnetAaveV3Positions, ...optimismAaveV3Positions]
       }),
     )
   })
 
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
   const positions$ = memoize(
-    curry(createPositions$)(makerPositions$, mainnetAavePositions$, aaveOptimismPositions$),
+    curry(createPositions$)(
+      makerPositions$,
+      mainnetAaveV2Positions$,
+      aaveMainnetAaveV3Positions$,
+      aaveOptimismPositions$,
+    ),
   )
 
   const openMultiplyVault$ = memoize((ilk: string) =>

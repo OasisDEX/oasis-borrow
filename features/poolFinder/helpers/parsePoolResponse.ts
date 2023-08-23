@@ -40,8 +40,8 @@ export function parsePoolResponse(
         lowestUtilizedPriceIndex,
         quoteTokenAddress,
       }) => {
-        const collateralToken = identifiedTokens[collateralAddress].symbol
-        const quoteToken = identifiedTokens[quoteTokenAddress].symbol
+        const collateralToken = identifiedTokens[collateralAddress.toLowerCase()].symbol
+        const quoteToken = identifiedTokens[quoteTokenAddress.toLowerCase()].symbol
         const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
         const isOracless = isPoolOracless({ chainId, collateralToken, quoteToken })
         const collateralPrice = isOracless ? one : prices[collateralToken]
@@ -74,15 +74,15 @@ export function parsePoolResponse(
           fee,
           managementType: 'active',
           collateralAddress: collateralAddress,
-          collateralToken: identifiedTokens[collateralAddress].symbol,
+          collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
           collateralIcon:
-            identifiedTokens[collateralAddress].source === 'blockchain'
+            identifiedTokens[collateralAddress.toLowerCase()].source === 'blockchain'
               ? collateralAddress
               : collateralToken,
           quoteAddress: quoteTokenAddress,
-          quoteToken: identifiedTokens[quoteTokenAddress].symbol,
+          quoteToken: identifiedTokens[quoteTokenAddress.toLowerCase()].symbol,
           quoteIcon:
-            identifiedTokens[quoteTokenAddress].source === 'blockchain'
+            identifiedTokens[quoteTokenAddress.toLowerCase()].source === 'blockchain'
               ? quoteTokenAddress
               : quoteToken,
           tooltips: {

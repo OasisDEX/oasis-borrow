@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
@@ -7,8 +8,11 @@ export interface AjnaUserNftsResponse {
   currentReward: BigNumber
 }
 
-export const getAjnaUserNfts = async (walletAddress: string): Promise<AjnaUserNftsResponse[]> => {
-  const { response } = await loadSubgraph('Ajna', 'getAjnaEarnPositionNftId', {
+export const getAjnaUserNfts = async (
+  walletAddress: string,
+  networkId: NetworkIds,
+): Promise<AjnaUserNftsResponse[]> => {
+  const { response } = await loadSubgraph('Ajna', 'getAjnaEarnPositionNftId', networkId, {
     walletAddress: walletAddress.toLowerCase(),
   })
 
