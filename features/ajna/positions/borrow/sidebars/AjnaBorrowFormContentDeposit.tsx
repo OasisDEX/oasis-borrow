@@ -15,11 +15,10 @@ export function AjnaBorrowFormContentDeposit() {
   const {
     environment: {
       collateralBalance,
-      collateralPrecision,
+      collateralDigits,
       collateralPrice,
       collateralToken,
       quoteDigits,
-      quotePrecision,
     },
   } = useAjnaGeneralContext()
   const {
@@ -34,7 +33,7 @@ export function AjnaBorrowFormContentDeposit() {
 
   const debtMin = getAjnaBorrowDebtMin({ digits: quoteDigits, position })
   const debtMax = getAjnaBorrowDebtMax({
-    precision: quotePrecision,
+    digits: quoteDigits,
     position,
     simulation,
   })
@@ -47,7 +46,7 @@ export function AjnaBorrowFormContentDeposit() {
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
-        tokenPrecision={collateralPrecision}
+        tokenDigits={collateralDigits}
       />
       <AjnaFormFieldGenerate dispatchAmount={dispatch} maxAmount={debtMax} minAmount={debtMin} />
       {generateAmount && <AjnaBorrowOriginationFee />}
