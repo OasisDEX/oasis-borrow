@@ -29,6 +29,7 @@ export function AaveManageTabBar({
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
   const aaveProtection = useFeatureToggle('AaveV3Protection')
+  const aaveHistory = useFeatureToggle('AaveV3History')
   const {
     automationTriggersData: { isAutomationDataLoaded },
     triggerData: { stopLossTriggerData },
@@ -59,7 +60,8 @@ export function AaveManageTabBar({
       ? state.context.transition?.simulation.position
       : undefined
 
-  const historyIsSupported = isAaveHistorySupported(state.context.strategyConfig.networkId)
+  const historyIsSupported =
+    aaveHistory && isAaveHistorySupported(state.context.strategyConfig.networkId)
 
   return (
     <TabBar
