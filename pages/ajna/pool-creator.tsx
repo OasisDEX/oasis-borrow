@@ -1,5 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
+import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoolCreatorController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -9,15 +10,22 @@ import React from 'react'
 
 function AjnaPoolCreatorPage() {
   return (
-    <WithConnection>
-      <WithTermsOfService>
-        <WithWalletAssociatedRisk>
-          <WithFeatureToggleRedirect feature="AjnaPoolFinder">
-            <AjnaPoolCreatorController />
-          </WithFeatureToggleRedirect>
-        </WithWalletAssociatedRisk>
-      </WithTermsOfService>
-    </WithConnection>
+    <>
+      <PageSEOTags
+        title="seo.ajnaPoolCreator.title"
+        description="seo.ajnaPoolCreator.description"
+        url={`/ajna/pool-creator`}
+      />
+      <WithConnection>
+        <WithTermsOfService>
+          <WithWalletAssociatedRisk>
+            <WithFeatureToggleRedirect feature="AjnaPoolFinder">
+              <AjnaPoolCreatorController />
+            </WithFeatureToggleRedirect>
+          </WithWalletAssociatedRisk>
+        </WithTermsOfService>
+      </WithConnection>
+    </>
   )
 }
 
