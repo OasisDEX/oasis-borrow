@@ -262,6 +262,7 @@ enum Protocol {
   aavev2
   aavev3
   ajna
+  spark
 
   @@map("protocol")
 }
