@@ -122,6 +122,7 @@ export function AaveManageTabBar({
                     collateralToken={collateralToken}
                     historyEvents={state.context.historyEvents}
                     quoteToken={debtToken}
+                    networkId={strategyConfig.networkId}
                   />
                 ),
               },

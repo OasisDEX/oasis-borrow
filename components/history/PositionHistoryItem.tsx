@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { NetworkIds } from 'blockchain/networks'
 import { DefinitionListItem } from 'components/DefinitionList'
 import { PositionHistoryItemDetails } from 'components/history/PositionHistoryItemDetails'
 import { AppLink } from 'components/Links'
@@ -18,6 +19,7 @@ interface PositionHistoryItemProps {
   item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<AjnaBorrowerEvent>
   priceFormat?: string
   quoteToken: string
+  networkId: NetworkIds
 }
 
 export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
@@ -29,6 +31,7 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
   item,
   priceFormat,
   quoteToken,
+  networkId,
 }) => {
   const [opened, setOpened] = useState(false)
   const { t, i18n } = useTranslation()
@@ -81,6 +84,7 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
             isShort={isShort}
             priceFormat={priceFormat}
             quoteToken={quoteToken}
+            networkId={networkId}
           />
           <Flex
             sx={{

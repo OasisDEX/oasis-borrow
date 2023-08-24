@@ -26,6 +26,7 @@ interface PositionHistoryItemDetailsProps {
   isShort?: boolean
   priceFormat?: string
   quoteToken: string
+  networkId: NetworkIds
 }
 
 export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = ({
@@ -35,6 +36,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
   isShort,
   priceFormat,
   quoteToken,
+  networkId,
 }) => {
   const { t } = useTranslation()
 
@@ -184,19 +186,16 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.netValueAfter)} USD
         </PositionHistoryRow>
       )}
-      {
-        // TODO: add chain id to component instead of hardcoding
-      }
       {event.swapToAmount &&
         event.swapToAmount.gt(zero) &&
         event.swapFromAmount &&
         event.swapFromAmount.gt(zero) && (
           <PositionHistoryRow label={t('position-history.swaped')}>
             {formatCryptoBalance(event.swapFromAmount)}{' '}
-            {getTokenSymbolBasedOnAddress(NetworkIds.MAINNET, event.swapFromToken!)}
+            {getTokenSymbolBasedOnAddress(networkId, event.swapFromToken!)}
             <VaultChangesInformationArrow />
             {formatCryptoBalance(event.swapToAmount)}{' '}
-            {getTokenSymbolBasedOnAddress(NetworkIds.MAINNET, event.swapToToken!)}
+            {getTokenSymbolBasedOnAddress(networkId, event.swapToToken!)}
           </PositionHistoryRow>
         )}
       {event.collateralTokenPriceUSD && (
