@@ -55,6 +55,13 @@ export const subgraphsRecord: SubgraphsRecord = {
 }
 
 export const subgraphMethodsRecord: SubgraphMethodsRecord = {
+  getAjnaPositionsOfAddress: gql`
+    query getPools($collateralAddress: ID!, $quoteAddress: ID!) {
+      pools(where: { collateralAddress: $collateralAddress, quoteTokenAddress: $quoteAddress }) {
+        address
+      }
+    }
+  `,
   getAjnaPositionAggregatedData: gql`
     query getAccount($dpmProxyAddress: ID!) {
       account(id: $dpmProxyAddress) {
