@@ -1,5 +1,6 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
 import { decode } from 'jsonwebtoken'
+import getConfig from 'next/config'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'
@@ -7,6 +8,8 @@ import { map } from 'rxjs/operators'
 import Web3 from 'web3'
 
 const LOCAL_STORAGE_GNOSIS_SAFE_PENDING = 'gnosis-safe-pending'
+
+const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 
 export type JWToken = string
 // return 'invalid' if we have forced the removal of the token again
@@ -191,7 +194,7 @@ function requestSignin({
   isGnosisSafe: boolean
 }): Observable<string> {
   return ajax({
-    url: `/api/auth/signin`,
+    url: `${basePath}/api/auth/signin`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

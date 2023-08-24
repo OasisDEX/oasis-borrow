@@ -27,7 +27,7 @@ export function createGasPrice$(
   const minersTip = new BigNumber(5000000000)
 
   const blockNativeRequest$ = ajax({
-    url: `$/api/gasPrice`,
+    url: `${window.location.origin}/api/gasPrice`,
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -88,7 +88,7 @@ export function createGasPrice$(
 export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
   switchMap(() =>
     ajax({
-      url: `/api/tokensPrices`,
+      url: `${window.location.origin}/api/tokensPrices`,
       method: 'GET',
       headers: {
         Accept: 'application/json',
