@@ -178,7 +178,8 @@ export function AjnaFormFieldPayback({
   maxAmount,
   maxAmountLabel = 'max',
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdatePayback | AjnaFormActionsUpdatePaybackMax> & AjnaFormFieldWithMaxAmount) {
+}: AjnaFormField<AjnaFormActionsUpdatePayback | AjnaFormActionsUpdatePaybackMax> &
+  AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
     environment: { isOracless, quoteDigits, quotePrice, quoteToken, product },

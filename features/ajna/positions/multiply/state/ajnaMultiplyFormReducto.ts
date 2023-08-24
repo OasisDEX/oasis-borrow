@@ -7,6 +7,7 @@ import {
   AjnaFormActionsUpdateDpm,
   AjnaFormActionsUpdateGenerate,
   AjnaFormActionsUpdatePayback,
+  AjnaFormActionsUpdatePaybackMax,
   AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
@@ -20,6 +21,7 @@ export interface AjnaMultiplyFormState {
   generateAmountUSD?: BigNumber
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
+  paybackAmountMax: boolean
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   loanToValue?: BigNumber
@@ -36,6 +38,7 @@ export type AjnaMultiplyFormAction = ReductoActions<
   | AjnaFormActionsUpdateDeposit
   | AjnaFormActionsUpdateGenerate
   | AjnaFormActionsUpdatePayback
+  | AjnaFormActionsUpdatePaybackMax
   | AjnaFormActionsUpdateWithdraw
   | AjnaFormActionsUpdateDpm
   | AjnaFormActionsReset
@@ -48,6 +51,7 @@ export const ajnaMultiplyReset = {
   generateAmountUSD: undefined,
   paybackAmount: undefined,
   paybackAmountUSD: undefined,
+  paybackAmountMax: false,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
   loanToValue: undefined,
@@ -90,6 +94,11 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
             ...state,
             paybackAmount: action.paybackAmount,
             paybackAmountUSD: action.paybackAmountUSD,
+          }
+        case 'update-payback-max':
+          return {
+            ...state,
+            paybackAmountMax: action.paybackAmountMax,
           }
         case 'update-withdraw':
           return {
