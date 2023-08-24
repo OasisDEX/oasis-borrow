@@ -87,7 +87,13 @@ export function AjnaFormView({
 
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),
-    ...getFlowStateConfig({ collateralToken, quoteToken, state, flow }),
+    ...getFlowStateConfig({
+      collateralToken,
+      fee: position.pool.interestRate,
+      flow,
+      quoteToken,
+      state,
+    }),
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })

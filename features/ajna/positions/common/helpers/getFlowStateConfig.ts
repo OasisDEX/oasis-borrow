@@ -1,19 +1,23 @@
+import BigNumber from 'bignumber.js'
 import { AjnaFlow, AjnaFormState } from 'features/ajna/common/types'
+import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 import { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 
 interface GetFlowStateConfigParams {
   collateralToken: string
+  fee: BigNumber
+  flow: AjnaFlow
   quoteToken: string
   state: AjnaFormState
-  flow: AjnaFlow
 }
 
 export function getFlowStateConfig({
   collateralToken,
+  fee,
+  flow,
   quoteToken,
   state,
-  flow,
 }: GetFlowStateConfigParams): {
   amount: UseFlowStateProps['amount']
   token: UseFlowStateProps['token']
@@ -70,8 +74,9 @@ export function getFlowStateConfig({
           token: 'ETH',
         }
       }
+
       return {
-        amount: state.paybackAmount,
+        amount: getMaxIncreasedValue(state.paybackAmount, fee),
         token: quoteToken,
       }
     case 'deposit-quote-multiply':
