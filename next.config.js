@@ -32,7 +32,7 @@ const baseConfig = {
     ignoreBuildErrors: isProduction,
   },
   productionBrowserSourceMaps: true,
-  pageExtensions: ['mdx', 'tsx'],
+  pageExtensions: ['mdx', 'tsx', 'ts'],
   publicRuntimeConfig: publicRuntimeConfig,
   webpack: function (config, { isServer }) {
     config.module.rules.push({
@@ -169,7 +169,6 @@ const baseConfig = {
           { key: 'X-Frame-Options', value: 'ALLOW' },
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'same-origin' },
-          { key: 'Access-Control-Allow-Origin', value: 'https://app.safe.global' },
         ],
       },
     ]
