@@ -17,12 +17,9 @@ export const sentryBaseConfig: BaseConfig = {
   // so ensure that SENTRY_RELEASE is the same at build time.
   release: process.env.SENTRY_RELEASE || getConfig()?.publicRuntimeConfig?.sentryRelease,
   enabled: process.env.NEXT_PUBLIC_SENTRY_ENV !== 'development',
-  tracesSampleRate: 0.2,
-  sampleRate: 0.3,
-  profilesSampleRate: 0.1,
-  integrations: [
-    new CaptureConsoleIntegration({ levels: ['error', 'warn', 'info', 'assets'] }),
-    new HttpClientIntegration(),
-  ],
+  tracesSampleRate: 0.1,
+  sampleRate: 0.1,
+  profilesSampleRate: 0.05,
+  integrations: [new CaptureConsoleIntegration({ levels: ['error'] }), new HttpClientIntegration()],
   debug: false,
 }
