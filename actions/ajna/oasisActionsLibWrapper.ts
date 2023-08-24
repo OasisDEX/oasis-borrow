@@ -93,7 +93,17 @@ export async function getAjnaParameters({
     }
     case 'payback-borrow':
     case 'withdraw-borrow': {
-      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position })
+      return ajnaPaybackWithdrawBorrow({
+        state: {
+          ...state,
+          paybackAmount: state.paybackAmountMax
+            ? new BigNumber(ethers.constants.MaxUint256.toString())
+            : state.paybackAmount,
+        },
+        commonPayload,
+        dependencies,
+        position,
+      })
     }
 
     case 'open-earn': {

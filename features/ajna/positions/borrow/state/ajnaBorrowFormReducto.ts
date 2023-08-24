@@ -7,6 +7,7 @@ import {
   AjnaFormActionsUpdateDpm,
   AjnaFormActionsUpdateGenerate,
   AjnaFormActionsUpdatePayback,
+  AjnaFormActionsUpdatePaybackMax,
   AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
@@ -20,8 +21,10 @@ export interface AjnaBorrowFormState {
   generateAmountUSD?: BigNumber
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
+  paybackAmountMax: boolean
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
+  withdrawAmountMax: boolean
   uiDropdown: AjnaBorrowPanel
   uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
 }
@@ -31,6 +34,7 @@ export type AjnaBorrowFormAction = ReductoActions<
   | AjnaFormActionsUpdateDeposit
   | AjnaFormActionsUpdateGenerate
   | AjnaFormActionsUpdatePayback
+  | AjnaFormActionsUpdatePaybackMax
   | AjnaFormActionsUpdateWithdraw
   | AjnaFormActionsUpdateDpm
   | AjnaFormActionsReset
@@ -43,8 +47,10 @@ export const ajnaBorrowReset = {
   generateAmountUSD: undefined,
   paybackAmount: undefined,
   paybackAmountUSD: undefined,
+  paybackAmountMax: false,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+  withdrawAmountMax: false,
 }
 
 export const ajnaBorrowDefault: AjnaBorrowFormState = {
@@ -85,6 +91,11 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             ...state,
             paybackAmount: action.paybackAmount,
             paybackAmountUSD: action.paybackAmountUSD,
+          }
+        case 'update-payback-max':
+          return {
+            ...state,
+            paybackAmountMax: action.paybackAmountMax,
           }
         case 'update-dpm':
           return {
