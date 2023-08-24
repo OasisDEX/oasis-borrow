@@ -430,18 +430,25 @@ export function setupAppContext() {
   }
 
   // protocols
-  const aaveV2 = getAaveV2Services({
+  const aaveV2Services = getAaveV2Services({
     refresh$: onEveryBlock$,
   })
 
-  const aaveV3 = getAaveV3Services({ refresh$: onEveryBlock$, networkId: NetworkIds.MAINNET })
-  const aaveV3Optimism = getAaveV3Services({
+  const aaveV3Services = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.MAINNET,
+  })
+  const aaveV3OptimismServices = getAaveV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.OPTIMISMMAINNET,
   })
-  const aaveV3Arbitrum = getAaveV3Services({
+  const aaveV3ArbitrumServices = getAaveV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.ARBITRUMMAINNET,
+  })
+  const sparkServices = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.MAINNET,
   })
 
   // base
@@ -849,7 +856,7 @@ export function setupAppContext() {
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
-      aaveV2.aaveProxyConfiguration$,
+      aaveV2Services.aaveProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
     (positionId: PositionId, networkName: NetworkNames) =>
@@ -901,7 +908,7 @@ export function setupAppContext() {
         automationTriggersData$,
         readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
       },
-      aaveV2,
+      aaveV2Services,
     ),
   )
 
@@ -914,7 +921,7 @@ export function setupAppContext() {
         mainnetAaveV3PositionCreatedEvents$,
         getApiVaults,
         automationTriggersData$,
-        aaveV3,
+        aaveV3Services,
         NetworkIds.MAINNET,
       ),
       (wallet) => wallet,
@@ -940,7 +947,7 @@ export function setupAppContext() {
       optimismReadPositionCreatedEvents$,
       getApiVaults,
       () => of<TriggersData | undefined>(undefined), // Triggers are not supported on optimism
-      aaveV3Optimism,
+      aaveV3OptimismServices,
       NetworkIds.OPTIMISMMAINNET,
     ),
     (wallet) => wallet,
@@ -1291,12 +1298,13 @@ export function setupAppContext() {
   )
 
   const protocols: ProtocolsServices = {
-    [LendingProtocol.AaveV2]: aaveV2,
+    [LendingProtocol.AaveV2]: aaveV2Services,
     [LendingProtocol.AaveV3]: {
-      [NetworkIds.MAINNET]: aaveV3,
-      [NetworkIds.OPTIMISMMAINNET]: aaveV3Optimism,
-      [NetworkIds.ARBITRUMMAINNET]: aaveV3Arbitrum,
+      [NetworkIds.MAINNET]: aaveV3Services,
+      [NetworkIds.OPTIMISMMAINNET]: aaveV3OptimismServices,
+      [NetworkIds.ARBITRUMMAINNET]: aaveV3ArbitrumServices,
     },
+    [LendingProtocol.Spark]: sparkServices,
   }
 
   const contextForAddress$ = connectedContext$.pipe(
@@ -1421,15 +1429,15 @@ export function setupAppContext() {
     userDpmProxies$,
     userDpmProxy$,
     hasActiveDsProxyAavePosition$,
-    aaveLiquidations$: aaveV2.aaveLiquidations$, // @deprecated,
-    aaveUserAccountData$: aaveV2.aaveUserAccountData$,
-    aaveAvailableLiquidityInUSDC$: aaveV2.aaveAvailableLiquidityInUSDC$,
+    aaveLiquidations$: aaveV2Services.aaveLiquidations$, // @deprecated,
+    aaveUserAccountData$: aaveV2Services.aaveUserAccountData$,
+    aaveAvailableLiquidityInUSDC$: aaveV2Services.aaveAvailableLiquidityInUSDC$,
     proxyConsumed$,
     dsr$,
     dsrDeposit$,
     potDsr$,
     potTotalValueLocked$,
-    aaveProtocolData$: aaveV2.aaveProtocolData$,
+    aaveProtocolData$: aaveV2Services.aaveProtocolData$,
     strategyConfig$,
     readPositionCreatedEvents$,
     ownersPositionsList$,
@@ -1466,6 +1474,7 @@ export type ProtocolsServices = {
     [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
     [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
   }
+  [LendingProtocol.Spark]: AaveLikeServices
 }
 
 export type DepreciatedServices = {

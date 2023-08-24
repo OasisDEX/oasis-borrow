@@ -3,6 +3,7 @@ export enum LendingProtocol {
   AaveV3 = 'aavev3',
   Ajna = 'ajna',
   Maker = 'maker',
+  Spark = 'spark',
 }
 
 export enum LendingProtocolLabel {
@@ -10,6 +11,7 @@ export enum LendingProtocolLabel {
   aavev3 = 'Aave V3',
   ajna = 'Ajna',
   maker = 'Maker',
+  spark = 'Spark',
 }
 
 export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
