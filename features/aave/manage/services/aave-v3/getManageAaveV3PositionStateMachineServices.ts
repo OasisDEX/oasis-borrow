@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { createExecuteTransaction, DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
@@ -12,6 +13,7 @@ import { getPricesFeed$ } from 'features/aave/services'
 import { contextToEthersTransactions, IStrategyConfig } from 'features/aave/types'
 import { IStrategyInfo, StrategyTokenAllowance, StrategyTokenBalance } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
@@ -23,7 +25,7 @@ import { ProtocolData } from 'lendingProtocols/aaveCommon'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
-import { interpret } from 'xstate'
+import { EventObject, interpret } from 'xstate'
 
 export function getManageAaveV3PositionStateMachineServices(
   context$: Observable<Context>,
@@ -40,6 +42,7 @@ export function getManageAaveV3PositionStateMachineServices(
     proxyAddress: string,
   ) => Observable<ProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
+  getHistoryEvents: (proxyAccount: string, networkId: NetworkIds) => Promise<AaveHistoryEvent[]>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -229,6 +232,22 @@ export function getManageAaveV3PositionStateMachineServices(
           return throwError(error)
         }),
       )
+    },
+    historyCallback: (context) => (callback, _onReceive) => {
+      const isProxyReceiveEvent = (
+        event: EventObject,
+      ): event is { type: 'PROXY_RECEIVED'; proxyAddress: string } => {
+        return event.type === 'PROXY_RECEIVED'
+      }
+      _onReceive(async (event) => {
+        if (isProxyReceiveEvent(event)) {
+          const events = await getHistoryEvents(
+            event.proxyAddress,
+            context.strategyConfig.networkId,
+          )
+          callback({ type: 'HISTORY_UPDATED', historyEvents: events })
+        }
+      })
     },
   }
 }

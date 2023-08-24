@@ -1,5 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { PositionHistoryEvent, PositionHistoryResponse } from 'features/positionHistory/types'
+import {
+  PositionHistoryEvent,
+  PositionHistoryResponse,
+  Trigger,
+} from 'features/positionHistory/types'
+
+import { AjnaUnifiedHistoryEvent } from './ajnaUnifiedHistoryEvent'
 
 export interface AjnaHistoryResponse extends PositionHistoryResponse {
   originationFee: string
@@ -23,6 +29,14 @@ export interface AjnaBorrowerEventsResponse {
 export interface AjnaHistoryEvent extends PositionHistoryEvent {
   originationFee: BigNumber
   originationFeeInQuoteToken: BigNumber
+  quoteTokensAfter: BigNumber
+  quoteTokensBefore: BigNumber
+  quoteTokensDelta: BigNumber
+  quoteTokensMoved: BigNumber
+  moveQuoteFromPrice: BigNumber
+  moveQuoteToPrice: BigNumber
+  addOrRemovePrice: BigNumber
+  totalFeeInQuoteToken: BigNumber
 }
 
 export type AjnaBorrowerEvent = {
@@ -41,5 +55,21 @@ export type AjnaBorrowerEvent = {
 
 // TODO to be removed when implementing aave history, dummy aave history interface
 export interface AaveHistoryEvent extends PositionHistoryEvent {
-  aaveStuff: BigNumber
+  quoteTokensAfter?: BigNumber
+  quoteTokensBefore?: BigNumber
+  quoteTokensDelta?: BigNumber
+  quoteTokensMoved?: BigNumber
+  moveQuoteFromPrice?: BigNumber
+  moveQuoteToPrice?: BigNumber
+  addOrRemovePrice?: BigNumber
+  totalFeeInQuoteToken?: BigNumber
+  trigger?: Trigger
+}
+
+export function hasTrigger(
+  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>,
+): event is Partial<AaveHistoryEvent> & { trigger: Trigger } {
+  return (
+    Object.entries(event).find(([key, value]) => key === 'trigger' && value !== null) !== undefined
+  )
 }

@@ -1,5 +1,6 @@
 import { useActor } from '@xstate/react'
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import { PositionHistory } from 'components/history/PositionHistory'
 import { TabBar } from 'components/TabBar'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
@@ -28,6 +29,7 @@ export function AaveManageTabBar({
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
   const aaveProtection = useFeatureToggle('AaveV3Protection')
+  const aaveHistory = useFeatureToggle('AaveV3History')
   const {
     automationTriggersData: { isAutomationDataLoaded },
     triggerData: { stopLossTriggerData },
@@ -58,7 +60,8 @@ export function AaveManageTabBar({
       ? state.context.transition?.simulation.position
       : undefined
 
-  const historyIsSupported = isAaveHistorySupported(state.context.strategyConfig.networkId)
+  const historyIsSupported =
+    aaveHistory && isAaveHistorySupported(state.context.strategyConfig.networkId)
 
   return (
     <TabBar
@@ -111,7 +114,18 @@ export function AaveManageTabBar({
           ? []
           : historyIsSupported
           ? [
-              // Implement HistoryControl for AAVE V3
+              {
+                value: 'history',
+                label: t('system.history'),
+                content: (
+                  <PositionHistory
+                    collateralToken={collateralToken}
+                    historyEvents={state.context.historyEvents}
+                    quoteToken={debtToken}
+                    networkId={strategyConfig.networkId}
+                  />
+                ),
+              },
             ]
           : [
               {

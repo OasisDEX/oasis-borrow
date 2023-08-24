@@ -27,6 +27,7 @@ import {
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
 import {
+  getAaveHistoryEvents,
   getAaveSupportedTokenBalances$,
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -167,6 +168,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     strategyInfo$,
     aaveProtocolData$,
     allowanceForAccount$,
+    getAaveHistoryEvents,
   )
 
   const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(

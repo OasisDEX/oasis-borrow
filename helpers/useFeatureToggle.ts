@@ -12,6 +12,7 @@ export type Feature =
   | 'AaveV3EarncbETHeth'
   | 'AaveV3EarnrETHeth'
   | 'AaveV3Multiply'
+  | 'AaveV3History'
   | 'AaveV3Protection'
   | 'AaveV3ProtectionWrite'
   | 'AjnaPoolFinder'
@@ -45,6 +46,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3EarncbETHeth: false,
   AaveV3EarnrETHeth: false,
   AaveV3Multiply: false,
+  AaveV3History: false,
   AaveV3Protection: true,
   AaveV3ProtectionWrite: true,
   AjnaPoolFinder: true,
