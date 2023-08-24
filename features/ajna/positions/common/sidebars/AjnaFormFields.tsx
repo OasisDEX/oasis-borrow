@@ -6,6 +6,7 @@ import {
   AjnaFormActionsUpdateDeposit,
   AjnaFormActionsUpdateGenerate,
   AjnaFormActionsUpdatePayback,
+  AjnaFormActionsUpdatePaybackMax,
   AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { handleNumericInput } from 'helpers/input'
@@ -14,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import React, { Dispatch } from 'react'
 
 interface AjnaFormField<D> {
-  dispatchAmount: Dispatch<D & { [key: string]: string | number | BigNumber | undefined }>
+  dispatchAmount: Dispatch<D>
   isDisabled?: boolean
   resetOnClear?: boolean
 }
@@ -177,7 +178,8 @@ export function AjnaFormFieldPayback({
   maxAmount,
   maxAmountLabel = 'max',
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdatePayback> & AjnaFormFieldWithMaxAmount) {
+}: AjnaFormField<AjnaFormActionsUpdatePayback | AjnaFormActionsUpdatePaybackMax> &
+  AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
     environment: { isOracless, quoteDigits, quotePrice, quoteToken, product },
@@ -209,6 +211,10 @@ export function AjnaFormFieldPayback({
           paybackAmount: n,
           paybackAmountUSD: n?.times(quotePrice),
         })
+        dispatchAmount({
+          type: 'update-payback-max',
+          paybackAmountMax: false,
+        })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
@@ -217,6 +223,10 @@ export function AjnaFormFieldPayback({
           paybackAmount: n?.dividedBy(quotePrice),
           paybackAmountUSD: n,
         })
+        dispatchAmount({
+          type: 'update-payback-max',
+          paybackAmountMax: false,
+        })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onSetMax={() => {
@@ -224,6 +234,10 @@ export function AjnaFormFieldPayback({
           type: 'update-payback',
           paybackAmount: maxAmount,
           paybackAmountUSD: maxAmount?.times(quotePrice),
+        })
+        dispatchAmount({
+          type: 'update-payback-max',
+          paybackAmountMax: true,
         })
       }}
     />
