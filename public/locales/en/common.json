@@ -1022,8 +1022,14 @@
       "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "ajnaProductPage": {
-      "title": "{{product}} - Summer.fi × Ajna",
-      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
+      "title": "{{product}} - Summer.fi × Ajna"
+    },
+    "ajnaPoolFinder": {
+      "title": "Ajna pool finder - Summer.fi × Ajna"
+    },
+    "ajnaPoolCreator": {
+      "title": "Ajna pool creator - Summer.fi × Ajna",
+      "description": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi."
     },
     "multiply": {
       "title": "Multiply - Summer.fi",
@@ -2298,10 +2304,9 @@
       "successful-body": "You will now receive 5% of all fees that they generate on Summer.fi. You can now go directly to the Summer.fi homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Summer.fi Refer a Friend program.",
       "successful-join": "You have successfully joined the Summer.fi Refer a Friend program.",
-      "switch-network-heading":"Switch network to Optimism to claim rewards",
-      "switch-network-p1":"Summer.fi only supports to claim your reward on Optimism at this moment. Please change your network to Optimism to continue.",
-      "switch-network-button-text":"Switch network"
-
+      "switch-network-heading": "Switch network to Optimism to claim rewards",
+      "switch-network-p1": "Summer.fi only supports to claim your reward on Optimism at this moment. Please change your network to Optimism to continue.",
+      "switch-network-button-text": "Switch network"
     }
   },
   "notifications": {

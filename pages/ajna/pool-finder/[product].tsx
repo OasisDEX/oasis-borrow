@@ -1,4 +1,5 @@
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
+import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolFinderController } from 'features/ajna/common/controls/AjnaPoolFinderController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -8,9 +9,16 @@ import React from 'react'
 
 function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
   return (
-    <WithFeatureToggleRedirect feature="AjnaPoolFinder">
-      <AjnaPoolFinderController product={product} />
-    </WithFeatureToggleRedirect>
+    <>
+      <PageSEOTags
+        title="seo.ajnaPoolFinder.title"
+        description="seo.ajna.description"
+        url={`/ajna/pool-finder/${product}`}
+      />
+      <WithFeatureToggleRedirect feature="AjnaPoolFinder">
+        <AjnaPoolFinderController product={product} />
+      </WithFeatureToggleRedirect>
+    </>
   )
 }
 
