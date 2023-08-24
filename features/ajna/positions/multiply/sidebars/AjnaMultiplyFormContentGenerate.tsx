@@ -24,7 +24,7 @@ export function AjnaMultiplyFormContentGenerate() {
 
   const debtMin = getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position })
   const debtMax = getAjnaBorrowDebtMax({
-    precision: getToken(quoteToken).precision,
+    digits: getToken(quoteToken).precision,
     position,
     simulation,
   })

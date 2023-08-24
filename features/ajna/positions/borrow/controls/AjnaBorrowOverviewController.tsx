@@ -70,6 +70,7 @@ export function AjnaBorrowOverviewController() {
               priceFormat={priceFormat}
               liquidationPrice={liquidationPrice}
               afterLiquidationPrice={afterLiquidationPrice}
+              withTooltips={isOracless}
               changeVariant={changeVariant}
               {...(!isOracless && {
                 belowCurrentPrice,
@@ -83,6 +84,7 @@ export function AjnaBorrowOverviewController() {
                 collateralAmount={position.collateralAmount}
                 afterThresholdPrice={simulation?.thresholdPrice}
                 priceFormat={priceFormat}
+                withTooltips
                 changeVariant={changeVariant}
                 {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
                   lup: position.pool.lup,

@@ -150,7 +150,10 @@ import {
   getDpmPositionData$,
   getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  createAutomationTriggersData,
+  TriggersData,
+} from 'features/automation/api/automationTriggersData'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -198,9 +201,9 @@ import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimColl
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$ } from 'features/referralOverview/user'
 import {
+  getReferralRewardsFromApi$,
   getReferralsFromApi$,
   getUserFromApi$,
-  getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
 import {
   BalanceInfo,
@@ -527,7 +530,7 @@ export function setupAppContext() {
   )
 
   const balanceFromAddress$ = memoize(
-    curry(createBalanceFromAddress$)(tokenBalanceFromAddress$),
+    curry(createBalanceFromAddress$)(onEveryBlock$, chainContext$, tokenBalanceFromAddress$),
     (token, address) => `${token.address}_${token.precision}_${address}`,
   )
 
@@ -910,6 +913,7 @@ export function setupAppContext() {
         tokenPriceUSDStatic$,
         mainnetAaveV3PositionCreatedEvents$,
         getApiVaults,
+        automationTriggersData$,
         aaveV3,
         NetworkIds.MAINNET,
       ),
@@ -935,6 +939,7 @@ export function setupAppContext() {
       tokenPriceUSDStatic$,
       optimismReadPositionCreatedEvents$,
       getApiVaults,
+      () => of<TriggersData | undefined>(undefined), // Triggers are not supported on optimism
       aaveV3Optimism,
       NetworkIds.OPTIMISMMAINNET,
     ),
@@ -1152,7 +1157,7 @@ export function setupAppContext() {
     txHelpers$,
     getUserFromApi$,
     getReferralsFromApi$,
-    getWeeklyClaimsFromApi$,
+    getReferralRewardsFromApi$,
     checkReferralLocalStorage$,
   )
 

@@ -6,6 +6,7 @@ import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjn
 import { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool'
 import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
 import { AavePositionHistoryResponse } from 'features/positionHistory/types'
+import { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards'
 
 export type Subgraphs = {
   Ajna: {
@@ -23,6 +24,9 @@ export type Subgraphs = {
   }
   TempGraph: {
     tempMethod: undefined
+  }
+  Referral: {
+    getClaimedReferralRewards: { walletAddress: string }
   }
 }
 
@@ -93,6 +97,11 @@ export type SubgraphsResponses = {
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>
   }
+  Referral: {
+    getClaimedReferralRewards: SubgraphBaseResponse<{
+      claimeds: ClaimedReferralRewards[]
+    }>
+  }
 }
 
 export type SubgraphsRecord = {
@@ -110,5 +119,5 @@ export type SubgraphsRecord = {
   }
 }
 export type SubgraphMethodsRecord = {
-  [key in keyof (Subgraphs['Aave'] & Subgraphs['Ajna'] & Subgraphs['TempGraph'])]: string
+  [key in keyof (Subgraphs['Aave'] & Subgraphs['Ajna'] & Subgraphs['TempGraph'] & Subgraphs['Referral'])]: string
 }

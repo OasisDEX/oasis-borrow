@@ -2297,7 +2297,11 @@
       "link-2": "Referral Guide",
       "successful-body": "You will now receive 5% of all fees that they generate on Summer.fi. You can now go directly to the Summer.fi homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Summer.fi Refer a Friend program.",
-      "successful-join": "You have successfully joined the Summer.fi Refer a Friend program."
+      "successful-join": "You have successfully joined the Summer.fi Refer a Friend program.",
+      "switch-network-heading":"Switch network to Optimism to claim rewards",
+      "switch-network-p1":"Summer.fi only supports to claim your reward on Optimism at this moment. Please change your network to Optimism to continue.",
+      "switch-network-button-text":"Switch network"
+
     }
   },
   "notifications": {

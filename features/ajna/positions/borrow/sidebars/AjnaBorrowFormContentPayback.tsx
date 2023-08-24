@@ -12,14 +12,7 @@ import React from 'react'
 
 export function AjnaBorrowFormContentPayback() {
   const {
-    environment: {
-      collateralDigits,
-      collateralPrecision,
-      collateralPrice,
-      quoteDigits,
-      collateralToken,
-      quoteBalance,
-    },
+    environment: { collateralDigits, collateralPrice, quoteDigits, collateralToken, quoteBalance },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -56,7 +49,7 @@ export function AjnaBorrowFormContentPayback() {
         maxAmount={collateralMax}
         token={collateralToken}
         tokenPrice={collateralPrice}
-        tokenPrecision={collateralPrecision}
+        tokenDigits={collateralDigits}
       />
       {(paybackAmount || withdrawAmount) && (
         <AjnaFormContentSummary>
