@@ -121,9 +121,11 @@ export function ContentCardPositionLendingPrice({
         `${formatted.afterPositionLendingPrice}`,
         `${priceFormat} ${t('system.cards.common.after')}`,
       ],
-      tooltip:
+      ...(withTooltips &&
         afterPositionLendingPrice &&
-        `${afterPositionLendingPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+        !afterPositionLendingPrice.isZero() && {
+          tooltip: `${afterPositionLendingPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+        }),
       variant: changeVariant,
     },
     modal: (
