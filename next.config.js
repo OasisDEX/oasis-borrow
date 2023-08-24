@@ -61,13 +61,6 @@ const baseConfig = {
         !isServer && config.mode !== 'development'
           ? {
               chunks: 'all',
-              minChunks: 2,
-              cacheGroups: {
-                vendors: {
-                  test: /[\\/]node_modules[\\/]/,
-                  name: 'vendors-chunk',
-                },
-              },
             }
           : {},
     }
