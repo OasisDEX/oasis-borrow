@@ -1,10 +1,7 @@
-import getConfig from 'next/config'
 import { of } from 'ramda'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
-
-const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
 export interface WalletRiskResponse {
   isRisky?: boolean
@@ -13,7 +10,7 @@ export interface WalletRiskResponse {
 
 export function getWalletRisk$(token: string, chainId: number): Observable<WalletRiskResponse> {
   return ajax({
-    url: `${basePath}/api/risk`,
+    url: `/api/risk`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
