@@ -29,6 +29,7 @@ interface AjnaTxHandlerInput {
   context: Context
   isFormValid: boolean
   position: AjnaGenericPosition
+  simulation?: AjnaGenericPosition
   quoteAddress: string
   quotePrecision: number
   quotePrice: BigNumber
@@ -46,6 +47,7 @@ export async function getAjnaParameters({
   context,
   isFormValid,
   position,
+  simulation,
   quoteAddress,
   quotePrecision,
   quotePrice,
@@ -105,6 +107,7 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
+        simulation,
       })
     }
 
@@ -183,7 +186,7 @@ export async function getAjnaParameters({
         })
       }
 
-      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position })
+      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position, simulation })
     }
     case 'deposit-quote-multiply': {
       // TODO here handling for complex action once available
