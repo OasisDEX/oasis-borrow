@@ -1,3 +1,3 @@
 export function staticFilesRuntimeUrl(filePath: string) {
-  return `/${filePath}`
+  return `${filePath}`
 }
