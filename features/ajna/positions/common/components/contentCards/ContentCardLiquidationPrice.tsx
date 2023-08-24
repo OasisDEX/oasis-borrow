@@ -49,8 +49,11 @@ export function ContentCardLiquidationPrice({
         `${formatted.afterLiquidationPrice}`,
         `${priceFormat} ${t('system.cards.common.after')}`,
       ],
-      tooltip:
-        afterLiquidationPrice && `${afterLiquidationPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+      ...(withTooltips &&
+        afterLiquidationPrice &&
+        !afterLiquidationPrice.isZero() && {
+          tooltip: `${afterLiquidationPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+        }),
       variant: changeVariant,
     },
     modal: (

@@ -108,8 +108,11 @@ export function ContentCardThresholdPrice({
     change: {
       isLoading,
       value: afterThresholdPrice && ['', `${formatted.afterThresholdPrice}`, `${priceFormat}`],
-      tooltip:
-        afterThresholdPrice && `${afterThresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+      ...(withTooltips &&
+        afterThresholdPrice &&
+        !afterThresholdPrice.isZero() && {
+          tooltip: `${afterThresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+        }),
       variant: changeVariant,
     },
     modal: (
