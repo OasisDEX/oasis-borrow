@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AjnaFlow, AjnaFormState } from 'features/ajna/common/types'
+import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 import { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 
@@ -75,8 +76,7 @@ export function getFlowStateConfig({
       }
 
       return {
-        // payback amount increased by 1% of borrow rate so it leaves a wiggle room for constantly increasing debt
-        amount: state.paybackAmount.plus(state.paybackAmount.times(fee.div(100))),
+        amount: getMaxIncreasedValue(state.paybackAmount, fee),
         token: quoteToken,
       }
     case 'deposit-quote-multiply':
