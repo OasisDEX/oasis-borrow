@@ -10,7 +10,6 @@ import {
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
 import { flatten, uniq } from 'lodash'
 import { NextApiResponse } from 'next'
-import getConfig from 'next/config'
 import { prisma } from 'server/prisma'
 
 export async function handleGetProductHubData(
@@ -103,9 +102,7 @@ export async function updateProductHubData(
         call: PRODUCT_HUB_HANDLERS[protocol],
       }
     })
-    const tickers = await (
-      await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/tokensPrices`)
-    ).json()
+    const tickers = await (await fetch(`/api/tokensPrices`)).json()
 
     const dataHandlersPromiseList = await Promise.all(
       handlersList.map(({ name, call }) => {
