@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
@@ -92,7 +93,7 @@ const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, 
 export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
   const { t } = useTranslation()
   const {
-    environment: { priceFormat, quoteToken, isShort },
+    environment: { isOracless, isShort, priceFormat, quoteToken },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -166,7 +167,9 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
           type="text"
           mask={createNumberMask({
             allowDecimal: true,
-            decimalLimit: formatCryptoBalance(manualAmount).split('.')[1]?.length || 0,
+            decimalLimit: isOracless
+              ? DEFAULT_TOKEN_DIGITS
+              : formatCryptoBalance(manualAmount).split('.')[1]?.length || 0,
             prefix: '',
           })}
           onFocus={() => {
@@ -180,7 +183,13 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
           })}
           onKeyPress={enterPressedHandler}
           value={
-            manualAmount ? formatCryptoBalance(isShort ? one.div(manualAmount) : manualAmount) : ''
+            manualAmount
+              ? isOracless
+                ? (isShort ? one.div(manualAmount) : manualAmount)
+                    .dp(DEFAULT_TOKEN_DIGITS)
+                    .toString()
+                : formatCryptoBalance(isShort ? one.div(manualAmount) : manualAmount)
+              : ''
           }
           sx={{
             px: 5,
