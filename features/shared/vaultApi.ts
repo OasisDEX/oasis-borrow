@@ -5,12 +5,15 @@ import { NetworkIds } from 'blockchain/networks'
 import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { LendingProtocol } from 'lendingProtocols'
+import getConfig from 'next/config'
 import { of } from 'ramda'
 import { useEffect } from 'react'
 import { combineLatest, EMPTY, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 import { useFetch } from 'usehooks-ts'
+
+const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
 export function checkVaultTypeUsingApi$(
   context$: Observable<Context>,
@@ -162,7 +165,7 @@ export function getVaultFromApi$(
     return EMPTY
   }
   return ajax({
-    url: `/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
+    url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -189,7 +192,7 @@ export function saveVaultUsingApi$(
   protocol: string,
 ): Observable<void> {
   return ajax({
-    url: `/api/vault`,
+    url: `${basePath}/api/vault`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
