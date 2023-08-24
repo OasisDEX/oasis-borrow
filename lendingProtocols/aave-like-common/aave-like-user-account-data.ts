@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-export interface UserAccountData {
+export interface AaveLikeUserAccountData {
   totalCollateral: BigNumber
   totalDebt: BigNumber
   availableBorrows: BigNumber
@@ -9,6 +9,6 @@ export interface UserAccountData {
   healthFactor: BigNumber
 }
 
-export interface UserAccountDataArgs {
+export interface AaveLikeUserAccountDataArgs {
   address: string
 }

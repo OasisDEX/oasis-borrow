@@ -5,7 +5,10 @@ import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveData,
+} from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
@@ -17,9 +20,9 @@ export function LiquidationPriceCard(props: {
   debtTokenPrice: BigNumber
   currentPositionThings: ReturnType<typeof calculateViewValuesForPosition>
   nextPositionThings: ReturnType<typeof calculateViewValuesForPosition> | undefined
-  collateralTokenReserveData: ReserveData
-  debtTokenReserveData: ReserveData
-  debtTokenReserveConfigurationData: ReserveConfigurationData
+  collateralTokenReserveData: AaveLikeReserveData
+  debtTokenReserveData: AaveLikeReserveData
+  debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
 }) {
   const belowCurrentPricePercentage = formatDecimalAsPercent(
     props.currentPositionThings.liquidationPriceInDebt

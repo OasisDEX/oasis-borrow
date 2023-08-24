@@ -2,7 +2,7 @@ import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { calculateSimulation, CalculateSimulationResult } from 'features/aave/open/services'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
+import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { useEffect, useState } from 'react'
 
 import { useAaveEarnYields } from './useAaveEarnYields'

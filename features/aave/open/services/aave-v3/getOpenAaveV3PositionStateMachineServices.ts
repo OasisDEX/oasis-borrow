@@ -24,12 +24,12 @@ import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
 import { LendingProtocol } from 'lendingProtocols'
 import {
+  AaveLikeProtocolData,
+  AaveLikeReserveConfigurationData,
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
   AaveReserveConfigurationDataParams,
-  ProtocolData,
-  ReserveConfigurationData,
-  UserAccountData,
-  UserAccountDataArgs,
-} from 'lendingProtocols/aaveCommon'
+} from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -40,7 +40,9 @@ export function getOpenAaveV3PositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
-  aaveUserAccountData$: (parameters: UserAccountDataArgs) => Observable<UserAccountData>,
+  aaveUserAccountData$: (
+    parameters: AaveLikeUserAccountDataArgs,
+  ) => Observable<AaveLikeUserAccountData>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
@@ -48,13 +50,13 @@ export function getOpenAaveV3PositionStateMachineServices(
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<ProtocolData>,
+  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
   aaveReserveConfiguration$: (
     args: AaveReserveConfigurationDataParams,
-  ) => Observable<ReserveConfigurationData>,
+  ) => Observable<AaveLikeReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {

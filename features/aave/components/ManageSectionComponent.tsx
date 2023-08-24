@@ -3,14 +3,17 @@ import { useSimulationYields } from 'features/aave/hooks'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { IStrategyConfig } from 'features/aave/types'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveData,
+} from 'lendingProtocols/aave-like-common'
 import React from 'react'
 
 import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ManageSectionComponentProps = {
-  aaveReserveState: ReserveConfigurationData
-  aaveReserveDataDebtToken: ReserveData
+  aaveReserveState: AaveLikeReserveConfigurationData
+  aaveReserveDataDebtToken: AaveLikeReserveData
   strategyConfig: IStrategyConfig
 }
 

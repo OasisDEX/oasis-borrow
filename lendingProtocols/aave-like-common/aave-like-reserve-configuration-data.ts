@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 
-export interface ReserveConfigurationData {
+export interface AaveLikeReserveConfigurationData {
   ltv: BigNumber
   liquidationThreshold: BigNumber
   liquidationBonus: BigNumber

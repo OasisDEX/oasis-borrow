@@ -254,9 +254,9 @@ import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'h
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
+import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
-import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of } from 'rxjs'
@@ -1460,11 +1460,11 @@ function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: s
 }
 
 export type ProtocolsServices = {
-  [LendingProtocol.AaveV2]: AaveServices
+  [LendingProtocol.AaveV2]: AaveLikeServices
   [LendingProtocol.AaveV3]: {
-    [NetworkIds.MAINNET]: AaveServices
-    [NetworkIds.OPTIMISMMAINNET]: AaveServices
-    [NetworkIds.ARBITRUMMAINNET]: AaveServices
+    [NetworkIds.MAINNET]: AaveLikeServices
+    [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
+    [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
   }
 }
 

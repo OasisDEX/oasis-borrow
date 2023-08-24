@@ -10,9 +10,9 @@ import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopL
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
+import { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
-import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { merge, Observable, of, Subject } from 'rxjs'
@@ -109,7 +109,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
 
   const earnCollateralsReserveData = {
     WSTETH: aaveReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
-  } as Record<string, Observable<ReserveConfigurationData>>
+  } as Record<string, Observable<AaveLikeReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
