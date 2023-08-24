@@ -48,7 +48,7 @@ export { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn }
 
 export const AddingStopLossAnimation = dynamic(
   () => {
-    return import('./AddingStopLossAnimation').then((component) => component.default)
+    return import('./adding-stop-loss-animation-static').then((component) => component.default)
   },
   {
     ssr: false,
@@ -57,7 +57,7 @@ export const AddingStopLossAnimation = dynamic(
 
 export const OpenVaultAnimation = dynamic(
   () => {
-    return import('./OpenVaultAnimation').then((component) => component.default)
+    return import('./open-vault-animation-static').then((component) => component.default)
   },
   {
     ssr: false,
