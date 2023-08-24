@@ -1,5 +1,6 @@
 import { Prisma, PrismaPromise, Protocol } from '@prisma/client'
 import { networks } from 'blockchain/networks'
+import { Tickers } from 'blockchain/prices'
 import { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
@@ -10,6 +11,7 @@ import {
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
 import { flatten, uniq } from 'lodash'
 import { NextApiResponse } from 'next'
+import { getTicker } from 'pages/api/tokensPrices'
 import { prisma } from 'server/prisma'
 
 export async function handleGetProductHubData(
@@ -102,7 +104,14 @@ export async function updateProductHubData(
         call: PRODUCT_HUB_HANDLERS[protocol],
       }
     })
-    const tickers = await (await fetch(`/api/tokensPrices`)).json()
+
+    const tickers = (await getTicker())?.data as any as Tickers
+    if (!tickers) {
+      return res.status(502).json({
+        errorMessage: 'Error getting token tickers',
+        dryRun,
+      })
+    }
 
     const dataHandlersPromiseList = await Promise.all(
       handlersList.map(({ name, call }) => {
