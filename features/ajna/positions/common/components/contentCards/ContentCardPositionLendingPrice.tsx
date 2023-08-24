@@ -1,5 +1,6 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import {
   ChangeVariantType,
   ContentCardProps,
@@ -74,6 +75,7 @@ interface ContentCardPositionLendingPriceProps {
   afterPositionLendingPrice?: BigNumber
   priceColor: string
   priceColorIndex: number
+  withTooltips?: boolean
   changeVariant?: ChangeVariantType
 }
 
@@ -87,6 +89,7 @@ export function ContentCardPositionLendingPrice({
   afterPositionLendingPrice,
   priceColor,
   priceColorIndex,
+  withTooltips,
   changeVariant = 'positive',
 }: ContentCardPositionLendingPriceProps) {
   const { t } = useTranslation()
@@ -113,9 +116,14 @@ export function ContentCardPositionLendingPrice({
     ),
     change: {
       isLoading,
-      value:
+      value: afterPositionLendingPrice && [
+        '',
+        `${formatted.afterPositionLendingPrice}`,
+        `${priceFormat} ${t('system.cards.common.after')}`,
+      ],
+      tooltip:
         afterPositionLendingPrice &&
-        `${formatted.afterPositionLendingPrice} ${t('system.cards.common.after')}`,
+        `${afterPositionLendingPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
       variant: changeVariant,
     },
     modal: (
@@ -132,5 +140,12 @@ export function ContentCardPositionLendingPrice({
       </AjnaDetailsSectionContentSimpleModal>
     ),
   }
+
+  if (withTooltips && !positionLendingPrice.isZero()) {
+    contentCardSettings.valueTooltip = `${positionLendingPrice.dp(
+      DEFAULT_TOKEN_DIGITS,
+    )} ${priceFormat}`
+  }
+
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
