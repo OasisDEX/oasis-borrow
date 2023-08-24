@@ -92,5 +92,8 @@ export function getActionUrl({
       const ilkInUrl = label.split('/').length ? label.split('/')[0] : label
 
       return `/vaults/${openUrl}/${ilkInUrl}`
+    case LendingProtocol.Spark:
+      // TODO: add spark urls
+      return `/not-implemented`
   }
 }
