@@ -66,8 +66,6 @@ export const ajnaPaybackWithdrawBorrow = ({
 }) => {
   const { withdrawAmount, paybackAmount } = state
 
-  console.log(`paybackAmount: ${paybackAmount}`)
-
   // TODO temporary fix in order to force refresh of neutral price
   //  and therefore liquidation price on repay-only action
   const resolvedWithdrawFallback =

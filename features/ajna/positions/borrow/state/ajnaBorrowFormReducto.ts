@@ -24,7 +24,6 @@ export interface AjnaBorrowFormState {
   paybackAmountMax: boolean
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  withdrawAmountMax: boolean
   uiDropdown: AjnaBorrowPanel
   uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
 }
@@ -50,7 +49,6 @@ export const ajnaBorrowReset = {
   paybackAmountMax: false,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
-  withdrawAmountMax: false,
 }
 
 export const ajnaBorrowDefault: AjnaBorrowFormState = {
