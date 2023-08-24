@@ -23,21 +23,21 @@ export function AjnaEarnOverviewManageController() {
   const {
     environment: {
       collateralToken,
+      isOracless,
       isShort,
       owner,
       priceFormat,
-      quoteToken,
       quotePrice,
-      isOracless,
+      quoteToken,
     },
   } = useAjnaGeneralContext()
   const {
-    position: {
-      isSimulationLoading,
-      currentPosition: { position, simulation },
-    },
     form: {
-      state: { withdrawAmount, depositAmount },
+      state: { depositAmount, withdrawAmount },
+    },
+    position: {
+      currentPosition: { position, simulation },
+      isSimulationLoading,
     },
     notifications,
   } = useAjnaProductContext('earn')
@@ -97,6 +97,7 @@ export function AjnaEarnOverviewManageController() {
             afterPositionLendingPrice={simulation?.price}
             priceColor={lendingPriceColor.color}
             priceColorIndex={lendingPriceColor.index}
+            withTooltips={isOracless}
           />
         </DetailsSectionContentCardWrapper>
       }
