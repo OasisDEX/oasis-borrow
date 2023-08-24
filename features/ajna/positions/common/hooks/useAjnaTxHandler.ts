@@ -93,6 +93,7 @@ export function useAjnaTxHandler(): () => void {
             context,
             isFormValid,
             position,
+            simulation,
             quoteAddress,
             quotePrecision,
             quotePrice,

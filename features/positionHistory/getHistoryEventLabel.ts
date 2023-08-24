@@ -53,6 +53,38 @@ export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?:
       return t('position-history.claim-collateral')
     case 'AjnaSupplyQuoteMintNftAndStake':
       return t('position-history.open-position')
+
+    // Aave
+    case 'AAVEDeposit':
+      return t('position-history.deposit')
+    case 'AAVEPaybackWithdraw':
+      return t('position-history.repay-withdraw')
+    case 'AAVEBorrow':
+      return t('position-history.borrow')
+    case 'AAVEOpenDepositBorrow':
+      return t('position-history.open-position')
+    case 'CloseAAVEPosition':
+      return t('position-history.close-position')
+    case 'IncreaseAAVEPosition':
+      return t('position-history.increase-multiple')
+    case 'OpenAAVEPosition':
+      return t('position-history.open-position')
+    case 'DecreaseAAVEPosition':
+      return t('position-history.decrease-multiple')
+    case 'AutomationAdded-AaveStopLossToCollateralV2':
+      return t('position-history.automation.stop-loss-collateral-added')
+    case 'AutomationExecuted-AaveStopLossToCollateralV2':
+      return t('position-history.automation.stop-loss-collateral-executed')
+    case 'AutomationRemoved-AaveStopLossToCollateralV2':
+      return t('position-history.automation.stop-loss-collateral-removed')
+    case 'AutomationAdded-AaveStopLossToDebtV2':
+      return t('position-history.automation.stop-loss-debt-added')
+    case 'AutomationExecuted-AaveStopLossToDebtV2':
+      return t('position-history.automation.stop-loss-debt-executed')
+    case 'AutomationRemoved-AaveStopLossToDebtV2':
+      return t('position-history.automation.stop-loss-debt-removed')
+    case 'Liquidation':
+      return t('position-history.liquidation')
     default:
       return t('position-history.event')
   }
