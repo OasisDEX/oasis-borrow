@@ -446,7 +446,7 @@ export function setupAppContext() {
     refresh$: onEveryBlock$,
     networkId: NetworkIds.ARBITRUMMAINNET,
   })
-  const sparkServices = getAaveV3Services({
+  const sparkV3Services = getAaveV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.MAINNET,
   })
@@ -1304,7 +1304,7 @@ export function setupAppContext() {
       [NetworkIds.OPTIMISMMAINNET]: aaveV3OptimismServices,
       [NetworkIds.ARBITRUMMAINNET]: aaveV3ArbitrumServices,
     },
-    [LendingProtocol.Spark]: sparkServices,
+    [LendingProtocol.SparkV3]: sparkV3Services,
   }
 
   const contextForAddress$ = connectedContext$.pipe(
@@ -1474,7 +1474,7 @@ export type ProtocolsServices = {
     [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
     [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
   }
-  [LendingProtocol.Spark]: AaveLikeServices
+  [LendingProtocol.SparkV3]: AaveLikeServices
 }
 
 export type DepreciatedServices = {

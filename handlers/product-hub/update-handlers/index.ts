@@ -17,5 +17,5 @@ export const PRODUCT_HUB_HANDLERS = {
   [LendingProtocol.AaveV3]: aaveV3Handler,
   [LendingProtocol.Ajna]: ajnaHandler,
   [LendingProtocol.Maker]: makerHandler,
-  [LendingProtocol.Spark]: emptyHandler, // TODO: add Spark handler
+  [LendingProtocol.SparkV3]: emptyHandler, // TODO: add Spark handler
 }

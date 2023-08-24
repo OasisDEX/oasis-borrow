@@ -5,15 +5,20 @@ import { ProductHubItem, ProductHubProductType } from 'features/productHub/types
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 
-const getAaveStrategyUrl = ({
+const getAaveLikeStrategyUrl = ({
+  aaveLikeProduct,
   bypassFeatureFlag,
-  aaveVersion,
+  version,
   product,
   protocol,
   primaryToken,
   secondaryToken,
   network,
-}: Partial<ProductHubItem> & { aaveVersion: 'v2' | 'v3'; bypassFeatureFlag: boolean }) => {
+}: Partial<ProductHubItem> & {
+  version: 'v2' | 'v3'
+  bypassFeatureFlag: boolean
+  aaveLikeProduct: 'aave' | 'spark'
+}) => {
   const search = aaveStrategyList.find(
     (strategy) =>
       product
@@ -28,7 +33,9 @@ const getAaveStrategyUrl = ({
   return !search?.urlSlug ||
     (!bypassFeatureFlag && search?.featureToggle && !getFeatureToggle(search?.featureToggle))
     ? '/'
-    : `/${network}/aave/${aaveVersion}/${search.type.toLocaleLowerCase()}/${search!.urlSlug}`
+    : `/${network}/${aaveLikeProduct}/${version}/${search.type.toLocaleLowerCase()}/${
+        search!.urlSlug
+      }`
 }
 
 export function getActionUrl({
@@ -66,34 +73,42 @@ export function getActionUrl({
 
       return `/ethereum/ajna/${productInUrl}/${tokensInUrl}`
     case LendingProtocol.AaveV2:
-      return getAaveStrategyUrl({
-        aaveVersion: 'v2',
+      return getAaveLikeStrategyUrl({
+        version: 'v2',
         bypassFeatureFlag,
         network,
         primaryToken,
         product,
         protocol,
         secondaryToken,
+        aaveLikeProduct: 'aave',
       })
     case LendingProtocol.AaveV3:
-      return getAaveStrategyUrl({
-        aaveVersion: 'v3',
+      return getAaveLikeStrategyUrl({
+        version: 'v3',
         bypassFeatureFlag,
         network,
         primaryToken,
         product,
         protocol,
         secondaryToken,
+        aaveLikeProduct: 'aave',
       })
     case LendingProtocol.Maker:
       if (label === 'DSR') return '/earn/dsr/'
-
       const openUrl = product.includes(ProductHubProductType.Multiply) ? 'open-multiply' : 'open'
       const ilkInUrl = label.split('/').length ? label.split('/')[0] : label
-
       return `/vaults/${openUrl}/${ilkInUrl}`
-    case LendingProtocol.Spark:
-      // TODO: add spark urls
-      return `/not-implemented`
+    case LendingProtocol.SparkV3:
+      return getAaveLikeStrategyUrl({
+        version: 'v3',
+        bypassFeatureFlag,
+        network,
+        primaryToken,
+        product,
+        protocol,
+        secondaryToken,
+        aaveLikeProduct: 'spark',
+      })
   }
 }
