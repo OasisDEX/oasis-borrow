@@ -173,10 +173,17 @@ export async function getAjnaParameters({
     case 'payback-multiply':
     case 'withdraw-multiply': {
       const { loanToValue } = state
+      const resolvedState = {
+        ...state,
+        paybackAmount:
+          state.paybackAmount && state.paybackAmountMax
+            ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+            : state.paybackAmount,
+      }
 
       if (loanToValue) {
         return ajnaAdjustMultiply({
-          state,
+          state: resolvedState,
           commonPayload,
           dependencies,
           position,
@@ -186,7 +193,13 @@ export async function getAjnaParameters({
         })
       }
 
-      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position, simulation })
+      return ajnaPaybackWithdrawBorrow({
+        state: resolvedState,
+        commonPayload,
+        dependencies,
+        position,
+        simulation,
+      })
     }
     case 'deposit-quote-multiply': {
       // TODO here handling for complex action once available
