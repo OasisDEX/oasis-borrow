@@ -119,5 +119,8 @@ export type SubgraphsRecord = {
   }
 }
 export type SubgraphMethodsRecord = {
-  [key in keyof (Subgraphs['Aave'] & Subgraphs['Ajna'] & Subgraphs['TempGraph'] & Subgraphs['Referral'])]: string
+  [key in keyof (Subgraphs['Aave'] &
+    Subgraphs['Ajna'] &
+    Subgraphs['TempGraph'] &
+    Subgraphs['Referral'])]: string
 }
