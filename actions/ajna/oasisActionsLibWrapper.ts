@@ -19,6 +19,7 @@ import { ethers } from 'ethers'
 import { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
+import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 
 interface AjnaTxHandlerInput {
   collateralAddress: string
@@ -96,7 +97,13 @@ export async function getAjnaParameters({
     case 'payback-borrow':
     case 'withdraw-borrow': {
       return ajnaPaybackWithdrawBorrow({
-        state,
+        state: {
+          ...state,
+          paybackAmount:
+            state.paybackAmount && state.paybackAmountMax
+              ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+              : state.paybackAmount,
+        },
         commonPayload,
         dependencies,
         position,
@@ -166,10 +173,17 @@ export async function getAjnaParameters({
     case 'payback-multiply':
     case 'withdraw-multiply': {
       const { loanToValue } = state
+      const resolvedState = {
+        ...state,
+        paybackAmount:
+          state.paybackAmount && state.paybackAmountMax
+            ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+            : state.paybackAmount,
+      }
 
       if (loanToValue) {
         return ajnaAdjustMultiply({
-          state,
+          state: resolvedState,
           commonPayload,
           dependencies,
           position,
@@ -180,7 +194,7 @@ export async function getAjnaParameters({
       }
 
       return ajnaPaybackWithdrawBorrow({
-        state,
+        state: resolvedState,
         commonPayload,
         dependencies,
         position,
