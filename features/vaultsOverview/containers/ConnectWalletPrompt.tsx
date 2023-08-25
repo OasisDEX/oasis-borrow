@@ -1,23 +1,23 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppLink } from 'components/Links'
+import { useConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Heading } from 'theme-ui'
+import { Button, Flex, Heading } from 'theme-ui'
 
 export function ConnectWalletPrompt() {
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [contextData] = useObservable(context$)
+  const { connect, connecting } = useConnection()
 
   return contextData?.status === 'connectedReadonly' ? (
     <Flex sx={{ flexDirection: 'column', mt: '112px' }}>
       <Heading as="h1" variant="header3" sx={{ textAlign: 'center', fontWeight: 'regular' }}>
         {t('vaults-overview.headers.not-connected-suggestions')}
       </Heading>
-      <AppLink
-        href="/connect"
+      <Button
         variant="primary"
         sx={{
           display: 'flex',
@@ -30,6 +30,11 @@ export function ConnectWalletPrompt() {
             transform: 'translateX(10px)',
           },
         }}
+        onClick={() => {
+          if (!connecting) {
+            connect()
+          }
+        }}
       >
         {t('connect-wallet')}
         <Icon
@@ -41,7 +46,7 @@ export function ConnectWalletPrompt() {
             transition: 'transform 200ms',
           }}
         />
-      </AppLink>
+      </Button>
     </Flex>
   ) : null
 }
