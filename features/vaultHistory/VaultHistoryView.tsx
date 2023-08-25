@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/context'
 import { DefinitionList } from 'components/DefinitionList'
 import { useObservable } from 'helpers/observableHook'
 import { flatten } from 'lodash'
@@ -12,7 +12,7 @@ import { mapAutomationEvents, splitEvents, VaultHistoryEvent } from './vaultHist
 import { VaultHistoryEntry } from './VaultHistoryEntry'
 
 export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryEvent[] }) {
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
   const { t } = useTranslation()
 

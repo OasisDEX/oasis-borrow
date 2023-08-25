@@ -3,7 +3,6 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   createManageMultiplyVault$,
@@ -12,7 +11,9 @@ import {
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { TxHelpers } from 'helpers/context/types'
 import { mockedMultiplyEvents } from 'helpers/multiply/calculations.mock'
+import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'

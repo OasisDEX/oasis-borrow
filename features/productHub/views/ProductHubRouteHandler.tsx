@@ -1,6 +1,6 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts'
 import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'

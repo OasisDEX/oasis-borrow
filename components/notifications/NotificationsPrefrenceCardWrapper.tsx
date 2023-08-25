@@ -1,6 +1,6 @@
 import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
+import { useNotificationSocket } from 'components/context'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
-import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { notificationPreferences } from 'features/notifications/consts'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import {

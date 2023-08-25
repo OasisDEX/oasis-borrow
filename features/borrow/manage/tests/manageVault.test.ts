@@ -3,7 +3,6 @@
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { protoTxHelpers } from 'components/AppContext'
 import {
   mockManageInstiVault$ as createManageInstiVault$,
   mockManageVault$ as createManageVault$,
@@ -16,6 +15,7 @@ import {
   defaultDebt,
   mockVault$,
 } from 'helpers/mocks/vaults.mock'
+import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { BehaviorSubject, of, Subject } from 'rxjs'

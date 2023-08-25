@@ -6,7 +6,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/ProductContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { setDsrAllowance } from 'features/allowance/setAllowance'
 import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
@@ -16,14 +16,8 @@ import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { applyDsrAllowanceChanges } from 'features/dsr/utils/applyDsrAllowance'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { applyProxyChanges } from 'features/proxy/proxy'
-import {
-  ApplyChange,
-  applyChange,
-  Change,
-  Changes,
-  GasEstimationStatus,
-  HasGasEstimation,
-} from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
+import { ApplyChange, applyChange, Change, Changes } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'

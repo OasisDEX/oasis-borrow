@@ -24,7 +24,7 @@ export type PositionCreated = {
   proxyAddress: string
 }
 
-async function getPositionCreatedEventForProxyAddress(
+export async function getPositionCreatedEventForProxyAddress(
   { chainId }: Pick<Context, 'chainId'>,
   proxyAddress: string,
 ): Promise<CreatePositionEvent[]> {
@@ -78,7 +78,7 @@ function mapEvent(
     })
 }
 
-function extractLendingProtocolFromPositionCreatedEvent(
+export function extractLendingProtocolFromPositionCreatedEvent(
   positionCreatedChainEvent: CreatePositionEvent,
 ): LendingProtocol {
   switch (positionCreatedChainEvent.args.protocol) {

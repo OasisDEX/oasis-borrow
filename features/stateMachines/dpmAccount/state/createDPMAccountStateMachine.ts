@@ -12,7 +12,6 @@ import { Context, ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
 import {
   createEthersTransactionStateMachine,
@@ -20,7 +19,7 @@ import {
   TransactionStateMachine,
   TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { isEqual } from 'lodash'
 import { Observable, of } from 'rxjs'
 import { fromPromise } from 'rxjs/internal-compatibility'

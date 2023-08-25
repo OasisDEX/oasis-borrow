@@ -64,3 +64,5 @@ export const AJNA_TOKENS_WITH_MULTIPLY = [
   'WSTETH',
   'YFI',
 ]
+
+export const AJNA_BORROWISH_PRODUCTS: AjnaProduct[] = ['borrow', 'multiply']

@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
-import { isAppContextAvailable } from 'components/AppContextProvider'
+import { isProductContextAvailable } from 'components/context'
 import {
   AjnaFlow,
   AjnaProduct,
@@ -105,7 +105,7 @@ export function AjnaGeneralContextProvider({
   steps,
   ...props
 }: PropsWithChildren<AjnaGeneralContextProviderProps>) {
-  if (!isAppContextAvailable()) return null
+  if (!isProductContextAvailable()) return null
 
   const {
     flow,

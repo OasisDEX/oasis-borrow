@@ -2,7 +2,7 @@ import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { WithChildren } from 'helpers/types'
 import React, { useContext } from 'react'
 
-// usable in situations where AppContext and other context is rendered simultanously:
+// usable in situations where ProductContext and other context is rendered simultanously:
 //  <AaveContextProvider>
 //    <DeferedContextProvider context={aaveContext}>
 // it wont render children until needed context is available

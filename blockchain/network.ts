@@ -2,11 +2,12 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import {
+  contract,
+  ContractDesc,
   Web3Context,
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
 } from 'features/web3Context'
-import { contract, ContractDesc } from 'features/web3Context'
 import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs'
 import {
   catchError,

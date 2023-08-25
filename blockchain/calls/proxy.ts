@@ -2,8 +2,7 @@ import { nullAddress } from '@oasisdex/utils'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
-import { contractDesc } from 'blockchain/networks'
-import { NetworkIds } from 'blockchain/networks'
+import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { isEqual } from 'lodash'
 import { combineLatest, defer, Observable, of } from 'rxjs'
 import {
@@ -16,8 +15,7 @@ import {
 } from 'rxjs/operators'
 import { DsProxy, DsProxyRegistry } from 'types/web3-v1-contracts'
 
-import { TransactionDef } from './callsHelpers'
-import { call, CallDef } from './callsHelpers'
+import { call, CallDef, TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
 
 export const proxyAddress: CallDef<string, string> = {

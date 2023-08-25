@@ -1,8 +1,9 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
+import { ProductContextHandler } from 'components/context'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts'
 import { DsrViewContainer } from 'features/dsr/containers/DsrViewContainer'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -26,26 +27,28 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
-    <WithFeatureToggleRedirect feature="DaiSavingsRate">
-      <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
-        <WithTermsOfService>
-          <WithWalletAssociatedRisk>
-            <PageSEOTags
-              title="seo.title-dsr"
-              titleParams={{
-                product: t('seo.earn.title'),
-                protocol: LendingProtocolLabel.maker,
-              }}
-              description="seo.multiply.description"
-              url="/earn/dsr"
-            />
-            <BackgroundLight />
-            <DsrViewContainer walletAddress={walletAddress} />
-            <Survey for="earn" />
-          </WithWalletAssociatedRisk>
-        </WithTermsOfService>
-      </WithConnection>
-    </WithFeatureToggleRedirect>
+    <ProductContextHandler>
+      <WithFeatureToggleRedirect feature="DaiSavingsRate">
+        <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <PageSEOTags
+                title="seo.title-dsr"
+                titleParams={{
+                  product: t('seo.earn.title'),
+                  protocol: LendingProtocolLabel.maker,
+                }}
+                description="seo.multiply.description"
+                url="/earn/dsr"
+              />
+              <BackgroundLight />
+              <DsrViewContainer walletAddress={walletAddress} />
+              <Survey for="earn" />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithConnection>
+      </WithFeatureToggleRedirect>
+    </ProductContextHandler>
   )
 }
 

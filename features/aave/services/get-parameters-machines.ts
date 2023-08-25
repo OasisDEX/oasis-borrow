@@ -7,9 +7,8 @@ import {
   ManageAaveParameters,
 } from 'actions/aave'
 import { NetworkIds } from 'blockchain/networks'
-import { TxHelpers } from 'components/AppContext'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 
 export function getCloseAaveParametersMachine(

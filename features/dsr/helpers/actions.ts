@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TxHelpers } from 'components/AppContext'
 import { RAY, WAD } from 'components/constants'
 import { DsrCreationChange, DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
 import {
@@ -14,6 +13,7 @@ import {
   savingsDaiDeposit,
 } from 'features/dsr/helpers/potCalls'
 import { DsrWithdrawChange } from 'features/dsr/pipes/dsrWithdraw'
+import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { roundDown, roundHalfUp } from 'helpers/rounding'
 import { zero } from 'helpers/zero'

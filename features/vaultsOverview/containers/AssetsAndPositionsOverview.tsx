@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
+import { useProductContext } from 'components/context'
 import { PieChart } from 'components/dumb/PieChart'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
@@ -346,7 +346,7 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
 }
 
 export function AssetsAndPositionsOverview({ address }: { address: string }) {
-  const { positionsOverviewSummary$ } = useAppContext()
+  const { positionsOverviewSummary$ } = useProductContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
 
   const [positionsOverviewSummary, positionOverviewSummaryError] = useObservable(

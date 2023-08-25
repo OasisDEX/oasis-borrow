@@ -5,7 +5,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { TxHelpers } from 'components/AppContext'
 import {
   addAutomationTrigger,
   removeAutomationTrigger,
@@ -17,6 +16,7 @@ import {
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationContracts } from 'features/automation/metadata/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { TxHelpers } from 'helpers/context/types'
 import { uiChanges } from 'helpers/uiChanges'
 
 export interface AutomationTxHandlerAnalytics {

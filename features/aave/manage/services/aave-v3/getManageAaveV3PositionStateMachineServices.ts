@@ -6,12 +6,16 @@ import { NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
-import { TxHelpers } from 'components/AppContext'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { getPricesFeed$ } from 'features/aave/services'
-import { contextToEthersTransactions, IStrategyConfig } from 'features/aave/types'
-import { IStrategyInfo, StrategyTokenAllowance, StrategyTokenBalance } from 'features/aave/types'
+import {
+  contextToEthersTransactions,
+  IStrategyConfig,
+  IStrategyInfo,
+  StrategyTokenAllowance,
+  StrategyTokenBalance,
+} from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
 import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
@@ -19,6 +23,7 @@ import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
+import { TxHelpers } from 'helpers/context/types'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { LendingProtocol } from 'lendingProtocols'
 import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'

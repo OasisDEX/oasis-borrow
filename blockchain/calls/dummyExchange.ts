@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import * as dummyExchange from 'blockchain/abi/dummy-exchange.json'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { contractDesc } from 'blockchain/networks'
+import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { amountToWei } from 'blockchain/utils'
 import { DummyExchange } from 'types/web3-v1-contracts'
 

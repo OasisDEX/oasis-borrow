@@ -1,10 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
-import { useAppContext } from 'components/AppContextProvider'
+import {
+  DeferedContextProvider,
+  tosContext,
+  useAccountContext,
+  useMainContext,
+} from 'components/context'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { useConnection } from 'features/web3OnBoard'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useModal } from 'helpers/modalHook'
@@ -26,19 +32,22 @@ interface Props {
 }
 
 export function ReferralLandingSummary() {
-  const { context$, userReferral$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { userReferral$ } = useAccountContext()
 
   const [context, contextError] = useObservable(context$)
   const [userReferral, userReferralError] = useObservable(userReferral$)
 
   return (
-    <WithErrorHandler error={[contextError, userReferralError]}>
-      <WithLoadingIndicator value={[context, userReferral]}>
-        {([context, _userReferral]) => (
-          <ReferralLanding context={context} userReferral={_userReferral} />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <DeferedContextProvider context={tosContext}>
+      <WithErrorHandler error={[contextError, userReferralError]}>
+        <WithLoadingIndicator value={[context, userReferral]}>
+          {([context, userReferral]) => (
+            <ReferralLanding context={context} userReferral={userReferral} />
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    </DeferedContextProvider>
   )
 }
 
@@ -46,6 +55,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
   const { t } = useTranslation()
   const openModal = useModal()
   const { replace } = useRedirect()
+  const { connect, connecting } = useConnection()
 
   const isConnected = context?.status === 'connected'
 
@@ -110,9 +120,8 @@ export function ReferralLanding({ context, userReferral }: Props) {
       </Flex>
       <Box mt={`16px`}>
         {context?.status !== 'connected' ? (
-          <AppLink
+          <Button
             variant="primary"
-            href="/connect"
             sx={{
               display: 'flex',
               margin: '0 auto',
@@ -123,6 +132,11 @@ export function ReferralLanding({ context, userReferral }: Props) {
               '&:hover svg': {
                 transform: 'translateX(10px)',
               },
+            }}
+            onClick={() => {
+              if (!connecting) {
+                connect()
+              }
             }}
           >
             {t('connect-wallet-button')}
@@ -135,7 +149,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
                 transition: '0.2s',
               }}
             />
-          </AppLink>
+          </Button>
         ) : null}
         {userReferral.state === 'newUser' && (
           <Button

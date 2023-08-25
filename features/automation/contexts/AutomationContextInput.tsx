@@ -1,9 +1,10 @@
-import { useAppContext } from 'components/AppContextProvider'
 import {
   AutomationCommonData,
   AutomationContextProvider,
   AutomationPositionData,
-} from 'components/AutomationContextProvider'
+  useMainContext,
+  useProductContext,
+} from 'components/context'
 import {
   AutomationDefinitionMetadata,
   OverwriteTriggersDefaults,
@@ -30,7 +31,8 @@ export function AutomationContextInput({
   metadata,
   overwriteTriggersDefaults,
 }: PropsWithChildren<GeneralManageControlProps>) {
-  const { tokenPriceUSD$, balanceInfo$, context$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { tokenPriceUSD$, balanceInfo$ } = useProductContext()
   const [contextData, contextError] = useObservable(context$)
 
   const resolvedAccount =

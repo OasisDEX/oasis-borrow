@@ -1,7 +1,6 @@
 import { ContextConnected } from 'blockchain/network'
-import { TxHelpers } from 'components/AppContext'
 import { createProxyStateMachine, ProxyStateMachine } from 'features/stateMachines/proxy/state'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 
 export function getOpenProxyStateMachine(

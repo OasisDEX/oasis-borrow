@@ -5,7 +5,6 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import {
   createAutomationTriggersChange$,
@@ -29,7 +28,12 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import {
+  AddGasEstimationFunction,
+  GasEstimationStatus,
+  HasGasEstimation,
+  TxHelpers,
+} from 'helpers/context/types'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'

@@ -2,13 +2,13 @@ import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { GasPriceParams, Tickers } from 'blockchain/prices'
-import { TxHelpers, TxHelpers$ } from 'components/AppContext'
 import { MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 } from 'components/Modal'
 import { combineLatest, Observable, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import { OmitProperties, ValueOf } from 'ts-essentials'
 
+import { GasEstimationStatus, HasGasEstimation, TxHelpers, TxHelpers$ } from './context/types'
 import { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {
@@ -259,26 +259,6 @@ export function transactionToX<X, Y extends TxMeta>(
       }),
       startWith(startWithX),
     )
-}
-
-export enum GasEstimationStatus {
-  unset = 'unset',
-  calculating = 'calculating',
-  calculated = 'calculated',
-  error = 'error',
-  unknown = 'unknown',
-}
-
-export interface HasGasEstimationCost {
-  gasEstimationUsd?: BigNumber
-  gasEstimationEth?: BigNumber
-  gasEstimationDai?: BigNumber
-}
-
-export interface HasGasEstimation extends HasGasEstimationCost {
-  gasEstimationStatus: GasEstimationStatus
-  error?: any
-  gasEstimation?: number
 }
 
 export function doGasEstimation<S extends HasGasEstimation>(

@@ -1,6 +1,5 @@
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { ContextConnected } from 'blockchain/network'
-import { AutomationTxData, TxHelpers } from 'components/AppContext'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
@@ -10,6 +9,7 @@ import {
   createTransactionStateMachine,
   startTransactionService,
 } from 'features/stateMachines/transaction'
+import { AutomationTxData, TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 
 export function getStopLossTransactionStateMachine(
