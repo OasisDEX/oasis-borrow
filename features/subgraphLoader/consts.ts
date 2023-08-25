@@ -1,5 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
-import { Subgraphs, SubgraphsRecord } from 'features/subgraphLoader/types'
+import { SubgraphMethodsRecord, SubgraphsRecord } from 'features/subgraphLoader/types'
 import { gql } from 'graphql-request'
 import getConfig from 'next/config'
 
@@ -8,6 +8,18 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
     [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
     [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrlGoerli,
+    [NetworkIds.ARBITRUMMAINNET]: '',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: '',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
+  Aave: {
+    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrl,
+    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrl,
+    [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
@@ -42,9 +54,7 @@ export const subgraphsRecord: SubgraphsRecord = {
   },
 }
 
-export const subgraphMethodsRecord: {
-  [key in keyof (Subgraphs['Ajna'] & Subgraphs['TempGraph'] & Subgraphs['Referral'])]: string
-} = {
+export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaPositionAggregatedData: gql`
     query getAccount($dpmProxyAddress: ID!) {
       account(id: $dpmProxyAddress) {
@@ -268,6 +278,74 @@ export const subgraphMethodsRecord: {
         lup
         lupIndex
         quoteTokenAddress
+      }
+    }
+  `,
+  getAaveHistory: gql`
+    query AavePositionHistory($dpmProxyAddress: String) {
+      positionEvents(where: { account: $dpmProxyAddress }) {
+        depositTransfers {
+          amount
+          token
+        }
+        withdrawTransfers {
+          amount
+          token
+        }
+        blockNumber
+        collateralAddress
+        collateralAfter
+        collateralBefore
+        collateralDelta
+        collateralOraclePrice
+        collateralToken {
+          symbol
+        }
+        collateralTokenPriceUSD
+        debtAddress
+        debtAfter
+        debtBefore
+        debtDelta
+        debtOraclePrice
+        debtToken {
+          symbol
+        }
+        debtTokenPriceUSD
+        depositedUSD
+        ethPrice
+        gasFeeUSD
+        gasPrice
+        gasUsed
+        id
+        kind
+        liquidationPriceAfter
+        liquidationPriceBefore
+        ltvAfter
+        ltvBefore
+        marketPrice
+        multipleAfter
+        multipleBefore
+        netValueAfter
+        netValueBefore
+        summerFee
+        summerFeeToken
+        summerFeeUSD
+        swapFromAmount
+        swapFromToken
+        swapToAmount
+        swapToToken
+        timestamp
+        totalFee
+        txHash
+        withdrawnUSD
+        timestamp
+        txHash
+        blockNumber
+        trigger {
+          id
+          decodedData
+          decodedDataNames
+        }
       }
     }
   `,

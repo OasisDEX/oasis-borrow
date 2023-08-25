@@ -28,6 +28,7 @@ import {
   RefTransactionMachine,
 } from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
@@ -55,6 +56,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   ownerAddress?: string
   positionCreatedBy: ProxyType
   updateStrategyConfig?: (vaultType: VaultType) => void
+  historyEvents: AaveHistoryEvent[]
 }
 
 function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -93,6 +95,7 @@ export type ManageAaveEvent =
     }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
+  | { type: 'HISTORY_UPDATED'; historyEvents: AaveHistoryEvent[] }
   | BaseAaveEvent
 
 export function createManageAaveStateMachine(
@@ -116,6 +119,10 @@ export function createManageAaveStateMachine(
       preserveActionOrder: true,
       predictableActionArguments: true,
       invoke: [
+        {
+          id: 'historyCallback',
+          src: 'historyCallback',
+        },
         {
           src: 'getBalance',
           id: 'getBalance',
@@ -543,7 +550,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext'],
         },
         POSITION_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
+          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendHistoryRequest'],
         },
         UPDATE_PROTOCOL_DATA: {
           actions: ['updateContext'],
@@ -604,6 +611,9 @@ export function createManageAaveStateMachine(
         },
         SWITCH_TO_EARN: {
           target: 'frontend.switchToEarn',
+        },
+        HISTORY_UPDATED: {
+          actions: 'updateContext',
         },
       },
     },
@@ -917,6 +927,12 @@ export function createManageAaveStateMachine(
             }
           },
         ),
+        sendHistoryRequest: sendTo('historyCallback', (context) => {
+          return {
+            type: 'PROXY_RECEIVED',
+            proxyAddress: context.proxyAddress,
+          }
+        }),
       },
     },
   )

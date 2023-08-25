@@ -71,7 +71,10 @@ import {
   getDpmPositionData$,
   getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  createAutomationTriggersData,
+  TriggersData,
+} from 'features/automation/api/automationTriggersData'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -313,7 +316,7 @@ export function setupProductContext(
   )
 
   const balanceFromAddress$ = memoize(
-    curry(createBalanceFromAddress$)(tokenBalanceFromAddress$),
+    curry(createBalanceFromAddress$)(onEveryBlock$, chainContext$, tokenBalanceFromAddress$),
     (token, address) => `${token.address}_${token.precision}_${address}`,
   )
 
@@ -621,6 +624,7 @@ export function setupProductContext(
         tokenPriceUSDStatic$,
         mainnetAaveV3PositionCreatedEvents$,
         getApiVaults,
+        automationTriggersData$,
         aaveV3,
         NetworkIds.MAINNET,
       ),
@@ -639,6 +643,7 @@ export function setupProductContext(
       tokenPriceUSDStatic$,
       optimismReadPositionCreatedEvents$,
       getApiVaults,
+      () => of<TriggersData | undefined>(undefined), // Triggers are not supported on optimism
       aaveV3Optimism,
       NetworkIds.OPTIMISMMAINNET,
     ),

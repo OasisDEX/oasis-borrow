@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import {
   ChangeVariantType,
   ContentCardProps,
@@ -25,6 +26,7 @@ interface ContentCardThresholdPriceProps {
   collateralAmount: BigNumber
   afterThresholdPrice?: BigNumber
   lup?: BigNumber
+  withTooltips?: boolean
   changeVariant?: ChangeVariantType
 }
 
@@ -86,6 +88,7 @@ export function ContentCardThresholdPrice({
   debtAmount,
   afterThresholdPrice,
   lup,
+  withTooltips,
   changeVariant = 'positive',
 }: ContentCardThresholdPriceProps) {
   const { t } = useTranslation()
@@ -104,7 +107,12 @@ export function ContentCardThresholdPrice({
     unit: priceFormat,
     change: {
       isLoading,
-      value: afterThresholdPrice && `${formatted.afterThresholdPrice} ${priceFormat}`,
+      value: afterThresholdPrice && ['', `${formatted.afterThresholdPrice}`, `${priceFormat}`],
+      ...(withTooltips &&
+        afterThresholdPrice &&
+        !afterThresholdPrice.isZero() && {
+          tooltip: `${afterThresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+        }),
       variant: changeVariant,
     },
     modal: (
@@ -121,8 +129,13 @@ export function ContentCardThresholdPrice({
     ),
   }
 
+  if (withTooltips && !thresholdPrice.isZero()) {
+    contentCardSettings.valueTooltip = `${thresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`
+  }
+
   if (lup) {
-    contentCardSettings.footnote = `LUP: ${formatted.lup} ${priceFormat}`
+    contentCardSettings.footnote = ['LUP:', `${formatted.lup}`, `${priceFormat}`]
+    contentCardSettings.footnoteTooltip = `${lup.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

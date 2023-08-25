@@ -14,9 +14,8 @@ import React from 'react'
 export function AjnaBorrowFormContentGenerate() {
   const {
     environment: {
-      collateralDigits,
       collateralBalance,
-      collateralPrecision,
+      collateralDigits,
       collateralPrice,
       collateralToken,
       quoteDigits,
@@ -34,7 +33,7 @@ export function AjnaBorrowFormContentGenerate() {
 
   const debtMin = getAjnaBorrowDebtMin({ digits: collateralDigits, position })
   const debtMax = getAjnaBorrowDebtMax({
-    precision: quoteDigits,
+    digits: quoteDigits,
     position,
     simulation,
   })
@@ -52,7 +51,7 @@ export function AjnaBorrowFormContentGenerate() {
         maxAmount={collateralBalance}
         token={collateralToken}
         tokenPrice={collateralPrice}
-        tokenPrecision={collateralPrecision}
+        tokenDigits={collateralDigits}
       />
       {generateAmount && <AjnaBorrowOriginationFee />}
       {(generateAmount || depositAmount) && (

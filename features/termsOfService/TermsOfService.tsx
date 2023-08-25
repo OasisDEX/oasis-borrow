@@ -15,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React, { ReactNode, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
-import { fadeIn } from 'theme/keyframes'
+import { fadeIn } from 'theme/animations'
 
 import { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance'
 

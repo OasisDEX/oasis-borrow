@@ -1,12 +1,17 @@
 import { normalizeValue } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
+import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import { AaveHistoryEvent } from 'features/ajna/history/types'
+import { AaveHistoryEvent, hasTrigger } from 'features/ajna/history/types'
 import {
+  formatAmountWithPrecision,
   formatCryptoBalance,
   formatDecimalAsPercent,
   formatFiatBalance,
+  formatPercent,
 } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -21,6 +26,7 @@ interface PositionHistoryItemDetailsProps {
   isShort?: boolean
   priceFormat?: string
   quoteToken: string
+  networkId: NetworkIds
 }
 
 export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = ({
@@ -30,8 +36,40 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
   isShort,
   priceFormat,
   quoteToken,
+  networkId,
 }) => {
   const { t } = useTranslation()
+
+  const automationNames = ['maxCoverage', 'slLevel']
+
+  if (event.kind?.startsWith('AutomationAdded') && hasTrigger(event)) {
+    return (
+      <DefinitionList>
+        {event.trigger &&
+          event.trigger.decodedDataNames
+            .map((name, index) => [name, event.trigger?.decodedData[index]] as const)
+            .filter(([name]) => automationNames.includes(name))
+            .map(([name, value]) => {
+              switch (name) {
+                case 'maxCoverage':
+                  return (
+                    <PositionHistoryRow label={t('position-history.max-coverage')} key={name}>
+                      {formatAmountWithPrecision(new BigNumber(value), quoteToken)} {quoteToken}
+                    </PositionHistoryRow>
+                  )
+                case 'slLevel':
+                  return (
+                    <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
+                      {value && formatPercent(new BigNumber(value).div(100))}
+                    </PositionHistoryRow>
+                  )
+                default:
+                  return <></>
+              }
+            })}
+      </DefinitionList>
+    )
+  }
 
   return (
     <DefinitionList>
@@ -73,13 +111,17 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       )}
       {event.liquidationPriceBefore && event.liquidationPriceAfter && (
         <PositionHistoryRow label={t('position-history.liquidation-price')}>
-          {formatCryptoBalance(
-            isShort
-              ? normalizeValue(one.div(event.liquidationPriceBefore))
-              : event.liquidationPriceBefore,
-          )}{' '}
-          {priceFormat || `${collateralToken}/${quoteToken}`}
-          <VaultChangesInformationArrow />
+          {!event.liquidationPriceBefore.isNaN() && (
+            <>
+              {formatCryptoBalance(
+                isShort
+                  ? normalizeValue(one.div(event.liquidationPriceBefore))
+                  : event.liquidationPriceBefore,
+              )}{' '}
+              {priceFormat || `${collateralToken}/${quoteToken}`}
+              <VaultChangesInformationArrow />
+            </>
+          )}
           {formatCryptoBalance(
             isShort
               ? normalizeValue(one.div(event.liquidationPriceAfter))
@@ -144,16 +186,18 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.netValueAfter)} USD
         </PositionHistoryRow>
       )}
-      {event.swapToAmount && (
-        <PositionHistoryRow label={t('position-history.bought')}>
-          {formatCryptoBalance(event.swapToAmount)} {collateralToken}
-        </PositionHistoryRow>
-      )}
-      {event.swapFromAmount && (
-        <PositionHistoryRow label={t('position-history.sold')}>
-          {formatCryptoBalance(event.swapFromAmount)} {collateralToken}
-        </PositionHistoryRow>
-      )}
+      {event.swapToAmount &&
+        event.swapToAmount.gt(zero) &&
+        event.swapFromAmount &&
+        event.swapFromAmount.gt(zero) && (
+          <PositionHistoryRow label={t('position-history.swaped')}>
+            {formatCryptoBalance(event.swapFromAmount)}{' '}
+            {getTokenSymbolBasedOnAddress(networkId, event.swapFromToken!)}
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(event.swapToAmount)}{' '}
+            {getTokenSymbolBasedOnAddress(networkId, event.swapToToken!)}
+          </PositionHistoryRow>
+        )}
       {event.collateralTokenPriceUSD && (
         <PositionHistoryRow label={t('position-history.market-price')}>
           {formatFiatBalance(event.collateralTokenPriceUSD)} USD

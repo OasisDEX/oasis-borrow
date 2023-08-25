@@ -10,6 +10,7 @@ import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { useConnection } from 'features/web3OnBoard'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useModal } from 'helpers/modalHook'
@@ -54,6 +55,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
   const { t } = useTranslation()
   const openModal = useModal()
   const { replace } = useRedirect()
+  const { connect, connecting } = useConnection()
 
   const isConnected = context?.status === 'connected'
 
@@ -118,9 +120,8 @@ export function ReferralLanding({ context, userReferral }: Props) {
       </Flex>
       <Box mt={`16px`}>
         {context?.status !== 'connected' ? (
-          <AppLink
+          <Button
             variant="primary"
-            href="/connect"
             sx={{
               display: 'flex',
               margin: '0 auto',
@@ -131,6 +132,11 @@ export function ReferralLanding({ context, userReferral }: Props) {
               '&:hover svg': {
                 transform: 'translateX(10px)',
               },
+            }}
+            onClick={() => {
+              if (!connecting) {
+                connect()
+              }
             }}
           >
             {t('connect-wallet-button')}
@@ -143,7 +149,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
                 transition: '0.2s',
               }}
             />
-          </AppLink>
+          </Button>
         ) : null}
         {userReferral.state === 'newUser' && (
           <Button

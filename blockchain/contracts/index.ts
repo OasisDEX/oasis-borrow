@@ -126,9 +126,12 @@ export function ensureSafeConfirmationsExist(
 export function ensureEtherscanExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-): asserts contracts is { etherscan: { url: string; apiUrl: string } } {
+): asserts contracts is { etherscan: { url: string; apiUrl: string }; ethtx: { url: string } } {
   if (!contracts.hasOwnProperty('etherscan')) {
     throw new Error(`Can't find etherscan definition on ${chainId} chain`)
+  }
+  if (!contracts.hasOwnProperty('ethtx')) {
+    throw new Error(`Can't find ethx definition on ${chainId} chain`)
   }
 }
 

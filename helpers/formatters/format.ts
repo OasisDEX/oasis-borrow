@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getToken, getTokenGuarded } from 'blockchain/tokensMetadata'
+import { amountFromWei } from 'blockchain/utils'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import dayjs from 'dayjs'
 import { billion, million, one, oneThousandth, ten, thousand, zero } from 'helpers/zero'
@@ -81,6 +82,10 @@ export function formatFiatBalance(amount: BigNumber): string {
 export function formatAmount(amount: BigNumber, token: string): string {
   const digits = token === 'USD' ? 2 : getTokenGuarded(token)?.digits || DEFAULT_TOKEN_DIGITS
   return amount.toFormat(digits, BigNumber.ROUND_DOWN)
+}
+
+export function formatAmountWithPrecision(amount: BigNumber, token: string): string {
+  return formatAmount(amountFromWei(amount, token), token)
 }
 
 export function formatPrice(amount: BigNumber, token: string): string {

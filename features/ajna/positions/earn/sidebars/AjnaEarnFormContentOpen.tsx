@@ -8,7 +8,7 @@ import React from 'react'
 
 export function AjnaEarnFormContentOpen() {
   const {
-    environment: { quotePrice, quoteToken, quoteBalance, quotePrecision, isOracless },
+    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits, isOracless },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -30,7 +30,7 @@ export function AjnaEarnFormContentOpen() {
         token={quoteToken}
         tokenPrice={quotePrice}
         maxAmount={quoteBalance}
-        tokenPrecision={quotePrecision}
+        tokenDigits={quoteDigits}
         resetOnClear
       />
       <AjnaEarnSlider

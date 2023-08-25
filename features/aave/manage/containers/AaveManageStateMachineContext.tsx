@@ -38,6 +38,7 @@ function setupManageAaveStateContext({
       positionId: positionId,
       getSlippageFrom: strategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
       updateStrategyConfig,
+      historyEvents: [],
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()

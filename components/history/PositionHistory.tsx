@@ -1,13 +1,10 @@
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useMainContext } from 'components/context'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
 import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
-import { Skeleton } from 'components/Skeleton'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { AaveHistoryEvent } from 'features/ajna/history/types'
-import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 
@@ -18,6 +15,7 @@ interface PositionHistoryProps {
   isShort?: boolean
   priceFormat?: string
   quoteToken: string
+  networkId: NetworkIds
 }
 
 export const PositionHistory: FC<PositionHistoryProps> = ({
@@ -27,14 +25,14 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
   isShort = false,
   priceFormat,
   quoteToken,
+  networkId,
 }) => {
-  const { context$ } = useMainContext()
-  const [context] = useObservable(context$)
-
   const { t } = useTranslation()
-  return !context ? (
-    <Skeleton height="440px" />
-  ) : (
+
+  const contracts = getNetworkContracts(networkId)
+  ensureEtherscanExist(networkId, contracts)
+  const { etherscan, ethtx } = contracts
+  return (
     <DetailsSection
       title={t('position-history.header')}
       content={
@@ -42,14 +40,15 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
           {historyEvents.map((item) => (
             <PositionHistoryItem
               collateralToken={collateralToken}
-              etherscanUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url}
-              ethtxUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).ethtx.url}
+              etherscanUrl={etherscan.url}
+              ethtxUrl={ethtx.url}
               isOracless={isOracless}
               isShort={isShort}
               item={item}
               key={`${item.id}-${item.txHash}`}
               priceFormat={priceFormat}
               quoteToken={quoteToken}
+              networkId={networkId}
             />
           ))}
         </DefinitionList>

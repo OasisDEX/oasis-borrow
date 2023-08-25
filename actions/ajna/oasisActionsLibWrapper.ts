@@ -19,6 +19,7 @@ import { ethers } from 'ethers'
 import { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
+import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 
 interface AjnaTxHandlerInput {
   collateralAddress: string
@@ -28,6 +29,7 @@ interface AjnaTxHandlerInput {
   context: Context
   isFormValid: boolean
   position: AjnaGenericPosition
+  simulation?: AjnaGenericPosition
   quoteAddress: string
   quotePrecision: number
   quotePrice: BigNumber
@@ -45,6 +47,7 @@ export async function getAjnaParameters({
   context,
   isFormValid,
   position,
+  simulation,
   quoteAddress,
   quotePrecision,
   quotePrice,
@@ -93,7 +96,19 @@ export async function getAjnaParameters({
     }
     case 'payback-borrow':
     case 'withdraw-borrow': {
-      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position })
+      return ajnaPaybackWithdrawBorrow({
+        state: {
+          ...state,
+          paybackAmount:
+            state.paybackAmount && state.paybackAmountMax
+              ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+              : state.paybackAmount,
+        },
+        commonPayload,
+        dependencies,
+        position,
+        simulation,
+      })
     }
 
     case 'open-earn': {
@@ -158,10 +173,17 @@ export async function getAjnaParameters({
     case 'payback-multiply':
     case 'withdraw-multiply': {
       const { loanToValue } = state
+      const resolvedState = {
+        ...state,
+        paybackAmount:
+          state.paybackAmount && state.paybackAmountMax
+            ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+            : state.paybackAmount,
+      }
 
       if (loanToValue) {
         return ajnaAdjustMultiply({
-          state,
+          state: resolvedState,
           commonPayload,
           dependencies,
           position,
@@ -171,7 +193,13 @@ export async function getAjnaParameters({
         })
       }
 
-      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position })
+      return ajnaPaybackWithdrawBorrow({
+        state: resolvedState,
+        commonPayload,
+        dependencies,
+        position,
+        simulation,
+      })
     }
     case 'deposit-quote-multiply': {
       // TODO here handling for complex action once available
