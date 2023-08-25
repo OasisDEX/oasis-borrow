@@ -17,6 +17,7 @@ import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
+import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 
@@ -69,6 +70,7 @@ export async function getAjnaParameters({
     provider: rpcProvider,
     WETH: addressesConfig.tokens.ETH.address,
     getPoolData: getAjnaPoolData(chainId),
+    getCumulatives: getAjnaCumulatives(chainId),
     network: 'mainnet' as Network,
   }
 

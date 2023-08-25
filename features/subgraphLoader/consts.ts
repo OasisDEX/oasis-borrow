@@ -57,14 +57,6 @@ export const subgraphsRecord: SubgraphsRecord = {
 export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaPositionAggregatedData: gql`
     query getAccount($dpmProxyAddress: ID!) {
-      account(id: $dpmProxyAddress) {
-        cumulativeDeposit
-        cumulativeFees
-        cumulativeWithdraw
-        earnCumulativeFeesInQuoteToken
-        earnCumulativeQuoteTokenDeposit
-        earnCumulativeQuoteTokenWithdraw
-      }
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
         alreadyTaken
@@ -146,6 +138,22 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getAjnaCumulatives: gql`
+    query getAccount($dpmProxyAddress: ID!, $poolAddress: String!) {
+      account(id: $dpmProxyAddress) {
+        earnPositions(where: { pool: $poolAddress }) {
+          earnCumulativeFeesInQuoteToken
+          earnCumulativeQuoteTokenDeposit
+          earnCumulativeQuoteTokenWithdraw
+        }
+        borrowPositions(where: { pool: $poolAddress }) {
+          borrowCumulativeDepositUSD
+          borrowCumulativeFeesUSD
+          borrowCumulativeWithdrawUSD
+        }
+      }
+    }
+  `,
   getAjnaPoolAddress: gql`
     query getPools($collateralAddress: ID!, $quoteAddress: ID!) {
       pools(where: { collateralAddress: $collateralAddress, quoteTokenAddress: $quoteAddress }) {
@@ -218,18 +226,21 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   getAjnaEarnPositionData: gql`
-    query getAccount($dpmProxyAddress: ID!) {
+    query getAccount($dpmProxyAddress: ID!, $poolAddress: String!) {
       account(id: $dpmProxyAddress) {
-        earnPositions {
-          lps
-          index
+        vaultId
+        address
+        earnPositions(where: { pool: $poolAddress }) {
+          id
           nft {
             id
           }
-          account {
-            earnCumulativeFeesInQuoteToken
-            earnCumulativeQuoteTokenDeposit
-            earnCumulativeQuoteTokenWithdraw
+          earnCumulativeFeesInQuoteToken
+          earnCumulativeQuoteTokenDeposit
+          earnCumulativeQuoteTokenWithdraw
+          bucketPositions(where: { lps_gt: 0 }) {
+            lps
+            index
           }
         }
       }

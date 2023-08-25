@@ -4,7 +4,6 @@ import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import {
   AjnaPositionAggregatedDataAuctions,
-  AjnaPositionCumulatives,
   getAjnaPositionAggregatedData,
 } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { mapAjnaBorrowishEvents } from 'features/ajna/positions/common/helpers/mapBorrowishEvents'
@@ -32,7 +31,6 @@ export type AjnaPositionAuction = AjnaBorrowishPositionAuction | AjnaEarnPositio
 
 interface AjnaPositionAggregatedDataResponse {
   auction: AjnaPositionAuction
-  cumulatives: AjnaPositionCumulatives
   history: AjnaUnifiedHistoryEvent[]
 }
 
@@ -138,9 +136,8 @@ export const getAjnaPositionAggregatedData$ = ({
   const { proxy } = dpmPositionData
 
   return from(getAjnaPositionAggregatedData(proxy, networkId)).pipe(
-    map(({ auctions, cumulatives, history }) => ({
+    map(({ auctions, history }) => ({
       auction: parseAggregatedDataAuction({ auctions, dpmPositionData, history, position }),
-      cumulatives,
       history: parseAggregatedDataHistory({ dpmPositionData, history }),
     })),
     shareReplay(1),

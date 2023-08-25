@@ -8,6 +8,7 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { PositionCreated } from 'features/aave/services'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
@@ -60,6 +61,7 @@ export function getAjnaPosition$(
         rewardsManagerAddress: ajnaRewardsManager.address,
         provider: getRpcProvider(context.chainId),
         getPoolData: getAjnaPoolData(context.chainId),
+        getCumulatives: getAjnaCumulatives(context.chainId),
       }
 
       switch (product as AjnaProduct) {

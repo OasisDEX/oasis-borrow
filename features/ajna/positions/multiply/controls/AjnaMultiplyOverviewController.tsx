@@ -37,20 +37,10 @@ export function AjnaMultiplyOverviewController() {
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
-      cumulatives,
     },
   } = useAjnaProductContext('multiply')
 
   const changeVariant = 'positive'
-
-  let pnl = zero
-  if (cumulatives) {
-    pnl = position.pnl(
-      cumulatives.cumulativeDeposit,
-      cumulatives.cumulativeWithdraw,
-      cumulatives.cumulativeFees,
-    )
-  }
 
   const liquidationPrice = isShort
     ? normalizeValue(one.div(position.liquidationPriceT0Np))
@@ -109,7 +99,7 @@ export function AjnaMultiplyOverviewController() {
               afterNetValue={simulation?.collateralAmount
                 .times(collateralPrice)
                 .minus(simulation?.debtAmount.times(quotePrice))}
-              pnl={pnl}
+              pnl={position.pnl.withoutFees}
               // For now we need to hide P&L for proxies with many positions
               // because subgraph doesn't support it yet
               pnlNotAvailable={isProxyWithManyPositions}

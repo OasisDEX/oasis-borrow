@@ -19,18 +19,8 @@ export interface AjnaPositionAggregatedDataAuctions {
   inLiquidation: boolean
 }
 
-export interface AjnaPositionCumulatives {
-  cumulativeDeposit: BigNumber
-  cumulativeFees: BigNumber
-  cumulativeWithdraw: BigNumber
-  earnCumulativeFeesInQuoteToken: BigNumber
-  earnCumulativeQuoteTokenDeposit: BigNumber
-  earnCumulativeQuoteTokenWithdraw: BigNumber
-}
-
 export interface AjnaPositionAggregatedData {
   auctions: AjnaPositionAggregatedDataAuctions[]
-  cumulatives: AjnaPositionCumulatives
   history: AjnaUnifiedHistoryEvent[]
 }
 
@@ -49,20 +39,6 @@ export const getAjnaPositionAggregatedData = async (
   if (errors.length) throw new Error([`Missing data for ${proxy} proxy:`, ...errors].join('\n'))
 
   return {
-    cumulatives: {
-      cumulativeDeposit: new BigNumber(response.account?.cumulativeDeposit || 0),
-      cumulativeWithdraw: new BigNumber(response.account?.cumulativeWithdraw || 0),
-      cumulativeFees: new BigNumber(response.account?.cumulativeFees || 0),
-      earnCumulativeFeesInQuoteToken: new BigNumber(
-        response.account?.earnCumulativeFeesInQuoteToken || 0,
-      ),
-      earnCumulativeQuoteTokenDeposit: new BigNumber(
-        response.account?.earnCumulativeQuoteTokenDeposit || 0,
-      ),
-      earnCumulativeQuoteTokenWithdraw: new BigNumber(
-        response.account?.earnCumulativeQuoteTokenWithdraw || 0,
-      ),
-    },
     auctions: response.auctions.map(
       ({ alreadyTaken, collateral, debtToCover, endOfGracePeriod, id, inLiquidation }) => ({
         alreadyTaken,

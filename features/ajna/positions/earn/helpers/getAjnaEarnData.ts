@@ -15,9 +15,10 @@ const defaultResponse = {
 }
 
 export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
-  (networkId) => async (proxy: string) => {
+  (networkId) => async (proxy: string, poolAddress: string) => {
     const { response } = (await loadSubgraph('Ajna', 'getAjnaEarnPositionData', networkId, {
       dpmProxyAddress: proxy.toLowerCase(),
+      poolAddress: poolAddress.toLowerCase(),
     })) as SubgraphsResponses['Ajna']['getAjnaEarnPositionData']
 
     if (
@@ -26,19 +27,15 @@ export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
       response.account &&
       response.account.earnPositions.length
     ) {
-      const earnPosition = response.account.earnPositions.find((position) => position.lps > 0)
-
-      const anyPositionForCumulatives = response.account.earnPositions[0]
+      const earnPosition = response.account.earnPositions[0]
 
       const cumulativeValues = {
         earnCumulativeQuoteTokenDeposit: new BigNumber(
-          anyPositionForCumulatives.account.earnCumulativeQuoteTokenDeposit,
+          earnPosition.earnCumulativeQuoteTokenDeposit,
         ),
-        earnCumulativeFeesInQuoteToken: new BigNumber(
-          anyPositionForCumulatives.account.earnCumulativeFeesInQuoteToken,
-        ),
+        earnCumulativeFeesInQuoteToken: new BigNumber(earnPosition.earnCumulativeFeesInQuoteToken),
         earnCumulativeQuoteTokenWithdraw: new BigNumber(
-          anyPositionForCumulatives.account.earnCumulativeQuoteTokenWithdraw,
+          earnPosition.earnCumulativeQuoteTokenWithdraw,
         ),
       }
 
@@ -50,8 +47,8 @@ export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
       }
 
       return {
-        lps: new BigNumber(earnPosition.lps),
-        priceIndex: new BigNumber(earnPosition.index),
+        lps: new BigNumber(earnPosition.bucketPositions[0].lps),
+        priceIndex: new BigNumber(earnPosition.bucketPositions[0].index),
         nftID: earnPosition.nft?.id || null,
         ...cumulativeValues,
       }
