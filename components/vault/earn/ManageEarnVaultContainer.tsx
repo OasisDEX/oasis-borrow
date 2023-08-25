@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { EarnVaultHeaderProps } from 'features/earn/guni/common/GuniVaultHeader'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
@@ -26,7 +26,8 @@ export function ManageEarnVaultContainer({
   form: Form,
   history: History,
 }: ManageEarnVaultContainerProps & ManageEarnVaultContainerComponents) {
-  const { context$, manageGuniVault$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { manageGuniVault$ } = useProductContext()
   const {
     vault: { id },
     clear,

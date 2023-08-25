@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/AppContextProvider'
+import { useAccountContext, useMainContext } from 'components/context'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { ContextAccountDetails, getShowHeaderSettings } from 'helpers/functions'
@@ -6,7 +6,8 @@ import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 export function WalletOrb() {
-  const { accountData$, context$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { accountData$ } = useAccountContext()
   const [accountData] = useObservable(accountData$)
   const [context] = useObservable(context$)
 

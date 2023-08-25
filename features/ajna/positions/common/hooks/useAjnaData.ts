@@ -1,8 +1,8 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
+import { useAccountContext, useMainContext, useProductContext } from 'components/context'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaPositionAggregatedData$ } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
@@ -23,17 +23,16 @@ interface AjnaDataProps {
 
 export function useAjnaData({ collateralToken, id, product, quoteToken }: AjnaDataProps) {
   const { walletAddress } = useAccount()
+  const { context$, gasPrice$ } = useMainContext()
+  const { userSettings$ } = useAccountContext()
   const {
-    context$,
     ajnaPosition$,
     balancesFromAddressInfoArray$,
     balancesInfoArray$,
     dpmPositionDataV2$,
-    gasPrice$,
     identifiedTokens$,
     tokenPriceUSD$,
-    userSettings$,
-  } = useAppContext()
+  } = useProductContext()
 
   const isOracless =
     collateralToken && quoteToken && isPoolOracless({ collateralToken, quoteToken })

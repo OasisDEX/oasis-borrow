@@ -1,12 +1,11 @@
 import { getOpenDepositBorrowPositionParameters, getOpenPositionParameters } from 'actions/aave'
 import { OpenAaveParameters } from 'actions/aave/types'
 import { NetworkIds } from 'blockchain/networks'
-import { TxHelpers } from 'components/AppContext'
 import {
   createTransactionParametersStateMachine,
   TransactionParametersStateMachine,
 } from 'features/stateMachines/transactionParameters'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 
 export function getOpenAaveParametersMachine(

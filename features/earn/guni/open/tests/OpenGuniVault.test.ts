@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { protoTxHelpers } from 'components/AppContext'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
@@ -9,6 +8,7 @@ import { addGasEstimationMock } from 'helpers/mocks/openVault.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { slippageLimitMock } from 'helpers/mocks/slippageLimit.mock'
 import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
+import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of } from 'rxjs'
 

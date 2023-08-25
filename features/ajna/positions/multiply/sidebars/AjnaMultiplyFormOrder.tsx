@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useProductContext } from 'components/context'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { SecondaryVariantType } from 'components/infoSection/Item'
@@ -23,7 +23,7 @@ import { Box } from 'theme-ui'
 
 export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
-  const { exchangeQuote$ } = useAppContext()
+  const { exchangeQuote$ } = useProductContext()
   const {
     environment: { collateralPrice, collateralToken, quoteToken, slippage, isShort, quotePrice },
     steps: { isFlowStateReady },

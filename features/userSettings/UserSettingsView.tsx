@@ -1,10 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
-import { useAppContext } from 'components/AppContextProvider'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
+import { useAccountContext, useMainContext, useNotificationSocket } from 'components/context'
 import { AppLink } from 'components/Links'
-import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { AccountDetails } from 'features/account/AccountData'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -120,7 +119,7 @@ function SlippageLimitMessages({
 }
 
 function SlippageSettingsForm() {
-  const { userSettings$ } = useAppContext()
+  const { userSettings$ } = useAccountContext()
   const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()
   const [customOpened, setCustomOpened] = useState(false)
@@ -242,7 +241,8 @@ function SlippageSettingsForm() {
 }
 
 function WalletInfo() {
-  const { accountData$, web3Context$ } = useAppContext()
+  const { web3Context$ } = useMainContext()
+  const { accountData$ } = useAccountContext()
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)

@@ -1,13 +1,13 @@
-import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
 } from 'features/multiply/open/pipes/openMultiplyVault'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { mockGuniOpenEarnVault } from 'helpers/mocks/guniOpenEarnVault.mock'
 import { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
-import { AppContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
@@ -62,10 +62,10 @@ export function guniOpenMultiplyVaultStory({
       const ctx = {
         openGuniVault$,
         accountData$: of(EMPTY),
-      } as any as AppContext
+      } as any as ProductContext
 
       return (
-        <appContext.Provider value={ctx as any}>
+        <productContext.Provider value={ctx as any}>
           <SharedUIContext.Provider
             value={{
               vaultFormOpened: true,
@@ -75,13 +75,13 @@ export function guniOpenMultiplyVaultStory({
           >
             <GuniOpenMultiplyVaultStoryContainer ilk={'GUNIV3DAIUSDC1-A'} title={title} />
           </SharedUIContext.Provider>
-        </appContext.Provider>
+        </productContext.Provider>
       )
     }
 }
 
 const GuniOpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {
-  if (!isAppContextAvailable()) return null
+  if (!isProductContextAvailable()) return null
 
   return (
     <Container variant="appContainer">

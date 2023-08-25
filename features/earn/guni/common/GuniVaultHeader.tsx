@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useProductContext } from 'components/context'
 import { EarnVaultHeadline } from 'components/vault/EarnVaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import dayjs from 'dayjs'
@@ -24,7 +24,7 @@ const currentDate = dayjs().startOf('day')
 const previousDate = currentDate.clone().subtract(1, 'day')
 
 export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnVaultHeaderProps) {
-  const { yieldsChange$, totalValueLocked$ } = useAppContext()
+  const { yieldsChange$, totalValueLocked$ } = useProductContext()
   const [yieldChanges, changesError] = useObservable(yieldsChange$(currentDate, previousDate, ilk))
   const [totalValueLocked, totalValueLockedError] = useObservable(totalValueLocked$(ilk))
 

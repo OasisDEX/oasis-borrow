@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
-import { isAppContextAvailable } from 'components/AppContextProvider'
+import { isMainContextAvailable } from 'components/context'
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'
@@ -231,7 +231,7 @@ export function NewsletterSection({ small }: { small?: boolean }) {
         </Heading>
         {small && <Text sx={{ color: 'neutral80' }}>{t('newsletter.subtitle')}</Text>}
       </Grid>
-      {isAppContextAvailable() ? <NewsletterForm small={small} /> : null}
+      {isMainContextAvailable() ? <NewsletterForm small={small} /> : null}
     </Box>
   )
 }

@@ -5,7 +5,6 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import {
   AllowanceChanges,
   AllowanceOption,
@@ -36,7 +35,8 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { TxError } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'

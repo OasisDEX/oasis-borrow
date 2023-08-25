@@ -1,12 +1,12 @@
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { ContextConnected } from 'blockchain/network'
-import { TxHelpers } from 'components/AppContext'
 import {
   CommonTransactionServices,
   createTransactionStateMachine,
   startTransactionService,
 } from 'features/stateMachines/transaction'
+import { TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 
 export function getOperationExecutorTransactionMachine(

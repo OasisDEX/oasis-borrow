@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { TxData } from 'components/AppContext'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation, TxData } from 'helpers/context/types'
 import { TX_DATA_CHANGE, TxPayloadChange } from 'helpers/gasEstimate'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
@@ -10,7 +9,7 @@ import { zero } from 'helpers/zero'
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { of } from 'rxjs'
 
-import { isAppContextAvailable, useAppContext } from './AppContextProvider'
+import { isProductContextAvailable, useProductContext } from './ProductContextProvider'
 
 export type GasEstimationContext = {
   isSuccessful: boolean
@@ -28,11 +27,11 @@ export const useGasEstimationContext = () => useContext(gasEstimationContext)
 */
 
 export function GasEstimationContextProvider({ children }: WithChildren) {
-  if (!isAppContextAvailable()) {
+  if (!isProductContextAvailable()) {
     return null
   }
   const [gasEstimate, setEstimate] = useState<GasEstimationContext | undefined>(undefined)
-  const { addGasEstimation$ } = useAppContext()
+  const { addGasEstimation$ } = useProductContext()
 
   const [txData] = useUIChanges<TxPayloadChange>(TX_DATA_CHANGE)
 

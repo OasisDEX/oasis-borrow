@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
@@ -53,8 +53,8 @@ export function useFlowState({
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
   const { dpmAccountStateMachine, allowanceStateMachine, userDpmProxies$, allowanceForAccount$ } =
-    useAppContext()
-  const { context$ } = useAppContext()
+    useProductContext()
+  const { context$ } = useMainContext()
   const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)
   const { stateMachine: allowanceMachine } = setupAllowanceContext(allowanceStateMachine)
 

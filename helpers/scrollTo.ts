@@ -1,7 +1,11 @@
 export function scrollTo(elementId: string) {
-  if (!document.querySelectorAll(`#${elementId}`)[0]) {
-    console.warn(`Element with id ${elementId} not found`)
-    return () => void 0
+  return () => {
+    if (!document.querySelectorAll(`#${elementId}`)[0]) {
+      return () => {
+        console.warn(`Element with id ${elementId} not found`)
+        void 0
+      }
+    }
+    return document.querySelectorAll(`#${elementId}`)[0]?.scrollIntoView({ behavior: 'smooth' })
   }
-  return () => document.querySelectorAll(`#${elementId}`)[0]?.scrollIntoView({ behavior: 'smooth' })
 }

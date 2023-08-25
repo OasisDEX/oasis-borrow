@@ -1,5 +1,5 @@
 import { useActor } from '@xstate/react'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { PositionHistory } from 'components/history/PositionHistory'
 import { TabBar } from 'components/TabBar'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'

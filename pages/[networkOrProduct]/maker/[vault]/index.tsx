@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ethereumMainnetHexId, isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'

@@ -3,11 +3,13 @@ import { NetworkNames } from 'blockchain/networks'
 import { networksByName } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
-import { AppContext } from 'components/AppContext'
+import { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { MainContext } from 'helpers/context/MainContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
@@ -19,7 +21,7 @@ import { merge, Observable, of, Subject } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 
 import { AaveContext } from './aave-context'
-import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
+import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from './helpers'
 import {
   getManageAaveStateMachine,
@@ -44,22 +46,18 @@ export type StrategyUpdateParams = {
   vaultType?: VaultType
 }
 
-export function setupAaveV3Context(appContext: AppContext, network: NetworkNames): AaveContext {
+export function setupAaveV3Context(
+  mainContext: MainContext,
+  accountContext: AccountContext,
+  productContext: ProductContext,
+  network: NetworkNames,
+): AaveContext {
   const networkId = networksByName[network].id
   ensureIsSupportedAaveV3NetworkId(networkId)
 
-  const {
-    userSettings$,
-    txHelpers$,
-    onEveryBlock$,
-    context$,
-    tokenPriceUSD$,
-    proxyConsumed$,
-    protocols,
-    connectedContext$,
-    commonTransactionServices,
-    chainContext$,
-  } = appContext
+  const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
+  const { userSettings$, proxyConsumed$ } = accountContext
+  const { tokenPriceUSD$, protocols, commonTransactionServices } = productContext
 
   const {
     allowanceForAccount$,
@@ -73,7 +71,13 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(appContext, onEveryBlock$, networkId)
+  } = getCommonPartsFromProductContext(
+    mainContext,
+    accountContext,
+    productContext,
+    onEveryBlock$,
+    networkId,
+  )
 
   const userDpms = memoize(getUserDpmProxy, (vaultId, chainId) => `${vaultId}-${chainId}`)
   const proxiesRelatedWithPosition$: (

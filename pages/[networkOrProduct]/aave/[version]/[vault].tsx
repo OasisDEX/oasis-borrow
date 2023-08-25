@@ -1,7 +1,8 @@
 import { isSupportedNetwork, NetworkNames, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
+import { ProductContextHandler } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts'
 import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
@@ -158,17 +159,19 @@ function Position({
   }
 
   return (
-    <AaveContextProvider>
-      <WithConnection>
-        <WithTermsOfService>
-          <WithStrategy
-            positionId={{ walletAddress: address, vaultId }}
-            protocol={protocol}
-            network={network}
-          />
-        </WithTermsOfService>
-      </WithConnection>
-    </AaveContextProvider>
+    <ProductContextHandler>
+      <AaveContextProvider>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithStrategy
+              positionId={{ walletAddress: address, vaultId }}
+              protocol={protocol}
+              network={network}
+            />
+          </WithTermsOfService>
+        </WithConnection>
+      </AaveContextProvider>
+    </ProductContextHandler>
   )
 }
 

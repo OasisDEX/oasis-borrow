@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/context'
 import { useConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +8,7 @@ import { Button, Flex, Heading } from 'theme-ui'
 
 export function ConnectWalletPrompt() {
   const { t } = useTranslation()
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [contextData] = useObservable(context$)
   const { connect, connecting } = useConnection()
 

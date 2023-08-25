@@ -1,5 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
+import { ProductContextHandler } from 'components/context'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
@@ -19,13 +20,15 @@ interface AjnaPositionPageProps {
 
 function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
   return (
-    <AjnaProductController
-      collateralToken={collateralToken}
-      flow={id ? 'manage' : 'open'}
-      id={id}
-      product={product}
-      quoteToken={quoteToken}
-    />
+    <ProductContextHandler>
+      <AjnaProductController
+        collateralToken={collateralToken}
+        flow={id ? 'manage' : 'open'}
+        id={id}
+        product={product}
+        quoteToken={quoteToken}
+      />
+    </ProductContextHandler>
   )
 }
 

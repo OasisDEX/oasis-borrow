@@ -6,7 +6,6 @@ import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   InstitutionalBorrowManageAdapter,
@@ -20,6 +19,8 @@ import {
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { TxHelpers } from 'helpers/context/types'
+import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'

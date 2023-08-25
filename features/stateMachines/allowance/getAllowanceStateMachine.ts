@@ -1,11 +1,11 @@
 import { approve } from 'blockchain/calls/erc20'
 import { ContextConnected } from 'blockchain/network'
-import { TxHelpers } from 'components/AppContext'
 import {
   CommonTransactionServices,
   createTransactionStateMachine,
   startTransactionService,
 } from 'features/stateMachines/transaction'
+import { TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 
 import { AllowanceTxMeta, createAllowanceStateMachine } from './state/createAllowanceStateMachine'

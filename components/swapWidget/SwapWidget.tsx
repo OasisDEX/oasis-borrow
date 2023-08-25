@@ -1,7 +1,7 @@
 import { LiFiWalletManagement, supportedWallets } from '@lifi/wallet-management'
 import { LiFiWidget } from '@lifi/widget'
 import { useWallets } from '@web3-onboard/react'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/context'
 import { useTrackSwapWidgetEvents } from 'helpers/hooks/useTrackSwapWidgetEvents'
 import { useObservable } from 'helpers/observableHook'
 import { useOnboarding } from 'helpers/useOnboarding'
@@ -13,7 +13,7 @@ import { SwapWidgetOnboarding } from './SwapWidgetOnboarding'
 import { SwapWidgetSkeleton } from './SwapWidgetSkeleton'
 
 export function SwapWidget() {
-  const { web3ContextConnected$ } = useAppContext()
+  const { web3ContextConnected$ } = useMainContext()
   const [web3Context] = useObservable(web3ContextConnected$)
   const [isOnboarded] = useOnboarding('SwapWidget')
   const activeOnboardWallets = useWallets()

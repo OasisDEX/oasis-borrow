@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { claimAjnaRewards } from 'blockchain/calls/ajnaRewardsClaimer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/context'
 import {
   AjnaUserNftsResponse,
   getAjnaUserNfts,
@@ -26,8 +26,8 @@ interface AjnaUserNfts {
 }
 
 export const useAjnaUserNfts = (): AjnaUserNfts => {
+  const { txHelpers$ } = useMainContext()
   const { wallet } = useWalletManagement()
-  const { txHelpers$ } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [nfts, setNfts] = useState<AjnaUserNftsResponse[]>()
   const [txDetails, setTxDetails] = useState<TxDetails>()
