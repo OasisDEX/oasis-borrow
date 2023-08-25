@@ -17,7 +17,7 @@ export function getFlowStateFilter({
   product,
   quoteAddress,
 }: getFlowStateFilterParams): boolean {
-  return events.some(
+  return events.every(
     (event) =>
       !(
         extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.Ajna &&

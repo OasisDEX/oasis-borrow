@@ -45,6 +45,7 @@ export function useFlowState({
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
+  const [chainId, setChainId] = useState<NetworkIds>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
   const [availableProxies, setAvailableProxies] = useState<string[]>(
     existingProxy ? [existingProxy] : [],
@@ -80,9 +81,10 @@ export function useFlowState({
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
-    const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
+    const walletConnectionSubscription = context$.subscribe(({ account, chainId, status }) => {
       setWalletConnected(status === 'connected')
       setWalletAddress(status === 'connected' && account ? account : undefined)
+      setChainId(chainId)
     })
     if (existingProxy) {
       return () => {
@@ -124,25 +126,20 @@ export function useFlowState({
 
   // list of AVAILABLE DPM proxies (updated asynchronously)
   useEffect(() => {
-    if (!walletAddress || !userProxyList.length || existingProxy) return
+    if (!walletAddress || !userProxyList.length || existingProxy || !chainId) return
     const proxyListAvailabilityMap = combineLatest(
-      userProxyList.map(async ({ proxy }) => {
-        return {
-          proxyAddress: proxy,
-          events: await getPositionCreatedEventForProxyAddress(
-            { chainId: NetworkIds.GOERLI },
-            proxy,
-          ),
-        }
-      }),
+      userProxyList.map(async ({ proxy }) => ({
+        proxyAddress: proxy,
+        events: await getPositionCreatedEventForProxyAddress({ chainId }, proxy),
+      })),
     ).subscribe((userProxies) => {
-      const p = userProxies.filter(({ events }) =>
-        events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
+      setAvailableProxies(
+        userProxies
+          .filter(({ events }) =>
+            events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
+          )
+          .map(({ proxyAddress }) => proxyAddress),
       )
-
-      console.log(userProxies)
-      console.log(p)
-      setAvailableProxies(p.map(({ proxyAddress }) => proxyAddress))
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()
