@@ -186,6 +186,7 @@ export function createProxyConsumed$(
       )
     }),
     map((events) => {
+      console.log(events)
       return events.length > 0
     }),
   )
