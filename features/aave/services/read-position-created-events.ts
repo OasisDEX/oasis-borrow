@@ -78,7 +78,7 @@ function mapEvent(
     })
 }
 
-function extractLendingProtocolFromPositionCreatedEvent(
+export function extractLendingProtocolFromPositionCreatedEvent(
   positionCreatedChainEvent: CreatePositionEvent,
 ): LendingProtocol {
   switch (positionCreatedChainEvent.args.protocol) {

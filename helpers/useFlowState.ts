@@ -5,7 +5,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
-import { CreatePositionEventObject } from 'types/ethers-contracts/PositionCreated'
+import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 import { allDefined } from './allDefined'
 import { callBackIfDefined } from './callBackIfDefined'
@@ -28,7 +28,7 @@ export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 export type UseFlowStateProps = {
   amount?: BigNumber
   existingProxy?: string
-  filterConsumedProxy?: (positionDetails: CreatePositionEventObject[]) => boolean
+  filterConsumedProxy?: (events: CreatePositionEvent[]) => boolean
   onEverythingReady?: UseFlowStateCBType
   onGoBack?: UseFlowStateCBType
   token?: string
@@ -128,45 +128,25 @@ export function useFlowState({
     const proxyListAvailabilityMap = combineLatest(
       userProxyList.map(async ({ proxy }) => {
         return {
-          proxy,
-          positionDetails: (
-            await getPositionCreatedEventForProxyAddress({ chainId: NetworkIds.GOERLI }, proxy)
-          ).map((event) => event.args),
+          proxyAddress: proxy,
+          events: await getPositionCreatedEventForProxyAddress(
+            { chainId: NetworkIds.GOERLI },
+            proxy,
+          ),
         }
       }),
     ).subscribe((userProxies) => {
-      const m = userProxies.filter(({ positionDetails }) =>
-        positionDetails.length === 0
-          ? true
-          : filterConsumedProxy
-          ? filterConsumedProxy(positionDetails)
-          : false,
+      const p = userProxies.filter(({ events }) =>
+        events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
       )
-      console.log('dotarte')
+
       console.log(userProxies)
-      console.log(m)
+      console.log(p)
+      setAvailableProxies(p.map(({ proxyAddress }) => proxyAddress))
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()
     }
-    // const proxyListAvailabilityMap = combineLatest(
-    //   userProxyList.map((proxy) =>
-    //     proxyConsumed$(proxy.proxy).pipe(
-    //       map((hasOpenedPosition) => {
-    //         return { ...proxy, hasOpenedPosition }
-    //       }),
-    //     ),
-    //   ),
-    // ).subscribe((availableProxies) => {
-    //   setAvailableProxies(
-    //     availableProxies
-    //       .filter(({ hasOpenedPosition }) => !hasOpenedPosition)
-    //       .map(({ proxy }) => proxy),
-    //   )
-    // })
-    // return () => {
-    //   proxyListAvailabilityMap.unsubscribe()
-    // }
   }, [walletAddress, userProxyList])
 
   // a case when proxy is ready and amount/token is not provided (skipping allowance)
