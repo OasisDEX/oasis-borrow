@@ -16,6 +16,7 @@ export type Feature =
   | 'AaveV3Protection'
   | 'AaveV3ProtectionWrite'
   | 'AjnaPoolFinder'
+  | 'AjnaReusableDPM'
   | 'AjnaSafetySwitch'
   | 'AjnaSuppressValidation'
   | 'ConstantMultipleReadOnly'
@@ -50,6 +51,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3Protection: true,
   AaveV3ProtectionWrite: true,
   AjnaPoolFinder: true,
+  AjnaReusableDPM: false,
   AjnaSafetySwitch: false,
   AjnaSuppressValidation: false,
   ConstantMultipleReadOnly: false,
