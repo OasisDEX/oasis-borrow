@@ -47,7 +47,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function WithStrategy({
+function WithAaveStrategy({
   positionId,
   protocol,
   network,
@@ -161,7 +161,7 @@ function Position({
     <AaveContextProvider>
       <WithConnection>
         <WithTermsOfService>
-          <WithStrategy
+          <WithAaveStrategy
             positionId={{ walletAddress: address, vaultId }}
             protocol={protocol}
             network={network}

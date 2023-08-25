@@ -220,7 +220,7 @@ export function setupAaveV3Context(appContext: AppContext, network: NetworkNames
             (params) => params.positionId === positionId && params.networkName === networkName,
           ),
         ),
-        // The initial trigger from WithStrategy
+        // The initial trigger from WithAaveStrategy
         of({ positionId, networkName, vaultType }),
       ).pipe(
         switchMap((params) =>

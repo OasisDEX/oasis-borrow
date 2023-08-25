@@ -14,7 +14,7 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { AaveLendingProtocol, checkIfAave } from 'lendingProtocols'
+import { checkIfSpark, SparkLendingProtocol } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -26,9 +26,9 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const networkOrProduct = ctx.query.networkOrProduct as string
   const version = ctx.query.version as string
-  const protocol = `aave${version.toLowerCase()}`
+  const protocol = `spark${version.toLowerCase()}`
 
-  if (checkIfAave(protocol) && isSupportedNetwork(networkOrProduct)) {
+  if (checkIfSpark(protocol) && isSupportedNetwork(networkOrProduct)) {
     return {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
@@ -47,13 +47,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function WithStrategy({
+function WithSparkStrategy({
   positionId,
   protocol,
   network,
 }: {
   positionId: PositionId
-  protocol: AaveLendingProtocol
+  protocol: SparkLendingProtocol
   network: NetworkNames
 }) {
   const { push } = useRouter()
@@ -145,7 +145,7 @@ function Position({
 }: {
   vault: string
   network: NetworkNames
-  protocol: AaveLendingProtocol
+  protocol: SparkLendingProtocol
 }) {
   const { replace } = useRouter()
 
@@ -161,7 +161,7 @@ function Position({
     <AaveContextProvider>
       <WithConnection>
         <WithTermsOfService>
-          <WithStrategy
+          <WithSparkStrategy
             positionId={{ walletAddress: address, vaultId }}
             protocol={protocol}
             network={network}
