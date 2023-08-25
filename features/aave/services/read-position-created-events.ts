@@ -24,7 +24,7 @@ export type PositionCreated = {
   proxyAddress: string
 }
 
-async function getPositionCreatedEventForProxyAddress(
+export async function getPositionCreatedEventForProxyAddress(
   { chainId }: Pick<Context, 'chainId'>,
   proxyAddress: string,
 ): Promise<CreatePositionEvent[]> {
@@ -186,7 +186,6 @@ export function createProxyConsumed$(
       )
     }),
     map((events) => {
-      console.log(events)
       return events.length > 0
     }),
   )

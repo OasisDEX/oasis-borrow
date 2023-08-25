@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { useAppContext } from 'components/AppContextProvider'
+import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { CreatePositionEventObject } from 'types/ethers-contracts/PositionCreated'
 
 import { allDefined } from './allDefined'
 import { callBackIfDefined } from './callBackIfDefined'
@@ -25,18 +27,20 @@ export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 
 export type UseFlowStateProps = {
   amount?: BigNumber
-  token?: string
   existingProxy?: string
+  filterConsumedProxy?: (positionDetails: CreatePositionEventObject[]) => boolean
   onEverythingReady?: UseFlowStateCBType
   onGoBack?: UseFlowStateCBType
+  token?: string
 }
 
 export function useFlowState({
   amount,
-  token,
   existingProxy,
+  filterConsumedProxy,
   onEverythingReady,
   onGoBack,
+  token,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
@@ -47,13 +51,8 @@ export function useFlowState({
   )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
-  const {
-    dpmAccountStateMachine,
-    allowanceStateMachine,
-    userDpmProxies$,
-    proxyConsumed$,
-    allowanceForAccount$,
-  } = useAppContext()
+  const { dpmAccountStateMachine, allowanceStateMachine, userDpmProxies$, allowanceForAccount$ } =
+    useAppContext()
   const { context$ } = useAppContext()
   const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)
   const { stateMachine: allowanceMachine } = setupAllowanceContext(allowanceStateMachine)
@@ -127,23 +126,47 @@ export function useFlowState({
   useEffect(() => {
     if (!walletAddress || !userProxyList.length || existingProxy) return
     const proxyListAvailabilityMap = combineLatest(
-      userProxyList.map((proxy) =>
-        proxyConsumed$(proxy.proxy).pipe(
-          map((hasOpenedPosition) => {
-            return { ...proxy, hasOpenedPosition }
-          }),
-        ),
-      ),
-    ).subscribe((availableProxies) => {
-      setAvailableProxies(
-        availableProxies
-          .filter(({ hasOpenedPosition }) => !hasOpenedPosition)
-          .map(({ proxy }) => proxy),
+      userProxyList.map(async ({ proxy }) => {
+        return {
+          proxy,
+          positionDetails: (
+            await getPositionCreatedEventForProxyAddress({ chainId: NetworkIds.GOERLI }, proxy)
+          ).map((event) => event.args),
+        }
+      }),
+    ).subscribe((userProxies) => {
+      const m = userProxies.filter(({ positionDetails }) =>
+        positionDetails.length === 0
+          ? true
+          : filterConsumedProxy
+          ? filterConsumedProxy(positionDetails)
+          : false,
       )
+      console.log('dotarte')
+      console.log(userProxies)
+      console.log(m)
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()
     }
+    // const proxyListAvailabilityMap = combineLatest(
+    //   userProxyList.map((proxy) =>
+    //     proxyConsumed$(proxy.proxy).pipe(
+    //       map((hasOpenedPosition) => {
+    //         return { ...proxy, hasOpenedPosition }
+    //       }),
+    //     ),
+    //   ),
+    // ).subscribe((availableProxies) => {
+    //   setAvailableProxies(
+    //     availableProxies
+    //       .filter(({ hasOpenedPosition }) => !hasOpenedPosition)
+    //       .map(({ proxy }) => proxy),
+    //   )
+    // })
+    // return () => {
+    //   proxyListAvailabilityMap.unsubscribe()
+    // }
   }, [walletAddress, userProxyList])
 
   // a case when proxy is ready and amount/token is not provided (skipping allowance)
