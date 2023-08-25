@@ -257,6 +257,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
+import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of } from 'rxjs'
@@ -446,9 +447,17 @@ export function setupAppContext() {
     refresh$: onEveryBlock$,
     networkId: NetworkIds.ARBITRUMMAINNET,
   })
-  const sparkV3Services = getAaveV3Services({
+  const sparkV3Services = getSparkV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.MAINNET,
+  })
+  const sparkV3OptimismServices = getSparkV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.OPTIMISMMAINNET,
+  })
+  const sparkV3ArbitrumServices = getSparkV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.ARBITRUMMAINNET,
   })
 
   // base
@@ -1304,7 +1313,11 @@ export function setupAppContext() {
       [NetworkIds.OPTIMISMMAINNET]: aaveV3OptimismServices,
       [NetworkIds.ARBITRUMMAINNET]: aaveV3ArbitrumServices,
     },
-    [LendingProtocol.SparkV3]: sparkV3Services,
+    [LendingProtocol.SparkV3]: {
+      [NetworkIds.MAINNET]: sparkV3Services,
+      [NetworkIds.OPTIMISMMAINNET]: sparkV3OptimismServices,
+      [NetworkIds.ARBITRUMMAINNET]: sparkV3ArbitrumServices,
+    },
   }
 
   const contextForAddress$ = connectedContext$.pipe(
@@ -1474,7 +1487,11 @@ export type ProtocolsServices = {
     [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
     [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
   }
-  [LendingProtocol.SparkV3]: AaveLikeServices
+  [LendingProtocol.SparkV3]: {
+    [NetworkIds.MAINNET]: AaveLikeServices
+    [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
+    [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
+  }
 }
 
 export type DepreciatedServices = {

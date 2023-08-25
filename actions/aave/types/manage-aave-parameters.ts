@@ -2,7 +2,7 @@ import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ManageTokenInput, ProxyType } from 'features/aave/types'
 import { NetworkIds } from '../../../blockchain/networks'
-import { AaveLendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 
 export interface ManageAaveParameters {
   currentPosition: IPosition
@@ -15,5 +15,5 @@ export interface ManageAaveParameters {
   proxyType: ProxyType
   shouldCloseToCollateral: boolean
   networkId: NetworkIds,
-  protocol: AaveLendingProtocol
+  protocol: AaveLendingProtocol | SparkLendingProtocol
 }

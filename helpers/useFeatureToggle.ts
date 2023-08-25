@@ -36,6 +36,7 @@ export type Feature =
   | 'UseNetworkSwitcherForks'
   | 'UseNetworkSwitcherOptimism'
   | 'UseNetworkSwitcherTestnets'
+  | 'SparkProtocol'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -70,6 +71,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcherForks: false,
   UseNetworkSwitcherOptimism: true,
   UseNetworkSwitcherTestnets: false,
+  SparkProtocol: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
