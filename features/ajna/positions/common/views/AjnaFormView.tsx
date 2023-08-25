@@ -37,6 +37,8 @@ export function AjnaFormView({
   txSuccessAction,
 }: PropsWithChildren<AjnaFormViewProps>) {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const AjnaReusableDPMEnabled = useFeatureToggle('AjnaReusableDPM')
+
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -95,13 +97,15 @@ export function AjnaFormView({
       quoteToken,
       state,
     }),
-    filterConsumedProxy: (events) =>
-      getFlowStateFilter({
-        collateralAddress,
-        events,
-        product,
-        quoteAddress,
-      }),
+    ...(AjnaReusableDPMEnabled && {
+      filterConsumedProxy: (events) =>
+        getFlowStateFilter({
+          collateralAddress,
+          events,
+          product,
+          quoteAddress,
+        }),
+    }),
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })
