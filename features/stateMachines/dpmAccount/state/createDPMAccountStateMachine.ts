@@ -19,8 +19,7 @@ import {
   TransactionStateMachine,
   TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
-import { TxHelpers } from 'helpers/context/types'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
+import { GasEstimationStatus, HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { isEqual } from 'lodash'
 import { Observable, of } from 'rxjs'
 import { fromPromise } from 'rxjs/internal-compatibility'

@@ -10,8 +10,7 @@ import {
   mockOpenMultiplyVault,
   MockOpenMultiplyVaultProps,
 } from 'helpers/mocks/openMultiplyVault.mock'
-import React from 'react'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'

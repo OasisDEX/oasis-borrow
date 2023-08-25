@@ -9,8 +9,13 @@ import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { getPricesFeed$ } from 'features/aave/services'
-import { contextToEthersTransactions, IStrategyConfig } from 'features/aave/types'
-import { IStrategyInfo, StrategyTokenAllowance, StrategyTokenBalance } from 'features/aave/types'
+import {
+  contextToEthersTransactions,
+  IStrategyConfig,
+  IStrategyInfo,
+  StrategyTokenAllowance,
+  StrategyTokenBalance,
+} from 'features/aave/types'
 import { PositionId } from 'features/aave/types/position-id'
 import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'

@@ -18,8 +18,7 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { of } from 'rxjs'
 import { catchError, startWith } from 'rxjs/operators'
-import { DssGuniProxyActions as GuniProxyActions } from 'types/web3-v1-contracts'
-import { GuniToken } from 'types/web3-v1-contracts'
+import { DssGuniProxyActions as GuniProxyActions, GuniToken } from 'types/web3-v1-contracts'
 
 export type TxChange =
   | { kind: 'txWaitingForApproval' }

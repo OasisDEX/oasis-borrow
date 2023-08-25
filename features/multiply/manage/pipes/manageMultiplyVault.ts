@@ -28,8 +28,12 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
+import {
+  AddGasEstimationFunction,
+  GasEstimationStatus,
+  HasGasEstimation,
+  TxHelpers,
+} from 'helpers/context/types'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
