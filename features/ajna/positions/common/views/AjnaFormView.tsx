@@ -12,6 +12,7 @@ import { getAjnaSidebarButtonsStatus } from 'features/ajna/positions/common/help
 import { getAjnaSidebarPrimaryButtonActions } from 'features/ajna/positions/common/helpers/getAjnaSidebarPrimaryButtonActions'
 import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
 import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
+import { getFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
@@ -36,21 +37,23 @@ export function AjnaFormView({
   txSuccessAction,
 }: PropsWithChildren<AjnaFormViewProps>) {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const AjnaReusableDPMEnabled = useFeatureToggle('AjnaReusableDPM')
+
   const { t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const { walletAddress } = useAccount()
   const {
     environment: {
+      collateralAddress,
       collateralToken,
       dpmProxy,
       flow,
+      isOracless,
       isOwner,
       product,
-      quoteToken,
-      isOracless,
       quoteAddress,
-      collateralAddress,
+      quoteToken,
     },
     steps: {
       currentStep,
@@ -93,6 +96,15 @@ export function AjnaFormView({
       flow,
       quoteToken,
       state,
+    }),
+    ...(AjnaReusableDPMEnabled && {
+      filterConsumedProxy: (events) =>
+        getFlowStateFilter({
+          collateralAddress,
+          events,
+          product,
+          quoteAddress,
+        }),
     }),
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
