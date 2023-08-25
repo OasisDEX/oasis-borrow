@@ -7,8 +7,7 @@ import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
-import { first, switchMap } from 'rxjs/operators'
-import { map } from 'rxjs/operators'
+import { first, map, switchMap } from 'rxjs/operators'
 import { AnyEventObject, assign, createMachine, sendParent } from 'xstate'
 
 type BaseTransactionStateMachineContext = {

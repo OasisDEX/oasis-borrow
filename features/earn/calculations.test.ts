@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { amountFromRay } from 'blockchain/utils'
 import { SECONDS_PER_YEAR } from 'features/dsr/utils/constants'
-import { calculateBreakeven, calculateYield } from 'helpers/earn/calculations'
-import { calculateEarnings } from 'helpers/earn/calculations'
+import { calculateBreakeven, calculateEarnings, calculateYield } from 'helpers/earn/calculations'
 
 // TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
 describe.skip('Yield Calculations', () => {

@@ -1,7 +1,6 @@
 import { useModal } from 'helpers/modalHook'
 import { env } from 'process'
-import React from 'react'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { ErrorModal } from './ErrorModal'
 

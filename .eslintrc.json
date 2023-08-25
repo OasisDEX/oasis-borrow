@@ -23,6 +23,7 @@
     "unused-imports/no-unused-imports-ts": "error",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
+    "import/no-duplicates": "error",
     "simple-import-sort/sort": [
       "error",
       {

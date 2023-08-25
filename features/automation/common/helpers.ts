@@ -1,6 +1,5 @@
 import { Result } from '@ethersproject/abi'
-import { TriggerType } from '@oasisdex/automation'
-import { decodeTriggerDataAsJson } from '@oasisdex/automation'
+import { decodeTriggerDataAsJson, TriggerType } from '@oasisdex/automation'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,

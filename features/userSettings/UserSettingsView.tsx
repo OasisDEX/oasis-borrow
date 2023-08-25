@@ -9,8 +9,12 @@ import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
-import { formatPercent, formatPrecision } from 'helpers/formatters/format'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatPercent,
+  formatPrecision,
+} from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'

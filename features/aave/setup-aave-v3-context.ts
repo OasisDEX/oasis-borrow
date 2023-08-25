@@ -1,6 +1,5 @@
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
-import { NetworkNames } from 'blockchain/networks'
-import { networksByName } from 'blockchain/networks'
+import { NetworkNames, networksByName } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { AccountContext } from 'components/context'

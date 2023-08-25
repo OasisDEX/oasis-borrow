@@ -35,8 +35,12 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
-import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
+import {
+  AddGasEstimationFunction,
+  GasEstimationStatus,
+  HasGasEstimation,
+  TxHelpers,
+} from 'helpers/context/types'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { TxError } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'

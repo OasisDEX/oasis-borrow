@@ -1,7 +1,6 @@
 import { ContextConnected } from 'blockchain/network'
 import { allDefined } from 'helpers/allDefined'
-import { TxHelpers } from 'helpers/context/types'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
+import { GasEstimationStatus, HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 import { nameofFactory } from 'utils'
 import { Machine, sendParent } from 'xstate'
