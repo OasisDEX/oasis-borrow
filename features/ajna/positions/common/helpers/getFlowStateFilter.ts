@@ -4,7 +4,7 @@ import { AjnaProduct } from 'features/ajna/common/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-interface getFlowStateFilterParams {
+interface GetFlowStateFilterParams {
   collateralAddress: string
   events: CreatePositionEvent[]
   product: AjnaProduct
@@ -16,7 +16,7 @@ export function getFlowStateFilter({
   events,
   product,
   quoteAddress,
-}: getFlowStateFilterParams): boolean {
+}: GetFlowStateFilterParams): boolean {
   return events.every(
     (event) =>
       !(
