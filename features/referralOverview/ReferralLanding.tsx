@@ -42,8 +42,8 @@ export function ReferralLandingSummary() {
     <DeferedContextProvider context={tosContext}>
       <WithErrorHandler error={[contextError, userReferralError]}>
         <WithLoadingIndicator value={[context, userReferral]}>
-          {([context, userReferral]) => (
-            <ReferralLanding context={context} userReferral={userReferral} />
+          {([_context, _userReferral]) => (
+            <ReferralLanding context={_context} userReferral={_userReferral} />
           )}
         </WithLoadingIndicator>
       </WithErrorHandler>

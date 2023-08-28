@@ -437,7 +437,7 @@ export function setupProductContext(
         switchMap(([context, proxyAddress]) => {
           if (!proxyAddress) return of(zero)
           return everyBlock$(
-            defer(() => call(context, pie)(proxyAddress!)),
+            defer(() => call(context, pie)(proxyAddress)),
             equals,
           )
         }),
