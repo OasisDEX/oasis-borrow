@@ -48,34 +48,41 @@ export function AaveContextProvider({ children }: WithChildren) {
   const [aaveContexts, setAaveContexts] = useState<AaveContexts | undefined>(undefined)
 
   useEffect(() => {
-    setAaveContexts({
-      [NetworkNames.ethereumMainnet]: {
-        [LendingProtocol.AaveV2]: setupAaveV2Context(mainContext, accountContext, productContext),
-        [LendingProtocol.AaveV3]: setupAaveV3Context(
-          mainContext,
-          accountContext,
-          productContext,
-          NetworkNames.ethereumMainnet,
-        ),
-        [LendingProtocol.SparkV3]: setupSparkV3Context(
-          mainContext,
-          accountContext,
-          productContext,
-          NetworkNames.ethereumMainnet,
-        ),
-      },
-      [NetworkNames.optimismMainnet]: {
-        [LendingProtocol.AaveV3]: setupAaveV3Context(
-          mainContext,
-          accountContext,
-          productContext,
-          NetworkNames.optimismMainnet,
-        ),
-      },
-      // [NetworkNames.arbitrumMainnet]: {
-      //   [LendingProtocol.AaveV3]: setupAaveV3Context(productContext, NetworkNames.arbitrumMainnet),
-      // },
-    })
+    if (productContext) {
+      setAaveContexts({
+        [NetworkNames.ethereumMainnet]: {
+          [LendingProtocol.AaveV2]: setupAaveV2Context(mainContext, accountContext, productContext),
+          [LendingProtocol.AaveV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            productContext,
+            NetworkNames.ethereumMainnet,
+          ),
+          [LendingProtocol.SparkV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            productContext,
+            NetworkNames.ethereumMainnet,
+          ),
+        },
+        [NetworkNames.optimismMainnet]: {
+          [LendingProtocol.AaveV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            productContext,
+            NetworkNames.optimismMainnet,
+          ),
+        },
+        [NetworkNames.arbitrumMainnet]: {
+          [LendingProtocol.AaveV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            productContext,
+            NetworkNames.arbitrumMainnet,
+          ),
+        },
+      })
+    }
   }, [accountContext, mainContext, productContext])
 
   return <aaveContext.Provider value={aaveContexts}>{children}</aaveContext.Provider>

@@ -1,0 +1,55 @@
+import { MainNetworkNames } from 'blockchain/networks'
+import { TokenConfig } from 'blockchain/tokensMetadata'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { LendingProtocol } from 'lendingProtocols'
+
+export const aaveV3OptimismTokensMetadata: TokenConfig[] = [
+  {
+    symbol: 'optimism-ethusdc',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'ETH / USDC',
+    icon: 'eth_usdc',
+    iconCircle: 'eth_usdc',
+    color: '#E2F7F9',
+    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v3.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v3.gif'),
+    tags: [],
+    protocol: LendingProtocol.AaveV3,
+    chain: MainNetworkNames.optimismMainnet,
+  },
+  {
+    symbol: 'optimism-wstethusdc',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'WSTETH / USDC',
+    icon: 'steth_usdc',
+    iconCircle: 'steth_usdc',
+    color: '#E2F7F9',
+    background: 'linear-gradient(160.47deg, #E2F7F9 0.35%, #D3F3F5 99.18%), #000000',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v3.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v3.gif'),
+    tags: [],
+    protocol: LendingProtocol.AaveV3,
+    chain: MainNetworkNames.optimismMainnet,
+  },
+  {
+    symbol: 'optimism-wbtcusdc',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'WBTC / USDC',
+    icon: 'wbtc_usdc',
+    iconCircle: 'wbtc_usdc',
+    color: '#E2F7F9',
+    background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/AAVE_WBTC_v3.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_WBTC_v3.gif'),
+    tags: [],
+    protocol: LendingProtocol.AaveV3,
+    chain: MainNetworkNames.optimismMainnet,
+  },
+]
