@@ -114,32 +114,27 @@ export function AjnaFormView({
           product,
           quoteAddress,
         }),
-    }),
-    onProxiesAvailable: (events, dpmAccounts) => {
-      const positionIds = events
-        .filter((event) => ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }))
-        .map(
-          (event) =>
-            dpmAccounts.find(
-              (dpmAccount) =>
-                dpmAccount.proxy.toLowerCase() === event.args.proxyAddress.toLowerCase(),
-            )?.vaultId as string,
+      onProxiesAvailable: (events, dpmAccounts) => {
+        const filteredEvents = events.filter((event) =>
+          ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
         )
 
-      if (!hasDupePosition && positionIds.length) {
-        setHasDupePosition(true)
-        openModal(AjnaDupePosition, {
-          chainId: context?.chainId,
-          collateralAddress,
-          collateralToken,
-          positionIds,
-          product,
-          quoteAddress,
-          quoteToken,
-          walletAddress,
-        })
-      }
-    },
+        if (!hasDupePosition && filteredEvents.length) {
+          setHasDupePosition(true)
+          openModal(AjnaDupePosition, {
+            chainId: context?.chainId,
+            collateralAddress,
+            collateralToken,
+            dpmAccounts,
+            events: filteredEvents,
+            product,
+            quoteAddress,
+            quoteToken,
+            walletAddress,
+          })
+        }
+      },
+    }),
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })

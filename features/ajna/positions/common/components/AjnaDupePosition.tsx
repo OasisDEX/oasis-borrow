@@ -1,4 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { AjnaProduct } from 'features/ajna/common/types'
@@ -10,12 +11,14 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { Box, Button, Flex, Heading, Image, Text, ThemeProvider } from 'theme-ui'
+import { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 interface AjnaDupePositionProps {
   chainId?: NetworkIds
   collateralAddress: string
   collateralToken: string
-  positionIds: string[]
+  dpmAccounts: UserDpmAccount[]
+  events: CreatePositionEvent[]
   product: AjnaProduct
   quoteAddress: string
   quoteToken: string
@@ -26,7 +29,8 @@ export function AjnaDupePosition({
   chainId = NetworkIds.MAINNET,
   collateralAddress,
   collateralToken,
-  positionIds,
+  dpmAccounts,
+  events,
   product,
   quoteAddress,
   quoteToken,
@@ -34,6 +38,13 @@ export function AjnaDupePosition({
 }: AjnaDupePositionProps) {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
+
+  const positionIds = events.map(
+    (event) =>
+      dpmAccounts.find(
+        (dpmAccount) => dpmAccount.proxy.toLowerCase() === event.args.proxyAddress.toLowerCase(),
+      )?.vaultId as string,
+  )
 
   const hasMultiplyPositions = positionIds.length > 1
   const amount = hasMultiplyPositions ? 'plural' : 'singular'
