@@ -42,11 +42,11 @@ export function getAaveV3Services({
     'assetPrice$',
   )
 
-  const aaveReserveConfigurationData$ = makeObservableForNetworkId(
+  const aaveLikeReserveConfigurationData$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3ReserveConfigurationData,
     networkId,
-    'aaveReserveConfigurationData$',
+    'aaveLikeReserveConfigurationData$',
   )
 
   const getAaveV3EModeCategoryForAsset$ = makeObservableForNetworkId(
@@ -56,27 +56,27 @@ export function getAaveV3Services({
     'getAaveV3EModeCategoryForAsset$',
   )
 
-  const aaveLiquidations$ = makeObservableForNetworkId(
+  const aaveLikeLiquidations$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3PositionLiquidation,
     networkId,
-    'aaveLiquidations$',
+    'aaveLikeLiquidations$',
   )
 
-  const aaveUserAccountData$: (
+  const aaveLikeUserAccountData$: (
     args: AaveLikeUserAccountDataArgs,
   ) => Observable<AaveLikeUserAccountData> = makeObservableForNetworkId(
     refresh$,
     curry(mapAaveUserAccountData$)(blockchainCalls.getAaveV3UserAccountData),
     networkId,
-    'aaveUserAccountData$',
+    'aaveLikeUserAccountData$',
   )
 
-  const getAaveReserveData$ = makeObservableForNetworkId(
+  const getAaveLikeReserveData$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3ReserveData,
     networkId,
-    'getAaveReserveData$',
+    'getAaveLikeReserveData$',
   )
 
   const getEModeCategoryData$ = makeObservableForNetworkId(
@@ -86,9 +86,9 @@ export function getAaveV3Services({
     'getEModeCategoryData$',
   )
 
-  const aaveAvailableLiquidityInUSDC$ = memoize(
+  const aaveLikeAvailableLiquidityInUSDC$ = memoize(
     curry(prepareaaveAvailableLiquidityInUSDC$)(
-      getAaveReserveData$,
+      getAaveLikeReserveData$,
       assetPrice$({ token: 'WETH' }),
     ),
     ({ token }) => token,
@@ -120,10 +120,10 @@ export function getAaveV3Services({
     'onChainPosition$',
   )
 
-  const aaveProtocolData$ = memoize(
+  const aaveLikeProtocolData$ = memoize(
     curry(getAaveProtocolData$)(
       aaveUserReserveData$,
-      aaveUserAccountData$,
+      aaveLikeUserAccountData$,
       assetPrice$,
       aaveUserConfiguration$,
       aaveReservesList$,
@@ -132,13 +132,13 @@ export function getAaveV3Services({
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
-  const aaveProxyConfiguration$ = memoize(
+  const aaveLikeProxyConfiguration$ = memoize(
     curry(getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
   )
 
   const reserveConfigurationDataWithEMode$ = memoize(
     curry(getReserveConfigurationDataWithEMode$)(
-      aaveReserveConfigurationData$,
+      aaveLikeReserveConfigurationData$,
       getAaveV3EModeCategoryForAsset$,
       getEModeCategoryData$,
     ),
@@ -148,14 +148,14 @@ export function getAaveV3Services({
 
   return {
     protocol: LendingProtocol.AaveV3,
-    aaveReserveConfigurationData$: reserveConfigurationDataWithEMode$,
-    getAaveReserveData$,
-    aaveAvailableLiquidityInUSDC$,
-    aaveLiquidations$,
-    aaveUserAccountData$,
-    aaveProxyConfiguration$,
-    aaveProtocolData$,
-    aaveOracleAssetPriceData$: assetPrice$,
-    getAaveAssetsPrices$: assetsPrices$,
+    aaveLikeReserveConfigurationData$: reserveConfigurationDataWithEMode$,
+    getAaveLikeReserveData$,
+    aaveLikeAvailableLiquidityInUSDC$,
+    aaveLikeLiquidations$,
+    aaveLikeUserAccountData$,
+    aaveLikeProxyConfiguration$,
+    aaveLikeProtocolData$,
+    aaveLikeOracleAssetPriceData$: assetPrice$,
+    getAaveLikeAssetsPrices$: assetsPrices$,
   }
 }

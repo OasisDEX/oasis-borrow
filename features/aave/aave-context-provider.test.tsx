@@ -12,6 +12,7 @@ import { ProductContext } from 'helpers/context/ProductContext'
 import { WithChildren } from 'helpers/types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
+import { Observable } from 'rxjs'
 
 import { AaveContext } from './aave-context'
 import { aaveContext, AaveContextProvider, useAaveContext } from './aave-context-provider'
@@ -30,7 +31,7 @@ jest.mock('./setup-aave-v3-context', () => {
 })
 
 describe('AaveContextProvider', () => {
-  const context = { protocols: {} } as ProductContext
+  const context = { protocols: {}, contextForAddress$: new Observable() } as ProductContext
   const wrapper = ({ children }: WithChildren) => (
     <MainContextProvider>
       <DeferedContextProvider context={mainContext}>

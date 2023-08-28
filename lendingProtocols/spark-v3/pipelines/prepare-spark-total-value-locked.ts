@@ -1,26 +1,26 @@
 import BigNumber from 'bignumber.js'
-import { AaveV3ReserveDataReply } from 'blockchain/aave-v3'
+import { SparkV3ReserveDataReply } from 'blockchain/spark-v3'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-export type PreparedAaveTotalValueLocked = {
+export type PreparedSparkTotalValueLocked = {
   totalValueLocked: BigNumber
 }
 
-type PrepareAaveTVLProps = [AaveV3ReserveDataReply, AaveV3ReserveDataReply, BigNumber[]]
+type PrepareSparkTVLProps = [SparkV3ReserveDataReply, SparkV3ReserveDataReply, BigNumber[]]
 
-export function prepareAaveTotalValueLocked$(
-  getAaveWstEthReserveData$: Observable<AaveLikeReserveData>,
-  getAaveWEthReserveData$: Observable<AaveLikeReserveData>,
-  getAaveAssetsPrices$: Observable<BigNumber[]>,
-): Observable<PreparedAaveTotalValueLocked> {
+export function prepareSparkTotalValueLocked$(
+  getSparkWstEthReserveData$: Observable<AaveLikeReserveData>,
+  getSparkWEthReserveData$: Observable<AaveLikeReserveData>,
+  getSparkAssetsPrices$: Observable<BigNumber[]>,
+): Observable<PreparedSparkTotalValueLocked> {
   return combineLatest(
-    getAaveWstEthReserveData$,
-    getAaveWEthReserveData$,
-    getAaveAssetsPrices$,
+    getSparkWstEthReserveData$,
+    getSparkWEthReserveData$,
+    getSparkAssetsPrices$,
   ).pipe(
-    map(([WSTETH_reserveData, ETH_reserveData, [ethPrice, wstEthPrice]]: PrepareAaveTVLProps) => {
+    map(([WSTETH_reserveData, ETH_reserveData, [ethPrice, wstEthPrice]]: PrepareSparkTVLProps) => {
       const wstEthAvailableLiquidity = new BigNumber(WSTETH_reserveData.availableLiquidity)
       const WETH_totalStableDebt = new BigNumber(ETH_reserveData.totalStableDebt)
       const WETH_totalVariableDebt = new BigNumber(ETH_reserveData.totalVariableDebt)

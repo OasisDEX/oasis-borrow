@@ -1,6 +1,6 @@
 import { PositionTransition } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
-import { swapCall } from 'actions/aave'
+import { swapCall } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import {
   ensureGivenTokensExist,

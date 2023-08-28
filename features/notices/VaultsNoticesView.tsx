@@ -537,8 +537,8 @@ export function AavePositionNoticesView() {
   const { protocols } = useProductContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const { aaveLiquidations$ } = getProtocolServices(state, protocols)
-  const preparedAaveLiquidations$ = aaveLiquidations$({
+  const { aaveLikeLiquidations$ } = getProtocolServices(state, protocols)
+  const preparedAaveLiquidations$ = aaveLikeLiquidations$({
     proxyAddress: state.context.proxyAddress || '',
   })
   const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)

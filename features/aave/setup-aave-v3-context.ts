@@ -98,12 +98,12 @@ export function setupAaveV3Context(
   )
 
   const {
-    aaveUserAccountData$,
-    aaveProtocolData$,
-    aaveReserveConfigurationData$,
-    aaveOracleAssetPriceData$,
-    getAaveReserveData$,
-    getAaveAssetsPrices$,
+    aaveLikeUserAccountData$,
+    aaveLikeProtocolData$,
+    aaveLikeReserveConfigurationData$,
+    aaveLikeOracleAssetPriceData$,
+    getAaveLikeReserveData$,
+    getAaveLikeAssetsPrices$,
   } = protocols[LendingProtocol.AaveV3][networkId]
 
   const aaveEarnYieldsQuery = memoize(
@@ -112,12 +112,12 @@ export function setupAaveV3Context(
   )
 
   const earnCollateralsReserveData = {
-    WSTETH: aaveReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
+    WSTETH: aaveLikeReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
   } as Record<string, Observable<AaveLikeReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
-      aaveOracleAssetPriceData$,
+      aaveLikeOracleAssetPriceData$,
       of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3, network),
       networkId,
@@ -131,7 +131,7 @@ export function setupAaveV3Context(
   )
 
   const strategyInfo$ = memoize(
-    curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    curry(getStrategyInfo$)(aaveLikeOracleAssetPriceData$, aaveLikeReserveConfigurationData$),
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
@@ -149,15 +149,15 @@ export function setupAaveV3Context(
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
-    aaveUserAccountData$,
+    aaveLikeUserAccountData$,
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveProtocolData$,
+    aaveLikeProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
-    aaveReserveConfigurationData$,
+    aaveLikeReserveConfigurationData$,
   )
 
   const manageAaveStateMachineServices = getManageAaveV3PositionStateMachineServices(
@@ -169,7 +169,7 @@ export function setupAaveV3Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveProtocolData$,
+    aaveLikeProtocolData$,
     allowanceForAccount$,
     getAaveHistoryEvents,
   )
@@ -200,9 +200,9 @@ export function setupAaveV3Context(
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
-    getAaveReserveData$({ token: 'WSTETH' }),
-    getAaveReserveData$({ token: 'ETH' }),
-    getAaveAssetsPrices$({
+    getAaveLikeReserveData$({ token: 'WSTETH' }),
+    getAaveLikeReserveData$({ token: 'ETH' }),
+    getAaveLikeAssetsPrices$({
       tokens: ['ETH', 'WSTETH'],
     }),
   )

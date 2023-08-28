@@ -1,6 +1,6 @@
 import { AAVETokens, IPosition, strategies } from '@oasisdex/dma-library'
-import { getTokenAddresses } from 'actions/aave/get-token-addresses'
-import { GetOnChainPositionParams } from 'actions/aave/types'
+import { getTokenAddresses } from 'actions/aave-like/get-token-addresses'
+import { GetOnChainPositionParams } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { LendingProtocol } from 'lendingProtocols'

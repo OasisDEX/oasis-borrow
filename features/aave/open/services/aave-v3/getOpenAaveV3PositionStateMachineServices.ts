@@ -26,9 +26,9 @@ import { LendingProtocol } from 'lendingProtocols'
 import {
   AaveLikeProtocolData,
   AaveLikeReserveConfigurationData,
+  AaveLikeReserveConfigurationDataParams,
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
-  AaveReserveConfigurationDataParams,
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of, throwError } from 'rxjs'
@@ -40,13 +40,13 @@ export function getOpenAaveV3PositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
-  aaveUserAccountData$: (
+  aaveLikeUserAccountData$: (
     parameters: AaveLikeUserAccountDataArgs,
   ) => Observable<AaveLikeUserAccountData>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
-  aaveProtocolData$: (
+  aaveLikeProtocolData$: (
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
@@ -55,7 +55,7 @@ export function getOpenAaveV3PositionStateMachineServices(
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
   aaveReserveConfiguration$: (
-    args: AaveReserveConfigurationDataParams,
+    args: AaveLikeReserveConfigurationDataParams,
   ) => Observable<AaveLikeReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
@@ -161,7 +161,7 @@ export function getOpenAaveV3PositionStateMachineServices(
       return connectedProxy$.pipe(
         filter((address) => address !== undefined),
         switchMap((proxyAddress) =>
-          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
         ),
         map((aaveProtocolData) => ({
           type: 'UPDATE_PROTOCOL_DATA',

@@ -124,13 +124,13 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }: {
     strategyConfig: IStrategyConfig
   }) {
-    const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext(
+    const { aaveTotalValueLocked$, aaveLikeReserveConfigurationData$ } = useAaveContext(
       strategyConfig.protocol,
       strategyConfig.network,
     )
     const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
     const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(
-      aaveReserveConfigurationData$({
+      aaveLikeReserveConfigurationData$({
         collateralToken: strategyConfig.tokens.collateral,
         debtToken: strategyConfig.tokens.debt,
       }),

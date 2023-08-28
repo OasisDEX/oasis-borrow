@@ -1,5 +1,5 @@
 import { IPosition } from '@oasisdex/dma-library'
-import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
+import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave-like'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,

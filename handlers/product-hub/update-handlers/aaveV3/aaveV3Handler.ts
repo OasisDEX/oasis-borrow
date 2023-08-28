@@ -13,7 +13,7 @@ import { wstethRiskRatio } from 'features/aave/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
-import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
+import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { curry } from 'ramda'
 
@@ -99,11 +99,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   )
 
   const emptyYields = (_risk: RiskRatio, _fields: FilterYieldFieldsType[]) => {
-    return Promise.resolve<AaveYieldsResponse>({})
+    return Promise.resolve<AaveLikeYieldsResponse>({})
   }
   const yieldsPromisesMap: Record<
     string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveYieldsResponse>
+    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
   > = {
     // a crude map, but it works for now since we only have one earn product
     'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),

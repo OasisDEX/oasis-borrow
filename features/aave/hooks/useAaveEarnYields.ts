@@ -2,7 +2,7 @@ import { IRiskRatio } from '@oasisdex/dma-library'
 import { NetworkNames } from 'blockchain/networks'
 import { useAaveContext } from 'features/aave'
 import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
-import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
+import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { useEffect, useState } from 'react'
 
 export function useAaveEarnYields(
@@ -10,9 +10,9 @@ export function useAaveEarnYields(
   protocol: AaveLendingProtocol | SparkLendingProtocol,
   network: NetworkNames,
   yieldFields: FilterYieldFieldsType[],
-): AaveYieldsResponse | undefined {
+): AaveLikeYieldsResponse | undefined {
   const { aaveEarnYieldsQuery } = useAaveContext(protocol, network)
-  const [yields, setYields] = useState<AaveYieldsResponse>()
+  const [yields, setYields] = useState<AaveLikeYieldsResponse>()
 
   useEffect(() => {
     if (!riskRatio) return
