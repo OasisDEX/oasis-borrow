@@ -129,9 +129,12 @@ export function AjnaFormView({
       if (!hasDupePosition && positionIds.length) {
         setHasDupePosition(true)
         openModal(AjnaDupePosition, {
+          chainId: context?.chainId,
+          collateralAddress,
           collateralToken,
           positionIds,
           product,
+          quoteAddress,
           quoteToken,
         })
       }

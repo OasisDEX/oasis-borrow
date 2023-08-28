@@ -1,6 +1,8 @@
+import { NetworkIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { AjnaProduct } from 'features/ajna/common/types'
+import { getOraclessProductUrl } from 'features/poolFinder/helpers'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { startCase } from 'lodash'
@@ -10,16 +12,22 @@ import { ajnaExtensionTheme } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Image, Text, ThemeProvider } from 'theme-ui'
 
 interface AjnaDupePositionProps {
+  chainId?: NetworkIds
+  collateralAddress: string
   collateralToken: string
-  quoteToken: string
-  product: AjnaProduct
   positionIds: string[]
+  product: AjnaProduct
+  quoteAddress: string
+  quoteToken: string
 }
 
 export function AjnaDupePosition({
+  chainId = NetworkIds.MAINNET,
+  collateralAddress,
   collateralToken,
   positionIds,
   product,
+  quoteAddress,
   quoteToken,
 }: AjnaDupePositionProps) {
   const { t } = useTranslation()
@@ -53,7 +61,14 @@ export function AjnaDupePosition({
               {positionIds.map((positionId) => (
                 <Box as="li">
                   <AppLink
-                    href={`/ethereum/ajna/borrow/${collateralToken}-${quoteToken}/${positionId}`}
+                    href={`${getOraclessProductUrl({
+                      chainId,
+                      collateralAddress,
+                      collateralToken,
+                      product,
+                      quoteAddress,
+                      quoteToken,
+                    })}/${positionId}`}
                     onClick={closeModal}
                   >
                     {t('system.go-to-position')} #{positionId}
