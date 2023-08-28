@@ -52,7 +52,7 @@ import {
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
 import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
-import { AccountContext, TOSContext } from 'components/context'
+import { AccountContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
@@ -146,7 +146,6 @@ import {
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
-import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
@@ -186,7 +185,6 @@ export function setupProductContext(
     onEveryBlock$,
     oracleContext$,
     txHelpers$,
-    web3Context$,
   }: MainContext,
   {
     balance$,
@@ -207,7 +205,6 @@ export function setupProductContext(
     vault$,
     vaults$,
   }: AccountContext,
-  { termsAcceptance$ }: TOSContext,
 ) {
   console.log('Product context setup')
   combineLatest(account$, connectedContext$)
@@ -862,8 +859,6 @@ export function setupProductContext(
     curry(createPositionsOverviewSummary$)(balanceLean$, tokenPriceUSD$, positions$, assetActions$),
   )
 
-  const walletAssociatedRisk$ = createWalletAssociatedRisk$(web3Context$, termsAcceptance$)
-
   const vaultBanners$ = memoize(
     curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
@@ -1101,7 +1096,6 @@ export function setupProductContext(
     userDpmProxy$,
     vaultBanners$,
     vaultHistory$,
-    walletAssociatedRisk$,
     yields$,
     yieldsChange$,
   }
