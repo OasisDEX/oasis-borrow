@@ -108,8 +108,7 @@ export function getOneInchCall(
     slippage: BigNumber,
     protocols: string[] = defaultExchangeProtocols,
   ) => {
-    const shouldUseOptimismLiquidityProviders =
-      networkId === NetworkIds.OPTIMISMMAINNET && protocols.length === 0
+    const shouldUseOptimismLiquidityProviders = networkId === NetworkIds.OPTIMISMMAINNET
     const response = await swapOneInchTokens(
       from,
       to,
