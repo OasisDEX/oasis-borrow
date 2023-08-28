@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { AaveV3ReserveDataParameters } from 'blockchain/aave-v3/aave-v3-pool-data-provider'
-import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
 import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { SparkV3ReserveDataParameters } from 'blockchain/spark-v3/spark-v3-pool-data-provider'
+import { SparkV3SupportedNetwork } from 'blockchain/spark-v3/spark-v3-supported-network'
 import { ethers } from 'ethers'
 
 export type Factory<T> = {
@@ -10,7 +10,7 @@ export type Factory<T> = {
 }
 
 export type BaseParameters = {
-  readonly networkId: AaveV3SupportedNetwork
+  readonly networkId: SparkV3SupportedNetwork
 }
 
 export type ContractForNetwork<Contract> = {
@@ -30,13 +30,13 @@ const baseCurrencyUnits = {
 }
 
 type ContractKey = keyof Pick<
-  AllNetworksContractsType[AaveV3SupportedNetwork],
-  'aaveV3PoolDataProvider' | 'aaveV3Pool' | 'aaveV3Oracle'
+  AllNetworksContractsType[SparkV3SupportedNetwork],
+  'sparkV3PoolDataProvider' | 'sparkV3Pool' | 'sparkV3Oracle'
 >
 
 export function getNetworkMapping<Contract>(
   factory: Factory<Contract>,
-  networkId: AaveV3SupportedNetwork,
+  networkId: SparkV3SupportedNetwork,
   contractKey: ContractKey,
 ): ContractForNetwork<Contract> {
   const { address, genesisBlock } = getNetworkContracts(networkId)[contractKey]
@@ -55,11 +55,11 @@ export function getNetworkMapping<Contract>(
 }
 
 /**
- *  Aave expects WETH instead of ETH address, this handles it
+ *  Spark (as Aave probably) expects WETH instead of ETH address, this handles it
  */
 export function wethToEthAddress<T>(
   tokenMappings: ContractForNetwork<T>['tokenMappings'],
-  token: AaveV3ReserveDataParameters['token'],
+  token: SparkV3ReserveDataParameters['token'],
 ): string {
   return tokenMappings[token].address === tokenMappings['ETH'].address
     ? tokenMappings['WETH'].address

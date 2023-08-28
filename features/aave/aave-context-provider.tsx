@@ -7,6 +7,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AaveContext } from './aave-context'
 import { setupAaveV2Context } from './setup-aave-v2-context'
 import { setupAaveV3Context } from './setup-aave-v3-context'
+import { setupSparkV3Context } from './setup-spark-v3-context'
 
 type AaveContexts = Partial<
   Record<NetworkNames, Partial<Record<AaveLendingProtocol | SparkLendingProtocol, AaveContext>>>
@@ -31,7 +32,7 @@ export function useAaveContext(
     throw new Error(`AaveContext for network ${network} is not available!`)
   }
   const aaveContextsForNetwork = ac[network]!
-  if (!aaveContextsForNetwork[protocol]) {
+  if (aaveContextsForNetwork[protocol]) {
     throw new Error(`AaveContext for network ${network} and protocol ${protocol} is not available!`)
   }
 
@@ -55,7 +56,7 @@ export function AaveContextProvider({ children }: WithChildren) {
             productContext,
             NetworkNames.ethereumMainnet,
           ),
-          [LendingProtocol.SparkV3]: setupAaveV3Context(
+          [LendingProtocol.SparkV3]: setupSparkV3Context(
             mainContext,
             accountContext,
             productContext,

@@ -42,6 +42,9 @@ import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
+import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
+import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
+import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as vat from 'blockchain/abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -49,7 +52,7 @@ import {
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
-import { supportedIlks } from 'blockchain/tokens/mainnet'
+import { AAVE_V3_POOL_GENESIS_MAINNET, supportedIlks } from 'blockchain/tokens/mainnet'
 import {
   AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
   ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
@@ -167,6 +170,12 @@ export const optimismContracts: OptimismContracts = {
   aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.AaveOracle),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
+    optimism.aave.v3.AavePoolDataProvider,
+  ),
+  sparkV3Pool: contractDesc(sparkV3Pool, optimism.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, optimism.aave.v3.AaveOracle),
+  sparkV3PoolDataProvider: contractDesc(
+    sparkV3PoolDataProvider,
     optimism.aave.v3.AavePoolDataProvider,
   ),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
