@@ -2689,7 +2689,8 @@
           "description-lender-singular": "You already have lender position in this pool.",
           "description-lender-plural": "You already have lender positions in this pool.",
           "help": "You can either create a new position in this pool or go to your existing position.",
-          "cta": "Open new position"
+          "cta-primary": "Go to your Portfolio",
+          "cta-textual": "Open new position"
         },
         "notifications": {
           "time-to-liquidation": {

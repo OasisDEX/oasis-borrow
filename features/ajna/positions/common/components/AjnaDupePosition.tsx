@@ -9,7 +9,7 @@ import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import { Box, Button, Flex, Grid, Heading, Image, Text, ThemeProvider } from 'theme-ui'
+import { Box, Button, Flex, Heading, Image, Text, ThemeProvider } from 'theme-ui'
 
 interface AjnaDupePositionProps {
   chainId?: NetworkIds
@@ -19,6 +19,7 @@ interface AjnaDupePositionProps {
   product: AjnaProduct
   quoteAddress: string
   quoteToken: string
+  walletAddress?: string
 }
 
 export function AjnaDupePosition({
@@ -29,12 +30,27 @@ export function AjnaDupePosition({
   product,
   quoteAddress,
   quoteToken,
+  walletAddress,
 }: AjnaDupePositionProps) {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
 
-  const amount = positionIds.length > 1 ? 'plural' : 'singular'
+  const hasMultiplyPositions = positionIds.length > 1
+  const amount = hasMultiplyPositions ? 'plural' : 'singular'
   const type = product === 'earn' ? 'lender' : 'borrower'
+  const primaryLink = hasMultiplyPositions
+    ? `/owner/${walletAddress}`
+    : `${getOraclessProductUrl({
+        chainId,
+        collateralAddress,
+        collateralToken,
+        product,
+        quoteAddress,
+        quoteToken,
+      })}/${positionIds[0]}`
+  const primaryText = hasMultiplyPositions
+    ? t('ajna.position-page.common.dupe-modal.cta-primary')
+    : `${t('system.go-to-position')} #${positionIds[0]}`
 
   return (
     <ThemeProvider theme={ajnaExtensionTheme}>
@@ -54,28 +70,14 @@ export function AjnaDupePosition({
               {t(`ajna.position-page.common.dupe-modal.description-${type}-${amount}`)}{' '}
               {t('ajna.position-page.common.dupe-modal.help')}
             </Text>
-            <Button variant="primary" sx={{ width: '100%' }} onClick={closeModal}>
-              {t('ajna.position-page.common.dupe-modal.cta')}
+            <AppLink href={primaryLink} onClick={closeModal} sx={{ width: '100%' }}>
+              <Button variant="primary" sx={{ width: '100%' }}>
+                {primaryText}
+              </Button>
+            </AppLink>
+            <Button variant="textual" onClick={closeModal} sx={{ mt: '24px', p: 0 }}>
+              {t('ajna.position-page.common.dupe-modal.cta-textual')}
             </Button>
-            <Grid as="ul" sx={{ rowGap: 1, m: 0, pt: '24px', pl: 0, listStyle: 'none' }}>
-              {positionIds.map((positionId) => (
-                <Box as="li">
-                  <AppLink
-                    href={`${getOraclessProductUrl({
-                      chainId,
-                      collateralAddress,
-                      collateralToken,
-                      product,
-                      quoteAddress,
-                      quoteToken,
-                    })}/${positionId}`}
-                    onClick={closeModal}
-                  >
-                    {t('system.go-to-position')} #{positionId}
-                  </AppLink>
-                </Box>
-              ))}
-            </Grid>
           </Flex>
         </Box>
       </Modal>
