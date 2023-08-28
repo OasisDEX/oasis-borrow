@@ -112,8 +112,6 @@ export type ProtocolsServices = {
   }
   [LendingProtocol.SparkV3]: {
     [NetworkIds.MAINNET]: AaveLikeServices
-    [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
-    [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
   }
 }
 

@@ -244,7 +244,7 @@ export function setupAaveV3Context(
   }
 
   return {
-    ...protocols[LendingProtocol.AaveV3][networkId],
+    ...protocols[LendingProtocol.SparkV3][1],
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,

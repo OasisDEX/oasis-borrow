@@ -147,7 +147,7 @@ export function getSparkV3Services({
   )
 
   return {
-    protocol: LendingProtocol.AaveV3,
+    protocol: LendingProtocol.SparkV3,
     aaveLikeReserveConfigurationData$: reserveConfigurationDataWithEMode$,
     getAaveLikeReserveData$,
     aaveLikeAvailableLiquidityInUSDC$,

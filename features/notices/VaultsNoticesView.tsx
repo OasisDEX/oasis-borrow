@@ -27,6 +27,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { useTheme } from 'theme/useThemeUI'
+import { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
+import { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
 import { StateFrom } from 'xstate'
 
 import { VaultNoticesState } from './vaultsNotices'
@@ -568,7 +570,9 @@ export function AavePositionNoticesView() {
     maxLoanToValue,
     liquidationThreshold,
     connectedProxyAddress,
-    aaveLiquidations,
+    aaveLiquidations: aaveLiquidations as
+      | AaveLiquidationCallEventV3[]
+      | AaveLiquidationCallEventV2[], // as this is only for aave
     ownerAddress,
     connectedAddress: web3Context?.account,
   })

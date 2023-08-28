@@ -270,14 +270,6 @@ export function setupProductContext(
     refresh$: onEveryBlock$,
     networkId: NetworkIds.MAINNET,
   })
-  const sparkV3OptimismServices = getSparkV3Services({
-    refresh$: onEveryBlock$,
-    networkId: NetworkIds.OPTIMISMMAINNET,
-  })
-  const sparkV3ArbitrumServices = getSparkV3Services({
-    refresh$: onEveryBlock$,
-    networkId: NetworkIds.ARBITRUMMAINNET,
-  })
 
   // base
 
@@ -974,8 +966,6 @@ export function setupProductContext(
     },
     [LendingProtocol.SparkV3]: {
       [NetworkIds.MAINNET]: sparkV3Services,
-      [NetworkIds.OPTIMISMMAINNET]: sparkV3OptimismServices,
-      [NetworkIds.ARBITRUMMAINNET]: sparkV3ArbitrumServices,
     },
   }
 
