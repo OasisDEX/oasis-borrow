@@ -46,6 +46,7 @@
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-shadow": "off",
     "accessor-pairs": "error",
     "constructor-super": "error",
     "eqeqeq": [
@@ -129,7 +130,6 @@
     "no-self-assign": "error",
     "no-self-compare": "error",
     "no-sequences": "error",
-    "no-shadow": ["warn", { "builtinGlobals": true, "hoist": "all" }],
     "no-shadow-restricted-names": "error",
     "no-sparse-arrays": "error",
     "no-tabs": "error",
