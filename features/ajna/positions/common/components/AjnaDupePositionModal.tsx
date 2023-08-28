@@ -13,7 +13,7 @@ import { ajnaExtensionTheme } from 'theme'
 import { Box, Button, Flex, Heading, Image, Text, ThemeProvider } from 'theme-ui'
 import { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-interface AjnaDupePositionProps {
+interface AjnaDupePositionModalProps {
   chainId?: NetworkIds
   collateralAddress: string
   collateralToken: string
@@ -25,7 +25,7 @@ interface AjnaDupePositionProps {
   walletAddress?: string
 }
 
-export function AjnaDupePosition({
+export function AjnaDupePositionModal({
   chainId = NetworkIds.MAINNET,
   collateralAddress,
   collateralToken,
@@ -35,7 +35,7 @@ export function AjnaDupePosition({
   quoteAddress,
   quoteToken,
   walletAddress,
-}: AjnaDupePositionProps) {
+}: AjnaDupePositionModalProps) {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
 

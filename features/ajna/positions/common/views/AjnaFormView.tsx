@@ -5,7 +5,7 @@ import { FlowSidebar } from 'components/FlowSidebar'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
-import { AjnaDupePosition } from 'features/ajna/positions/common/components/AjnaDupePosition'
+import { AjnaDupePositionModal } from 'features/ajna/positions/common/components/AjnaDupePositionModal'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
@@ -121,7 +121,7 @@ export function AjnaFormView({
 
         if (!hasDupePosition && filteredEvents.length) {
           setHasDupePosition(true)
-          openModal(AjnaDupePosition, {
+          openModal(AjnaDupePositionModal, {
             chainId: context?.chainId,
             collateralAddress,
             collateralToken,
