@@ -31,7 +31,7 @@ export type UseFlowStateProps = {
   filterConsumedProxy?: (events: CreatePositionEvent[]) => boolean
   onEverythingReady?: UseFlowStateCBType
   onGoBack?: UseFlowStateCBType
-  onProxiesAvailable?: (events: CreatePositionEvent[]) => void
+  onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
   token?: string
 }
 
@@ -130,15 +130,19 @@ export function useFlowState({
   useEffect(() => {
     if (!walletAddress || !userProxyList.length || existingProxy || !chainId) return
     const proxyListAvailabilityMap = combineLatest(
-      userProxyList.map(async ({ proxy }) => ({
+      userProxyList.map(async ({ vaultId, proxy }) => ({
         proxyAddress: proxy,
+        proxyId: vaultId,
         events: await getPositionCreatedEventForProxyAddress({ chainId }, proxy),
       })),
-    ).subscribe((userProxies) => {
-      if (onProxiesAvailable && userProxies.length > 0)
-        onProxiesAvailable(userProxies.flatMap(({ events }) => events))
+    ).subscribe((userProxyEventsList) => {
+      if (onProxiesAvailable && userProxyEventsList.length > 0)
+        onProxiesAvailable(
+          userProxyEventsList.flatMap(({ events }) => events),
+          userProxyList,
+        )
       setAvailableProxies(
-        userProxies
+        userProxyEventsList
           .filter(({ events }) =>
             events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
           )
