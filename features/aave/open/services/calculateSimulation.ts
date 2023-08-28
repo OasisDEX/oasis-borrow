@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import dayjs from 'dayjs'
 import { one, zero } from 'helpers/zero'
-import { AaveYieldsResponse } from 'lendingProtocols/aaveCommon'
+import { AaveYieldsResponse } from 'lendingProtocols/aave-like-common'
 
 const AAVE_INCEPTION_DATE = dayjs('2022-02-28')
 

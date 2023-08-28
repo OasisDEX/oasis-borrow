@@ -1,6 +1,6 @@
 import { NetworkConfigHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
-import { AaveLendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { Feature } from 'helpers/useFeatureToggle'
 import BigNumber from 'bignumber.js'
 
@@ -86,7 +86,7 @@ export interface IStrategyConfig {
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
   type: ProductType
-  protocol: AaveLendingProtocol
+  protocol: AaveLendingProtocol | SparkLendingProtocol
   featureToggle?: Feature
   defaultSlippage?: BigNumber
   executeTransactionWith: 'web3' | 'ethers'

@@ -11,14 +11,17 @@ import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarMan
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveData,
+} from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 interface AaveManageTabBarProps {
-  aaveReserveState: ReserveConfigurationData
-  aaveReserveDataDebtToken: ReserveData
+  aaveReserveState: AaveLikeReserveConfigurationData
+  aaveReserveDataDebtToken: AaveLikeReserveData
   strategyConfig: IStrategyConfig
 }
 

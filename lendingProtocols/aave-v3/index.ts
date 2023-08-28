@@ -1,7 +1,10 @@
 import * as blockchainCalls from 'blockchain/aave-v3'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
-import { UserAccountData, UserAccountDataArgs } from 'lendingProtocols/aaveCommon'
-import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
+import {
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
+} from 'lendingProtocols/aave-like-common'
+import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
@@ -25,7 +28,7 @@ interface AaveV3ServicesDependencies {
 export function getAaveV3Services({
   refresh$,
   networkId,
-}: AaveV3ServicesDependencies): AaveServices {
+}: AaveV3ServicesDependencies): AaveLikeServices {
   const assetsPrices$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3AssetsPrices,
@@ -60,13 +63,14 @@ export function getAaveV3Services({
     'aaveLiquidations$',
   )
 
-  const aaveUserAccountData$: (args: UserAccountDataArgs) => Observable<UserAccountData> =
-    makeObservableForNetworkId(
-      refresh$,
-      curry(mapAaveUserAccountData$)(blockchainCalls.getAaveV3UserAccountData),
-      networkId,
-      'aaveUserAccountData$',
-    )
+  const aaveUserAccountData$: (
+    args: AaveLikeUserAccountDataArgs,
+  ) => Observable<AaveLikeUserAccountData> = makeObservableForNetworkId(
+    refresh$,
+    curry(mapAaveUserAccountData$)(blockchainCalls.getAaveV3UserAccountData),
+    networkId,
+    'aaveUserAccountData$',
+  )
 
   const getAaveReserveData$ = makeObservableForNetworkId(
     refresh$,

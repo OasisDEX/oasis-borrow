@@ -156,6 +156,7 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
+import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of } from 'rxjs'
@@ -249,16 +250,31 @@ export function setupProductContext(
   }
 
   // protocols
-  const aaveV2 = getAaveV2Services({
+  const aaveV2Services = getAaveV2Services({
     refresh$: onEveryBlock$,
   })
 
-  const aaveV3 = getAaveV3Services({ refresh$: onEveryBlock$, networkId: NetworkIds.MAINNET })
-  const aaveV3Optimism = getAaveV3Services({
+  const aaveV3Services = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.MAINNET,
+  })
+  const aaveV3OptimismServices = getAaveV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.OPTIMISMMAINNET,
   })
-  const aaveV3Arbitrum = getAaveV3Services({
+  const aaveV3ArbitrumServices = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.ARBITRUMMAINNET,
+  })
+  const sparkV3Services = getSparkV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.MAINNET,
+  })
+  const sparkV3OptimismServices = getSparkV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.OPTIMISMMAINNET,
+  })
+  const sparkV3ArbitrumServices = getSparkV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.ARBITRUMMAINNET,
   })
@@ -437,7 +453,7 @@ export function setupProductContext(
         switchMap(([context, proxyAddress]) => {
           if (!proxyAddress) return of(zero)
           return everyBlock$(
-            defer(() => call(context, pie)(proxyAddress!)),
+            defer(() => call(context, pie)(proxyAddress)),
             equals,
           )
         }),
@@ -567,7 +583,7 @@ export function setupProductContext(
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
-      aaveV2.aaveProxyConfiguration$,
+      aaveV2Services.aaveProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
     (positionId: PositionId, networkName: NetworkNames) =>
@@ -612,7 +628,7 @@ export function setupProductContext(
         automationTriggersData$,
         readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
       },
-      aaveV2,
+      aaveV2Services,
     ),
   )
 
@@ -625,7 +641,7 @@ export function setupProductContext(
         mainnetAaveV3PositionCreatedEvents$,
         getApiVaults,
         automationTriggersData$,
-        aaveV3,
+        aaveV3Services,
         NetworkIds.MAINNET,
       ),
       (wallet) => wallet,
@@ -644,7 +660,7 @@ export function setupProductContext(
       optimismReadPositionCreatedEvents$,
       getApiVaults,
       () => of<TriggersData | undefined>(undefined), // Triggers are not supported on optimism
-      aaveV3Optimism,
+      aaveV3OptimismServices,
       NetworkIds.OPTIMISMMAINNET,
     ),
     (wallet) => wallet,
@@ -950,11 +966,16 @@ export function setupProductContext(
   )
 
   const protocols: ProtocolsServices = {
-    [LendingProtocol.AaveV2]: aaveV2,
+    [LendingProtocol.AaveV2]: aaveV2Services,
     [LendingProtocol.AaveV3]: {
-      [NetworkIds.MAINNET]: aaveV3,
-      [NetworkIds.OPTIMISMMAINNET]: aaveV3Optimism,
-      [NetworkIds.ARBITRUMMAINNET]: aaveV3Arbitrum,
+      [NetworkIds.MAINNET]: aaveV3Services,
+      [NetworkIds.OPTIMISMMAINNET]: aaveV3OptimismServices,
+      [NetworkIds.ARBITRUMMAINNET]: aaveV3ArbitrumServices,
+    },
+    [LendingProtocol.SparkV3]: {
+      [NetworkIds.MAINNET]: sparkV3Services,
+      [NetworkIds.OPTIMISMMAINNET]: sparkV3OptimismServices,
+      [NetworkIds.ARBITRUMMAINNET]: sparkV3ArbitrumServices,
     },
   }
 
@@ -1025,10 +1046,10 @@ export function setupProductContext(
   )
 
   return {
-    aaveAvailableLiquidityInUSDC$: aaveV2.aaveAvailableLiquidityInUSDC$,
-    aaveLiquidations$: aaveV2.aaveLiquidations$, // @deprecated,
-    aaveProtocolData$: aaveV2.aaveProtocolData$,
-    aaveUserAccountData$: aaveV2.aaveUserAccountData$,
+    aaveAvailableLiquidityInUSDC$: aaveV2Services.aaveAvailableLiquidityInUSDC$,
+    aaveLiquidations$: aaveV2Services.aaveLiquidations$, // @deprecated,
+    aaveProtocolData$: aaveV2Services.aaveProtocolData$,
+    aaveUserAccountData$: aaveV2Services.aaveUserAccountData$,
     addGasEstimation$,
     ajnaPosition$,
     allowance$,

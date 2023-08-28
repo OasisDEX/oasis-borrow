@@ -18,7 +18,10 @@ import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
-import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveData,
+} from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
@@ -31,9 +34,9 @@ type AaveMultiplyPositionDataProps = {
   nextPosition?: IPosition
   collateralTokenPrice: BigNumber
   debtTokenPrice: BigNumber
-  collateralTokenReserveData: ReserveData
-  debtTokenReserveData: ReserveData
-  debtTokenReserveConfigurationData: ReserveConfigurationData
+  collateralTokenReserveData: AaveLikeReserveData
+  debtTokenReserveData: AaveLikeReserveData
+  debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
   aaveHistory: VaultHistoryEvent[]
   isAutomationAvailable?: boolean
   strategyType: StrategyType

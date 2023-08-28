@@ -1,5 +1,5 @@
 declare module '@makerdao/dai-ui-icons' {
-  import { ComponentType } from 'react'
+  import type { ComponentType } from 'react'
   export const Icon: ComponentType<{
     color?: string
     size?: number | string | number[]
@@ -14,7 +14,6 @@ declare module '@makerdao/dai-ui-icons' {
 }
 
 declare module '@makerdao/dai-ui-icons-branding' {
-  import { ComponentType } from 'react'
   export const Icon: ComponentType<{
     color?: string
     size?: number | string | number[]

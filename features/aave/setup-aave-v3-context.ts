@@ -11,9 +11,9 @@ import { MainContext } from 'helpers/context/MainContext'
 import { ProductContext } from 'helpers/context/ProductContext'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
+import { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
-import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { merge, Observable, of, Subject } from 'rxjs'
@@ -113,7 +113,7 @@ export function setupAaveV3Context(
 
   const earnCollateralsReserveData = {
     WSTETH: aaveReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
-  } as Record<string, Observable<ReserveConfigurationData>>
+  } as Record<string, Observable<AaveLikeReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
@@ -223,7 +223,7 @@ export function setupAaveV3Context(
             (params) => params.positionId === positionId && params.networkName === networkName,
           ),
         ),
-        // The initial trigger from WithStrategy
+        // The initial trigger from WithAaveStrategy
         of({ positionId, networkName, vaultType }),
       ).pipe(
         switchMap((params) =>

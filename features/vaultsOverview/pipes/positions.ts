@@ -23,8 +23,8 @@ import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
 import { AaveLendingProtocol, checkIfAave, LendingProtocol } from 'lendingProtocols'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
-import { AaveServices } from 'lendingProtocols/aaveCommon/AaveServices'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
+import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
@@ -129,7 +129,7 @@ type ProxyAddressesProvider = {
 }
 
 type BuildPositionArgs = {
-  aaveV2: AaveServices
+  aaveV2: AaveLikeServices
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
@@ -259,7 +259,7 @@ function buildAaveV3OnlyViewModel(
   positionId: string,
   walletAddress: string,
   isOwner: boolean,
-  services: AaveServices,
+  services: AaveLikeServices,
   strategyConfig: IStrategyConfig,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData | undefined>,
   tickerPrices$: (tokens: string[]) => Observable<Tickers>,
@@ -386,7 +386,7 @@ function getStethEthAaveV2DsProxyEarnPosition$(
     collateralToken: string,
     debtToken: string,
     address: string,
-  ) => Observable<ProtocolData>,
+  ) => Observable<AaveLikeProtocolData>,
   walletAddress: string,
 ): Observable<FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition[]> {
   return proxyAddressesProvider.dsProxy$(walletAddress).pipe(
@@ -426,7 +426,7 @@ const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
 export function createAaveV2Position$(
   proxyAddressesProvider: ProxyAddressesProvider,
   environment: CreatePositionEnvironmentPropsType,
-  aaveV2: AaveServices,
+  aaveV2: AaveLikeServices,
   walletAddress: string,
 ): Observable<AavePosition[]> {
   const { context$, tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } =
@@ -509,7 +509,7 @@ export function createAaveV3DpmPosition$(
   readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
   getApiVaults: (params: ApiVaultsParams) => Promise<ApiVault[]>,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData | undefined>,
-  aaveV3: AaveServices,
+  aaveV3: AaveLikeServices,
   networkId: NetworkIds,
   walletAddress: string,
 ): Observable<AavePosition[]> {

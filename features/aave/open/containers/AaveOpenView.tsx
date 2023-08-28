@@ -10,6 +10,7 @@ import { AutomationContextInput } from 'features/automation/contexts/AutomationC
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
@@ -126,7 +127,7 @@ export function AaveOpenView({ config }: { config: IStrategyConfig }) {
         title="seo.title-product-w-tokens"
         titleParams={{
           product: t(`seo.${config.type.toLocaleLowerCase()}.title`),
-          protocol: config.protocol,
+          protocol: LendingProtocolLabel[config.protocol],
           token1: config.tokens.collateral,
           token2: config.tokens.debt,
         }}

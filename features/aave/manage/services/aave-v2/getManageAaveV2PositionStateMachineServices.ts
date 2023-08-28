@@ -19,7 +19,7 @@ import { createEthersTransactionStateMachine } from 'features/stateMachines/tran
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
 import { TxHelpers } from 'helpers/context/types'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -38,7 +38,7 @@ export function getManageAaveV2PositionStateMachineServices(
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<ProtocolData>,
+  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
