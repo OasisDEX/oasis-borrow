@@ -1,14 +1,16 @@
 import { NetworkNames } from 'blockchain/networks'
 import { useAccountContext, useMainContext, useProductContext } from 'components/context'
 import { WithChildren } from 'helpers/types'
-import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, LendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import React, { useContext, useEffect, useState } from 'react'
 
 import { AaveContext } from './aave-context'
 import { setupAaveV2Context } from './setup-aave-v2-context'
 import { setupAaveV3Context } from './setup-aave-v3-context'
 
-type AaveContexts = Partial<Record<NetworkNames, Partial<Record<AaveLendingProtocol, AaveContext>>>>
+type AaveContexts = Partial<
+  Record<NetworkNames, Partial<Record<AaveLendingProtocol | SparkLendingProtocol, AaveContext>>>
+>
 
 export const aaveContext = React.createContext<AaveContexts | undefined>(undefined)
 
@@ -18,7 +20,7 @@ export function isAaveContextAvailable(): boolean {
 }
 
 export function useAaveContext(
-  protocol: AaveLendingProtocol = LendingProtocol.AaveV2,
+  protocol: AaveLendingProtocol | SparkLendingProtocol = LendingProtocol.AaveV2,
   network: NetworkNames = NetworkNames.ethereumMainnet,
 ): AaveContext {
   const ac = useContext(aaveContext)
@@ -53,6 +55,12 @@ export function AaveContextProvider({ children }: WithChildren) {
             productContext,
             NetworkNames.ethereumMainnet,
           ),
+          [LendingProtocol.SparkV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            productContext,
+            NetworkNames.ethereumMainnet,
+          ),
         },
         [NetworkNames.optimismMainnet]: {
           [LendingProtocol.AaveV3]: setupAaveV3Context(
@@ -67,7 +75,7 @@ export function AaveContextProvider({ children }: WithChildren) {
         // },
       })
     }
-  }, [productContext])
+  }, [accountContext, mainContext, productContext])
 
   return <aaveContext.Provider value={aaveContexts}>{children}</aaveContext.Provider>
 }

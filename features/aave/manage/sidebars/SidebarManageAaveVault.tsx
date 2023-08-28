@@ -31,6 +31,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getAaveStrategyUrl } from 'helpers/getAaveStrategyUrl'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
@@ -357,6 +358,8 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
       url: getAaveStrategyUrl({
+        aaveLikeProduct:
+          state.context.strategyConfig.protocol === LendingProtocol.SparkV3 ? 'spark' : 'aave',
         protocol: state.context.strategyConfig.protocol,
         slug: state.context.strategyConfig.urlSlug,
         strategyType: state.context.strategyConfig.type,

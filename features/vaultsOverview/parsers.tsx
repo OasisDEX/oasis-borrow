@@ -86,6 +86,7 @@ const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: Network
     [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV2]: false,
     [LendingProtocol.Ajna]: false,
+    [LendingProtocol.SparkV3]: false, // TODO: add automation for Spark
   }[protocol]
 }
 

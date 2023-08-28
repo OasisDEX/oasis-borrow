@@ -33,8 +33,8 @@ import {
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
+import { AaveLikeServices } from 'lendingProtocols/aave-like-common'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
-import { AaveServices } from 'lendingProtocols/aaveCommon'
 import { Observable } from 'rxjs'
 
 export type TxData =
@@ -104,11 +104,16 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 ) => Observable<S>
 
 export type ProtocolsServices = {
-  [LendingProtocol.AaveV2]: AaveServices
+  [LendingProtocol.AaveV2]: AaveLikeServices
   [LendingProtocol.AaveV3]: {
-    [NetworkIds.MAINNET]: AaveServices
-    [NetworkIds.OPTIMISMMAINNET]: AaveServices
-    [NetworkIds.ARBITRUMMAINNET]: AaveServices
+    [NetworkIds.MAINNET]: AaveLikeServices
+    [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
+    [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
+  }
+  [LendingProtocol.SparkV3]: {
+    [NetworkIds.MAINNET]: AaveLikeServices
+    [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
+    [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
   }
 }
 

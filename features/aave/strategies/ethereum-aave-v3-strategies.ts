@@ -25,38 +25,12 @@ import {
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
-
-type ProductTypeConfig = {
-  featureToggle: Feature | undefined
-  additionalManageActions?: {
-    action: ManagePositionAvailableActions
-    featureToggle: Feature | undefined
-  }[]
-}
-
-type TokenPairConfig = {
-  collateral: string
-  debt: string
-  strategyType: StrategyType
-  productTypes: Partial<Record<ProductType, ProductTypeConfig>>
-}
-
-function hasMultiplyProductType(
-  config: TokenPairConfig,
-): config is TokenPairConfig & { productTypes: { [ProductType.Multiply]: ProductTypeConfig } } {
-  return config.productTypes.Multiply !== undefined
-}
-
-function hasBorrowProductType(
-  config: TokenPairConfig,
-): config is TokenPairConfig & { productTypes: { [ProductType.Borrow]: ProductTypeConfig } } {
-  return config.productTypes.Borrow !== undefined
-}
+import { hasBorrowProductType, hasMultiplyProductType, TokenPairConfig } from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [
   {

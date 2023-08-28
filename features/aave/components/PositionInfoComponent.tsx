@@ -14,7 +14,7 @@ import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { ReserveData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -32,7 +32,7 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 }
 
 type PositionInfoComponentProps = {
-  aaveReserveDataDebtToken: ReserveData
+  aaveReserveDataDebtToken: AaveLikeReserveData
   apy?: BigNumber
   position: IPosition
 }

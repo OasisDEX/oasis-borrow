@@ -26,7 +26,7 @@ import { allDefined } from 'helpers/allDefined'
 import { TxHelpers } from 'helpers/context/types'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { LendingProtocol } from 'lendingProtocols'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -45,7 +45,7 @@ export function getManageAaveV3PositionStateMachineServices(
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<ProtocolData>,
+  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   getHistoryEvents: (proxyAccount: string, networkId: NetworkIds) => Promise<AaveHistoryEvent[]>,
 ): ManageAaveStateMachineServices {
