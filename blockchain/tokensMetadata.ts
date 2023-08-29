@@ -1,12 +1,6 @@
 import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
-import { MainNetworkNames, NetworkIds } from 'blockchain/networks'
-import {
-  aaveV2TokensMetadata,
-  aaveV3TokensMetadata,
-  ajnaTokensMetadata,
-  makerTokensMetadata,
-} from 'blockchain/token-metadata-list'
-import { LendingProtocol } from 'lendingProtocols'
+import { NetworkIds } from 'blockchain/networks'
+import { tokenConfigs } from 'blockchain/token-metadata-list'
 import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
 
@@ -33,8 +27,6 @@ export interface TokenConfig {
   background: string
   digitsInstant?: number
   safeCollRatio?: number
-  protocol: LendingProtocol
-  chain: MainNetworkNames
   oracleTicker?: string
   source?: string
 }
@@ -44,12 +36,7 @@ export type SimplifiedTokenConfig = Pick<TokenConfig, 'name' | 'precision' | 'sy
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 
-export const tokens: TokenConfig[] = [
-  ...makerTokensMetadata,
-  ...aaveV2TokensMetadata,
-  ...aaveV3TokensMetadata,
-  ...ajnaTokensMetadata,
-]
+export const tokens: TokenConfig[] = [...tokenConfigs]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
 export const tokensBySymbol = keyBy(tokens, 'symbol')
@@ -73,18 +60,6 @@ export function getTokenGuarded(
 export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
   if (tokenSymbol instanceof Array) {
     return tokenSymbol.map(getToken)
-  }
-  throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
-}
-
-export function getTokensWithChain(
-  tokenSymbol: TokenSymbolType[],
-  chain?: MainNetworkNames,
-): typeof tokens {
-  if (tokenSymbol instanceof Array) {
-    return tokenSymbol
-      .map(getToken)
-      .filter((token) => token.chain === chain || MainNetworkNames.ethereumGoerli)
   }
   throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
 }
