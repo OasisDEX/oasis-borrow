@@ -1,6 +1,6 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import BigNumber from 'bignumber.js'
-import { AaveV3UserConfigurationsParameters } from 'blockchain/aave-v3'
+import { SparkV3UserConfigurationsParameters } from 'blockchain/spark-v3'
 import { curry } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -11,52 +11,50 @@ const reserveNamesDictionary = Object.fromEntries(
   Object.entries(mainnet.common).map((mainnetEntry) => mainnetEntry.reverse()),
 )
 
-export type AaveUserConfigurationResult = {
+export type SparkUserConfigurationResult = {
   collateral: boolean
   borrowed: boolean
   asset: string
   assetName: (typeof mainnet.common)[keyof typeof mainnet.common]
 }
 
-export type AaveUserConfigurationResults = AaveUserConfigurationResult[] & {
+export type SparkUserConfigurationResults = SparkUserConfigurationResult[] & {
   hasAssets: (
-    collateralToken: AaveUserConfigurationResult['assetName'][],
-    debtToken: AaveUserConfigurationResult['assetName'][],
+    collateralToken: SparkUserConfigurationResult['assetName'][],
+    debtToken: SparkUserConfigurationResult['assetName'][],
   ) => boolean
 }
 
-export function getAaveProxyConfiguration$(
+export function getSparkProxyConfiguration$(
   userConfiguration: (
-    args: Omit<AaveV3UserConfigurationsParameters, 'networkId'>,
+    args: Omit<SparkV3UserConfigurationsParameters, 'networkId'>,
   ) => Observable<string[]>,
   reserveList: Observable<string[]>,
   proxyAddress: string,
-): Observable<AaveUserConfigurationResults> {
+): Observable<SparkUserConfigurationResults> {
   return combineLatest(userConfiguration({ address: proxyAddress }), reserveList).pipe(
-    map(([aaveUserConfiguration, aaveReserveList]) =>
-      createAaveUserConfiguration(aaveUserConfiguration, aaveReserveList),
+    map(([sparkUserConfiguration, sparkReserveList]) =>
+      createSparkUserConfiguration(sparkUserConfiguration, sparkReserveList),
     ),
   )
 }
 
-export function createAaveUserConfiguration(
-  aaveUserConfiguration?: string[],
-  aaveReserveList?: string[],
+export function createSparkUserConfiguration(
+  sparkUserConfiguration?: string[],
+  sparkReserveList?: string[],
   tokensDictionary: any = reserveNamesDictionary,
-): AaveUserConfigurationResults {
+): SparkUserConfigurationResults {
   // merges getreserveslist and getuserconfiguration
-  if (!aaveUserConfiguration?.length || !aaveReserveList?.length)
+  if (!sparkUserConfiguration?.length || !sparkReserveList?.length)
     return Object.assign([], { hasAssets: () => false })
 
-  // https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getuserconfiguration
-  let binaryString = String(new BigNumber(aaveUserConfiguration[0]).toString(2))
+  let binaryString = String(new BigNumber(sparkUserConfiguration[0]).toString(2))
 
-  // aave does not pad this binary string
-  while (binaryString.length < aaveReserveList.length * 2) {
+  while (binaryString.length < sparkReserveList.length * 2) {
     binaryString = '0' + binaryString
   }
 
-  const results: AaveUserConfigurationResult[] =
+  const results: SparkUserConfigurationResult[] =
     binaryString
       .match(/.{1,2}/g)
       ?.reverse() // reverse, cause we need to start from the end
@@ -65,11 +63,11 @@ export function createAaveUserConfiguration(
           [collateral, borrowed],
           reserveIndex, // collateral, borrowed are string '0' or '1'
         ) =>
-          tokensDictionary[aaveReserveList[reserveIndex]] && {
+          tokensDictionary[sparkReserveList[reserveIndex]] && {
             collateral: !!Number(collateral),
             borrowed: !!Number(borrowed),
-            asset: aaveReserveList[reserveIndex],
-            assetName: tokensDictionary[aaveReserveList[reserveIndex]],
+            asset: sparkReserveList[reserveIndex],
+            assetName: tokensDictionary[sparkReserveList[reserveIndex]],
           },
       )
       .filter(Boolean) || []
@@ -78,9 +76,9 @@ export function createAaveUserConfiguration(
 }
 
 export function hasAssets(
-  userAssetList: AaveUserConfigurationResult[],
-  collateralToken: AaveUserConfigurationResult['assetName'][],
-  debtToken: AaveUserConfigurationResult['assetName'][],
+  userAssetList: SparkUserConfigurationResult[],
+  collateralToken: SparkUserConfigurationResult['assetName'][],
+  debtToken: SparkUserConfigurationResult['assetName'][],
 ) {
   return (
     userAssetList.filter(

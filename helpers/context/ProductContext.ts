@@ -267,14 +267,6 @@ export function setupProductContext(
     refresh$: onEveryBlock$,
     networkId: NetworkIds.MAINNET,
   })
-  const sparkV3OptimismServices = getSparkV3Services({
-    refresh$: onEveryBlock$,
-    networkId: NetworkIds.OPTIMISMMAINNET,
-  })
-  const sparkV3ArbitrumServices = getSparkV3Services({
-    refresh$: onEveryBlock$,
-    networkId: NetworkIds.ARBITRUMMAINNET,
-  })
 
   // base
 
@@ -580,7 +572,7 @@ export function setupProductContext(
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
-      aaveV2Services.aaveProxyConfiguration$,
+      aaveV2Services.aaveLikeProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
     (positionId: PositionId, networkName: NetworkNames) =>
@@ -969,8 +961,6 @@ export function setupProductContext(
     },
     [LendingProtocol.SparkV3]: {
       [NetworkIds.MAINNET]: sparkV3Services,
-      [NetworkIds.OPTIMISMMAINNET]: sparkV3OptimismServices,
-      [NetworkIds.ARBITRUMMAINNET]: sparkV3ArbitrumServices,
     },
   }
 
@@ -1041,10 +1031,10 @@ export function setupProductContext(
   )
 
   return {
-    aaveAvailableLiquidityInUSDC$: aaveV2Services.aaveAvailableLiquidityInUSDC$,
-    aaveLiquidations$: aaveV2Services.aaveLiquidations$, // @deprecated,
-    aaveProtocolData$: aaveV2Services.aaveProtocolData$,
-    aaveUserAccountData$: aaveV2Services.aaveUserAccountData$,
+    aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
+    aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
+    aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
+    aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
     addGasEstimation$,
     ajnaPosition$,
     allowance$,

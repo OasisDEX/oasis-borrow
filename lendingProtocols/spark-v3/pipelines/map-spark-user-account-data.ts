@@ -1,12 +1,12 @@
-import { AaveV3UserAccountData, AaveV3UserAccountDataParameters } from 'blockchain/aave-v3'
 import { NetworkIds } from 'blockchain/networks'
+import { SparkV3UserAccountData, SparkV3UserAccountDataParameters } from 'blockchain/spark-v3'
 import {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common/aave-like-user-account-data'
 
-export function mapAaveUserAccountData$(
-  blockchainCall: (args: AaveV3UserAccountDataParameters) => Promise<AaveV3UserAccountData>,
+export function mapSparkUserAccountData$(
+  blockchainCall: (params: SparkV3UserAccountDataParameters) => Promise<SparkV3UserAccountData>,
   args: AaveLikeUserAccountDataArgs & { networkId: NetworkIds.MAINNET },
 ): Promise<AaveLikeUserAccountData> {
   return blockchainCall(args).then((userAccountData) => {

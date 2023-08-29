@@ -42,6 +42,9 @@ import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
+import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
+import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
+import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as vat from 'blockchain/abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -150,6 +153,12 @@ export const mainnetContracts = {
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.AaveOracle),
   aaveV3PoolDataProvider: contractDesc(
     aaveV3PoolDataProvider,
+    mainnet.aave.v3.AavePoolDataProvider,
+  ),
+  sparkV3Pool: contractDesc(sparkV3Pool, mainnet.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, mainnet.aave.v3.AaveOracle),
+  sparkV3PoolDataProvider: contractDesc(
+    sparkV3PoolDataProvider,
     mainnet.aave.v3.AavePoolDataProvider,
   ),
   // TODO ajna addresses to be updated

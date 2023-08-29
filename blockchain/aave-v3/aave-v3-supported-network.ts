@@ -13,6 +13,6 @@ export function ensureIsSupportedAaveV3NetworkId(
       networkId,
     )
   ) {
-    throw new Error(`Unsupported network id: ${networkId}`)
+    throw new Error(`Unsupported Aave V3 network id: ${networkId}`)
   }
 }

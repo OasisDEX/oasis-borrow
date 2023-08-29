@@ -10,7 +10,7 @@ export type FilterYieldFieldsType =
   | 'Inception'
 export const yieldsDateFormat = 'YYYY-MM-DD'
 
-export interface AaveYieldsResponse {
+export interface AaveLikeYieldsResponse {
   annualisedYield7days?: BigNumber
   annualisedYield7daysOffset?: BigNumber
   annualisedYield30days?: BigNumber

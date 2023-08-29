@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
 
-import { AaveUserConfigurationResult, createAaveUserConfiguration } from './aave-user-configuration'
+import {
+  createSparkUserConfiguration,
+  SparkUserConfigurationResult,
+} from './spark-user-configuration'
 
-// userConfig -> https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getuserconfiguration
-// reservesList -> https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getreserveslist
-describe('AaveUserConfiguration', () => {
+describe('SparkUserConfiguration', () => {
   function generateUserConfig(input: string): string {
     return new BigNumber(`0b${input}`).toString()
   }
@@ -14,7 +15,7 @@ describe('AaveUserConfiguration', () => {
     assetName: string,
     isCollateral: boolean,
     isBorrowed: boolean,
-    results: AaveUserConfigurationResult[],
+    results: SparkUserConfigurationResult[],
   ) {
     const interestingRow = results.find((row) => row.asset === asset && row.assetName === assetName)
 
@@ -39,7 +40,7 @@ describe('AaveUserConfiguration', () => {
       '0x reserve that is used as debt and collateral': 'D',
     }
 
-    const results = createAaveUserConfiguration([userConfig], reservesList, dictionary)
+    const results = createSparkUserConfiguration([userConfig], reservesList, dictionary)
     // console.log(results)
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as debt', 'B', false, true, results)
@@ -64,7 +65,7 @@ describe('AaveUserConfiguration', () => {
       '0x reserve that is used as neither debt nor collateral': 'C',
     }
 
-    const results = createAaveUserConfiguration([userConfig], reservesList, dictionary)
+    const results = createSparkUserConfiguration([userConfig], reservesList, dictionary)
     // console.log(results)
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as debt', 'B', false, true, results)
@@ -88,7 +89,7 @@ describe('AaveUserConfiguration', () => {
       '0x reserve that is used as debt only': 'C',
     }
 
-    const results = createAaveUserConfiguration([userConfig], reservesList, dictionary)
+    const results = createSparkUserConfiguration([userConfig], reservesList, dictionary)
 
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as collateral and debt', 'B', true, true, results)

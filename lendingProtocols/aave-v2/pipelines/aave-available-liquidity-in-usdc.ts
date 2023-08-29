@@ -5,7 +5,7 @@ import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-export function aaveAvailableLiquidityInUSDC$(
+export function aaveLikeAvailableLiquidityInUSDC$(
   getReserveData$: (args: AaveV2ReserveDataParameters) => Observable<AaveV2ReserveDataReply>,
   getAssetPrice$: (args: AaveV2GetAssetPriceParameters) => Observable<BigNumber>,
   getUSDCPriceInEth$: Observable<BigNumber>,

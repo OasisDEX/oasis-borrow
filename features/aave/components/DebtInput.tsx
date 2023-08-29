@@ -1,4 +1,4 @@
-import { NORMALISED_PRECISION } from 'actions/aave'
+import { NORMALISED_PRECISION } from 'actions/aave-like'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromPrecision } from 'blockchain/utils'
 import { MessageCard } from 'components/MessageCard'

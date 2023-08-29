@@ -151,13 +151,17 @@ function buildAaveViewModel(
   const resolvedAaveServices = observables.aaveV2
 
   return combineLatest(
-    resolvedAaveServices.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-    resolvedAaveServices.getAaveAssetsPrices$({
+    resolvedAaveServices.aaveLikeProtocolData$(
+      collateralTokenSymbol,
+      debtTokenSymbol,
+      proxyAddress,
+    ),
+    resolvedAaveServices.getAaveLikeAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
     observables.tickerPrices$([debtTokenSymbol]),
-    resolvedAaveServices.getAaveReserveData$({ token: debtTokenSymbol }),
-    resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
+    resolvedAaveServices.getAaveLikeReserveData$({ token: debtTokenSymbol }),
+    resolvedAaveServices.aaveLikeAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
     isAddress(positionId)
@@ -272,17 +276,17 @@ function buildAaveV3OnlyViewModel(
   }
 
   return combineLatest(
-    services.aaveProtocolData$(
+    services.aaveLikeProtocolData$(
       strategyConfig.tokens.collateral,
       strategyConfig.tokens.debt,
       proxyAddress,
     ),
-    services.getAaveAssetsPrices$({
+    services.getAaveLikeAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
     tickerPrices$([debtTokenSymbol]),
-    services.getAaveReserveData$({ token: debtTokenSymbol }),
-    services.aaveAvailableLiquidityInUSDC$({
+    services.getAaveLikeReserveData$({ token: debtTokenSymbol }),
+    services.aaveLikeAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
     automationTriggersData$(new BigNumber(positionId)),
@@ -382,7 +386,7 @@ type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCrea
 
 function getStethEthAaveV2DsProxyEarnPosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
-  aaveProtocolData$: (
+  aaveLikeProtocolData$: (
     collateralToken: string,
     debtToken: string,
     address: string,
@@ -395,7 +399,7 @@ function getStethEthAaveV2DsProxyEarnPosition$(
         return of([])
       }
 
-      return aaveProtocolData$('STETH', 'ETH', dsProxyAddress).pipe(
+      return aaveLikeProtocolData$('STETH', 'ETH', dsProxyAddress).pipe(
         map((avp) => {
           if (avp && avp.position.collateral.amount.gt(zero)) {
             return [
@@ -438,7 +442,7 @@ export function createAaveV2Position$(
             proxyAddressesProvider.userDpmProxies$(walletAddress),
             getStethEthAaveV2DsProxyEarnPosition$(
               proxyAddressesProvider,
-              aaveV2.aaveProtocolData$,
+              aaveV2.aaveLikeProtocolData$,
               walletAddress,
             ),
           ).pipe(
