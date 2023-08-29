@@ -15,7 +15,6 @@ import {
   DiscoverTableStatusRowData,
 } from 'features/discover/types'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import i18n from 'i18next'
 import React, { ReactNode } from 'react'
 import { Trans } from 'react-i18next'
 import { timeAgo } from 'utils'
@@ -92,8 +91,6 @@ function ParseDiscoverCellData({ kind, label, lang, row }: ParseDiscoverCellData
       )
     case 'activity':
       const activity = row.activity as DiscoverTableActivityRowData
-      console.log(i18n)
-
       return (
         <AssetsTableDataCellPill color={getActivityPillColor(activity)}>
           <Trans
