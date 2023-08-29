@@ -1,5 +1,4 @@
-import { MainNetworkNames } from './networks'
-import { getToken, getTokens, getTokensWithChain, tokens } from './tokensMetadata'
+import { getToken, getTokens, tokens } from './tokensMetadata'
 
 const tokenKeys = [
   'symbol',
@@ -13,7 +12,6 @@ const tokenKeys = [
   'bannerIcon',
   'bannerGif',
   'tags',
-  'chain',
 ]
 
 describe('tokens metadata', () => {
@@ -31,15 +29,6 @@ describe('tokens metadata', () => {
   })
   it('should return metadata for multiple tokens', () => {
     getTokens(tokens.map((token) => token.symbol)).forEach((tokenData) => {
-      const keys = Object.keys(tokenData)
-      expect(keys).toEqual(expect.arrayContaining(tokenKeys))
-    })
-  })
-  it('should return metadata for multiple tokens, filtering the chain', () => {
-    getTokensWithChain(
-      tokens.map((token) => token.symbol),
-      MainNetworkNames.ethereumMainnet,
-    ).forEach((tokenData) => {
       const keys = Object.keys(tokenData)
       expect(keys).toEqual(expect.arrayContaining(tokenKeys))
     })
