@@ -1,4 +1,4 @@
-import { AAVETokens, IPosition, strategies } from '@oasisdex/dma-library'
+import { AAVETokens, IPosition, views } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { GetOnChainPositionParams } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
@@ -24,29 +24,38 @@ export async function getOnChainPosition({
     precision: getToken(debtToken).precision,
   }
 
-  const addresses = getAddresses(networkId)
-
-  if (protocol === LendingProtocol.AaveV3) {
-    return await strategies.aave.v3.view(
-      {
-        proxy: proxyAddress,
-        collateralToken: _collateralToken,
-        debtToken: _debtToken,
-      },
-      { addresses, provider },
-    )
+  switch (protocol) {
+    case LendingProtocol.AaveV2:
+      const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+      return await views.aave.v2(
+        {
+          proxy: proxyAddress,
+          collateralToken: _collateralToken,
+          debtToken: _debtToken,
+        },
+        { addresses: addressesV2, provider },
+      )
+    case LendingProtocol.AaveV3:
+      const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+      return await views.aave.v3(
+        {
+          proxy: proxyAddress,
+          collateralToken: _collateralToken,
+          debtToken: _debtToken,
+        },
+        { addresses: addressesV3, provider },
+      )
+    case LendingProtocol.SparkV3:
+      const addressesSpark = getAddresses(networkId, LendingProtocol.SparkV3)
+      return await views.spark(
+        {
+          proxy: proxyAddress,
+          collateralToken: _collateralToken,
+          debtToken: _debtToken,
+        },
+        { addresses: addressesSpark, provider },
+      )
+    default:
+      throw new Error('Protocol not supported')
   }
-
-  if (protocol === LendingProtocol.AaveV2) {
-    return await strategies.aave.v2.view(
-      {
-        proxy: proxyAddress,
-        collateralToken: _collateralToken,
-        debtToken: _debtToken,
-      },
-      { addresses, provider },
-    )
-  }
-
-  throw new Error('Protocol not supported')
 }
