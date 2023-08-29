@@ -29,7 +29,10 @@ export async function getOpenDepositBorrowPositionParameters(
 
   assertNetwork(networkId)
 
-  const aaveLikeArgs = {
+  type types = Parameters<typeof strategies.aave.borrow.v3.openDepositBorrow> &
+    Parameters<typeof strategies.spark.borrow.openDepositBorrow>
+
+  const aaveLikeArgs: types[0] = {
     slippage,
     collateralToken: {
       symbol: collateralToken,
@@ -47,8 +50,7 @@ export async function getOpenDepositBorrowPositionParameters(
     },
   }
 
-  const aaveLikeDeps = {
-    // addresses: getTokenAddresses(networkId),
+  const aaveLikeDeps: Omit<types[1], 'addresses' | 'protocolType'> = {
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,
     user: userAddress,
@@ -58,46 +60,18 @@ export async function getOpenDepositBorrowPositionParameters(
 
   switch (args.protocol) {
     case LendingProtocol.AaveV2:
+      throw new Error('New Aave V2 positions are no longer supported')
+    case LendingProtocol.AaveV3:
       return await strategies.aave.borrow.v3.openDepositBorrow(aaveLikeArgs, {
         ...aaveLikeDeps,
         addresses: getAddresses(networkId, LendingProtocol.AaveV2),
       })
-    case LendingProtocol.AaveV3:
-    // Do stuff
     case LendingProtocol.SparkV3:
-    // Do stuff
+      return await strategies.spark.borrow.openDepositBorrow(aaveLikeArgs, {
+        ...aaveLikeDeps,
+        addresses: getAddresses(networkId, LendingProtocol.SparkV3),
+      })
     default:
       throw new Error('Invalid protocol')
   }
-
-  // type types = Parameters<typeof strategies.aave.v3.openDepositBorrow>
-  //
-  // const libArgs: types[0] = {
-  //   slippage,
-  //   collateralToken: {
-  //     symbol: collateralToken,
-  //     precision: getToken(collateralToken).precision,
-  //   },
-  //   debtToken: {
-  //     symbol: debtToken,
-  //     precision: getToken(debtToken).precision,
-  //   },
-  //   amountCollateralToDepositInBaseUnit: amountToWei(collateralAmount, collateralToken),
-  //   amountDebtToBorrowInBaseUnit: amountToWei(borrowAmount, debtToken),
-  //   entryToken: {
-  //     symbol: collateralToken,
-  //     precision: getToken(collateralToken).precision,
-  //   },
-  // }
-  //
-  // const deps: types[1] = {
-  //   addresses: getTokenAddresses(networkId),
-  //   provider: getRpcProvider(networkId),
-  //   proxy: proxyAddress,
-  //   user: userAddress,
-  //   network: networkIdToLibraryNetwork(networkId),
-  //   positionType: 'Borrow' as const,
-  // }
-  //
-  // return await strategies.aave.v3.openDepositBorrow(libArgs, deps)
 }
