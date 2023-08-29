@@ -7,8 +7,8 @@ import {
   mainContext,
   MainContextProvider,
   productContext,
-  ProductContextHandler,
 } from 'components/context'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { WithChildren } from 'helpers/types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
@@ -29,19 +29,24 @@ jest.mock('./setup-aave-v3-context', () => {
   }
 })
 
+jest.mock('./setup-spark-v3-context', () => {
+  return {
+    setupSparkV3Context: jest.fn(() => ({} as AaveContext)),
+  }
+})
+
 describe('AaveContextProvider', () => {
+  const context = { protocols: {} } as ProductContext
   const wrapper = ({ children }: WithChildren) => (
     <MainContextProvider>
       <DeferedContextProvider context={mainContext}>
         <AccountContextProvider>
           <DeferedContextProvider context={accountContext}>
-            <ProductContextHandler>
-              <DeferedContextProvider context={productContext}>
-                <AaveContextProvider>
-                  <DeferedContextProvider context={aaveContext}>{children}</DeferedContextProvider>
-                </AaveContextProvider>
-              </DeferedContextProvider>
-            </ProductContextHandler>
+            <productContext.Provider value={context}>
+              <AaveContextProvider>
+                <DeferedContextProvider context={aaveContext}>{children}</DeferedContextProvider>
+              </AaveContextProvider>
+            </productContext.Provider>
           </DeferedContextProvider>
         </AccountContextProvider>
       </DeferedContextProvider>
