@@ -40,10 +40,8 @@ export async function getCloseAaveParameters({
   }
 
   const stratDeps: Omit<closeParameters[1], 'addresses' | 'getSwapData'> = {
-    // addresses,
     currentPosition,
     provider: getRpcProvider(networkId),
-    // getSwapData: swapCall(addresses, networkId),
     proxy: proxyAddress,
     user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
