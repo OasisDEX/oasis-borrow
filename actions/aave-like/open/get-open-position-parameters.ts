@@ -1,5 +1,5 @@
 import { AAVETokens, IRiskRatio, PositionTransition, strategies } from '@oasisdex/dma-library'
-import { getTokenAddresses } from 'actions/aave-like/get-token-addresses'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
 import { OpenMultiplyAaveParameters } from 'actions/aave-like/types'
@@ -43,7 +43,7 @@ async function openPosition(
     positionType: positionType,
   }
 
-  const addresses = getTokenAddresses(networkId)
+  const addresses = getAddresses(networkId)
 
   const dependencies: Parameters<typeof strategies.aave.v2.open>[1] &
     Parameters<typeof strategies.aave.v3.open>[1] = {

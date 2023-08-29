@@ -1,5 +1,5 @@
 import { AAVETokens, PositionTransition, strategies } from '@oasisdex/dma-library'
-import { getTokenAddresses } from 'actions/aave-like/get-token-addresses'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
 import { CloseAaveParameters } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
@@ -27,7 +27,7 @@ export async function getCloseAaveParameters({
     precision: currentPosition.debt.precision,
   }
 
-  const addresses = getTokenAddresses(networkId)
+  const addresses = getAddresses(networkId)
 
   type closeParameters =
     | Parameters<typeof strategies.aave.v2.close>

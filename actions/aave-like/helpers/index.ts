@@ -1,5 +1,5 @@
 import { Network } from '@oasisdex/dma-library'
-import { getTokenAddresses } from 'actions/aave-like/get-token-addresses'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
 import { getOneInchCall } from 'helpers/swap'
 
@@ -28,7 +28,7 @@ export function networkIdToLibraryNetwork(networkId: NetworkIds): Network {
 }
 
 export function swapCall(
-  { swapAddress }: Pick<ReturnType<typeof getTokenAddresses>, 'swapAddress'>,
+  { swapAddress }: Pick<ReturnType<typeof getAddresses>, 'swapAddress'>,
   network: NetworkIds,
 ) {
   const oneInchVersion = [NetworkIds.OPTIMISMMAINNET, NetworkIds.ARBITRUMMAINNET].includes(network)
