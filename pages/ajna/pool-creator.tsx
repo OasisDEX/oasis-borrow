@@ -1,4 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
+import { ProductContextHandler } from 'components/context'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoolCreatorController'
@@ -16,15 +17,17 @@ function AjnaPoolCreatorPage() {
         description="seo.ajnaPoolCreator.description"
         url={`/ajna/pool-creator`}
       />
-      <WithConnection>
-        <WithTermsOfService>
-          <WithWalletAssociatedRisk>
-            <WithFeatureToggleRedirect feature="AjnaPoolFinder">
-              <AjnaPoolCreatorController />
-            </WithFeatureToggleRedirect>
-          </WithWalletAssociatedRisk>
-        </WithTermsOfService>
-      </WithConnection>
+      <ProductContextHandler>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <WithFeatureToggleRedirect feature="AjnaPoolFinder">
+                <AjnaPoolCreatorController />
+              </WithFeatureToggleRedirect>
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithConnection>
+      </ProductContextHandler>
     </>
   )
 }
