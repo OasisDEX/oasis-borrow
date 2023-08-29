@@ -30,7 +30,12 @@ import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
-import { hasBorrowProductType, hasMultiplyProductType, TokenPairConfig } from './common'
+import {
+  hasBorrowProductType,
+  hasEarnProductType,
+  hasMultiplyProductType,
+  TokenPairConfig,
+} from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [
   {
@@ -463,7 +468,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     debt: 'USDC',
     strategyType: StrategyType.Long,
     productTypes: {
-      [ProductType.Multiply]: {
+      [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [
           {
@@ -476,7 +481,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         featureToggle: undefined,
         additionalManageActions: [
           {
-            action: 'switch-to-multiply',
+            action: 'switch-to-earn',
             featureToggle: undefined,
           },
         ],
@@ -488,7 +493,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     debt: 'GHO',
     strategyType: StrategyType.Long,
     productTypes: {
-      [ProductType.Multiply]: {
+      [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [
           {
@@ -501,7 +506,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         featureToggle: undefined,
         additionalManageActions: [
           {
-            action: 'switch-to-multiply',
+            action: 'switch-to-earn',
             featureToggle: undefined,
           },
         ],
@@ -513,7 +518,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     debt: 'LUSD',
     strategyType: StrategyType.Long,
     productTypes: {
-      [ProductType.Multiply]: {
+      [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [
           {
@@ -526,7 +531,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         featureToggle: undefined,
         additionalManageActions: [
           {
-            action: 'switch-to-multiply',
+            action: 'switch-to-earn',
             featureToggle: undefined,
           },
         ],
@@ -538,7 +543,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     debt: 'FRAX',
     strategyType: StrategyType.Long,
     productTypes: {
-      [ProductType.Multiply]: {
+      [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [
           {
@@ -551,7 +556,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         featureToggle: undefined,
         additionalManageActions: [
           {
-            action: 'switch-to-multiply',
+            action: 'switch-to-earn',
             featureToggle: undefined,
           },
         ],
@@ -656,9 +661,59 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
     }
   })
 
+const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
+  .filter(hasEarnProductType)
+  .filter((config) => config.collateral === 'SDAI')
+  .map((config) => {
+    return {
+      network: NetworkNames.ethereumMainnet,
+      networkId: NetworkIds.MAINNET,
+      networkHexId: ethereumMainnetHexId,
+      name: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}V3`,
+      urlSlug: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}`,
+      proxyType: ProxyType.DpmProxy,
+      viewComponents: {
+        headerOpen: AaveOpenHeader,
+        headerManage: AaveManageHeader,
+        headerView: AaveManageHeader,
+        simulateSection: AaveMultiplyManageComponent,
+        vaultDetailsManage: AaveMultiplyManageComponent,
+        vaultDetailsView: AaveMultiplyManageComponent,
+        secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        positionInfo: AaveMultiplyFaq,
+        sidebarTitle: 'open-multiply.sidebar.title',
+        sidebarButton: 'open-multiply.sidebar.open-btn',
+      },
+      tokens: {
+        collateral: config.collateral,
+        debt: config.debt,
+        deposit: config.collateral,
+      },
+      riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+      type: ProductType.Earn,
+      protocol: LendingProtocol.AaveV3,
+      availableActions: () => {
+        const additionalAction =
+          config.productTypes.Earn.additionalManageActions
+            ?.filter(({ featureToggle }) => {
+              const isFeatureEnabled =
+                featureToggle === undefined || getFeatureToggle(featureToggle)
+              return isFeatureEnabled
+            })
+            .map(({ action }) => action) ?? []
+        return [...allActionsAvailableInMultiply, ...additionalAction]
+      },
+      executeTransactionWith: 'ethers',
+      strategyType: config.strategyType,
+      featureToggle: config.productTypes.Earn.featureToggle,
+    }
+  })
+
 export const ethereumAaveV3Strategies: IStrategyConfig[] = [
   ...borrowStrategies,
   ...multiplyStategies,
+  ...sdaiEarnStrategies,
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,
