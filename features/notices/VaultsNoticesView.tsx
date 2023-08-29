@@ -532,7 +532,7 @@ function getProtocolServices(
   }
   const networkId = networksByName[strategyConfig.network].id
   ensureIsSupportedAaveV3NetworkId(networkId)
-  return protocols[strategyConfig.protocol][networkId]
+  return protocols[strategyConfig.protocol as LendingProtocol.AaveV3][networkId] // this isnt a thing on Spark V3
 }
 
 export function AavePositionNoticesView() {
