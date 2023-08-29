@@ -73,6 +73,18 @@ export function AjnaBorrowFormController() {
                       updateState('action', 'switch-borrow')
                     },
                   },
+                  {
+                    label: t('system.actions.common.close-position'),
+                    icon: 'circle_close',
+                    iconShrink: 2,
+                    panel: 'close',
+                    action: () => {
+                      dispatch({ type: 'reset' })
+                      updateState('uiDropdown', 'close')
+                      updateState('closeTo', 'collateral')
+                      updateState('action', 'close-multiply')
+                    },
+                  },
                 ]
               : []),
           ],

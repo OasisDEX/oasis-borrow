@@ -116,11 +116,13 @@ type AjnaProductContextWithBorrow = AjnaProductContext<
   ReturnType<typeof useAjnaBorrowFormReducto>,
   AjnaBorrowishPositionAuction
 >
+
 type AjnaProductContextWithEarn = AjnaProductContext<
   AjnaEarnPosition,
   ReturnType<typeof useAjnaEarnFormReducto>,
   AjnaEarnPositionAuction
 >
+
 type AjnaProductContextWithMultiply = AjnaProductContext<
   AjnaPosition,
   ReturnType<typeof useAjnaMultiplyFormReducto>,

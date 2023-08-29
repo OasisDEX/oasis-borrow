@@ -1,5 +1,6 @@
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
+import { AjnaProduct } from 'features/ajna/common/types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
@@ -9,7 +10,11 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
-export function AjnaMultiplyFormContentClose() {
+interface Props {
+  product: 'borrow' | 'multiply'
+}
+
+export function AjnaMultiplyFormContentClose(props: Props) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, collateralPrice, quoteToken, quotePrice },
@@ -24,7 +29,7 @@ export function AjnaMultiplyFormContentClose() {
       swap,
       isSimulationLoading,
     },
-  } = useAjnaProductContext('multiply')
+  } = useAjnaProductContext(props.product)
   const closeToToken = closeTo === 'collateral' ? collateralToken : quoteToken
 
   const collateralOnClose = swap?.current

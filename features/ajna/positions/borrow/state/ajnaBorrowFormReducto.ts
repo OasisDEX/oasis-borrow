@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
+import { AjnaBorrowAction, AjnaBorrowPanel, AjnaCloseTo } from 'features/ajna/common/types'
 import {
   AjnaFormActionsReset,
   AjnaFormActionsUpdateDeposit,
@@ -25,6 +25,7 @@ export interface AjnaBorrowFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   uiDropdown: AjnaBorrowPanel
+  closeTo: AjnaCloseTo
   uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
 }
 
@@ -56,6 +57,7 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'collateral',
   uiPill: 'deposit-borrow',
+  closeTo: 'collateral',
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
