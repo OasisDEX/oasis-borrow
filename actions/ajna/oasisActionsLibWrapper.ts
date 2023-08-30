@@ -10,7 +10,7 @@ import {
   ajnaPaybackWithdrawBorrow,
 } from 'actions/ajna/borrow'
 import { ajnaClaimEarn, ajnaDepositEarn, ajnaOpenEarn, ajnaWithdrawEarn } from 'actions/ajna/earn'
-import { ajnaAdjustMultiply, ajnaCloseMultiply, ajnaOpenMultiply } from 'actions/ajna/multiply'
+import { ajnaAdjust, ajnaClose, ajnaOpenMultiply } from 'actions/ajna/multiply'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
@@ -82,6 +82,18 @@ export async function getAjnaParameters({
     quotePrice,
   }
 
+  console.log(`
+  
+  
+  
+  
+  
+  action ${action}
+  
+  
+  
+  `);
+
   if (!isFormValid || !walletAddress) {
     return defaultPromise
   }
@@ -137,7 +149,7 @@ export async function getAjnaParameters({
       })
     }
     case 'adjust': {
-      return ajnaAdjustMultiply({
+      return ajnaAdjust({
         state,
         commonPayload,
         dependencies,
@@ -152,7 +164,7 @@ export async function getAjnaParameters({
       const { loanToValue } = state
 
       if (loanToValue) {
-        return ajnaAdjustMultiply({
+        return ajnaAdjust({
           state,
           commonPayload,
           dependencies,
@@ -182,7 +194,7 @@ export async function getAjnaParameters({
       }
 
       if (loanToValue) {
-        return ajnaAdjustMultiply({
+        return ajnaAdjust({
           state: resolvedState,
           commonPayload,
           dependencies,
@@ -205,8 +217,9 @@ export async function getAjnaParameters({
       // TODO here handling for complex action once available
       return defaultPromise
     }
+    case 'close-borrow':
     case 'close-multiply': {
-      return ajnaCloseMultiply({
+      return ajnaClose({
         state,
         commonPayload,
         dependencies,

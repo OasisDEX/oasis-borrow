@@ -24,8 +24,9 @@ export interface AjnaBorrowFormState {
   paybackAmountMax: boolean
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  uiDropdown: AjnaBorrowPanel
+  loanToValue?: BigNumber
   closeTo: AjnaCloseTo
+  uiDropdown: AjnaBorrowPanel
   uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
 }
 

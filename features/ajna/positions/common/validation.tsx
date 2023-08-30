@@ -147,6 +147,8 @@ function isFormValid({
               return !!paybackAmount?.gt(0) || !!withdrawAmount?.gt(0)
             case 'switch-borrow':
               return true
+            case 'close-borrow':
+              return true
             default:
               return false
           }

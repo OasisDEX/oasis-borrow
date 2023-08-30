@@ -82,7 +82,7 @@ export function AjnaBorrowFormController() {
                       dispatch({ type: 'reset' })
                       updateState('uiDropdown', 'close')
                       updateState('closeTo', 'collateral')
-                      updateState('action', 'close-multiply')
+                      updateState('action', 'close-borrow')
                     },
                   },
                 ]

@@ -145,17 +145,18 @@ type PickProductType<T extends AjnaProduct> = T extends 'borrow'
 
 export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickProductType<T> {
   const { environment } = useAjnaGeneralContext()
+  
   const context =
-    product === 'borrow'
+  environment.product === 'borrow'
       ? useContext(ajnaBorrowContext)
-      : product === 'earn'
+      : environment.product === 'earn'
       ? useContext(ajnaEarnContext)
       : useContext(ajnaMultiplyContext)
 
-  if (product !== environment.product)
-    throw new Error(
-      `AjnaGeneralContext and AjnaProductContext products doesn't match: ${environment.product}/${product}`,
-    )
+  // if (product !== environment.product)
+  //   throw new Error(
+  //     `AjnaGeneralContext and AjnaProductContext products doesn't match: ${environment.product}/${product}`,
+  //   )
   if (!context) throw new Error('AjnaProductContext not available!')
   return context as PickProductType<T>
 }

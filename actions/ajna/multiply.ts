@@ -11,6 +11,7 @@ import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { AjnaGenericPosition } from 'features/ajna/common/types'
+import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
@@ -84,7 +85,7 @@ export const ajnaOpenMultiply = ({
   )
 }
 
-export const ajnaAdjustMultiply = ({
+export const ajnaAdjust = ({
   state,
   commonPayload,
   dependencies,
@@ -93,7 +94,7 @@ export const ajnaAdjustMultiply = ({
   collateralToken,
   quoteToken,
 }: {
-  state: AjnaMultiplyFormState
+  state: AjnaMultiplyFormState | AjnaBorrowFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
@@ -133,7 +134,7 @@ export const ajnaAdjustMultiply = ({
   )
 }
 
-export const ajnaCloseMultiply = ({
+export const ajnaClose = ({
   state,
   commonPayload,
   dependencies,
@@ -142,7 +143,7 @@ export const ajnaCloseMultiply = ({
   collateralToken,
   quoteToken,
 }: {
-  state: AjnaMultiplyFormState
+  state: AjnaMultiplyFormState | AjnaBorrowFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition

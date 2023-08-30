@@ -10,11 +10,16 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
-export function AjnaMultiplyFormContentClose() {
+export function AjnaBorrowFormContentClose() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, collateralPrice, quoteToken, quotePrice },
+    environment: { collateralToken, collateralPrice, quoteToken, quotePrice, product },
   } = useAjnaGeneralContext()
+
+  if (product === 'earn') {
+    return null
+  }
+
   const {
     form: {
       state: { closeTo },
@@ -25,7 +30,7 @@ export function AjnaMultiplyFormContentClose() {
       swap,
       isSimulationLoading,
     },
-  } = useAjnaProductContext('multiply')
+  } = useAjnaProductContext('borrow')
   const closeToToken = closeTo === 'collateral' ? collateralToken : quoteToken
 
   const collateralOnClose = swap?.current

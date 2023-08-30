@@ -28,8 +28,12 @@ export function getIsFormEmpty({
 }: GetIsFormEmptyParams): boolean {
   switch (product) {
     case 'borrow': {
-      const { depositAmount, generateAmount, paybackAmount, withdrawAmount } =
+      const { depositAmount, generateAmount, paybackAmount, withdrawAmount, action } =
         state as AjnaBorrowFormState
+
+        if (action === 'close-borrow') {
+          return false
+        }
 
       return !depositAmount && !generateAmount && !paybackAmount && !withdrawAmount
     }

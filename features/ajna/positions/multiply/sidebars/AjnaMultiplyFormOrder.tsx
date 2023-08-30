@@ -59,6 +59,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       'deposit-quote-multiply',
       'withdraw-multiply',
       'close-multiply',
+      'close-borrow',
     ].includes(action)
 
   const withBuying =
