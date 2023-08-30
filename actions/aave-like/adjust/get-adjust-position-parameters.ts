@@ -1,5 +1,5 @@
 import { AAVETokens, PositionTransition, strategies } from '@oasisdex/dma-library'
-import { getTokenAddresses } from 'actions/aave-like/get-token-addresses'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
 import { AdjustAaveParameters } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
@@ -30,14 +30,16 @@ export async function getAdjustPositionParameters({
       precision: currentPosition.debt.precision,
     }
 
-    type strategyArguments = Parameters<typeof strategies.aave.v2.adjust>[0] &
-      Parameters<typeof strategies.aave.v3.adjust>[0]
-    type strategyDependencies = Parameters<typeof strategies.aave.v2.adjust>[1] &
-      Parameters<typeof strategies.aave.v3.adjust>[1]
+    type AaveLikeStrategyArgs = Parameters<typeof strategies.aave.multiply.v2.adjust>[0] &
+      Parameters<
+        typeof strategies.aave.multiply.v3.adjust
+      >[0] /*& Parameters<typeof strategies.spark.multiply.adjust>[0]*/
+    type AaveLikeStrategyDeps = Parameters<typeof strategies.aave.multiply.v2.adjust>[1] &
+      Parameters<
+        typeof strategies.aave.multiply.v3.adjust
+      >[1] /*& Parameters<typeof strategies.spark.multiply.adjust>[1]*/
 
-    const addresses = getTokenAddresses(networkId)
-
-    const args: strategyArguments = {
+    const args: AaveLikeStrategyArgs = {
       slippage,
       multiple: riskRatio,
       debtToken: debtToken,
@@ -45,11 +47,9 @@ export async function getAdjustPositionParameters({
       positionType,
     }
 
-    const stratDeps: strategyDependencies = {
-      addresses,
+    const stratDeps: Omit<AaveLikeStrategyDeps, 'addresses' | 'getSwapData'> = {
       currentPosition,
       provider: provider,
-      getSwapData: swapCall(addresses, networkId),
       proxy: proxyAddress,
       user: userAddress,
       isDPMProxy: proxyType === ProxyType.DpmProxy,
@@ -58,9 +58,23 @@ export async function getAdjustPositionParameters({
 
     switch (protocol) {
       case LendingProtocol.AaveV2:
-        return await strategies.aave.v2.adjust(args, stratDeps)
+        const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+        return await strategies.aave.multiply.v2.adjust(args, {
+          ...stratDeps,
+          addresses: addressesV2,
+          getSwapData: swapCall(addressesV2, networkId),
+        })
       case LendingProtocol.AaveV3:
-        return await strategies.aave.v3.adjust(args, stratDeps)
+        const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+        return await strategies.aave.multiply.v3.adjust(args, {
+          ...stratDeps,
+          addresses: addressesV3,
+          getSwapData: swapCall(addressesV3, networkId),
+        })
+      case LendingProtocol.SparkV3:
+        throw new Error('SparkV3 not implemented')
+      default:
+        throw new Error('Invalid protocol')
     }
   } catch (e) {
     console.error(e)

@@ -125,9 +125,9 @@ export const mainnetContracts = {
   } as Record<string, string>,
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    mainnet.aave.v2.ProtocolDataProvider,
+    mainnet.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
@@ -149,18 +149,12 @@ export const mainnetContracts = {
     mainnet.mpa.core.AccountGuard,
     ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    mainnet.aave.v3.AavePoolDataProvider,
-  ),
-  sparkV3Pool: contractDesc(sparkV3Pool, mainnet.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, mainnet.aave.v3.AaveOracle),
-  sparkV3PoolDataProvider: contractDesc(
-    sparkV3PoolDataProvider,
-    mainnet.aave.v3.AavePoolDataProvider,
-  ),
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(sparkV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, mainnet.aave.v3.Oracle),
+  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
   // TODO ajna addresses to be updated
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, mainnet.ajna.AjnaProxyActions),

@@ -136,9 +136,9 @@ export const goerliContracts: MainnetContracts = {
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    goerli.aave.v2.ProtocolDataProvider,
+    goerli.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, goerli.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, goerli.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_ETHUSD),
@@ -161,15 +161,12 @@ export const goerliContracts: MainnetContracts = {
     goerli.mpa.core.AccountGuard,
     ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.AavePoolDataProvider),
-  sparkV3Pool: contractDesc(sparkV3Pool, goerli.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, goerli.aave.v3.AaveOracle),
-  sparkV3PoolDataProvider: contractDesc(
-    sparkV3PoolDataProvider,
-    goerli.aave.v3.AavePoolDataProvider,
-  ),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(sparkV3Pool, goerli.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, goerli.aave.v3.Oracle),
+  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, goerli.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
