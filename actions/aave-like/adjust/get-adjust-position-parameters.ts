@@ -55,7 +55,7 @@ export async function getAdjustPositionParameters({
       isDPMProxy: proxyType === ProxyType.DpmProxy,
       network: networkIdToLibraryNetwork(networkId),
     }
-    
+
     switch (protocol) {
       case LendingProtocol.AaveV2:
         const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)

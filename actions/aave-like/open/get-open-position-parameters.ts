@@ -30,7 +30,7 @@ async function openPosition(
   protocol: AaveLikeLendingProtocol,
 ) {
   assertProtocol(protocol)
-  
+
   const network = networkIdToLibraryNetwork(networkId)
 
   type OpenAaveLikeMultiplyPositionParams = Parameters<typeof strategies.aave.multiply.v2.open> &
