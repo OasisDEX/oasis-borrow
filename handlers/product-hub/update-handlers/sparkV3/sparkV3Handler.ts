@@ -1,41 +1,32 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import {
-  AaveV3SupportedNetwork,
-  getAaveV3ReserveConfigurationData,
-  getAaveV3ReserveData,
-} from 'blockchain/aave-v3'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
-import dayjs from 'dayjs'
+import {
+  getSparkV3ReserveConfigurationData,
+  getSparkV3ReserveData,
+  SparkV3SupportedNetwork,
+} from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { ProductHubProductType } from 'features/productHub/types'
-import { GraphQLClient } from 'graphql-request'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
-import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
-import { curry } from 'ramda'
 
-import { aaveV3ProductHubProducts } from './aaveV3Products'
+import { sparkV3ProductHubProducts } from './sparkV3Products'
 
-type AaveV3Networks =
-  | NetworkNames.ethereumMainnet
-  | NetworkNames.arbitrumMainnet
-  | NetworkNames.optimismMainnet
+type SparkV3Networks = NetworkNames.ethereumMainnet
 
 const networkNameToIdMap = {
   [NetworkNames.ethereumMainnet]: NetworkIds.MAINNET,
-  [NetworkNames.arbitrumMainnet]: NetworkIds.ARBITRUMMAINNET,
-  [NetworkNames.optimismMainnet]: NetworkIds.OPTIMISMMAINNET,
 }
 
-const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers) => {
-  const currentNetworkProducts = aaveV3ProductHubProducts.filter(
+const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Tickers) => {
+  const currentNetworkProducts = sparkV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
-  const networkId = networkNameToIdMap[networkName] as AaveV3SupportedNetwork
+  const networkId = networkNameToIdMap[networkName] as SparkV3SupportedNetwork
   const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
   const primaryTokensList = [
     ...new Set(
@@ -53,7 +44,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   ]
   // reserveData -> liq available and variable fee
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
-    const reserveData = await getAaveV3ReserveData({ token, networkId })
+    const reserveData = await getSparkV3ReserveData({ token, networkId })
     return {
       [token]: {
         liquidity: reserveData.totalAToken
@@ -67,7 +58,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
 
   // reserveData -> max multiple
   const tokensReserveConfigurationDataPromises = primaryTokensList.map(async (token) => {
-    const reserveConfigurationData = await getAaveV3ReserveConfigurationData({ token, networkId })
+    const reserveConfigurationData = await getSparkV3ReserveConfigurationData({ token, networkId })
     return {
       [token]: {
         maxLtv: reserveConfigurationData.ltv,
@@ -89,22 +80,18 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // mainnet
-  const aaveV3NetworksList = [
-    ...new Set(aaveV3ProductHubProducts.map((product) => product.network)),
+  const sparkV3NetworksList = [
+    ...new Set(sparkV3ProductHubProducts.map((product) => product.network)),
   ]
-  const getAaveV3TokensDataPromises = aaveV3NetworksList.map((networkName) =>
-    getAaveV3TokensData(networkName as AaveV3Networks, tickers),
-  )
-  const graphQlProvider = new GraphQLClient(
-    getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
+  const getSparkV3TokensDataPromises = sparkV3NetworksList.map((networkName) =>
+    getSparkV3TokensData(networkName as SparkV3Networks, tickers),
   )
 
   const yieldsPromisesMap: Record<
     string,
     (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
   > = {
-    // a crude map, but it works for now since we only have one earn product
-    'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
+    'WSTETH/ETH': emptyYields,
     'CBETH/ETH': emptyYields,
     'RETH/ETH': emptyYields,
     'SDAI/GHO': emptyYields,
@@ -113,16 +100,19 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     'SDAI/FRAX': emptyYields,
   }
   // getting the APYs
-  const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>
+  const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await getAaveV3TokensData(product.network as AaveV3Networks, tickers)
+    const tokensReserveData = await getSparkV3TokensData(
+      product.network as SparkV3Networks,
+      tickers,
+    )
 
     const riskRatio =
       product.label === 'WSTETH/ETH'
         ? wstethRiskRatio
-        : tokensReserveData[product.network as AaveV3Networks].tokensReserveConfigurationData.find(
+        : tokensReserveData[product.network as SparkV3Networks].tokensReserveConfigurationData.find(
             (data) => data[product.primaryToken],
           )![product.primaryToken].riskRatio
     const response = await yieldsPromisesMap[product.label as keyof typeof yieldsPromisesMap](
@@ -134,16 +124,16 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     }
   })
   return Promise.all([
-    Promise.all(getAaveV3TokensDataPromises),
+    Promise.all(getSparkV3TokensDataPromises),
     Promise.all(earnProductsPromises),
-  ]).then(([aaveV3TokensDataList, earnProductsYields]) => {
-    const aaveV3TokensData = aaveV3TokensDataList.reduce((acc, curr) => {
+  ]).then(([sparkV3TokensDataList, earnProductsYields]) => {
+    const sparkV3TokensData = sparkV3TokensDataList.reduce((acc, curr) => {
       return { ...acc, ...curr }
     }, {})
     return {
-      table: aaveV3ProductHubProducts.map((product) => {
+      table: sparkV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =
-          aaveV3TokensData[product.network]
+          sparkV3TokensData[product.network]
         const { secondaryToken, primaryToken, label } = product
         const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
           secondaryToken
