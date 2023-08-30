@@ -60,7 +60,7 @@ import {
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
-  stateToOverride: Partial<ManageStandardBorrowVaultState>
+  stateToOverride: Partial<ManageBorrowVaultState>
 }
 
 export type ManageVaultChange =
@@ -178,7 +178,7 @@ export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultS
     autoTakeProfitData?: AutoTakeProfitTriggerData
   } & HasGasEstimation
 
-export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
+export type ManageBorrowVaultState = GenericManageBorrowVaultState<Vault>
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -186,8 +186,8 @@ function addTransitions(
   saveVaultType$: SaveVaultType,
   proxyActions: VaultActionsLogicInterface,
   change: (ch: ManageVaultChange) => void,
-  state: ManageStandardBorrowVaultState,
-): ManageStandardBorrowVaultState {
+  state: ManageBorrowVaultState,
+): ManageBorrowVaultState {
   if (state.stage === 'multiplyTransitionEditing') {
     return {
       ...state,
@@ -364,7 +364,7 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
-export function createManageVault$<V extends Vault, VS extends ManageStandardBorrowVaultState>(
+export function createManageVault$<V extends Vault, VS extends ManageBorrowVaultState>(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,

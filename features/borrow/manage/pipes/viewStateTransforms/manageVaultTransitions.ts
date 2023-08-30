@@ -2,7 +2,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import {
   defaultMutableManageVaultState,
-  ManageStandardBorrowVaultState,
+  ManageBorrowVaultState,
   ManageVaultChange,
   ManageVaultEditingStage,
 } from 'features/borrow/manage/pipes/manageVault'
@@ -64,7 +64,7 @@ export type ManageVaultTransitionChange =
       kind: 'clear'
     }
 
-export function applyManageVaultTransition<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultTransition<VaultState extends ManageBorrowVaultState>(
   change: ManageVaultChange,
   state: VaultState,
 ): VaultState {
@@ -261,7 +261,7 @@ export function applyManageVaultTransition<VaultState extends ManageStandardBorr
 
 export function progressManage(
   txHelpers$: Observable<TxHelpers>,
-  state: ManageStandardBorrowVaultState,
+  state: ManageBorrowVaultState,
   change: (ch: ManageVaultChange) => void,
   proxyActions: VaultActionsLogicInterface,
 ) {

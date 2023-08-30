@@ -5,7 +5,7 @@ import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/S
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getAutomationThatClosedVault } from 'features/automation/common/helpers'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -27,7 +27,7 @@ import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVault
 import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultManageStage'
 import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
 
-export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
+export function SidebarManageBorrowVault(props: ManageBorrowVaultState) {
   const { t } = useTranslation()
 
   const {

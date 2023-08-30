@@ -3,7 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -25,7 +25,7 @@ import React from 'react'
 type VaultState =
   | OpenVaultState
   | OpenMultiplyVaultState
-  | ManageStandardBorrowVaultState
+  | ManageBorrowVaultState
   | ManageMultiplyVaultState
 
 interface FieldProps {

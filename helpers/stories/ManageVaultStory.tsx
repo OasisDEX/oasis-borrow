@@ -100,7 +100,6 @@ export function manageVaultStory({
         context$: of({ etherscan: 'url' }),
         generalManageVault$: memoize(() =>
           createGeneralManageVault$(
-            () => from([]),
             // @ts-ignore, don't need to mock Multiply here
             () => of(EMPTY),
             () => of(EMPTY),

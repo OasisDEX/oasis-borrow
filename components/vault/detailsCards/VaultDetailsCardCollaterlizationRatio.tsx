@@ -5,7 +5,7 @@ import {
   VaultDetailsCard,
   VaultDetailsCardModal,
 } from 'components/vault/VaultDetails'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
@@ -57,7 +57,7 @@ export function VaultDetailsCardCollaterlizationRatioModal({
 }
 
 export function VaultDetailsCardCollateralizationRatio(
-  props: ManageStandardBorrowVaultState & AfterPillProps,
+  props: ManageBorrowVaultState & AfterPillProps,
 ) {
   const {
     vault: { collateralizationRatio },

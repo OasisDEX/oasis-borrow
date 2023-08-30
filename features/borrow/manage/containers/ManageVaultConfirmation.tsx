@@ -1,6 +1,6 @@
 import { Divider } from '@theme-ui/components'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
@@ -8,9 +8,9 @@ import { OpenVaultAnimation } from 'theme/animations'
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 export function ManageVaultConfirmation(
-  props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },
+  props: ManageBorrowVaultState & { txnCostDisplay?: ReactNode },
 ) {
-  const [vaultChange, setVaultChanges] = useState<ManageStandardBorrowVaultState>(props)
+  const [vaultChange, setVaultChanges] = useState<ManageBorrowVaultState>(props)
   useEffect(() => {
     if (props.stage !== 'manageSuccess') {
       setVaultChanges(props)
@@ -31,7 +31,7 @@ export function ManageVaultConfirmationStatus({
   stage,
   etherscan,
   manageTxHash,
-}: ManageStandardBorrowVaultState) {
+}: ManageBorrowVaultState) {
   const { t } = useTranslation()
 
   if (stage === 'manageInProgress') {

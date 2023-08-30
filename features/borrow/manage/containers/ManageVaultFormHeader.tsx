@@ -3,7 +3,7 @@ import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { WithArrow } from 'components/WithArrow'
 import {
-  ManageStandardBorrowVaultState,
+  ManageBorrowVaultState,
   ManageVaultEditingStage,
 } from 'features/borrow/manage/pipes/manageVault'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -23,7 +23,7 @@ function ManageVaultEditingController({
   setMainAction,
   mainAction,
   hideMultiplyTab,
-}: ManageStandardBorrowVaultState & { hideMultiplyTab?: boolean }) {
+}: ManageBorrowVaultState & { hideMultiplyTab?: boolean }) {
   const { t } = useTranslation()
   const isDaiEditing = stage === 'daiEditing'
   const isCollateralEditing = stage === 'collateralEditing'
@@ -92,7 +92,7 @@ function ManageVaultEditingController({
 }
 
 export function ManageVaultFormHeader(
-  props: ManageStandardBorrowVaultState & { hideMultiplyTab?: boolean },
+  props: ManageBorrowVaultState & { hideMultiplyTab?: boolean },
 ) {
   const { t } = useTranslation()
   const {

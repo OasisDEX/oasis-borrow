@@ -1,8 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import {
-  ManageStandardBorrowVaultState,
-  ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
 
@@ -64,19 +61,19 @@ export type ManageVaultInputChange =
   | PaybackChange
   | PaybackMaxChange
 
-export const depositAndGenerateDefaults: Partial<ManageStandardBorrowVaultState> = {
+export const depositAndGenerateDefaults: Partial<ManageBorrowVaultState> = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
 }
 
-export const paybackAndWithdrawDefaults: Partial<ManageStandardBorrowVaultState> = {
+export const paybackAndWithdrawDefaults: Partial<ManageBorrowVaultState> = {
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
   paybackAmount: undefined,
 }
 
-export function applyManageVaultInput<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultInput<VaultState extends ManageBorrowVaultState>(
   change: ManageVaultChange,
   state: VaultState,
 ): VaultState {

@@ -23,7 +23,7 @@ import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { BonusContainer } from 'features/bonus/BonusContainer'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -37,7 +37,7 @@ export function ManageVaultDetailsSummary({
   daiYieldFromTotalCollateral,
   afterPillColors,
   showAfterPill,
-}: ManageStandardBorrowVaultState & AfterPillProps) {
+}: ManageBorrowVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -103,7 +103,7 @@ export function ManageVaultDetailsSummary({
 }
 
 export function ManageVaultDetails(
-  props: ManageStandardBorrowVaultState & { onBannerButtonClickHandler: () => void },
+  props: ManageBorrowVaultState & { onBannerButtonClickHandler: () => void },
 ) {
   const {
     vault: {

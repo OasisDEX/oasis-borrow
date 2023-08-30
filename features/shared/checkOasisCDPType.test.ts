@@ -18,15 +18,4 @@ describe('checkOasisPositionType', () => {
     )
     expect(state()).toBe(VaultType.Multiply)
   })
-  it('returns insti type vault if hardcoded as a charter ilk', () => {
-    const state = getStateUnpacker(
-      createCheckOasisCDPType$(
-        () => of(VaultType.Borrow),
-        () => of('INST-ETH-A'),
-        ['INST-ETH-A'],
-        { id: new BigNumber(1), protocol: LendingProtocol.Maker },
-      ),
-    )
-    expect(state()).toBe(VaultType.Insti)
-  })
 })

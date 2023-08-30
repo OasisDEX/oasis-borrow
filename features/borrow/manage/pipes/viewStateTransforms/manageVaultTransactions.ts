@@ -8,10 +8,7 @@ import {
 } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import {
-  ManageStandardBorrowVaultState,
-  ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
 import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { TxError } from 'helpers/types'
@@ -90,7 +87,7 @@ export type ManageVaultTransactionChange =
   | DaiAllowanceChange
   | ManageChange
 
-export function applyManageVaultTransaction<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultTransaction<VaultState extends ManageBorrowVaultState>(
   change: ManageVaultChange,
   state: VaultState,
 ): VaultState {
@@ -232,7 +229,7 @@ export function manageVaultDepositAndGenerate(
     depositAmount,
     proxyAddress,
     vault: { ilk, token, id },
-  }: ManageStandardBorrowVaultState,
+  }: ManageBorrowVaultState,
   proxyActions: VaultActionsLogicInterface,
 ) {
   txHelpers$
@@ -282,7 +279,7 @@ export function manageVaultWithdrawAndPayback(
     proxyAddress,
     vault: { ilk, token, id },
     shouldPaybackAll,
-  }: ManageStandardBorrowVaultState,
+  }: ManageBorrowVaultState,
   proxyActions: VaultActionsLogicInterface,
 ) {
   txHelpers$
@@ -327,7 +324,7 @@ export function manageVaultWithdrawAndPayback(
 export function setDaiAllowance(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  state: ManageStandardBorrowVaultState,
+  state: ManageBorrowVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -366,7 +363,7 @@ export function setDaiAllowance(
 export function setCollateralAllowance(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  state: ManageStandardBorrowVaultState,
+  state: ManageBorrowVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -410,7 +407,7 @@ export function createProxy(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: ManageVaultChange) => void,
-  { safeConfirmations }: ManageStandardBorrowVaultState,
+  { safeConfirmations }: ManageBorrowVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -459,8 +456,8 @@ export function createProxy(
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
   vaultActions: VaultActionsLogicInterface,
-  state: ManageStandardBorrowVaultState,
-): Observable<ManageStandardBorrowVaultState> {
+  state: ManageBorrowVaultState,
+): Observable<ManageBorrowVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
     const {
       proxyAddress,

@@ -12,9 +12,6 @@ import { Box, Grid } from 'theme-ui'
 
 export interface ManageMultiplyVaultContainerProps {
   manageVault: ManageMultiplyVaultState
-}
-
-interface ManageMultiplyVaultContainerComponents {
   header: (props: DefaultVaultHeaderProps) => JSX.Element
   details: (props: ManageMultiplyVaultState) => JSX.Element
   form: (props: ManageMultiplyVaultState) => JSX.Element
@@ -27,7 +24,7 @@ export function ManageMultiplyVaultContainer({
   details: Details,
   form: Form,
   history: History,
-}: ManageMultiplyVaultContainerProps & ManageMultiplyVaultContainerComponents) {
+}: ManageMultiplyVaultContainerProps) {
   const { context$ } = useMainContext()
   const { manageMultiplyVault$, manageGuniVault$ } = useProductContext()
   const {

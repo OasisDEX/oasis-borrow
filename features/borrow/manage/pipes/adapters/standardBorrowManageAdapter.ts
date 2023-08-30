@@ -3,7 +3,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { Vault } from 'blockchain/vaults'
 import {
   defaultMutableManageVaultState,
-  ManageStandardBorrowVaultState,
+  ManageBorrowVaultState,
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault'
 import { applyManageVaultAllowance } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
@@ -36,16 +36,16 @@ import {
 
 export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
   Vault,
-  ManageStandardBorrowVaultState
+  ManageBorrowVaultState
 > = {
-  addErrorsAndWarnings(viewState: ManageStandardBorrowVaultState): ManageStandardBorrowVaultState {
+  addErrorsAndWarnings(viewState: ManageBorrowVaultState): ManageBorrowVaultState {
     return viewState
   },
 
   transformViewState(
-    viewState: ManageStandardBorrowVaultState,
+    viewState: ManageBorrowVaultState,
     change: ManageVaultChange,
-  ): ManageStandardBorrowVaultState {
+  ): ManageBorrowVaultState {
     const s1 = applyManageVaultInput(change, viewState)
     const s2 = applyManageVaultForm(change, s1)
     const s3 = applyManageVaultAllowance(change, s2)
@@ -59,7 +59,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
     return applyManageVaultSummary(s10)
   },
 
-  addTxnCost(viewState: ManageStandardBorrowVaultState): ManageStandardBorrowVaultState {
+  addTxnCost(viewState: ManageBorrowVaultState): ManageBorrowVaultState {
     return viewState
   },
 
@@ -78,7 +78,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       change,
       injectStateOverride,
     } = args
-    const initialState: ManageStandardBorrowVaultState = {
+    const initialState: ManageBorrowVaultState = {
       ...defaultMutableManageVaultState,
       ...defaultManageVaultCalculations,
       ...defaultManageVaultConditions,

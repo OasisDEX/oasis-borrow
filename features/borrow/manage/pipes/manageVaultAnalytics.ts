@@ -7,7 +7,7 @@ import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { ManageStandardBorrowVaultState } from './manageVault'
+import { ManageBorrowVaultState } from './manageVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'
@@ -33,8 +33,8 @@ type AllowanceChange = {
   kind: 'collateralAllowanceChange' | 'daiAllowanceChange'
   value: {
     type:
-      | Pick<ManageStandardBorrowVaultState, 'selectedDaiAllowanceRadio'>
-      | Pick<ManageStandardBorrowVaultState, 'selectedCollateralAllowanceRadio'>
+      | Pick<ManageBorrowVaultState, 'selectedDaiAllowanceRadio'>
+      | Pick<ManageBorrowVaultState, 'selectedCollateralAllowanceRadio'>
     amount: BigNumber
   }
 }
@@ -59,7 +59,7 @@ type ManageVaultConfirmTransaction = {
 }
 
 export function createManageVaultAnalytics$(
-  manageVaultState$: Observable<ManageStandardBorrowVaultState>,
+  manageVaultState$: Observable<ManageBorrowVaultState>,
   context$: Observable<Context>,
   tracker: Tracker,
 ) {
@@ -126,7 +126,7 @@ export function createManageVaultAnalytics$(
   )
 
   const collateralAllowanceTypeChanges: Observable<
-    Pick<ManageStandardBorrowVaultState, 'selectedCollateralAllowanceRadio'>
+    Pick<ManageBorrowVaultState, 'selectedCollateralAllowanceRadio'>
   > = manageVaultState$.pipe(
     filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
     map((state) => state.selectedCollateralAllowanceRadio),
@@ -154,7 +154,7 @@ export function createManageVaultAnalytics$(
   )
 
   const daiAllowanceTypeChanges: Observable<
-    Pick<ManageStandardBorrowVaultState, 'selectedDaiAllowanceRadio'>
+    Pick<ManageBorrowVaultState, 'selectedDaiAllowanceRadio'>
   > = manageVaultState$.pipe(
     filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),
     map((state) => state.selectedDaiAllowanceRadio),

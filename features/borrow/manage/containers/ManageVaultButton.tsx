@@ -1,12 +1,12 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
-function manageVaultButtonText(state: ManageStandardBorrowVaultState): string {
+function manageVaultButtonText(state: ManageBorrowVaultState): string {
   const { t } = useTranslation()
 
   switch (state.stage) {
@@ -107,7 +107,7 @@ function manageVaultButtonText(state: ManageStandardBorrowVaultState): string {
   }
 }
 
-function manageVaultSecondaryButtonText(state: ManageStandardBorrowVaultState): string {
+function manageVaultSecondaryButtonText(state: ManageBorrowVaultState): string {
   const {
     isCollateralAllowanceStage,
     vault: { token },
@@ -126,7 +126,7 @@ function manageVaultSecondaryButtonText(state: ManageStandardBorrowVaultState): 
       return t('edit-vault-details')
   }
 }
-export function ManageVaultButton(props: ManageStandardBorrowVaultState) {
+export function ManageVaultButton(props: ManageBorrowVaultState) {
   const {
     progress,
     stage,

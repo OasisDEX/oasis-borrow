@@ -1,6 +1,6 @@
 import {
   ManageBorrowVaultStage,
-  ManageStandardBorrowVaultState,
+  ManageBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import {
   accountIsConnectedValidator,
@@ -47,9 +47,9 @@ const defaultManageVaultStageCategories = {
   isMultiplyTransitionStage: false,
 }
 
-export function applyManageVaultStageCategorisation<
-  VaultState extends ManageStandardBorrowVaultState,
->(state: VaultState): VaultState {
+export function applyManageVaultStageCategorisation<VaultState extends ManageBorrowVaultState>(
+  state: VaultState,
+): VaultState {
   const {
     stage,
     vault: { token, debtOffset },
@@ -294,7 +294,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   insufficientEthFundsForTx: false,
 }
 
-export function applyManageVaultConditions<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultConditions<VaultState extends ManageBorrowVaultState>(
   state: VaultState,
 ): VaultState {
   const {

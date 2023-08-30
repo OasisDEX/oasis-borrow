@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { one, zero } from 'helpers/zero'
 
@@ -78,7 +78,7 @@ function determineShouldPaybackAll({
   debt,
   debtOffset,
   daiBalance,
-}: Pick<ManageStandardBorrowVaultState, 'paybackAmount'> &
+}: Pick<ManageBorrowVaultState, 'paybackAmount'> &
   Pick<Vault, 'debt' | 'debtOffset'> &
   Pick<BalanceInfo, 'daiBalance'>): boolean {
   return (
@@ -97,7 +97,7 @@ function calculateAfterLockedCollateral({
   lockedCollateral,
   depositAmount,
   withdrawAmount,
-}: Pick<ManageStandardBorrowVaultState, 'depositAmount' | 'withdrawAmount'> &
+}: Pick<ManageBorrowVaultState, 'depositAmount' | 'withdrawAmount'> &
   Pick<Vault, 'lockedCollateral'>) {
   const amount = depositAmount
     ? lockedCollateral.plus(depositAmount)
@@ -121,7 +121,7 @@ function calculateAfterDebt({
   paybackAmount,
   debt,
   originationFeePercent,
-}: Pick<ManageStandardBorrowVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
+}: Pick<ManageBorrowVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
   Pick<Vault, 'debt'> & { originationFeePercent: BigNumber }) {
   if (shouldPaybackAll) return zero
 
@@ -144,7 +144,7 @@ function calculateAfterBackingCollateral({
   afterDebt,
   liquidationRatio,
   price,
-}: Pick<ManageStandardBorrowVaultState, 'afterDebt'> &
+}: Pick<ManageBorrowVaultState, 'afterDebt'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
   if (!afterDebt.gt(zero)) return zero
 
@@ -187,7 +187,7 @@ function calculateMaxWithdrawAmount({
   debtOffset,
   liquidationRatio,
   price,
-}: Pick<ManageStandardBorrowVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
+}: Pick<ManageBorrowVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
   const afterDebt = calculateAfterDebt({
@@ -216,7 +216,7 @@ function calculateAfterIlkDebtAvailable({
   generateAmount = zero,
   originationFee,
 }: Pick<IlkData, 'ilkDebtAvailable'> &
-  Pick<ManageStandardBorrowVaultState, 'generateAmount' | 'paybackAmount'> & {
+  Pick<ManageBorrowVaultState, 'generateAmount' | 'paybackAmount'> & {
     originationFee: BigNumber
   }) {
   const generateAmountWithOriginationFee = generateAmount.div(originationFee.plus(one))
@@ -240,7 +240,7 @@ function calculateDaiYieldFromCollateral({
   collateral,
   ilkDebtAvailable,
   originationFee,
-}: Pick<ManageStandardBorrowVaultState, 'generateAmount' | 'paybackAmount'> &
+}: Pick<ManageBorrowVaultState, 'generateAmount' | 'paybackAmount'> &
   Pick<Vault, 'debt'> &
   Pick<IlkData, 'ilkDebtAvailable'> & {
     price: BigNumber
@@ -286,7 +286,7 @@ function calculateMaxGenerateAmount({
   price,
   ilkDebtAvailable,
   originationFee,
-}: Pick<ManageStandardBorrowVaultState, 'depositAmount' | 'generateAmount'> &
+}: Pick<ManageBorrowVaultState, 'depositAmount' | 'generateAmount'> &
   Pick<Vault, 'debtOffset' | 'debt' | 'lockedCollateral'> &
   Pick<IlkData, 'ilkDebtAvailable'> & {
     price: BigNumber
@@ -309,7 +309,7 @@ function calculateMaxGenerateAmount({
   })
 }
 
-export function applyManageVaultCalculations<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultCalculations<VaultState extends ManageBorrowVaultState>(
   state: VaultState,
   originationFee: BigNumber,
   minActiveColRatio: BigNumber,

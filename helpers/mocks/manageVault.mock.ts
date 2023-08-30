@@ -1,20 +1,14 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { CharteredDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
 import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { IlkData } from 'blockchain/ilks'
-import { InstiVault } from 'blockchain/instiVault'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
-import {
-  InstitutionalBorrowManageAdapter,
-  ManageInstiVaultState,
-} from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import {
   createManageVault$,
-  ManageStandardBorrowVaultState,
+  ManageBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -215,9 +209,7 @@ function buildMockDependencies({
   }
 }
 
-export function mockManageVault$(
-  args: MockManageVaultProps = {},
-): Observable<ManageStandardBorrowVaultState> {
+export function mockManageVault$(args: MockManageVaultProps = {}): Observable<ManageBorrowVaultState> {
   const {
     context$,
     txHelpers$,
@@ -233,7 +225,7 @@ export function mockManageVault$(
     gasEstimationMock$,
   } = buildMockDependencies(args)
 
-  return createManageVault$<Vault, ManageStandardBorrowVaultState>(
+  return createManageVault$<Vault, ManageBorrowVaultState>(
     context$ as Observable<Context>,
     txHelpers$,
     proxyAddress$,
@@ -247,52 +239,6 @@ export function mockManageVault$(
     vaultHistory$,
     () => of(StandardDssProxyActionsContractAdapter),
     StandardBorrowManageAdapter,
-    automationTriggersData$,
-    MOCK_VAULT_ID,
-  )
-}
-
-export interface MockManageInstiVaultProps extends MockManageVaultProps {
-  _instiVault$?: Observable<InstiVault>
-}
-
-export function mockManageInstiVault$(
-  args: MockManageInstiVaultProps = {},
-): Observable<ManageInstiVaultState> {
-  const {
-    context$,
-    txHelpers$,
-    proxyAddress$,
-    allowance$,
-    priceInfo$,
-    balanceInfo$,
-    ilkData$,
-    saveVaultType$,
-    vaultHistory$,
-    automationTriggersData$,
-    gasEstimationMock$,
-  } = buildMockDependencies(args)
-
-  function instiVault$(): Observable<InstiVault> {
-    const { instiVault$ } = mockVault$()
-
-    return args._instiVault$ || instiVault$
-  }
-
-  return createManageVault$<InstiVault, ManageInstiVaultState>(
-    context$ as Observable<Context>,
-    txHelpers$,
-    proxyAddress$,
-    allowance$,
-    priceInfo$,
-    balanceInfo$,
-    ilkData$,
-    instiVault$,
-    saveVaultType$,
-    gasEstimationMock$,
-    vaultHistory$,
-    () => of(new CharteredDssProxyActionsContractAdapter()),
-    InstitutionalBorrowManageAdapter,
     automationTriggersData$,
     MOCK_VAULT_ID,
   )

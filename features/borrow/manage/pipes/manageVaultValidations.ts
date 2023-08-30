@@ -2,11 +2,9 @@ import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
 
-import { ManageStandardBorrowVaultState } from './manageVault'
+import { ManageBorrowVaultState } from './manageVault'
 
-export function validateErrors(
-  state: ManageStandardBorrowVaultState,
-): ManageStandardBorrowVaultState {
+export function validateErrors(state: ManageBorrowVaultState): ManageBorrowVaultState {
   const {
     stage,
     withdrawAmountExceedsFreeCollateral,
@@ -100,9 +98,7 @@ export function validateErrors(
   return { ...state, errorMessages }
 }
 
-export function validateWarnings(
-  state: ManageStandardBorrowVaultState,
-): ManageStandardBorrowVaultState {
+export function validateWarnings(state: ManageBorrowVaultState): ManageBorrowVaultState {
   const {
     errorMessages,
     isEditingStage,
@@ -135,9 +131,7 @@ export function validateWarnings(
   return { ...state, warningMessages }
 }
 
-export function finalValidation(
-  state: ManageStandardBorrowVaultState,
-): ManageStandardBorrowVaultState {
+export function finalValidation(state: ManageBorrowVaultState): ManageBorrowVaultState {
   const {
     vault: { token },
     gasEstimationUsd,

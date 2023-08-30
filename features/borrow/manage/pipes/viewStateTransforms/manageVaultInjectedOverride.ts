@@ -1,9 +1,6 @@
-import {
-  ManageStandardBorrowVaultState,
-  ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
 
-export function applyManageVaultInjectedOverride<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultInjectedOverride<VaultState extends ManageBorrowVaultState>(
   change: ManageVaultChange,
   state: VaultState,
 ): VaultState {

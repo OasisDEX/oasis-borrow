@@ -9,7 +9,7 @@ import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -19,7 +19,7 @@ import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
 import { ManageVaultEditing } from './ManageVaultEditing'
 
-function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVaultState) {
+function ManageVaultMultiplyTransition({ stage, vault }: ManageBorrowVaultState) {
   const { t } = useTranslation()
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
@@ -49,7 +49,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
 }
 
 export function ManageVaultForm(
-  props: ManageStandardBorrowVaultState & { hideMultiplyTab?: boolean; txnCostDisplay?: ReactNode },
+  props: ManageBorrowVaultState & { hideMultiplyTab?: boolean; txnCostDisplay?: ReactNode },
 ) {
   const {
     isEditingStage,

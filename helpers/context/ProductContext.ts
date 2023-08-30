@@ -3,7 +3,6 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
-import { charterNib, charterPeace, charterUline } from 'blockchain/calls/charter'
 import {
   cropperBonusTokenAddress,
   cropperCrops,
@@ -33,7 +32,6 @@ import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
-import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import { every10Seconds$ } from 'blockchain/network'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { createOraclePriceData$, createTokenPriceInUSD$, tokenPrices$ } from 'blockchain/prices'
@@ -51,7 +49,11 @@ import {
   getUserDpmProxy$,
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
-import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
+import {
+  createVaultsFromIds$,
+  decorateVaultsWithValue$,
+  // Vault
+} from 'blockchain/vaults'
 import { AccountContext, TOSContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
@@ -81,15 +83,7 @@ import {
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
-import {
-  InstitutionalBorrowManageAdapter,
-  ManageInstiVaultState,
-} from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
-import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import {
-  createManageVault$,
-  ManageStandardBorrowVaultState,
-} from 'features/borrow/manage/pipes/manageVault'
+// import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
@@ -201,8 +195,6 @@ export function setupProductContext(
     standardCdps$,
     urnResolver$,
     userSettings$,
-    vatGem$,
-    vatUrns$,
     vault$,
     vaults$,
   }: AccountContext,
@@ -270,10 +262,6 @@ export function setupProductContext(
   const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
   const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
-  const charterNib$ = observe(onEveryBlock$, context$, charterNib)
-  const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
-  const charterUline$ = observe(onEveryBlock$, context$, charterUline)
-
   const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
   const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
   const cropperStock$ = observe(onEveryBlock$, context$, cropperStock)
@@ -287,12 +275,6 @@ export function setupProductContext(
   const pipPeepLean$ = observe(once$, oracleContext$, pipPeep)
 
   const unclaimedCrvLdoRewardsForIlk$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
-
-  const charter = {
-    nib$: (args: { ilk: string; usr: string }) => charterNib$(args),
-    peace$: (args: { ilk: string; usr: string }) => charterPeace$(args),
-    uline$: (args: { ilk: string; usr: string }) => charterUline$(args),
-  }
 
   const oraclePriceDataLean$ = memoize(
     curry(createOraclePriceData$)(
@@ -464,19 +446,6 @@ export function setupProductContext(
         addGasEstimation$,
       ),
     (item) => item,
-  )
-
-  const instiVault$ = memoize(
-    curry(createInstiVault$)(
-      urnResolver$,
-      vatUrns$,
-      vatGem$,
-      ilkData$,
-      oraclePriceData$,
-      ilkToToken$,
-      context$,
-      charter,
-    ),
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(chainContext$, onEveryBlock$, vault$))
@@ -694,7 +663,7 @@ export function setupProductContext(
 
   const manageVault$ = memoize(
     (id: BigNumber) =>
-      createManageVault$<Vault, ManageStandardBorrowVaultState>(
+      createManageMultiplyVault$(
         context$,
         txHelpers$,
         proxyAddress$,
@@ -703,33 +672,11 @@ export function setupProductContext(
         balanceInfo$,
         ilkData$,
         vault$,
-        saveVaultUsingApi$,
+        exchangeQuote$,
         addGasEstimation$,
+        userSettings$,
         vaultHistory$,
-        proxyActionsAdapterResolver$,
-        StandardBorrowManageAdapter,
-        automationTriggersData$,
-        id,
-      ),
-    bigNumberTostring,
-  )
-
-  const manageInstiVault$ = memoize(
-    (id: BigNumber) =>
-      createManageVault$<InstiVault, ManageInstiVaultState>(
-        context$,
-        txHelpers$,
-        proxyAddress$,
-        allowance$,
-        priceInfo$,
-        balanceInfo$,
-        ilkData$,
-        instiVault$,
         saveVaultUsingApi$,
-        addGasEstimation$,
-        vaultHistory$,
-        proxyActionsAdapterResolver$,
-        InstitutionalBorrowManageAdapter,
         automationTriggersData$,
         id,
       ),
@@ -811,7 +758,6 @@ export function setupProductContext(
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
-      manageInstiVault$,
       manageMultiplyVault$,
       manageGuniVault$,
       manageVault$,
@@ -1055,11 +1001,9 @@ export function setupProductContext(
     identifiedTokens$,
     ilkDataList$,
     ilks$: ilksSupportedOnNetwork$,
-    instiVault$,
     manageGuniVault$,
-    manageInstiVault$,
     manageMultiplyVault$,
-    manageVault$,
+    manageVault$: manageVault$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,

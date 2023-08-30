@@ -1,4 +1,4 @@
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
@@ -21,7 +21,7 @@ export const defaultManageVaultSummary: ManageVaultSummary = {
   afterCollateralBalance: zero,
 }
 
-export function applyManageVaultSummary<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultSummary<VaultState extends ManageBorrowVaultState>(
   state: VaultState,
 ): VaultState {
   const {

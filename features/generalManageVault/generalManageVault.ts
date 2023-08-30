@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
-import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+// import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -15,12 +14,8 @@ export type WithToggle<T> = T & { toggleVaultType: () => void }
 
 export type GeneralManageVaultState =
   | {
-      type: VaultType.Insti
-      state: WithToggle<ManageInstiVaultState>
-    }
-  | {
       type: VaultType.Borrow
-      state: WithToggle<ManageStandardBorrowVaultState>
+      state: WithToggle<ManageMultiplyVaultState>
     }
   | {
       type: VaultType.Multiply
@@ -32,10 +27,9 @@ export type GeneralManageVaultState =
     }
 
 export function createGeneralManageVault$(
-  manageInstiVault$: (id: BigNumber) => Observable<ManageInstiVaultState>,
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageGuniVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
-  manageVault$: (id: BigNumber) => Observable<ManageStandardBorrowVaultState>,
+  manageBorrowVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   checkVaultType$: ({
     id,
     protocol,
@@ -53,7 +47,7 @@ export function createGeneralManageVault$(
         switchMap(() => {
           switch (type) {
             case VaultType.Borrow:
-              return manageVault$(id).pipe(
+              return manageBorrowVault$(id).pipe(
                 map((state) => ({ ...state, toggleVaultType: () => {} })),
                 map((state) => ({ state, type })),
               )
@@ -64,11 +58,6 @@ export function createGeneralManageVault$(
               )
             case VaultType.Earn:
               return manageGuniVault$(id).pipe(
-                map((state) => ({ ...state, toggleVaultType: () => {} })),
-                map((state) => ({ state, type })),
-              )
-            case VaultType.Insti:
-              return manageInstiVault$(id).pipe(
                 map((state) => ({ ...state, toggleVaultType: () => {} })),
                 map((state) => ({ state, type })),
               )

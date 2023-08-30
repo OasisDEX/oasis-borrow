@@ -1,13 +1,13 @@
 import {
   MainAction,
-  ManageStandardBorrowVaultState,
+  ManageBorrowVaultState,
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault'
 
 import { allowanceDefaults } from './manageVaultAllowances'
 import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 
-export const manageVaultFormDefaults: Partial<ManageStandardBorrowVaultState> = {
+export const manageVaultFormDefaults: Partial<ManageBorrowVaultState> = {
   ...allowanceDefaults,
   ...depositAndGenerateDefaults,
   ...paybackAndWithdrawDefaults,
@@ -30,7 +30,7 @@ export type ManageVaultFormChange =
       mainAction: MainAction
     }
 
-export function applyManageVaultForm<VaultState extends ManageStandardBorrowVaultState>(
+export function applyManageVaultForm<VaultState extends ManageBorrowVaultState>(
   change: ManageVaultChange,
   state: VaultState,
 ): VaultState {
