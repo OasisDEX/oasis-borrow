@@ -82,18 +82,6 @@ export async function getAjnaParameters({
     quotePrice,
   }
 
-  console.log(`
-  
-  
-  
-  
-  
-  action ${action}
-  
-  
-  
-  `);
-
   if (!isFormValid || !walletAddress) {
     return defaultPromise
   }
@@ -148,6 +136,7 @@ export async function getAjnaParameters({
         slippage,
       })
     }
+    case 'adjust-borrow':
     case 'adjust': {
       return ajnaAdjust({
         state,

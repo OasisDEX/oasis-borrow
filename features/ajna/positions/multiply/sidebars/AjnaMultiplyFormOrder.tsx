@@ -60,6 +60,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       'withdraw-multiply',
       'close-multiply',
       'close-borrow',
+      'adjust-borrow',
     ].includes(action)
 
   const withBuying =

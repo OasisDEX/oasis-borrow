@@ -1,14 +1,14 @@
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import { AjnaProduct } from 'features/ajna/common/types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
+
+import { AjnaBorrowFormOrder } from './AjnaBorrowFormOrder'
 
 export function AjnaBorrowFormContentClose() {
   const { t } = useTranslation()
@@ -78,7 +78,7 @@ export function AjnaBorrowFormContentClose() {
         value={formatted[closeTo === 'collateral' ? 'collateralOnClose' : 'quoteOnClose']}
         isLoading={isSimulationLoading}
       />
-      <AjnaMultiplyFormOrder />
+      <AjnaBorrowFormOrder />
     </>
   )
 }
