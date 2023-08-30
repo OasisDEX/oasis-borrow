@@ -47,7 +47,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
     const reserveData = await getSparkV3ReserveData({ token, networkId })
     return {
       [token]: {
-        liquidity: reserveData.totalAToken
+        liquidity: reserveData.totalSpToken
           .minus(reserveData.totalStableDebt)
           .minus(reserveData.totalVariableDebt)
           .times(usdcPrice),
@@ -127,13 +127,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     Promise.all(getSparkV3TokensDataPromises),
     Promise.all(earnProductsPromises),
   ]).then(([sparkV3TokensDataList, earnProductsYields]) => {
-    const sparkV3TokensData = sparkV3TokensDataList.reduce((acc, curr) => {
-      return { ...acc, ...curr }
-    }, {})
+    const sparkV3TokensData = sparkV3TokensDataList[0] // only one (ethereum) now
     return {
       table: sparkV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =
-          sparkV3TokensData[product.network]
+          sparkV3TokensData[product.network as SparkV3Networks]
         const { secondaryToken, primaryToken, label } = product
         const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
           secondaryToken
