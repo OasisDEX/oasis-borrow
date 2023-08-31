@@ -22,6 +22,9 @@ export function getAddresses(
     'aaveV2PriceOracle',
     'aaveV2ProtocolDataProvider',
     'aaveV3Oracle',
+    'sparkV3Pool',
+    'sparkV3Oracle',
+    'sparkV3PoolDataProvider',
   ])
   ensureTokensExist(networkId, contracts)
   ensureChainlinkTokenPairsExist(networkId, contracts, ['ETHUSD'])
@@ -65,14 +68,12 @@ export function getAddresses(
         poolDataProvider: contracts.aaveV3PoolDataProvider.address,
       }
     case LendingProtocol.SparkV3:
-      throw new Error('Spark V3 not supported yet')
-    // return {
-    //   ...sharedAddresses,
-    //   // TODO: Add Spark v3 sytem addresse
-    //   // lendingPool: contracts.aaveV3Pool.address,
-    //   // oracle: contracts.aaveV3Oracle.address,
-    //   // poolDataProvider: contracts.aaveV3PoolDataProvider.address,
-    // }
+      return {
+        ...sharedAddresses,
+        lendingPool: contracts.sparkV3Pool.address,
+        oracle: contracts.sparkV3Oracle.address,
+        poolDataProvider: contracts.sparkV3PoolDataProvider.address,
+      }
     default:
       throw new Error('Lending protocol not supported')
   }

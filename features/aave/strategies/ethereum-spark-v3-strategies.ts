@@ -54,10 +54,6 @@ const availableTokenPairs: TokenPairConfig[] = [
           },
         ],
       },
-      [ProductType.Earn]: {
-        featureToggle: 'SparkProtocol',
-        additionalManageActions: [],
-      },
     },
   },
   {
@@ -82,10 +78,6 @@ const availableTokenPairs: TokenPairConfig[] = [
             featureToggle: 'SparkProtocol',
           },
         ],
-      },
-      [ProductType.Earn]: {
-        featureToggle: 'SparkProtocol',
-        additionalManageActions: [],
       },
     },
   },
