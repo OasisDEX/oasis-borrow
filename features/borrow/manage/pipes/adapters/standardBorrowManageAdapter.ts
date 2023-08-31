@@ -26,7 +26,7 @@ import {
 } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultSummary'
 import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
-import { GasEstimationStatus } from 'helpers/form'
+import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 
 import {

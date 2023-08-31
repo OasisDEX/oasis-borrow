@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { NetworkConfigHexId, NetworkNames } from 'blockchain/networks'
-import { NetworkConfig } from 'blockchain/networks'
+import { NetworkConfig, NetworkConfigHexId, NetworkNames } from 'blockchain/networks'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,

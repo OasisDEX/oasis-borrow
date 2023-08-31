@@ -3,8 +3,7 @@ import {
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TxHelpers } from 'components/AppContext'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
 import {
   AutomationTxHandlerAnalytics,
@@ -19,6 +18,7 @@ import { AutomationPublishType, SidebarAutomationStages } from 'features/automat
 import { AutomationContracts } from 'features/automation/metadata/types'
 import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { TxHelpers } from 'helpers/context/types'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { uiChanges } from 'helpers/uiChanges'
 import { ReactElement, useEffect, useMemo } from 'react'

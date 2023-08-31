@@ -1,15 +1,13 @@
 import {
   enableNetworksSet,
-  NetworkIdToNetworkHexIds,
-  NetworkNames,
-  networkSetByHexId,
-} from 'blockchain/networks'
-import {
   filterNetworksAccordingToSavedNetwork,
   filterNetworksAccordingToWalletNetwork,
   isTestnet,
   isTestnetEnabled,
   isTestnetNetworkHexId,
+  NetworkIdToNetworkHexIds,
+  NetworkNames,
+  networkSetByHexId,
 } from 'blockchain/networks'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'

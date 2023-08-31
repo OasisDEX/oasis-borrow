@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js'
 import * as blockchainCalls from 'blockchain/aave'
-import { AaveReserveConfigurationDataParams, AaveServices } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeServices,
+  AaveReserveConfigurationDataParams,
+} from 'lendingProtocols/aave-like-common'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservable, makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
@@ -13,7 +16,7 @@ interface AaveV2ServicesDependencies {
   refresh$: Observable<unknown>
 }
 
-export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): AaveServices {
+export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): AaveLikeServices {
   const aaveLiquidations$ = makeObservable(refresh$, blockchainCalls.getAaveV2PositionLiquidation)
   const aaveUserAccountData$ = makeObservable(refresh$, pipelines.mapAaveUserAccountData)
   const getAaveReserveData$ = makeObservable(refresh$, blockchainCalls.getAaveV2ReserveData)

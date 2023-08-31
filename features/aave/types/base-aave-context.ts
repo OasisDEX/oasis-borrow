@@ -9,12 +9,12 @@ import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aav
 import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
 import { IStrategyConfig } from './strategy-config'
 import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { HasGasEstimation } from 'helpers/context/types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { EthersTransactionStateMachine, TransactionStateMachine } from 'features/stateMachines/transaction'
-import { UserSettingsState } from 'features/userSettings/userSettings'
-import { HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 export type UserInput = {
@@ -95,7 +95,7 @@ export interface BaseAaveContext {
   web3Context?: Context
   userSettings?: UserSettingsState
   error?: string | unknown
-  protocolData?: ProtocolData
+  protocolData?: AaveLikeProtocolData
   userDpmAccount?: UserDpmAccount
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>

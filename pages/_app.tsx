@@ -11,13 +11,18 @@ import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
-import { AppContextProvider } from 'components/AppContextProvider'
+import {
+  accountContext,
+  AccountContextProvider,
+  DeferedContextProvider,
+  mainContext,
+  MainContextProvider,
+  NotificationSocketProvider,
+} from 'components/context'
 import { CookieBanner, SavedSettings } from 'components/CookieBanner'
-import { GasEstimationContextProvider } from 'components/GasEstimationContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
-import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
+import { AppLayout, MarketingLayoutProps } from 'components/layouts'
 import { AppLink, CustomMDXLink } from 'components/Links'
-import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { TopBanner } from 'components/TopBanner'
 import { WithArrow } from 'components/WithArrow'
@@ -204,33 +209,40 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         <CacheProvider value={cache}>
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
-            <ModalProvider>
-              <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-                <Web3OnBoardConnectorProvider>
-                  <Web3ReactProvider {...{ getLibrary }}>
-                    <AppContextProvider>
-                      <HeadTags />
-                      {seoTags}
-                      <SetupWeb3Context>
-                        <SharedUIProvider>
-                          <GasEstimationContextProvider>
-                            <NotificationSocketProvider>
+            <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+              <MainContextProvider>
+                <DeferedContextProvider context={mainContext}>
+                  <ModalProvider>
+                    <Web3OnBoardConnectorProvider>
+                      <Web3ReactProvider {...{ getLibrary }}>
+                        <HeadTags />
+                        {seoTags}
+                        <SetupWeb3Context>
+                          <NotificationSocketProvider>
+                            <SharedUIProvider>
                               <WithFollowVaults>
                                 <TopBanner name="rebranding">{topBannerContent}</TopBanner>
-                                <Layout {...layoutProps}>
-                                  <Component {...pageProps} />
-                                  <CookieBanner setValue={cookiesSetValue} value={cookiesValue} />
-                                </Layout>
+                                <AccountContextProvider>
+                                  <DeferedContextProvider context={accountContext}>
+                                    <Layout {...layoutProps}>
+                                      <Component {...pageProps} />
+                                      <CookieBanner
+                                        setValue={cookiesSetValue}
+                                        value={cookiesValue}
+                                      />
+                                    </Layout>
+                                  </DeferedContextProvider>
+                                </AccountContextProvider>
                               </WithFollowVaults>
-                            </NotificationSocketProvider>
-                          </GasEstimationContextProvider>
-                        </SharedUIProvider>
-                      </SetupWeb3Context>
-                    </AppContextProvider>
-                  </Web3ReactProvider>
-                </Web3OnBoardConnectorProvider>
-              </Web3OnboardProvider>
-            </ModalProvider>
+                            </SharedUIProvider>
+                          </NotificationSocketProvider>
+                        </SetupWeb3Context>
+                      </Web3ReactProvider>
+                    </Web3OnBoardConnectorProvider>
+                  </ModalProvider>
+                </DeferedContextProvider>
+              </MainContextProvider>
+            </Web3OnboardProvider>
           </MDXProvider>
         </CacheProvider>
       </ThemeProvider>

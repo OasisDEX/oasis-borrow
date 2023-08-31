@@ -1,4 +1,4 @@
-import { GasEstimationStatus } from 'helpers/form'
+import { GasEstimationStatus } from 'helpers/context/types'
 import { assign } from 'xstate'
 
 import { ProxyContext, ProxyEvent } from './types'

@@ -40,7 +40,6 @@ export const AJNA_POOLS_WITH_REWARDS = [
   'RETH-DAI',
   'RETH-ETH',
   'SDAI-USDC',
-  'TBTC-USDC',
   'USDC-ETH',
   'USDC-WBTC',
   'WBTC-DAI',
@@ -64,3 +63,5 @@ export const AJNA_TOKENS_WITH_MULTIPLY = [
   'WSTETH',
   'YFI',
 ]
+
+export const AJNA_BORROWISH_PRODUCTS: AjnaProduct[] = ['borrow', 'multiply']

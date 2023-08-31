@@ -12,10 +12,9 @@ import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
-// import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
-import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aaveCommon'
 import { curry } from 'ramda'
 
 import { aaveV3ProductHubProducts } from './aaveV3Products'
@@ -110,6 +109,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
     'CBETH/ETH': emptyYields,
     'RETH/ETH': emptyYields,
+    'SDAI/GHO': emptyYields,
+    'SDAI/USDC': emptyYields,
+    'SDAI/LUSD': emptyYields,
+    'SDAI/FRAX': emptyYields,
   }
   // getting the APYs
   const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>

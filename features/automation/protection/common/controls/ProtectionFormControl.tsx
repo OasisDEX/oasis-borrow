@@ -1,5 +1,4 @@
-import { TxHelpers } from 'components/AppContext'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import {
   getAvailableAutomation,
   getShouldRemoveAllowance,
@@ -12,6 +11,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
+import { TxHelpers } from 'helpers/context/types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'

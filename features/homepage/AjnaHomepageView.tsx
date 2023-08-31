@@ -1,6 +1,6 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
-import { useAppContext } from 'components/AppContextProvider'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
+import { useMainContext } from 'components/context'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
@@ -52,7 +52,7 @@ export function AjnaHomepageView() {
   const ajnaPoolFinderEnabled = useFeatureToggle('AjnaPoolFinder')
 
   const { t } = useTranslation()
-  const { context$ } = useAppContext()
+  const { context$ } = useMainContext()
   const [context] = useObservable(context$)
   const { connecting, connect } = useConnection()
   const { isConnected } = useAccount()

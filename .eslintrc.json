@@ -23,6 +23,7 @@
     "unused-imports/no-unused-imports-ts": "error",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
+    "import/no-duplicates": "error",
     "simple-import-sort/sort": [
       "error",
       {
@@ -44,6 +45,8 @@
     ],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-useless-constructor": "error",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-shadow": ["warn", { "builtinGlobals": true, "hoist": "all" }],
     "accessor-pairs": "error",
     "constructor-super": "error",
     "eqeqeq": [
@@ -127,6 +130,7 @@
     "no-self-assign": "error",
     "no-self-compare": "error",
     "no-sequences": "error",
+    "no-shadow": "off",
     "no-shadow-restricted-names": "error",
     "no-sparse-arrays": "error",
     "no-tabs": "error",

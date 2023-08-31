@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { ethereumMainnetHexId, isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/Layouts'
+import { ProductContextHandler } from 'components/context'
+import { AppLayout } from 'components/layouts'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -34,13 +35,15 @@ function Vault({ id }: { id: string }) {
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 
   return (
-    <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
-      <WithTermsOfService>
-        <WithWalletAssociatedRisk>
-          {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}
-        </WithWalletAssociatedRisk>
-      </WithTermsOfService>
-    </WithConnection>
+    <ProductContextHandler>
+      <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
+        <WithTermsOfService>
+          <WithWalletAssociatedRisk>
+            {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}
+          </WithWalletAssociatedRisk>
+        </WithTermsOfService>
+      </WithConnection>
+    </ProductContextHandler>
   )
 }
 

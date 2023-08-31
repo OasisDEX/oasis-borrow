@@ -1,5 +1,5 @@
 import { Context } from 'blockchain/network'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAccountContext, useMainContext } from 'components/context'
 import { getAddress } from 'ethers/lib/utils'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -19,7 +19,8 @@ interface Props {
 }
 
 export function ReferralsSummary({ address }: { address: string }) {
-  const { context$, userReferral$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { userReferral$ } = useAccountContext()
 
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [context, contextError] = useObservable(context$)

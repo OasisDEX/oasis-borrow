@@ -1,6 +1,5 @@
 import { AutomationEventIds, Pages } from 'analytics/analytics'
-import { TxHelpers } from 'components/AppContext'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { CloseVaultToEnum } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
@@ -12,6 +11,7 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitStatus'
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
+import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

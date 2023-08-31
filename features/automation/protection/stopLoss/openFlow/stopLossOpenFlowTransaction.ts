@@ -4,10 +4,10 @@ import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
-import { TxHelpers } from 'components/AppContext'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { AddStopLossChange } from 'features/shared/transactions'
+import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { of } from 'rxjs'
 

@@ -54,8 +54,8 @@ import {
   AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
   ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
   ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET,
+  tokensOptimism,
 } from 'blockchain/tokens/optimism'
-import { tokensOptimism } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 import { ContractDesc } from 'features/web3Context'
 

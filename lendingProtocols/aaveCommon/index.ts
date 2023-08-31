@@ -1,7 +1,0 @@
-export * from './reserveConfigurationData'
-export * from './yields'
-export * from './protocolData'
-export * from './reserveData'
-export * from './AaveServices'
-export * from './userAccountData'
-export * from './userConfiguration'

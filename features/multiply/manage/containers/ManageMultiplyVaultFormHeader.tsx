@@ -1,7 +1,9 @@
 import { ManageVaultHeaderAllowance } from 'components/vault/commonMultiply/ManageVaultHeaderAllowance'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
-import { ManageMultiplyVaultEditingStage } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import {
+  ManageMultiplyVaultEditingStage,
+  ManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Grid, Text } from 'theme-ui'

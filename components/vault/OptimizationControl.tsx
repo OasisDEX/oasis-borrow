@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -122,7 +121,7 @@ export function OptimizationControl({ vaultHistory }: OptimizationControlProps) 
     positionData: { debt },
     triggerData: { autoBuyTriggerData, autoTakeProfitTriggerData, constantMultipleTriggerData },
   } = useAutomationContext()
-  const { txHelpers$ } = useAppContext()
+  const { txHelpers$ } = useMainContext()
   const [txHelpersData] = useObservable(txHelpers$)
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)

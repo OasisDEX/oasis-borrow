@@ -1258,9 +1258,8 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
-    "header-aave-open": "Open {{collateral}}/{{debt}} Aave position",
-    "header-aave-view": "Aave {{collateral}}/{{debt}}",
-    "header-aave-view-id": "Aave {{collateral}}/{{debt}} Vault {{vaultId}}",
+    "header-aave-open": "Open {{collateral}}/{{debt}} {{protocol}} position",
+    "header-aave-view": "{{protocol}} {{collateral}}/{{debt}}",
     "header-current-market-price": "Current Market Price",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
@@ -2681,6 +2680,16 @@
             "success-open": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was created",
             "success-manage": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was updated"
           }
+        },
+        "dupe-modal": {
+          "title": "Are you sure you want to open a new {{product}} position in the Ajna {{collateralToken}}/{{quoteToken}} pool?",
+          "description-borrower-singular": "You already have borrower position in this pool.",
+          "description-borrower-plural": "You already have borrower positions in this pool.",
+          "description-lender-singular": "You already have lender position in this pool.",
+          "description-lender-plural": "You already have lender positions in this pool.",
+          "help": "You can either create a new position in this pool or go to your existing position.",
+          "cta-primary": "Go to your Portfolio",
+          "cta-textual": "Open new position"
         },
         "notifications": {
           "time-to-liquidation": {

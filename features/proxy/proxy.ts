@@ -1,5 +1,5 @@
-import { TxHelpers } from 'components/AppContext'
 import { createProxy } from 'features/proxy/createProxy'
+import { TxHelpers } from 'helpers/context/types'
 import { TxError } from 'helpers/types'
 import { Observable } from 'rxjs'
 

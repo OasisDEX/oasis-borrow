@@ -16,6 +16,7 @@ export type Feature =
   | 'AaveV3Protection'
   | 'AaveV3ProtectionWrite'
   | 'AjnaPoolFinder'
+  | 'AjnaReusableDPM'
   | 'AjnaSafetySwitch'
   | 'AjnaSuppressValidation'
   | 'ConstantMultipleReadOnly'
@@ -36,6 +37,7 @@ export type Feature =
   | 'UseNetworkSwitcherForks'
   | 'UseNetworkSwitcherOptimism'
   | 'UseNetworkSwitcherTestnets'
+  | 'SparkProtocol'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -50,6 +52,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3Protection: true,
   AaveV3ProtectionWrite: true,
   AjnaPoolFinder: true,
+  AjnaReusableDPM: false,
   AjnaSafetySwitch: false,
   AjnaSuppressValidation: false,
   ConstantMultipleReadOnly: false,
@@ -70,6 +73,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcherForks: false,
   UseNetworkSwitcherOptimism: true,
   UseNetworkSwitcherTestnets: false,
+  SparkProtocol: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

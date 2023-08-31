@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TxHelpers } from 'components/AppContext'
+import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { iif, Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'

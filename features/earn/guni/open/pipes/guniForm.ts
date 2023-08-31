@@ -1,10 +1,10 @@
 // TODO REMOVE NO CHECK
 // @ts-nocheck
 import { BigNumber } from 'bignumber.js'
-import { TxHelpers } from 'components/AppContext'
 import { defaultAllowanceState } from 'features/allowance/allowance'
 import { defaultProxyStage } from 'features/proxy/proxy'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 
 import { EnvironmentState } from './enviroment'

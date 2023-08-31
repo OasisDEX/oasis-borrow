@@ -1,9 +1,11 @@
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
-import { AppContext } from 'components/AppContext'
+import { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { MainContext } from 'helpers/context/MainContext'
+import { ProductContext } from 'helpers/context/ProductContext'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
@@ -13,7 +15,7 @@ import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { AaveContext } from './aave-context'
-import { getCommonPartsFromAppContext } from './get-common-parts-from-app-context'
+import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
@@ -30,20 +32,14 @@ import {
 import { getSupportedTokens } from './strategies'
 import { IStrategyConfig } from './types'
 
-export function setupAaveV2Context(appContext: AppContext): AaveContext {
-  const {
-    userSettings$,
-    txHelpers$,
-    onEveryBlock$,
-    context$,
-    tokenPriceUSD$,
-    proxyConsumed$,
-    strategyConfig$,
-    protocols,
-    connectedContext$,
-    commonTransactionServices,
-    chainContext$,
-  } = appContext
+export function setupAaveV2Context(
+  mainContext: MainContext,
+  accountContext: AccountContext,
+  productContext: ProductContext,
+): AaveContext {
+  const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
+  const { proxyConsumed$, userSettings$ } = accountContext
+  const { tokenPriceUSD$, strategyConfig$, protocols, commonTransactionServices } = productContext
 
   const {
     allowanceForAccount$,
@@ -58,7 +54,13 @@ export function setupAaveV2Context(appContext: AppContext): AaveContext {
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-  } = getCommonPartsFromAppContext(appContext, onEveryBlock$, NetworkIds.MAINNET)
+  } = getCommonPartsFromProductContext(
+    mainContext,
+    accountContext,
+    productContext,
+    onEveryBlock$,
+    NetworkIds.MAINNET,
+  )
 
   const {
     aaveUserAccountData$,

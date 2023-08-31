@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -14,7 +14,8 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$, context$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { generalManageVault$ } = useProductContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)

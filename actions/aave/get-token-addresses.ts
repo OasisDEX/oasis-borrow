@@ -2,12 +2,11 @@ import { AAVEStrategyAddresses, AAVEV3StrategyAddresses } from '@oasisdex/dma-li
 import {
   ensureChainlinkTokenPairsExist,
   ensureContractsExist,
+  ensureGivenTokensExist,
   ensurePropertiesExist,
-  ensureTokensExist,
   getNetworkContracts,
 } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { ethNullAddress } from 'blockchain/networks'
+import { ethNullAddress, NetworkIds } from 'blockchain/networks'
 
 export function getTokenAddresses(
   networkId: NetworkIds,
@@ -22,7 +21,22 @@ export function getTokenAddresses(
     'aaveV2ProtocolDataProvider',
     'aaveV3Oracle',
   ])
-  ensureTokensExist(networkId, contracts)
+  ensureGivenTokensExist(networkId, contracts, [
+    'DAI',
+    'ETH',
+    'WETH',
+    'USDC',
+    'WBTC',
+    'WSTETH',
+    'CBETH',
+    'RETH',
+    'STETH',
+    'GHO',
+    'USDT',
+    'SDAI',
+    'LUSD',
+    'FRAX',
+  ])
   ensureChainlinkTokenPairsExist(networkId, contracts, ['ETHUSD'])
   ensurePropertiesExist(networkId, contracts, ['swapAddress'])
 
@@ -36,6 +50,11 @@ export function getTokenAddresses(
     CBETH: contracts.tokens['CBETH'].address,
     RETH: contracts.tokens['RETH'].address,
     STETH: contracts.tokens['STETH'].address,
+    GHO: contracts.tokens['GHO'].address,
+    USDT: contracts.tokens['USDT'].address,
+    SDAI: contracts.tokens['SDAI'].address,
+    LUSD: contracts.tokens['LUSD'].address,
+    FRAX: contracts.tokens['FRAX'].address,
     chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
     pool: contracts.aaveV3Pool.address,
     aaveOracle: contracts.aaveV3Oracle.address,

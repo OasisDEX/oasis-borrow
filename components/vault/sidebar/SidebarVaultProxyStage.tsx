@@ -7,7 +7,7 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/context/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'

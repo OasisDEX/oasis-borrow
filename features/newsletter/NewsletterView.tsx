@@ -1,11 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
-import { isAppContextAvailable } from 'components/AppContextProvider'
+import { isMainContextAvailable } from 'components/context'
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { FormEvent, useState } from 'react'
-import { useEffect } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 
@@ -231,7 +230,7 @@ export function NewsletterSection({ small }: { small?: boolean }) {
         </Heading>
         {small && <Text sx={{ color: 'neutral80' }}>{t('newsletter.subtitle')}</Text>}
       </Grid>
-      {isAppContextAvailable() ? <NewsletterForm small={small} /> : null}
+      {isMainContextAvailable() ? <NewsletterForm small={small} /> : null}
     </Box>
   )
 }
