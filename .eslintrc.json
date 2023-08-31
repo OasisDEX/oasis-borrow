@@ -237,9 +237,31 @@
 
     "no-only-tests/no-only-tests": "error",
 
+    //* plugin:simple-import-sort */
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // react and react celated packages
+          ["^react", "^@?\\w"],
+          // side effect
+          ["^\\u0000"],
+          // regular packages - imports starting with a letter (or digit or underscore), or `@` followed by a letter
+          ["^@?\\w"],
+          // absolute imports and anything not matched in another group.
+          ["^"],
+          // relative imports
+          ["^\\."],
+          // style imports
+          ["^.+\\.s?css$"],
+          // images
+          ["^.+\\.s?png$"]
+        ]
+      }
+    ],
+
     //* eslint-plugin-prettier */
 
     "prettier/prettier": 2
-    
   }
 }
