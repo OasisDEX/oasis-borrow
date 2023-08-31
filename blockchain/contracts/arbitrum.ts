@@ -131,9 +131,9 @@ export const arbitrumContracts: MainnetContracts = {
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    arbitrum.aave.v2.ProtocolDataProvider,
+    arbitrum.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, arbitrum.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, arbitrum.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_ETHUSD),
@@ -144,18 +144,16 @@ export const arbitrumContracts: MainnetContracts = {
   swapAddress: arbitrum.mpa.core.Swap,
   accountFactory: contractDesc(accountFactory, arbitrum.mpa.core.AccountFactory),
   accountGuard: contractDesc(accountGuard, arbitrum.mpa.core.AccountGuard),
-  aaveV3Pool: contractDesc(aaveV3Pool, arbitrum.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, arbitrum.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    arbitrum.aave.v3.AavePoolDataProvider,
+  aaveV3Pool: contractDesc(aaveV3Pool, arbitrum.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, arbitrum.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, arbitrum.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(
+    sparkV3Pool,
+    arbitrum.aave.v3.LendingPool,
+    AAVE_V3_POOL_GENESIS_MAINNET,
   ),
-  sparkV3Pool: contractDesc(sparkV3Pool, arbitrum.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, arbitrum.aave.v3.AaveOracle),
-  sparkV3PoolDataProvider: contractDesc(
-    sparkV3PoolDataProvider,
-    arbitrum.aave.v3.AavePoolDataProvider,
-  ),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, arbitrum.aave.v3.Oracle),
+  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, arbitrum.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
