@@ -43,11 +43,9 @@ const getSparkV3TokensData = memoize(async (networkName: SparkV3Networks, ticker
     ...new Set(currentNetworkProducts.map((product) => product.secondaryToken)),
   ]
   // reserveData -> liq available and variable fee
-  console.log('secondaryTokensList', secondaryTokensList)
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getSparkV3ReserveData({ token, networkId })
     const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers))
-    console.log('fee', token, reserveData.variableBorrowRate.toString())
     return {
       [token]: {
         liquidity: reserveData.totalSpToken
@@ -86,7 +84,6 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const sparkV3NetworksList = [
     ...new Set(sparkV3ProductHubProducts.map((product) => product.network)),
   ]
-  console.log('sparkV3NetworksList', sparkV3NetworksList)
   const getSparkV3TokensDataPromises = sparkV3NetworksList.map((networkName) =>
     getSparkV3TokensData(networkName as SparkV3Networks, tickers),
   )

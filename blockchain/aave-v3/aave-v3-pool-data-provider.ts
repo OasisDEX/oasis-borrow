@@ -111,7 +111,6 @@ export function getAaveV3ReserveData({
 }: AaveV3ReserveDataParameters): Promise<AaveV3ReserveDataReply> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
-  !tokenAddress && console.log('token', token)
   warnIfAddressIsZero(tokenAddress, networkId, 'aaveV3PoolDataProvider', 'getReserveData')
   return contract.getReserveData(tokenAddress).then((result) => {
     const totalAToken = amountFromWei(new BigNumber(result.totalAToken.toString()), token)
