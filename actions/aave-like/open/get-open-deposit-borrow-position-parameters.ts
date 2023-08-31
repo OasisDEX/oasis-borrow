@@ -1,10 +1,11 @@
 import { IOpenDepositBorrowStrategy, strategies } from '@oasisdex/dma-library'
-import { getTokenAddresses } from 'actions/aave-like/get-token-addresses'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import { OpenAaveDepositBorrowParameters } from 'actions/aave-like/types'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
+import { LendingProtocol } from 'lendingProtocols'
 
 function assertNetwork(networkId: NetworkIds): asserts networkId is NetworkIds.MAINNET {
   if (networkId !== NetworkIds.MAINNET) {
@@ -28,9 +29,10 @@ export async function getOpenDepositBorrowPositionParameters(
 
   assertNetwork(networkId)
 
-  type types = Parameters<typeof strategies.aave.v3.openDepositBorrow>
+  type types = Parameters<typeof strategies.aave.borrow.v3.openDepositBorrow> &
+    Parameters<typeof strategies.spark.borrow.openDepositBorrow>
 
-  const libArgs: types[0] = {
+  const aaveLikeArgs: types[0] = {
     slippage,
     collateralToken: {
       symbol: collateralToken,
@@ -48,8 +50,7 @@ export async function getOpenDepositBorrowPositionParameters(
     },
   }
 
-  const deps: types[1] = {
-    addresses: getTokenAddresses(networkId),
+  const aaveLikeDeps: Omit<types[1], 'addresses' | 'protocolType'> = {
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,
     user: userAddress,
@@ -57,5 +58,20 @@ export async function getOpenDepositBorrowPositionParameters(
     positionType: 'Borrow' as const,
   }
 
-  return await strategies.aave.v3.openDepositBorrow(libArgs, deps)
+  switch (args.protocol) {
+    case LendingProtocol.AaveV2:
+      throw new Error('New Aave V2 positions are no longer supported')
+    case LendingProtocol.AaveV3:
+      return await strategies.aave.borrow.v3.openDepositBorrow(aaveLikeArgs, {
+        ...aaveLikeDeps,
+        addresses: getAddresses(networkId, LendingProtocol.AaveV2),
+      })
+    case LendingProtocol.SparkV3:
+      return await strategies.spark.borrow.openDepositBorrow(aaveLikeArgs, {
+        ...aaveLikeDeps,
+        addresses: getAddresses(networkId, LendingProtocol.SparkV3),
+      })
+    default:
+      throw new Error('Invalid protocol')
+  }
 }

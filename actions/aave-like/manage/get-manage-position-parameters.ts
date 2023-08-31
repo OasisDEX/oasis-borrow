@@ -1,5 +1,5 @@
 import { AAVETokens, IStrategy, strategies } from '@oasisdex/dma-library'
-import { getTokenAddresses } from 'actions/aave-like/get-token-addresses'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import { ManageAaveParameters } from 'actions/aave-like/types'
 import BigNumber from 'bignumber.js'
@@ -50,15 +50,15 @@ export async function getManagePositionParameters(
 
   const provider = getRpcProvider(networkId)
 
-  const addresses = getTokenAddresses(networkId)
-
   const [collateral, debt] = getTokensInBaseUnit(parameters)
 
   switch (manageTokenInput?.manageTokenAction) {
     case ManageDebtActionsEnum.PAYBACK_DEBT:
     case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
-      type paybackWithdrawTypes = Parameters<typeof strategies.aave.v2.paybackWithdraw> &
-        Parameters<typeof strategies.aave.v3.paybackWithdraw>
+      type paybackWithdrawTypes = Parameters<typeof strategies.aave.borrow.v2.paybackWithdraw> &
+        Parameters<
+          typeof strategies.aave.borrow.v3.paybackWithdraw
+        > /* & Parameters<typeof strategies.spark.paybackWithdraw> */
 
       const paybackWithdrawStratArgs: paybackWithdrawTypes[0] = {
         slippage,
@@ -74,8 +74,7 @@ export async function getManagePositionParameters(
         amountDebtToPaybackInBaseUnit: debt,
       }
 
-      const paybackWithdrawStratDeps: paybackWithdrawTypes[1] = {
-        addresses,
+      const paybackWithdrawStratDeps: Omit<paybackWithdrawTypes[1], 'addresses'> = {
         currentPosition,
         provider: provider,
         proxy: proxyAddress,
@@ -84,26 +83,35 @@ export async function getManagePositionParameters(
       }
 
       if (protocol === LendingProtocol.AaveV2) {
-        return await strategies.aave.v2.paybackWithdraw(
-          paybackWithdrawStratArgs,
-          paybackWithdrawStratDeps,
-        )
+        const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+        return await strategies.aave.borrow.v2.paybackWithdraw(paybackWithdrawStratArgs, {
+          ...paybackWithdrawStratDeps,
+          addresses: addressesV2,
+        })
       }
 
       if (protocol === LendingProtocol.AaveV3) {
-        return await strategies.aave.v3.paybackWithdraw(
-          paybackWithdrawStratArgs,
-          paybackWithdrawStratDeps,
-        )
+        const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+        return await strategies.aave.borrow.v3.paybackWithdraw(paybackWithdrawStratArgs, {
+          ...paybackWithdrawStratDeps,
+          addresses: addressesV3,
+        })
+      }
+
+      if (protocol === LendingProtocol.SparkV3) {
+        throw new Error('Not implemented')
       }
 
       throw new Error(
         `Unsupported protocol ${protocol} for action ${manageTokenInput?.manageTokenAction}`,
       )
+
     case ManageDebtActionsEnum.BORROW_DEBT:
     case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
-      type borrowDepositTypes = Parameters<typeof strategies.aave.v2.depositBorrow> &
-        Parameters<typeof strategies.aave.v3.depositBorrow>
+      type borrowDepositTypes = Parameters<typeof strategies.aave.borrow.v2.depositBorrow> &
+        Parameters<
+          typeof strategies.aave.borrow.v3.depositBorrow
+        > /* & Parameters<typeof strategies.spark.depositBorrow> */
 
       const borrowDepositStratArgs: borrowDepositTypes[0] = {
         debtToken: {
@@ -123,8 +131,7 @@ export async function getManagePositionParameters(
         },
       }
 
-      const borrowDepositStratDeps: borrowDepositTypes[1] = {
-        addresses,
+      const borrowDepositStratDeps: Omit<borrowDepositTypes[1], 'addresses'> = {
         currentPosition,
         provider: provider,
         proxy: proxyAddress,
@@ -132,16 +139,22 @@ export async function getManagePositionParameters(
         network: networkIdToLibraryNetwork(networkId),
       }
       if (protocol === LendingProtocol.AaveV2) {
-        return await strategies.aave.v2.depositBorrow(
-          borrowDepositStratArgs,
-          borrowDepositStratDeps,
-        )
+        const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+        return await strategies.aave.borrow.v2.depositBorrow(borrowDepositStratArgs, {
+          ...borrowDepositStratDeps,
+          addresses: addressesV2,
+        })
       }
       if (protocol === LendingProtocol.AaveV3) {
-        return await strategies.aave.v3.depositBorrow(
-          borrowDepositStratArgs,
-          borrowDepositStratDeps,
-        )
+        const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+        return await strategies.aave.borrow.v3.depositBorrow(borrowDepositStratArgs, {
+          ...borrowDepositStratDeps,
+          addresses: addressesV3,
+        })
+      }
+
+      if (protocol === LendingProtocol.SparkV3) {
+        throw new Error('Not implemented')
       }
 
       throw new Error(
