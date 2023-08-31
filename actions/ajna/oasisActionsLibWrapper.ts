@@ -92,7 +92,7 @@ export async function getAjnaParameters({
     }
     case 'deposit-borrow':
     case 'generate-borrow': {
-      return ajnaDepositGenerateBorrow({ state, commonPayload, dependencies, position })
+      return ajnaDepositGenerateBorrow({ state, commonPayload, dependencies, position, simulation })
     }
     case 'payback-borrow':
     case 'withdraw-borrow': {
@@ -168,6 +168,7 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
+        simulation,
       })
     }
     case 'payback-multiply':
