@@ -74,7 +74,6 @@ export function AjnaHomepageView() {
             ]}
           />
         }
-        subheadingWidth="740px"
         primaryButton={{
           isVisible: true,
           translationKey: 'landing.hero.ajna.primary-cta',
