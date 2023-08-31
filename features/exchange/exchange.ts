@@ -78,7 +78,7 @@ export function getTokenMetaData(
  * Because it causes re-entrancy issues
  * For Ajna multiply (and other Balancer FL using operations) on mainnet
  */
-export const defaultExchangeProtocols = [
+export const ETHEREUM_MAINNET_DEFAULT_PROTOCOLS = [
   'UNISWAP_V1',
   'UNISWAP_V2',
   'SUSHI',
@@ -130,9 +130,10 @@ export const defaultExchangeProtocols = [
   'CURVE_V2_ETH_CRV',
   'CURVE_V2_ETH_CVX',
   'CONVERGENCE_X',
-  'ONE_INCH_LIMIT_ORDER',
-  'ONE_INCH_LIMIT_ORDER_V2',
-  'ONE_INCH_LIMIT_ORDER_V3',
+  /* Disbled becuase wrong token price */
+  //'ONE_INCH_LIMIT_ORDER',
+  //'ONE_INCH_LIMIT_ORDER_V2',
+  //'ONE_INCH_LIMIT_ORDER_V3',
   'DFX_FINANCE',
   'FIXED_FEE_SWAP',
   'DXSWAP',
@@ -184,6 +185,26 @@ export const defaultExchangeProtocols = [
   'SDAI',
 ]
 
+export const OPTIMIMS_DEFAULT_PROCOTOLS = [
+  'OPTIMISM_UNISWAP_V3',
+  'OPTIMISM_SYNTHETIX',
+  'OPTIMISM_SYNTHETIX_WRAPPER',
+  'OPTIMISM_ONE_INCH_LIMIT_ORDER',
+  'OPTIMISM_ONE_INCH_LIMIT_ORDER_V2',
+  'OPTIMISM_ONE_INCH_LIMIT_ORDER_V3',
+  'OPTIMISM_CURVE',
+  // 'OPTIMISM_BALANCER_V2', - We can't use balancer due to reentrancy issues
+  'OPTIMISM_VELODROME',
+  'OPTIMISM_KYBERSWAP_ELASTIC',
+  'OPTIMISM_CLIPPER_COVES',
+  'OPTIMISM_KYBER_DMM_STATIC',
+  'OPTIMISM_AAVE_V3',
+  'OPTIMISM_ELK',
+  'OPTIMISM_WOOFI_V2',
+  'OPTIMISM_TRIDENT',
+  'OPTIMISM_MUMMY_FINANCE',
+]
+
 export function getQuote$(
   quote: TokenMetadata,
   collateral: TokenMetadata,
@@ -210,7 +231,7 @@ export function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
-    protocols: protocols || defaultExchangeProtocols.join(','),
+    protocols: protocols || ETHEREUM_MAINNET_DEFAULT_PROTOCOLS.join(','),
   })
 
   const responseBase = {

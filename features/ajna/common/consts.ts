@@ -40,7 +40,6 @@ export const AJNA_POOLS_WITH_REWARDS = [
   'RETH-DAI',
   'RETH-ETH',
   'SDAI-USDC',
-  'TBTC-USDC',
   'USDC-ETH',
   'USDC-WBTC',
   'WBTC-DAI',

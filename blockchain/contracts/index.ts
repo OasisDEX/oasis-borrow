@@ -150,8 +150,13 @@ export function ensureGivenTokensExist(
   tokens: ReadonlyArray<string>,
 ): asserts contracts is { tokens: { [K in (typeof tokens)[number]]: ContractDesc } } {
   ensureTokensExist(chainId, contracts)
-  if (tokens.some((p) => !contracts.tokens.hasOwnProperty(p))) {
-    throw new Error(`Can't find tokens definitions: ${JSON.stringify(tokens)} on ${chainId} chain`)
+  const notFoundTokens = tokens.filter((p) => !contracts.tokens.hasOwnProperty(p))
+  if (notFoundTokens.length > 0) {
+    throw new Error(
+      `Can't find tokens definitions: ${JSON.stringify(
+        notFoundTokens,
+      )}. searching for: ${JSON.stringify(tokens)} on ${chainId} chain`,
+    )
   }
 }
 
