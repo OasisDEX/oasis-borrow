@@ -64,7 +64,7 @@ export async function getOpenDepositBorrowPositionParameters(
     case LendingProtocol.AaveV3:
       return await strategies.aave.borrow.v3.openDepositBorrow(aaveLikeArgs, {
         ...aaveLikeDeps,
-        addresses: getAddresses(networkId, LendingProtocol.AaveV2),
+        addresses: getAddresses(networkId, LendingProtocol.AaveV3),
       })
     case LendingProtocol.SparkV3:
       return await strategies.spark.borrow.openDepositBorrow(aaveLikeArgs, {
