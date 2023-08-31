@@ -490,31 +490,6 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'SDAI',
-    debt: 'GHO',
-    strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Earn]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-earn',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
-  },
-  {
-    collateral: 'SDAI',
     debt: 'LUSD',
     strategyType: StrategyType.Long,
     productTypes: {
