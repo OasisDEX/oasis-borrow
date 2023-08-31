@@ -115,10 +115,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         : tokensReserveData[product.network as SparkV3Networks].tokensReserveConfigurationData.find(
             (data) => data[product.primaryToken],
           )![product.primaryToken].riskRatio
-    const response = await yieldsPromisesMap[product.label as keyof typeof yieldsPromisesMap](
-      riskRatio,
-      ['7Days'],
-    )
+    const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }

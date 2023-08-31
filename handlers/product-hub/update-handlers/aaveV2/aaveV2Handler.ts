@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { flatten } from 'lodash'
 import { curry } from 'ramda'
@@ -36,7 +37,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   const graphQlProvider = new GraphQLClient(
     getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
   )
-  const yieldsPromisesMap = {
+  const yieldsPromisesMap: Record<
+    string,
+    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
+  > = {
     // a crude map, but it works for now since we only have one earn product
     'STETH/ETH': curry(getAaveStEthYield)(graphQlProvider, dayjs()),
   }
@@ -72,10 +76,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     const { riskRatio } = tokensReserveData.find((data) => data[product.primaryToken])![
       product.primaryToken
     ]
-    const response = await yieldsPromisesMap[product.label as keyof typeof yieldsPromisesMap](
-      riskRatio,
-      ['7Days'],
-    )
+    const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }
