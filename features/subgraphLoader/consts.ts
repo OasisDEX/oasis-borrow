@@ -5,9 +5,9 @@ import getConfig from 'next/config'
 
 export const subgraphsRecord: SubgraphsRecord = {
   Ajna: {
-    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
-    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
-    [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrlGoerli,
+    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2Url,
+    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2Url,
+    [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2UrlGoerli,
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
