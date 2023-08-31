@@ -32,7 +32,8 @@ const networkNameToIdMap = {
   [NetworkNames.optimismMainnet]: NetworkIds.OPTIMISMMAINNET,
 }
 
-const getAaveV3TokensData = memoize(async (networkName: AaveV3Networks, tickers: Tickers) => {
+const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers) => {
+  console.log('getAaveV3TokensData', networkName)
   const currentNetworkProducts = aaveV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
@@ -86,15 +87,16 @@ const getAaveV3TokensData = memoize(async (networkName: AaveV3Networks, tickers:
       tokensReserveConfigurationData,
     },
   }
-})
+}
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // mainnet
+  const memoizedTokensData = memoize(getAaveV3TokensData)
   const aaveV3NetworksList = [
     ...new Set(aaveV3ProductHubProducts.map((product) => product.network)),
   ]
   const getAaveV3TokensDataPromises = aaveV3NetworksList.map((networkName) =>
-    getAaveV3TokensData(networkName as AaveV3Networks, tickers),
+    memoizedTokensData(networkName as AaveV3Networks, tickers),
   )
   const graphQlProvider = new GraphQLClient(
     getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
@@ -118,7 +120,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     product.includes(ProductHubProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await getAaveV3TokensData(product.network as AaveV3Networks, tickers)
+    const tokensReserveData = await memoizedTokensData(product.network as AaveV3Networks, tickers)
 
     const riskRatio =
       product.label === 'WSTETH/ETH'

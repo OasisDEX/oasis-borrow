@@ -23,7 +23,8 @@ const networkNameToIdMap = {
   [NetworkNames.ethereumMainnet]: NetworkIds.MAINNET,
 }
 
-const getSparkV3TokensData = memoize(async (networkName: SparkV3Networks, tickers: Tickers) => {
+const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Tickers) => {
+  console.log('getSparkV3TokensData', networkName)
   const currentNetworkProducts = sparkV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
@@ -77,15 +78,16 @@ const getSparkV3TokensData = memoize(async (networkName: SparkV3Networks, ticker
       tokensReserveConfigurationData,
     },
   }
-})
+}
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // mainnet
+  const memoizedTokensData = memoize(getSparkV3TokensData)
   const sparkV3NetworksList = [
     ...new Set(sparkV3ProductHubProducts.map((product) => product.network)),
   ]
   const getSparkV3TokensDataPromises = sparkV3NetworksList.map((networkName) =>
-    getSparkV3TokensData(networkName as SparkV3Networks, tickers),
+    memoizedTokensData(networkName as SparkV3Networks, tickers),
   )
 
   const yieldsPromisesMap: Record<
@@ -105,10 +107,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     product.includes(ProductHubProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await getSparkV3TokensData(
-      product.network as SparkV3Networks,
-      tickers,
-    )
+    const tokensReserveData = await memoizedTokensData(product.network as SparkV3Networks, tickers)
 
     const riskRatio =
       product.label === 'WSTETH/ETH'
