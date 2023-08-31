@@ -13,6 +13,7 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
+import { memoize } from 'lodash'
 
 import { sparkV3ProductHubProducts } from './sparkV3Products'
 
@@ -22,12 +23,11 @@ const networkNameToIdMap = {
   [NetworkNames.ethereumMainnet]: NetworkIds.MAINNET,
 }
 
-const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Tickers) => {
+const getSparkV3TokensData = memoize(async (networkName: SparkV3Networks, tickers: Tickers) => {
   const currentNetworkProducts = sparkV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
   const networkId = networkNameToIdMap[networkName] as SparkV3SupportedNetwork
-  const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
   const primaryTokensList = [
     ...new Set(
       currentNetworkProducts
@@ -43,14 +43,17 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
     ...new Set(currentNetworkProducts.map((product) => product.secondaryToken)),
   ]
   // reserveData -> liq available and variable fee
+  console.log('secondaryTokensList', secondaryTokensList)
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getSparkV3ReserveData({ token, networkId })
+    const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers))
+    console.log('fee', token, reserveData.variableBorrowRate.toString())
     return {
       [token]: {
         liquidity: reserveData.totalSpToken
           .minus(reserveData.totalStableDebt)
           .minus(reserveData.totalVariableDebt)
-          .times(usdcPrice),
+          .times(debtTokenPrice),
         fee: reserveData.variableBorrowRate,
       },
     }
@@ -76,13 +79,14 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
       tokensReserveConfigurationData,
     },
   }
-}
+})
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // mainnet
   const sparkV3NetworksList = [
     ...new Set(sparkV3ProductHubProducts.map((product) => product.network)),
   ]
+  console.log('sparkV3NetworksList', sparkV3NetworksList)
   const getSparkV3TokensDataPromises = sparkV3NetworksList.map((networkName) =>
     getSparkV3TokensData(networkName as SparkV3Networks, tickers),
   )

@@ -58,7 +58,7 @@ import {
   ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
   tokensGoerli,
 } from 'blockchain/tokens/goerli'
-import { AAVE_V3_POOL_GENESIS_MAINNET, supportedIlks } from 'blockchain/tokens/mainnet'
+import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
@@ -164,9 +164,9 @@ export const goerliContracts: MainnetContracts = {
   aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
   aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.PoolDataProvider),
-  sparkV3Pool: contractDesc(sparkV3Pool, goerli.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, goerli.aave.v3.Oracle),
-  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, goerli.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(sparkV3Pool, goerli.spark.LendingPool!),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, goerli.spark.Oracle!),
+  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, goerli.spark.PoolDataProvider!),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {

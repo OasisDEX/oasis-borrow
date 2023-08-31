@@ -53,7 +53,7 @@ import {
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import { tokensArbitrum } from 'blockchain/tokens/'
 import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
-import { AAVE_V3_POOL_GENESIS_MAINNET, supportedIlks } from 'blockchain/tokens/mainnet'
+import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
 import { MainnetContracts, mainnetContracts } from './mainnet'
@@ -147,13 +147,9 @@ export const arbitrumContracts: MainnetContracts = {
   aaveV3Pool: contractDesc(aaveV3Pool, arbitrum.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
   aaveV3Oracle: contractDesc(aaveV3Oracle, arbitrum.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, arbitrum.aave.v3.PoolDataProvider),
-  sparkV3Pool: contractDesc(
-    sparkV3Pool,
-    arbitrum.aave.v3.LendingPool,
-    AAVE_V3_POOL_GENESIS_MAINNET,
-  ),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, arbitrum.aave.v3.Oracle),
-  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, arbitrum.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(sparkV3Pool, arbitrum.spark.LendingPool!),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, arbitrum.spark.Oracle!),
+  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, arbitrum.spark.PoolDataProvider!),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {

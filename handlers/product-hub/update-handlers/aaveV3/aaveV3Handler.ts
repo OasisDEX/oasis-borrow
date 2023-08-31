@@ -16,6 +16,7 @@ import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
+import { memoize } from 'lodash'
 import { curry } from 'ramda'
 
 import { aaveV3ProductHubProducts } from './aaveV3Products'
@@ -31,12 +32,11 @@ const networkNameToIdMap = {
   [NetworkNames.optimismMainnet]: NetworkIds.OPTIMISMMAINNET,
 }
 
-const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers) => {
+const getAaveV3TokensData = memoize(async (networkName: AaveV3Networks, tickers: Tickers) => {
   const currentNetworkProducts = aaveV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
   const networkId = networkNameToIdMap[networkName] as AaveV3SupportedNetwork
-  const usdcPrice = new BigNumber(getTokenPrice('USDC', tickers))
   const primaryTokensList = [
     ...new Set(
       currentNetworkProducts
@@ -54,12 +54,13 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   // reserveData -> liq available and variable fee
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getAaveV3ReserveData({ token, networkId })
+    const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers))
     return {
       [token]: {
         liquidity: reserveData.totalAToken
           .minus(reserveData.totalStableDebt)
           .minus(reserveData.totalVariableDebt)
-          .times(usdcPrice),
+          .times(debtTokenPrice),
         fee: reserveData.variableBorrowRate,
       },
     }
@@ -85,7 +86,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
       tokensReserveConfigurationData,
     },
   }
-}
+})
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // mainnet

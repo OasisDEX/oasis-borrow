@@ -52,7 +52,7 @@ import {
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
-import { AAVE_V3_POOL_GENESIS_MAINNET, supportedIlks } from 'blockchain/tokens/mainnet'
+import { supportedIlks } from 'blockchain/tokens/mainnet'
 import {
   AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
   ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
@@ -169,13 +169,9 @@ export const optimismContracts: OptimismContracts = {
   ),
   aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, optimism.aave.v3.PoolDataProvider),
-  sparkV3Pool: contractDesc(
-    sparkV3Pool,
-    optimism.aave.v3.LendingPool,
-    AAVE_V3_POOL_GENESIS_MAINNET,
-  ),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, optimism.aave.v3.Oracle),
-  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, optimism.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(sparkV3Pool, optimism.spark.LendingPool!),
+  sparkV3Oracle: contractDesc(sparkV3Oracle, optimism.spark.Oracle!),
+  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, optimism.spark.PoolDataProvider!),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
