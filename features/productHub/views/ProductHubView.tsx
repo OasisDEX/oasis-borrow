@@ -47,10 +47,10 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const { t } = useTranslation()
   const { data } = useProductHubData({
     protocols: [
-      // LendingProtocol.Ajna,
-      // LendingProtocol.AaveV2,
-      // LendingProtocol.AaveV3,
-      // LendingProtocol.Maker,
+      LendingProtocol.Ajna,
+      LendingProtocol.AaveV2,
+      LendingProtocol.AaveV3,
+      LendingProtocol.Maker,
       LendingProtocol.SparkV3,
     ],
     promoCardsCollection,
