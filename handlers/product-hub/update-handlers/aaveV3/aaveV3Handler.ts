@@ -33,7 +33,6 @@ const networkNameToIdMap = {
 }
 
 const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers) => {
-  console.log('getAaveV3TokensData', networkName)
   const currentNetworkProducts = aaveV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
