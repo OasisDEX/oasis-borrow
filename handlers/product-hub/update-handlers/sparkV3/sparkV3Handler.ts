@@ -24,7 +24,6 @@ const networkNameToIdMap = {
 }
 
 const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Tickers) => {
-  console.log('getSparkV3TokensData', networkName)
   const currentNetworkProducts = sparkV3ProductHubProducts.filter(
     (product) => product.network === networkName,
   )
