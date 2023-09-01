@@ -94,12 +94,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
   > = {
     'WSTETH/ETH': emptyYields,
-    'CBETH/ETH': emptyYields,
     'RETH/ETH': emptyYields,
-    'SDAI/GHO': emptyYields,
-    'SDAI/USDC': emptyYields,
-    'SDAI/LUSD': emptyYields,
-    'SDAI/FRAX': emptyYields,
   }
   // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>

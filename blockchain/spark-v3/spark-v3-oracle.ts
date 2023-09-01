@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { ensureContractsExist } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { one } from 'helpers/zero'
 import { SparkV3Oracle__factory } from 'types/ethers-contracts'
@@ -24,6 +25,7 @@ export function getSparkV3AssetsPrices({
   networkId,
 }: SparkV3AssetsPricesParameters): Promise<BigNumber[]> {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]()
+  ensureContractsExist(networkId, contract, ['sparkV3Oracle'])
   const tokenAddresses = tokens.map((token) => wethToEthAddress(tokenMappings, token))
   return contract.getAssetsPrices(tokenAddresses).then((result) => {
     return result.map((tokenPriceInBaseCurrency) =>

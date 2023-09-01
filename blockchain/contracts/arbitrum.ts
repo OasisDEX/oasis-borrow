@@ -41,9 +41,6 @@ import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
-import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
-import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
-import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as vat from 'blockchain/abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -56,11 +53,11 @@ import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import { MainnetContracts, mainnetContracts } from './mainnet'
+import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
 
 const { arbitrum } = ADDRESSES
 
-export const arbitrumContracts: MainnetContracts = {
+export const arbitrumContracts: MainnetContractsWithOptional = {
   otc: contractDesc(otc, arbitrum.common.Otc),
   collaterals: getCollaterals(arbitrum.common, supportedIlks),
   tokens: tokensArbitrum,
@@ -147,9 +144,6 @@ export const arbitrumContracts: MainnetContracts = {
   aaveV3Pool: contractDesc(aaveV3Pool, arbitrum.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
   aaveV3Oracle: contractDesc(aaveV3Oracle, arbitrum.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, arbitrum.aave.v3.PoolDataProvider),
-  sparkV3Pool: contractDesc(sparkV3Pool, arbitrum.spark.LendingPool!),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, arbitrum.spark.Oracle!),
-  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, arbitrum.spark.PoolDataProvider!),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {

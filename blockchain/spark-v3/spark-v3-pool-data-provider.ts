@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { ensureContractsExist } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
@@ -68,6 +69,7 @@ export function getSparkV3UserReserveData({
   networkId,
 }: SparkV3UserReserveDataParameters): Promise<SparkV3UserReserveData> {
   const { contract, tokenMappings } = networkMappings[networkId]()
+  ensureContractsExist(networkId, contract, ['sparkV3PoolDataProvider'])
 
   const tokenAddress = wethToEthAddress(tokenMappings, token)
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
@@ -99,6 +101,7 @@ export function getSparkV3ReserveData({
 }: SparkV3ReserveDataParameters): Promise<SparkV3ReserveDataReply> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+  ensureContractsExist(networkId, contract, ['sparkV3PoolDataProvider'])
   warnIfAddressIsZero(tokenAddress, networkId, 'sparkV3PoolDataProvider', 'getReserveData')
   return contract.getReserveData(tokenAddress).then((result) => {
     const totalSpToken = amountFromWei(new BigNumber(result.totalSpToken.toString()), token)

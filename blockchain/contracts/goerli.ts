@@ -42,9 +42,6 @@ import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
-import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
-import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
-import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as vat from 'blockchain/abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -61,11 +58,11 @@ import {
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import { MainnetContracts, mainnetContracts } from './mainnet'
+import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
 
 const { goerli } = ADDRESSES
 
-export const goerliContracts: MainnetContracts = {
+export const goerliContracts: MainnetContractsWithOptional = {
   otc: contractDesc(otc, goerli.common.Otc),
   collaterals: getCollaterals(goerli.common, supportedIlks),
   tokens: tokensGoerli,
@@ -164,9 +161,6 @@ export const goerliContracts: MainnetContracts = {
   aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
   aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.PoolDataProvider),
-  sparkV3Pool: contractDesc(sparkV3Pool, goerli.spark.LendingPool!),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, goerli.spark.Oracle!),
-  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, goerli.spark.PoolDataProvider!),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {

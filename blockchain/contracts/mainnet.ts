@@ -63,6 +63,9 @@ import {
   tokensMainnet,
 } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
+import { Optional } from 'helpers/types'
+
+import { OptionalContracts } from './optional-contracts'
 
 const { mainnet } = ADDRESSES
 
@@ -228,3 +231,4 @@ export const mainnetContracts = {
 }
 
 export type MainnetContracts = typeof mainnetContracts
+export type MainnetContractsWithOptional = Optional<MainnetContracts, OptionalContracts>
