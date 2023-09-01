@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { ensureContractsExist } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { SparkV3Pool__factory } from 'types/ethers-contracts'
 
@@ -43,8 +42,6 @@ export function getSparkV3UserAccountData({
   address,
 }: SparkV3UserAccountDataParameters): Promise<SparkV3UserAccountData> {
   const { contract, baseCurrencyUnit } = networkMappings[networkId]()
-  ensureContractsExist(networkId, contract, ['sparkV3Pool'])
-
   return contract.getUserAccountData(address).then((result) => {
     return {
       totalCollateralBase: new BigNumber(result.totalCollateralBase.toString()).div(
