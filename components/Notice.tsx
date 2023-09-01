@@ -47,7 +47,7 @@ export function Notice({ children, close, sx, withClose = true }: NoticeProps) {
           <Icon name="close_squared" size={14} />
         </IconButton>
       )}
-      <Box sx={{ wordBreak: 'break-all' }}>{children}</Box>
+      <Box>{children}</Box>
     </Box>
   )
 }

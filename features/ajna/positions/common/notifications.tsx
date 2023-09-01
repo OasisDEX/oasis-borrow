@@ -84,7 +84,8 @@ const ajnaNotifications: {
   gotPartiallyLiquidated: NotificationCallbackWithParams<null>
   lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
   priceAboveMomp: NotificationCallbackWithParams<PriceAboveMompParams>
-  safetySwichOn: NotificationCallbackWithParams<null>
+  safetySwichOpen: NotificationCallbackWithParams<null>
+  safetySwichManage: NotificationCallbackWithParams<null>
   timeToLiquidation: NotificationCallbackWithParams<TimeToLiquidationParams>
   nearLup: NotificationCallbackWithParams<null>
   aboveLup: NotificationCallbackWithParams<null>
@@ -222,14 +223,34 @@ const ajnaNotifications: {
     type: 'error',
     closable: true,
   }),
-  safetySwichOn: () => ({
+  safetySwichOpen: () => ({
     title: {
-      translationKey: 'ajna.position-page.common.notifications.safety-switch-on.title',
+      translationKey: 'ajna.position-page.common.notifications.safety-switch-open.title',
     },
     message: {
       component: (
         <Trans
-          i18nKey={'ajna.position-page.common.notifications.safety-switch-on.message'}
+          i18nKey={'ajna.position-page.common.notifications.safety-switch-open.message'}
+          components={[
+            <AppLink
+              sx={{ fontSize: 'inherit', color: 'inherit' }}
+              href={EXTERNAL_LINKS.DISCORD}
+            />,
+          ]}
+        />
+      ),
+    },
+    icon: 'liquidation',
+    type: 'error',
+  }),
+  safetySwichManage: () => ({
+    title: {
+      translationKey: 'ajna.position-page.common.notifications.safety-switch-manage.title',
+    },
+    message: {
+      component: (
+        <Trans
+          i18nKey={'ajna.position-page.common.notifications.safety-switch-manage.message'}
           components={[
             <AppLink
               sx={{ fontSize: 'inherit', color: 'inherit' }}
@@ -297,8 +318,12 @@ export function getAjnaNotifications({
 }) {
   const notifications: DetailsSectionNotificationItem[] = []
 
-  if (ajnaSafetySwitchOn && flow === 'open') {
-    notifications.push(ajnaNotifications.safetySwichOn(null))
+  if (ajnaSafetySwitchOn) {
+    notifications.push(
+      flow === 'open'
+        ? ajnaNotifications.safetySwichOpen(null)
+        : ajnaNotifications.safetySwichManage(null),
+    )
   }
 
   switch (product) {
