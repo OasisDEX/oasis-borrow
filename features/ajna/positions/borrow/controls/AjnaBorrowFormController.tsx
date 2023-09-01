@@ -85,18 +85,18 @@ export function AjnaBorrowFormController() {
                       updateState('action', 'close-borrow')
                     },
                   },
-                  {
-                    label: t('system.adjust-position'),
-                    panel: 'adjust',
-                    shortLabel: t('adjust'),
-                    icon: 'circle_slider',
-                    iconShrink: 2,
-                    action: () => {
-                      dispatch({ type: 'reset' })
-                      updateState('uiDropdown', 'adjust')
-                      updateState('action', 'adjust-borrow')
-                    },
-                  },
+                  // {
+                  //   label: t('system.adjust-position'),
+                  //   panel: 'adjust',
+                  //   shortLabel: t('adjust'),
+                  //   icon: 'circle_slider',
+                  //   iconShrink: 2,
+                  //   action: () => {
+                  //     dispatch({ type: 'reset' })
+                  //     updateState('uiDropdown', 'adjust')
+                  //     updateState('action', 'adjust-borrow')
+                  //   },
+                  // },
                 ]
               : []),
           ],
