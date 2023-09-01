@@ -42,7 +42,6 @@ export function getSparkV3UserAccountData({
   address,
 }: SparkV3UserAccountDataParameters): Promise<SparkV3UserAccountData> {
   const { contract, baseCurrencyUnit } = networkMappings[networkId]()
-
   return contract.getUserAccountData(address).then((result) => {
     return {
       totalCollateralBase: new BigNumber(result.totalCollateralBase.toString()).div(

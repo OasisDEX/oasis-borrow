@@ -56,10 +56,16 @@ import {
   AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   AAVE_V3_POOL_GENESIS_MAINNET,
   ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
+  SPARK_V3_LENDING_POOL_GENESIS_MAINNET,
+  SPARK_V3_ORACLE_GENESIS_MAINNET,
+  SPARK_V3_POOL_DATA_PROVIDER_GENESIS_MAINNET,
   supportedIlks,
   tokensMainnet,
 } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
+import { Optional } from 'helpers/types'
+
+import { OptionalContracts } from './optional-contracts'
 
 const { mainnet } = ADDRESSES
 
@@ -152,9 +158,21 @@ export const mainnetContracts = {
   aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
   aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
-  sparkV3Pool: contractDesc(sparkV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
-  sparkV3Oracle: contractDesc(sparkV3Oracle, mainnet.aave.v3.Oracle),
-  sparkV3PoolDataProvider: contractDesc(sparkV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(
+    sparkV3Pool,
+    mainnet.spark.LendingPool!,
+    SPARK_V3_LENDING_POOL_GENESIS_MAINNET,
+  ),
+  sparkV3Oracle: contractDesc(
+    sparkV3Oracle,
+    mainnet.spark.Oracle!,
+    SPARK_V3_ORACLE_GENESIS_MAINNET,
+  ),
+  sparkV3PoolDataProvider: contractDesc(
+    sparkV3PoolDataProvider,
+    mainnet.spark.PoolDataProvider!,
+    SPARK_V3_POOL_DATA_PROVIDER_GENESIS_MAINNET,
+  ),
   // TODO ajna addresses to be updated
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, mainnet.ajna.AjnaProxyActions),
@@ -213,3 +231,4 @@ export const mainnetContracts = {
 }
 
 export type MainnetContracts = typeof mainnetContracts
+export type MainnetContractsWithOptional = Optional<MainnetContracts, OptionalContracts>

@@ -16,7 +16,7 @@ export interface SparkV3ReserveDataParameters extends BaseParameters {
 }
 
 export interface SparkV3UserReserveData {
-  currentATokenBalance: BigNumber
+  currentSpTokenBalance: BigNumber
   currentStableDebt: BigNumber
   currentVariableDebt: BigNumber
   principalStableDebt: BigNumber
@@ -30,7 +30,7 @@ export interface SparkV3ReserveDataReply {
   availableLiquidity: BigNumber
   unbacked: BigNumber
   accruedToTreasuryScaled: BigNumber
-  totalAToken: BigNumber
+  totalSpToken: BigNumber
   totalStableDebt: BigNumber
   totalVariableDebt: BigNumber
   liquidityRate: BigNumber
@@ -68,11 +68,10 @@ export function getSparkV3UserReserveData({
   networkId,
 }: SparkV3UserReserveDataParameters): Promise<SparkV3UserReserveData> {
   const { contract, tokenMappings } = networkMappings[networkId]()
-
   const tokenAddress = wethToEthAddress(tokenMappings, token)
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
-      currentATokenBalance: amountFromWei(
+      currentSpTokenBalance: amountFromWei(
         new BigNumber(result.currentSpTokenBalance.toString()),
         token,
       ),
@@ -101,14 +100,14 @@ export function getSparkV3ReserveData({
   const tokenAddress = wethToEthAddress(tokenMappings, token)
   warnIfAddressIsZero(tokenAddress, networkId, 'sparkV3PoolDataProvider', 'getReserveData')
   return contract.getReserveData(tokenAddress).then((result) => {
-    const totalAToken = amountFromWei(new BigNumber(result.totalSpToken.toString()), token)
+    const totalSpToken = amountFromWei(new BigNumber(result.totalSpToken.toString()), token)
     const totalStableDebt = amountFromWei(new BigNumber(result.totalStableDebt.toString()), token)
     const totalVariableDebt = amountFromWei(
       new BigNumber(result.totalVariableDebt.toString()),
       token,
     )
     return {
-      availableLiquidity: totalAToken.minus(totalStableDebt).minus(totalVariableDebt),
+      availableLiquidity: totalSpToken.minus(totalStableDebt).minus(totalVariableDebt),
       unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
       liquidityRate: amountFromRay(new BigNumber(result.liquidityRate.toString())),
@@ -120,7 +119,7 @@ export function getSparkV3ReserveData({
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
-      totalAToken,
+      totalSpToken,
       totalStableDebt,
       totalVariableDebt,
     }

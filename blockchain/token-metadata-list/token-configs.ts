@@ -742,4 +742,17 @@ export const tokenConfigs: TokenConfig[] = [
     coinpaprikaTicker: 'frax-frax',
     tags: ['stablecoin'],
   },
+  {
+    symbol: 'SPARK',
+    precision: 18,
+    digits: 5,
+    name: 'Spark',
+    icon: 'spark_circle_color',
+    iconCircle: 'spark_circle_color',
+    color: '#17438C',
+    background: '',
+    bannerIcon: '',
+    bannerGif: '',
+    tags: ['stablecoin'],
+  },
 ]

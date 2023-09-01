@@ -54,10 +54,6 @@ const availableTokenPairs: TokenPairConfig[] = [
           },
         ],
       },
-      [ProductType.Earn]: {
-        featureToggle: 'SparkProtocol',
-        additionalManageActions: [],
-      },
     },
   },
   {
@@ -82,10 +78,6 @@ const availableTokenPairs: TokenPairConfig[] = [
             featureToggle: 'SparkProtocol',
           },
         ],
-      },
-      [ProductType.Earn]: {
-        featureToggle: 'SparkProtocol',
-        additionalManageActions: [],
       },
     },
   },
@@ -117,7 +109,7 @@ const availableTokenPairs: TokenPairConfig[] = [
   {
     collateral: 'SDAI',
     debt: 'ETH',
-    strategyType: StrategyType.Short,
+    strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
         featureToggle: 'SparkProtocol',
@@ -136,6 +128,28 @@ const availableTokenPairs: TokenPairConfig[] = [
             featureToggle: 'SparkProtocol',
           },
         ],
+      },
+    },
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: 'SparkProtocol',
+        additionalManageActions: [],
+      },
+    },
+  },
+  {
+    collateral: 'RETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: 'SparkProtocol',
+        additionalManageActions: [],
       },
     },
   },
