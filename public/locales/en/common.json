@@ -2714,7 +2714,7 @@
           },
           "safety-switch-manage": {
             "title": "Some features of Ajna positions are temporary disabled",
-            "message": "Due to a technical issue we have currently disabled some features of Ajna positions, as they might not result in the expected outcome for our users. You can withdraw deposited tokens or repay debt. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+            "message": "Due to a technical issue we have currently disabled some features of Ajna positions, as they might not result in the expected outcome for our users. You can withdraw deposited tokens or repay position's debt. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
           "near-lup": {
             "title": "Your position's threshold price is approaching the LUP",

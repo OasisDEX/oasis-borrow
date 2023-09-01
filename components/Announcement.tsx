@@ -25,14 +25,20 @@ function Separator() {
   )
 }
 interface AnnouncementProps {
-  text: string
   discordLink?: string
   link?: string
   linkText?: string
-  disableClosing?: boolean
+  text: string
+  withClose?: boolean
 }
 
-export function Announcement({ text, discordLink, link, linkText }: AnnouncementProps) {
+export function Announcement({
+  discordLink,
+  link,
+  linkText,
+  text,
+  withClose,
+}: AnnouncementProps) {
   const [shouldRender, setShouldRender] = useState(true)
 
   useLayoutEffect(() => {
@@ -45,7 +51,7 @@ export function Announcement({ text, discordLink, link, linkText }: Announcement
         setShouldRender(false)
         sessionStorage.setItem('isAnnouncementHidden', 'true')
       }}
-      sx={{ mx: 3 }}
+      withClose={withClose}
     >
       <Flex
         sx={{
