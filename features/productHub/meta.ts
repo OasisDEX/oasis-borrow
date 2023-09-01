@@ -1,5 +1,6 @@
 import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { GenericMultiselectOption } from 'components/GenericMultiselect'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -141,7 +142,7 @@ export const productHubOptionsMap: {
   },
 }
 
-export const productHubStrategyFilter = [
+export const productHubStrategyFilter: GenericMultiselectOption[] = [
   {
     label: 'Long',
     value: 'long',
@@ -152,7 +153,7 @@ export const productHubStrategyFilter = [
   },
 ]
 
-export const productHubNetworkFilter = [
+export const productHubNetworkFilter: GenericMultiselectOption[] = [
   {
     label: networksByName[BaseNetworkNames.Ethereum].label,
     value: networksByName[BaseNetworkNames.Ethereum].name,
@@ -170,7 +171,7 @@ export const productHubNetworkFilter = [
   },
 ]
 
-export const productHubTestNetworkFilter = [
+export const productHubTestNetworkFilter: GenericMultiselectOption[] = [
   {
     label: networksByName[BaseNetworkNames.Ethereum].label,
     value: networksByName[NetworkNames.ethereumGoerli].name,
@@ -188,7 +189,7 @@ export const productHubTestNetworkFilter = [
   },
 ]
 
-export const productHubProtocolFilter = [
+export const productHubProtocolFilter: GenericMultiselectOption[] = [
   {
     label: lendingProtocolsByName[LendingProtocol.Maker].label,
     value: lendingProtocolsByName[LendingProtocol.Maker].name,
@@ -208,5 +209,12 @@ export const productHubProtocolFilter = [
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
     value: lendingProtocolsByName[LendingProtocol.Ajna].name,
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+    featureFlag: 'AjnaSafetySwitch',
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
+    value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+    image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
+    featureFlag: 'SparkProtocol',
   },
 ]
