@@ -5,6 +5,7 @@ import { FlowSidebar } from 'components/FlowSidebar'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
+import { AjnaDupePositionModal } from 'features/ajna/positions/common/components/AjnaDupePositionModal'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
@@ -12,18 +13,22 @@ import { getAjnaSidebarButtonsStatus } from 'features/ajna/positions/common/help
 import { getAjnaSidebarPrimaryButtonActions } from 'features/ajna/positions/common/helpers/getAjnaSidebarPrimaryButtonActions'
 import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
 import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
-import { getFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
+import {
+  ajnaFlowStateFilter,
+  getAjnaFlowStateFilter,
+} from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { useConnection } from 'features/web3OnBoard'
+import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { PropsWithChildren, useEffect } from 'react'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 interface AjnaFormViewProps {
@@ -37,12 +42,14 @@ export function AjnaFormView({
   txSuccessAction,
 }: PropsWithChildren<AjnaFormViewProps>) {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
-  const AjnaReusableDPMEnabled = useFeatureToggle('AjnaReusableDPM')
+  const ajnaSuppressValidationEnabled = useFeatureToggle('AjnaSuppressValidation')
+  const ajnaReusableDPMEnabled = useFeatureToggle('AjnaReusableDPM')
 
   const { t } = useTranslation()
   const { context$ } = useMainContext()
+
   const [context] = useObservable(context$)
-  const { walletAddress } = useAccount()
+
   const {
     environment: {
       collateralAddress,
@@ -83,10 +90,12 @@ export function AjnaFormView({
     },
     validation: { isFormValid, hasErrors, isFormFrozen },
   } = useAjnaProductContext(product)
-  const { connect } = useConnection()
-  const ajnaSuppressValidationEnabled = useFeatureToggle('AjnaSuppressValidation')
 
+  const { connect } = useConnection()
+  const { walletAddress } = useAccount()
   const txHandler = useAjnaTxHandler()
+  const { openModal } = useModalContext()
+  const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
 
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),
@@ -97,14 +106,34 @@ export function AjnaFormView({
       quoteToken,
       state,
     }),
-    ...(AjnaReusableDPMEnabled && {
+    ...(ajnaReusableDPMEnabled && {
       filterConsumedProxy: (events) =>
-        getFlowStateFilter({
+        getAjnaFlowStateFilter({
           collateralAddress,
           events,
           product,
           quoteAddress,
         }),
+      onProxiesAvailable: (events, dpmAccounts) => {
+        const filteredEvents = events.filter((event) =>
+          ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+        )
+
+        if (!hasDupePosition && filteredEvents.length) {
+          setHasDupePosition(true)
+          openModal(AjnaDupePositionModal, {
+            chainId: context?.chainId,
+            collateralAddress,
+            collateralToken,
+            dpmAccounts,
+            events: filteredEvents,
+            product,
+            quoteAddress,
+            quoteToken,
+            walletAddress,
+          })
+        }
+      },
     }),
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),

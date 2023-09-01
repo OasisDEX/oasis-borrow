@@ -109,6 +109,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
     'CBETH/ETH': emptyYields,
     'RETH/ETH': emptyYields,
+    'SDAI/GHO': emptyYields,
+    'SDAI/USDC': emptyYields,
+    'SDAI/LUSD': emptyYields,
+    'SDAI/FRAX': emptyYields,
   }
   // getting the APYs
   const earnProducts = aaveV3ProductHubProducts.filter(({ product }) =>

@@ -290,5 +290,3 @@ export const ethereumSparkV3Strategies: IStrategyConfig[] = [
   ...multiplyStategies,
   ...earnStrategies,
 ]
-
-console.log('ethereumSparkV3Strategies', ethereumSparkV3Strategies)

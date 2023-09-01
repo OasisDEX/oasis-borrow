@@ -31,6 +31,7 @@ export type UseFlowStateProps = {
   filterConsumedProxy?: (events: CreatePositionEvent[]) => boolean
   onEverythingReady?: UseFlowStateCBType
   onGoBack?: UseFlowStateCBType
+  onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
   token?: string
 }
 
@@ -40,6 +41,7 @@ export function useFlowState({
   filterConsumedProxy,
   onEverythingReady,
   onGoBack,
+  onProxiesAvailable,
   token,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
@@ -128,13 +130,19 @@ export function useFlowState({
   useEffect(() => {
     if (!walletAddress || !userProxyList.length || existingProxy || !chainId) return
     const proxyListAvailabilityMap = combineLatest(
-      userProxyList.map(async ({ proxy }) => ({
+      userProxyList.map(async ({ vaultId, proxy }) => ({
         proxyAddress: proxy,
+        proxyId: vaultId,
         events: await getPositionCreatedEventForProxyAddress({ chainId }, proxy),
       })),
-    ).subscribe((userProxies) => {
+    ).subscribe((userProxyEventsList) => {
+      if (onProxiesAvailable && userProxyEventsList.length > 0)
+        onProxiesAvailable(
+          userProxyEventsList.flatMap(({ events }) => events),
+          userProxyList,
+        )
       setAvailableProxies(
-        userProxies
+        userProxyEventsList
           .filter(({ events }) =>
             events.length === 0 ? true : filterConsumedProxy ? filterConsumedProxy(events) : false,
           )
@@ -153,7 +161,7 @@ export function useFlowState({
       setLoading(false)
       setAllowanceReady(false)
     }
-  }, [token, amount?.toString(), isProxyReady])
+  }, [token, isProxyReady, walletAddress, amount])
 
   // allowance machine
   useEffect(() => {
