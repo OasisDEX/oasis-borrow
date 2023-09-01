@@ -2708,9 +2708,13 @@
             "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
             "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation. <0>Read more about Ajna Liquidations →</0>"
           },
-          "safety-switch-on": {
+          "safety-switch-open": {
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+          },
+          "safety-switch-manage": {
+            "title": "Some features of Ajna positions are temporary disabled",
+            "message": "Due to a technical issue we have currently disabled some features of Ajna positions, as they might not result in the expected outcome for our users. You can withdraw deposited tokens or repay debt. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
           "near-lup": {
             "title": "Your position's threshold price is approaching the LUP",
