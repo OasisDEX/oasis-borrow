@@ -28,7 +28,7 @@ export function AjnaAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
   } = useAjnaGeneralContext()
 
   if (product === 'earn') {
-    return null
+    throw new Error('AjnaAdjustSlider is not supported for earn')
   }
 
   const {

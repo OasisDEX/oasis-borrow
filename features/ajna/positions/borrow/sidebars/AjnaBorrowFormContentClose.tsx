@@ -16,10 +16,6 @@ export function AjnaBorrowFormContentClose() {
     environment: { collateralToken, collateralPrice, quoteToken, quotePrice, product },
   } = useAjnaGeneralContext()
 
-  if (product === 'earn') {
-    return null
-  }
-
   const {
     form: {
       state: { closeTo },
