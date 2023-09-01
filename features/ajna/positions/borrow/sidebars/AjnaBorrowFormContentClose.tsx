@@ -13,7 +13,7 @@ import { AjnaBorrowFormOrder } from './AjnaBorrowFormOrder'
 export function AjnaBorrowFormContentClose() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, collateralPrice, quoteToken, quotePrice, product },
+    environment: { collateralToken, collateralPrice, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
 
   const {
