@@ -29,6 +29,7 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
 import React, { Dispatch, FC } from 'react'
+import { isPoolSupportingMultiply } from './helpers/isPoolSupportingMultiply'
 
 interface AjnaLiquidationNotificationWithLinkProps {
   translationKey: string
@@ -76,6 +77,7 @@ type LendingPriceFrozenParams = {
 type NotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem
 
 const ajnaNotifications: {
+  multiplyNotice: NotificationCallbackWithParams<null>
   beingLiquidated: NotificationCallbackWithParams<null>
   collateralToWithdraw: NotificationCallbackWithParams<null>
   earningNoApy: NotificationCallbackWithParams<EarningNoApyParams>
@@ -89,6 +91,21 @@ const ajnaNotifications: {
   nearLup: NotificationCallbackWithParams<null>
   aboveLup: NotificationCallbackWithParams<null>
 } = {
+  multiplyNotice: () => ({
+    type: 'notice',
+    icon: 'bell',
+    title: {
+      translationKey: 'ajna.position-page.common.notifications.risk-managemnt.title',
+    },
+    message: {
+      translationKey: 'ajna.position-page.common.notifications.risk-managemnt.message',
+    },
+    link: {
+      component: () => <div />,
+      translationKey: 'learn-more',
+      url: 'http://oasis.app/learn/risk-management',
+    },
+  }),
   priceAboveMomp: ({ action, message }) => ({
     title: {
       translationKey:
@@ -342,6 +359,11 @@ export function getAjnaNotifications({
       ) {
         notifications.push(ajnaNotifications.aboveLup(null))
       }
+
+      if (isPoolSupportingMultiply({collateralToken, quoteToken})) {
+        notifications.push(ajnaNotifications.multiplyNotice(null))
+      }
+
 
       break
     case 'earn': {
