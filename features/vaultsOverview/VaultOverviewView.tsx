@@ -38,10 +38,10 @@ export function VaultsOverviewView({ address }: { address: string }) {
         ownersPositionsListData?.ajnaPositions &&
         ownersPositionsListData.ajnaPositions.length > 0 && (
           <Announcement
-            text="This is emergency Ajna safety switch message."
+            text="There has been possible griefing attack vector identified on Ajna Protocol. All Ajna users should close their positions and withdraw their funds. This is not related to any summer.fi contracts, so Maker and Aave users are not affected."
             discordLink={EXTERNAL_LINKS.DISCORD}
-            link="/"
-            linkText="Check blog post/twitter/other place"
+            link="https://blog.summer.fi/ajna-possible-attack-vector/"
+            linkText="Read more"
             withClose={false}
           />
         )}
