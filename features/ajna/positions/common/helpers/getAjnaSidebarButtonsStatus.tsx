@@ -69,7 +69,7 @@ export function getAjnaSidebarButtonsStatus({
     (ajnaSafetySwitchOn &&
       flow === 'manage' &&
       currentStep !== 'risk' &&
-      ['deposit-borrow', 'generate-borrow'].includes(action as string))
+      ['deposit-borrow', 'generate-borrow', 'deposit-earn'].includes(action as string))
   const isTextButtonHidden =
     !(
       (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
