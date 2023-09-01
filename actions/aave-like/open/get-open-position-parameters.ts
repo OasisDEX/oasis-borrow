@@ -61,21 +61,21 @@ async function openPosition(
 
   switch (protocol) {
     case LendingProtocol.AaveV2:
-      const v2Addresses = getAddresses(networkId, LendingProtocol.AaveV2)
-      const dependenciesV2 = {
+      const aavev2Addresses = getAddresses(networkId, LendingProtocol.AaveV2)
+      const dependenciesAaveV2 = {
         ...sharedDependencies,
-        addresses: v2Addresses,
-        getSwapData: swapCall(v2Addresses, networkId),
+        addresses: aavev2Addresses,
+        getSwapData: swapCall(aavev2Addresses, networkId),
       }
-      return await strategies.aave.multiply.v2.open(args, dependenciesV2)
+      return await strategies.aave.multiply.v2.open(args, dependenciesAaveV2)
     case LendingProtocol.AaveV3:
-      const v3Addresses = getAddresses(networkId, LendingProtocol.AaveV3)
-      const dependenciesV3 = {
+      const aavev3Addresses = getAddresses(networkId, LendingProtocol.AaveV3)
+      const dependenciesAaveV3 = {
         ...sharedDependencies,
-        addresses: v3Addresses,
-        getSwapData: swapCall(v3Addresses, networkId),
+        addresses: aavev3Addresses,
+        getSwapData: swapCall(aavev3Addresses, networkId),
       }
-      return await strategies.aave.multiply.v3.open(args, dependenciesV3)
+      return await strategies.aave.multiply.v3.open(args, dependenciesAaveV3)
     case LendingProtocol.SparkV3:
       throw new Error('SparkV3 is not supported yet')
     default:
