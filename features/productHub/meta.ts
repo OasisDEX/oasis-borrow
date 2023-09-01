@@ -209,7 +209,6 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
     value: lendingProtocolsByName[LendingProtocol.Ajna].name,
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-    featureFlag: 'AjnaSafetySwitch',
   },
   {
     label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
