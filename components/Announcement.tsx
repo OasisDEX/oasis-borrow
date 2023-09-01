@@ -32,13 +32,7 @@ interface AnnouncementProps {
   withClose?: boolean
 }
 
-export function Announcement({
-  discordLink,
-  link,
-  linkText,
-  text,
-  withClose,
-}: AnnouncementProps) {
+export function Announcement({ discordLink, link, linkText, text, withClose }: AnnouncementProps) {
   const [shouldRender, setShouldRender] = useState(true)
 
   useLayoutEffect(() => {
