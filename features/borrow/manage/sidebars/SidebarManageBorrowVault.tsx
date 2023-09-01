@@ -53,6 +53,8 @@ export function SidebarManageBorrowVault(props: ManageBorrowVaultState) {
     totalSteps,
     vault: { token },
     vaultHistory,
+    otherAction,
+    setOtherAction,
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
@@ -82,6 +84,12 @@ export function SidebarManageBorrowVault(props: ManageBorrowVaultState) {
         break
       case 'multiplyTransitionEditing':
         setForcePanel('transition')
+        break
+      case 'adjustPosition':
+        setForcePanel('adjust')
+        break
+      case 'otherActions':
+        if (otherAction === 'closeVault') setForcePanel('close')
         break
     }
   }, [stage])
@@ -128,6 +136,25 @@ export function SidebarManageBorrowVault(props: ManageBorrowVaultState) {
           panel: 'transition',
           action: () => {
             toggle!('multiplyTransitionEditing')
+          },
+        },
+        {
+          label: t('system.actions.multiply.adjust'),
+          icon: 'circle_slider',
+          iconShrink: 2,
+          panel: 'adjust',
+          action: () => {
+            toggle!('adjustPosition')
+          },
+        },
+        {
+          label: t('system.actions.common.close-vault'),
+          icon: 'circle_close',
+          iconShrink: 2,
+          panel: 'close',
+          action: () => {
+            toggle!('otherActions')
+            setOtherAction!('closeVault')
           },
         },
       ],

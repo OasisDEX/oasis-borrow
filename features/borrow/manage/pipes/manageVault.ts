@@ -19,6 +19,7 @@ import { AutoTakeProfitTriggerData } from 'features/automation/optimization/auto
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
+import { Quote } from 'features/exchange/exchange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import {
@@ -29,6 +30,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
+import { UserSettingsState } from 'features/userSettings/userSettings'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { AddGasEstimationFunction, HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { TxError } from 'helpers/types'
@@ -76,6 +78,8 @@ export type ManageVaultEditingStage =
   | 'collateralEditing'
   | 'daiEditing'
   | 'multiplyTransitionEditing'
+  | 'adjustPosition'
+  | 'otherActions'
 
 export type ManageBorrowVaultStage =
   | BaseManageVaultStage
@@ -85,11 +89,14 @@ export type ManageBorrowVaultStage =
   | 'multiplyTransitionFailure'
   | 'multiplyTransitionSuccess'
 
-export type MainAction = 'depositGenerate' | 'withdrawPayback'
+export type MainAction = 'depositGenerate' | 'withdrawPayback' | 'closeVault' | 'adjustPosition'
+export type CloseVaultTo = 'collateral' | 'dai'
+export type OtherAction = 'closeVault'
 
 export interface MutableManageVaultState {
   stage: ManageBorrowVaultStage
   mainAction: MainAction
+  otherAction: OtherAction
   originalEditingStage: ManageVaultEditingStage
   showDepositAndGenerateOption: boolean
   showPaybackAndWithdrawOption: boolean
@@ -103,6 +110,8 @@ export interface MutableManageVaultState {
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
+  closeVaultTo: CloseVaultTo
+  requiredCollRatio?: BigNumber
 }
 
 export interface ManageVaultEnvironment<V extends Vault> {
@@ -116,15 +125,20 @@ export interface ManageVaultEnvironment<V extends Vault> {
   balanceInfo: BalanceInfo
   priceInfo: PriceInfo
   vaultHistory: VaultHistoryEvent[]
+  quote?: Quote
+  swap?: Quote
+  slippage: BigNumber
 }
 
 interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
   toggle?: (stage: ManageVaultEditingStage) => void
+
   setMainAction?: (action: MainAction) => void
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
+
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -146,6 +160,12 @@ interface ManageVaultFunctions {
   clear: () => void
   injectStateOverride: (state: Partial<MutableManageVaultState>) => void
   toggleMultiplyTransition?: () => void
+
+  setOtherAction?: (otherAction: OtherAction) => void
+
+  toggleSliderController?: () => void
+  setCloseVaultTo?: (closeVaultTo: CloseVaultTo) => void
+  updateRequiredCollRatio?: (value: BigNumber) => void
 }
 
 interface ManageVaultTxInfo {
@@ -221,6 +241,20 @@ function addTransitions(
         )
       },
       regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
+  if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      progress: () => change({ kind: 'progressEditing' }),
+      setMainAction: (mainAction: MainAction) => change({ kind: 'mainAction', mainAction }),
+      setOtherAction: (otherAction: OtherAction) => change({ kind: 'otherAction', otherAction }),
+      setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
+        change({ kind: 'closeVaultTo', closeVaultTo }),
+      updateRequiredCollRatio: (requiredCollRatio: BigNumber) =>
+        change({ kind: 'requiredCollRatio', requiredCollRatio }),
     }
   }
 
@@ -355,6 +389,7 @@ function addTransitions(
 export const defaultMutableManageVaultState: MutableManageVaultState = {
   stage: 'collateralEditing' as ManageBorrowVaultStage,
   mainAction: 'depositGenerate',
+  otherAction: 'closeVault',
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
@@ -362,8 +397,9 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   daiAllowanceAmount: maxUint256,
   selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
+  closeVaultTo: 'collateral',
 }
-
+// To do add Slippage
 export function createManageVault$<V extends Vault, VS extends ManageBorrowVaultState>(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
@@ -375,6 +411,7 @@ export function createManageVault$<V extends Vault, VS extends ManageBorrowVault
   vault$: (id: BigNumber, chainId: number) => Observable<V>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
+  slippageLimit$: Observable<UserSettingsState>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   proxyActionsAdapterResolver$: ({
     makerVaultType,
@@ -397,88 +434,101 @@ export function createManageVault$<V extends Vault, VS extends ManageBorrowVault
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
             proxyActionsAdapterResolver$({ makerVaultType: vault.makerType }),
+            slippageLimit$,
           ).pipe(
             first(),
-            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, proxyActionsAdapter]) => {
-              const vaultActions = vaultActionsLogic(proxyActionsAdapter)
-              vault.chainId = context.chainId
-              const collateralAllowance$ =
-                account && proxyAddress
-                  ? allowance$(vault.token, account, proxyAddress)
-                  : of(undefined)
-              const daiAllowance$ =
-                account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(undefined)
+            switchMap(
+              ([
+                priceInfo,
+                balanceInfo,
+                ilkData,
+                proxyAddress,
+                proxyActionsAdapter,
+                { slippage },
+              ]) => {
+                const vaultActions = vaultActionsLogic(proxyActionsAdapter)
+                vault.chainId = context.chainId
+                const collateralAllowance$ =
+                  account && proxyAddress
+                    ? allowance$(vault.token, account, proxyAddress)
+                    : of(undefined)
+                const daiAllowance$ =
+                  account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(undefined)
 
-              return combineLatest(collateralAllowance$, daiAllowance$).pipe(
-                first(),
-                switchMap(([collateralAllowance, daiAllowance]) => {
-                  const change$ = new Subject<ManageVaultChange>()
+                return combineLatest(collateralAllowance$, daiAllowance$).pipe(
+                  first(),
+                  switchMap(([collateralAllowance, daiAllowance]) => {
+                    const change$ = new Subject<ManageVaultChange>()
 
-                  function change(ch: ManageVaultChange) {
-                    change$.next(ch)
-                  }
+                    function change(ch: ManageVaultChange) {
+                      change$.next(ch)
+                    }
 
-                  // NOTE: Not to be used in production/dev, test only
-                  function injectStateOverride(stateToOverride: Partial<MutableManageVaultState>) {
-                    return change$.next({ kind: 'injectStateOverride', stateToOverride })
-                  }
+                    // NOTE: Not to be used in production/dev, test only
+                    function injectStateOverride(
+                      stateToOverride: Partial<MutableManageVaultState>,
+                    ) {
+                      return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                    }
 
-                  const initialTotalSteps = calculateInitialTotalSteps(
-                    proxyAddress,
-                    vault.token,
-                    collateralAllowance,
-                  )
+                    const initialTotalSteps = calculateInitialTotalSteps(
+                      proxyAddress,
+                      vault.token,
+                      collateralAllowance,
+                    )
 
-                  const initialState = vaultViewStateProvider.createInitialViewState({
-                    vault,
-                    priceInfo,
-                    balanceInfo,
-                    ilkData,
-                    account,
-                    proxyAddress,
-                    collateralAllowance,
-                    daiAllowance,
-                    context,
-                    initialTotalSteps,
-                    change,
-                    injectStateOverride,
-                  })
+                    const initialState = vaultViewStateProvider.createInitialViewState({
+                      vault,
+                      priceInfo,
+                      balanceInfo,
+                      ilkData,
+                      account,
+                      proxyAddress,
+                      collateralAllowance,
+                      daiAllowance,
+                      context,
+                      initialTotalSteps,
+                      change,
+                      injectStateOverride,
+                      slippage,
+                    })
 
-                  const environmentChanges$ = merge(
-                    priceInfoChange$(priceInfo$, vault.token),
-                    balanceInfoChange$(balanceInfo$, vault.token, account),
-                    createIlkDataChange$(ilkData$, vault.ilk),
-                    createVaultChange$(vault$, id, context.chainId),
-                    createHistoryChange$(vaultHistory$, id),
-                    createAutomationTriggersChange$(automationTriggersData$, id),
-                  )
+                    const environmentChanges$ = merge(
+                      priceInfoChange$(priceInfo$, vault.token),
+                      balanceInfoChange$(balanceInfo$, vault.token, account),
+                      createIlkDataChange$(ilkData$, vault.ilk),
+                      createVaultChange$(vault$, id, context.chainId),
+                      createHistoryChange$(vaultHistory$, id),
+                      createAutomationTriggersChange$(automationTriggersData$, id),
+                    )
 
-                  const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
+                    const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
-                  return merge(change$, environmentChanges$).pipe(
-                    scan<ManageVaultChange, VS>(
-                      vaultViewStateProvider.transformViewState,
-                      initialState,
-                    ),
-                    map(validateErrors),
-                    map(validateWarnings),
-                    map(vaultViewStateProvider.addErrorsAndWarnings),
-                    switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
-                    map(finalValidation),
-                    map(vaultViewStateProvider.addTxnCost),
-                    map(
-                      curry(addTransitions)(
-                        txHelpers$,
-                        connectedProxyAddress$,
-                        saveVaultType$,
-                        vaultActions,
-                        change,
+                    return merge(change$, environmentChanges$).pipe(
+                      scan<ManageVaultChange, VS>(
+                        vaultViewStateProvider.transformViewState,
+                        initialState,
                       ),
-                    ),
-                  )
-                }),
-              )
-            }),
+                      map(validateErrors),
+                      map(validateWarnings),
+                      map(vaultViewStateProvider.addErrorsAndWarnings),
+                      switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                      map(finalValidation),
+                      map(vaultViewStateProvider.addTxnCost),
+                      map(
+                        curry(addTransitions)(
+                          txHelpers$,
+                          connectedProxyAddress$,
+                          saveVaultType$,
+                          vaultActions,
+                          change,
+                        ),
+                      ),
+                    )
+                  }),
+                )
+              },
+            ),
           )
         }),
       )

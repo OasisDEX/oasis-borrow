@@ -107,7 +107,6 @@ export function getPrimaryButtonLabel({
         insufficientAllowance,
         flow,
       })
-
       return t(translationKey, { token: allowanceToken })
     case 'proxyWaitingForConfirmation':
       return t('create-proxy-btn')

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
-// import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -15,7 +15,7 @@ export type WithToggle<T> = T & { toggleVaultType: () => void }
 export type GeneralManageVaultState =
   | {
       type: VaultType.Borrow
-      state: WithToggle<ManageMultiplyVaultState>
+      state: WithToggle<ManageBorrowVaultState>
     }
   | {
       type: VaultType.Multiply
@@ -29,7 +29,7 @@ export type GeneralManageVaultState =
 export function createGeneralManageVault$(
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageGuniVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
-  manageBorrowVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
+  manageBorrowVault$: (id: BigNumber) => Observable<ManageBorrowVaultState>,
   checkVaultType$: ({
     id,
     protocol,

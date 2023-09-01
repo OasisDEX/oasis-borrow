@@ -1,8 +1,10 @@
+import { getCloseToCollateralParams, getCloseToDaiParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 // This value ought to be coupled in relation to how much we round the raw debt
@@ -37,7 +39,17 @@ export interface ManageVaultCalculations {
   shouldPaybackAll: boolean
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
   daiYieldFromTotalCollateralWithoutDebt: BigNumber
+
+  afterCloseToDai: BigNumber
+  afterCloseToCollateral: BigNumber
+  afterCloseToCollateralUSD: BigNumber
+  maxCollRatio: BigNumber
+  minCollRatio: BigNumber
+
+  multiply: BigNumber
 }
+
+export const MAX_COLL_RATIO = new BigNumber(5)
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
   maxDepositAmount: zero,
@@ -67,6 +79,13 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   shouldPaybackAll: false,
   liquidationPriceCurrentPriceDifference: undefined,
   daiYieldFromTotalCollateralWithoutDebt: zero,
+
+  maxCollRatio: MAX_COLL_RATIO,
+  minCollRatio: zero,
+  afterCloseToDai: zero,
+  afterCloseToCollateral: zero,
+  afterCloseToCollateralUSD: zero,
+  multiply: zero,
 }
 
 /*
@@ -187,7 +206,7 @@ function calculateMaxWithdrawAmount({
   debtOffset,
   liquidationRatio,
   price,
-}: Pick<ManageBorrowVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
+}: Pick<ManageBorrowVaultState, 'paybackAmount' | 'shouldPaybackAll' | 'requiredCollRatio'> &
   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
   const afterDebt = calculateAfterDebt({
@@ -323,6 +342,10 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     vault: { lockedCollateral, debt, debtOffset, liquidationPrice },
+    requiredCollRatio,
+    swap,
+    quote,
+    slippage,
   } = state
 
   const shouldPaybackAll = determineShouldPaybackAll({
@@ -395,6 +418,7 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
   const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
   const maxDepositAmount = collateralBalance
+  const maxDepositDaiAmount = daiBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
   const daiYieldFromTotalCollateral = calculateDaiYieldFromCollateral({
@@ -489,6 +513,82 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
       ? lockedCollateral.times(nextCollateralPrice).div(debt)
       : zero
 
+  const marketPrice =
+    swap?.status === 'SUCCESS'
+      ? swap.tokenPrice
+      : quote?.status === 'SUCCESS'
+      ? quote.tokenPrice
+      : undefined
+
+  const marketPriceMaxSlippage = marketPrice ? marketPrice.div(one.minus(slippage)) : undefined
+
+  const prices = {
+    marketPrice,
+    marketPriceMaxSlippage,
+  }
+
+  const maxInputAmounts = {
+    maxDepositAmount,
+    maxDepositAmountUSD,
+    maxDepositDaiAmount,
+
+    maxWithdrawAmountAtCurrentPrice,
+    maxWithdrawAmountAtNextPrice,
+    maxWithdrawAmount,
+    maxWithdrawAmountUSD,
+    maxPaybackAmount,
+    maxGenerateAmountAtNextPrice: new BigNumber(0),
+    maxGenerateAmountAtCurrentPrice: new BigNumber(0),
+    maxGenerateAmount: new BigNumber(0),
+  }
+
+  if (!marketPrice || !marketPriceMaxSlippage) {
+    return {
+      ...state,
+      ...defaultManageVaultCalculations,
+      ...maxInputAmounts,
+      ...prices,
+    }
+  }
+
+  const closeToDaiParams = getCloseToDaiParams(
+    // market params
+    {
+      oraclePrice: currentCollateralPrice,
+      marketPrice,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+      slippage,
+    },
+    // vault info
+    {
+      currentDebt: debt.plus(debtOffset),
+      currentCollateral: lockedCollateral,
+    },
+  )
+
+  const closeToCollateralParams = getCloseToCollateralParams(
+    // market params
+    {
+      oraclePrice: currentCollateralPrice,
+      marketPrice,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+      slippage,
+    },
+    // vault info
+    {
+      currentDebt: debt.plus(debtOffset),
+      currentCollateral: lockedCollateral,
+      minCollRatio: requiredCollRatio,
+    },
+  )
+
+  const afterCloseToDai = closeToDaiParams.minToTokenAmount.minus(debt)
+
+  const afterCloseToCollateral = lockedCollateral.minus(closeToCollateralParams.fromTokenAmount)
+  const afterCloseToCollateralUSD = afterCloseToCollateral.times(marketPrice)
+
   return {
     ...state,
     maxDepositAmount,
@@ -518,5 +618,8 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
     daiYieldFromTotalCollateralWithoutDebt,
     shouldPaybackAll,
     liquidationPriceCurrentPriceDifference,
+    afterCloseToDai,
+    afterCloseToCollateral,
+    afterCloseToCollateralUSD,
   }
 }

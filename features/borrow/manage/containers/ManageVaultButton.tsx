@@ -102,6 +102,22 @@ function manageVaultButtonText(state: ManageBorrowVaultState): string {
     case 'multiplyTransitionSuccess':
       return t('borrow-to-multiply.button-success')
 
+    case 'adjustPosition':
+    case 'otherActions':
+      return state.inputAmountsEmpty
+        ? state.stage === 'adjustPosition'
+          ? t('adjust-your-position')
+          : t('enter-an-amount')
+        : !state.proxyAddress
+        ? t('setup-proxy')
+        : state.insufficientCollateralAllowance
+        ? t('set-token-allowance', { token: state.vault.token })
+        : state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
+        : state.originalEditingStage === 'otherActions' && state.otherAction === 'closeVault'
+        ? t('close-vault')
+        : t('confirm')
+
     default:
       throw new UnreachableCaseError(state.stage)
   }

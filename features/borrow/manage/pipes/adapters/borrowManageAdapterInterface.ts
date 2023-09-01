@@ -22,6 +22,7 @@ export type CreateInitialVaultStateArgs<V extends Vault> = {
   initialTotalSteps: number
   change: (ch: ManageVaultChange) => void
   injectStateOverride: (stateToOverride: Partial<MutableManageVaultState>) => void
+  slippage: BigNumber
 }
 
 export interface BorrowManageAdapterInterface<V extends Vault, ViewState> {

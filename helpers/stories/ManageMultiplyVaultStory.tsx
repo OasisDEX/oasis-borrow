@@ -15,7 +15,7 @@ import {
 } from 'helpers/mocks/manageMultiplyVault.mock'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'
-import { EMPTY, from, of } from 'rxjs'
+import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'

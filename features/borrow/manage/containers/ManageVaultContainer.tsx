@@ -1,17 +1,14 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-// import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-// import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-// import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
-// import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
-// import { ManageVaultDetails } from './ManageVaultDetails'
-import { ManageMultiplyVaultDetails } from 'features/multiply/manage/containers/ManageMultiplyVaultDetails'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
-import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
+import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-// import { uiChanges } from 'helpers/uiChanges'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -20,7 +17,7 @@ import { Box, Grid } from 'theme-ui'
 export function ManageBorrowVaultContainer({
   manageVault,
 }: {
-  manageVault: ManageMultiplyVaultState
+  manageVault: ManageBorrowVaultState
 }) {
   const { context$ } = useMainContext()
   const { manageVault$ } = useProductContext()
@@ -34,7 +31,7 @@ export function ManageBorrowVaultContainer({
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   useEffect(() => {
-    const subscription = createManageMultiplyVaultAnalytics$(
+    const subscription = createManageVaultAnalytics$(
       manageVault$(id),
       context$,
       trackingEvents,
@@ -59,19 +56,19 @@ export function ManageBorrowVaultContainer({
       )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
-          <ManageMultiplyVaultDetails
+          <ManageVaultDetails
             {...manageVault}
-            // onBannerButtonClickHandler={() => {
-            //   uiChanges.publish(TAB_CHANGE_SUBJECT, {
-            //     type: 'change-tab',
-            //     currentMode: VaultViewMode.Protection,
-            //   })
-            // }}
+            onBannerButtonClickHandler={() => {
+              uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                type: 'change-tab',
+                currentMode: VaultViewMode.Protection,
+              })
+            }}
           />
           {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
-          <SidebarManageMultiplyVault {...manageVault} />
+          <SidebarManageBorrowVault {...manageVault} />
         </Box>
       </Grid>
     </>

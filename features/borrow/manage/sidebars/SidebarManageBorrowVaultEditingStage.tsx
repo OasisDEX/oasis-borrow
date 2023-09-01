@@ -14,7 +14,10 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { SidebarManageMultiplyVaultEditingStageClose } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultEditingStageClose'
+import { SliderAdjustMultiply } from 'features/multiply/manage/sidebars/SliderAdjustMultiply'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -44,6 +47,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageBorrowVaultSta
     vault: { debt, token },
     warningMessages,
     withdrawAmount,
+    otherAction,
   } = props
 
   const [isSecondaryFieldDisabled, setIsSecondaryFieldDisabled] = useState<boolean>(true)
@@ -65,76 +69,92 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageBorrowVaultSta
 
   return (
     <Grid gap={3}>
-      <ActionPills
-        active={mainAction}
-        items={[
-          {
-            id: 'depositGenerate',
-            label: isCollateralEditing ? t('vault-actions.deposit') : t('vault-actions.generate'),
-            action: () => {
-              setMainAction!('depositGenerate')
-            },
-          },
-          {
-            id: 'withdrawPayback',
-            label: isCollateralEditing ? t('vault-actions.withdraw') : t('vault-actions.payback'),
-            action: () => {
-              setMainAction!('withdrawPayback')
-            },
-          },
-        ]}
-      />
-      {isCollateralEditing && (
+      {stage === 'adjustPosition' && <SliderAdjustMultiply {...props} />}
+      {stage === 'otherActions' &&
+        otherAction === 'closeVault' &&
+        debt.isGreaterThan(zero) &&
+        debt && <SidebarManageMultiplyVaultEditingStageClose {...props} />}
+      {stage !== 'otherActions' && stage !== 'adjustPosition' && (
         <>
-          {isDepositOrGenerate && (
+          <ActionPills
+            active={mainAction}
+            items={[
+              {
+                id: 'depositGenerate',
+                label: isCollateralEditing
+                  ? t('vault-actions.deposit')
+                  : t('vault-actions.generate'),
+                action: () => {
+                  setMainAction!('depositGenerate')
+                },
+              },
+              {
+                id: 'withdrawPayback',
+                label: isCollateralEditing
+                  ? t('vault-actions.withdraw')
+                  : t('vault-actions.payback'),
+                action: () => {
+                  setMainAction!('withdrawPayback')
+                },
+              },
+            ]}
+          />
+          {isCollateralEditing && (
             <>
-              <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
-              <FieldGenerateDai
-                debt={debt}
-                disabled={isSecondaryFieldDisabled || !isOwner}
-                {...extractFieldGenerateDaiData(props)}
-              />
+              {isDepositOrGenerate && (
+                <>
+                  <FieldDepositCollateral
+                    token={token}
+                    {...extractFieldDepositCollateralData(props)}
+                  />
+                  <FieldGenerateDai
+                    debt={debt}
+                    disabled={isSecondaryFieldDisabled || !isOwner}
+                    {...extractFieldGenerateDaiData(props)}
+                  />
+                </>
+              )}
+              {isWithdrawOrPayback && (
+                <>
+                  <FieldWithdrawCollateral
+                    token={token}
+                    disabled={!isOwner}
+                    {...extractFieldWithdrawCollateralData(props)}
+                  />
+                  <FieldPaybackDai
+                    disabled={isSecondaryFieldDisabled}
+                    {...extractFieldPaybackDaiData(props)}
+                  />
+                </>
+              )}
             </>
           )}
-          {isWithdrawOrPayback && (
+          {isDaiEditing && (
             <>
-              <FieldWithdrawCollateral
-                token={token}
-                disabled={!isOwner}
-                {...extractFieldWithdrawCollateralData(props)}
-              />
-              <FieldPaybackDai
-                disabled={isSecondaryFieldDisabled}
-                {...extractFieldPaybackDaiData(props)}
-              />
-            </>
-          )}
-        </>
-      )}
-      {isDaiEditing && (
-        <>
-          {isDepositOrGenerate && (
-            <>
-              <FieldGenerateDai
-                debt={debt}
-                disabled={!isOwner}
-                {...extractFieldGenerateDaiData(props)}
-              />
-              <FieldDepositCollateral
-                token={token}
-                disabled={isSecondaryFieldDisabled}
-                {...extractFieldDepositCollateralData(props)}
-              />
-            </>
-          )}
-          {isWithdrawOrPayback && (
-            <>
-              <FieldPaybackDai {...extractFieldPaybackDaiData(props)} />
-              <FieldWithdrawCollateral
-                token={token}
-                disabled={isSecondaryFieldDisabled || !isOwner}
-                {...extractFieldWithdrawCollateralData(props)}
-              />
+              {isDepositOrGenerate && (
+                <>
+                  <FieldGenerateDai
+                    debt={debt}
+                    disabled={!isOwner}
+                    {...extractFieldGenerateDaiData(props)}
+                  />
+                  <FieldDepositCollateral
+                    token={token}
+                    disabled={isSecondaryFieldDisabled}
+                    {...extractFieldDepositCollateralData(props)}
+                  />
+                </>
+              )}
+              {isWithdrawOrPayback && (
+                <>
+                  <FieldPaybackDai {...extractFieldPaybackDaiData(props)} />
+                  <FieldWithdrawCollateral
+                    token={token}
+                    disabled={isSecondaryFieldDisabled || !isOwner}
+                    {...extractFieldWithdrawCollateralData(props)}
+                  />
+                </>
+              )}
             </>
           )}
         </>

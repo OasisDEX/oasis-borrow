@@ -85,6 +85,8 @@ export function applyManageVaultStageCategorisation<VaultState extends ManageBor
 
   switch (stage) {
     case 'collateralEditing':
+    case 'adjustPosition':
+    case 'otherActions':
     case 'daiEditing':
       return {
         ...state,
@@ -215,6 +217,8 @@ export interface ManageVaultConditions {
   withdrawCollateralOnVaultUnderDebtFloor: boolean
   depositCollateralOnVaultUnderDebtFloor: boolean
 
+  hasToDepositCollateralOnEmptyVault: boolean
+
   stopLossTriggered: boolean
   autoTakeProfitTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
@@ -280,6 +284,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   withdrawCollateralOnVaultUnderDebtFloor: false,
   depositCollateralOnVaultUnderDebtFloor: false,
 
+  hasToDepositCollateralOnEmptyVault: false,
+
   stopLossTriggered: false,
   autoTakeProfitTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
@@ -311,7 +317,7 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
       debtFloor,
       ilkDebtAvailable,
     },
-    vault: { controller, debt, token, debtOffset },
+    vault: { controller, debt, token, debtOffset, lockedCollateral },
     account,
     stage,
     selectedCollateralAllowanceRadio,
@@ -332,13 +338,16 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
     maxGenerateAmountAtNextPrice,
     isMultiplyTransitionStage,
     afterDebt,
-    txError,
     vaultHistory,
     stopLossData,
     autoSellData,
     autoBuyData,
     constantMultipleData,
     autoTakeProfitData,
+    mainAction,
+
+    originalEditingStage,
+    txError,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -350,6 +359,13 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
     generateAmount,
     paybackAmount,
   })
+
+  const hasToDepositCollateralOnEmptyVault =
+    lockedCollateral.eq(zero) &&
+    !(
+      (originalEditingStage === 'collateralEditing' && mainAction === 'depositGenerate') ||
+      (originalEditingStage === 'daiEditing' && mainAction === 'depositGenerate')
+    )
 
   const inputAmountsEmpty = depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty
 
@@ -618,6 +634,7 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
       depositCollateralOnVaultUnderDebtFloor ||
+      hasToDepositCollateralOnEmptyVault ||
       afterCollRatioBelowStopLossRatio ||
       afterCollRatioBelowAutoSellRatio ||
       afterCollRatioAboveAutoBuyRatio ||
@@ -725,6 +742,8 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
 
     withdrawCollateralOnVaultUnderDebtFloor,
     depositCollateralOnVaultUnderDebtFloor,
+
+    hasToDepositCollateralOnEmptyVault,
 
     stopLossTriggered,
     autoTakeProfitTriggered,

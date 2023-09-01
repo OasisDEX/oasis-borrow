@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultErrors } from 'components/vault/VaultErrors'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
@@ -11,7 +12,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent } from 'react'
 import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState
+type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState | ManageBorrowVaultState
 
 interface SidebarSliderAdjustMultiplyProps {
   collapsed?: boolean

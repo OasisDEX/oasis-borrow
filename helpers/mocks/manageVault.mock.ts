@@ -25,6 +25,7 @@ import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
@@ -209,7 +210,9 @@ function buildMockDependencies({
   }
 }
 
-export function mockManageVault$(args: MockManageVaultProps = {}): Observable<ManageBorrowVaultState> {
+export function mockManageVault$(
+  args: MockManageVaultProps = {},
+): Observable<ManageBorrowVaultState> {
   const {
     context$,
     txHelpers$,
@@ -236,6 +239,7 @@ export function mockManageVault$(args: MockManageVaultProps = {}): Observable<Ma
     vault$,
     saveVaultType$,
     gasEstimationMock$,
+    slippageLimitMock(),
     vaultHistory$,
     () => of(StandardDssProxyActionsContractAdapter),
     StandardBorrowManageAdapter,

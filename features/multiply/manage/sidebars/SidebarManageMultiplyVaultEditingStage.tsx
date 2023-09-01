@@ -1,6 +1,4 @@
-import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
-import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import {
   extractFieldDepositCollateralData,
   extractFieldDepositDaiData,
@@ -15,7 +13,6 @@ import {
 } from 'components/vault/sidebar/SidebarFields'
 import { OptionalAdjust } from 'components/vault/sidebar/SidebarOptionalAdjust'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
@@ -24,102 +21,14 @@ import {
   otherActionsCollateralPanel,
   otherActionsDaiPanel,
 } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
-import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
-interface SliderAdjustMultiplyParams extends ManageMultiplyVaultState {
-  collapsed?: boolean
-  disabled?: boolean
-}
-
-function SliderAdjustMultiply({ collapsed, disabled, ...props }: SliderAdjustMultiplyParams) {
-  const {
-    hasToDepositCollateralOnEmptyVault,
-    ilkData: { liquidationRatio },
-    maxCollRatio,
-    minCollRatio,
-    requiredCollRatio,
-    updateRequiredCollRatio,
-    vault: { collateralizationRatio },
-  } = props
-
-  const sliderMax = maxCollRatio || MAX_COLL_RATIO
-  const sliderMin = minCollRatio || liquidationRatio
-
-  return (
-    <SidebarSliderAdjustMultiply
-      state={props}
-      min={sliderMin}
-      max={sliderMax}
-      value={requiredCollRatio || collateralizationRatio}
-      onChange={(e) => {
-        updateRequiredCollRatio!(new BigNumber(e.target.value))
-      }}
-      collapsed={collapsed}
-      disabled={hasToDepositCollateralOnEmptyVault || disabled}
-    />
-  )
-}
-
-function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultState) {
-  const { t } = useTranslation()
-
-  const {
-    closeVaultTo,
-    setCloseVaultTo,
-    afterCloseToCollateral,
-    afterCloseToCollateralUSD,
-    afterCloseToDai,
-    vault: { token },
-  } = props
-
-  const isClosingToCollateral = closeVaultTo === 'collateral'
-  const closeToTokenSymbol = isClosingToCollateral ? token : 'DAI'
-  const amountOnClose = (
-    <>
-      {formatCryptoBalance(isClosingToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
-      {closeToTokenSymbol}{' '}
-      {isClosingToCollateral && `($${formatAmount(afterCloseToCollateralUSD, 'USD')})`}
-    </>
-  )
-
-  return (
-    <>
-      <ActionPills
-        active={closeVaultTo}
-        items={[
-          {
-            id: 'collateral',
-            label: t('close-to', { token }),
-            action: () => {
-              setCloseVaultTo!('collateral')
-            },
-          },
-          {
-            id: 'dai',
-            label: t('close-to', { token: 'DAI' }),
-            action: () => {
-              setCloseVaultTo!('dai')
-            },
-          },
-        ]}
-      />
-      <Text as="p" variant="paragraph3" sx={{ mt: 2, color: 'neutral80' }}>
-        {t('vault-info-messages.closing')}
-      </Text>
-      <HighlightedOrderInformation
-        symbol={closeToTokenSymbol}
-        label={t('after-closing', { token: closeToTokenSymbol })}
-        value={amountOnClose}
-      />
-    </>
-  )
-}
+import { SidebarManageMultiplyVaultEditingStageClose } from './SidebarManageMultiplyVaultEditingStageClose'
+import { SliderAdjustMultiply } from './SliderAdjustMultiply'
 
 function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

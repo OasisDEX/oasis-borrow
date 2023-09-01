@@ -1,7 +1,9 @@
 import {
+  CloseVaultTo,
   MainAction,
   ManageBorrowVaultState,
   ManageVaultChange,
+  OtherAction,
 } from 'features/borrow/manage/pipes/manageVault'
 
 import { allowanceDefaults } from './manageVaultAllowances'
@@ -28,6 +30,14 @@ export type ManageVaultFormChange =
   | {
       kind: 'mainAction'
       mainAction: MainAction
+    }
+  | {
+      kind: 'otherAction'
+      otherAction: OtherAction
+    }
+  | {
+      kind: 'closeVaultTo'
+      closeVaultTo: CloseVaultTo
     }
 
 export function applyManageVaultForm<VaultState extends ManageBorrowVaultState>(

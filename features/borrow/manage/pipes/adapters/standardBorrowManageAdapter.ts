@@ -77,6 +77,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       initialTotalSteps,
       change,
       injectStateOverride,
+      slippage,
     } = args
     const initialState: ManageBorrowVaultState = {
       ...defaultMutableManageVaultState,
@@ -107,6 +108,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       autoSellData: undefined,
       constantMultipleData: undefined,
       injectStateOverride,
+      slippage,
     }
     return initialState
   },

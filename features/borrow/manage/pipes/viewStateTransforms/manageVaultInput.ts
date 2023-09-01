@@ -49,6 +49,11 @@ interface PaybackMaxChange {
   kind: 'paybackMax'
 }
 
+interface RequiredCollRatioChange {
+  kind: 'requiredCollRatio'
+  requiredCollRatio?: BigNumber
+}
+
 export type ManageVaultInputChange =
   | DepositChange
   | DepositUSDChange
@@ -60,6 +65,7 @@ export type ManageVaultInputChange =
   | WithdrawMaxChange
   | PaybackChange
   | PaybackMaxChange
+  | RequiredCollRatioChange
 
 export const depositAndGenerateDefaults: Partial<ManageBorrowVaultState> = {
   depositAmount: undefined,

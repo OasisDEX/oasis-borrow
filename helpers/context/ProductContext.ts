@@ -49,11 +49,7 @@ import {
   getUserDpmProxy$,
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
-import {
-  createVaultsFromIds$,
-  decorateVaultsWithValue$,
-  // Vault
-} from 'blockchain/vaults'
+import { createVaultsFromIds$, decorateVaultsWithValue$ } from 'blockchain/vaults'
 import { AccountContext, TOSContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
@@ -83,7 +79,8 @@ import {
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
-// import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
+import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
+import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
@@ -663,7 +660,7 @@ export function setupProductContext(
 
   const manageVault$ = memoize(
     (id: BigNumber) =>
-      createManageMultiplyVault$(
+      createManageVault$(
         context$,
         txHelpers$,
         proxyAddress$,
@@ -672,11 +669,12 @@ export function setupProductContext(
         balanceInfo$,
         ilkData$,
         vault$,
-        exchangeQuote$,
+        saveVaultUsingApi$,
         addGasEstimation$,
         userSettings$,
         vaultHistory$,
-        saveVaultUsingApi$,
+        proxyActionsAdapterResolver$,
+        StandardBorrowManageAdapter,
         automationTriggersData$,
         id,
       ),
