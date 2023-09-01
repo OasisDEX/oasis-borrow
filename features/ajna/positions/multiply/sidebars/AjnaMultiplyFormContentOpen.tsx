@@ -1,8 +1,8 @@
+import { AjnaAdjustSlider } from 'features/ajna/positions/common/components/AjnaAdjustSlider'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldDeposit } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
-import { AjnaMultiplySlider } from 'features/ajna/positions/multiply/components/AjnaMultiplySlider'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import React from 'react'
 
@@ -26,7 +26,7 @@ export function AjnaMultiplyFormContentOpen() {
         token={collateralToken}
         tokenPrice={collateralPrice}
       />
-      <AjnaMultiplySlider disabled={!depositAmount} />
+      <AjnaAdjustSlider disabled={!depositAmount} />
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />
