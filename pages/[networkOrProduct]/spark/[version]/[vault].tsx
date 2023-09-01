@@ -1,5 +1,6 @@
 import { isSupportedNetwork, NetworkNames, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
+import { ProductContextHandler } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts'
 import { getAddress } from 'ethers/lib/utils'
@@ -158,17 +159,19 @@ function Position({
   }
 
   return (
-    <AaveContextProvider>
-      <WithConnection>
-        <WithTermsOfService>
-          <WithSparkStrategy
-            positionId={{ walletAddress: address, vaultId }}
-            protocol={protocol}
-            network={network}
-          />
-        </WithTermsOfService>
-      </WithConnection>
-    </AaveContextProvider>
+    <ProductContextHandler>
+      <AaveContextProvider>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithSparkStrategy
+              positionId={{ walletAddress: address, vaultId }}
+              protocol={protocol}
+              network={network}
+            />
+          </WithTermsOfService>
+        </WithConnection>
+      </AaveContextProvider>
+    </ProductContextHandler>
   )
 }
 

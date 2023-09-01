@@ -119,7 +119,7 @@ export function setupSparkV3Context(
     curry(getAaveSupportedTokenBalances$)(
       aaveLikeOracleAssetPriceData$,
       of(one), // aave v3 base is already in USD
-      getSupportedTokens(LendingProtocol.AaveV3, network),
+      getSupportedTokens(LendingProtocol.SparkV3, network),
       networkId,
     ),
   )
