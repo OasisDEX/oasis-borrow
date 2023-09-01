@@ -92,6 +92,8 @@ const ajnaNotifications: {
   aboveLup: NotificationCallbackWithParams<null>
 } = {
   multiplyNotice: () => ({
+    closable: true,
+    
     type: 'notice',
     icon: 'bell',
     title: {

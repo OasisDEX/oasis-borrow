@@ -2694,7 +2694,7 @@
         "notifications": {
           "risk-managemnt": {
             "title": "Enhanced Risk Managment for Borrow Positions",
-            "message": "New ways to manage rish from your borrow position."
+            "message": "New ways to manage risk from your borrow position."
           },
           "time-to-liquidation": {
             "title": "Your position will be moved to liquidation {{time}}",
