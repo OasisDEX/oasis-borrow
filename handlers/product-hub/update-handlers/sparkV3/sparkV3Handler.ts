@@ -147,7 +147,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         )[secondaryToken]
         const weeklyNetApy = earnProductsYields.find((data) => data[label])
         const { maxLtv, riskRatio } = ensureFind(
-          tokensReserveConfigurationData.find((data) => data && data[primaryToken]),
+          tokensReserveConfigurationData.find((data) => data[primaryToken]),
         )[primaryToken]
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
 
