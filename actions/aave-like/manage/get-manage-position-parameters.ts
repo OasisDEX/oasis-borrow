@@ -99,7 +99,12 @@ export async function getManagePositionParameters(
       }
 
       if (protocol === LendingProtocol.SparkV3) {
-        throw new Error('Not implemented')
+        const addressesV3 = getAddresses(networkId, LendingProtocol.SparkV3)
+        return await strategies.spark.borrow.paybackWithdraw(paybackWithdrawStratArgs, {
+          ...paybackWithdrawStratDeps,
+          protocolType: 'Spark',
+          addresses: addressesV3,
+        })
       }
 
       throw new Error(
@@ -154,7 +159,11 @@ export async function getManagePositionParameters(
       }
 
       if (protocol === LendingProtocol.SparkV3) {
-        throw new Error('Not implemented')
+        const addressesV3 = getAddresses(networkId, LendingProtocol.SparkV3)
+        return await strategies.spark.borrow.depositBorrow(borrowDepositStratArgs, {
+          ...borrowDepositStratDeps,
+          addresses: addressesV3,
+        })
       }
 
       throw new Error(
