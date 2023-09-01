@@ -270,10 +270,7 @@ export function AjnaFormView({
   return (
     <>
       {!isExternalStep ? (
-        <>
         <SidebarSection {...sidebarSectionProps} />
-        {state.action}
-        </>
       ) : (
         <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
       )}
