@@ -166,7 +166,7 @@ export function GenericMultiselect({
   useEffect(() => {
     if (didMountRef.current) onChange(values.length ? values : options.map((item) => item.value))
     else didMountRef.current = true
-  }, [onChange, options, values])
+  }, [values])
 
   function getSelectLabel(): ReactNode {
     switch (values.length) {
