@@ -4,6 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
 import {
+  getSparkV3EModeCategoryForAsset,
   getSparkV3ReserveConfigurationData,
   getSparkV3ReserveData,
   SparkV3SupportedNetwork,
@@ -12,6 +13,7 @@ import { wstethRiskRatio } from 'features/aave/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { ensureFind } from 'helpers/ensure-find'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { memoize } from 'lodash'
 
@@ -82,6 +84,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // mainnet
   const memoizedTokensData = memoize(getSparkV3TokensData)
+  const memoizedEModeCategoryData = memoize(getSparkV3EModeCategoryForAsset)
   const sparkV3NetworksList = [
     ...new Set(sparkV3ProductHubProducts.map((product) => product.network)),
   ]
@@ -101,14 +104,29 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     product.includes(ProductHubProductType.Earn),
   )
   const earnProductsPromises = earnProducts.map(async (product) => {
-    const tokensReserveData = await memoizedTokensData(product.network as SparkV3Networks, tickers)
-
-    const riskRatio =
-      product.label === 'WSTETH/ETH'
-        ? wstethRiskRatio
-        : tokensReserveData[product.network as SparkV3Networks].tokensReserveConfigurationData.find(
+    const networkId = networkNameToIdMap[product.network as SparkV3Networks]
+    const [primaryTokenEModeCategory, secondaryTokenEModeCategory, tokensReserveData] =
+      await Promise.all([
+        memoizedEModeCategoryData({
+          token: product.primaryToken,
+          networkId: networkId as SparkV3SupportedNetwork,
+        }),
+        memoizedEModeCategoryData({
+          token: product.secondaryToken,
+          networkId: networkId as SparkV3SupportedNetwork,
+        }),
+        memoizedTokensData(product.network as SparkV3Networks, tickers),
+      ])
+    const isEModeTokenPair =
+      !primaryTokenEModeCategory.isZero() &&
+      primaryTokenEModeCategory.eq(secondaryTokenEModeCategory)
+    const riskRatio = isEModeTokenPair
+      ? wstethRiskRatio
+      : ensureFind(
+          tokensReserveData[product.network as SparkV3Networks].tokensReserveConfigurationData.find(
             (data) => data[product.primaryToken],
-          )![product.primaryToken].riskRatio
+          ),
+        )[product.primaryToken].riskRatio
     const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
@@ -124,13 +142,13 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         const { tokensReserveData, tokensReserveConfigurationData } =
           sparkV3TokensData[product.network as SparkV3Networks]
         const { secondaryToken, primaryToken, label } = product
-        const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
-          secondaryToken
-        ]
-        const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
-        const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-          (data) => data && data[primaryToken],
-        )![primaryToken]
+        const { liquidity, fee } = ensureFind(
+          tokensReserveData.find((data) => data[secondaryToken]),
+        )[secondaryToken]
+        const weeklyNetApy = earnProductsYields.find((data) => data[label])
+        const { maxLtv, riskRatio } = ensureFind(
+          tokensReserveConfigurationData.find((data) => data && data[primaryToken]),
+        )[primaryToken]
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
 
         return {
@@ -144,7 +162,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),
-          weeklyNetApy: weeklyNetApy[label] ? weeklyNetApy[label]!.toString() : undefined,
+          weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
         }
       }),
       warnings: [],

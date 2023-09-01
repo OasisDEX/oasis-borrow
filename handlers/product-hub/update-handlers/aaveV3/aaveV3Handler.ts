@@ -14,6 +14,7 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { ensureFind } from 'helpers/ensure-find'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { memoize } from 'lodash'
@@ -124,9 +125,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     const riskRatio =
       product.label === 'WSTETH/ETH'
         ? wstethRiskRatio
-        : tokensReserveData[product.network as AaveV3Networks].tokensReserveConfigurationData.find(
-            (data) => data[product.primaryToken],
-          )![product.primaryToken].riskRatio
+        : ensureFind(
+            tokensReserveData[
+              product.network as AaveV3Networks
+            ].tokensReserveConfigurationData.find((data) => data[product.primaryToken]),
+          )[product.primaryToken].riskRatio
     const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
@@ -144,13 +147,13 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         const { tokensReserveData, tokensReserveConfigurationData } =
           aaveV3TokensData[product.network]
         const { secondaryToken, primaryToken, label } = product
-        const { liquidity, fee } = tokensReserveData.find((data) => data[secondaryToken])![
-          secondaryToken
-        ]
+        const { liquidity, fee } = ensureFind(
+          tokensReserveData.find((data) => data[secondaryToken]),
+        )[secondaryToken]
         const weeklyNetApy = earnProductsYields.find((data) => data[label]) || {}
-        const { maxLtv, riskRatio } = tokensReserveConfigurationData.find(
-          (data) => data && data[primaryToken],
-        )![primaryToken]
+        const { maxLtv, riskRatio } = ensureFind(
+          tokensReserveConfigurationData.find((data) => data && data[primaryToken]),
+        )[primaryToken]
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
 
         return {
@@ -164,7 +167,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),
-          weeklyNetApy: weeklyNetApy[label] ? weeklyNetApy[label]!.toString() : undefined,
+          weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
         }
       }),
       warnings: [],
