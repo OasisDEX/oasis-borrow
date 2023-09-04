@@ -10,6 +10,7 @@ import {
   SparkV3SupportedNetwork,
 } from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
+import { productHubSparkRewardsTooltip } from 'features/productHub/content'
 import { ProductHubProductType } from 'features/productHub/types'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
@@ -162,6 +163,9 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),
+          tooltips: {
+            fee: productHubSparkRewardsTooltip,
+          },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
         }
       }),
