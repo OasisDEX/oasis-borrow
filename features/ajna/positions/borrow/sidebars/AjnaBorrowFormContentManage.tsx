@@ -8,6 +8,9 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { AjnaBorrowFormContentAdjust } from './AjnaBorrowFormContentAdjust'
+import { AjnaBorrowFormContentClose } from './AjnaBorrowFormContentClose'
+
 export function AjnaBorrowFormContentManage() {
   const { t } = useTranslation()
   const {
@@ -79,6 +82,8 @@ export function AjnaBorrowFormContentManage() {
         </>
       )}
       {uiDropdown === 'switch' && <AjnaBorrowFormContentSwitch />}
+      {uiDropdown === 'close' && <AjnaBorrowFormContentClose />}
+      {uiDropdown === 'adjust' && <AjnaBorrowFormContentAdjust />}
     </>
   )
 }

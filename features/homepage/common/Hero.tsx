@@ -11,9 +11,9 @@ export function Hero({
   sx,
   isConnected,
   heading,
-  headingWidth = '700px',
+  headingWidth = '804px',
   subheading,
-  subheadingWidth = '450px',
+  subheadingWidth = '740px',
   primaryButton = {
     isVisible: true,
     translationKey: 'find-your-defi-product',
@@ -55,14 +55,23 @@ export function Hero({
       <Heading
         as="h1"
         variant="heroHeader"
-        sx={{ mt: [2, 5], mb: 3, maxWidth: ['100%', headingWidth] }}
+        sx={{
+          mt: [2, 5],
+          mb: [4, 3],
+          maxWidth: ['100%', headingWidth],
+        }}
       >
         {t(heading)}
       </Heading>
       <Text
         variant="paragraph1"
         as="p"
-        sx={{ mb: 4, color: 'neutral80', maxWidth: ['100%', subheadingWidth] }}
+        sx={{
+          display: ['none', 'block'],
+          mb: 4,
+          color: 'neutral80',
+          maxWidth: ['100%', subheadingWidth],
+        }}
       >
         {subheading}
       </Text>

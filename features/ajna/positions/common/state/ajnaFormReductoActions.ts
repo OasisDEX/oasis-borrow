@@ -31,3 +31,7 @@ export interface AjnaFormActionsUpdateDpm {
 export interface AjnaFormActionsReset {
   type: 'reset'
 }
+export interface AjnaUpdateLoanToValue {
+  type: 'update-loan-to-value'
+  loanToValue: BigNumber
+}
