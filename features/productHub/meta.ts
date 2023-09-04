@@ -4,8 +4,10 @@ import { GenericMultiselectOption } from 'components/GenericMultiselect'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
+import { clone } from 'ramda'
 
 export const ALL_ASSETS = 'all assets'
 
@@ -97,7 +99,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
 }
 
-export const productHubOptionsMap: {
+export const productHubOptionsMapBase: {
   [key in ProductHubProductType]: {
     product: HeaderSelectorOption
     tokens: { [key: string]: HeaderSelectorOption }
@@ -141,6 +143,22 @@ export const productHubOptionsMap: {
     },
   },
 }
+
+const productHubOptionsMap = clone(productHubOptionsMapBase)
+
+if (getFeatureToggle('AjnaSafetySwitch')) {
+  delete productHubOptionsMap.borrow.tokens.YFI
+  delete productHubOptionsMap.borrow.tokens.GHO
+  delete productHubOptionsMap.borrow.tokens.WLD
+  delete productHubOptionsMap.multiply.tokens.YFI
+  delete productHubOptionsMap.multiply.tokens.GHO
+  delete productHubOptionsMap.earn.tokens.BTC
+  delete productHubOptionsMap.earn.tokens.USDC
+  delete productHubOptionsMap.earn.tokens.GHO
+  delete productHubOptionsMap.earn.tokens.WLD
+}
+
+export { productHubOptionsMap }
 
 export const productHubStrategyFilter: GenericMultiselectOption[] = [
   {

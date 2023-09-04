@@ -521,8 +521,8 @@
   "landing": {
     "hero": {
       "main": {
-        "headline": "DeFi made simple and secure",
-        "subheader": "Take advantage of powerful automation strategies and user-friendly UX."
+        "headline": "The best place to Borrow and Earn in DeFi",
+        "subheader": "Power up your portfolio by Borrowing, Lending and Multiplying your favourite assets. Made Safe and Easy by industry leading automation tools."
       },
       "ajna": {
         "headline": "Use the only market-driven lending protocol",
@@ -2710,9 +2710,13 @@
             "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
             "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation. <0>Read more about Ajna Liquidations →</0>"
           },
-          "safety-switch-on": {
+          "safety-switch-open": {
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+          },
+          "safety-switch-manage": {
+            "title": "Some features of Ajna positions are temporary disabled",
+            "message": "Due to a technical issue we have currently disabled some features of Ajna positions, as they might not result in the expected outcome for our users. You can withdraw deposited tokens or repay position's debt. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
           "near-lup": {
             "title": "Your position's threshold price is approaching the LUP",
