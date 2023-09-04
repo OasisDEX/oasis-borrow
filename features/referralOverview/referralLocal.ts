@@ -1,73 +1,33 @@
-import { ensNameToAddressMainnet } from 'blockchain/ens'
-import { getAddress } from 'ethers/lib/utils'
+import { isAddress } from 'ethers/lib/utils'
 import { Observable, of } from 'rxjs'
 
+/**
+ * Checks the referral value in local storage.
+ * @returns {Observable<string | null>} An observable that emits the referral value from local storage,
+ * or null if the referral is not valid or not found.
+ * @dev since we only store the referrer address in local storage, we need to check if it's a valid address
+ * before returning it. If not it means that the referral is not valid and we remove it from local storage.
+ */
 export function checkReferralLocalStorage$(): Observable<string | null> {
   const referrer = localStorage.getItem(`referral`)
-  return checkReferrer(referrer)
+  if (referrer && isAddress(referrer.slice(1, -1))) {
+    return of(referrer)
+  } else if (referrer === 'null') {
+    return of(null)
+  } else {
+    localStorage.removeItem(`referral`)
+    return of(null)
+  }
 }
 
 export function checkReferralLocalStorage(): string | null {
-  let referrer = localStorage.getItem(`referral`)
-  if (referrer) {
-    try {
-      const address = getAddress(referrer)
-      if (address) {
-        referrer = address
-      }
-      return referrer
-    } catch (err) {
-      console.warn(`Referrals: not an address.`)
-    }
-
-    ensNameToAddressMainnet(referrer)
-      .then((ensAddress) => {
-        if (ensAddress) {
-          localStorage.setItem(`referral`, ensAddress)
-          return ensAddress
-        } else {
-          return null
-        }
-      })
-      .catch((err: Error) => {
-        console.warn(`Error looking up ENS name for address: ${err.message}`)
-        localStorage.removeItem(`referral`)
-        return null
-      })
+  const referrer = localStorage.getItem(`referral`)
+  if (referrer && isAddress(referrer.slice(1, -1))) {
+    return referrer
   } else if (referrer === 'null') {
-    referrer = null
+    return null
+  } else {
+    localStorage.removeItem(`referral`)
+    return null
   }
-  return null
-}
-
-function checkReferrer(referrer: string | null): Observable<string | null> {
-  if (referrer) {
-    try {
-      const address = getAddress(referrer)
-      if (address) {
-        referrer = address
-      }
-      return of(referrer)
-    } catch (err) {
-      console.warn(`Referrals: not an address.`)
-    }
-
-    ensNameToAddressMainnet(referrer)
-      .then((ensAddress) => {
-        if (ensAddress) {
-          localStorage.setItem(`referral`, ensAddress)
-          return of(ensAddress)
-        } else {
-          return of(null)
-        }
-      })
-      .catch((err: Error) => {
-        console.warn(`Error looking up ENS name for address: ${err.message}`)
-        localStorage.removeItem(`referral`)
-        return of(null)
-      })
-  } else if (referrer === 'null') {
-    referrer = null
-  }
-  return of(null)
 }
