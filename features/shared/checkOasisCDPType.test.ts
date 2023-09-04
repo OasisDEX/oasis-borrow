@@ -12,7 +12,6 @@ describe('checkOasisPositionType', () => {
       createCheckOasisCDPType$(
         () => of(VaultType.Multiply),
         () => of('ETH-A'),
-        [],
         { id: new BigNumber(1), protocol: LendingProtocol.Maker },
       ),
     )

@@ -22,7 +22,6 @@ import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
-import { BonusContainer } from 'features/bonus/BonusContainer'
 import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -220,7 +219,6 @@ export function ManageVaultDetails(
       {stopLossReadEnabled && stopLossWriteEnabled && (
         <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
-      <BonusContainer cdpId={props.vault.id} />
     </Grid>
   )
 }

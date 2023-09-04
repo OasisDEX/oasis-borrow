@@ -32,20 +32,6 @@ describe('proxyActionsAdapterResolver', () => {
   })
 
   describe('create from maker vault type (managing a vault)', () => {
-    it('returns a cropjoin proxy actions for cropjoin vault type', () => {
-      const adapter$ = proxyActionsAdapterResolver$({ makerVaultType: MakerVaultType.CROP_JOIN })
-
-      const state = getStateUnpacker(adapter$)
-
-      expect(state().AdapterType).toBe(ProxyActionsAdapterType.CROPJOIN)
-    })
-    it('returns CHARTER proxy actions for CHARTER vault type', () => {
-      const adapter$ = proxyActionsAdapterResolver$({ makerVaultType: MakerVaultType.CHARTER })
-
-      const state = getStateUnpacker(adapter$)
-
-      expect(state().AdapterType).toBe(ProxyActionsAdapterType.CHARTER)
-    })
     it('returns standard proxy actions in all other cases', () => {
       const adapter$ = proxyActionsAdapterResolver$({ makerVaultType: MakerVaultType.STANDARD })
 

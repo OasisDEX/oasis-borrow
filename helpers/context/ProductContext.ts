@@ -3,30 +3,17 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
-import {
-  cropperBonusTokenAddress,
-  cropperCrops,
-  cropperShare,
-  cropperStake,
-  cropperStock,
-} from 'blockchain/calls/cropper'
+
 import { dogIlk } from 'blockchain/calls/dog'
 import {
   tokenAllowance,
   tokenBalance,
   tokenBalanceFromAddress,
-  tokenBalanceRawForJoin,
-  tokenDecimals,
-  tokenName,
-  tokenSymbol,
 } from 'blockchain/calls/erc20'
 import { jugIlk } from 'blockchain/calls/jug'
-import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
-import { CropjoinProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/proxyActionsAdapterResolver'
-import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from 'blockchain/calls/spot'
 import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
@@ -42,7 +29,6 @@ import {
   createBalanceFromAddress$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { charterIlks } from 'blockchain/tokens/mainnet'
 import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
@@ -77,8 +63,6 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
-import { createBonusPipe$ } from 'features/bonus/bonusPipe'
-import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
 import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
@@ -181,8 +165,6 @@ export function setupProductContext(
   {
     balance$,
     cdpManagerIlks$,
-    charterCdps$,
-    cropJoinCdps$,
     ilkData$,
     ilkToToken$,
     mainnetReadPositionCreatedEvents$,
@@ -190,7 +172,6 @@ export function setupProductContext(
     oraclePriceData$,
     proxyAddress$,
     standardCdps$,
-    urnResolver$,
     userSettings$,
     vault$,
     vaults$,
@@ -259,19 +240,10 @@ export function setupProductContext(
   const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
   const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
-  const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
-  const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
-  const cropperStock$ = observe(onEveryBlock$, context$, cropperStock)
-  const cropperTotal$ = observe(onEveryBlock$, context$, cropperStock)
-  const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
-  const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
-
   const pipZzzLean$ = observe(once$, chainContext$, pipZzz)
   const pipHopLean$ = observe(once$, context$, pipHop)
   const pipPeekLean$ = observe(once$, oracleContext$, pipPeek)
   const pipPeepLean$ = observe(once$, oracleContext$, pipPeep)
-
-  const unclaimedCrvLdoRewardsForIlk$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
 
   const oraclePriceDataLean$ = memoize(
     curry(createOraclePriceData$)(
@@ -308,48 +280,11 @@ export function setupProductContext(
   )
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
-  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
-  const tokenDecimals$ = observe(onEveryBlock$, chainContext$, tokenDecimals)
-  const tokenSymbol$ = observe(onEveryBlock$, chainContext$, tokenSymbol)
-  const tokenName$ = observe(onEveryBlock$, chainContext$, tokenName)
 
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
   const ilkDataLean$ = memoize(
     curry(createIlkData$)(vatIlksLean$, spotIlksLean$, jugIlksLean$, dogIlksLean$, ilkToToken$),
-  )
-
-  const bonusAdapter = memoize(
-    (cdpId: BigNumber) =>
-      createMakerProtocolBonusAdapter(
-        urnResolver$,
-        unclaimedCrvLdoRewardsForIlk$,
-        {
-          stake$: cropperStake$,
-          share$: cropperShare$,
-          bonusTokenAddress$: cropperBonusTokenAddress$,
-          stock$: cropperStock$,
-          total$: cropperTotal$,
-          crops$: cropperCrops$,
-        },
-        {
-          tokenDecimals$,
-          tokenSymbol$,
-          tokenName$,
-          tokenBalanceRawForJoin$,
-        },
-        connectedContext$,
-        txHelpers$,
-        vaultActionsLogic(new CropjoinProxyActionsContractAdapter()),
-        proxyAddress$,
-        cdpId,
-      ),
-    bigNumberTostring,
-  )
-
-  const bonus$ = memoize(
-    (cdpId: BigNumber) => createBonusPipe$(bonusAdapter, cdpId),
-    bigNumberTostring,
   )
 
   const potDsr$ = context$.pipe(
@@ -751,7 +686,6 @@ export function setupProductContext(
       uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT),
     ),
     cdpManagerIlks$,
-    charterIlks,
   )
 
   const generalManageVault$ = memoize(
@@ -859,8 +793,6 @@ export function setupProductContext(
 
   const vaultsFromId$ = memoize(
     curry(createVaultsFromIds$)(onEveryBlock$, followedVaults$, vault$, chainContext$, [
-      charterCdps$,
-      cropJoinCdps$,
       standardCdps$,
     ]),
   )
@@ -982,7 +914,6 @@ export function setupProductContext(
     balanceInfo$,
     balancesFromAddressInfoArray$,
     balancesInfoArray$,
-    bonus$,
     chainContext$,
     commonTransactionServices,
     contextForAddress$,
