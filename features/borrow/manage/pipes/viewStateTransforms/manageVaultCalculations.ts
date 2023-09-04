@@ -542,6 +542,13 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
     maxGenerateAmount: new BigNumber(0),
   }
 
+  console.log('CALCULATIONS', `
+  
+  slipage: ${slippage}
+  marketPrice: ${marketPrice}
+  marketPriceMaxSlippage: ${marketPriceMaxSlippage}
+
+  `)
   if (!marketPrice || !marketPriceMaxSlippage) {
     return {
       ...state,
@@ -550,6 +557,11 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
       ...prices,
     }
   }
+
+  console.log('CALCULATIONS', `
+  
+AFTER
+  `)
 
   const closeToDaiParams = getCloseToDaiParams(
     // market params

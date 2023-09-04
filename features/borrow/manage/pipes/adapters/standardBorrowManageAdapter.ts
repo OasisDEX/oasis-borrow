@@ -5,6 +5,7 @@ import {
   defaultMutableManageVaultState,
   ManageBorrowVaultState,
   ManageVaultChange,
+  OtherAction,
 } from 'features/borrow/manage/pipes/manageVault'
 import { applyManageVaultAllowance } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
 import {
@@ -101,6 +102,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       currentStep: 1,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       clear: () => change({ kind: 'clear' }),
+      setOtherAction: (otherAction: OtherAction) => change({ kind: 'otherAction', otherAction }),
       gasEstimationStatus: GasEstimationStatus.unset,
       vaultHistory: [],
       stopLossData: undefined,

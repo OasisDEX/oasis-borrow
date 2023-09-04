@@ -604,6 +604,7 @@ export function setupProductContext(
         balanceInfo$,
         ilkData$,
         vault$,
+        exchangeQuote$,
         saveVaultUsingApi$,
         addGasEstimation$,
         userSettings$,

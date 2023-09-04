@@ -19,7 +19,7 @@ import { AutoTakeProfitTriggerData } from 'features/automation/optimization/auto
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import { Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import {
@@ -59,6 +59,7 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './viewStateTransforms/manageVaultTransitions'
+import { createExchangeChange$, createInitialQuoteChange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -292,6 +293,7 @@ function addTransitions(
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       progress: () => change({ kind: 'progressEditing' }),
       setMainAction: (mainAction: MainAction) => change({ kind: 'mainAction', mainAction }),
+      setOtherAction: (otherAction: OtherAction) => change({ kind: 'otherAction', otherAction }),
     }
   }
 
@@ -409,6 +411,13 @@ export function createManageVault$<V extends Vault, VS extends ManageBorrowVault
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber, chainId: number) => Observable<V>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+    exchangeType: ExchangeType,
+  ) => Observable<Quote>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
   slippageLimit$: Observable<UserSettingsState>,
@@ -493,12 +502,16 @@ export function createManageVault$<V extends Vault, VS extends ManageBorrowVault
                       slippage,
                     })
 
+                    const stateSubject$ = new Subject<ManageBorrowVaultState>()
+
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, vault.token),
                       balanceInfoChange$(balanceInfo$, vault.token, account),
                       createIlkDataChange$(ilkData$, vault.ilk),
                       createVaultChange$(vault$, id, context.chainId),
                       createHistoryChange$(vaultHistory$, id),
+                      createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
+                      createExchangeChange$(exchangeQuote$, stateSubject$),
                       createAutomationTriggersChange$(automationTriggersData$, id),
                     )
 

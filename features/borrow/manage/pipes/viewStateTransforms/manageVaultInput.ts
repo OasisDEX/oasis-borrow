@@ -263,5 +263,12 @@ export function applyManageVaultInput<VaultState extends ManageBorrowVaultState>
     }
   }
 
+  if (change.kind === 'closeVaultTo') {
+    return {
+      ...state,
+      closeVaultTo: change.closeVaultTo,
+    }
+  }
+
   return state
 }

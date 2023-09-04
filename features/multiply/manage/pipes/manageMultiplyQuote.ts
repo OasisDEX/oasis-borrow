@@ -16,6 +16,7 @@ import {
 } from 'rxjs/operators'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'
@@ -92,7 +93,7 @@ export function swapToChange(swap: Quote) {
     : { kind: 'swapError' as const }
 }
 
-export function createExchangeChange$(
+export function createExchangeChange$<S extends ManageMultiplyVaultState | ManageBorrowVaultState>(
   exchangeQuote$: (
     token: string,
     slippage: BigNumber,
@@ -100,7 +101,7 @@ export function createExchangeChange$(
     action: ExchangeAction,
     exchangeType: ExchangeType,
   ) => Observable<Quote>,
-  state$: Observable<ManageMultiplyVaultState>,
+  state$: Observable<S>,
 ) {
   const stateChanges$ = state$.pipe(
     map((state) => state),
