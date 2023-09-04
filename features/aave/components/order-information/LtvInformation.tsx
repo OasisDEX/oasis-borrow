@@ -1,8 +1,8 @@
 import {
   IPosition,
+  IPositionTransitionParams,
   ISimplePositionTransition,
   IStrategy,
-  PositionTransition,
 } from '@oasisdex/dma-library'
 import { Flex } from '@theme-ui/components'
 import {
@@ -14,7 +14,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface LtvInformationProps {
-  transactionParameters: ISimplePositionTransition | PositionTransition | IStrategy
+  transactionParameters: ISimplePositionTransition | IPositionTransitionParams | IStrategy
   currentPosition: IPosition
 }
 

@@ -1,9 +1,9 @@
 import {
+  IPositionTransitionParams,
   IRiskRatio,
   ISimplePositionTransition,
   ISimulatedTransition,
   IStrategy,
-  PositionTransition,
   RiskRatio,
 } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
@@ -63,8 +63,8 @@ export type AdjustRiskViewConfig = {
 }
 
 function transitionHasMinConfigurableRiskRatio(
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
-): transition is PositionTransition {
+  transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy,
+): transition is IPositionTransitionParams {
   return (
     !!transition &&
     (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined

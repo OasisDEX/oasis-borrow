@@ -1,4 +1,4 @@
-import { AAVETokens, IRiskRatio, PositionTransition, strategies } from '@oasisdex/dma-library'
+import { IPositionTransitionParams, IRiskRatio, strategies, Tokens } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
@@ -8,14 +8,14 @@ import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/types'
-import { AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 async function openPosition(
   slippage: BigNumber,
   riskRatio: IRiskRatio,
-  debtToken: { symbol: AAVETokens; precision: number },
+  debtToken: { symbol: Tokens; precision: number },
   collateralToken: {
-    symbol: AAVETokens
+    symbol: Tokens
     precision: number
   },
   depositedByUser: {
@@ -33,12 +33,16 @@ async function openPosition(
 
   const network = networkIdToLibraryNetwork(networkId)
 
-  type OpenAaveLikeMultiplyPositionParams = Parameters<typeof strategies.aave.multiply.v2.open> &
-    Parameters<
-      typeof strategies.aave.multiply.v3.open
-    > /*& Parameters<typeof strategies.spark.multiply.open> */
+  const aaveLikeOpenStrategyType = {
+    [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
+    [LendingProtocol.AaveV3]: strategies.aave.multiply.v3,
+    // [LendingProtocol.SparkV3]: strategies.spark.multiply,
+  }[protocol as AaveLendingProtocol] // to be AaveLikeLendingProtocol when SparkV3 is added
 
-  const args: OpenAaveLikeMultiplyPositionParams[0] = {
+  type AaveLikeOpenStrategyArgs = Parameters<typeof aaveLikeOpenStrategyType.open>[0]
+  type AaveLikeOpenStrategyDeps = Parameters<typeof aaveLikeOpenStrategyType.open>[1]
+
+  const args: AaveLikeOpenStrategyArgs = {
     slippage,
     multiple: riskRatio,
     debtToken: debtToken,
@@ -47,10 +51,7 @@ async function openPosition(
     positionType: positionType,
   }
 
-  type SharedAaveLikeDependencies = Omit<
-    OpenAaveLikeMultiplyPositionParams[1],
-    'addresses' | 'getSwapData'
-  >
+  type SharedAaveLikeDependencies = Omit<AaveLikeOpenStrategyDeps, 'addresses' | 'getSwapData'>
   const sharedDependencies: SharedAaveLikeDependencies = {
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,
@@ -96,14 +97,14 @@ export async function getOpenPositionParameters({
   positionType,
   protocol,
   networkId,
-}: OpenMultiplyAaveParameters): Promise<PositionTransition> {
+}: OpenMultiplyAaveParameters): Promise<IPositionTransitionParams> {
   const _collateralToken = {
-    symbol: collateralToken as AAVETokens,
+    symbol: collateralToken as Tokens,
     precision: getToken(collateralToken).precision,
   }
 
   const _debtToken = {
-    symbol: debtToken as AAVETokens,
+    symbol: debtToken as Tokens,
     precision: getToken(debtToken).precision,
   }
 

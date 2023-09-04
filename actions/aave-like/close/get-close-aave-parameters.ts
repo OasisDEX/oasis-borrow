@@ -1,10 +1,10 @@
-import { AAVETokens, PositionTransition, strategies } from '@oasisdex/dma-library'
+import { IPositionTransitionParams, strategies, Tokens } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
 import { CloseAaveParameters } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 export async function getCloseAaveParameters({
   proxyAddress,
@@ -16,22 +16,27 @@ export async function getCloseAaveParameters({
   protocol,
   networkId,
   positionType,
-}: CloseAaveParameters): Promise<PositionTransition> {
+}: CloseAaveParameters): Promise<IPositionTransitionParams> {
   const collateralToken = {
-    symbol: currentPosition.collateral.symbol as AAVETokens,
+    symbol: currentPosition.collateral.symbol as Tokens,
     precision: currentPosition.collateral.precision,
   }
 
   const debtToken = {
-    symbol: currentPosition.debt.symbol as AAVETokens,
+    symbol: currentPosition.debt.symbol as Tokens,
     precision: currentPosition.debt.precision,
   }
 
-  type closeParameters =
-    | Parameters<typeof strategies.aave.multiply.v2.close>
-    | Parameters<typeof strategies.aave.multiply.v3.close>
-  /*| Parameters<typeof strategies.spark.close>*/
-  const stratArgs: closeParameters[0] = {
+  const aaveLikeCloseStrategyType = {
+    [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
+    [LendingProtocol.AaveV3]: strategies.aave.multiply.v3,
+    // [LendingProtocol.SparkV3]: strategies.spark.multiply,
+  }[protocol as AaveLendingProtocol] // to be AaveLikeLendingProtocol when SparkV3 is added
+
+  type AaveLikeCloseStrategyArgs = Parameters<typeof aaveLikeCloseStrategyType.adjust>[0]
+  type AaveLikeCloseStrategyDeps = Parameters<typeof aaveLikeCloseStrategyType.adjust>[1]
+
+  const stratArgs: AaveLikeCloseStrategyArgs = {
     slippage,
     debtToken,
     collateralToken,
@@ -39,7 +44,7 @@ export async function getCloseAaveParameters({
     shouldCloseToCollateral,
   }
 
-  const stratDeps: Omit<closeParameters[1], 'addresses' | 'getSwapData'> = {
+  const stratDeps: Omit<AaveLikeCloseStrategyDeps, 'addresses' | 'getSwapData'> = {
     currentPosition,
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,

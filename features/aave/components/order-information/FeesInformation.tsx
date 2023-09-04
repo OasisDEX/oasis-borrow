@@ -24,12 +24,10 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
 
   const oasisFeeDisplay =
     swap && swap.tokenFee.gt(zero)
-      ? formatAmount(
+      ? `${formatAmount(
           amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
           swap[swap.collectFeeFrom].symbol,
-        ) +
-        ' ' +
-        swap[swap.collectFeeFrom].symbol
+        )} ${swap[swap.collectFeeFrom].symbol}`
       : '0'
 
   return (

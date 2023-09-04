@@ -1,11 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import {
   IPosition,
+  IPositionTransitionParams,
   ISimplePositionTransition,
   ISimulatedTransition,
   IStrategy,
   OPERATION_NAMES,
-  PositionTransition,
 } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -88,16 +88,16 @@ export function textButtonReturningToAdjust({
 }
 
 export function transitionHasSwap(
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
-): transition is PositionTransition {
+  transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy,
+): transition is IPositionTransitionParams {
   return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
 }
 
 export function getAmountReceivedAfterClose(
   strategy:
-    | PositionTransition
+    | IPositionTransitionParams
     | ISimplePositionTransition
-    | PositionTransition
+    | IPositionTransitionParams
     | IStrategy
     | undefined,
   currentPosition: IPosition | undefined,

@@ -1,4 +1,4 @@
-import { PositionTransition } from '@oasisdex/dma-library'
+import { IPositionTransitionParams } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
 import { swapCall } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
@@ -22,7 +22,7 @@ interface PriceImpactProps {
     collateral: string
     debt: string
   }
-  transactionParameters: PositionTransition
+  transactionParameters: IPositionTransitionParams
   strategyConfig: IStrategyConfig
 }
 

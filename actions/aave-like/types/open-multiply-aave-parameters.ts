@@ -1,4 +1,4 @@
-import { AAVETokens, IRiskRatio } from '@oasisdex/dma-library'
+import { Tokens, IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ProxyType } from 'features/aave/types'
 import { AaveLendingProtocol } from 'lendingProtocols'
@@ -6,9 +6,9 @@ import { NetworkIds } from 'blockchain/networks'
 
 export interface OpenMultiplyAaveParameters {
   amount: BigNumber
-  collateralToken: AAVETokens
-  debtToken: AAVETokens
-  depositToken: AAVETokens
+  collateralToken: Tokens
+  debtToken: Tokens
+  depositToken: Tokens
   riskRatio: IRiskRatio
   slippage: BigNumber
   proxyAddress: string
