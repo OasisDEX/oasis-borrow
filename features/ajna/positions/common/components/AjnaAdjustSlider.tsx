@@ -16,26 +16,31 @@ const min = new BigNumber(0.01)
 const max = new BigNumber(1)
 const openFlowInitialLtv = new BigNumber(0.1)
 
-interface AjnaMultiplySliderProps {
+interface AjnaAdjustSliderProps {
   disabled?: boolean
 }
 
-export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps) {
+export function AjnaAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, isShort },
+    environment: { collateralToken, quoteToken, isShort, product },
     steps: { currentStep },
   } = useAjnaGeneralContext()
+
+  if (product === 'earn') {
+    throw new Error('AjnaAdjustSlider is not supported for earn')
+  }
+
   const {
     form: {
       state: { loanToValue, depositAmount },
-      updateState,
+      dispatch,
     },
     position: {
       currentPosition: { position, simulation },
       isSimulationLoading,
     },
-  } = useAjnaProductContext('multiply')
+  } = useAjnaProductContext(product)
   const [depositChanged, setDepositChanged] = useState(false)
 
   useEffect(() => {
@@ -62,7 +67,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
 
   useEffect(() => {
     if (!loanToValue && currentStep === 'setup' && depositAmount) {
-      updateState('loanToValue', openFlowInitialLtv)
+      dispatch({ type: 'update-loan-to-value', loanToValue: openFlowInitialLtv })
     }
   }, [loanToValue?.toString(), currentStep, depositAmount?.toString()])
 
@@ -102,7 +107,7 @@ export function AjnaMultiplySlider({ disabled = false }: AjnaMultiplySliderProps
           )}
         </Flex>
       )}
-      onChange={(value) => updateState('loanToValue', value)}
+      onChange={(value) => dispatch({ type: 'update-loan-to-value', loanToValue: value })}
       minBoundry={min}
       maxBoundry={max}
       lastValue={resolvedValue}
