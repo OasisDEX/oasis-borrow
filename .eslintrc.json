@@ -9,7 +9,7 @@
     "sourceType": "module",
     "project": ["./tsconfig.json"]
   },
-  "ignorePatterns": ["*.json", "coverage", "node_modules", "types"],
+  "ignorePatterns": ["*.json", "coverage", "node_modules", "./types"],
   "plugins": [
     "deprecation",
     "no-only-tests",
@@ -227,7 +227,7 @@
 
     //* eslint-plugin-no-relative-import-paths */
 
-    "no-relative-import-paths/no-relative-import-paths": ["warn", { "allowSameFolder": true }],
+    "no-relative-import-paths/no-relative-import-paths": "error",
 
     //* eslint-plugin-deprecation */
 
