@@ -1,4 +1,9 @@
-import { AAVETokens, PositionTransition, strategies } from '@oasisdex/dma-library'
+import {
+  AaveLikeProtocol as AaveLikeLibProtocol,
+  AAVETokens,
+  PositionTransition,
+  strategies,
+} from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
 import { AdjustAaveParameters } from 'actions/aave-like/types'
@@ -34,7 +39,7 @@ export async function getAdjustPositionParameters({
       [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
       [LendingProtocol.AaveV3]: strategies.aave.multiply.v3,
       // [LendingProtocol.SparkV3]: strategies.spark.multiply,
-    }[protocol as AaveLendingProtocol]
+    }[protocol as AaveLendingProtocol] // to be AaveLikeLendingProtocol when SparkV3 is added
 
     type AaveLikeStrategyArgs = Parameters<typeof aaveLikeStrategyType.adjust>[0]
     type AaveLikeStrategyDeps = Parameters<typeof aaveLikeStrategyType.adjust>[1]
@@ -44,7 +49,6 @@ export async function getAdjustPositionParameters({
       multiple: riskRatio,
       debtToken: debtToken,
       collateralToken: collateralToken,
-      positionType,
     }
 
     const stratDeps: Omit<AaveLikeStrategyDeps, 'addresses' | 'getSwapData'> = {
@@ -54,6 +58,12 @@ export async function getAdjustPositionParameters({
       user: userAddress,
       isDPMProxy: proxyType === ProxyType.DpmProxy,
       network: networkIdToLibraryNetwork(networkId),
+      positionType,
+      protocolType: {
+        [LendingProtocol.AaveV2]: 'AAVE',
+        [LendingProtocol.AaveV3]: 'AAVE_V3',
+        [LendingProtocol.SparkV3]: 'Spark',
+      }[protocol] as AaveLikeLibProtocol,
     }
 
     switch (protocol) {
