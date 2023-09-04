@@ -1,9 +1,7 @@
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
-import { useProductContext } from 'components/context'
 import { AppLink } from 'components/Links'
-import { getAddress } from 'ethers/lib/utils'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
@@ -32,24 +30,22 @@ import { PositionsList } from 'features/vaultsOverview/vaultsOverview'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
-export function PositionsTable({ address }: { address: string }) {
+export function PositionsTable({
+  address,
+  ownersPositionsListData,
+  ownersPositionsListError,
+}: {
+  address: string
+  ownersPositionsListData?: PositionsList
+  ownersPositionsListError?: any
+}) {
   const { t } = useTranslation()
-  const checksumAddress = getAddress(address.toLocaleLowerCase())
-  const { ownersPositionsList$ } = useProductContext()
   const { walletAddress } = useAccount()
-  const memoizedOwnersPositionList$ = useMemo(
-    () => ownersPositionsList$(checksumAddress),
-    [checksumAddress],
-  )
-  const [ownersPositionsListData, ownersPositionsListError] = useObservable(
-    memoizedOwnersPositionList$,
-  )
 
   const isOwner = address === walletAddress
 

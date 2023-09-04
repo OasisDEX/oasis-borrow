@@ -55,16 +55,15 @@ export function getStrategyConfig$(
         throw new Error(`There is no PositionCreatedEvent and AaveUserConfiguration`)
       }
 
-      const _vaultType = vaultTypeIsUnknown ? VaultType.Borrow : vaultType
       switch (true) {
-        // For aave v3 we should have the event.
+        // For aave v3 we should have the event. and we don't support changing vault type in aave v2
         case aaveUserConfigurations.hasAssets(['STETH'], ['ETH', 'WETH']):
           return loadStrategyFromTokens(
             'STETH',
             'ETH',
             networkName,
             LendingProtocol.AaveV2,
-            _vaultType,
+            VaultType.Earn,
           )
         case aaveUserConfigurations.hasAssets(['ETH', 'WETH'], ['USDC']):
           return loadStrategyFromTokens(
@@ -72,7 +71,7 @@ export function getStrategyConfig$(
             'USDC',
             networkName,
             LendingProtocol.AaveV2,
-            _vaultType,
+            VaultType.Multiply,
           )
         case aaveUserConfigurations.hasAssets(['WBTC'], ['USDC']):
           return loadStrategyFromTokens(
@@ -80,7 +79,7 @@ export function getStrategyConfig$(
             'USDC',
             networkName,
             LendingProtocol.AaveV2,
-            _vaultType,
+            VaultType.Multiply,
           )
         case aaveUserConfigurations.hasAssets(['STETH'], ['USDC']):
           return loadStrategyFromTokens(
@@ -88,7 +87,7 @@ export function getStrategyConfig$(
             'USDC',
             networkName,
             LendingProtocol.AaveV2,
-            _vaultType,
+            VaultType.Multiply,
           )
         default:
           throw new Error(`User doesn't have assets supported in the app`)
