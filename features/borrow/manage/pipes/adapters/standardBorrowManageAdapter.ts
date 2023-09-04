@@ -27,6 +27,7 @@ import {
 } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultSummary'
 import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
+import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 
@@ -48,7 +49,8 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
     change: ManageVaultChange,
   ): ManageBorrowVaultState {
     const s1 = applyManageVaultInput(change, viewState)
-    const s2 = applyManageVaultForm(change, s1)
+    const s1_ = applyExchange(change, s1)
+    const s2 = applyManageVaultForm(change, s1_)
     const s3 = applyManageVaultAllowance(change, s2)
     const s4 = applyManageVaultTransition(change, s3)
     const s5 = applyManageVaultTransaction(change, s4)

@@ -3,7 +3,6 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
-
 import { dogIlk } from 'blockchain/calls/dog'
 import {
   tokenAllowance,
