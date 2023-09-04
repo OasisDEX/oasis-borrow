@@ -1,4 +1,9 @@
-import { IPositionTransitionParams, IRiskRatio, strategies, Tokens } from '@oasisdex/dma-library'
+import {
+  IMultiplyStrategy,
+  IRiskRatio,
+  strategies,
+  Tokens,
+} from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
@@ -36,7 +41,7 @@ async function openPosition(
   const aaveLikeOpenStrategyType = {
     [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
     [LendingProtocol.AaveV3]: strategies.aave.multiply.v3,
-    // [LendingProtocol.SparkV3]: strategies.spark.multiply,
+    [LendingProtocol.SparkV3]: strategies.spark.multiply,
   }[protocol as AaveLendingProtocol] // to be AaveLikeLendingProtocol when SparkV3 is added
 
   type AaveLikeOpenStrategyArgs = Parameters<typeof aaveLikeOpenStrategyType.open>[0]
@@ -47,17 +52,23 @@ async function openPosition(
     multiple: riskRatio,
     debtToken: debtToken,
     collateralToken: collateralToken,
-    depositedByUser,
-    positionType: positionType,
+    depositedByUser: {
+      collateralInWei: depositedByUser.collateralToken?.amountInBaseUnit,
+      debtInWei: depositedByUser.debtToken?.amountInBaseUnit,
+    },
   }
 
-  type SharedAaveLikeDependencies = Omit<AaveLikeOpenStrategyDeps, 'addresses' | 'getSwapData'>
+  type SharedAaveLikeDependencies = Omit<
+    AaveLikeOpenStrategyDeps,
+    'addresses' | 'getSwapData' | 'protocolType'
+  >
   const sharedDependencies: SharedAaveLikeDependencies = {
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,
     user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
     network,
+    positionType: positionType,
   }
 
   switch (protocol) {
@@ -67,6 +78,7 @@ async function openPosition(
         ...sharedDependencies,
         addresses: aavev2Addresses,
         getSwapData: swapCall(aavev2Addresses, networkId),
+        protocolType: 'AAVE' as const,
       }
       return await strategies.aave.multiply.v2.open(args, dependenciesAaveV2)
     case LendingProtocol.AaveV3:
@@ -75,10 +87,18 @@ async function openPosition(
         ...sharedDependencies,
         addresses: aavev3Addresses,
         getSwapData: swapCall(aavev3Addresses, networkId),
+        protocolType: 'AAVE_V3' as const,
       }
       return await strategies.aave.multiply.v3.open(args, dependenciesAaveV3)
     case LendingProtocol.SparkV3:
-      throw new Error('SparkV3 is not supported yet')
+      const sparkV3Addresses = getAddresses(networkId, LendingProtocol.SparkV3)
+      const dependenciesSparkV3 = {
+        ...sharedDependencies,
+        addresses: sparkV3Addresses,
+        getSwapData: swapCall(sparkV3Addresses, networkId),
+        protocolType: 'Spark' as const,
+      }
+      return await strategies.spark.multiply.open(args, dependenciesSparkV3)
     default:
       throw new Error('Unsupported protocol')
   }
@@ -97,7 +117,7 @@ export async function getOpenPositionParameters({
   positionType,
   protocol,
   networkId,
-}: OpenMultiplyAaveParameters): Promise<IPositionTransitionParams> {
+}: OpenMultiplyAaveParameters): Promise<IMultiplyStrategy> {
   const _collateralToken = {
     symbol: collateralToken as Tokens,
     precision: getToken(collateralToken).precision,
