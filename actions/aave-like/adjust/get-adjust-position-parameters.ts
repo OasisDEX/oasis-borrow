@@ -4,7 +4,7 @@ import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
 import { AdjustAaveParameters } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 export async function getAdjustPositionParameters({
   userAddress,
@@ -30,14 +30,14 @@ export async function getAdjustPositionParameters({
       precision: currentPosition.debt.precision,
     }
 
-    type AaveLikeStrategyArgs = Parameters<typeof strategies.aave.multiply.v2.adjust>[0] &
-      Parameters<
-        typeof strategies.aave.multiply.v3.adjust
-      >[0] /*& Parameters<typeof strategies.spark.multiply.adjust>[0]*/
-    type AaveLikeStrategyDeps = Parameters<typeof strategies.aave.multiply.v2.adjust>[1] &
-      Parameters<
-        typeof strategies.aave.multiply.v3.adjust
-      >[1] /*& Parameters<typeof strategies.spark.multiply.adjust>[1]*/
+    const aaveLikeStrategyType = {
+      [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
+      [LendingProtocol.AaveV3]: strategies.aave.multiply.v3,
+      // [LendingProtocol.SparkV3]: strategies.spark.multiply,
+    }[protocol as AaveLendingProtocol]
+
+    type AaveLikeStrategyArgs = Parameters<typeof aaveLikeStrategyType.adjust>[0]
+    type AaveLikeStrategyDeps = Parameters<typeof aaveLikeStrategyType.adjust>[1]
 
     const args: AaveLikeStrategyArgs = {
       slippage,
