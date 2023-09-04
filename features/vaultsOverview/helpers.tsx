@@ -3,7 +3,7 @@ import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
-import { AavePosition } from 'features/vaultsOverview/pipes/positions'
+import { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { zero } from 'helpers/zero'
 
@@ -72,11 +72,11 @@ export function getMakerPositionOfType(positions: MakerPositionDetails[]) {
   )
 }
 
-export function getAavePositionOfType(positions: AavePosition[]) {
+export function getAavePositionOfType(positions: AaveLikePosition[]) {
   return positions.reduce<{
-    multiply: AavePosition[]
-    earn: AavePosition[]
-    borrow: AavePosition[]
+    multiply: AaveLikePosition[]
+    earn: AaveLikePosition[]
+    borrow: AaveLikePosition[]
   }>(
     (v, position) => {
       if (position.type === 'earn') v.earn.push(position)

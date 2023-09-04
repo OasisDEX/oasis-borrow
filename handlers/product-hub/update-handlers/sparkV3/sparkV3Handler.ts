@@ -10,6 +10,7 @@ import {
   SparkV3SupportedNetwork,
 } from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
+import { productHubSparkRewardsTooltip } from 'features/productHub/content'
 import { ProductHubProductType } from 'features/productHub/types'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
@@ -141,7 +142,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       table: sparkV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =
           sparkV3TokensData[product.network as SparkV3Networks]
-        const { secondaryToken, primaryToken, label } = product
+        const { secondaryToken, primaryToken, label, primaryTokenGroup } = product
         const { liquidity, fee } = ensureFind(
           tokensReserveData.find((data) => data[secondaryToken]),
         )[secondaryToken]
@@ -162,6 +163,13 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           maxLtv: maxLtv.toString(),
           liquidity: liquidity.toString(),
           fee: fee.toString(),
+          tooltips: {
+            fee:
+              // rewards are available for the ETHlike/DAI pairs
+              primaryTokenGroup === 'ETH' && secondaryToken === 'DAI'
+                ? productHubSparkRewardsTooltip
+                : undefined,
+          },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
         }
       }),

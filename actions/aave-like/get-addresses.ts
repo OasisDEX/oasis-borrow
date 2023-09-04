@@ -14,18 +14,31 @@ export function getAddresses(
   lendingProtocol: AaveLikeLendingProtocol,
 ): AaveLikeStrategyAddresses & { swapAddress: string } {
   const contracts = getNetworkContracts(networkId)
-  ensureContractsExist(networkId, contracts, [
-    'aaveV3Pool',
-    'operationExecutor',
-    'aaveV3PoolDataProvider',
-    'aaveV2LendingPool',
-    'aaveV2PriceOracle',
-    'aaveV2ProtocolDataProvider',
-    'aaveV3Oracle',
-    'sparkV3Pool',
-    'sparkV3Oracle',
-    'sparkV3PoolDataProvider',
-  ])
+  // Spark V3 is mainnet only right now
+  const contractProperties =
+    networkId === NetworkIds.MAINNET
+      ? [
+          'aaveV3Pool',
+          'operationExecutor',
+          'aaveV3PoolDataProvider',
+          'aaveV2LendingPool',
+          'aaveV2PriceOracle',
+          'aaveV2ProtocolDataProvider',
+          'aaveV3Oracle',
+          'sparkV3Pool',
+          'sparkV3Oracle',
+          'sparkV3PoolDataProvider',
+        ]
+      : [
+          'aaveV3Pool',
+          'operationExecutor',
+          'aaveV3PoolDataProvider',
+          'aaveV2LendingPool',
+          'aaveV2PriceOracle',
+          'aaveV2ProtocolDataProvider',
+          'aaveV3Oracle',
+        ]
+  ensureContractsExist(networkId, contracts, contractProperties)
   ensureTokensExist(networkId, contracts)
   ensureChainlinkTokenPairsExist(networkId, contracts, ['ETHUSD'])
   ensurePropertiesExist(networkId, contracts, ['swapAddress'])
