@@ -142,7 +142,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       table: sparkV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =
           sparkV3TokensData[product.network as SparkV3Networks]
-        const { secondaryToken, primaryToken, label } = product
+        const { secondaryToken, primaryToken, label, primaryTokenGroup } = product
         const { liquidity, fee } = ensureFind(
           tokensReserveData.find((data) => data[secondaryToken]),
         )[secondaryToken]
@@ -164,7 +164,11 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           tooltips: {
-            fee: productHubSparkRewardsTooltip,
+            fee:
+              // rewards are available for the ETHlike/DAI pairs
+              primaryTokenGroup === 'ETH' && secondaryToken === 'DAI'
+                ? productHubSparkRewardsTooltip
+                : undefined,
           },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
         }
