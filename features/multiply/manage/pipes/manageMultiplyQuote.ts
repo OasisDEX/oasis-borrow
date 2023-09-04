@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
+import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { EMPTY, Observable } from 'rxjs'
@@ -16,7 +17,6 @@ import {
 } from 'rxjs/operators'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
-import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'

@@ -22,6 +22,7 @@ import { switchMap } from 'rxjs/operators'
 
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
+import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
@@ -92,6 +93,7 @@ export interface MockManageVaultProps {
   daiAllowance?: BigNumber
   account?: string
   status?: 'connected'
+  exchangeQuote?: MockExchangeQuote
   gasEstimationUsd?: BigNumber
 }
 
@@ -118,6 +120,7 @@ function buildMockDependencies({
   daiAllowance,
   account = '0xVaultController',
   status = 'connected',
+  exchangeQuote,
   gasEstimationUsd,
 }: MockManageVaultProps = {}) {
   const token = vault && vault.ilk ? vault.ilk.split('-')[0] : 'WBTC'
@@ -207,6 +210,7 @@ function buildMockDependencies({
     vaultHistory$,
     automationTriggersData$,
     gasEstimationMock$,
+    exchangeQuote,
   }
 }
 
@@ -226,6 +230,7 @@ export function mockManageVault$(
     vaultHistory$,
     automationTriggersData$,
     gasEstimationMock$,
+    exchangeQuote,
   } = buildMockDependencies(args)
 
   return createManageVault$<Vault, ManageBorrowVaultState>(
@@ -237,6 +242,7 @@ export function mockManageVault$(
     balanceInfo$,
     ilkData$,
     vault$,
+    mockExchangeQuote$(exchangeQuote),
     saveVaultType$,
     gasEstimationMock$,
     slippageLimitMock(),

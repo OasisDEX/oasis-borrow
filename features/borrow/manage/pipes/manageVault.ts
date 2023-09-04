@@ -27,6 +27,10 @@ import {
   saveVaultTypeForAccount,
   VaultType,
 } from 'features/generalManageVault/vaultType'
+import {
+  createExchangeChange$,
+  createInitialQuoteChange,
+} from 'features/multiply/manage/pipes/manageMultiplyQuote'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
@@ -59,7 +63,6 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './viewStateTransforms/manageVaultTransitions'
-import { createExchangeChange$, createInitialQuoteChange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -96,22 +99,27 @@ export type OtherAction = 'closeVault'
 
 export interface MutableManageVaultState {
   stage: ManageBorrowVaultStage
+  originalEditingStage: ManageVaultEditingStage
   mainAction: MainAction
   otherAction: OtherAction
-  originalEditingStage: ManageVaultEditingStage
+
   showDepositAndGenerateOption: boolean
   showPaybackAndWithdrawOption: boolean
+
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  depositDaiAmount?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  generateAmount?: BigNumber
   paybackAmount?: BigNumber
+  generateAmount?: BigNumber
+  closeVaultTo: CloseVaultTo
+
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
-  closeVaultTo: CloseVaultTo
+
   requiredCollRatio?: BigNumber
 }
 
