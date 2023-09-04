@@ -270,5 +270,18 @@ export function applyManageVaultInput<VaultState extends ManageBorrowVaultState>
     }
   }
 
+  if (change.kind === 'requiredCollRatio') {
+    return {
+      ...state,
+      requiredCollRatio: change.requiredCollRatio,
+      depositAmount: state.depositAmount,
+      depositAmountUSD: state.depositAmountUSD,
+      withdrawAmount: state.withdrawAmount,
+      withdrawAmountUSD: state.withdrawAmountUSD,
+      depositDaiAmount: state.depositDaiAmount,
+      generateAmount: state.generateAmount,
+    }
+  }
+
   return state
 }

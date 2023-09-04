@@ -34,7 +34,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { AddGasEstimationFunction, HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { TxError } from 'helpers/types'
@@ -517,9 +517,10 @@ export function createManageVault$<V extends Vault, VS extends ManageBorrowVault
                       balanceInfoChange$(balanceInfo$, vault.token, account),
                       createIlkDataChange$(ilkData$, vault.ilk),
                       createVaultChange$(vault$, id, context.chainId),
-                      createHistoryChange$(vaultHistory$, id),
                       createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
                       createExchangeChange$(exchangeQuote$, stateSubject$),
+                      slippageChange$(slippageLimit$),
+                      createHistoryChange$(vaultHistory$, id),
                       createAutomationTriggersChange$(automationTriggersData$, id),
                     )
 
@@ -545,6 +546,7 @@ export function createManageVault$<V extends Vault, VS extends ManageBorrowVault
                           change,
                         ),
                       ),
+                      // tap((state) => stateSubject$.next(state)),
                     )
                   }),
                 )

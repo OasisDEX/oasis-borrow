@@ -15,6 +15,7 @@ export const manageVaultFormDefaults: Partial<ManageBorrowVaultState> = {
   ...paybackAndWithdrawDefaults,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
+  requiredCollRatio: undefined,
 }
 
 export type ManageVaultFormChange =
