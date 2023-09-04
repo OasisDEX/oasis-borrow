@@ -5,7 +5,7 @@ import { ProductHubItem, ProductHubProductType } from 'features/productHub/types
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 
-const getAaveLikeStrategyUrl = ({
+export const getAaveLikeViewStrategyUrl = ({
   aaveLikeProduct,
   bypassFeatureFlag,
   version,
@@ -73,7 +73,7 @@ export function getActionUrl({
 
       return `/ethereum/ajna/${productInUrl}/${tokensInUrl}`
     case LendingProtocol.AaveV2:
-      return getAaveLikeStrategyUrl({
+      return getAaveLikeViewStrategyUrl({
         version: 'v2',
         bypassFeatureFlag,
         network,
@@ -84,7 +84,7 @@ export function getActionUrl({
         aaveLikeProduct: 'aave',
       })
     case LendingProtocol.AaveV3:
-      return getAaveLikeStrategyUrl({
+      return getAaveLikeViewStrategyUrl({
         version: 'v3',
         bypassFeatureFlag,
         network,
@@ -100,7 +100,7 @@ export function getActionUrl({
       const ilkInUrl = label.split('/').length ? label.split('/')[0] : label
       return `/vaults/${openUrl}/${ilkInUrl}`
     case LendingProtocol.SparkV3:
-      return getAaveLikeStrategyUrl({
+      return getAaveLikeViewStrategyUrl({
         version: 'v3',
         bypassFeatureFlag,
         network,

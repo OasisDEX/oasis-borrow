@@ -18,7 +18,15 @@ export function mapAaveProtocol(protocol: AaveVersionProps['protocol']) {
   }[protocol]
 }
 
-export function getAaveStrategyUrl({
+export function mapAaveLikeUrlSlug(protocol: AaveVersionProps['protocol']) {
+  return {
+    [LendingProtocol.AaveV2]: 'aave',
+    [LendingProtocol.AaveV3]: 'aave',
+    [LendingProtocol.SparkV3]: 'spark',
+  }[protocol]
+}
+
+export function getAaveLikeOpenStrategyUrl({
   protocol,
   strategyType,
   slug,
