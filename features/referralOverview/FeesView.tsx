@@ -268,16 +268,14 @@ export function FeesView({ userReferral }: Props) {
                 >
                   {userReferral?.referrer &&
                     !userReferral.invitePending &&
-                    `${ensReferrerName !== null ? ensReferrerName : userReferral.referrer}`}{' '}
+                    `${ensReferrerName || userReferral.referrer}`}{' '}
                   {!userReferral?.referrer &&
                     !userReferral.invitePending &&
                     t(`ref.you-were-not-referred`)}
                   {userReferral?.referrer &&
                     userReferral.invitePending &&
                     `${t('ref.you-have-been-invited')} ${
-                      ensReferrerName !== null
-                        ? ensReferrerName
-                        : formatAddress(userReferral.referrer, 6)
+                      ensReferrerName || formatAddress(userReferral.referrer, 6)
                     }`}
                 </Text>
               </Box>
