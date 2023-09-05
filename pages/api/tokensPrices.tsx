@@ -2,7 +2,7 @@ import { cacheObject } from 'helpers/api/cacheObject'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-const getTicker = cacheObject(tokenTickers, 2 * 60, 'token-tickers')
+export const getTicker = cacheObject(tokenTickers, 2 * 60, 'token-tickers')
 
 async function tokensPricesHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
