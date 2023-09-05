@@ -35,10 +35,6 @@ export function PriceImpact({
   const { t } = useTranslation()
   const [marketPrice, setMarketPrice] = useState<BigNumber>(zero)
 
-  if (!transactionParameters.simulation.swap) {
-    throw new Error('Transaction parameters do not have swap')
-  }
-
   const { toTokenAmount, targetToken, fromTokenAmount, sourceToken } =
     transactionParameters.simulation.swap
 

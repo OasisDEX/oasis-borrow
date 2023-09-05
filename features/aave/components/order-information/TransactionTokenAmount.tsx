@@ -26,9 +26,6 @@ export function TransactionTokenAmount({
     collateral: { price: collateralPrice },
   } = balance
 
-  if (!transactionParameters.simulation.swap) {
-    return <></>
-  }
   const { toTokenAmount, fromTokenAmount, targetToken } = transactionParameters.simulation.swap
 
   if (!allDefined(toTokenAmount, fromTokenAmount) || toTokenAmount?.lte(zero)) {
