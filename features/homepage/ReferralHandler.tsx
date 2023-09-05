@@ -1,3 +1,4 @@
+import { ensNameToAddressMainnet } from 'blockchain/ens'
 import { useAccountContext, useMainContext } from 'components/context'
 import { isAddress } from 'ethers/lib/utils'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
@@ -17,15 +18,26 @@ export function ReferralHandler() {
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
 
   const referralsEnabled = useFeatureToggle('Referrals')
-  const [landedWithRef, setLandedWithRef] = useState('')
+  const [landedWithRef, setLandedWithRef] = useState(false)
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   useEffect(() => {
     if (!localReferral && referralsEnabled) {
       const linkReferral = query.ref as string
-      // store only the address - not the ens name - it's handled in the modal
-      if (linkReferral && context && isAddress(linkReferral)) {
+      const isReferrerAddress = isAddress(linkReferral)
+
+      if (linkReferral && context && isReferrerAddress) {
         setLocalReferral(linkReferral)
-        setLandedWithRef(linkReferral)
+        setLandedWithRef(true)
+      } else if (linkReferral && context && !isReferrerAddress) {
+        ensNameToAddressMainnet(linkReferral)
+          .then((resolvedAddress) => {
+            console.log('resolvedAddress', resolvedAddress)
+            setLocalReferral(resolvedAddress)
+            setLandedWithRef(true)
+          })
+          .catch((error) => {
+            console.error('Error getting ensName for referral', linkReferral, error)
+          })
       }
     }
   }, [
@@ -35,7 +47,7 @@ export function ReferralHandler() {
     localReferral,
     query.ref,
     referralsEnabled,
-    setLocalReferral,
+    setLocalReferral
   ])
 
   return (
