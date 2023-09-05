@@ -41,7 +41,7 @@ import { TxError } from 'helpers/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
 import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
@@ -136,6 +136,7 @@ export interface ManageVaultEnvironment<V extends Vault> {
   vaultHistory: VaultHistoryEvent[]
   quote?: Quote
   swap?: Quote
+  exchangeError: boolean
   slippage: BigNumber
 }
 
@@ -546,7 +547,8 @@ export function createManageVault$<V extends Vault, VS extends ManageBorrowVault
                           change,
                         ),
                       ),
-                      // tap((state) => stateSubject$.next(state)),
+                      tap(console.log),
+                      tap((state) => stateSubject$.next(state)),
                     )
                   }),
                 )

@@ -1,3 +1,4 @@
+import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import {
   ManageBorrowVaultStage,
   ManageBorrowVaultState,
@@ -199,10 +200,13 @@ export interface ManageVaultConditions {
   generateAmountExceedsDebtCeiling: boolean
   paybackAmountExceedsVaultDebt: boolean
   paybackAmountExceedsDaiBalance: boolean
-
+  generateAmountMoreThanMaxFlashAmount: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
   isSuccessStage: boolean
+  exchangeDataRequired: boolean
+  shouldShowExchangeError: boolean
+  isExchangeLoading: boolean
 
   insufficientCollateralAllowance: boolean
   customCollateralAllowanceAmountEmpty: boolean
@@ -263,12 +267,16 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: false,
   generateAmountLessThanDebtFloor: false,
   generateAmountExceedsDebtCeiling: false,
+  generateAmountMoreThanMaxFlashAmount: false,
   paybackAmountExceedsVaultDebt: false,
   paybackAmountExceedsDaiBalance: false,
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
   isSuccessStage: false,
+  exchangeDataRequired: false,
+  shouldShowExchangeError: false,
+  isExchangeLoading: false,
 
   insufficientCollateralAllowance: false,
   customCollateralAllowanceAmountEmpty: false,
@@ -346,8 +354,18 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
     autoTakeProfitData,
     mainAction,
 
+    otherAction,
+
     originalEditingStage,
     txError,
+
+    quote,
+    swap,
+    exchangeError,
+
+    requiredCollRatio,
+
+    debtDelta
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -367,7 +385,11 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
       (originalEditingStage === 'daiEditing' && mainAction === 'depositGenerate')
     )
 
-  const inputAmountsEmpty = depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty
+  const inputAmountsEmpty = stage === 'otherActions' && otherAction === 'closeVault' 
+    ? false 
+    : stage === 'adjustPosition' ?
+      !requiredCollRatio
+      : (depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty )
 
   const vaultWillBeAtRiskLevelDanger = vaultWillBeAtRiskLevelDangerValidator({
     inputAmountsEmpty,
@@ -453,6 +475,10 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
     !generateAmount.plus(debt).isZero() &&
     generateAmount.plus(debt).lt(debtFloor)
   )
+
+  const generateAmountMoreThanMaxFlashAmount = debtDelta
+    ? debtDelta?.gt(FLASH_MINT_LIMIT_PER_TX)
+    : false
 
   const paybackAmountExceedsDaiBalance = paybackAmountExceedsDaiBalanceValidator({
     paybackAmount,
@@ -693,10 +719,25 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
+  const isDepositOrWithdrawAndMultiply = !!state.requiredCollRatio?.gt(zero)
+  const exchangeDataRequired =
+  originalEditingStage === 'adjustPosition' ||
+  (originalEditingStage === 'otherActions' &&
+    ((otherAction === 'closeVault' && !debt.isZero()) || isDepositOrWithdrawAndMultiply))
+
+  const shouldShowExchangeError = exchangeDataRequired && exchangeError
+
+  const isExchangeLoading = exchangeDataRequired && !quote && !swap && !exchangeError
+
+
   return {
     ...state,
     canProgress,
     canRegress,
+
+    exchangeDataRequired,
+    shouldShowExchangeError,
+    isExchangeLoading,
 
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
@@ -729,6 +770,8 @@ export function applyManageVaultConditions<VaultState extends ManageBorrowVaultS
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
     isSuccessStage,
+
+    generateAmountMoreThanMaxFlashAmount,
 
     insufficientCollateralAllowance,
     customCollateralAllowanceAmountEmpty,

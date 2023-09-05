@@ -113,6 +113,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       constantMultipleData: undefined,
       injectStateOverride,
       slippage,
+      exchangeError: false
     }
     return initialState
   },

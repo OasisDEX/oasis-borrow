@@ -467,6 +467,23 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
       NetworkIds.MAINNET,
       context.chainId,
     )
+    console.log(`
+    
+    
+    
+    
+    
+    data.exchangeData,
+    
+    
+    
+    
+    
+    
+    
+    ${data.exchangeData}`)
+
+    
     if (data.exchangeData) {
       return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
     } else {

@@ -414,14 +414,18 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
     daiBalance,
     debtOffset,
   })
-  const afterLockedCollateral = calculateAfterLockedCollateral({
+  const afterLockedCollateral = isCloseAction 
+    ? zero 
+    : calculateAfterLockedCollateral({
     lockedCollateral,
     depositAmount,
     withdrawAmount,
   })
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
   const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
-  const afterDebt = calculateAfterDebt({
+  const afterDebt = isCloseAction 
+    ? zero 
+    : calculateAfterDebt({
     shouldPaybackAll,
     debt,
     generateAmount,
@@ -602,16 +606,6 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
     maxGenerateAmount: new BigNumber(0),
   }
 
-  console.log(
-    'CALCULATIONS',
-    `
-
-  slipage: ${slippage}
-  marketPrice: ${marketPrice}
-  marketPriceMaxSlippage: ${marketPriceMaxSlippage}
-
-  `,
-  )
   if (!marketPrice || !marketPriceMaxSlippage) {
     return {
       ...state,
@@ -621,14 +615,6 @@ export function applyManageVaultCalculations<VaultState extends ManageBorrowVaul
     }
   }
 
-  console.log(
-    'CALCULATIONS',
-    `
-
-AFTER
-  `,
-  )
-
   const depositCollateralAmount = depositDaiAmount.gt(zero)
     ? depositDaiAmount.div(marketPrice)
     : depositAmount
@@ -636,9 +622,9 @@ AFTER
   const {
     debtDelta: borrowedDaiAmount,
     collateralDelta: collateralDeltaNonClose,
-    // loanFee: loanFeeNonClose,
-    // skipFL: skipFLNonClose,
-    // oazoFee: oazoFeeNonClose,
+    loanFee: loanFeeNonClose,
+    skipFL: skipFLNonClose,
+    oazoFee: oazoFeeNonClose,
   } = getVaultChange({
     currentCollateralPrice,
     marketPrice,
@@ -700,6 +686,26 @@ AFTER
         closeToDaiParams.fromTokenAmount.negated()
       : closeToCollateralParams.fromTokenAmount.negated()
     : collateralDeltaNonClose
+
+  const oazoFee = isCloseAction
+  ? closeVaultTo === 'dai'
+    ? closeToDaiParams.oazoFee
+    : closeToCollateralParams.oazoFee
+  : oazoFeeNonClose
+
+  const loanFee = isCloseAction
+  ? closeVaultTo === 'dai'
+    ? closeToDaiParams.loanFee
+    : closeToCollateralParams.loanFee
+  : loanFeeNonClose
+
+  const skipFL = isCloseAction
+    ? closeVaultTo === 'dai'
+      ? closeToDaiParams.skipFL
+      : closeToCollateralParams.skipFL
+    : skipFLNonClose
+
+  const fees = BigNumber.sum(loanFee, oazoFee)
 
   const exchangeAction = collateralDelta.isNegative() ? 'SELL_COLLATERAL' : 'BUY_COLLATERAL'
 
