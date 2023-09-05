@@ -60,7 +60,7 @@ async function openPosition(
     user: proxyAddress !== ethNullAddress ? userAddress : ethNullAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
     network,
-    positionType: positionType,
+    positionType,
   }
 
   switch (protocol) {
