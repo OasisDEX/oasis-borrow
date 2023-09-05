@@ -5,7 +5,7 @@ import {
   getCloseAaveParameters,
   getManagePositionParameters,
   ManageAaveParameters,
-} from 'actions/aave'
+} from 'actions/aave-like'
 import { NetworkIds } from 'blockchain/networks'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import { HasGasEstimation, TxHelpers } from 'helpers/context/types'

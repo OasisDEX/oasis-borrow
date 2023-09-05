@@ -49,14 +49,15 @@ server.
 Monitor the logs and wait for the migrations to complete. This should be evident by a log message
 `Migrations DONE`
 
-- **NOTE**: If you get a <span style="color:red">**localnode Error**</span> when running `./scripts/dev.sh`, comment out the whole _**localnode**_ section in `./scripts/docker/compose.yml` file and run the command again.
+- **NOTE**: If you get a <span style="color:red">**localnode Error**</span> when running
+  `./scripts/dev.sh`, comment out the whole _**localnode**_ section in
+  `./scripts/docker/compose.yml` file and run the command again.
 
 In a second terminal we can then begin the web server instance over http or https (https is required
 for testing hardware wallets):
 
-- **Note**: For running the app locally you'll need to create a `.env.local` file. Make sure you have everything setup correctly according to the configuration explained
-[here](#configuration). 
-
+- **Note**: For running the app locally you'll need to create a `.env.local` file. Make sure you
+  have everything setup correctly according to the configuration explained [here](#configuration).
 
 ```sh
 yarn start
@@ -67,10 +68,13 @@ HTTPS=true yarn start
 
 The application will be viewable on <http://localhost:3000> or <https://localhost:3443> respectively
 
-At this point, no products will be loaded in the products hub of the homepage. To see products, open a third terminal and run:
+At this point, no products will be loaded in the products hub of the homepage. To see products, open
+a third terminal and run:
+
 ```
-curl -X PATCH -H "Authorization: <your PRODUCT_HUB_KEY entered in .env.local file>" -H "Content-Type: application/json" -d '{"protocols": ["aavev2", "aavev3", "maker"]}' http://localhost:3000/api/product-hub
-``` 
+curl -X PATCH -H "Authorization: <your PRODUCT_HUB_KEY entered in .env.local file>" -H "Content-Type: application/json" -d '{"protocols": ["aavev2", "aavev3", "maker", "ajna", "sparkv3"]}' http://localhost:3000/api/product-hub
+```
+
 <br>
 
 ### Run staging site locally
@@ -102,6 +106,7 @@ _build time_.
 Some of the values that are used you can check in the `.env` file.
 
 #### List of env vars needed in `.env.local` file to run the app locally
+
 ```
 INFURA_PROJECT_ID="<API key from Infura>"
 OPTIMISM_MAINNET_RPC_URL="<Optimism URL from Alchemy>"
@@ -110,7 +115,9 @@ SENTRY_RELEASE="local"
 APP_FULL_DOMAIN="http://localhost:3000"
 PRODUCT_HUB_KEY="<any value of your choice>"
 ```
-- **Note**: You'll need to create an account in **Infura** and another one in **Alchemy** _(Free accounts are ok)_, and create apps in Alchemy for Arbitrum & Optimism.
+
+- **Note**: You'll need to create an account in **Infura** and another one in **Alchemy** _(Free
+  accounts are ok)_, and create apps in Alchemy for Arbitrum & Optimism.
 
 #### List of the `build-time` env vars
 

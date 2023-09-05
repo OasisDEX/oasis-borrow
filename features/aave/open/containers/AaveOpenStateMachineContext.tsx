@@ -1,4 +1,4 @@
-import { AavePosition } from '@oasisdex/dma-library'
+import { AaveLikePosition } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
 import { OpenAaveStateMachine } from 'features/aave/open/state'
 import { IStrategyConfig, ProxyType } from 'features/aave/types'
@@ -23,7 +23,7 @@ function setupOpenAaveStateContext({
       tokens: config.tokens,
       currentStep: 1,
       totalSteps: 4,
-      currentPosition: AavePosition.emptyPosition(
+      currentPosition: AaveLikePosition.emptyPosition(
         { amount: zero, symbol: effectiveStrategy.tokens.debt },
         { amount: zero, symbol: effectiveStrategy.tokens.collateral },
       ),
@@ -36,6 +36,7 @@ function setupOpenAaveStateContext({
     stateMachine,
   }
 }
+
 export type OpenAaveStateMachineContext = ReturnType<typeof setupOpenAaveStateContext>
 
 const openAaveStateContext = React.createContext<OpenAaveStateMachineContext | undefined>(undefined)

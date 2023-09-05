@@ -1,6 +1,6 @@
-import { PositionTransition } from '@oasisdex/dma-library'
+import { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
-import { swapCall } from 'actions/aave'
+import { swapCall } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import {
   ensureGivenTokensExist,
@@ -22,7 +22,7 @@ interface PriceImpactProps {
     collateral: string
     debt: string
   }
-  transactionParameters: PositionTransition
+  transactionParameters: IMultiplyStrategy
   strategyConfig: IStrategyConfig
 }
 
@@ -34,6 +34,7 @@ export function PriceImpact({
 }: PriceImpactProps) {
   const { t } = useTranslation()
   const [marketPrice, setMarketPrice] = useState<BigNumber>(zero)
+
   const { toTokenAmount, targetToken, fromTokenAmount, sourceToken } =
     transactionParameters.simulation.swap
 

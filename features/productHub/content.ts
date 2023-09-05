@@ -12,7 +12,19 @@ export const productHubAjnaRewardsTooltip = {
       key: 'ajna.product-hub-tooltips.rewards-available-soon',
     },
   },
-  icon: 'sparks',
+  icon: 'ajnaSparks',
+}
+
+export const productHubSparkRewardsTooltip = {
+  content: {
+    title: {
+      key: 'spark.product-hub-tooltips.elligible-for-spk-airdrop',
+    },
+    description: {
+      key: 'spark.product-hub-tooltips.elligible-for-spk-airdrop-description',
+    },
+  },
+  icon: 'sparkSparks',
 }
 
 export const productHubEmptyPoolMaxLtvTooltip = {

@@ -1,4 +1,4 @@
-import { IPosition, IRiskRatio, ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
+import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
@@ -54,7 +54,6 @@ export type RefTransactionMachine =
   | ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   | ActorRefFrom<EthersTransactionStateMachine<any>> // todo
 
-
 export interface BaseAaveContext {
   strategyConfig: IStrategyConfig
   userInput: UserInput
@@ -69,7 +68,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy
+  transition?: IStrategy
   estimatedGasPrice?: HasGasEstimation
   /**
    * @deprecated no idea what token it is. use **balance.__token__.balance** instead

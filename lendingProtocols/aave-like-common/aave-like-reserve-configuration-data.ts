@@ -6,7 +6,7 @@ export interface AaveLikeReserveConfigurationData {
   liquidationBonus: BigNumber
 }
 
-export interface AaveReserveConfigurationDataParams {
+export interface AaveLikeReserveConfigurationDataParams {
   collateralToken: string
   debtToken: string
 }

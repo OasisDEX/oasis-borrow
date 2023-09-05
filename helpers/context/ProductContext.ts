@@ -137,11 +137,12 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
-  AavePosition,
+  AaveLikePosition,
   createAaveV2Position$,
   createAaveV3DpmPosition$,
   createMakerPositions$,
   createPositions$,
+  createSparkV3DpmPosition$,
 } from 'features/vaultsOverview/pipes/positions'
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
@@ -266,14 +267,6 @@ export function setupProductContext(
   const sparkV3Services = getSparkV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.MAINNET,
-  })
-  const sparkV3OptimismServices = getSparkV3Services({
-    refresh$: onEveryBlock$,
-    networkId: NetworkIds.OPTIMISMMAINNET,
-  })
-  const sparkV3ArbitrumServices = getSparkV3Services({
-    refresh$: onEveryBlock$,
-    networkId: NetworkIds.ARBITRUMMAINNET,
   })
 
   // base
@@ -580,7 +573,7 @@ export function setupProductContext(
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
-      aaveV2Services.aaveProxyConfiguration$,
+      aaveV2Services.aaveLikeProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
     (positionId: PositionId, networkName: NetworkNames) =>
@@ -613,23 +606,28 @@ export function setupProductContext(
     return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV3)
   })
 
-  const mainnetAaveV2Positions$: (walletAddress: string) => Observable<AavePosition[]> = memoize(
-    curry(createAaveV2Position$)(
-      {
-        dsProxy$: proxyAddress$,
-        userDpmProxies$: mainnetDpmProxies$,
-      },
-      {
-        tickerPrices$: tokenPriceUSDStatic$,
-        context$,
-        automationTriggersData$,
-        readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
-      },
-      aaveV2Services,
-    ),
-  )
+  const mainnetSparkV3PositionCreatedEvents$ = memoize((walletAddress: string) => {
+    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.SparkV3)
+  })
 
-  const aaveMainnetAaveV3Positions$: (walletAddress: string) => Observable<AavePosition[]> =
+  const mainnetAaveV2Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
+    memoize(
+      curry(createAaveV2Position$)(
+        {
+          dsProxy$: proxyAddress$,
+          userDpmProxies$: mainnetDpmProxies$,
+        },
+        {
+          tickerPrices$: tokenPriceUSDStatic$,
+          context$,
+          automationTriggersData$,
+          readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
+        },
+        aaveV2Services,
+      ),
+    )
+
+  const aaveMainnetAaveV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
     memoize(
       curry(createAaveV3DpmPosition$)(
         context$,
@@ -644,12 +642,27 @@ export function setupProductContext(
       (wallet) => wallet,
     )
 
+  const sparkMainnetSparkV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
+    memoize(
+      curry(createSparkV3DpmPosition$)(
+        context$,
+        mainnetDpmProxies$,
+        tokenPriceUSDStatic$,
+        mainnetSparkV3PositionCreatedEvents$,
+        getApiVaults,
+        automationTriggersData$,
+        sparkV3Services,
+        NetworkIds.MAINNET,
+      ),
+      (wallet) => wallet,
+    )
+
   const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
     curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
     (walletAddress) => walletAddress,
   )
 
-  const aaveOptimismPositions$: (walletAddress: string) => Observable<AavePosition[]> = memoize(
+  const aaveOptimismPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
     curry(createAaveV3DpmPosition$)(
       context$,
       optimismDpmProxies$,
@@ -663,15 +676,28 @@ export function setupProductContext(
     (wallet) => wallet,
   )
 
-  const aavePositions$ = memoize((walletAddress: string) => {
+  const aaveLikePositions$ = memoize((walletAddress: string) => {
     return combineLatest([
       mainnetAaveV2Positions$(walletAddress),
       aaveMainnetAaveV3Positions$(walletAddress),
+      sparkMainnetSparkV3Positions$(walletAddress),
       aaveOptimismPositions$(walletAddress),
     ]).pipe(
-      map(([mainnetAaveV2Positions, mainnetAaveV3Positions, optimismAaveV3Positions]) => {
-        return [...mainnetAaveV2Positions, ...mainnetAaveV3Positions, ...optimismAaveV3Positions]
-      }),
+      map(
+        ([
+          mainnetAaveV2Positions,
+          mainnetAaveV3Positions,
+          mainnetSparkV3Positions,
+          optimismAaveV3Positions,
+        ]) => {
+          return [
+            ...mainnetAaveV2Positions,
+            ...mainnetAaveV3Positions,
+            ...mainnetSparkV3Positions,
+            ...optimismAaveV3Positions,
+          ]
+        },
+      ),
     )
   })
 
@@ -943,7 +969,7 @@ export function setupProductContext(
   )
 
   const ownersPositionsList$ = memoize(
-    curry(createPositionsList$)(positionsList$, aavePositions$, ajnaPositions$, dsr$),
+    curry(createPositionsList$)(positionsList$, aaveLikePositions$, ajnaPositions$, dsr$),
   )
 
   const followedList$ = memoize(
@@ -969,8 +995,6 @@ export function setupProductContext(
     },
     [LendingProtocol.SparkV3]: {
       [NetworkIds.MAINNET]: sparkV3Services,
-      [NetworkIds.OPTIMISMMAINNET]: sparkV3OptimismServices,
-      [NetworkIds.ARBITRUMMAINNET]: sparkV3ArbitrumServices,
     },
   }
 
@@ -1041,10 +1065,10 @@ export function setupProductContext(
   )
 
   return {
-    aaveAvailableLiquidityInUSDC$: aaveV2Services.aaveAvailableLiquidityInUSDC$,
-    aaveLiquidations$: aaveV2Services.aaveLiquidations$, // @deprecated,
-    aaveProtocolData$: aaveV2Services.aaveProtocolData$,
-    aaveUserAccountData$: aaveV2Services.aaveUserAccountData$,
+    aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
+    aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
+    aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
+    aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
     addGasEstimation$,
     ajnaPosition$,
     allowance$,

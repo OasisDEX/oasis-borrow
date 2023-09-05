@@ -1,5 +1,8 @@
-import { getOpenDepositBorrowPositionParameters, getOpenPositionParameters } from 'actions/aave'
-import { OpenAaveParameters } from 'actions/aave/types'
+import {
+  getOpenDepositBorrowPositionParameters,
+  getOpenPositionParameters,
+} from 'actions/aave-like'
+import { OpenAaveParameters } from 'actions/aave-like/types'
 import { NetworkIds } from 'blockchain/networks'
 import {
   createTransactionParametersStateMachine,

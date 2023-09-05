@@ -1,5 +1,5 @@
-import * as blockchainCalls from 'blockchain/aave-v3'
-import { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
+import * as blockchainCalls from 'blockchain/spark-v3'
+import { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
@@ -12,71 +12,71 @@ import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 
 import {
-  aaveV3OnChainPosition,
-  getAaveProtocolData$,
-  getAaveProxyConfiguration$,
   getReserveConfigurationDataWithEMode$,
-  mapAaveUserAccountData$,
-  prepareaaveAvailableLiquidityInUSDC$,
+  getSparkProtocolData$,
+  getSparkProxyConfiguration$,
+  mapSparkUserAccountData$,
+  prepareSparkAvailableLiquidityInUSDC$,
+  sparkV3OnChainPosition,
 } from './pipelines'
 
-interface AaveV3ServicesDependencies {
+interface SparkV3ServicesDependencies {
   refresh$: Observable<unknown>
-  networkId: AaveV3SupportedNetwork
+  networkId: SparkV3SupportedNetwork
 }
 
 export function getSparkV3Services({
   refresh$,
   networkId,
-}: AaveV3ServicesDependencies): AaveLikeServices {
+}: SparkV3ServicesDependencies): AaveLikeServices {
   const assetsPrices$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3AssetsPrices,
+    blockchainCalls.getSparkV3AssetsPrices,
     networkId,
     'assetsPrices$',
   )
   const assetPrice$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3OracleAssetPrice,
+    blockchainCalls.getSparkV3OracleAssetPrice,
     networkId,
     'assetPrice$',
   )
 
-  const aaveReserveConfigurationData$ = makeObservableForNetworkId(
+  const aaveLikeReserveConfigurationData$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3ReserveConfigurationData,
+    blockchainCalls.getSparkV3ReserveConfigurationData,
     networkId,
-    'aaveReserveConfigurationData$',
+    'aaveLikeReserveConfigurationData$',
   )
 
   const getAaveV3EModeCategoryForAsset$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3EModeCategoryForAsset,
+    blockchainCalls.getSparkV3EModeCategoryForAsset,
     networkId,
     'getAaveV3EModeCategoryForAsset$',
   )
 
-  const aaveLiquidations$ = makeObservableForNetworkId(
+  const aaveLikeLiquidations$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3PositionLiquidation,
+    blockchainCalls.getSparkV3PositionLiquidation,
     networkId,
-    'aaveLiquidations$',
+    'aaveLikeLiquidations$',
   )
 
-  const aaveUserAccountData$: (
+  const aaveLikeUserAccountData$: (
     args: AaveLikeUserAccountDataArgs,
   ) => Observable<AaveLikeUserAccountData> = makeObservableForNetworkId(
     refresh$,
-    curry(mapAaveUserAccountData$)(blockchainCalls.getAaveV3UserAccountData),
+    curry(mapSparkUserAccountData$)(blockchainCalls.getSparkV3UserAccountData),
     networkId,
-    'aaveUserAccountData$',
+    'aaveLikeUserAccountData$',
   )
 
-  const getAaveReserveData$ = makeObservableForNetworkId(
+  const getAaveLikeReserveData$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3ReserveData,
+    blockchainCalls.getSparkV3ReserveData,
     networkId,
-    'getAaveReserveData$',
+    'getAaveLikeReserveData$',
   )
 
   const getEModeCategoryData$ = makeObservableForNetworkId(
@@ -86,9 +86,9 @@ export function getSparkV3Services({
     'getEModeCategoryData$',
   )
 
-  const aaveAvailableLiquidityInUSDC$ = memoize(
-    curry(prepareaaveAvailableLiquidityInUSDC$)(
-      getAaveReserveData$,
+  const aaveLikeAvailableLiquidityInUSDC$ = memoize(
+    curry(prepareSparkAvailableLiquidityInUSDC$)(
+      getAaveLikeReserveData$,
       assetPrice$({ token: 'WETH' }),
     ),
     ({ token }) => token,
@@ -96,34 +96,34 @@ export function getSparkV3Services({
 
   const aaveUserReserveData$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3UserReserveData,
+    blockchainCalls.getSparkV3UserReserveData,
     networkId,
     'aaveUserReserveData$',
   )
   const aaveUserConfiguration$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3UserConfigurations,
+    blockchainCalls.getSparkV3UserConfigurations,
     networkId,
     'aaveUserConfiguration$',
   )
   const aaveReservesList$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getAaveV3ReservesList,
+    blockchainCalls.getSparkV3ReservesList,
     networkId,
     'aaveReservesList$',
   )({})
 
   const onChainPosition$ = makeObservableForNetworkId(
     refresh$,
-    aaveV3OnChainPosition,
+    sparkV3OnChainPosition,
     networkId,
     'onChainPosition$',
   )
 
-  const aaveProtocolData$ = memoize(
-    curry(getAaveProtocolData$)(
+  const aaveLikeProtocolData$ = memoize(
+    curry(getSparkProtocolData$)(
       aaveUserReserveData$,
-      aaveUserAccountData$,
+      aaveLikeUserAccountData$,
       assetPrice$,
       aaveUserConfiguration$,
       aaveReservesList$,
@@ -132,13 +132,13 @@ export function getSparkV3Services({
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
-  const aaveProxyConfiguration$ = memoize(
-    curry(getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
+  const aaveLikeProxyConfiguration$ = memoize(
+    curry(getSparkProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
   )
 
   const reserveConfigurationDataWithEMode$ = memoize(
     curry(getReserveConfigurationDataWithEMode$)(
-      aaveReserveConfigurationData$,
+      aaveLikeReserveConfigurationData$,
       getAaveV3EModeCategoryForAsset$,
       getEModeCategoryData$,
     ),
@@ -147,15 +147,15 @@ export function getSparkV3Services({
   )
 
   return {
-    protocol: LendingProtocol.AaveV3,
-    aaveReserveConfigurationData$: reserveConfigurationDataWithEMode$,
-    getAaveReserveData$,
-    aaveAvailableLiquidityInUSDC$,
-    aaveLiquidations$,
-    aaveUserAccountData$,
-    aaveProxyConfiguration$,
-    aaveProtocolData$,
-    aaveOracleAssetPriceData$: assetPrice$,
-    getAaveAssetsPrices$: assetsPrices$,
+    protocol: LendingProtocol.SparkV3,
+    aaveLikeReserveConfigurationData$: reserveConfigurationDataWithEMode$,
+    getAaveLikeReserveData$,
+    aaveLikeAvailableLiquidityInUSDC$,
+    aaveLikeLiquidations$,
+    aaveLikeUserAccountData$,
+    aaveLikeProxyConfiguration$,
+    aaveLikeProtocolData$,
+    aaveLikeOracleAssetPriceData$: assetPrice$,
+    getAaveLikeAssetsPrices$: assetsPrices$,
   }
 }

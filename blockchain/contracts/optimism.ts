@@ -59,11 +59,11 @@ import {
 import { etherscanAPIKey } from 'config/runtimeConfig'
 import { ContractDesc } from 'features/web3Context'
 
-import { MainnetContracts, mainnetContracts } from './mainnet'
+import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
 
 const { optimism } = ADDRESSES
 
-type OptimismContracts = MainnetContracts & {
+type OptimismContracts = MainnetContractsWithOptional & {
   gasPriceOracle: ContractDesc
 }
 
@@ -138,9 +138,9 @@ export const optimismContracts: OptimismContracts = {
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    optimism.aave.v2.ProtocolDataProvider,
+    optimism.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, optimism.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, optimism.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_ETHUSD),
@@ -161,14 +161,11 @@ export const optimismContracts: OptimismContracts = {
   ),
   aaveV3Pool: contractDesc(
     aaveV3Pool,
-    optimism.aave.v3.Pool,
+    optimism.aave.v3.LendingPool,
     AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
   ),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    optimism.aave.v3.AavePoolDataProvider,
-  ),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, optimism.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
   ajnaPoolPairs: {

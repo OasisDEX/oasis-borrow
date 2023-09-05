@@ -1,11 +1,4 @@
-import {
-  IRiskRatio,
-  ISimplePositionTransition,
-  ISimulatedTransition,
-  IStrategy,
-  PositionTransition,
-  RiskRatio,
-} from '@oasisdex/dma-library'
+import { IAdjustStrategy, IRiskRatio, IStrategy, RiskRatio } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
@@ -63,11 +56,11 @@ export type AdjustRiskViewConfig = {
 }
 
 function transitionHasMinConfigurableRiskRatio(
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
-): transition is PositionTransition {
+  transition?: IAdjustStrategy | IStrategy,
+): transition is IAdjustStrategy {
   return (
     !!transition &&
-    (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
+    (transition.simulation as IAdjustStrategy['simulation']).minConfigurableRiskRatio !== undefined
   )
 }
 

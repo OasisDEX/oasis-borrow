@@ -58,11 +58,11 @@ import {
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import { MainnetContracts, mainnetContracts } from './mainnet'
+import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
 
 const { goerli } = ADDRESSES
 
-export const goerliContracts: MainnetContracts = {
+export const goerliContracts: MainnetContractsWithOptional = {
   otc: contractDesc(otc, goerli.common.Otc),
   collaterals: getCollaterals(goerli.common, supportedIlks),
   tokens: tokensGoerli,
@@ -133,9 +133,9 @@ export const goerliContracts: MainnetContracts = {
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    goerli.aave.v2.ProtocolDataProvider,
+    goerli.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, goerli.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, goerli.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_ETHUSD),
@@ -158,9 +158,9 @@ export const goerliContracts: MainnetContracts = {
     goerli.mpa.core.AccountGuard,
     ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.AavePoolDataProvider),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
