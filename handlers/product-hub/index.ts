@@ -10,9 +10,9 @@ import {
   HandleUpdateProductHubDataProps,
 } from 'handlers/product-hub/types'
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
+import { tokenTickers } from 'helpers/api/tokenTickers'
 import { flatten, uniq } from 'lodash'
 import { NextApiResponse } from 'next'
-import { getTicker } from 'pages/api/tokensPrices'
 import { prisma } from 'server/prisma'
 
 export async function handleGetProductHubData(
@@ -105,8 +105,7 @@ export async function updateProductHubData(
         call: PRODUCT_HUB_HANDLERS[protocol],
       }
     })
-    const cachedTickers = await getTicker()
-    const tickers = cachedTickers?.data
+    const tickers = await tokenTickers()
     if (!tickers) {
       return res.status(502).json({
         errorMessage: 'Error getting token tickers',
