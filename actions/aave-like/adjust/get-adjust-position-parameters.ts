@@ -13,7 +13,7 @@ export async function getAdjustPositionParameters({
   riskRatio,
   currentPosition,
   proxyType,
-  positionType,
+  positionType: _positionType,
   protocol,
   networkId,
 }: AdjustAaveParameters): Promise<IMultiplyStrategy> {
@@ -53,7 +53,8 @@ export async function getAdjustPositionParameters({
       user: userAddress,
       isDPMProxy: proxyType === ProxyType.DpmProxy,
       network: networkIdToLibraryNetwork(networkId),
-      positionType,
+      positionType: 'Multiply', // this needs to be multiply even if we use this for adjusting borrow
+      // from the lib perspective borrow and multiply are the same
     }
 
     switch (protocol) {
