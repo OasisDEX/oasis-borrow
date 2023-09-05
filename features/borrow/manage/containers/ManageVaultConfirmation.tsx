@@ -11,7 +11,7 @@ import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageM
 export function ManageVaultConfirmation(
   props: ManageMultiplyVaultState & { txnCostDisplay?: ReactNode },
 ) {
-  const [vaultChange, setVaultChanges] = useState<ManageBorrowVaultState>(props)
+  const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
   useEffect(() => {
     if (props.stage !== 'manageSuccess') {
       setVaultChanges(props)

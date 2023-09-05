@@ -1,4 +1,6 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
@@ -9,7 +11,7 @@ import { OpenVaultAnimation } from 'theme/animations'
 export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
-  const { stage } = props
+  const { stage, vaultType } = props
 
   const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
 
@@ -23,7 +25,7 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
     case 'manageSuccess':
       return (
         <>
-          <ManageMultiplyVaultChangesInformation {...vaultChange} />
+          {vaultType === VaultType.Multiply ? <ManageMultiplyVaultChangesInformation {...props} /> : <ManageVaultChangesInformation {...props} />}
           <VaultChangesWithADelayCard />
         </>
       )
@@ -33,7 +35,7 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
-          <ManageMultiplyVaultChangesInformation {...props} />
+          {vaultType === VaultType.Multiply ? <ManageMultiplyVaultChangesInformation {...props} /> : <ManageVaultChangesInformation {...props} />}
         </>
       )
   }

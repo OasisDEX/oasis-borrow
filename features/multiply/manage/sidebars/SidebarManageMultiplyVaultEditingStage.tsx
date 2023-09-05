@@ -29,6 +29,8 @@ import { Grid, Text } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStageClose } from './SidebarManageMultiplyVaultEditingStageClose'
 import { SliderAdjustMultiply } from './SliderAdjustMultiply'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 
 function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -153,6 +155,7 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
     updateWithdrawAmount,
     vault: { debt },
     warningMessages,
+    vaultType,
   } = props
 
   return (
@@ -247,7 +250,9 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
 
       <VaultErrors {...props} errorMessages={extractCommonErrors(errorMessages)} />
       <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
-      <ManageMultiplyVaultChangesInformation {...props} />
+      {vaultType === VaultType.Multiply 
+        ? <ManageMultiplyVaultChangesInformation {...props} /> 
+        : <ManageVaultChangesInformation {...props} />}
     </Grid>
   )
 }
