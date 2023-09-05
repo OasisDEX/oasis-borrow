@@ -2,7 +2,7 @@ import { NetworkNames } from 'blockchain/networks'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-function getRpcNode(network: NetworkNames): string | undefined {
+export function getRpcNode(network: NetworkNames): string | undefined {
   switch (network) {
     // case 'hardhat': // hardhat does not request this one
     case NetworkNames.ethereumMainnet:
