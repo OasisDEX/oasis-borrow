@@ -28,6 +28,7 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate && yarn xstate:typegen",
     "xstate:typegen": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" ",
     "xstate:typegen:watch": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" --watch",
+    "update-product-hub": "npx ts-node scripts/update-product-hub.ts",
     "release": "release-it"
   },
   "dependencies": {
