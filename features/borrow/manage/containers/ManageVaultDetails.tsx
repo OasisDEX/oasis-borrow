@@ -6,6 +6,7 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { MessageCard } from 'components/MessageCard'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
@@ -150,6 +151,24 @@ export function ManageVaultDetails(
     maxBuyOrMinSellPrice.isZero() &&
     vaultIdsThatAutoBuyTriggerShouldBeRecreated.includes(id.toNumber())
 
+  const notifications: DetailsSectionNotificationItem[] = [
+    {
+      closable: true,
+      icon: 'bell',
+      link: {
+        translationKey: 'vault-info-messages.risk-management-for-borrow-link',
+        url: 'https://blog.summer.fi/new-risk-management-tool',
+      },
+      title: {
+        translationKey: 'vault-info-messages.risk-management-for-borrow-title',
+      },
+      message: {
+        translationKey: 'vault-info-messages.risk-management-for-borrow-message',
+      },
+      type: 'notice',
+    },
+  ]
+
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
@@ -214,6 +233,7 @@ export function ManageVaultDetails(
             />
           </DetailsSectionFooterItemWrapper>
         }
+        notifications={notifications}
       />
 
       {stopLossReadEnabled && stopLossWriteEnabled && (

@@ -1,14 +1,11 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -59,10 +56,7 @@ export function ManageBorrowVaultContainer({
           <ManageVaultDetails
             {...manageVault}
             onBannerButtonClickHandler={() => {
-              uiChanges.publish(TAB_CHANGE_SUBJECT, {
-                type: 'change-tab',
-                currentMode: VaultViewMode.Protection,
-              })
+              // log analytics
             }}
           />
           {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
