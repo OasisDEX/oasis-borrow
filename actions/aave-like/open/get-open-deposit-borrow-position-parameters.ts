@@ -1,5 +1,4 @@
 import {
-  AaveLikeProtocol as AaveLikeLibProtocol,
   IOpenDepositBorrowStrategy,
   strategies,
 } from '@oasisdex/dma-library'
@@ -75,11 +74,6 @@ export async function getOpenDepositBorrowPositionParameters(
     case LendingProtocol.AaveV3:
       return await strategies.aave.borrow.v3.openDepositBorrow(aaveLikeArgs, {
         ...aaveLikeDeps,
-        protocolType: {
-          [LendingProtocol.AaveV2]: 'AAVE',
-          [LendingProtocol.AaveV3]: 'AAVE_V3',
-          [LendingProtocol.SparkV3]: 'Spark',
-        }[protocol] as AaveLikeLibProtocol,
         addresses: getAddresses(networkId, LendingProtocol.AaveV3),
       })
     case LendingProtocol.SparkV3:

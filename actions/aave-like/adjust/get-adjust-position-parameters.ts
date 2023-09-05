@@ -1,6 +1,5 @@
 import {
-  AaveLikeProtocol as AaveLikeLibProtocol,
-  IPositionTransitionParams,
+  IMultiplyStrategy,
   strategies,
   Tokens,
 } from '@oasisdex/dma-library'
@@ -21,7 +20,7 @@ export async function getAdjustPositionParameters({
   positionType,
   protocol,
   networkId,
-}: AdjustAaveParameters): Promise<IPositionTransitionParams> {
+}: AdjustAaveParameters): Promise<IMultiplyStrategy> {
   try {
     const provider = getRpcProvider(networkId)
 
@@ -38,8 +37,8 @@ export async function getAdjustPositionParameters({
     const aaveLikeAjdustStrategyType = {
       [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
       [LendingProtocol.AaveV3]: strategies.aave.multiply.v3,
-      // [LendingProtocol.SparkV3]: strategies.spark.multiply,
-    }[protocol as AaveLendingProtocol] // to be AaveLikeLendingProtocol when SparkV3 is added
+      [LendingProtocol.SparkV3]: strategies.spark.multiply,
+    }[protocol as AaveLendingProtocol]
 
     type AaveLikeAdjustStrategyArgs = Parameters<typeof aaveLikeAjdustStrategyType.adjust>[0]
     type AaveLikeAdjustStrategyDeps = Parameters<typeof aaveLikeAjdustStrategyType.adjust>[1]
@@ -59,11 +58,6 @@ export async function getAdjustPositionParameters({
       isDPMProxy: proxyType === ProxyType.DpmProxy,
       network: networkIdToLibraryNetwork(networkId),
       positionType,
-      protocolType: {
-        [LendingProtocol.AaveV2]: 'AAVE',
-        [LendingProtocol.AaveV3]: 'AAVE_V3',
-        [LendingProtocol.SparkV3]: 'Spark',
-      }[protocol] as AaveLikeLibProtocol,
     }
 
     switch (protocol) {
@@ -82,7 +76,12 @@ export async function getAdjustPositionParameters({
           getSwapData: swapCall(addressesV3, networkId),
         })
       case LendingProtocol.SparkV3:
-        throw new Error('SparkV3 not implemented')
+        const addressesSparkV3 = getAddresses(networkId, LendingProtocol.SparkV3)
+        return await strategies.spark.multiply.adjust(args, {
+          ...stratDeps,
+          addresses: addressesSparkV3,
+          getSwapData: swapCall(addressesSparkV3, networkId),
+        })
       default:
         throw new Error('Invalid protocol')
     }

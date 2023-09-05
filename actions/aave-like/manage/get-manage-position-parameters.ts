@@ -52,20 +52,20 @@ export async function getManagePositionParameters(
 
   const [collateral, debt] = getTokensInBaseUnit(parameters)
 
+  const aaveLikeBorrowStrategyType = {
+    [LendingProtocol.AaveV2]: strategies.aave.borrow.v2,
+    [LendingProtocol.AaveV3]: strategies.aave.borrow.v3,
+    [LendingProtocol.SparkV3]: strategies.spark.borrow,
+  }[protocol as AaveLendingProtocol]
+
   switch (manageTokenInput?.manageTokenAction) {
     case ManageDebtActionsEnum.PAYBACK_DEBT:
     case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
-      const aaveLikePaybackWithdrawStrategyType = {
-        [LendingProtocol.AaveV2]: strategies.aave.borrow.v2,
-        [LendingProtocol.AaveV3]: strategies.aave.borrow.v3,
-        // [LendingProtocol.SparkV3]: strategies.spark.multiply,
-      }[protocol as AaveLendingProtocol] // to be AaveLikeLendingProtocol when SparkV3 is added
-
       type AaveLikePaybackWithdrawStrategyArgs = Parameters<
-        typeof aaveLikePaybackWithdrawStrategyType.paybackWithdraw
+        typeof aaveLikeBorrowStrategyType.paybackWithdraw
       >[0]
       type AaveLikePaybackWithdrawStrategyDeps = Parameters<
-        typeof aaveLikePaybackWithdrawStrategyType.paybackWithdraw
+        typeof aaveLikeBorrowStrategyType.paybackWithdraw
       >[1]
 
       const paybackWithdrawStratArgs: AaveLikePaybackWithdrawStrategyArgs = {
@@ -82,7 +82,10 @@ export async function getManagePositionParameters(
         amountDebtToPaybackInBaseUnit: debt,
       }
 
-      const paybackWithdrawStratDeps: Omit<AaveLikePaybackWithdrawStrategyDeps, 'addresses'> = {
+      const paybackWithdrawStratDeps: Omit<
+        AaveLikePaybackWithdrawStrategyDeps,
+        'addresses' | 'protocolType'
+      > = {
         currentPosition,
         provider: provider,
         proxy: proxyAddress,
@@ -110,7 +113,6 @@ export async function getManagePositionParameters(
         const addressesV3 = getAddresses(networkId, LendingProtocol.SparkV3)
         return await strategies.spark.borrow.paybackWithdraw(paybackWithdrawStratArgs, {
           ...paybackWithdrawStratDeps,
-          protocolType: 'Spark',
           addresses: addressesV3,
         })
       }
@@ -121,12 +123,14 @@ export async function getManagePositionParameters(
 
     case ManageDebtActionsEnum.BORROW_DEBT:
     case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
-      type borrowDepositTypes = Parameters<typeof strategies.aave.borrow.v2.depositBorrow> &
-        Parameters<
-          typeof strategies.aave.borrow.v3.depositBorrow
-        > /* & Parameters<typeof strategies.spark.depositBorrow> */
+      type AaveLikeDepositBorrowStrategyArgs = Parameters<
+        typeof aaveLikeBorrowStrategyType.depositBorrow
+      >[0]
+      type AaveLikeDepositBorrowStrategyDeps = Parameters<
+        typeof aaveLikeBorrowStrategyType.depositBorrow
+      >[1]
 
-      const borrowDepositStratArgs: borrowDepositTypes[0] = {
+      const borrowDepositStratArgs: AaveLikeDepositBorrowStrategyArgs = {
         debtToken: {
           symbol: currentPosition.debt.symbol as Tokens,
           precision: currentPosition.debt.precision,
@@ -144,7 +148,7 @@ export async function getManagePositionParameters(
         },
       }
 
-      const borrowDepositStratDeps: Omit<borrowDepositTypes[1], 'addresses'> = {
+      const borrowDepositStratDeps: Omit<AaveLikeDepositBorrowStrategyDeps, 'addresses'> = {
         currentPosition,
         provider: provider,
         proxy: proxyAddress,
