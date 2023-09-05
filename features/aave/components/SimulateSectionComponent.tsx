@@ -1,8 +1,4 @@
-import {
-  IMultiplyStrategy,
-  IRiskRatio,
-  IStrategy,
-} from '@oasisdex/dma-library'
+import { IMultiplyStrategy, IRiskRatio, IStrategy } from '@oasisdex/dma-library'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'

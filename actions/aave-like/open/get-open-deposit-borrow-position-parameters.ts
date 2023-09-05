@@ -1,7 +1,4 @@
-import {
-  IOpenDepositBorrowStrategy,
-  strategies,
-} from '@oasisdex/dma-library'
+import { IOpenDepositBorrowStrategy, strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import { OpenAaveDepositBorrowParameters } from 'actions/aave-like/types'

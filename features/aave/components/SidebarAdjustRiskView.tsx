@@ -1,9 +1,4 @@
-import {
-  IAdjustStrategy,
-  IRiskRatio,
-  IStrategy,
-  RiskRatio,
-} from '@oasisdex/dma-library'
+import { IAdjustStrategy, IRiskRatio, IStrategy, RiskRatio } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'

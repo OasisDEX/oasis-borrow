@@ -1,8 +1,4 @@
-import {
-  IMultiplyStrategy,
-  strategies,
-  Tokens,
-} from '@oasisdex/dma-library'
+import { IMultiplyStrategy, strategies, Tokens } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
 import { AdjustAaveParameters } from 'actions/aave-like/types'
