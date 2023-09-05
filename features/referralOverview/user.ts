@@ -64,10 +64,22 @@ export function createUserReferral$(
       ).pipe(
         switchMap(([user, referrals, referralRewards, referrer, claimedReferralRewards]) => {
           // newUser gets referrer address from local storage, currentUser from the db
-          if (!user) {
+          if (!user && referrer) {
+            const referrerAddress = referrer.slice(1, -1)
+            // Check if referrer exists in the database
+            return getUserFromApi$(referrerAddress, trigger$).pipe(
+              switchMap((referrerEntity) => {
+                return of({
+                  state: 'newUser',
+                  referrer: referrerEntity ? referrerAddress : null,
+                  trigger: trigger,
+                })
+              }),
+            )
+          } else if (!user) {
             return of({
               state: 'newUser',
-              referrer: referrer ? referrer.slice(1, -1) : null,
+              referrer: null,
               trigger: trigger,
             })
           }

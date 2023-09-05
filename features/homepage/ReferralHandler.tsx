@@ -24,7 +24,6 @@ export function ReferralHandler() {
       const linkReferral = query.ref as string
       // store only the address - not the ens name - it's handled in the modal
       if (linkReferral && context && isAddress(linkReferral)) {
-        console.log('isAddress', linkReferral)
         setLocalReferral(linkReferral)
         setLandedWithRef(linkReferral)
       }

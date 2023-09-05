@@ -12,8 +12,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const user = await selectUserByAddress(address)
 
-  if (user === undefined || user == null) {
+  if (user === undefined) {
     return res.status(404).json({ error: 'NOK' })
+  } else if (user === null) {
+    return res.status(204)
   } else {
     return res.status(200).json(user)
   }
