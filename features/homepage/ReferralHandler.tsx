@@ -27,6 +27,7 @@ export function ReferralHandler() {
       if (linkReferral && context && isReferrerAddress) {
         setLocalReferral(linkReferral)
         setLandedWithRef(true)
+        if (userReferral) userReferral.trigger()
       } else if (linkReferral && context && !isReferrerAddress) {
         ensNameToAddressMainnet(linkReferral)
           .then((resolvedAddress) => {
