@@ -12,10 +12,9 @@ import React, { useEffect, useState } from 'react'
 export function ReferralHandler() {
   const { query, isReady } = useRouter()
   const { context$ } = useMainContext()
-  const { checkReferralLocal$, userReferral$ } = useAccountContext()
+  const { userReferral$ } = useAccountContext()
   const [context] = useObservable(context$)
   const [userReferral] = useObservable(userReferral$)
-  const [checkReferralLocal] = useObservable(checkReferralLocal$)
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const [landedWithRef, setLandedWithRef] = useState(false)
@@ -34,21 +33,14 @@ export function ReferralHandler() {
             console.log('resolvedAddress', resolvedAddress)
             setLocalReferral(resolvedAddress)
             setLandedWithRef(true)
+            if (userReferral) userReferral.trigger()
           })
           .catch((error) => {
             console.error('Error getting ensName for referral', linkReferral, error)
           })
       }
     }
-  }, [
-    checkReferralLocal,
-    context,
-    isReady,
-    localReferral,
-    query.ref,
-    referralsEnabled,
-    setLocalReferral
-  ])
+  }, [context, isReady, localReferral, query.ref, referralsEnabled, setLocalReferral, userReferral])
 
   return (
     <>

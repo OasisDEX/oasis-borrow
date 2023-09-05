@@ -46,7 +46,7 @@ export function createUserReferral$(
     address: string,
     trigger$: Subject<void>,
   ) => Observable<WeeklyClaim[] | null>,
-  checkReferralLocalStorage$: () => Observable<string | null>,
+  checkReferralLocalStorage$: (trigger$: Subject<void>) => Observable<string | null>,
 ): Observable<UserReferralState> {
   return web3Context$.pipe(
     switchMap((web3Context) => {
@@ -58,11 +58,12 @@ export function createUserReferral$(
         getUserFromApi$(web3Context.account, trigger$),
         getReferralsFromApi$(web3Context.account),
         getReferralRewardsFromApi$(web3Context.account, trigger$),
-        checkReferralLocalStorage$(),
+        checkReferralLocalStorage$(trigger$),
         getClaimedReferralRewards(web3Context.chainId, web3Context.account),
         txHelpers$,
       ).pipe(
         switchMap(([user, referrals, referralRewards, referrer, claimedReferralRewards]) => {
+          console.log('user', user)
           // newUser gets referrer address from local storage, currentUser from the db
           if (!user && referrer) {
             const referrerAddress = referrer.slice(1, -1)

@@ -253,8 +253,6 @@ export function AccountContextProvider({ children }: WithChildren) {
         checkReferralLocalStorage$,
       )
 
-      const checkReferralLocal$ = checkReferralLocalStorage$()
-
       return {
         accountData$,
         allNetworkReadPositionCreatedEvents$,
@@ -266,7 +264,6 @@ export function AccountContextProvider({ children }: WithChildren) {
         cdpRegistryOwns$,
         charterCdps$,
         charterUrnProxy$,
-        checkReferralLocal$,
         cropJoinCdps$,
         cropperUrnProxy$,
         dogIlks$,
@@ -324,7 +321,6 @@ export type AccountContext = {
   cdpRegistryOwns$: (args: BigNumber) => Observable<string>
   charterCdps$: (address: string) => Observable<BigNumber[]>
   charterUrnProxy$: (args: string) => Observable<string>
-  checkReferralLocal$: Observable<string | null>
   cropJoinCdps$: (address: string) => Observable<BigNumber[]>
   cropperUrnProxy$: (args: string) => Observable<string>
   dogIlks$: (args: string) => Observable<DogIlk>
