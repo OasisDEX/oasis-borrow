@@ -13,7 +13,7 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { SidebarManageMultiplyVaultEditingStageClose } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultEditingStageClose'
 import { SliderAdjustMultiply } from 'features/multiply/manage/sidebars/SliderAdjustMultiply'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
@@ -22,7 +22,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
-export function SidebarManageBorrowVaultEditingStage(props: ManageBorrowVaultState) {
+export function SidebarManageBorrowVaultEditingStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   const {
@@ -34,29 +34,29 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageBorrowVaultSta
     inputAmountsEmpty,
     mainAction,
     paybackAmount,
-    setMainAction,
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
     stage,
     toggleDepositAndGenerateOption,
     togglePaybackAndWithdrawOption,
-    updateDeposit,
-    updateGenerate,
-    updatePayback,
-    updateWithdraw,
+    updateDepositAmount,
+    updateGenerateAmount,
+    updatePaybackAmount,
+    updateWithdrawAmount,
     vault: { debt, token },
     warningMessages,
     withdrawAmount,
     otherAction,
+    setOtherAction,
   } = props
 
   const [isSecondaryFieldDisabled, setIsSecondaryFieldDisabled] = useState<boolean>(true)
 
   const isOwner = accountIsConnected && accountIsController
-  const isCollateralEditing = stage === 'collateralEditing'
-  const isDaiEditing = stage === 'daiEditing'
-  const isDepositOrGenerate = mainAction === 'depositGenerate'
-  const isWithdrawOrPayback = mainAction === 'withdrawPayback'
+  const isCollateralEditing = stage === 'otherActions' && (otherAction === 'depositCollateral' || otherAction === 'withdrawCollateral' || otherAction === 'withdrawDai')
+  const isDaiEditing = stage === 'otherActions' && (otherAction === 'depositDai' || otherAction === 'paybackDai')
+  const isDepositOrGenerate = otherAction === 'depositCollateral'
+  const isWithdrawOrPayback = otherAction === 'withdrawCollateral'
 
   useEffect(() => {
     if (inputAmountsEmpty) setIsSecondaryFieldDisabled(true)
@@ -85,7 +85,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageBorrowVaultSta
                   ? t('vault-actions.deposit')
                   : t('vault-actions.generate'),
                 action: () => {
-                  setMainAction!('depositGenerate')
+                  setOtherAction!('depositCollateral')
                 },
               },
               {
@@ -94,7 +94,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageBorrowVaultSta
                   ? t('vault-actions.withdraw')
                   : t('vault-actions.payback'),
                 action: () => {
-                  setMainAction!('withdrawPayback')
+                  setOtherAction!('withdrawCollateral')
                 },
               },
             ]}
@@ -162,10 +162,10 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageBorrowVaultSta
       {!inputAmountsEmpty && (
         <SidebarResetButton
           clear={() => {
-            updateDeposit!()
-            updateWithdraw!()
-            updateGenerate!()
-            updatePayback!()
+            updateDepositAmount!()
+            updateWithdrawAmount!()
+            updateGenerateAmount!()
+            updatePaybackAmount!()
           }}
         />
       )}

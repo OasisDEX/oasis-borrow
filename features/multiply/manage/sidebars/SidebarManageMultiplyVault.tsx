@@ -26,6 +26,7 @@ import { Grid } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { SidebarManageBorrowVaultEditingStage } from 'features/borrow/manage/sidebars/SidebarManageBorrowVaultEditingStage'
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']
@@ -160,7 +161,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       <Grid gap={3}>
         {!isClosedVaultPanelVisible ? (
           <>
-            {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
+            {isEditingStage && vaultType === VaultType.Multiply ? <SidebarManageMultiplyVaultEditingStage {...props} /> : <SidebarManageBorrowVaultEditingStage {...props} />}
             {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
             {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
               <SidebarVaultAllowanceStage {...props} />
