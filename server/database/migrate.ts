@@ -1,8 +1,8 @@
+import dotenv from 'dotenv'
 import { join } from 'path'
 import pg from 'pg'
 import { migrate } from 'postgres-migrations'
-
-require('dotenv-flow').config({ path: __dirname })
+dotenv.config()
 
 async function main() {
   if (!process.env.DATABASE_URL) {
