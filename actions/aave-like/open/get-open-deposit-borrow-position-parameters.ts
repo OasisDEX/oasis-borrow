@@ -5,7 +5,7 @@ import { OpenAaveDepositBorrowParameters } from 'actions/aave-like/types'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
-import { LendingProtocol } from 'lendingProtocols'
+import { AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 function assertNetwork(networkId: NetworkIds): asserts networkId is NetworkIds.MAINNET {
   if (networkId !== NetworkIds.MAINNET) {
@@ -25,14 +25,21 @@ export async function getOpenDepositBorrowPositionParameters(
     proxyAddress,
     userAddress,
     networkId,
+    protocol,
   } = args
 
   assertNetwork(networkId)
 
-  type types = Parameters<typeof strategies.aave.borrow.v3.openDepositBorrow> &
-    Parameters<typeof strategies.spark.borrow.openDepositBorrow>
+  const aaveLikeOpenStrategyType = {
+    [LendingProtocol.AaveV2]: strategies.aave.borrow.v2,
+    [LendingProtocol.AaveV3]: strategies.aave.borrow.v3,
+    [LendingProtocol.SparkV3]: strategies.spark.borrow,
+  }[protocol as AaveLikeLendingProtocol]
 
-  const aaveLikeArgs: types[0] = {
+  type AaveLikeOpenStrategyArgs = Parameters<typeof aaveLikeOpenStrategyType.openDepositBorrow>[0]
+  type AaveLikeOpenStrategyDeps = Parameters<typeof aaveLikeOpenStrategyType.openDepositBorrow>[1]
+
+  const aaveLikeArgs: AaveLikeOpenStrategyArgs = {
     slippage,
     collateralToken: {
       symbol: collateralToken,
@@ -50,7 +57,7 @@ export async function getOpenDepositBorrowPositionParameters(
     },
   }
 
-  const aaveLikeDeps: Omit<types[1], 'addresses' | 'protocolType'> = {
+  const aaveLikeDeps: Omit<AaveLikeOpenStrategyDeps, 'addresses'> = {
     provider: getRpcProvider(networkId),
     proxy: proxyAddress,
     user: userAddress,

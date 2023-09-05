@@ -1,12 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import {
-  IPosition,
-  ISimplePositionTransition,
-  ISimulatedTransition,
-  IStrategy,
-  OPERATION_NAMES,
-  PositionTransition,
-} from '@oasisdex/dma-library'
+import { IMultiplyStrategy, IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -88,18 +81,15 @@ export function textButtonReturningToAdjust({
 }
 
 export function transitionHasSwap(
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
-): transition is PositionTransition {
-  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+  transition?: IMultiplyStrategy | IStrategy,
+): transition is IMultiplyStrategy {
+  return (
+    !!transition && (transition.simulation as IMultiplyStrategy['simulation']).swap !== undefined
+  )
 }
 
 export function getAmountReceivedAfterClose(
-  strategy:
-    | PositionTransition
-    | ISimplePositionTransition
-    | PositionTransition
-    | IStrategy
-    | undefined,
+  strategy: IStrategy | undefined,
   currentPosition: IPosition | undefined,
   isCloseToCollateral: boolean,
 ) {
