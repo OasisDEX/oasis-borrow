@@ -51,6 +51,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
       LendingProtocol.AaveV2,
       LendingProtocol.AaveV3,
       LendingProtocol.Maker,
+      LendingProtocol.SparkV3,
     ],
     promoCardsCollection,
   })

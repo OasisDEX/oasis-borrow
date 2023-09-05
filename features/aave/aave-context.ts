@@ -7,7 +7,7 @@ import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {
   AaveLikeReserveConfigurationData,
   AaveLikeServices,
-  AaveYieldsResponse,
+  AaveLikeYieldsResponse,
   FilterYieldFieldsType,
 } from 'lendingProtocols/aave-like-common'
 import { Observable } from 'rxjs'
@@ -28,7 +28,7 @@ export type AaveContext = AaveLikeServices & {
   aaveEarnYieldsQuery: (
     riskRatio: IRiskRatio,
     fields: FilterYieldFieldsType[],
-  ) => Promise<AaveYieldsResponse>
+  ) => Promise<AaveLikeYieldsResponse>
   strategyConfig$: (
     positionId: PositionId,
     networkName: NetworkNames,

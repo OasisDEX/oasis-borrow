@@ -2,7 +2,7 @@ import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { calculateSimulation, CalculateSimulationResult } from 'features/aave/open/services'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { AaveYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
+import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { useEffect, useState } from 'react'
 
 import { useAaveEarnYields } from './useAaveEarnYields'
@@ -16,7 +16,7 @@ type useSimulationYieldsParams = {
   fees?: BigNumber
 }
 
-export type SimulationYields = CalculateSimulationResult & { yields: AaveYieldsResponse }
+export type SimulationYields = CalculateSimulationResult & { yields: AaveLikeYieldsResponse }
 
 export function useSimulationYields({
   amount,

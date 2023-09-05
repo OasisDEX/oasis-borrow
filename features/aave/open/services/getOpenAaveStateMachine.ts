@@ -1,4 +1,4 @@
-import { OpenAaveParameters } from 'actions/aave/types'
+import { OpenAaveParameters } from 'actions/aave-like/types'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from 'features/aave/open/state'

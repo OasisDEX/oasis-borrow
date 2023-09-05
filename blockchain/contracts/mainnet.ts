@@ -42,6 +42,9 @@ import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
+import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
+import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
+import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as vat from 'blockchain/abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -53,10 +56,16 @@ import {
   AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   AAVE_V3_POOL_GENESIS_MAINNET,
   ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
+  SPARK_V3_LENDING_POOL_GENESIS_MAINNET,
+  SPARK_V3_ORACLE_GENESIS_MAINNET,
+  SPARK_V3_POOL_DATA_PROVIDER_GENESIS_MAINNET,
   supportedIlks,
   tokensMainnet,
 } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
+import { Optional } from 'helpers/types'
+
+import { OptionalContracts } from './optional-contracts'
 
 const { mainnet } = ADDRESSES
 
@@ -122,9 +131,9 @@ export const mainnetContracts = {
   } as Record<string, string>,
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    mainnet.aave.v2.ProtocolDataProvider,
+    mainnet.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
@@ -146,11 +155,23 @@ export const mainnetContracts = {
     mainnet.mpa.core.AccountGuard,
     ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    mainnet.aave.v3.AavePoolDataProvider,
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(
+    sparkV3Pool,
+    mainnet.spark.LendingPool!,
+    SPARK_V3_LENDING_POOL_GENESIS_MAINNET,
+  ),
+  sparkV3Oracle: contractDesc(
+    sparkV3Oracle,
+    mainnet.spark.Oracle!,
+    SPARK_V3_ORACLE_GENESIS_MAINNET,
+  ),
+  sparkV3PoolDataProvider: contractDesc(
+    sparkV3PoolDataProvider,
+    mainnet.spark.PoolDataProvider!,
+    SPARK_V3_POOL_DATA_PROVIDER_GENESIS_MAINNET,
   ),
   // TODO ajna addresses to be updated
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
@@ -210,3 +231,4 @@ export const mainnetContracts = {
 }
 
 export type MainnetContracts = typeof mainnetContracts
+export type MainnetContractsWithOptional = Optional<MainnetContracts, OptionalContracts>

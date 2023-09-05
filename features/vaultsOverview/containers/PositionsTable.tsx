@@ -58,7 +58,7 @@ export function PositionsTable({
         {([ownersPositionsList]) => {
           let amountOfPositions =
             ownersPositionsList.makerPositions.length +
-            ownersPositionsList.aavePositions.length +
+            ownersPositionsList.aaveLikePositions.length +
             ownersPositionsList.ajnaPositions.length
           if (getDsrValue(ownersPositionsList.dsrPosition).gt(zero)) amountOfPositions++
 
@@ -110,8 +110,8 @@ export function PositionsTableContent({
     [ownersPositionsList.makerPositions],
   )
   const aavePositions = useMemo(
-    () => getAavePositionOfType(ownersPositionsList.aavePositions),
-    [ownersPositionsList.aavePositions],
+    () => getAavePositionOfType(ownersPositionsList.aaveLikePositions),
+    [ownersPositionsList.aaveLikePositions],
   )
   const ajnaPositions = useMemo(
     () => getAjnaPositionOfType(ownersPositionsList.ajnaPositions),

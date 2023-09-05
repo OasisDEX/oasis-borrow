@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { AaveV3ReserveDataParameters } from 'blockchain/aave-v3/aave-v3-pool-data-provider'
 import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
-import { AaveV3ReserveDataParameters } from 'blockchain/aave-v3/aaveV3PoolDataProvider'
 import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { ethers } from 'ethers'

@@ -13,12 +13,12 @@ type PrepareAaveTVLProps = [AaveV2ReserveDataReply, AaveV2ReserveDataReply, BigN
 export function prepareAaveTotalValueLocked$(
   getAaveStEthReserveData$: Observable<AaveLikeReserveData>,
   getAaveWEthReserveData$: Observable<AaveLikeReserveData>,
-  getAaveAssetsPrices$: Observable<BigNumber[]>,
+  getAaveLikeAssetsPrices$: Observable<BigNumber[]>,
 ): Observable<PreparedAaveTotalValueLocked> {
   return combineLatest(
     getAaveStEthReserveData$,
     getAaveWEthReserveData$,
-    getAaveAssetsPrices$,
+    getAaveLikeAssetsPrices$,
   ).pipe(
     map(
       ([

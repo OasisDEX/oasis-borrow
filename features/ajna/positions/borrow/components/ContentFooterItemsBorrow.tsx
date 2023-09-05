@@ -90,7 +90,7 @@ export function ContentFooterItemsBorrow({
                   lineHeight: 'body',
                 }}
               >
-                <Icon size={16} name="sparks" color="interactive100" />
+                <Icon size={16} name="ajnaSparks" color="interactive100" />
               </StatefulTooltip>
             )}
             {formatted.cost}
