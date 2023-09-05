@@ -1,4 +1,4 @@
-import { IPositionTransitionParams } from '@oasisdex/dma-library'
+import { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { Flex, Text } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface BuyingTokenAmountProps {
-  transactionParameters: IPositionTransitionParams
+  transactionParameters: IMultiplyStrategy
   tokens: { collateral: string }
   balance: StrategyTokenBalance
 }
@@ -26,6 +26,9 @@ export function TransactionTokenAmount({
     collateral: { price: collateralPrice },
   } = balance
 
+  if (!transactionParameters.simulation.swap) {
+    return <></>
+  }
   const { toTokenAmount, fromTokenAmount, targetToken } = transactionParameters.simulation.swap
 
   if (!allDefined(toTokenAmount, fromTokenAmount) || toTokenAmount?.lte(zero)) {

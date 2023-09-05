@@ -1,8 +1,6 @@
 import {
-  IPositionTransitionParams,
+  IAdjustStrategy,
   IRiskRatio,
-  ISimplePositionTransition,
-  ISimulatedTransition,
   IStrategy,
   RiskRatio,
 } from '@oasisdex/dma-library'
@@ -63,11 +61,11 @@ export type AdjustRiskViewConfig = {
 }
 
 function transitionHasMinConfigurableRiskRatio(
-  transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy,
-): transition is IPositionTransitionParams {
+  transition?: IAdjustStrategy | IStrategy,
+): transition is IAdjustStrategy {
   return (
     !!transition &&
-    (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
+    (transition.simulation as IAdjustStrategy['simulation']).minConfigurableRiskRatio !== undefined
   )
 }
 

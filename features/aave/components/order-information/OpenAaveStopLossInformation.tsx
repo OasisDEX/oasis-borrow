@@ -1,8 +1,4 @@
-import {
-  IPositionTransitionParams,
-  ISimplePositionTransition,
-  IStrategy,
-} from '@oasisdex/dma-library'
+import { IStrategy } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -15,7 +11,7 @@ import React from 'react'
 
 interface OpenAaveStopLossInformationProps {
   stopLossLevel: BigNumber
-  transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy
+  transition?: IStrategy
   collateralActive: boolean
 }
 

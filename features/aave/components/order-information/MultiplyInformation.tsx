@@ -1,9 +1,4 @@
-import {
-  IPosition,
-  IPositionTransitionParams,
-  ISimplePositionTransition,
-  IStrategy,
-} from '@oasisdex/dma-library'
+import { IPosition,  IStrategy } from '@oasisdex/dma-library'
 import { Flex } from '@theme-ui/components'
 import {
   VaultChangesInformationArrow,
@@ -14,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface MultiplyInformationProps {
-  transactionParameters: ISimplePositionTransition | IPositionTransitionParams | IStrategy
+  transactionParameters: IStrategy
   currentPosition: IPosition
 }
 

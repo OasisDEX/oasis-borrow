@@ -1,8 +1,6 @@
 import {
-  IPositionTransitionParams,
+  IMultiplyStrategy,
   IRiskRatio,
-  ISimplePositionTransition,
-  ISimulatedTransition,
   IStrategy,
 } from '@oasisdex/dma-library'
 import { useSelector } from '@xstate/react'
@@ -38,9 +36,11 @@ function mapSimulation(simulation?: Simulation): string[] {
 const defaultYieldFields: FilterYieldFieldsType[] = ['7Days', '30Days', '90Days', '1Year']
 
 function transitionHasSwap(
-  transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy,
-): transition is IPositionTransitionParams {
-  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+  transition?: IMultiplyStrategy | IStrategy,
+): transition is IMultiplyStrategy {
+  return (
+    !!transition && (transition.simulation as IMultiplyStrategy['simulation']).swap !== undefined
+  )
 }
 
 function SimulationSection({
@@ -52,7 +52,7 @@ function SimulationSection({
   defaultRiskRatio,
 }: {
   strategy: IStrategyConfig
-  transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy
+  transition?: IMultiplyStrategy | IStrategy
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation

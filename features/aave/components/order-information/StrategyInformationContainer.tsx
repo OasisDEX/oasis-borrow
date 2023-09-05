@@ -1,10 +1,4 @@
-import {
-  IPosition,
-  IPositionTransitionParams,
-  ISimplePositionTransition,
-  ISimulatedTransition,
-  IStrategy,
-} from '@oasisdex/dma-library'
+import { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
 import { getSlippage, ProductType, StrategyTokenBalance } from 'features/aave/types'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
@@ -35,7 +29,7 @@ export type OpenAaveInformationContainerProps = {
       }
       balance?: StrategyTokenBalance
       estimatedGasPrice?: HasGasEstimation
-      transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy
+      transition?: IStrategy
       userSettings?: UserSettingsState
       currentPosition?: IPosition
       strategyConfig: IStrategyConfig
@@ -46,9 +40,11 @@ export type OpenAaveInformationContainerProps = {
 }
 
 function transitionHasSwap(
-  transition?: ISimplePositionTransition | IPositionTransitionParams | IStrategy,
-): transition is IPositionTransitionParams {
-  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+  transition?: IMultiplyStrategy | IStrategy,
+): transition is IMultiplyStrategy {
+  return (
+    !!transition && (transition.simulation as IMultiplyStrategy['simulation']).swap !== undefined
+  )
 }
 
 export function StrategyInformationContainer({

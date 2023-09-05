@@ -1,9 +1,4 @@
-import {
-  IOpenDepositBorrowStrategy,
-  IPositionTransitionParams,
-  ISimplePositionTransition,
-  IStrategy,
-} from '@oasisdex/dma-library'
+import { IMultiplyStrategy, IOpenDepositBorrowStrategy, IStrategy } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters, estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
 import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
@@ -32,7 +27,7 @@ export interface BaseTransactionParameters {
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: ISimplePositionTransition | IPositionTransitionParams | IStrategy
+  strategy?: IStrategy
 
   /**
    * @deprecated This is old stuff. It uses `web3.js`. We want to move to `ethers.js` and get rid of RxJS.
@@ -56,11 +51,7 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 export type TransactionParametersStateMachineResponseEvent =
   | {
       type: 'STRATEGY_RECEIVED'
-      transition?:
-        | ISimplePositionTransition
-        | IPositionTransitionParams
-        | IStrategy
-        | IOpenDepositBorrowStrategy
+      transition?: IStrategy | IOpenDepositBorrowStrategy
     }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
@@ -78,7 +69,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'SIGNER_CHANGED'; signer: ethers.Signer }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = ISimplePositionTransition | IPositionTransitionParams | IStrategy
+export type LibraryCallReturn = IMultiplyStrategy | IStrategy
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
