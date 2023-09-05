@@ -198,6 +198,7 @@ export interface ManageVaultEnvironment {
   exchangeError: boolean
   slippage: BigNumber
   vaultHistory: VaultHistoryEvent[]
+  vaultType: VaultType.Borrow | VaultType.Multiply
 }
 
 interface ManageVaultFunctions {
@@ -305,7 +306,7 @@ function addTransitions(
           saveVaultType$,
           state.account as string,
           state.vault.id,
-          VaultType.Borrow,
+          state.vaultType === VaultType.Borrow ? VaultType.Multiply : VaultType.Borrow,
           state.vault.chainId,
           LendingProtocol.Maker,
           () => {
@@ -465,12 +466,17 @@ function addTransitions(
 }
 
 export function defaultMutableManageMultiplyVaultState(
+  vaultType: VaultType.Borrow | VaultType.Multiply,
   lockedCollateral?: BigNumber,
 ): MutableManageMultiplyVaultState {
   const hasZeroCollateral = lockedCollateral?.eq(zero)
 
   return {
-    stage: hasZeroCollateral ? 'otherActions' : 'adjustPosition',
+    stage: vaultType === VaultType.Borrow 
+    ? 'otherActions' 
+    : hasZeroCollateral 
+      ? 'otherActions' 
+      : 'adjustPosition',
     originalEditingStage: hasZeroCollateral ? 'otherActions' : 'adjustPosition',
     collateralAllowanceAmount: maxUint256,
     daiAllowanceAmount: maxUint256,
@@ -504,6 +510,7 @@ export function createManageMultiplyVault$(
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
+  vaultType: VaultType.Borrow | VaultType.Multiply,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -551,9 +558,10 @@ export function createManageMultiplyVault$(
                   )
 
                   const initialState: ManageMultiplyVaultState = {
-                    ...defaultMutableManageMultiplyVaultState(vault.lockedCollateral),
+                    ...defaultMutableManageMultiplyVaultState(vaultType, vault.lockedCollateral),
                     ...defaultManageMultiplyVaultCalculations,
                     ...defaultManageMultiplyVaultConditions,
+                    vaultType,
                     vault,
                     priceInfo,
                     vaultHistory: [],
@@ -619,6 +627,7 @@ export function createManageMultiplyVault$(
                         state,
                       ),
                     ),
+                    tap(console.log),
                     tap((state) => stateSubject$.next(state)),
                   )
                 }),

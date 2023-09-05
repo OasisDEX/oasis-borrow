@@ -25,7 +25,6 @@ import React from 'react'
 type VaultState =
   | OpenVaultState
   | OpenMultiplyVaultState
-  | ManageBorrowVaultState
   | ManageMultiplyVaultState
 
 interface FieldProps {

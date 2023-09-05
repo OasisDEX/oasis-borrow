@@ -6,9 +6,10 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 
 export function ManageVaultConfirmation(
-  props: ManageBorrowVaultState & { txnCostDisplay?: ReactNode },
+  props: ManageMultiplyVaultState & { txnCostDisplay?: ReactNode },
 ) {
   const [vaultChange, setVaultChanges] = useState<ManageBorrowVaultState>(props)
   useEffect(() => {

@@ -25,6 +25,7 @@ import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
+import { VaultType } from 'features/generalManageVault/vaultType'
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']
@@ -56,6 +57,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     totalSteps,
     vault: { token },
     vaultHistory,
+    vaultType,
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
@@ -131,7 +133,9 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           },
         },
         {
-          label: t('system.actions.multiply.switch-to-borrow'),
+          label: vaultType === VaultType.Borrow 
+            ?  t('system.actions.borrow.switch-to-multiply') 
+            : t('system.actions.multiply.switch-to-borrow'),
           icon: 'circle_exchange',
           iconShrink: 2,
           panel: 'transition',
@@ -161,7 +165,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
             {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
               <SidebarVaultAllowanceStage {...props} />
             )}
-            {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} />}
+            {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} vaultType={vaultType} token={token} />}
             {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
           </>
         ) : (
@@ -173,6 +177,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       label: getPrimaryButtonLabel({
         flow,
         isClosedVaultPanelVisible,
+        vaultType,
         ...primaryButtonLabelParams,
       }),
       disabled: (!canProgress || !accountIsConnected) && !isClosedVaultPanelVisible,

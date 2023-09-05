@@ -28,6 +28,7 @@ import { Grid } from 'theme-ui'
 
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
+import { VaultType } from 'features/generalManageVault/vaultType'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { t } = useTranslation()
@@ -93,7 +94,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       },
     }),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow, vaultType: VaultType.Borrow }),
       steps: !isSuccessStage && !isAddStopLossStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress || (isProxyStage && isProxyCreationDisabled),
       isLoading: isLoadingStage,

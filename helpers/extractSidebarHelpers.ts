@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AllowanceOption } from 'features/allowance/allowance'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { pick } from 'ramda'
 

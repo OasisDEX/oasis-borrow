@@ -1,3 +1,4 @@
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
@@ -85,7 +86,8 @@ export function getPrimaryButtonLabel({
   flow,
   canTransition = true,
   isClosedVaultPanelVisible = false,
-}: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
+  vaultType,
+}: PrimaryButtonLabelParams & { flow: SidebarFlow, vaultType: VaultType }): string {
   const { t } = useTranslation()
   const allowanceToken =
     insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
@@ -179,16 +181,33 @@ export function getPrimaryButtonLabel({
     case 'multiplyTransitionSuccess':
       return t('borrow-to-multiply.button-success')
     case 'borrowTransitionEditing':
+      if (vaultType === VaultType.Borrow) {
+        return canTransition
+        ? t('borrow-to-multiply.button-start')
+        : t('borrow-to-multiply.button-not-supported', { token: token?.toUpperCase() })
+      }
       return canTransition
         ? t('multiply-to-borrow.button-start')
         : t('multiply-to-borrow.button-not-supported', { token: token?.toUpperCase() })
     case 'borrowTransitionWaitingForConfirmation':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-confirm')
+      }
       return t('multiply-to-borrow.button-confirm')
     case 'borrowTransitionInProgress':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-progress')
+      }
       return t('multiply-to-borrow.button-progress')
     case 'borrowTransitionFailure':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-failure')
+      }
       return t('multiply-to-borrow.button-failure')
     case 'borrowTransitionSuccess':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-success')
+      }
       return t('multiply-to-borrow.button-success')
     default:
       throw new UnreachableCaseError(stage)

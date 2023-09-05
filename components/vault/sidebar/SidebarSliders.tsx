@@ -12,7 +12,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent } from 'react'
 import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState | ManageBorrowVaultState
+type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState
 
 interface SidebarSliderAdjustMultiplyProps {
   collapsed?: boolean

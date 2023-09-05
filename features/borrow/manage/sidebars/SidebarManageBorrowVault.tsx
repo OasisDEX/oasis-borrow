@@ -26,6 +26,7 @@ import { Grid } from 'theme-ui'
 import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
 import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultManageStage'
 import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
+import { VaultType } from 'features/generalManageVault/vaultType'
 
 export function SidebarManageBorrowVault(props: ManageBorrowVaultState) {
   const { t } = useTranslation()
@@ -182,6 +183,7 @@ export function SidebarManageBorrowVault(props: ManageBorrowVaultState) {
       label: getPrimaryButtonLabel({
         flow,
         isClosedVaultPanelVisible,
+        vaultType: VaultType.Borrow,
         ...primaryButtonLabelParams,
       }),
       disabled: (!canProgress || !accountIsConnected) && !isClosedVaultPanelVisible,
