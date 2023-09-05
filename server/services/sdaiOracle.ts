@@ -12,7 +12,10 @@ export async function getSDaiOracleTicker(): Promise<PriceServiceResponse> {
   if (!node) {
     throw new Error('RPC provider is not available')
   }
-  const rpcProvider = new ethers.providers.JsonRpcProvider(node)
+  const rpcProvider = new ethers.providers.JsonRpcProvider(node, {
+    chainId: NetworkIds.MAINNET,
+    name: NetworkNames.ethereumMainnet,
+  })
   const sdaiPriceOracleContractAddress = getNetworkContracts(NetworkIds.MAINNET).SdaiOracle.address
   const sdaiPriceOracleContract = SdaiPriceOracleFactory.connect(
     sdaiPriceOracleContractAddress,
