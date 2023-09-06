@@ -149,7 +149,7 @@ export function multiplyVault(
           exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
           borrowedCollateral: buyingCollateral,
           requiredDebt: borrowedDaiAmount,
-          toTokenAmount: toTokenAmount,
+          toTokenAmount,
           fromTokenAmount,
         }).pipe(
           transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(

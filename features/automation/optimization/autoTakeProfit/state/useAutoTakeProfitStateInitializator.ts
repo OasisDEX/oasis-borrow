@@ -29,7 +29,7 @@ export function useAutoTakeProfitStateInitializator({
       })
 
   const initialSelectedColRatio = ratioAtCollateralPrice({
-    lockedCollateral: lockedCollateral,
+    lockedCollateral,
     collateralPriceUSD: initialSelectedPrice,
     vaultDebt: debt,
   })

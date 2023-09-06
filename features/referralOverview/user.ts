@@ -76,7 +76,7 @@ export function createUserReferral$(
                 return of({
                   state: 'newUser',
                   referrer: referrerEntity ? referrerAddress : null,
-                  trigger: trigger,
+                  trigger,
                 })
               }),
             )
@@ -84,7 +84,7 @@ export function createUserReferral$(
             return of({
               state: 'newUser',
               referrer: null,
-              trigger: trigger,
+              trigger,
             })
           }
 
@@ -164,7 +164,7 @@ export function createUserReferral$(
               user,
               referrer: user.user_that_referred_address,
               referrals: referralsOut,
-              trigger: trigger,
+              trigger,
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               performClaimMultiple: claimAllFunction,

@@ -208,7 +208,7 @@ async function makeMulticall(
           method: 'eth_call',
           params: [
             {
-              data: data,
+              data,
               to: to!,
               from: spotAddress,
             },
@@ -319,7 +319,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const callsWithHash: CallWithHash[] = calls.map((call) => {
     return {
-      call: call,
+      call,
       hash: ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${JSON.stringify(call.params)}`)),
     }
   })

@@ -65,7 +65,7 @@ export function getAaveProtocolData$(
         return {
           positionData: reserveData,
           accountData,
-          oraclePrice: oraclePrice,
+          oraclePrice,
           position: onChainPosition,
           userConfiguration: aaveUserConfiguration,
           reservesList: aaveReservesList,

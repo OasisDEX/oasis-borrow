@@ -82,7 +82,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
           afterMaxToken={afterMaxToken}
           isCollateralActive={!!stopLossState?.collateralActive}
           isEditing={checkIfIsEditingStopLoss({
-            isStopLossEnabled: isStopLossEnabled,
+            isStopLossEnabled,
             selectedSLValue: stopLossState.stopLossLevel,
             stopLossLevel,
             collateralActive: stopLossState.collateralActive,
@@ -102,7 +102,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
           title={t('vault-banners.setup-stop-loss.header')}
           description={
             <>
-              {t('vault-banners.setup-stop-loss.content', { token: token })}{' '}
+              {t('vault-banners.setup-stop-loss.content', { token })}{' '}
               <AppLink href={EXTERNAL_LINKS.KB.STOP_LOSS} sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
@@ -123,7 +123,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
                 AutomationEventIds.SelectStopLoss,
                 Pages.ProtectionTab,
                 CommonAnalyticsSections.Banner,
-                { vaultId: id.toString(), ilk: ilk },
+                { vaultId: id.toString(), ilk },
               )
             },
             text: t('vault-banners.setup-stop-loss.button'),

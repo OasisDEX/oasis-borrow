@@ -84,8 +84,8 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
   return createMachine(
     {
       context: {
-        networkId: networkId,
-        runWithEthers: runWithEthers,
+        networkId,
+        runWithEthers,
       },
       tsTypes: {} as import('./transactionParametersStateMachine.typegen').Typegen0,
       schema: {
@@ -229,7 +229,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               signer: signer!,
               proxyAddress: parameters!.proxyAddress,
               value: parameters!.token === 'ETH' ? parameters!.amount! : zero,
-              networkId: networkId,
+              networkId,
             }
 
             return fromPromise(estimateGasOnDpm(dpmParams)).pipe(

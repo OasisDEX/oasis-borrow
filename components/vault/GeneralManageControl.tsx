@@ -43,7 +43,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
               followButton={{
                 followerAddress: account,
                 vaultId: id,
-                chainId: chainId,
+                chainId,
                 protocol: 'maker',
               }}
               chainId={chainId}

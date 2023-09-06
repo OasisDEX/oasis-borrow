@@ -23,7 +23,7 @@ async function get({ req: { body } }: { req: NextApiRequest }) {
   } catch (error: any) {
     return {
       success: false,
-      error: error,
+      error,
     }
   }
 }

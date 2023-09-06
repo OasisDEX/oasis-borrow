@@ -28,9 +28,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
         network: networkOrProduct,
-        protocol: protocol,
-        product: product,
-        strategy: strategy,
+        protocol,
+        product,
+        strategy,
       },
     }
   }

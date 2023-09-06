@@ -28,7 +28,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
 
   if (env !== 'production' && env !== 'staging') {
     return {
-      track: function (eventType: string, payload: any) {
+      track(eventType: string, payload: any) {
         console.info('\n✨ Mixpanel Event: ', eventType, payload, '\n')
       },
       get_distinct_id: () => 'test_id',

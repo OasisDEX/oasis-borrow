@@ -47,7 +47,7 @@ const handler = async function (_req: NextApiRequest, res: NextApiResponse) {
     const estimatedPriceFor95PercentConfidence = cache.get('estimatedPriceFor95PercentConfidence')
 
     res.json({
-      time: time,
+      time,
       fromCache: true,
       maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
       maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas,

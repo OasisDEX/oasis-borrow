@@ -60,9 +60,9 @@ export function useConstantMultipleStateInitialization({
   const eligibleMultipliers = getEligibleMultipliers({
     multipliers,
     positionRatio,
-    lockedCollateral: lockedCollateral,
-    debt: debt,
-    debtFloor: debtFloor,
+    lockedCollateral,
+    debt,
+    debtFloor,
     deviation: constantMultipleTriggerData.deviation,
     minTargetRatio: min,
     maxTargetRatio: max,

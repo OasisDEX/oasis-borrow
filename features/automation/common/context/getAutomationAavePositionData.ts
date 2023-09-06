@@ -57,7 +57,7 @@ export function getAutomationAavePositionData({
     lockedCollateral,
     owner: proxyAddress!,
     token: collateralToken,
-    debtToken: debtToken,
+    debtToken,
     vaultType,
     debtTokenAddress: getNetworkContracts(NetworkIds.MAINNET, web3Context!.chainId).tokens[
       debtToken

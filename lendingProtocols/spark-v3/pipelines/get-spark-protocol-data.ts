@@ -63,7 +63,7 @@ export function getSparkProtocolData$(
         return {
           positionData: reserveData,
           accountData,
-          oraclePrice: oraclePrice,
+          oraclePrice,
           position: onChainPosition,
           userConfiguration: sparkUserConfiguration,
           reservesList: sparkReservesList,

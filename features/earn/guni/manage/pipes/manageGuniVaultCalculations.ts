@@ -42,7 +42,7 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
     currentPnL,
     earningsToDate: grossEarnings,
     earningsToDateAfterFees: netEarnings,
-    netAPY: netAPY,
+    netAPY,
     afterCloseToDai:
       sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }

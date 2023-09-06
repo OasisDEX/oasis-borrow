@@ -100,7 +100,7 @@ export function createOpenMultiplyVaultAnalytics$(
     map(({ ilk, depositAmount, multiply }) => ({
       kind: 'openMultiplyVaultConfirm',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount: depositAmount,
         // slight movements on market price are causing change of multiply
         // to counter that we round passed multiply to not have retriggered events
@@ -116,7 +116,7 @@ export function createOpenMultiplyVaultAnalytics$(
       map(({ ilk, depositAmount, openTxHash, multiply, oazoFee }) => ({
         kind: 'openMultiplyVaultConfirmTransaction',
         value: {
-          ilk: ilk,
+          ilk,
           collateralAmount: depositAmount,
           multiply: multiply?.toFixed(3),
           txHash: openTxHash,

@@ -67,7 +67,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading: false,
       disabled: isProxyCreationDisabled,
       label: state.matches('proxyFailure') ? t('retry-create-proxy') : t('create-proxy-btn'),

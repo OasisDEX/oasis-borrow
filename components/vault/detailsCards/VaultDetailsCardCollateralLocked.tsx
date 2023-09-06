@@ -80,7 +80,7 @@ export function VaultDetailsCardCollateralLocked({
       }
       openModal={() =>
         openModal(VaultDetailsCardCollateralLockedModal, {
-          token: token,
+          token,
           collateralAmountLocked: depositAmount,
           collateralLockedUSD: afterDepositAmountUSD,
         })

@@ -45,8 +45,8 @@ async function openPosition(
   const args: AaveLikeOpenStrategyArgs = {
     slippage,
     multiple: riskRatio,
-    debtToken: debtToken,
-    collateralToken: collateralToken,
+    debtToken,
+    collateralToken,
     depositedByUser: {
       collateralInWei: depositedByUser.collateralToken?.amountInBaseUnit,
       debtInWei: depositedByUser.debtToken?.amountInBaseUnit,

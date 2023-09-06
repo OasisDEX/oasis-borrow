@@ -79,12 +79,12 @@ export function VaultErrors({
       case 'withdrawAmountExceedsFreeCollateral':
         return translate('withdraw-amount-exceeds-free-collateral', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: token,
+          token,
         })
       case 'withdrawAmountExceedsFreeCollateralAtNextPrice':
         return translate('withdraw-amount-exceeds-free-collateral-at-next-price', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: token,
+          token,
         })
       case 'generateAmountExceedsDaiYieldFromTotalCollateral':
         return translate('generate-amount-exceeds-dai-yield-from-total-collateral')

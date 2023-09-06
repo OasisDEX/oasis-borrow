@@ -76,12 +76,12 @@ export function extractConstantMultipleData(triggersData: TriggersData) {
   if (triggersData.triggers && triggersData.triggers.length > 0) {
     const constantMultipleTriggers = {
       [TriggerType.BasicBuy]: extractAutoBSData({
-        triggersData: triggersData,
+        triggersData,
         triggerType: TriggerType.BasicBuy,
         isInGroup: true,
       }),
       [TriggerType.BasicSell]: extractAutoBSData({
-        triggersData: triggersData,
+        triggersData,
         triggerType: TriggerType.BasicSell,
         isInGroup: true,
       }),
@@ -112,7 +112,7 @@ export function prepareConstantMultipleResetData({
     : defaultMultiplier
 
   return {
-    multiplier: multiplier,
+    multiplier,
     targetCollRatio: calculateCollRatioFromMultiple(multiplier),
     buyExecutionCollRatio: targetCollRatio.gt(zero)
       ? buyExecutionCollRatio

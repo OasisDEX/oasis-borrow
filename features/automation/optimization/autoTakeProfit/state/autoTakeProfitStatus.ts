@@ -93,7 +93,7 @@ export function getAutoTakeProfitStatus({
         CommonAnalyticsSections.Form,
         {
           vaultId: id.toString(),
-          ilk: ilk,
+          ilk,
           closeTo: optionName as CloseVaultTo,
         },
       )

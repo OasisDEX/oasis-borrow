@@ -52,7 +52,7 @@ export function applyOpenVaultInput(
     const { priceInfo, token } = state
     const { currentCollateralPrice } = priceInfo
     const currencyDigits = calculateTokenPrecisionByValue({
-      token: token,
+      token,
       usdPrice: currentCollateralPrice,
     })
     const depositAmount =

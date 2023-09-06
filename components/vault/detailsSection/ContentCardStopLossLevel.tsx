@@ -71,7 +71,7 @@ export function ContentCardStopLossLevel({
   }
 
   const contentCardModalSettings: ContentCardStopLossCollateralRatioModalProps = {
-    isStopLossEnabled: isStopLossEnabled,
+    isStopLossEnabled,
     stopLossLevelFormatted: formatted.stopLossLevel,
     ratioParamTranslationKey,
     modalDescription,

@@ -80,7 +80,7 @@ export function GuniOpenMultiplyVaultDetails(
   if (depositAmount.gt(zero) && (apy30.gt(zero) || apy7.gt(zero))) {
     breakeven = calculateBreakeven({
       depositAmount,
-      entryFees: entryFees,
+      entryFees,
       apy: useApy30ForBreakeven ? apy30 : apy7,
     })
   }

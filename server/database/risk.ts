@@ -16,7 +16,7 @@ export async function updateRiskForAddress(
 ): Promise<WalletRisk | null> {
   return await prisma.walletRisk.update({
     where: {
-      address: address,
+      address,
     },
     data: { is_risky: isRisky, last_check: new Date() },
   })
@@ -28,6 +28,6 @@ export async function createRiskForAddress(
   isRisky: boolean,
 ): Promise<WalletRisk | null> {
   return await prisma.walletRisk.create({
-    data: { address: address, is_risky: isRisky, last_check: new Date() },
+    data: { address, is_risky: isRisky, last_check: new Date() },
   })
 }

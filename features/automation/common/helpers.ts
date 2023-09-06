@@ -227,8 +227,8 @@ export function getAutoBSVaultChange({
         currentCollateralPrice: executionPrice,
         marketPrice: executionPrice,
         slippage: deviation.div(100),
-        debt: debt,
-        lockedCollateral: lockedCollateral,
+        debt,
+        lockedCollateral,
         requiredCollRatio: targetCollRatio.div(100),
         depositAmount: zero,
         paybackAmount: zero,
@@ -331,7 +331,7 @@ export function automationMultipleRangeSliderAnalytics({
 }) {
   const analyticsAdditionalParams = {
     vaultId: vaultId.toString(),
-    ilk: ilk,
+    ilk,
     collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
     ...(targetMultiple && { targetMultiple: targetMultiple.toString() }),
   }
@@ -415,7 +415,7 @@ export function automationInputsAnalytics({
 
   const analyticsAdditionalParams = {
     vaultId: vaultId.toString(),
-    ilk: ilk,
+    ilk,
     collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
   }
 

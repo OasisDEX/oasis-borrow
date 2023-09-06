@@ -76,16 +76,16 @@ export function getAutoBSStatus({
     execCollRatio: autoBSState.execCollRatio,
     deviation: autoBSState.deviation,
     executionPrice,
-    lockedCollateral: lockedCollateral,
-    debt: debt,
+    lockedCollateral,
+    debt,
   })
   const { debtDelta: debtDeltaAtCurrentCollRatio } = getAutoBSVaultChange({
     targetCollRatio: autoBSState.targetCollRatio,
     execCollRatio: positionRatio.times(100),
     deviation: autoBSState.deviation,
     executionPrice: executionPriceAtCurrentCollRatio,
-    lockedCollateral: lockedCollateral,
-    debt: debt,
+    lockedCollateral,
+    debt,
   })
   const resetData = prepareAutoBSResetData(autoBSTriggerData, positionRatio, publishType)
 

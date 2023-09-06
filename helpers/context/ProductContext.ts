@@ -227,8 +227,8 @@ export function setupProductContext(
     )
     .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
       if (account) {
-        Sentry.setUser({ id: account, walletLabel: walletLabel })
-        mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
+        Sentry.setUser({ id: account, walletLabel })
+        mixpanelIdentify(account, { walletType: connectionKind, walletLabel })
         trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }
     })

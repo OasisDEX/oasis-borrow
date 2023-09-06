@@ -195,7 +195,7 @@ export function getManageAaveV3PositionStateMachineServices(
         ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
-          allowance: allowance,
+          allowance,
         })),
         distinctUntilChanged(isEqual),
       )

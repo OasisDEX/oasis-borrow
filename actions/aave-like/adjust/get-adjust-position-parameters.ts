@@ -38,13 +38,13 @@ export async function getAdjustPositionParameters({
     const args: AaveLikeAdjustStrategyArgs = {
       slippage,
       multiple: riskRatio,
-      debtToken: debtToken,
-      collateralToken: collateralToken,
+      debtToken,
+      collateralToken,
     }
 
     const stratDeps: Omit<AaveLikeAdjustStrategyDeps, 'addresses' | 'getSwapData'> = {
       currentPosition,
-      provider: provider,
+      provider,
       proxy: proxyAddress,
       user: userAddress,
       isDPMProxy: proxyType === ProxyType.DpmProxy,

@@ -117,8 +117,8 @@ export function SidebarSetupAutoTakeProfit({
   const { estimatedProfitOnClose } = getOnCloseEstimations({
     colMarketPrice: autoTakeProfitState.executionPrice,
     colOraclePrice: autoTakeProfitState.executionPrice,
-    debt: debt,
-    debtOffset: debtOffset,
+    debt,
+    debtOffset,
     ethMarketPrice,
     lockedCollateral,
     toCollateral: autoTakeProfitState.toCollateral,

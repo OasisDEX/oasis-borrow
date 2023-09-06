@@ -185,7 +185,7 @@ export function createManageVaultAnalytics$(
     map(({ vault: { ilk }, depositAmount, withdrawAmount, generateAmount, paybackAmount }) => ({
       kind: 'manageVaultConfirm',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount:
           depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
         daiAmount:
@@ -209,7 +209,7 @@ export function createManageVaultAnalytics$(
         }) => ({
           kind: 'manageVaultConfirmTransaction',
           value: {
-            ilk: ilk,
+            ilk,
             collateralAmount:
               depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
             daiAmount:

@@ -1,3 +1,4 @@
+/* eslint-disable no-global-assign */
 import { LocalStorage } from 'test-configs/mock-local-storage'
 
 import '@testing-library/jest-dom'

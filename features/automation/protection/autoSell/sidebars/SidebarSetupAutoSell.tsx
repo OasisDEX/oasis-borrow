@@ -128,7 +128,7 @@ export function SidebarSetupAutoSell({
     nextPositionRatio,
     token,
     gasEstimationUsd: gasEstimation?.usdValue,
-    ethBalance: ethBalance,
+    ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: autoSellState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,

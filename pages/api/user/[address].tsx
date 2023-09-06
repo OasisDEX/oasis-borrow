@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 export async function selectUserByAddress(address: string): Promise<User | null> {
   return prisma.user.findUnique({
-    where: { address: address },
+    where: { address },
   })
 }
 

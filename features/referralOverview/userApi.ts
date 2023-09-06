@@ -153,8 +153,8 @@ export function createUserUsingApi$(
     },
     body: {
       user_that_referred_address: referrer,
-      address: address,
-      accepted: accepted,
+      address,
+      accepted,
     },
   }).pipe(map((resp) => resp.status))
 }

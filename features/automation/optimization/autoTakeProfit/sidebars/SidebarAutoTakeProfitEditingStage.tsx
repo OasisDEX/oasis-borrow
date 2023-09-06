@@ -63,7 +63,7 @@ export function SidebarAutoTakeProfitEditingStage({
         CommonAnalyticsSections.Form,
         {
           vaultId: id.toString(),
-          ilk: ilk,
+          ilk,
           collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },

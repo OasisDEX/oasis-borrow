@@ -397,7 +397,7 @@ export function applyManageVaultInput(
       vault: { token },
     } = state
     const currencyDigits = calculateTokenPrecisionByValue({
-      token: token,
+      token,
       usdPrice: currentCollateralPrice,
     })
 

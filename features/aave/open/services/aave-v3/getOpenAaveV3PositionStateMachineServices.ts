@@ -196,7 +196,7 @@ export function getOpenAaveV3PositionStateMachineServices(
         ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
-          allowance: allowance,
+          allowance,
         })),
         distinctUntilChanged((a, b) => isEqual(a, b)),
       )

@@ -100,7 +100,7 @@ export function mockIlkData$({
         switchMap(([maxDebtPerUnitCollateral, debtScalingFactor]) =>
           of({
             normalizedIlkDebt,
-            debtScalingFactor: debtScalingFactor,
+            debtScalingFactor,
             maxDebtPerUnitCollateral,
             debtCeiling:
               debtCeiling || normalizedIlkDebt.times(DEFAULT_DEBT_SCALING_FACTOR).times(2.5),

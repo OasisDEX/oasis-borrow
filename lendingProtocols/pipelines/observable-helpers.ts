@@ -38,7 +38,7 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
     }
     const actualArgs = <Args>{
       ...args,
-      networkId: networkId,
+      networkId,
     }
 
     return refreshTrigger$.pipe(

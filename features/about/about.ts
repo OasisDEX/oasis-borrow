@@ -30,7 +30,7 @@ export function parseMemberInfo(fileName: string): TeamMember {
   return {
     name: memberNameNoDigits,
     order: memberName,
-    title: title,
+    title,
     picFileName: fileName,
   }
 }

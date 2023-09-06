@@ -40,7 +40,7 @@ export function warningsAutoSellValidation({
   debtFloor: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token: token,
+    token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,

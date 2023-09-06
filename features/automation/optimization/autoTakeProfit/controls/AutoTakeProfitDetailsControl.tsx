@@ -43,7 +43,7 @@ export function AutoTakeProfitDetailsControl() {
       triggerColPrice: executionPrice,
       estimatedProfit: estimatedProfitOnClose,
       triggerColRatio: ratioAtCollateralPrice({
-        lockedCollateral: lockedCollateral,
+        lockedCollateral,
         collateralPriceUSD: executionPrice,
         vaultDebt: debt,
       }),

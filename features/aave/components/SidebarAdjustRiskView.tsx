@@ -152,7 +152,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           rightBoundry={
             sliderValue
               ? viewConfig.rightBoundary.valueExtractor({
-                  oracleAssetPrice: oracleAssetPrice,
+                  oracleAssetPrice,
                   oraclesPricesRatio: oraclePriceCollateralToDebt,
                   ltv: sliderValue,
                 })

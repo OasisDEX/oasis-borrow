@@ -15,7 +15,7 @@ export function createFollowButton(positionId: PositionId, protocol: Protocol) {
           chainId,
           followerAddress: connectedWalletAddress,
           vaultId: new BigNumber(positionId.vaultId),
-          protocol: protocol,
+          protocol,
         }
       : undefined
 

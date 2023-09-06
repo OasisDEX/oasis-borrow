@@ -22,6 +22,6 @@ export const callOasisActionsWithDpmProxy: TransactionDef<OasisActionsTxData> = 
     return [to, data]
   },
   options: ({ value }) => ({
-    value: value,
+    value,
   }),
 }

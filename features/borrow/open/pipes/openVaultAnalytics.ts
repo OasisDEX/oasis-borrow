@@ -113,7 +113,7 @@ export function createOpenVaultAnalytics$(
     map(({ ilk, depositAmount, generateAmount }) => ({
       kind: 'openVaultConfirm',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount: depositAmount,
         daiAmount: generateAmount || zero,
       },
@@ -126,7 +126,7 @@ export function createOpenVaultAnalytics$(
     map(({ ilk, depositAmount, generateAmount, openTxHash }) => ({
       kind: 'openVaultConfirmTransaction',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount: depositAmount,
         daiAmount: generateAmount || zero,
         txHash: openTxHash,

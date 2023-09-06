@@ -120,7 +120,7 @@ export function SidebarAdjustStopLossEditingStage({
         CommonAnalyticsSections.Form,
         {
           vaultId: !id.isZero() ? id.toString() : 'n/a',
-          ilk: ilk,
+          ilk,
           collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },
@@ -174,7 +174,7 @@ export function SidebarAdjustStopLossEditingStage({
                   CommonAnalyticsSections.Form,
                   {
                     vaultId: !id.isZero() ? id.toString() : 'n/a',
-                    ilk: ilk,
+                    ilk,
                     closeTo: optionName as CloseVaultTo,
                   },
                 )

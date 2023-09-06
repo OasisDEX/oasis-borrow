@@ -26,10 +26,10 @@ export function createPositionsList$(
     dsr$(address),
   ).pipe(
     map(([makerPositions, aaveLikePositions, ajnaPositions, dsrPosition]) => ({
-      makerPositions: makerPositions,
-      aaveLikePositions: aaveLikePositions,
-      ajnaPositions: ajnaPositions,
-      dsrPosition: dsrPosition,
+      makerPositions,
+      aaveLikePositions,
+      ajnaPositions,
+      dsrPosition,
     })),
   )
 }

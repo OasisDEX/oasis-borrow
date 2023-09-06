@@ -34,7 +34,7 @@ export function ManageAaveReviewingStateView({
     primaryButton: {
       isLoading: false,
       disabled: !state.can('NEXT_STEP') || isLocked(state) || stopLossError,
-      label: label,
+      label,
       action: () => send('NEXT_STEP'),
     },
     textButton: state.matches('frontend.reviewingAdjusting')

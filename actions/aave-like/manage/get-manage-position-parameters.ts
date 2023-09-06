@@ -82,7 +82,7 @@ export async function getManagePositionParameters(
         'addresses' | 'protocolType'
       > = {
         currentPosition,
-        provider: provider,
+        provider,
         proxy: proxyAddress,
         user: userAddress,
         network: networkIdToLibraryNetwork(networkId),
@@ -139,7 +139,7 @@ export async function getManagePositionParameters(
 
       const borrowDepositStratDeps: Omit<AaveLikeDepositBorrowStrategyDeps, 'addresses'> = {
         currentPosition,
-        provider: provider,
+        provider,
         proxy: proxyAddress,
         user: userAddress,
         network: networkIdToLibraryNetwork(networkId),

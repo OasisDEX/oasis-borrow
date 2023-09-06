@@ -35,7 +35,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
         vault: ctx.query.vault || null,
         network: networkOrProduct,
-        protocol: protocol,
+        protocol,
       },
     }
   }

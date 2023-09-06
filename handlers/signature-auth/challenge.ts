@@ -19,7 +19,7 @@ const address = z
   )
 
 const inputSchema = z.object({
-  address: address,
+  address,
   isGnosisSafe: z.boolean(),
 })
 

@@ -184,7 +184,7 @@ export function SidebarConstantMultipleEditingStage({
               })
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'multiplier',
-                multiplier: multiplier,
+                multiplier,
               })
 
               trackingEvents.automation.buttonClick(
@@ -193,7 +193,7 @@ export function SidebarConstantMultipleEditingStage({
                 CommonAnalyticsSections.Form,
                 {
                   vaultId: id.toString(),
-                  ilk: ilk,
+                  ilk,
                   targetMultiple: multiplier.toString(),
                 },
               )
@@ -264,7 +264,7 @@ export function SidebarConstantMultipleEditingStage({
           })
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'max-buy-price',
-            maxBuyPrice: maxBuyPrice,
+            maxBuyPrice,
           })
         })}
         onToggle={(toggleStatus) => {
@@ -362,7 +362,7 @@ export function SidebarConstantMultipleEditingStage({
         value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
         analytics={{
           page: Pages.ConstantMultiple,
-          additionalParams: { vaultId: id.toString(), ilk: ilk },
+          additionalParams: { vaultId: id.toString(), ilk },
         }}
       />
       {isEditing && (

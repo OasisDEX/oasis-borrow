@@ -120,7 +120,7 @@ function AllowanceInfoStateView({
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: <AllowanceInfoStateViewContent state={state} send={send} />,
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading,
       disabled: isLoading || !state.can('NEXT_STEP'),
       label: t('approve-allowance'),
@@ -169,7 +169,7 @@ function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps)
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: <AllowanceInProgressStateViewContent state={state} />,
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading: true,
       disabled: true,
       label: t('approving-allowance'),
@@ -210,7 +210,7 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
       </Grid>
     ),
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading: false,
       disabled: false,
       label: t('continue'),

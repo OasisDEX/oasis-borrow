@@ -237,7 +237,7 @@ function buildAaveViewModel(
         return {
           token: collateralToken,
           debtToken,
-          title: title,
+          title,
           url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, //TODO: Proper network handling
           id: isAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
@@ -251,7 +251,7 @@ function buildAaveViewModel(
           isOwner,
           lockedCollateral: collateralNotWei,
           type: mappymap[positionCreatedEvent.positionType],
-          liquidity: liquidity,
+          liquidity,
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,
@@ -358,7 +358,7 @@ function buildAaveLikeV3OnlyViewModel(
         return {
           token: collateralToken,
           debtToken,
-          title: title,
+          title,
           url: `/${strategyConfig.network}/${mapAaveLikeUrlSlug(protocol)}/${mapAaveProtocol(
             protocol,
           )}/${positionId}`,
@@ -373,7 +373,7 @@ function buildAaveLikeV3OnlyViewModel(
           isOwner,
           lockedCollateral: collateralNotWei,
           type: mappymap[strategyConfig.type],
-          liquidity: liquidity,
+          liquidity,
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,

@@ -466,7 +466,7 @@ export function getVaultChange({
       },
       // desired cdp state
       {
-        requiredCollRatio: requiredCollRatio,
+        requiredCollRatio,
         providedCollateral: depositAmount,
         providedDai: paybackAmount,
         withdrawDai: generateAmount,
@@ -826,7 +826,7 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
       })
 
   const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
-    debt: debt,
+    debt,
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
@@ -838,7 +838,7 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
   })
 
   const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
-    debt: debt,
+    debt,
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,

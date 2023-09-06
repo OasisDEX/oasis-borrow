@@ -240,9 +240,9 @@ export function setupSparkV3Context(
   function updateStrategyConfig(positionId: PositionId, networkName: NetworkNames) {
     return (vaultType: VaultType) => {
       strategyUpdateTrigger.next({
-        positionId: positionId,
-        networkName: networkName,
-        vaultType: vaultType,
+        positionId,
+        networkName,
+        vaultType,
       })
     }
   }

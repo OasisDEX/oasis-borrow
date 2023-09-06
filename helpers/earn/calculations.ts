@@ -119,16 +119,16 @@ export function getYields$(
               yields: {
                 ...acc.yields,
                 [period]: {
-                  days: days,
-                  value: value,
+                  days,
+                  value,
                 },
               },
             }
           },
-          { ilk: ilk, yields: {} },
+          { ilk, yields: {} },
         )
     }),
-    catchError(() => of({ ilk: ilk, yields: {} })),
+    catchError(() => of({ ilk, yields: {} })),
     distinctUntilChanged(isEqual),
   )
 }

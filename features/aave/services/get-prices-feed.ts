@@ -16,8 +16,8 @@ export function getPricesFeed$(
       distinctUntilChanged(isEqual),
       map(({ collateralPrice, debtPrice }) => ({
         type: 'PRICES_RECEIVED',
-        collateralPrice: collateralPrice,
-        debtPrice: debtPrice,
+        collateralPrice,
+        debtPrice,
       })),
     )
   }

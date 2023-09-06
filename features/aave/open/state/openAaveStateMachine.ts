@@ -582,7 +582,7 @@ export function createOpenAaveStateMachine(
             optionalStopLoss
 
           return {
-            totalSteps: totalSteps,
+            totalSteps,
           }
         }),
         setAmount: assign((context, event) => ({

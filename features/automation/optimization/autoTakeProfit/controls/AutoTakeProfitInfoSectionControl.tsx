@@ -24,11 +24,11 @@ export function AutoTakeProfitInfoSectionControl({
     getOnCloseEstimations({
       colMarketPrice: triggerColPrice,
       colOraclePrice: triggerColPrice,
-      debt: debt,
-      debtOffset: debtOffset,
+      debt,
+      debtOffset,
       ethMarketPrice,
-      lockedCollateral: lockedCollateral,
-      toCollateral: toCollateral,
+      lockedCollateral,
+      toCollateral,
     })
 
   return (
