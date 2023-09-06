@@ -7,17 +7,15 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 
 export function ProductPagesLayout({ children }: WithChildren) {
   return (
-    <>
-      <WithAnnouncementLayout
-        header={<NavigationController />}
-        footer={<Footer />}
-        showAnnouncement={false}
-        variant="landingContainer"
-        sx={{ position: 'relative' }}
-        bg={<BackgroundLight />}
-      >
-        {children}
-      </WithAnnouncementLayout>
-    </>
+    <WithAnnouncementLayout
+      header={<NavigationController />}
+      footer={<Footer />}
+      showAnnouncement={false}
+      variant="landingContainer"
+      sx={{ position: 'relative' }}
+      bg={<BackgroundLight />}
+    >
+      {children}
+    </WithAnnouncementLayout>
   )
 }

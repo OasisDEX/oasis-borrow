@@ -459,11 +459,9 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
         </>
       )}
       {event.kind === 'OPEN_MULTIPLY_GUNI_VAULT' && (
-        <>
-          <VaultHistoryEntryDetailsItem label={t('history.deposited')}>
-            {'depositDai' in event && formatCryptoBalance(event.depositDai)} DAI
-          </VaultHistoryEntryDetailsItem>
-        </>
+        <VaultHistoryEntryDetailsItem label={t('history.deposited')}>
+          {'depositDai' in event && formatCryptoBalance(event.depositDai)} DAI
+        </VaultHistoryEntryDetailsItem>
       )}
       {event.kind === 'INCREASE_MULTIPLE' && (
         <VaultHistoryEntryDetailsItem label={t('history.bought')}>

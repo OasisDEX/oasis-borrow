@@ -63,7 +63,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
                     </PositionHistoryRow>
                   )
                 default:
-                  return <></>
+                  return <>{null}</>
               }
             })}
       </DefinitionList>

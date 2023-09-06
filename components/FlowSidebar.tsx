@@ -127,7 +127,7 @@ export function FlowSidebar({
           />
         )
       default:
-        return <></>
+        return <>{null}</>
     }
   }
   if (isProxyReady && !isAllowanceReady && allowanceConsidered) {
@@ -144,9 +144,9 @@ export function FlowSidebar({
           />
         )
       default:
-        return <></>
+        return <>{null}</>
     }
   }
 
-  return <></>
+  return <>{null}</>
 }

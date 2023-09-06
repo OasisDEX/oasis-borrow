@@ -285,30 +285,28 @@ export function FeesView({ userReferral }: Props) {
                 {userReferral.state === 'currentUser' &&
                   !userReferral.invitePending &&
                   userReferral?.referrer && (
-                    <>
-                      <AppLink
-                        href={`https://etherscan.com/address/${userReferral?.referrer}`}
+                    <AppLink
+                      href={`https://etherscan.com/address/${userReferral?.referrer}`}
+                      sx={{
+                        fontSize: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        pt: '16px',
+                        lineHeight: '22px',
+                      }}
+                      variant="inText"
+                    >
+                      {t('ref.etherscan')}
+                      <Icon
+                        name="arrow_right"
+                        size="12px"
                         sx={{
-                          fontSize: 2,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          pt: '16px',
-                          lineHeight: '22px',
+                          ml: 1,
+                          position: 'relative',
                         }}
-                        variant="inText"
-                      >
-                        {t('ref.etherscan')}
-                        <Icon
-                          name="arrow_right"
-                          size="12px"
-                          sx={{
-                            ml: 1,
-                            position: 'relative',
-                          }}
-                        />
-                      </AppLink>
-                    </>
+                      />
+                    </AppLink>
                   )}
                 {userReferral.state === 'currentUser' && userReferral.invitePending && (
                   <>

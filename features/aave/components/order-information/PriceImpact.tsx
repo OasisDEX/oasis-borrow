@@ -84,7 +84,7 @@ export function PriceImpact({
   ])
 
   if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
-    return <></>
+    return <>{null}</>
   }
 
   const swapPrice =

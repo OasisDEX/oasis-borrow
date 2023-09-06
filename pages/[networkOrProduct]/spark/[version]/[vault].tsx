@@ -85,7 +85,7 @@ function WithSparkStrategy({
     )
     void push(INTERNAL_LINKS.notFound)
 
-    return <></>
+    return <>{null}</>
   }
 
   const _updateStrategyConfig = updateStrategyConfig

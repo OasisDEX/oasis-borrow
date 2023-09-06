@@ -123,6 +123,6 @@ export function ProxyView({ proxyMachine, steps }: ProxyViewProps) {
     case state.matches('proxyInProgress'):
       return <ProxyRunningView steps={steps} />
     default:
-      return <></>
+      return <>{null}</>
   }
 }

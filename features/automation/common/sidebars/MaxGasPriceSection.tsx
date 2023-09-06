@@ -50,42 +50,40 @@ export function MaxGasPriceSection({ onChange, value, analytics }: MaxGasPriceSe
       dropdownValues={[
         {
           value: (
-            <>
-              <ActionPills
-                active={value.toString()}
-                variant="secondary"
-                items={[
-                  {
-                    id: '100',
-                    label: '100 Gwei',
-                    action: () => {
-                      handleChange(100)
-                    },
+            <ActionPills
+              active={value.toString()}
+              variant="secondary"
+              items={[
+                {
+                  id: '100',
+                  label: '100 Gwei',
+                  action: () => {
+                    handleChange(100)
                   },
-                  {
-                    id: '300',
-                    label: '300 Gwei',
-                    action: () => {
-                      handleChange(300)
-                    },
+                },
+                {
+                  id: '300',
+                  label: '300 Gwei',
+                  action: () => {
+                    handleChange(300)
                   },
-                  {
-                    id: '500',
-                    label: '500 Gwei',
-                    action: () => {
-                      handleChange(500)
-                    },
+                },
+                {
+                  id: '500',
+                  label: '500 Gwei',
+                  action: () => {
+                    handleChange(500)
                   },
-                  {
-                    id: maxUint32.toString(),
-                    label: 'No Limit',
-                    action: () => {
-                      handleChange(maxUint32.toNumber())
-                    },
+                },
+                {
+                  id: maxUint32.toString(),
+                  label: 'No Limit',
+                  action: () => {
+                    handleChange(maxUint32.toNumber())
                   },
-                ]}
-              />
-            </>
+                },
+              ]}
+            />
           ),
         },
       ]}

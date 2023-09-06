@@ -18,16 +18,14 @@ export function AssetsTableDataCellProtection({
   const { t } = useTranslation()
 
   return (
-    <>
-      <AppLink href={link} hash={VaultViewMode.Protection}>
-        <Button variant={level > 0 ? 'actionActiveGreen' : 'action'}>
-          {level > 0
-            ? t('discover.table.protection-value', { protection: level })
-            : isOwner
-            ? t('discover.table.activate')
-            : t('discover.table.inactive')}
-        </Button>
-      </AppLink>
-    </>
+    <AppLink href={link} hash={VaultViewMode.Protection}>
+      <Button variant={level > 0 ? 'actionActiveGreen' : 'action'}>
+        {level > 0
+          ? t('discover.table.protection-value', { protection: level })
+          : isOwner
+          ? t('discover.table.activate')
+          : t('discover.table.inactive')}
+      </Button>
+    </AppLink>
   )
 }

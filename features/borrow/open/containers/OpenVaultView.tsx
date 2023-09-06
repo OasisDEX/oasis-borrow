@@ -13,11 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { Box, Container, Grid } from 'theme-ui'
 
 function OpenVaultForm(props: OpenVaultState) {
-  return (
-    <>
-      <SidebarOpenBorrowVault {...props} />
-    </>
-  )
+  return <SidebarOpenBorrowVault {...props} />
 }
 
 export function OpenVaultContainer(props: OpenVaultState) {

@@ -212,6 +212,6 @@ export function CreateDPMAccountViewConsumed({
     case state.matches('txSuccess'):
       return <SuccessStateView state={state} send={send} />
     default:
-      return <></>
+      return <>{null}</>
   }
 }

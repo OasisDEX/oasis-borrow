@@ -125,23 +125,21 @@ export function GuniOpenMultiplyVaultDetails(
       <DetailsSection
         title={<GuniVaultDetailsTitle token={token} depositAmount={depositAmount} />}
         content={
-          <>
-            <DetailsSectionContentTable
-              headers={[
-                t('earn-vault.simulate.header1'),
-                t('earn-vault.simulate.header2'),
-                t('earn-vault.simulate.header3'),
-              ]}
-              rows={contentRowData}
-              footnote={
-                <>
-                  {t('earn-vault.simulate.footnote1')}
-                  <br />
-                  {t('earn-vault.simulate.footnote2')}
-                </>
-              }
-            />
-          </>
+          <DetailsSectionContentTable
+            headers={[
+              t('earn-vault.simulate.header1'),
+              t('earn-vault.simulate.header2'),
+              t('earn-vault.simulate.header3'),
+            ]}
+            rows={contentRowData}
+            footnote={
+              <>
+                {t('earn-vault.simulate.footnote1')}
+                <br />
+                {t('earn-vault.simulate.footnote2')}
+              </>
+            }
+          />
         }
         footer={
           <DetailsSectionFooterItemWrapper>

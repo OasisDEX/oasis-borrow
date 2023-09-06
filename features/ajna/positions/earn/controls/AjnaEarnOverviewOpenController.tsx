@@ -46,17 +46,15 @@ export function AjnaEarnOverviewOpenController() {
       }
       notifications={notifications}
       content={
-        <>
-          <DetailsSectionContentTable
-            headers={[
-              t('ajna.position-page.earn.open.simulation.duration'),
-              t('ajna.position-page.earn.open.simulation.estimated-earnings'),
-              t('ajna.position-page.earn.open.simulation.net-value'),
-            ]}
-            rows={getAjnaSimulationRows({ rowsInput, quoteToken, depositAmount })}
-            footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
-          />
-        </>
+        <DetailsSectionContentTable
+          headers={[
+            t('ajna.position-page.earn.open.simulation.duration'),
+            t('ajna.position-page.earn.open.simulation.estimated-earnings'),
+            t('ajna.position-page.earn.open.simulation.net-value'),
+          ]}
+          rows={getAjnaSimulationRows({ rowsInput, quoteToken, depositAmount })}
+          footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
+        />
       }
       footer={
         <DetailsSectionFooterItemWrapper>

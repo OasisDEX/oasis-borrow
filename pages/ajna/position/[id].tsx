@@ -1,11 +1,9 @@
 import React from 'react'
 import { GetServerSidePropsContext } from 'next'
 
-function AjnaManagePositionPageRedirect() {
-  return <></>
+export default function () {
+  return null
 }
-
-export default AjnaManagePositionPageRedirect
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   const id = query.id as string

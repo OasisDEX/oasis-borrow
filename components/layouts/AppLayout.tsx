@@ -8,17 +8,15 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 
 export function AppLayout({ children }: WithChildren) {
   return (
-    <>
-      <WithAnnouncementLayout
-        sx={{ zIndex: 2, position: 'relative' }}
-        showAnnouncement={false}
-        footer={<Footer />}
-        header={<NavigationController />}
-        bg={<BackgroundLight />}
-      >
-        {children}
-        <ModalTrezorMetamaskEIP1559 />
-      </WithAnnouncementLayout>
-    </>
+    <WithAnnouncementLayout
+      sx={{ zIndex: 2, position: 'relative' }}
+      showAnnouncement={false}
+      footer={<Footer />}
+      header={<NavigationController />}
+      bg={<BackgroundLight />}
+    >
+      {children}
+      <ModalTrezorMetamaskEIP1559 />
+    </WithAnnouncementLayout>
   )
 }

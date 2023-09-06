@@ -126,6 +126,6 @@ export function StopLossDetailsLayout({
       />
     )
   } else {
-    return <></>
+    return <>{null}</>
   }
 }

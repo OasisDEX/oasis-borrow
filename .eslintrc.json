@@ -271,6 +271,6 @@
 
     //* eslint-plugin-prettier */
 
-    "prettier/prettier": 2
+    "prettier/prettier": "error"
   }
 }

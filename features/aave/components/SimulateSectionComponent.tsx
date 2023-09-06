@@ -85,21 +85,19 @@ function SimulationSection({
       <DetailsSection
         title={<SimulateTitle token={token} depositAmount={amount} />}
         content={
-          <>
-            <DetailsSectionContentTable
-              headers={[
-                t('earn-vault.simulate.header1'),
-                t('earn-vault.simulate.header2'),
-                t('earn-vault.simulate.header3'),
-              ]}
-              rows={[
-                [t('earn-vault.simulate.rowlabel1'), ...mapSimulation(simulation?.previous30Days)],
-                [t('earn-vault.simulate.rowlabel2'), ...mapSimulation(simulation?.previous90Days)],
-                [t('earn-vault.simulate.rowlabel3'), ...mapSimulation(simulation?.previous1Year)],
-              ]}
-              footnote={<>{t('earn-vault.simulate.footnote1')}</>}
-            />
-          </>
+          <DetailsSectionContentTable
+            headers={[
+              t('earn-vault.simulate.header1'),
+              t('earn-vault.simulate.header2'),
+              t('earn-vault.simulate.header3'),
+            ]}
+            rows={[
+              [t('earn-vault.simulate.rowlabel1'), ...mapSimulation(simulation?.previous30Days)],
+              [t('earn-vault.simulate.rowlabel2'), ...mapSimulation(simulation?.previous90Days)],
+              [t('earn-vault.simulate.rowlabel3'), ...mapSimulation(simulation?.previous1Year)],
+            ]}
+            footnote={<>{t('earn-vault.simulate.footnote1')}</>}
+          />
         }
         footer={
           <DetailsSectionFooterItemWrapper>

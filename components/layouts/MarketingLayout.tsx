@@ -16,16 +16,14 @@ export function MarketingLayout({
   topBackground = 'default',
 }: MarketingLayoutProps) {
   return (
-    <>
-      <BasicLayout
-        header={<NavigationController />}
-        footer={<Footer />}
-        variant={variant || 'marketingContainer'}
-        sx={{ position: 'relative' }}
-        bg={marketingBackgrounds[topBackground]}
-      >
-        {children}
-      </BasicLayout>
-    </>
+    <BasicLayout
+      header={<NavigationController />}
+      footer={<Footer />}
+      variant={variant || 'marketingContainer'}
+      sx={{ position: 'relative' }}
+      bg={marketingBackgrounds[topBackground]}
+    >
+      {children}
+    </BasicLayout>
   )
 }

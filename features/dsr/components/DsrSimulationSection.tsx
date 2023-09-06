@@ -62,20 +62,18 @@ export function DsrSimulationSection({
       <DetailsSection
         title={<SimulateTitle token="DAI" depositAmount={amount} />}
         content={
-          <>
-            <DetailsSectionContentTable
-              headers={[
-                t('dsr.simulation.header1'),
-                t('dsr.simulation.header2'),
-                t('dsr.simulation.header3'),
-              ]}
-              rows={[
-                [t('dsr.simulation.rowlabel1'), ...mapSimulation(simulation?.next30Days)],
-                [t('dsr.simulation.rowlabel2'), ...mapSimulation(simulation?.next90Days)],
-                [t('dsr.simulation.rowlabel3'), ...mapSimulation(simulation?.next1Year)],
-              ]}
-            />
-          </>
+          <DetailsSectionContentTable
+            headers={[
+              t('dsr.simulation.header1'),
+              t('dsr.simulation.header2'),
+              t('dsr.simulation.header3'),
+            ]}
+            rows={[
+              [t('dsr.simulation.rowlabel1'), ...mapSimulation(simulation?.next30Days)],
+              [t('dsr.simulation.rowlabel2'), ...mapSimulation(simulation?.next90Days)],
+              [t('dsr.simulation.rowlabel3'), ...mapSimulation(simulation?.next1Year)],
+            ]}
+          />
         }
         footer={
           <DetailsSectionFooterItemWrapper>

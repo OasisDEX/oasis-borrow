@@ -70,16 +70,14 @@ export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxy
     )
   } else {
     return (
-      <>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          <Trans
-            i18nKey="vault-form.subtext.new-proxy-temporally-disabled"
-            components={{
-              1: <AppLink href={EXTERNAL_LINKS.BLOG.VAULT_AFTER_MERGE} sx={{ fontSize: 2 }} />,
-            }}
-          />
-        </Text>
-      </>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        <Trans
+          i18nKey="vault-form.subtext.new-proxy-temporally-disabled"
+          components={{
+            1: <AppLink href={EXTERNAL_LINKS.BLOG.VAULT_AFTER_MERGE} sx={{ fontSize: 2 }} />,
+          }}
+        />
+      </Text>
     )
   }
 }

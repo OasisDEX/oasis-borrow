@@ -114,6 +114,6 @@ export function StrategyInformationContainer({
       )}
     </VaultChangesInformationContainer>
   ) : (
-    <></>
+    <>{null}</>
   )
 }

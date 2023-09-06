@@ -298,6 +298,6 @@ export function AllowanceView({
     case state.matches('txSuccess'):
       return <AllowanceSuccessStateView state={state} send={send} steps={steps} />
     default:
-      return <></>
+      return <>{null}</>
   }
 }

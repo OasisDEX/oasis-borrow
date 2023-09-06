@@ -3,7 +3,7 @@ import { POOL_FINDER_DEFAULT_PRODUCT } from 'features/poolFinder/consts'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 
 export default function () {
-  return <></>
+  return null
 }
 
 export async function getServerSideProps() {

@@ -582,7 +582,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
     default: {
-      return <></>
+      return <>{null}</>
     }
   }
 }

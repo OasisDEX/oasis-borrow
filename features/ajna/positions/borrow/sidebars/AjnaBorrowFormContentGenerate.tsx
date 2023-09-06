@@ -55,11 +55,9 @@ export function AjnaBorrowFormContentGenerate() {
       />
       {generateAmount && <AjnaBorrowOriginationFee />}
       {(generateAmount || depositAmount) && (
-        <>
-          <AjnaFormContentSummary>
-            <AjnaBorrowFormOrder />
-          </AjnaFormContentSummary>
-        </>
+        <AjnaFormContentSummary>
+          <AjnaBorrowFormOrder />
+        </AjnaFormContentSummary>
       )}
     </>
   )

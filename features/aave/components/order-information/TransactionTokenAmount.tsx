@@ -29,7 +29,7 @@ export function TransactionTokenAmount({
   const { toTokenAmount, fromTokenAmount, targetToken } = transactionParameters.simulation.swap
 
   if (!allDefined(toTokenAmount, fromTokenAmount) || toTokenAmount?.lte(zero)) {
-    return <></>
+    return <>{null}</>
   }
   const isBuyingCollateral = targetToken.symbol === tokens.collateral
 

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { FTPolar } from 'helpers/fonts'
 import { fadeInAnimation } from 'theme/animations'
 import { icons } from 'theme/icons'
@@ -961,7 +962,7 @@ export const oasisBaseTheme = {
       border: '1px solid #D1DEE6',
       p: 0,
       ':focus-within': {
-        //indicate that input is focused
+        // indicate that input is focused
       },
     },
     plain: {
