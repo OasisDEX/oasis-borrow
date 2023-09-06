@@ -161,7 +161,7 @@ export function AutomationContextProvider({
       canInteract: context.status === 'connected' && context.account === controller,
       ethBalance,
       etherscanUrl: getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url,
-      ethMarketPrice: ethAndTokenPricesData['ETH'],
+      ethMarketPrice: ethAndTokenPricesData.ETH,
       nextCollateralPrice,
       tokenMarketPrice: tokenPriceResolved,
       chainId:
@@ -172,7 +172,7 @@ export function AutomationContextProvider({
     [
       context.status,
       context.chainId,
-      ethAndTokenPricesData['ETH'].toString(),
+      ethAndTokenPricesData.ETH.toString(),
       tokenPriceResolved.toString(),
       ethBalance.toString(),
       controller,

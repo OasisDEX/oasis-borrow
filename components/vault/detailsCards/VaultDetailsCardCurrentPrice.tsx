@@ -87,7 +87,7 @@ export function VaultDetailsCardCurrentPrice({
 
   return (
     <VaultDetailsCard
-      title={`Current Price`}
+      title="Current Price"
       value={currentPrice}
       valueBottom={
         isStaticCollateralPrice ? null : (

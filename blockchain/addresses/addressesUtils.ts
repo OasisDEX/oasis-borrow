@@ -45,5 +45,5 @@ export function getCollateralJoinContracts(addresses: Dictionary<string>, ilks: 
     .filter(([key]) => /MCD_JOIN_(.*)/.test(key))
     .map(([key, address]) => [key.replace('MCD_JOIN_', '').replace(/_/g, '-'), address])
     .filter(([key]) => ilks.includes(key))
-    .reduce((acc, [ilk, address]) => ({ ...acc, [ilk]: address }), {} as Dictionary<string>)
+    .reduce<Dictionary<string>>((acc, [ilk, address]) => ({ ...acc, [ilk]: address }), {})
 }

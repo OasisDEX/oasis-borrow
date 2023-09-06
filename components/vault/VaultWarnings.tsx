@@ -155,9 +155,9 @@ export function VaultWarnings({
     }
   }
 
-  const messages = warningMessages.reduce(
+  const messages = warningMessages.reduce<(string | JSX.Element)[]>(
     (acc, message) => [...acc, applyWarningMessageTranslation(message)],
-    [] as (string | JSX.Element)[],
+    [],
   )
 
   return <MessageCard {...{ messages, type: 'warning', withBullet: messages.length > 1 }} />

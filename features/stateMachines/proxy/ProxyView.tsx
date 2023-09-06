@@ -42,7 +42,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'vault-form.subtext.proxy-start'}
+              i18nKey="vault-form.subtext.proxy-start"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
               }}
@@ -87,7 +87,7 @@ function ProxyRunningView(props: { steps: [number, number] }) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'vault-form.subtext.proxy-progress'}
+              i18nKey="vault-form.subtext.proxy-progress"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
               }}

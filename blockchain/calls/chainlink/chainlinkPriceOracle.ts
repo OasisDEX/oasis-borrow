@@ -21,7 +21,7 @@ export function getChainlinkOraclePrice(
 ): Promise<BigNumber> {
   if (
     !contractName ||
-    !mainnetContracts['chainlinkPriceOracle'][contractName] ||
+    !mainnetContracts.chainlinkPriceOracle[contractName] ||
     !getNetworkContracts(networkId)?.chainlinkPriceOracle[contractName]
   ) {
     throw new Error(`ChainlinkPriceOracle ${contractName} not found`)

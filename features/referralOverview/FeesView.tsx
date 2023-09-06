@@ -234,7 +234,7 @@ export function FeesView({ userReferral }: Props) {
                   </Box>
                   <Box>
                     <AppLink
-                      href={`https://etherscan.com/address/#`}
+                      href="https://etherscan.com/address/#"
                       sx={{ fontSize: 2 }}
                       variant="inText"
                     >

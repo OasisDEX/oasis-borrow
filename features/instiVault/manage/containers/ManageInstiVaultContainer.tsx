@@ -79,7 +79,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
                     value={<Flex>$0.00</Flex>}
                   />
                   <VaultChangesInformationItem
-                    label={'Estimated gas fee'}
+                    label="Estimated gas fee"
                     value={getEstimatedGasFeeTextOld(manageVault)}
                   />
                 </Grid>

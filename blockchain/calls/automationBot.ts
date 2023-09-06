@@ -103,7 +103,7 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
 export const addAutomationBotTriggerV2: TransactionDef<AutomationBotV2AddTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute']
+      .methods.execute
   },
   prepareArgs: (data, context) => [
     getNetworkContracts(NetworkIds.MAINNET, context.chainId).automationBotV2.address,
@@ -114,7 +114,7 @@ export const addAutomationBotTriggerV2: TransactionDef<AutomationBotV2AddTrigger
 export const removeAutomationBotTriggerV2: TransactionDef<AutomationBotV2RemoveTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute']
+      .methods.execute
   },
   prepareArgs: (data, context) => [
     getNetworkContracts(NetworkIds.MAINNET, context.chainId).automationBotV2.address,

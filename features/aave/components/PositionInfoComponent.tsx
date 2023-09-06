@@ -46,12 +46,10 @@ interface IPositionBalance {
 
 function formatPositionBalance(positionBalance: IPositionBalance): string {
   return (
-    formatAmount(
+    `${formatAmount(
       amountFromWei(positionBalance.amount, positionBalance.symbol),
       positionBalance.symbol,
-    ) +
-      ' ' +
-      positionBalance?.symbol || '0'
+    )} ${positionBalance?.symbol}` || '0'
   )
 }
 

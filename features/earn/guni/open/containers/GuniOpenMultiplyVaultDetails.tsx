@@ -144,9 +144,9 @@ export function GuniOpenMultiplyVaultDetails(
         footer={
           <DetailsSectionFooterItemWrapper>
             <ContentFooterItemsEarnSimulate
-              token={`DAI`}
+              token="DAI"
               breakeven={breakeven}
-              breakevenAnnotation={`**`}
+              breakevenAnnotation="**"
               entryFees={entryFees}
               apy={apy7.times(100)}
             />

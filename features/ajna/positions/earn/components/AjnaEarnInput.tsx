@@ -108,8 +108,8 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
     const snappedValue = snapToPredefinedValues(manualAmount)
     let index = mappedAjnaBuckets.indexOf(snappedValue)
 
-    if (variant === '+') index = index - 1
-    if (variant === '-') index = index + 1
+    if (variant === '+') index -= 1
+    if (variant === '-') index += 1
 
     const selectedValue = mappedAjnaBuckets.at(index) || zero
 

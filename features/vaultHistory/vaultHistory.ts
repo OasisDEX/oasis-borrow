@@ -21,12 +21,12 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
 export function groupHistoryEventsByHash(events: VaultHistoryEvent[]) {
-  return events.reduce((acc, curr) => {
+  return events.reduce<{ [key: string]: VaultHistoryEvent[] }>((acc, curr) => {
     return {
       ...acc,
       [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
     }
-  }, {} as { [key: string]: VaultHistoryEvent[] })
+  }, {})
 }
 
 export function getAddConstantMultipleHistoryEventIndex(events: VaultEvent[]) {
@@ -136,13 +136,13 @@ export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
   const addOrRemove = ['added', 'removed']
   const addCombination = ['added']
 
-  const eventTypes = events.reduce((acc, curr) => {
+  const eventTypes = events.reduce<string[]>((acc, curr) => {
     if (acc.includes((curr as AutomationEvent).eventType)) {
       return acc
     }
 
     return [...acc, (curr as AutomationEvent).eventType]
-  }, [] as string[])
+  }, [])
 
   const addOrRemoveEvents = events.filter(
     (item) => 'triggerId' in item && addOrRemove.includes(item.eventType),
@@ -165,13 +165,13 @@ export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   const updateCombination = ['added', 'removed']
 
   const eventTypes = events
-    .reduce((acc, curr) => {
+    .reduce<string[]>((acc, curr) => {
       if (acc.includes((curr as AutomationEvent).eventType)) {
         return acc
       }
 
       return [...acc, (curr as AutomationEvent).eventType]
-    }, [] as string[])
+    }, [])
     .sort()
 
   const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
@@ -206,7 +206,7 @@ export function getOverrideTriggers(events: VaultHistoryEvent[]) {
   const overrideCombinationV2 = ['added', 'added', 'removed', 'removed']
 
   const eventTypes = events
-    .reduce((acc, curr) => [...acc, (curr as AutomationEvent).eventType], [] as string[])
+    .reduce<string[]>((acc, curr) => [...acc, (curr as AutomationEvent).eventType], [])
     .sort()
   const isOverrideTriggerEvent =
     equals(eventTypes, overrideCombinationV1) || equals(eventTypes, overrideCombinationV2)
@@ -274,33 +274,36 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
 export function mapAutomationEvents(events: VaultHistoryEvent[]) {
   const groupedByHash = groupHistoryEventsByHash(events)
 
-  const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
-    const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
-    const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
-    const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
-    const overrideEvents = getOverrideTriggers(groupedByHash[key])
+  const wrappedByHash = Object.keys(groupedByHash).reduce<{ [key: string]: VaultHistoryEvent[] }>(
+    (acc, key) => {
+      const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
+      const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
+      const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
+      const overrideEvents = getOverrideTriggers(groupedByHash[key])
 
-    if (overrideEvents) {
-      return { ...acc, [key]: overrideEvents }
-    }
-
-    if (updateTriggerEvent) {
-      return { ...acc, [key]: [updateTriggerEvent] }
-    }
-
-    if (executeTriggerEvent) {
-      return {
-        ...acc,
-        [key]: [executeTriggerEvent],
+      if (overrideEvents) {
+        return { ...acc, [key]: overrideEvents }
       }
-    }
 
-    if (addOrRemoveEvent) {
-      return { ...acc, [key]: [addOrRemoveEvent] }
-    }
+      if (updateTriggerEvent) {
+        return { ...acc, [key]: [updateTriggerEvent] }
+      }
 
-    return { ...acc, [key]: groupedByHash[key] }
-  }, {} as { [key: string]: VaultHistoryEvent[] })
+      if (executeTriggerEvent) {
+        return {
+          ...acc,
+          [key]: [executeTriggerEvent],
+        }
+      }
+
+      if (addOrRemoveEvent) {
+        return { ...acc, [key]: [addOrRemoveEvent] }
+      }
+
+      return { ...acc, [key]: groupedByHash[key] }
+    },
+    {},
+  )
 
   return flatten(Object.values(wrappedByHash))
 }

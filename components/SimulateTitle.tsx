@@ -57,7 +57,7 @@ export function SimulateTitle({ token, tokenSymbol, depositAmount }: SimulateTit
             fontWeight: 'semiBold',
           }}
         >
-          {`In this position`}
+          In this position
         </Text>
       </Box>
     </Flex>

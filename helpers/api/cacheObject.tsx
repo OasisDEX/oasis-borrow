@@ -32,7 +32,7 @@ export function cacheObject<R>(
       return JSON.parse(cache.get('data') as string)
     }
 
-    let data: Awaited<R> | undefined = undefined
+    let data: Awaited<R> | undefined
 
     try {
       data = await fetchFunction()

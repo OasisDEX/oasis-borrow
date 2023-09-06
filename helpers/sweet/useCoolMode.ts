@@ -159,11 +159,11 @@ function makeElementCool(element: HTMLElement): () => void {
 
   function updateParticles() {
     particles.forEach((p) => {
-      p.left = p.left - p.speedHorz * p.direction
-      p.top = p.top - p.speedUp
+      p.left -= p.speedHorz * p.direction
+      p.top -= p.speedUp
       // p.speedUp = Math.min(p.size, p.speedUp - 1)
       p.speedUp = Math.min(p.size, p.speedUp - 0.1)
-      p.spinVal = p.spinVal + p.spinSpeed
+      p.spinVal += p.spinSpeed
 
       if (p.top >= Math.max(window.innerHeight, document.body.clientHeight) + p.size) {
         particles = particles.filter((o) => o !== p)
@@ -238,7 +238,7 @@ function makeElementCool(element: HTMLElement): () => void {
   // audio
   const audioPlayer = document.createElement('audio')
 
-  audioPlayer.setAttribute('src', assetRoot + 'HAARHEEH.m4a')
+  audioPlayer.setAttribute('src', `${assetRoot}HAARHEEH.m4a`)
   audioPlayer.volume = 0.1
   getContainer().appendChild(audioPlayer)
 
@@ -299,8 +299,8 @@ function makeElementCool(element: HTMLElement): () => void {
         hDirection = 1
       }
 
-      button.top = button.top + buttonSpeed * vDirection
-      button.left = button.left + buttonSpeed * hDirection
+      button.top += buttonSpeed * vDirection
+      button.left += buttonSpeed * hDirection
 
       buttonElement.style.top = `${button.top}px`
       buttonElement.style.left = `${button.left}px`

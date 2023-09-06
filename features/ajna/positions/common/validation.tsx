@@ -63,7 +63,7 @@ const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ name, values 
 
 const AjnaSafetyOnMessage: FC = () => (
   <Trans
-    i18nKey={'ajna.validations.safety-switch-on'}
+    i18nKey="ajna.validations.safety-switch-on"
     components={[
       <AppLink sx={{ fontSize: 'inherit', color: 'inherit' }} href={EXTERNAL_LINKS.DISCORD} />,
     ]}

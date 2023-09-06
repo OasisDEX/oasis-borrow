@@ -16,7 +16,7 @@ export interface OasisActionsTxData extends TxMeta {
 export const callOasisActionsWithDpmProxy: TransactionDef<OasisActionsTxData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute']
+      .methods.execute
   },
   prepareArgs: ({ data, to }) => {
     return [to, data]

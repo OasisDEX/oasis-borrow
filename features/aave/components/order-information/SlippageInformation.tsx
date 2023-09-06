@@ -56,7 +56,7 @@ function SlippageFromStrategyWithTooltip({ slippage, changeSlippage }: SlippageI
       label={t('vault-changes.slippage-limit')}
       value={
         <Flex>
-          <Text color={'primary100'}>{formatPercent(slippage.times(100), { precision: 2 })}</Text>{' '}
+          <Text color="primary100">{formatPercent(slippage.times(100), { precision: 2 })}</Text>{' '}
           <OrderInformationTooltipAction>
             <ChangeSlippageToUserSettings
               buttonLabel={t('vault-changes.slippage-from-settings')}
@@ -79,7 +79,7 @@ function SlippageFromSettingsWithTooltip({ slippage, changeSlippage }: SlippageI
       label={t('vault-changes.slippage-limit')}
       value={
         <Flex>
-          <Text color={'warning100'}>{formatPercent(slippage.times(100), { precision: 2 })}</Text>
+          <Text color="warning100">{formatPercent(slippage.times(100), { precision: 2 })}</Text>
           <OrderInformationTooltipAction>
             <ChangeSlippageToUserSettings
               buttonLabel={t('vault-changes.slippage-from-strategy')}

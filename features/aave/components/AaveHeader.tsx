@@ -84,7 +84,7 @@ function AaveHeader({
 }
 
 export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
-  return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
+  return <AaveHeader strategyConfig={strategyConfig} headerLabelString="vault.header-aave-open" />
 }
 
 export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeaderProps) {
@@ -97,7 +97,7 @@ export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeade
   return (
     <AaveHeader
       strategyConfig={strategyConfig}
-      headerLabelString={'vault.header-aave-view'}
+      headerLabelString="vault.header-aave-view"
       followButton={followButton}
       shareButton
     />

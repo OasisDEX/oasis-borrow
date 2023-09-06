@@ -370,7 +370,7 @@ export function FieldGenerateDai({
         onSetMax={updateGenerateMax! || updateGenerateAmountMax!}
         showMax
         showMin={debt.isZero()}
-        currencyCode={'DAI'}
+        currencyCode="DAI"
       />
       <VaultErrors
         errorMessages={extractGenerateErrors(errorMessages)}

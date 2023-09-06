@@ -74,7 +74,7 @@ export function guniOpenMultiplyVaultStory({
               setVaultFormToggleTitle: () => null,
             }}
           >
-            <GuniOpenMultiplyVaultStoryContainer ilk={'GUNIV3DAIUSDC1-A'} title={title} />
+            <GuniOpenMultiplyVaultStoryContainer ilk="GUNIV3DAIUSDC1-A" title={title} />
           </SharedUIContext.Provider>
         </productContext.Provider>
       )

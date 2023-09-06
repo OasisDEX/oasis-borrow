@@ -11,11 +11,11 @@ function fixChainId(chainId: string | number) {
 }
 
 const READ_ONLY_RPC_CALLS = ['eth_call', 'eth_getTransactionReceipt', 'eth_getTransactionByHash']
-let jsonRpcBatchProvider: JsonRpcBatchProvider | undefined = undefined
+let jsonRpcBatchProvider: JsonRpcBatchProvider | undefined
 
 function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any> {
   const getReadOnlyProviderAsync = (() => {
-    let provider: JsonRpcProvider | undefined = undefined
+    let provider: JsonRpcProvider | undefined
 
     return async function (chainIdPromise: Promise<number | string>) {
       if (!provider) {
@@ -31,7 +31,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
   })()
 
   const getRPCProviderAsync = (() => {
-    let provider: JsonRpcProvider | undefined = undefined
+    let provider: JsonRpcProvider | undefined
 
     return async function (
       chainIdPromise: Promise<number | string>,

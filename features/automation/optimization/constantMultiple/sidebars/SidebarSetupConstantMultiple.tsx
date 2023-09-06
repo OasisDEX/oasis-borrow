@@ -181,7 +181,7 @@ export function SidebarSetupConstantMultiple({
 
               {isAwaitingConfirmation && (
                 <SidebarAwaitingConfirmation
-                  feature={'Constant-Multiple'}
+                  feature="Constant-Multiple"
                   children={
                     <ConstantMultipleInfoSectionControl
                       token={token}

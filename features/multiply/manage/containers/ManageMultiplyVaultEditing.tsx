@@ -112,7 +112,7 @@ function DepositTokenInput({
       showMax
       hasAuxiliary
       onSetMax={updateDepositAmountMax!}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositAmount}
@@ -143,7 +143,7 @@ function WithdrawTokenInput({
       showMax
       hasAuxiliary
       onSetMax={updateWithdrawAmountMax!}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
       maxAmount={maxWithdrawAmount}
@@ -168,7 +168,7 @@ function PaybackInput({
       currencyCode="DAI"
       showMax
       maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updatePaybackAmountMax}
       onChange={handleNumericInput(updatePaybackAmount!)}
       hasError={false}
@@ -189,7 +189,7 @@ function DepositDaiInput({
       currencyCode="DAI"
       showMax
       maxAmount={maxDepositDaiAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updateDepositDaiAmountMax}
       onChange={handleNumericInput(updateDepositDaiAmount!)}
       hasError={false}
@@ -210,7 +210,7 @@ function GenerateInput({
       currencyCode="DAI"
       showMax
       maxAmount={maxGenerateAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updateGenerateAmountMax}
       onChange={handleNumericInput(updateGenerateAmount!)}
       hasError={false}
@@ -477,7 +477,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           icon={tokenData.iconCircle}
           onClick={() => setCloseVaultTo!('collateral')}
           isActive={closeToCollateral}
-          optionName={'collateral'}
+          optionName="collateral"
         />
 
         <CloseVaultCard
@@ -485,7 +485,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           icon="dai_circle_color"
           onClick={() => setCloseVaultTo!('dai')}
           isActive={!closeToCollateral}
-          optionName={'dai'}
+          optionName="dai"
         />
       </Grid>
       <Text variant="paragraph3" sx={{ color: 'neutral80', mt: 3 }}>

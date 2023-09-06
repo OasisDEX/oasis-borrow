@@ -112,17 +112,15 @@ function InternalProvider({ children }: WithChildren) {
     if (state.status === WalletManagementStateStatus.connecting) {
       if (bridgeConnector)
         dispatch({ type: WalletStateEventType.connected, connector: bridgeConnector })
-      else {
-        if (!connecting) {
-          createConnector()
-            .then((result) => {
-              if (!result) dispatch({ type: WalletStateEventType.connectionCancelled })
-            })
-            .catch((error) => {
-              console.error(error)
-              dispatch({ type: WalletStateEventType.connectionCancelled })
-            })
-        }
+      else if (!connecting) {
+        createConnector()
+          .then((result) => {
+            if (!result) dispatch({ type: WalletStateEventType.connectionCancelled })
+          })
+          .catch((error) => {
+            console.error(error)
+            dispatch({ type: WalletStateEventType.connectionCancelled })
+          })
       }
     }
   }, [state.status, createConnector, bridgeConnector, dispatch, connecting])

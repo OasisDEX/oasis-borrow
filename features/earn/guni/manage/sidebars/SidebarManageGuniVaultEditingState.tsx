@@ -26,7 +26,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
       {stage === 'adjustPosition' && (
         <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
           <Trans
-            i18nKey={'vault-info-messages.earn-overview'}
+            i18nKey="vault-info-messages.earn-overview"
             values={{ token }}
             components={{
               1: (

@@ -9,25 +9,23 @@ interface GetOraclessTokenAddressParams {
 async function tokensSearch(query: string): Promise<string[]> {
   if (isAddress(query)) {
     return [query]
-  } else {
-    if (query.length > 2) {
-      const response = (
-        (await (
-          await fetch(`/api/tokens-search`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              query: [query],
-            }),
-          })
-        ).json()) as SearchTokensResponse[]
-      ).map(({ address }) => address)
+  } else if (query.length > 2) {
+    const response = (
+      (await (
+        await fetch(`/api/tokens-search`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: [query],
+          }),
+        })
+      ).json()) as SearchTokensResponse[]
+    ).map(({ address }) => address)
 
-      return response.length ? response : [query]
-    } else return query.length ? [query] : []
-  }
+    return response.length ? response : [query]
+  } else return query.length ? [query] : []
 }
 
 export async function getOraclessTokenAddress({

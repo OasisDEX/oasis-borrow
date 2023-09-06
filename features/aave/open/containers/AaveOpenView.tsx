@@ -71,7 +71,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
               <AutomationContextInput {...automationContextProps}>
                 <Box>
                   <SimulateSectionComponent config={strategyConfig} />
-                  <Box sx={{ mt: 5 }}></Box>
+                  <Box sx={{ mt: 5 }} />
                 </Box>
                 <Box>
                   <SidebarOpenAaveVault />

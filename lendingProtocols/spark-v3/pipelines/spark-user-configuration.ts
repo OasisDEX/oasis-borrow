@@ -51,7 +51,7 @@ export function createSparkUserConfiguration(
   let binaryString = String(new BigNumber(sparkUserConfiguration[0]).toString(2))
 
   while (binaryString.length < sparkReserveList.length * 2) {
-    binaryString = '0' + binaryString
+    binaryString = `0${binaryString}`
   }
 
   const results: SparkUserConfigurationResult[] =

@@ -149,7 +149,7 @@ export function createUserUsingApi$(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: {
       user_that_referred_address: referrer,

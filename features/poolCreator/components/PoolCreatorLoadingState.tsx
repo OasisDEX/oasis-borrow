@@ -22,7 +22,7 @@ export function PoolCreatorLoadingState() {
       }
       loose
       content={
-        <Grid gap={'24px'}>
+        <Grid gap="24px">
           <InputLoadingState />
           <InputLoadingState />
         </Grid>

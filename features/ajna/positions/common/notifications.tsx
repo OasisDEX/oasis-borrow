@@ -230,7 +230,7 @@ const ajnaNotifications: {
     message: {
       component: (
         <Trans
-          i18nKey={'ajna.position-page.common.notifications.safety-switch-open.message'}
+          i18nKey="ajna.position-page.common.notifications.safety-switch-open.message"
           components={[
             <AppLink
               sx={{ fontSize: 'inherit', color: 'inherit' }}
@@ -250,7 +250,7 @@ const ajnaNotifications: {
     message: {
       component: (
         <Trans
-          i18nKey={'ajna.position-page.common.notifications.safety-switch-manage.message'}
+          i18nKey="ajna.position-page.common.notifications.safety-switch-manage.message"
           components={[
             <AppLink
               sx={{ fontSize: 'inherit', color: 'inherit' }}

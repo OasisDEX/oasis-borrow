@@ -290,10 +290,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       .forEach((call) => {
         calls.push(call)
       })
-  } else {
-    if (isValidBody<RpcCall>(requestBody, ['method', 'params', 'id', 'jsonrpc'])) {
-      calls.push(requestBody)
-    }
+  } else if (isValidBody<RpcCall>(requestBody, ['method', 'params', 'id', 'jsonrpc'])) {
+    calls.push(requestBody)
   }
 
   if (calls.length === 0) {

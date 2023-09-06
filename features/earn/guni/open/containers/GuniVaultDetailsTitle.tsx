@@ -49,7 +49,7 @@ export function GuniVaultDetailsTitle({ token, depositAmount }: GuniVaultDetails
             fontWeight: 'semiBold',
           }}
         >
-          {`In this position`}
+          In this position
         </Text>
       </Box>
     </Flex>

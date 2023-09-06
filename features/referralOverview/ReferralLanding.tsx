@@ -118,7 +118,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
           {t('ref.how-p3')}
         </Text>
       </Flex>
-      <Box mt={`16px`}>
+      <Box mt="16px">
         {context?.status !== 'connected' ? (
           <Button
             variant="primary"

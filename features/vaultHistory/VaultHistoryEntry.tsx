@@ -108,13 +108,13 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
 function resolveMaxBuyOrSellPrice(maxBuyOrMinSellPrice: BigNumber, unlimited: string) {
   return maxBuyOrMinSellPrice.isEqualTo(maxUint256) || maxBuyOrMinSellPrice.isZero()
     ? unlimited
-    : '$' + formatFiatBalance(maxBuyOrMinSellPrice)
+    : `$${formatFiatBalance(maxBuyOrMinSellPrice)}`
 }
 
 function resolveMaxGweiAmount(maxBaseFeeInGwei: BigNumber, unlimited: string) {
   return maxBaseFeeInGwei.isEqualTo(maxUint32)
     ? unlimited
-    : formatCryptoBalance(maxBaseFeeInGwei) + ' Gwei'
+    : `${formatCryptoBalance(maxBaseFeeInGwei)} Gwei`
 }
 
 interface AutomationEntryProps {
@@ -482,12 +482,12 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
       )}
       {!(closeEvent && guniVaultEvent) && (
         <VaultHistoryEntryDetailsItem label={t('system.oracle-price')}>
-          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}
+          {'oraclePrice' in event && `$${formatFiatBalance(event.oraclePrice!)}`}
         </VaultHistoryEntryDetailsItem>
       )}
       {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
         <VaultHistoryEntryDetailsItem label={t('system.market-price')}>
-          {'marketPrice' in event && '$' + formatFiatBalance(event.marketPrice)}
+          {'marketPrice' in event && `$${formatFiatBalance(event.marketPrice)}`}
         </VaultHistoryEntryDetailsItem>
       )}
 
@@ -505,7 +505,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
           <VaultHistoryEntryDetailsItem label={t('multiple')}>
             {'beforeMultiple' in event && event.beforeMultiple.gt(0) && (
               <>
-                {formatCryptoBalance(event.beforeMultiple) + `x`}
+                {`${formatCryptoBalance(event.beforeMultiple)}x`}
                 <VaultChangesInformationArrow />
               </>
             )}
@@ -526,7 +526,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
       <VaultHistoryEntryDetailsItem label={t('outstanding-debt')}>
         {'beforeDebt' in event && event.beforeDebt.gt(0) && (
           <>
-            {formatCryptoBalance(event.beforeDebt.times(event.rate)) + `DAI`}
+            {`${formatCryptoBalance(event.beforeDebt.times(event.rate))}DAI`}
             <VaultChangesInformationArrow />
           </>
         )}
@@ -553,17 +553,17 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
             </VaultHistoryEntryDetailsItem>
           )}
           <VaultHistoryEntryDetailsItem label={t('net-value')}>
-            {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
+            {'netValue' in event && `$${formatFiatBalance(event.netValue)}`}
           </VaultHistoryEntryDetailsItem>
           {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
             <VaultHistoryEntryDetailsItem label={t('system.liquidation-price')}>
               {'beforeLiquidationPrice' in event && event.beforeLiquidationPrice.gt(0) && (
                 <>
-                  {`$` + formatFiatBalance(event.beforeLiquidationPrice)}
+                  {`$${formatFiatBalance(event.beforeLiquidationPrice)}`}
                   <VaultChangesInformationArrow />
                 </>
               )}
-              {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+              {'liquidationPrice' in event && `$${formatFiatBalance(event.liquidationPrice)}`}
             </VaultHistoryEntryDetailsItem>
           )}
         </>
@@ -572,13 +572,12 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
         {'totalFee' in event &&
         'gasFee' in event &&
         (event.totalFee.gt(zero) || event.gasFee.gt(zero))
-          ? '$' +
-            formatFiatBalance(
+          ? `$${formatFiatBalance(
               BigNumber.sum(
                 event.totalFee,
                 amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice),
               ),
-            )
+            )}`
           : '-'}
       </VaultHistoryEntryDetailsItem>
     </DefinitionList>

@@ -205,7 +205,7 @@ export function saveVaultUsingApi$(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: {
       id: parseInt(id.toFixed(0)),

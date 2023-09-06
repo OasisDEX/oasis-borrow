@@ -14,7 +14,7 @@ export async function followVaultUsingApi(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       vault_id: parseInt(vaultId.toFixed(0)),
@@ -66,7 +66,7 @@ export async function unfollowVaultUsingApi(
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       vault_id: parseInt(vaultId.toFixed(0)),

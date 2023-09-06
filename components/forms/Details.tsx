@@ -28,7 +28,7 @@ export function DetailsItem({ label, value }: { label: React.ReactNode; value: R
 export function Details({ children }: React.PropsWithChildren<{}>) {
   return (
     <Card bg="neutral30" sx={{ border: 'none' }}>
-      <Grid columns={'auto 1fr'} gap={2}>
+      <Grid columns="auto 1fr" gap={2}>
         {children}
       </Grid>
     </Card>

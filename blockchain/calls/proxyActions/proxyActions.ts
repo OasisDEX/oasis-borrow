@@ -43,7 +43,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     getNetworkContracts(NetworkIds.MAINNET, context.chainId)
   const { contract } = context
   const exchangeData = {
-    fromTokenAddress: tokens['DAI'].address,
+    fromTokenAddress: tokens.DAI.address,
     toTokenAddress: tokens[data.token].address,
     fromTokenAmount: amountToWei(data.fromTokenAmount, 'DAI').toFixed(0),
     toTokenAmount: amountToWei(data.toTokenAmount, data.token).toFixed(0),
@@ -245,7 +245,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
 
   if (data.action === 'BUY_COLLATERAL') {
     const exchangeData = {
-      fromTokenAddress: tokens['DAI'].address,
+      fromTokenAddress: tokens.DAI.address,
       toTokenAddress: tokens[data.token].address,
       fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
       toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
@@ -297,7 +297,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
   } else {
     const exchangeData = {
       fromTokenAddress: tokens[data.token].address,
-      toTokenAddress: tokens['DAI'].address,
+      toTokenAddress: tokens.DAI.address,
       toTokenAmount: amountToWei(
         data.requiredDebt
           .div(one.minus(OAZO_FEE)) // add oazo fee
@@ -408,7 +408,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
 
   const exchangeCallData = {
     fromTokenAddress: tokens[token].address,
-    toTokenAddress: tokens['DAI'].address,
+    toTokenAddress: tokens.DAI.address,
     fromTokenAmount: amountToWei(fromTokenAmount, token).toFixed(0),
     toTokenAmount: amountToWei(toTokenAmount, 'DAI').toFixed(0),
     minToTokenAmount: amountToWei(minToTokenAmount, 'DAI').toFixed(0),

@@ -178,7 +178,7 @@ export function VaultDetailsNetValueModal({
       <Divider variant="styles.hrVaultFormBottom" />
       <Grid gap={2} columns={[1, 2, 3]}>
         <Box>{t('manage-multiply-vault.card.gas-fees')}</Box>
-        <Box></Box>
+        <Box />
         <Box>{`$${formatAmount(totalGasSpentUSD, 'USD')}`}</Box>
       </Grid>
       <Card

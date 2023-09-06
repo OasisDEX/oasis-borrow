@@ -134,9 +134,9 @@ export function createInitializedAccount$(account$: Observable<string | undefine
 }
 
 export function reload(network: string) {
-  if (document.location.href.indexOf('network=') !== -1) {
-    document.location.href = document.location.href.replace(/network=[a-z]+/i, 'network=' + network)
+  if (document.location.href.includes('network=')) {
+    document.location.href = document.location.href.replace(/network=[a-z]+/i, `network=${network}`)
   } else {
-    document.location.href = document.location.href + '?network=' + network
+    document.location.href = `${document.location.href}?network=${network}`
   }
 }

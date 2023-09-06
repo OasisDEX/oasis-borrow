@@ -178,7 +178,7 @@ export function NavigationOrbIcon({
                   left: '-6px',
                 },
               }}
-            ></Box>
+            />
           )}
           {typeof beacon === 'number' && (
             <Box

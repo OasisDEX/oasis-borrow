@@ -41,7 +41,7 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
 export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutorTxMeta> = {
   call: (args, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, args.proxyAddress))
-      .methods['execute']
+      .methods.execute
   },
   prepareArgs: (data, context) => {
     const contracts = getNetworkContracts(context.chainId)

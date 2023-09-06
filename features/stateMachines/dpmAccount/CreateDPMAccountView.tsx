@@ -55,7 +55,7 @@ function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProp
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'dpm.create-flow.welcome-screen.paragraph'}
+              i18nKey="dpm.create-flow.welcome-screen.paragraph"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
@@ -113,7 +113,7 @@ function InProgressView({ state }: InternalViewsProps) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'dpm.create-flow.proxy-creating-screen.paragraph'}
+              i18nKey="dpm.create-flow.proxy-creating-screen.paragraph"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
@@ -156,7 +156,7 @@ function SuccessStateView({ send, state }: InternalViewsProps) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'dpm.create-flow.proxy-created-screen.paragraph'}
+              i18nKey="dpm.create-flow.proxy-created-screen.paragraph"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}

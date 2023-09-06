@@ -61,7 +61,7 @@ export function wethToEthAddress<T>(
   tokenMappings: ContractForNetwork<T>['tokenMappings'],
   token: AaveV3ReserveDataParameters['token'],
 ): string {
-  return tokenMappings[token].address === tokenMappings['ETH'].address
-    ? tokenMappings['WETH'].address
+  return tokenMappings[token].address === tokenMappings.ETH.address
+    ? tokenMappings.WETH.address
     : tokenMappings[token].address
 }

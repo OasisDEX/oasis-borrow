@@ -22,7 +22,7 @@ export function Tab({ variant, value, label, selected, tag, onClick }: TabProps)
   return (
     <Button
       key={value}
-      variant={'tab'}
+      variant="tab"
       onClick={onClick}
       sx={{
         ...styles[variant],

@@ -12,7 +12,7 @@ export function getRandomString() {
   for (let i = 0; i < 16; i++) {
     randomValue = buffer[i].toString(16)
     if (randomValue.length === 1) {
-      randomValue = '0' + randomValue
+      randomValue = `0${randomValue}`
     }
     randomString += randomValue
   }

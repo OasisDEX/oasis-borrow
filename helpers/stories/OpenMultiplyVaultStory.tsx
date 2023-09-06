@@ -80,7 +80,7 @@ export function openMultiplyVaultStory({
               setVaultFormToggleTitle: () => null,
             }}
           >
-            <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
+            <OpenMultiplyVaultStoryContainer ilk="WBTC-A" title={title} />
           </SharedUIContext.Provider>
         </productContext.Provider>
       )

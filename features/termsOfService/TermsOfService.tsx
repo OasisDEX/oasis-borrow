@@ -195,9 +195,7 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
     wallet !== undefined &&
     termsAcceptance?.stage === 'acceptanceAccepted'
   )
-    return (
-      <NewReferralModal account={wallet.address} userReferral={userReferral}></NewReferralModal>
-    )
+    return <NewReferralModal account={wallet.address} userReferral={userReferral} />
 
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 

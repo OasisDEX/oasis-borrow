@@ -201,7 +201,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
                   components={{
                     1: <AppLink href="/privacy" variant="inText" />,
                   }}
-                ></Trans>
+                />
               </Text>
             </Box>
           )}

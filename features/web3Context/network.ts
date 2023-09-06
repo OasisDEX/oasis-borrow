@@ -14,7 +14,7 @@ export const contract: any = memoize(
     if (!address) {
       throw new Error('Contract address is not defined')
     }
-    if (web3s.indexOf(web3) < 0) {
+    if (!web3s.includes(web3)) {
       web3s[web3s.length] = web3
     }
 

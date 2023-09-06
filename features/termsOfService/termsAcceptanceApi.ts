@@ -15,7 +15,7 @@ export function checkAcceptanceFromApi$(
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
   }).pipe(
     map((resp) => {
@@ -43,7 +43,7 @@ export function saveAcceptanceFromApi$(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: {
       docVersion: version,

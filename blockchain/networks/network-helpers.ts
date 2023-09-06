@@ -50,7 +50,7 @@ export const isForkSetForNetworkId = (networkId: NetworkIds) => {
 
 const networksWithForksAtTheBeginning: NetworkConfig[] = [...forkNetworks, ...networks]
 
-const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
+const networksSet = networksWithForksAtTheBeginning.reduce<NetworkConfig[]>((acc, network) => {
   if (acc.some((n) => n.hexId === network.hexId)) {
     console.log('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
 
@@ -58,7 +58,7 @@ const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
   }
 
   return [...acc, network]
-}, [] as NetworkConfig[])
+}, [])
 
 export const enableNetworksSet = networksSet.filter((network) => network.isEnabled())
 export const networkSetByHexId = keyBy(enableNetworksSet, 'hexId')

@@ -69,7 +69,7 @@ function AssetRow(props: PositionView) {
             ml: '8px',
           }}
         >
-          {`No price data`}
+          No price data
         </Text>
       </Flex>
     )

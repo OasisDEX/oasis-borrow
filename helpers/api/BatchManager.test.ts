@@ -81,7 +81,7 @@ describe('BatchManager', () => {
       // Second call (all from cache)
       const batchResults = await batchManager.batchCall(mockBatch)
 
-      batchResults.forEach(function (result, index) {
+      batchResults.forEach((result, index) => {
         expect(result.requestIdx).toBe(index)
       })
       expect(batchResults.map((batchResult) => batchResult.data)).toEqual(mockBatch)
@@ -99,7 +99,7 @@ describe('BatchManager', () => {
       const batchResults = await batchManager.batchCall(mockBatch)
 
       // ASSERT
-      batchResults.forEach(function (result, index) {
+      batchResults.forEach((result, index) => {
         expect(result.requestIdx).toBe(index)
       })
       expect(batchResults.map((batchResult) => batchResult.data)).toEqual(mockBatch)
@@ -147,7 +147,7 @@ describe('BatchManager', () => {
 
       // ASSERT
 
-      batchResults.forEach(function (result, index) {
+      batchResults.forEach((result, index) => {
         expect(result.requestIdx).toBe(index)
       })
       expect(batchResults.map((batchResult) => batchResult.data)).toEqual([

@@ -195,7 +195,7 @@ export function SidebarAdjustStopLossEditingStage({
             step={sliderStep}
             leftBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))}
             rightBoundryFormatter={(x: BigNumber) =>
-              x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')
+              x.isZero() ? '-' : `$ ${formatAmount(x, 'USD')}`
             }
             sliderPercentageFill={sliderPercentageFill}
             lastValue={stopLossState.stopLossLevel}

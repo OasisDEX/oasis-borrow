@@ -26,8 +26,8 @@ export function isDangerTransactionEnabled(): DangerTransactionConfig {
       return (
         elementAsObject.hasOwnProperty('enabled') &&
         elementAsObject.hasOwnProperty('gasLimit') &&
-        typeof elementAsObject['enabled'] === 'boolean' &&
-        typeof elementAsObject['gasLimit'] === 'number'
+        typeof elementAsObject.enabled === 'boolean' &&
+        typeof elementAsObject.gasLimit === 'number'
       )
     },
   )

@@ -154,7 +154,7 @@ export function ManageVaultDetails(
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
-      {<>{autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}</>}
+      <>{autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}</>
       <DetailsSection
         title={t('system.overview')}
         content={

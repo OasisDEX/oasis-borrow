@@ -42,7 +42,7 @@
     "constructor-super": "error",
     "no-constructor-return": "error",
     "no-duplicate-imports": "error",
-    "no-promise-executor-return": "error",
+    "no-promise-executor-return": "warn",
     "no-self-compare": "error",
     "no-template-curly-in-string": "error",
     "no-this-before-super": "error",
@@ -56,7 +56,7 @@
     "accessor-pairs": "error",
     "block-scoped-var": "error",
     "camelcase": "error",
-    "consistent-return": "error",
+    "consistent-return": "warn",
     "default-case-last": "error",
     "dot-notation": "error",
     "eqeqeq": [
@@ -132,7 +132,7 @@
     "prefer-regex-literals": "error",
     "prefer-template": "error",
     "radix": "error",
-    "require-await": "error",
+    "require-await": "warn",
     "require-unicode-regexp": "error",
     "spaced-comment": [
       "error",
@@ -202,7 +202,7 @@
       { "allow": ["Image", "Text", "Request"], "builtinGlobals": true, "hoist": "all" }
     ],
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
-    "@typescript-eslint/no-unnecessary-condition": "error",
+    "@typescript-eslint/no-unnecessary-condition": "warn",
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/no-useless-empty-export": "error",
     "@typescript-eslint/prefer-includes": "error",

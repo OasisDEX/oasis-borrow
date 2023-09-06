@@ -27,7 +27,7 @@ function DepositInput({
       showMax
       hasAuxiliary
       onSetMax={updateDepositMax!}
-      maxAmountLabel={'Balance'}
+      maxAmountLabel="Balance"
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositAmount}
@@ -52,11 +52,11 @@ function GenerateInput({
       collapsed={collapsed}
       action="Generate"
       amount={generateAmount}
-      currencyCode={'DAI'}
+      currencyCode="DAI"
       showMax
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updateGenerateMax}
       onChange={handleNumericInput(updateGenerate!)}
       hasError={false}
@@ -89,7 +89,7 @@ function WithdrawInput({
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
       maxAmount={maxWithdrawAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       maxAuxiliaryAmount={maxWithdrawAmountUSD}
       currencyCode={token}
       hasError={false}
@@ -111,10 +111,10 @@ function PaybackInput({
       collapsed={collapsed}
       action="Payback"
       amount={paybackAmount}
-      currencyCode={'DAI'}
+      currencyCode="DAI"
       showMax
       maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updatePaybackMax}
       onChange={handleNumericInput(updatePayback!)}
       hasError={false}

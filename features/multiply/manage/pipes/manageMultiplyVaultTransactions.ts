@@ -741,58 +741,56 @@ export function applyEstimateGas(
           id,
           ilk,
         })
+      } else if (state.otherAction === 'closeVault' && !debt.isZero()) {
+        const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
+          closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+
+        return estimateGas(closeVaultCall, {
+          kind: TxMetaKind.closeVault,
+          closeTo: closeVaultTo!,
+          token,
+          ilk,
+          id,
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+          userAddress: account!,
+          totalCollateral: lockedCollateral,
+          totalDebt: debt.plus(debtOffset),
+          proxyAddress: proxyAddress!,
+          fromTokenAmount,
+          toTokenAmount,
+          minToTokenAmount,
+        })
       } else {
-        if (state.otherAction === 'closeVault' && !debt.isZero()) {
-          const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
-            closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+        const isDepositAndGenerate = depositAmount || generateAmount
 
-          return estimateGas(closeVaultCall, {
-            kind: TxMetaKind.closeVault,
-            closeTo: closeVaultTo!,
-            token,
-            ilk,
-            id,
-            exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
-            exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-            userAddress: account!,
-            totalCollateral: lockedCollateral,
-            totalDebt: debt.plus(debtOffset),
-            proxyAddress: proxyAddress!,
-            fromTokenAmount,
-            toTokenAmount,
-            minToTokenAmount,
-          })
+        if (isDepositAndGenerate) {
+          return estimateGas(
+            vaultActionsLogic(StandardDssProxyActionsContractAdapter).depositAndGenerate,
+            {
+              kind: TxMetaKind.depositAndGenerate,
+              generateAmount: generateAmount || zero,
+              depositAmount: depositAmount || zero,
+              proxyAddress: proxyAddress!,
+              ilk,
+              token,
+              id,
+            },
+          )
         } else {
-          const isDepositAndGenerate = depositAmount || generateAmount
-
-          if (isDepositAndGenerate) {
-            return estimateGas(
-              vaultActionsLogic(StandardDssProxyActionsContractAdapter).depositAndGenerate,
-              {
-                kind: TxMetaKind.depositAndGenerate,
-                generateAmount: generateAmount || zero,
-                depositAmount: depositAmount || zero,
-                proxyAddress: proxyAddress!,
-                ilk,
-                token,
-                id,
-              },
-            )
-          } else {
-            return estimateGas(
-              vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
-              {
-                kind: TxMetaKind.withdrawAndPayback,
-                withdrawAmount: withdrawAmount || zero,
-                paybackAmount: paybackAmount || zero,
-                proxyAddress: proxyAddress!,
-                ilk,
-                token,
-                id,
-                shouldPaybackAll,
-              },
-            )
-          }
+          return estimateGas(
+            vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
+            {
+              kind: TxMetaKind.withdrawAndPayback,
+              withdrawAmount: withdrawAmount || zero,
+              paybackAmount: paybackAmount || zero,
+              proxyAddress: proxyAddress!,
+              ilk,
+              token,
+              id,
+              shouldPaybackAll,
+            },
+          )
         }
       }
     }

@@ -15,7 +15,7 @@ function AjnaPoolCreatorPage() {
       <PageSEOTags
         title="seo.ajnaPoolCreator.title"
         description="seo.ajnaPoolCreator.description"
-        url={`/ajna/pool-creator`}
+        url="/ajna/pool-creator"
       />
       <ProductContextHandler>
         <WithConnection>

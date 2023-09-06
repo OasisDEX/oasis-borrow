@@ -79,7 +79,7 @@ function createEventTypeHistory$(
   const potEvents$ = fromPromise(
     web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdPot.address,
-      topics: [eventSigntures[kind][0], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
+      topics: [eventSigntures[kind][0], `0x${padStart(proxyAddress.slice(2), 64, '0')}`],
       fromBlock,
     }),
   )
@@ -87,7 +87,7 @@ function createEventTypeHistory$(
   const adapterEvents$ = fromPromise(
     web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdJoinDai.address,
-      topics: [eventSigntures[kind][1], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
+      topics: [eventSigntures[kind][1], `0x${padStart(proxyAddress.slice(2), 64, '0')}`],
       fromBlock,
     }),
   )

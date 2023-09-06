@@ -72,7 +72,7 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
         />
       )}
       {isDaiAllowanceStage && (
-        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token="DAI" />
       )}
       {isManageStage && <ManageMultiplyVaultConfirmationStatus {...props} />}
     </VaultFormContainer>
