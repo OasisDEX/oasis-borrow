@@ -27,7 +27,7 @@ describe('utils$', () => {
     expect(radValueUnits.div(2).toFixed()).toBe(halfRadValueUnits.toFixed())
   })
 
-  //TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
+  // TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
   it.skip('should convert from gwei correctly', () => {
     expect(amountFromGwei(new BigNumber('1')).toString()).toBe('0.000000001')
   })

@@ -5,8 +5,7 @@ import {
 import * as Sentry from '@sentry/nextjs'
 import getConfig from 'next/config'
 
-const SENTRY_DSN: string =
-  'https://2fdf00b007464e2784ef445e16a6039f@o1143494.ingest.sentry.io/6204127'
+const SENTRY_DSN = 'https://2fdf00b007464e2784ef445e16a6039f@o1143494.ingest.sentry.io/6204127'
 
 type BaseConfig = Parameters<typeof Sentry.init>[0]
 

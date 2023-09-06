@@ -31,9 +31,9 @@ export function AjnaMultiplyFormContentDepositCollateral() {
        * added to product continuous improvements backlog
        * https://app.shortcut.com/oazo-apps/story/10553/multiply-deposit-ltv-decreases-are-not-supported-in-operation
        */}
-      {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}
+      {/* <PillAccordion title={t('adjust-your-position-additional')}>*/}
       {/*  <AjnaMultiplySlider disabled={!depositAmount} />*/}
-      {/*</PillAccordion>*/}
+      {/* </PillAccordion>*/}
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />

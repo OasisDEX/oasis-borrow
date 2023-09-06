@@ -73,7 +73,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     exchange: defaultExchange.address,
   }
 
-  //TODO: figure out why Typechain is generating arguments as arrays
+  // TODO: figure out why Typechain is generating arguments as arrays
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     exchangeData as any,
     cdpData as any,
@@ -147,7 +147,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
       minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
-    } as any, //TODO: figure out why Typechain is generating arguments as arrays
+    } as any, // TODO: figure out why Typechain is generating arguments as arrays
     {
       gemJoin: joins[data.ilk],
       fundsReceiver: data.userAddress,

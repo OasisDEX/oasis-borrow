@@ -53,7 +53,7 @@ function getMulticall(network: NetworkNames): string | undefined {
     case NetworkNames.arbitrumMainnet:
     case NetworkNames.optimismMainnet:
     case NetworkNames.optimismGoerli:
-      return '0xcA11bde05977b3631167028862bE2a173976CA11' //https://github.com/mds1/multicall
+      return '0xcA11bde05977b3631167028862bE2a173976CA11' // https://github.com/mds1/multicall
     default:
       console.warn(`Network: ${network} does not have a multicall contract`)
 

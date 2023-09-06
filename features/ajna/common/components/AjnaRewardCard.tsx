@@ -156,9 +156,9 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
           )}
         </Text>
         {/* TODO uncomment once ajna token usdc price will be available*/}
-        {/*<Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>*/}
+        {/* <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>*/}
         {/*  ${(rewards.usd)}*/}
-        {/*</Text>*/}
+        {/* </Text>*/}
         {!notAvailable && (
           <>
             {rewards.tokens.gt(zero) && (

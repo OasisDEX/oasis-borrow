@@ -37,7 +37,7 @@ export function setAllowance(
                 : undefined,
           }),
         (txState) => of({ kind: 'allowanceSuccess', allowance: txState.meta.amount }),
-        //TODO: check if we need confirmations
+        // TODO: check if we need confirmations
       ),
     )
     .subscribe((ch) => change(ch))

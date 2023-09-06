@@ -28,7 +28,7 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-//TODO max buy token, not needed right now but may be useful in near feature according to the designs
+// TODO max buy token, not needed right now but may be useful in near feature according to the designs
 // function BuyTokenInput({
 //   vault: { token },
 //   updateBuy,
@@ -61,7 +61,7 @@ import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from
 //   )
 // }
 
-//TODO max sell token, not needed right now but may be useful in near feature according to the designs
+// TODO max sell token, not needed right now but may be useful in near feature according to the designs
 // function SellTokenInput({
 //   accountIsController,
 //   updateSell,

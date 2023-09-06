@@ -119,7 +119,7 @@ export type UIReducer = (prev: any, event: any) => any
 function createUIChangesSubject(): UIChanges {
   const latest: any = {}
 
-  const reducers: ReducersMap = {} //TODO: Is there a way to strongly type this ?
+  const reducers: ReducersMap = {} // TODO: Is there a way to strongly type this ?
 
   interface PublisherRecord {
     subjectName: string

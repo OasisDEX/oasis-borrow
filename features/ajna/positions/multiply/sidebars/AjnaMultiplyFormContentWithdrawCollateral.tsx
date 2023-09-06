@@ -42,9 +42,9 @@ export function AjnaMultiplyFormContentWithdrawCollateral() {
        * added to product continuous improvements backlog
        * https://app.shortcut.com/oazo-apps/story/10552/multiply-withdrawal-ltv-increases-are-not-supported-in-operation
        */}
-      {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}
+      {/* <PillAccordion title={t('adjust-your-position-additional')}>*/}
       {/*  <AjnaMultiplySlider disabled={!withdrawAmount} />*/}
-      {/*</PillAccordion>*/}
+      {/* </PillAccordion>*/}
       {withdrawAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />

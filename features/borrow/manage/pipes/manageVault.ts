@@ -363,8 +363,8 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   showPaybackAndWithdrawOption: false,
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
-  selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
-  selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedCollateralAllowanceRadio: 'unlimited' as const,
+  selectedDaiAllowanceRadio: 'unlimited' as const,
 }
 
 export function createManageVault$<V extends Vault, VS extends ManageStandardBorrowVaultState>(

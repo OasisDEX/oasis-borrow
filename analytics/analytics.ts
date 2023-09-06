@@ -199,7 +199,7 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
   let win: Window
 
   if (typeof window === 'undefined') {
-    var loc = { hostname: '' }
+    const loc = { hostname: '' }
 
     win = {
       navigator: { userAgent: '' },

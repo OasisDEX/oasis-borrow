@@ -21,7 +21,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
       method,
       params,
       id: this._nextId++,
-      jsonrpc: '2.0' as '2.0',
+      jsonrpc: '2.0' as const,
     }
 
     if (this._pendingBatch == null) {

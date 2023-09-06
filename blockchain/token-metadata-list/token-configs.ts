@@ -198,7 +198,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Coinbase Wrapped Staked ETH',
     icon: 'cbeth_circle_color',
     iconCircle: 'cbeth_circle_color',
-    //TODO: replace with values provided by design team - so far content is duplicated from ETH
+    // TODO: replace with values provided by design team - so far content is duplicated from ETH
     color: '#667FE3',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/maker_eth.png'),

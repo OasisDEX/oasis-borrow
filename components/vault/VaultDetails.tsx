@@ -107,7 +107,7 @@ export function VaultDetailsCard({
   valueBottom?: ReactNode
   valueAfter?: ReactNode
   openModal?: () => void
-  relevant?: Boolean
+  relevant?: boolean
 } & AfterPillProps) {
   return (
     <Card

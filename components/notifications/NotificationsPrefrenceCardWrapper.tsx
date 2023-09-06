@@ -91,7 +91,7 @@ export function NotificationPreferenceCardWrapper() {
         />
       ))}
       {/* TODO UNCOMMENTED WHEN E-MAIL HANDLING WILL BE HANDLED IN API*/}
-      {/*<NotificationsEmailPreferences account={account} />*/}
+      {/* <NotificationsEmailPreferences account={account} />*/}
     </>
   )
 }

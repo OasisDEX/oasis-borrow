@@ -30,9 +30,9 @@ export function AjnaMultiplyFormContentDepositQuote() {
         tokenPrice={quotePrice}
       />
       {/* TODO uncomment once action will be handled */}
-      {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}
+      {/* <PillAccordion title={t('adjust-your-position-additional')}>*/}
       {/*  <AjnaMultiplySlider disabled={!depositAmount} />*/}
-      {/*</PillAccordion>*/}
+      {/* </PillAccordion>*/}
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />

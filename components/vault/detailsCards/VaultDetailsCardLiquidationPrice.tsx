@@ -100,7 +100,7 @@ export function VaultDetailsCardLiquidationPrice({
   liquidationRatio: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
-  relevant?: Boolean
+  relevant?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()

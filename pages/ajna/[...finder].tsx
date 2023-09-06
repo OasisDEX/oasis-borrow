@@ -44,7 +44,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
           ]),
         )
         .map((finder) => ({ params: { finder }, locale })),
-    ) || []
+    ) ?? []
 
   return {
     paths,

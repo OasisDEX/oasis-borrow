@@ -2,6 +2,7 @@ import { join } from 'path'
 import pg from 'pg'
 import { migrate } from 'postgres-migrations'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv-flow').config({ path: __dirname })
 
 async function main() {

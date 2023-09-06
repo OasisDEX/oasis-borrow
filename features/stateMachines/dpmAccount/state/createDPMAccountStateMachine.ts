@@ -59,7 +59,7 @@ export type DPMAccountStateMachineEvents =
 
 export function createDPMAccountStateMachine(
   transactionStateMachine: TransactionStateMachine<CreateDPMAccount, UserDpmAccount>,
-  runWithEthers: boolean = false,
+  runWithEthers = false,
 ) {
   return createMachine(
     {

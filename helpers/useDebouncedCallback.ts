@@ -5,7 +5,7 @@ import { debounce } from 'lodash'
 export function useDebouncedCallback<T>(
   callback: (value: T) => void,
   value: T,
-  delay: number = 1000, // milliseconds
+  delay = 1000, // milliseconds
 ) {
   const debouncedCallback = useCallback(debounce(callback, delay), [])
 

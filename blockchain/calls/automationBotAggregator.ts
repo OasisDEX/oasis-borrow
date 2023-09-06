@@ -13,7 +13,7 @@ export type AutomationBotAggregatorBaseTriggerData = {
 export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseTriggerData & {
   groupTypeId: number
   replacedTriggerIds: any // TODO ŁW replace any https://app.shortcut.com/oazo-apps/story/5388/change-types-in-transactiondef
-  triggersData: any //AutomationBotAddTriggerData[],
+  triggersData: any // AutomationBotAddTriggerData[],
   kind: TxMetaKind.addTriggerGroup
 }
 export type AutomationBotRemoveTriggersData = AutomationBotAggregatorBaseTriggerData & {

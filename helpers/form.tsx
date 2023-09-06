@@ -219,7 +219,7 @@ export function transactionToX<X, Y extends TxMeta>(
   waitingForConfirmationX: X | TxStateToX$<X, Y>,
   fiascoX: X | TxStateToX$<X, Y>,
   successHandler?: TxStateToX$<X, Y>,
-  confirmations: number = 0,
+  confirmations = 0,
 ): TxState$ToX$<X, Y> {
   return (txState$: Observable<TxState<Y>>) =>
     txState$.pipe(

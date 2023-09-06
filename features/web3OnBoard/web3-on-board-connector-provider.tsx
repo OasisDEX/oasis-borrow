@@ -206,10 +206,7 @@ function InternalProvider({ children }: WithChildren) {
   return (
     <web3OnBoardConnectorContext.Provider
       value={{
-        connect: (
-          desiredNetworkHexId?: NetworkConfigHexId,
-          couldBeConnectedToTestNet: boolean = false,
-        ) => {
+        connect: (desiredNetworkHexId?: NetworkConfigHexId, couldBeConnectedToTestNet = false) => {
           if (state.status === WalletManagementStateStatus.connected && desiredNetworkHexId) {
             dispatch({
               type: WalletStateEventType.changeChain,

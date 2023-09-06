@@ -238,7 +238,7 @@ function buildAaveViewModel(
           token: collateralToken,
           debtToken,
           title,
-          url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, //TODO: Proper network handling
+          url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, // TODO: Proper network handling
           id: isAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,

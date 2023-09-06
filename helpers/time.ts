@@ -7,7 +7,7 @@ export function useTime(refreshCycle = 1000) {
     const intervalId = setInterval(() => setTime(new Date().getTime()), refreshCycle)
 
     return () => clearInterval(intervalId)
-  }) //[refreshCycle, setInterval, clearInterval, setNow]
+  }) // [refreshCycle, setInterval, clearInterval, setNow]
 
   return time
 }

@@ -18,7 +18,7 @@ function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
   const slices = []
   let angle = 0
 
-  for (var i = 0; i < items.length; i++) {
+  for (let i = 0; i < items.length; i++) {
     const ratio = values[i].dividedBy(totalValue).toNumber()
 
     slices.push({

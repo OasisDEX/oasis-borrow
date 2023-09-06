@@ -61,7 +61,7 @@ export async function unfollowVaultUsingApi(
   chainId: number,
   protocol: Protocol,
   token: string,
-): Promise<{ message: String }> {
+): Promise<{ message: string }> {
   return fetch(`${basePath}/api/follow`, {
     method: 'DELETE',
     headers: {

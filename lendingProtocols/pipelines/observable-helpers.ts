@@ -29,7 +29,7 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
   refreshTrigger$: Observable<unknown>,
   valueGetter: (args: Args) => Result | Promise<Result>,
   networkId: NetworkIds = NetworkIds.MAINNET,
-  pipeName: string = '',
+  pipeName = '',
   resolver: (args: Args) => string = defaultResolver,
 ): (a: Omit<Args, 'networkId'>) => Observable<Result> {
   return memoize((args) => {

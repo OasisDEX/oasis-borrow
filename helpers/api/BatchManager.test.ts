@@ -171,7 +171,7 @@ function createBatchManager(mockFetchJson: any) {
   })
 }
 
-function createMockBatch(startSliceIndex: number = 0, endSliceIndex: number = 9): Request[] {
+function createMockBatch(startSliceIndex = 0, endSliceIndex = 9): Request[] {
   if (startSliceIndex < 0 || startSliceIndex >= 9) {
     throw new Error(`Start Index must be greater than or equal to zero and less than 9`)
   }

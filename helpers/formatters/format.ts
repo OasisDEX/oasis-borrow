@@ -17,7 +17,7 @@ BigNumber.config({
   EXPONENTIAL_AT: 100000,
 })
 
-export function toShorthandNumber(amount: BigNumber, suffix: string = '', precision?: number) {
+export function toShorthandNumber(amount: BigNumber, suffix = '', precision?: number) {
   const sh = new BigNumber(
     amount
       .toString()
@@ -135,7 +135,7 @@ export function formatDateTime(time: Date, showMs?: boolean): string {
   return dayjs(time).format(showMs ? 'DD.MM HH:mm:ss' : 'DD.MM HH:mm')
 }
 
-export function formatAddress(address: string, first: number = 4, last: number = 5) {
+export function formatAddress(address: string, first = 4, last = 5) {
   return `${address.slice(0, first)}...${address.slice(-last)}`
 }
 
