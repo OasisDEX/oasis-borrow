@@ -84,7 +84,7 @@ export function AjnaProductController({
   if (redirect) void push(redirect)
 
   return (
-    <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
+    <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <WithErrorHandler error={errors}>

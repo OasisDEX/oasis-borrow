@@ -36,7 +36,7 @@ export function AssetsTableBanner({
       <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'], ml: 'auto' }}>
         <AppLink
           href={link}
-          internalInNewTab={true}
+          internalInNewTab
           onClick={() => {
             onClick && onClick(link)
           }}

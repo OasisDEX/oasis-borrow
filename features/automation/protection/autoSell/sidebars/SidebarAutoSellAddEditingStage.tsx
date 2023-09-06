@@ -282,7 +282,7 @@ export function SidebarAutoSellAddEditingStage({
           })
         }}
         defaultToggle={autoSellState.withThreshold}
-        showToggle={true}
+        showToggle
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}

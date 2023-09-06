@@ -25,7 +25,7 @@ function DsrProxyPage({ walletAddress }: { walletAddress: string }) {
   }
 
   return (
-    <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+    <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet>
       {null}
     </WithWalletConnection>
   )

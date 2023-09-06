@@ -37,7 +37,7 @@ function Vault({ id }: { id: string }) {
 
   return (
     <ProductContextHandler>
-      <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
+      <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}

@@ -13,7 +13,7 @@ import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
+export const getStaticPaths: GetStaticPaths<{ ilk: string }> = () => {
   const paths = supportedBorrowIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
 
   return {
@@ -36,7 +36,7 @@ function OpenVault({ ilk }: { ilk: string }) {
 
   return (
     <ProductContextHandler>
-      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags

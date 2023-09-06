@@ -7,6 +7,7 @@ const getStats = cacheObject(getOasisStats, 12 * 60 * 60, 'oasis-stats')
 async function oasisStatsHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
+      // eslint-disable-next-line no-case-declarations
       const stats = await getStats()
 
       if (stats?.data) {

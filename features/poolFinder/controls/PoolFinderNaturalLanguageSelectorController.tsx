@@ -31,7 +31,7 @@ export const PoolFinderNaturalLanguageSelectorController: FC<
             (option) => option.product,
           )}
           parentRef={ref}
-          withHeaders={true}
+          withHeaders
           onChange={(selected) => {
             onChange && onChange(selected.value as ProductHubProductType)
             void push(`${INTERNAL_LINKS.ajnaPoolFinder}/${selected.value}`)

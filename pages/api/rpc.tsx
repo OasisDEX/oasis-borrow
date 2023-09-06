@@ -204,7 +204,7 @@ async function makeMulticall(
       multicallFailedCalls.map(([to, data], i) => {
         return {
           jsonrpc: '2.0',
-          id: +requestBody[0].id + i,
+          id: Number(requestBody[0].id) + i,
           method: 'eth_call',
           params: [
             {

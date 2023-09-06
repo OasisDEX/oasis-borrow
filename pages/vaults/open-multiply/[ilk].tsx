@@ -37,7 +37,7 @@ function OpenVault({ ilk }: { ilk: string }) {
 
   return (
     <ProductContextHandler>
-      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags

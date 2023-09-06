@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { PrismaClient, WalletRisk } from '@prisma/client'
 
 export async function selectRiskForAddress(

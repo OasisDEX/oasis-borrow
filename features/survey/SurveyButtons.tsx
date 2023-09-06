@@ -32,7 +32,7 @@ export function SurveyButtons({ id, title, color }: SurveyConfig) {
           <Popover
             id={id}
             buttonColor={color}
-            shareGaInstance={true}
+            shareGaInstance
             onClose={() => setClosedSurveys([...closedSurveys, id])}
           />
         </>
@@ -42,7 +42,7 @@ export function SurveyButtons({ id, title, color }: SurveyConfig) {
           id={id}
           buttonText={title}
           buttonColor={color}
-          shareGaInstance={true}
+          shareGaInstance
           onClose={() => setClosedSurveys([...closedSurveys, id])}
         >
           {title}

@@ -264,7 +264,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
           components={[
             <AppLink
               href={EXTERNAL_LINKS.KB.CURATED_TOKEN_LIST}
-              internalInNewTab={true}
+              internalInNewTab
               sx={{ fontWeight: 'regular', fontSize: 3 }}
             />,
           ]}

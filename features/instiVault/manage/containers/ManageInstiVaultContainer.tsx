@@ -48,7 +48,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
       </Grid>
       <Box>
         <ManageVaultForm
-          hideMultiplyTab={true}
+          hideMultiplyTab
           txnCostDisplay={
             <>
               <VaultChangesInformationItem

@@ -109,7 +109,7 @@ function SecurityPage() {
                   }}
                 >
                   {category.links.map((link) => (
-                    <AppLink variant="inText" target="_blank" href={link.url}>
+                    <AppLink key={link.label} variant="inText" target="_blank" href={link.url}>
                       {link.label}
                       <Icon
                         name="arrow_right"

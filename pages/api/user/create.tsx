@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { User } from '@prisma/client'
 import { getAddress } from 'ethers/lib/utils'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'

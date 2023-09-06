@@ -43,7 +43,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
           gradient={gradient}
           options={Object.values(productHubOptionsMap).map((option) => option.product)}
           parentRef={ref}
-          withHeaders={true}
+          withHeaders
           onChange={(selected) => {
             const typedValue = selected.value as ProductHubProductType
             const tokenInUrl = selectedToken !== ALL_ASSETS ? selectedToken : undefined
@@ -74,7 +74,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
           options={Object.values(productHubOptionsMap[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
-          valueAsLabel={true}
+          valueAsLabel
           onChange={(selected) => {
             const tokenInUrl = selected.value !== ALL_ASSETS ? selected.value : undefined
 

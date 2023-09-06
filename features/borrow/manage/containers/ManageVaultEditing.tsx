@@ -24,8 +24,8 @@ function DepositInput({
       action="Deposit"
       currencyCode={token}
       tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       onSetMax={updateDepositMax!}
       maxAmountLabel={'Balance'}
       amount={depositAmount}
@@ -53,7 +53,7 @@ function GenerateInput({
       action="Generate"
       amount={generateAmount}
       currencyCode={'DAI'}
-      showMax={true}
+      showMax
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
       maxAmountLabel={'Max'}
@@ -81,8 +81,8 @@ function WithdrawInput({
     <VaultActionInput
       collapsed={collapsed}
       action="Withdraw"
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       tokenUsdPrice={currentCollateralPrice}
       onSetMax={updateWithdrawMax}
       disabled={!accountIsController}
@@ -112,7 +112,7 @@ function PaybackInput({
       action="Payback"
       amount={paybackAmount}
       currencyCode={'DAI'}
-      showMax={true}
+      showMax
       maxAmount={maxPaybackAmount}
       maxAmountLabel={'Max'}
       onSetMax={updatePaybackMax}

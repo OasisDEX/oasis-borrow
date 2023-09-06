@@ -25,7 +25,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
         <VaultActionInput
           action="Deposit"
           currencyCode="DAI"
-          showMax={true}
+          showMax
           hasAuxiliary={false}
           onSetMax={updateDepositMax!}
           amount={depositAmount}

@@ -35,14 +35,14 @@ export function DebtInput(props: SecondaryInputProps) {
       <VaultActionInput
         action={'Borrow'}
         amount={userInputDebt}
-        hasAuxiliary={true}
+        hasAuxiliary
         auxiliaryAmount={
           state.context.userInput.debtAmount?.times(state.context.balance?.debt.price || zero) ||
           zero
         }
         hasError={amountDebtTooHigh}
         maxAmount={maxDebt}
-        showMax={true}
+        showMax
         maxAmountLabel={t('max')}
         onSetMax={() => {
           send({ type: 'SET_DEBT', debt: maxDebt })

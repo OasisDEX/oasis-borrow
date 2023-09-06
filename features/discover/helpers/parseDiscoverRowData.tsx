@@ -109,7 +109,7 @@ function ParseDiscoverCellData({ kind, label, lang, row }: ParseDiscoverCellData
       return (
         <AssetsTableDataCellAction
           link={`/${stringified.cdpId}`}
-          newTab={true}
+          newTab
           onClick={() => trackingEvents.discover.viewPosition(kind, stringified.cdpId)}
         />
       )

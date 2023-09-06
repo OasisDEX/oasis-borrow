@@ -5,11 +5,5 @@ import { BaseAaveContext } from 'features/aave/types'
 export function ConnectedSidebarSection(props: SidebarSectionProps & { context: BaseAaveContext }) {
   const strategy = props.context.strategyConfig
 
-  return (
-    <SidebarSection
-      {...props}
-      requireConnection={true}
-      requiredChainHexId={strategy.networkHexId}
-    />
-  )
+  return <SidebarSection {...props} requireConnection requiredChainHexId={strategy.networkHexId} />
 }

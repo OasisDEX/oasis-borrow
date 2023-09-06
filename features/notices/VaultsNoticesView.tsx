@@ -235,7 +235,7 @@ export function VaultOverviewOwnershipNotice({
       subheader={
         <Text>
           {t('vaults-overview.banner-content')}{' '}
-          <AppLink href={`/owner/${account}`} internalInNewTab={true} sx={{ fontSize: 3 }}>
+          <AppLink href={`/owner/${account}`} internalInNewTab sx={{ fontSize: 3 }}>
             {t('here')}
           </AppLink>
         </Text>
@@ -384,7 +384,7 @@ export function VaultNextPriceUpdateCounter({
       ]}
       trailColor={theme.colors.counter.surface}
       duration={duration}
-      isLinearGradient={true}
+      isLinearGradient
       isPlaying={!!duration}
     >
       {({ remainingTime }) => {

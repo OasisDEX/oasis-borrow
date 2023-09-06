@@ -22,11 +22,11 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
       <VaultActionInput
         action={'Deposit'}
         amount={state.context.userInput?.amount}
-        hasAuxiliary={true}
+        hasAuxiliary
         auxiliaryAmount={state.context.auxiliaryAmount}
         hasError={false}
         maxAmount={state.context.balance?.deposit.balance}
-        showMax={true}
+        showMax
         maxAmountLabel={t('balance')}
         onSetMax={() => {
           send({ type: 'SET_AMOUNT', amount: state.context.balance?.deposit.balance ?? zero })

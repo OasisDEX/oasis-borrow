@@ -60,8 +60,8 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
           action="Deposit"
           currencyCode={token}
           tokenUsdPrice={currentCollateralPrice}
-          showMax={true}
-          hasAuxiliary={true}
+          showMax
+          hasAuxiliary
           onSetMax={updateDepositMax!}
           amount={depositAmount}
           auxiliaryAmount={depositAmountUSD}

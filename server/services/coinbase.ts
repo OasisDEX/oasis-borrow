@@ -16,11 +16,11 @@ const requiredTickers = tokens
   .filter((token): token is RequiredField<TokenConfig, 'coinbaseTicker'> => !!token.coinbaseTicker)
   .map((token) => token.coinbaseTicker)
 
-async function fetchTicker(product_id: string): Promise<{ data: CoinbaseApiResponse }> {
-  return axios({
+async function fetchTicker(productId: string): Promise<{ data: CoinbaseApiResponse }> {
+  return await axios({
     method: 'get',
     timeout: 1000,
-    url: `https://api.pro.coinbase.com/products/${product_id}/ticker`,
+    url: `https://api.pro.coinbase.com/products/${productId}/ticker`,
     responseType: 'json',
     headers: {
       Accept: 'application/json',

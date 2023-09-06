@@ -158,8 +158,8 @@ function BrandAssetsPage() {
         infoTranslation={t('brand-assets.category.minimum-size.info')}
       />
       <Grid sx={twoColumnsLayoutBoxSX}>
-        {assetsList.minimumSizeList.map((minSizeAsset) => (
-          <Box>
+        {assetsList.minimumSizeList.map((minSizeAsset, i) => (
+          <Box key={i}>
             <Box
               bg="neutral30"
               sx={{
@@ -204,8 +204,8 @@ function BrandAssetsPage() {
         infoTranslation={t('brand-assets.category.best-practices.info')}
       />
       <Grid sx={twoColumnsLayoutBoxSX}>
-        {assetsList.incorrectUseCasesMap.map((incorrectUseCase) => (
-          <Box>
+        {assetsList.incorrectUseCasesMap.map((incorrectUseCase, i) => (
+          <Box key={i}>
             <Box
               bg="neutral30"
               sx={{

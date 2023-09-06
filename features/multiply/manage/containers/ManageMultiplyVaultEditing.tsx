@@ -109,8 +109,8 @@ function DepositTokenInput({
       action="Deposit"
       currencyCode={token}
       tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       onSetMax={updateDepositAmountMax!}
       maxAmountLabel={'Max'}
       amount={depositAmount}
@@ -140,8 +140,8 @@ function WithdrawTokenInput({
       action="Withdraw"
       currencyCode={token}
       tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       onSetMax={updateWithdrawAmountMax!}
       maxAmountLabel={'Max'}
       amount={withdrawAmount}
@@ -166,7 +166,7 @@ function PaybackInput({
       action="Deposit"
       amount={paybackAmount}
       currencyCode="DAI"
-      showMax={true}
+      showMax
       maxAmount={maxPaybackAmount}
       maxAmountLabel={'Max'}
       onSetMax={updatePaybackAmountMax}
@@ -187,7 +187,7 @@ function DepositDaiInput({
       action="Deposit"
       amount={depositDaiAmount}
       currencyCode="DAI"
-      showMax={true}
+      showMax
       maxAmount={maxDepositDaiAmount}
       maxAmountLabel={'Max'}
       onSetMax={updateDepositDaiAmountMax}
@@ -208,7 +208,7 @@ function GenerateInput({
       action="Withdraw"
       amount={generateAmount}
       currencyCode="DAI"
-      showMax={true}
+      showMax
       maxAmount={maxGenerateAmount}
       maxAmountLabel={'Max'}
       onSetMax={updateGenerateAmountMax}
@@ -529,7 +529,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>
@@ -564,7 +564,7 @@ function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>
@@ -602,7 +602,7 @@ function DepositDAIAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>
@@ -637,7 +637,7 @@ function WithdrawDAIAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>

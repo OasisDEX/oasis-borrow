@@ -16,7 +16,7 @@ export function PoolCreatorLoadingState() {
   return (
     <DetailsSection
       title={
-        <DetailsSectionTitle loose={true}>
+        <DetailsSectionTitle loose>
           <Skeleton width="240px" height="28px" />
         </DetailsSectionTitle>
       }

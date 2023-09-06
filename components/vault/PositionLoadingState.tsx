@@ -56,7 +56,7 @@ export function PositionLoadingState({
 }) {
   return (
     <Container variant="vaultPageContainer">
-      <VaultHeadline header={header} details={[]} loading={true} {...rest} />
+      <VaultHeadline header={header} details={[]} loading {...rest} />
       <Skeleton
         width="150px"
         height={4}

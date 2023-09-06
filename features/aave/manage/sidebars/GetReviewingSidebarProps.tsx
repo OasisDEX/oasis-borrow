@@ -104,7 +104,7 @@ export function GetReviewingSidebarProps({
               currencyDigits={getToken(collateral).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxCollateralAmount}
-              showMax={true}
+              showMax
               onSetMax={() => {
                 updateTokenActionValue(maxCollateralAmount)
               }}
@@ -165,7 +165,7 @@ export function GetReviewingSidebarProps({
               currencyDigits={getToken(debt).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxDebtAmount}
-              showMax={true}
+              showMax
               onSetMax={() => {
                 updateTokenActionValue(maxDebtAmount)
               }}

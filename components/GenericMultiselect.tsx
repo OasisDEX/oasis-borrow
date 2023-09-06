@@ -301,7 +301,7 @@ export function GenericMultiselect({
         >
           <GenericMultiselectItem
             hasCheckbox={false}
-            isClearing={true}
+            isClearing
             isDisabled={values.length === 0}
             label={t('clear-selection')}
             onClick={() => {

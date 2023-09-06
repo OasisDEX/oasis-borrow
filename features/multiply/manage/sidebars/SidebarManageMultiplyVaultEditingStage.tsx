@@ -141,7 +141,7 @@ function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMu
         isExpanded={showSliderController}
         clickHandler={toggleSliderController}
       >
-        <SliderAdjustMultiply collapsed={true} {...props} />
+        <SliderAdjustMultiply collapsed {...props} />
       </OptionalAdjust>
     </>
   )
@@ -166,7 +166,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawCollateral(props: ManageM
         isExpanded={showSliderController}
         clickHandler={toggleSliderController}
       >
-        <SliderAdjustMultiply collapsed={true} {...props} />
+        <SliderAdjustMultiply collapsed {...props} />
       </OptionalAdjust>
     </>
   )
@@ -222,7 +222,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawDai(props: ManageMultiply
         isExpanded={showSliderController}
         clickHandler={toggleSliderController}
       >
-        <SliderAdjustMultiply collapsed={true} {...props} />
+        <SliderAdjustMultiply collapsed {...props} />
       </OptionalAdjust>
     </>
   )

@@ -232,7 +232,7 @@ export function FieldDepositCollateral({
         action={action}
         amount={depositAmount}
         auxiliaryAmount={depositAmountUSD}
-        hasAuxiliary={true}
+        hasAuxiliary
         hasError={false}
         maxAmount={maxDepositAmount}
         maxAmountLabel={t('balance')}
@@ -240,7 +240,7 @@ export function FieldDepositCollateral({
         onAuxiliaryChange={handleNumericInput(updateDepositUSD! || updateDepositAmountUSD!)}
         onChange={handleNumericInput(updateDeposit! || updateDepositAmount!)}
         onSetMax={updateDepositMax! || updateDepositAmountMax!}
-        showMax={true}
+        showMax
         currencyCode={token}
         tokenUsdPrice={currentCollateralPrice}
         disabled={disabled}
@@ -278,7 +278,7 @@ export function FieldWithdrawCollateral({
         amount={withdrawAmount}
         auxiliaryAmount={withdrawAmountUSD}
         disabled={disabled}
-        hasAuxiliary={true}
+        hasAuxiliary
         hasError={false}
         maxAmount={maxWithdrawAmount}
         maxAmountLabel={t('max')}
@@ -286,7 +286,7 @@ export function FieldWithdrawCollateral({
         onAuxiliaryChange={handleNumericInput(updateWithdrawUSD! || updateWithdrawAmountUSD!)}
         onChange={handleNumericInput(updateWithdraw! || updateWithdrawAmount!)}
         onSetMax={updateWithdrawMax! || updateWithdrawAmountMax!}
-        showMax={true}
+        showMax
         currencyCode={token}
         tokenUsdPrice={currentCollateralPrice}
       />
@@ -321,7 +321,7 @@ export function FieldDepositDai({
         action={action}
         amount={depositDaiAmount}
         currencyCode="DAI"
-        showMax={true}
+        showMax
         maxAmount={maxDepositDaiAmount}
         maxAmountLabel={t(maxAmountLabelKey)}
         onSetMax={updateDepositDaiMax! || updateDepositDaiAmountMax!}
@@ -368,7 +368,7 @@ export function FieldGenerateDai({
           if (updateGenerateAmount) updateGenerateAmount(debtFloor)
         }}
         onSetMax={updateGenerateMax! || updateGenerateAmountMax!}
-        showMax={true}
+        showMax
         showMin={debt.isZero()}
         currencyCode={'DAI'}
       />
@@ -406,7 +406,7 @@ export function FieldPaybackDai({
         maxAmountLabel={t('max')}
         onChange={handleNumericInput(updatePayback! || updatePaybackAmount!)}
         onSetMax={updatePaybackMax! || updatePaybackAmountMax!}
-        showMax={true}
+        showMax
         currencyCode="DAI"
       />
       <VaultErrors errorMessages={extractPaybackErrors(errorMessages)} ilkData={ilkData} />

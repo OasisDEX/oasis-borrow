@@ -17,12 +17,7 @@ export const WithWalletConnection = ({
   chainId,
   includeTestNet,
 }: WithChildren & { chainId: NetworkConfigHexId; includeTestNet?: boolean }) => (
-  <Connection
-    walletConnect={true}
-    chainId={chainId}
-    pageChainId={chainId}
-    includeTestNet={includeTestNet}
-  >
+  <Connection walletConnect chainId={chainId} pageChainId={chainId} includeTestNet={includeTestNet}>
     {children}
   </Connection>
 )

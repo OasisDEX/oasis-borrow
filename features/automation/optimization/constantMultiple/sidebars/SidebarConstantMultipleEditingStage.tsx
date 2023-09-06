@@ -277,7 +277,7 @@ export function SidebarConstantMultipleEditingStage({
             buyWithThreshold: toggleStatus,
           })
         }}
-        showToggle={true}
+        showToggle
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
@@ -325,7 +325,7 @@ export function SidebarConstantMultipleEditingStage({
           })
         }}
         defaultToggle={constantMultipleState?.sellWithThreshold}
-        showToggle={true}
+        showToggle
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
