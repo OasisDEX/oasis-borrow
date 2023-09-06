@@ -1,5 +1,5 @@
 import { IPosition } from '@oasisdex/dma-library'
-import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
+import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave-like'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -737,6 +737,7 @@ export function createManageAaveStateMachine(
                 token,
                 amount,
                 protocol: context.strategyConfig.protocol,
+                positionType: context.strategyConfig.type,
                 shouldCloseToCollateral:
                   context.manageTokenInput?.closingToken === context.tokens.collateral,
                 userAddress: context.web3Context?.account ?? ethNullAddress,

@@ -37,26 +37,22 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolMultiply',
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolMultiply',
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolBorrow',
           },
         ],
-      },
-      [ProductType.Earn]: {
-        featureToggle: 'SparkProtocol',
-        additionalManageActions: [],
       },
     },
   },
@@ -66,26 +62,22 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolMultiply',
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolMultiply',
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolBorrow',
           },
         ],
-      },
-      [ProductType.Earn]: {
-        featureToggle: 'SparkProtocol',
-        additionalManageActions: [],
       },
     },
   },
@@ -95,20 +87,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolMultiply',
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolMultiply',
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolBorrow',
           },
         ],
       },
@@ -117,25 +109,47 @@ const availableTokenPairs: TokenPairConfig[] = [
   {
     collateral: 'SDAI',
     debt: 'ETH',
-    strategyType: StrategyType.Short,
+    strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolMultiply',
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolMultiply',
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocol',
+        featureToggle: 'SparkProtocolBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocol',
+            featureToggle: 'SparkProtocolBorrow',
           },
         ],
+      },
+    },
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: 'SparkProtocolEarn',
+        additionalManageActions: [],
+      },
+    },
+  },
+  {
+    collateral: 'RETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: 'SparkProtocolEarn',
+        additionalManageActions: [],
       },
     },
   },

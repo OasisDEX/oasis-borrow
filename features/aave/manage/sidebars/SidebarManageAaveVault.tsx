@@ -1,12 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import {
-  IPosition,
-  ISimplePositionTransition,
-  ISimulatedTransition,
-  IStrategy,
-  OPERATION_NAMES,
-  PositionTransition,
-} from '@oasisdex/dma-library'
+import { IMultiplyStrategy, IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -28,7 +21,7 @@ import { ManagePositionAvailableActions, ProductType } from 'features/aave/types
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { getAaveStrategyUrl } from 'helpers/getAaveStrategyUrl'
+import { getAaveLikeOpenStrategyUrl } from 'helpers/getAaveLikeStrategyUrl'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -88,18 +81,15 @@ export function textButtonReturningToAdjust({
 }
 
 export function transitionHasSwap(
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy,
-): transition is PositionTransition {
-  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+  transition?: IMultiplyStrategy | IStrategy,
+): transition is IMultiplyStrategy {
+  return (
+    !!transition && (transition.simulation as IMultiplyStrategy['simulation']).swap !== undefined
+  )
 }
 
 export function getAmountReceivedAfterClose(
-  strategy:
-    | PositionTransition
-    | ISimplePositionTransition
-    | PositionTransition
-    | IStrategy
-    | undefined,
+  strategy: IStrategy | undefined,
   currentPosition: IPosition | undefined,
   isCloseToCollateral: boolean,
 ) {
@@ -357,7 +347,7 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: getAaveStrategyUrl({
+      url: getAaveLikeOpenStrategyUrl({
         aaveLikeProduct:
           state.context.strategyConfig.protocol === LendingProtocol.SparkV3 ? 'spark' : 'aave',
         protocol: state.context.strategyConfig.protocol,

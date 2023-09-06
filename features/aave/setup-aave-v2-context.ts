@@ -63,12 +63,12 @@ export function setupAaveV2Context(
   )
 
   const {
-    aaveUserAccountData$,
-    aaveProtocolData$,
-    aaveReserveConfigurationData$,
-    aaveOracleAssetPriceData$,
-    getAaveAssetsPrices$,
-    getAaveReserveData$,
+    aaveLikeUserAccountData$,
+    aaveLikeProtocolData$,
+    aaveLikeReserveConfigurationData$,
+    aaveLikeOracleAssetPriceData$,
+    getAaveLikeAssetsPrices$,
+    getAaveLikeReserveData$,
   } = protocols[LendingProtocol.AaveV2]
 
   const aaveEarnYieldsQuery = memoize(
@@ -77,12 +77,12 @@ export function setupAaveV2Context(
   )
 
   const earnCollateralsReserveData = {
-    STETH: aaveReserveConfigurationData$({ collateralToken: 'STETH', debtToken: 'ETH' }),
-  } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
+    STETH: aaveLikeReserveConfigurationData$({ collateralToken: 'STETH', debtToken: 'ETH' }),
+  } as Record<string, ReturnType<typeof aaveLikeReserveConfigurationData$>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
-      aaveOracleAssetPriceData$,
+      aaveLikeOracleAssetPriceData$,
       chainLinkETHUSDOraclePrice$,
       getSupportedTokens(LendingProtocol.AaveV2, NetworkNames.ethereumMainnet),
       NetworkIds.MAINNET,
@@ -96,7 +96,7 @@ export function setupAaveV2Context(
   )
 
   const strategyInfo$ = memoize(
-    curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    curry(getStrategyInfo$)(aaveLikeOracleAssetPriceData$, aaveLikeReserveConfigurationData$),
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
@@ -126,15 +126,15 @@ export function setupAaveV2Context(
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
-    aaveUserAccountData$,
+    aaveLikeUserAccountData$,
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveProtocolData$,
+    aaveLikeProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
-    aaveReserveConfigurationData$,
+    aaveLikeReserveConfigurationData$,
   )
 
   const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(
@@ -152,7 +152,7 @@ export function setupAaveV2Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveProtocolData$,
+    aaveLikeProtocolData$,
     allowanceForAccount$,
   )
 
@@ -176,9 +176,9 @@ export function setupAaveV2Context(
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
-    getAaveReserveData$({ token: 'STETH' }),
-    getAaveReserveData$({ token: 'ETH' }),
-    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }),
+    getAaveLikeReserveData$({ token: 'STETH' }),
+    getAaveLikeReserveData$({ token: 'ETH' }),
+    getAaveLikeAssetsPrices$({ tokens: ['USDC', 'STETH'] }),
   )
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))

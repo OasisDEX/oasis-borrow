@@ -2374,7 +2374,9 @@
       "product-header": {
         "token-pair-list": {
           "aave-steth-eth": "Aave stETH yield multiple",
-          "aave-wsteth-eth": "Aave wstETH yield multiple"
+          "aave-wsteth-eth": "Aave wstETH yield multiple",
+          "spark-wsteth-eth": "Spark wstETH yield multiple",
+          "spark-reth-eth": "Spark rETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",
@@ -2930,6 +2932,12 @@
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
+    }
+  },
+  "spark": {
+    "product-hub-tooltips": {
+      "elligible-for-spk-airdrop": "Positions on this pair are elligible for the SPK airdrop.",
+      "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
   "product-hub": {
