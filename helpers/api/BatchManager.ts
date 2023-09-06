@@ -93,7 +93,7 @@ export class BatchManager {
     }
 
     // 4. Print stats (Debug mode only)
-    this._debug && console.log(this._cache.getStats())
+    this._debug && console.info(this._cache.getStats())
 
     // 5. Integrate responses into batchResults
     return batchResults.map((result) => {

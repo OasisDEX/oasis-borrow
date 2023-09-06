@@ -196,7 +196,8 @@
     "no-relative-import-paths/no-relative-import-paths": ["warn", { "allowSameFolder": true }],
     "deprecation/deprecation": "warn", // or "error" to have stricter rule
     "react-hooks/rules-of-hooks": "warn",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "no-console": ["error", { "allow": ["warn", "error", "info"] }]
   },
   "overrides": [
     {
