@@ -47,6 +47,7 @@ export type TopAssetsAndPositionsViewModal = {
 }
 
 const tokensWeCareAbout: Array<string> = uniq(tokenList.tokens.map((t) => t.symbol.toUpperCase()))
+
 tokensWeCareAbout.push('ETH')
 
 export function createPositionsOverviewSummary$(
@@ -90,16 +91,19 @@ export function createPositionsOverviewSummary$(
         .sort((tokenA, tokenB) => {
           const tokenAUsdAmount = getPositionOrAssetValue(tokenA)
           const tokenBUsdAmount = getPositionOrAssetValue(tokenB)
+
           if (!tokenAUsdAmount) {
             return 1 // push a to bottom
           }
           if (!tokenBUsdAmount) {
             return -1 // push b to bottom
           }
+
           return tokenBUsdAmount.minus(tokenAUsdAmount).toNumber()
         })
         .filter((token) => {
           const valueUsd = getPositionOrAssetValue(token)
+
           return (
             valueUsd.decimalPlaces(2).gt(zero) ||
             ((token as WalletAssets)?.missingPriceData && valueUsd.decimalPlaces(2).gt(zero))
@@ -161,6 +165,7 @@ export function createPositionsOverviewSummary$(
           .slice(0, 5)
           .reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero)
         const percentageOther = totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
+
         return [assetsAndPositions, percentageOther, totalAssetsUsd] as [
           PositionView[],
           BigNumber,

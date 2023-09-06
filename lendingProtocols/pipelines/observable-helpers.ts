@@ -40,6 +40,7 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
       ...args,
       networkId: networkId,
     }
+
     return refreshTrigger$.pipe(
       switchMap(async () => await valueGetter(actualArgs)),
       distinctUntilChanged((a, b) => isEqual(a, b)),
@@ -49,6 +50,7 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
           `Error getting value for Args ${JSON.stringify(actualArgs)}. For pipe: ${pipeName}`,
           error,
         )
+
         return EMPTY
       }),
     )

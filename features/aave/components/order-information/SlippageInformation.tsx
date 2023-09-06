@@ -23,6 +23,7 @@ function ChangeSlippageToUserSettings({
   buttonLabel: string
 }) {
   const { t } = useTranslation()
+
   return (
     <Box sx={{ p: 3 }}>
       {t('vault-changes.slippage-info')}
@@ -39,6 +40,7 @@ function ChangeSlippageToUserSettings({
 
 function BasicSlippageInformation({ slippage }: SlippageInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.slippage-limit')}
@@ -49,6 +51,7 @@ function BasicSlippageInformation({ slippage }: SlippageInformationProps) {
 
 function SlippageFromStrategyWithTooltip({ slippage, changeSlippage }: SlippageInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.slippage-limit')}
@@ -71,6 +74,7 @@ function SlippageFromStrategyWithTooltip({ slippage, changeSlippage }: SlippageI
 
 function SlippageFromSettingsWithTooltip({ slippage, changeSlippage }: SlippageInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.slippage-limit')}
@@ -95,5 +99,6 @@ export function SlippageInformation(props: SlippageInformationProps) {
   if (!props.isStrategyHasSlippage) return <BasicSlippageInformation {...props} />
   if (props.getSlippageFrom === 'strategyConfig')
     return <SlippageFromStrategyWithTooltip {...props} />
+
   return <SlippageFromSettingsWithTooltip {...props} />
 }

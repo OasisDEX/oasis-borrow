@@ -41,6 +41,7 @@ export function AaveBorrowManageComponent({
       strategyConfig.tokens.debt,
     ) &&
     supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId)
+
   return (
     <WithErrorHandler
       error={[

@@ -58,6 +58,7 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
       if (!resp.ok) {
         throw Error(`Risk service status code ${resp.status} ${resp.statusText}`)
       }
+
       return resp.json()
     })
     .then((data) => {
@@ -86,6 +87,7 @@ async function checkIfRisky(address: string) {
       .includes(true)
   } catch (ex) {
     console.log(`TRM_LOG ${address} check failed`)
+
     throw ex
   }
 }
@@ -111,6 +113,7 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
     // create record in db
     if (risk === null) {
       const isRisky = await checkIfRisky(user.address)
+
       await createRiskForAddress(prisma, user.address, isRisky)
 
       return res.status(200).json({ isRisky })
@@ -126,6 +129,7 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
 
     // update
     const isRisky = await checkIfRisky(user.address)
+
     await updateRiskForAddress(prisma, user.address, isRisky)
 
     return res.status(200).json({ isRisky })

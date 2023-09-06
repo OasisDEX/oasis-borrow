@@ -32,6 +32,7 @@ function OptionWithIcon({ innerProps, isSelected, data }: OptionProps<AssetsSele
 
 const InputWithIcon = (props: SingleValueProps<AssetsSelectOption>) => {
   const { value } = props.selectProps
+
   return (
     <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
       <Icon name={`${(value as AssetsSelectOption).icon}`} size="32px" sx={{ mr: 2, ml: 2 }} />

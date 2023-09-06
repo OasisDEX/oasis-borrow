@@ -27,6 +27,7 @@ export function checkAcceptanceFromApi$(
       if (err.xhr.status === 404) {
         return of({ acceptance: false })
       }
+
       throw err
     }),
   )

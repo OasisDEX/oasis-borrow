@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
 
 type BannerGradientPresetsArray = { [key: string]: [string, string] }
+
 export const bannerGradientPresets: BannerGradientPresetsArray = {
   autoBuy: ['#e0e7ff', '#fae2fc'],
   autoSell: ['#fef1e1', '#fef5d6'],

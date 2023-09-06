@@ -28,6 +28,7 @@ function StatCell({ label, value }: { label: string; value: string }) {
 
 function ManagedVolumeStats({ oasisStats }: { oasisStats?: OasisStats }) {
   const { t } = useTranslation()
+
   return (
     <HomepagePromoBlock.Big
       background="rgba(255, 255, 255, 0.5)"
@@ -70,6 +71,7 @@ function ManagedVolumeStats({ oasisStats }: { oasisStats?: OasisStats }) {
 export const HomepageHero = () => {
   const { data: oasisStats } = useOasisStats()
   const { isConnected } = useAccount()
+
   return (
     <Container>
       <Flex

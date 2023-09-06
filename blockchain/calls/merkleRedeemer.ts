@@ -28,6 +28,7 @@ export const claimMultiple: TransactionDef<ClaimMultipleData> = {
   },
   prepareArgs: (data) => {
     const { weeks, amounts, proofs } = data
+
     return [weeks, amounts, proofs]
   },
 }

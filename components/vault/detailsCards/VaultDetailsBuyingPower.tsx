@@ -6,6 +6,7 @@ import { Grid, Heading, Text } from 'theme-ui'
 
 export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
   const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>

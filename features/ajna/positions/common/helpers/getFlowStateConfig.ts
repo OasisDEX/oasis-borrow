@@ -35,6 +35,7 @@ export function getFlowStateConfig({
           token: 'ETH',
         }
       }
+
       return {
         amount: state.depositAmount || zero,
         token: quoteToken,
@@ -86,6 +87,7 @@ export function getFlowStateConfig({
           token: 'ETH',
         }
       }
+
       return {
         amount: state.depositAmount,
         token: quoteToken,

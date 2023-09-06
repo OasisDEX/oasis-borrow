@@ -24,6 +24,7 @@ export function VaultHeaderLayout({
   originationFeePercent,
 }: VaultHeaderLayoutProps) {
   const { t } = useTranslation()
+
   return (
     <Grid mt={4}>
       <Box

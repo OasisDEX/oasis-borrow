@@ -84,9 +84,11 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           isSpark && isEarn && !(sparkEnabled && sparkEarnEnabled),
           isSpark && isMultiply && !(sparkEnabled && sparkMultiplyEnabled),
         ]
+
         if (unalailableChecksList.some((check) => !!check)) {
           return false
         }
+
         return true
       }),
     [

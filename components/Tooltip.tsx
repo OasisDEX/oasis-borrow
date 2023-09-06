@@ -17,6 +17,7 @@ export function useTooltip() {
 
       return () => document.removeEventListener('click', close)
     }
+
     return () => null
   }, [tooltipOpen])
 

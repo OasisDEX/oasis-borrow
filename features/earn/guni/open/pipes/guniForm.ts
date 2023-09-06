@@ -61,6 +61,7 @@ type StateDependencies = {
   allowance?: BigNumber
   errorMessages: string[]
 }
+
 export function applyFormChange<S extends FormState & StateDependencies, Ch extends FormChanges>(
   state: S,
   change: Ch,
@@ -121,6 +122,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
 
       if (change.kind === 'txInProgress') {
         const { openTxHash } = change
+
         return {
           ...state,
           openTxHash,
@@ -130,6 +132,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
 
       if (change.kind === 'txFailure') {
         const { txError } = change
+
         return {
           ...state,
           stage: 'txFailure',

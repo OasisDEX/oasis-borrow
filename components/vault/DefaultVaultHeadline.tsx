@@ -63,6 +63,7 @@ export function DefaultVaultHeadline({
       subColor: ['neutral80', priceChangeColor],
     },
   ]
+
   if (colRatio) {
     detailsList.push({
       label: t('system.collateral-ratio'),

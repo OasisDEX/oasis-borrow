@@ -38,6 +38,7 @@ export async function getCoingeckoTickers(): Promise<PriceServiceResponse> {
       if (!res.usd) {
         return acc
       }
+
       return {
         ...acc,
         [res.ticker]: res.usd,

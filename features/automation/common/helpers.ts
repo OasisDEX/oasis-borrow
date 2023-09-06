@@ -67,10 +67,12 @@ export function getTriggersByType(
 
     return decodedTriggers.filter((decodedTrigger) => {
       const triggerType = Number(decodedTrigger.result.triggerType)
+
       return triggerTypes.includes(triggerType)
     })
   } catch (e) {
     console.error(e)
+
     return []
   }
 }
@@ -139,6 +141,7 @@ export function prepareAutoBSResetData(
     positionRatio,
     publishKey,
   })
+
   return {
     ...defaultSliderValues,
     maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(autoBSTriggersData.maxBuyOrMinSellPrice),
@@ -347,6 +350,7 @@ export function automationMultipleRangeSliderAnalytics({
 
   useDebouncedCallback((value) => {
     const parsedValues = JSON.parse(value)
+
     trackingEvents.automation.inputChange(
       AutomationEventIds.MoveSlider,
       analyticsPageMap[type],
@@ -500,10 +504,12 @@ export function openFlowInitialStopLossLevel({
   liquidationRatio: BigNumber
 }) {
   const stopLossSliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+
   return stopLossSliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100)
 }
 
 export function isSupportedAaveAutomationTokenPair(collateralToken: string, debtToken: string) {
   const joined = [collateralToken, debtToken].join('-')
+
   return aaveTokenPairsAllowedAutomation.map((pair) => pair.join('-')).includes(joined)
 }

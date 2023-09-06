@@ -578,9 +578,11 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableBorrow, ...additionalAction]
       },
       executeTransactionWith: 'ethers' as const,
@@ -625,9 +627,11 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',
@@ -674,9 +678,11 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',
@@ -722,6 +728,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
         ? ['switch-to-borrow']
         : []
+
       return [...allActionsAvailableInMultiply, ...additionalActions]
     },
     defaultSlippage: new BigNumber(0.001),
@@ -762,6 +769,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
         ? ['switch-to-borrow']
         : []
+
       return [...allActionsAvailableInMultiply, ...additionalActions]
     },
     defaultSlippage: new BigNumber(0.001),
@@ -802,6 +810,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
         ? ['switch-to-borrow']
         : []
+
       return [...allActionsAvailableInMultiply, ...additionalActions]
     },
     defaultSlippage: new BigNumber(0.001),

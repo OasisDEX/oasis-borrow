@@ -28,6 +28,7 @@ function AavePositionNotice() {
   if (context.hasOpenedPosition) {
     return <AavePositionAlreadyOpenedNotice />
   }
+
   return null
 }
 
@@ -106,6 +107,7 @@ function AaveOpenContainer({
   config: IStrategyConfig
 }) {
   const Header = config.viewComponents.headerOpen
+
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine} config={config}>
       <Container variant="vaultPageContainer">
@@ -121,6 +123,7 @@ function AaveOpenContainer({
 export function AaveOpenView({ config }: { config: IStrategyConfig }) {
   const { aaveStateMachine } = useAaveContext(config.protocol, config.network)
   const { t } = useTranslation()
+
   return (
     <>
       <PageSEOTags

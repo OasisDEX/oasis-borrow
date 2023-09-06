@@ -33,6 +33,7 @@ function constructMakerProtocolBonusAdapterForTests({
   const _txHelpers = customTxHelpersImp || of(protoTxHelpers)
   const _contextConnected = customContextConnectedImp || of(mockContextConnected)
   const _vaultResolver = customVaultResolverImp || createMockVaultResolver$
+
   return createMakerProtocolBonusAdapter(
     () => _vaultResolver(),
     () => of(new BigNumber('213546478530833333208')),
@@ -92,6 +93,7 @@ describe('makerProtocolBonusAdapter', () => {
       })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+
       getStateUnpacker(claimAllCbState!())
 
       expect(txHelpersMock.sendWithGasEstimation).toHaveBeenCalledWith(
@@ -166,6 +168,7 @@ describe('makerProtocolBonusAdapter', () => {
       })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+
       expect(claimAllCbState).toBeUndefined()
     })
 
@@ -176,6 +179,7 @@ describe('makerProtocolBonusAdapter', () => {
       })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+
       expect(claimAllCbState).toBeUndefined()
     })
   })

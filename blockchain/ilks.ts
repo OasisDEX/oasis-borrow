@@ -30,6 +30,7 @@ interface DerivedIlkData {
   collateralizationDangerThreshold: BigNumber
   collateralizationWarningThreshold: BigNumber
 }
+
 export type IlkData = VatIlk & SpotIlk & JugIlk & DogIlk & DerivedIlkData
 
 // TODO Go in some config somewhere?

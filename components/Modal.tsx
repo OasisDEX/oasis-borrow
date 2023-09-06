@@ -36,6 +36,7 @@ interface ModalCloseIconProps extends ModalProps<WithChildren> {
 export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: ModalCloseIconProps) {
   const handleEscClose = useCallback((event) => {
     const { keyCode } = event
+
     if (keyCode === 27) {
       close && close()
     }
@@ -43,6 +44,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
 
   useEffect(() => {
     window.addEventListener('keydown', handleEscClose)
+
     return () => {
       window.removeEventListener('keydown', handleEscClose)
     }
@@ -76,6 +78,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
 // This will recursively look down to every single child of the target element.
 function iterateAllNodes(target: Node, container: Node[] = [], id = 0) {
   let nodes = [...container, target]
+
   target.childNodes.forEach((node) => {
     if (node.childNodes.length) {
       nodes = [...iterateAllNodes(node, nodes, ++id)]
@@ -97,6 +100,7 @@ function overflowClickHandler(onClick: () => void, event: MouseEvent) {
     const hasClickedOnOverlay = iterateAllNodes(event.target as Node).find(
       (node: any) => node.id === 'modalContainer',
     )
+
     if (hasClickedOnOverlay) {
       if (onClick) {
         onClick()

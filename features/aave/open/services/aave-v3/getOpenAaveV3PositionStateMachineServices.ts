@@ -59,10 +59,12 @@ export function getOpenAaveV3PositionStateMachineServices(
   ) => Observable<AaveLikeReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
+
   return {
     runEthersTransaction: (context) => async (sendBack, _onReceive) => {
       const networkId = context.strategyConfig.networkId
       const contracts = getNetworkContracts(networkId)
+
       ensureEtherscanExist(networkId, contracts)
 
       const { etherscan } = contracts
@@ -108,6 +110,7 @@ export function getOpenAaveV3PositionStateMachineServices(
             debt: balances[context.tokens.debt],
             deposit: balances[context.tokens.deposit],
           }
+
           return strategyBalance
         }),
         map((balances) => ({
@@ -236,6 +239,7 @@ export function getOpenAaveV3PositionStateMachineServices(
 
       const proxy = context.userDpmAccount?.proxy
       const user = context.userDpmAccount?.user
+
       if (!proxy) {
         return throwError(new Error('No proxy available - save position unsuccessful'))
       }
@@ -246,9 +250,11 @@ export function getOpenAaveV3PositionStateMachineServices(
             return throwError(new Error('No enough data provided to save position'))
           }
           const token = jwtAuthGetToken(user)
+
           if (!token) {
             return throwError(new Error('No token available - save position unsuccessful'))
           }
+
           return saveVaultUsingApi$(
             new BigNumber(positionId),
             token,
@@ -260,6 +266,7 @@ export function getOpenAaveV3PositionStateMachineServices(
         map(() => ({ type: 'SAVE_POSITION_SUCCESS' })),
         catchError((error) => {
           console.error('Error saving to the DB:', error)
+
           return of({ type: 'SAVE_POSITION_ERROR', error })
         }),
       )

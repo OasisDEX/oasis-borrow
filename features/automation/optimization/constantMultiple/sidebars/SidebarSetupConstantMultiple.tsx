@@ -261,5 +261,6 @@ export function SidebarSetupConstantMultiple({
 
     return <SidebarSection {...sidebarSectionProps} />
   }
+
   return null
 }

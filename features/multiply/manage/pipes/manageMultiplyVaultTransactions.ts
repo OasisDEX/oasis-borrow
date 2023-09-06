@@ -113,6 +113,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'proxyInProgress') {
     const { proxyTxHash } = change
+
     return {
       ...state,
       stage: 'proxyInProgress',
@@ -122,11 +123,13 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'proxyFailure') {
     const { txError } = change
+
     return { ...state, stage: 'proxyFailure', txError }
   }
 
   if (change.kind === 'proxyConfirming') {
     const { proxyConfirmations } = change
+
     return {
       ...state,
       proxyConfirmations,
@@ -135,6 +138,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'proxySuccess') {
     const { proxyAddress } = change
+
     return {
       ...state,
       proxyAddress,
@@ -151,6 +155,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'collateralAllowanceInProgress') {
     const { collateralAllowanceTxHash } = change
+
     return {
       ...state,
       collateralAllowanceTxHash,
@@ -160,6 +165,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'collateralAllowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'collateralAllowanceFailure',
@@ -169,6 +175,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'collateralAllowanceSuccess') {
     const { collateralAllowance } = change
+
     return { ...state, stage: 'collateralAllowanceSuccess', collateralAllowance }
   }
 
@@ -181,6 +188,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'daiAllowanceInProgress') {
     const { daiAllowanceTxHash } = change
+
     return {
       ...state,
       daiAllowanceTxHash,
@@ -190,6 +198,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'daiAllowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'daiAllowanceFailure',
@@ -199,6 +208,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'daiAllowanceSuccess') {
     const { daiAllowance } = change
+
     return { ...state, stage: 'daiAllowanceSuccess', daiAllowance }
   }
 
@@ -211,6 +221,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'manageInProgress') {
     const { manageTxHash } = change
+
     return {
       ...state,
       manageTxHash,
@@ -220,6 +231,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'manageFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'manageFailure',
@@ -254,6 +266,7 @@ export function adjustPosition(
   }: ManageMultiplyVaultState,
 ) {
   const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
   txHelpers$
     .pipe(
       first(),
@@ -681,6 +694,7 @@ export function applyEstimateGas(
     */
     const isGnosisSafeWallet = checkIfGnosisSafe(context)
     const GNOSIS_GAS_ESTIMATE = undefined
+
     if (isGnosisSafeWallet) return GNOSIS_GAS_ESTIMATE
 
     if (proxyAddress) {

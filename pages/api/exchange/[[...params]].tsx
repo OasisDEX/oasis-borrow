@@ -20,6 +20,7 @@ const handler: NextApiHandler = async (req, res) => {
     networkId: req.query.params?.[1],
     route: req.query.params?.[2],
   }
+
   // validate the query
   try {
     oneInchSchema.parse(query)
@@ -33,6 +34,7 @@ const handler: NextApiHandler = async (req, res) => {
   const headers = { [AUTH_HEADER_KEY]: oneInchApiKey }
   // fetch data from 1inch api
   const response = await fetch(newUrl, { headers })
+
   // pass the response from 1inch api to the client
   return res.status(response.status).json(await response.json())
 }

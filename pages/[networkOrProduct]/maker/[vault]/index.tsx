@@ -13,6 +13,7 @@ import React from 'react'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const networkOrProduct = ctx.query.networkOrProduct as string
+
   if (isSupportedNetwork(networkOrProduct) && networkOrProduct === NetworkNames.ethereumMainnet) {
     return {
       props: {

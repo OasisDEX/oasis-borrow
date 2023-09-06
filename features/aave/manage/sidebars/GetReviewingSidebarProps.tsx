@@ -83,6 +83,7 @@ export function GetReviewingSidebarProps({
       const amountCollateralTooHigh = maxCollateralAmount.lt(
         state.context.manageTokenInput?.manageTokenActionValue || zero,
       )
+
       return {
         title: t('system.manage-collateral'),
         content: (
@@ -143,6 +144,7 @@ export function GetReviewingSidebarProps({
       const amountDebtTooHigh = maxDebtAmount.lt(
         state.context.manageTokenInput?.manageTokenActionValue || zero,
       )
+
       return {
         title: t('system.manage-debt'),
         content: (

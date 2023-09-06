@@ -22,12 +22,14 @@ const networkMappings = {
   [NetworkIds.ARBITRUMMAINNET]: () =>
     getNetworkMapping(AaveV3Oracle__factory, NetworkIds.ARBITRUMMAINNET, 'aaveV3Oracle'),
 }
+
 export function getAaveV3AssetsPrices({
   tokens,
   networkId,
 }: AaveV3AssetsPricesParameters): Promise<BigNumber[]> {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]()
   const tokenAddresses = tokens.map((token) => wethToEthAddress(tokenMappings, token))
+
   return contract.getAssetsPrices(tokenAddresses).then((result) => {
     return result.map((tokenPriceInBaseCurrency) =>
       new BigNumber(tokenPriceInBaseCurrency.toString()).div(baseCurrencyUnit),
@@ -42,6 +44,7 @@ export function getAaveV3OracleAssetPrice({
 }: AaveV3OracleAssetPriceDataParameters) {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   return contract.getAssetPrice(tokenAddress).then((result) => {
     return new BigNumber(result.toString()).times(amount).div(baseCurrencyUnit)
   })

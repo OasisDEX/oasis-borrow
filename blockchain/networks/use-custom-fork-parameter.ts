@@ -19,19 +19,23 @@ export function isValidCustomForkParameter(
   if (typeof element !== 'object') {
     return false
   }
+
   return Object.entries(element).every(([key, value]) => {
     if (!isSupportedNetwork(key)) {
       return false
     }
+
     return typeof value === 'object'
   })
 }
 
 export function useCustomForkParameter() {
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
+
   if (!useForks) {
     ;[{} as CustomForkParameterType, () => {}]
   }
+
   return useLocalStorage<CustomForkParameterType>(
     CustomForkStorageKey,
     {} as CustomForkParameterType,

@@ -42,6 +42,7 @@ export async function getCoinbaseTickers(): Promise<PriceServiceResponse> {
       if (!res.price) {
         return acc
       }
+
       return {
         ...acc,
         [res.ticker]: Number(res.price),

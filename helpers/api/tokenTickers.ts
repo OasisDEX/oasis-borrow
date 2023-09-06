@@ -10,6 +10,7 @@ export async function tokenTickers() {
     getCoingeckoTickers(),
     getSDaiOracleTicker(),
   ])
+
   // Merge prices from all services into one tickers blob
   return results.reduce((acc, el) => ({ ...acc, ...el }), {})
 }

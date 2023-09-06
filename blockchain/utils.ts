@@ -37,11 +37,13 @@ export function amountToWei(amount: BigNumber, tokenOrPrecision: TokenOrPrecisio
     typeof tokenOrPrecision === 'string'
       ? getToken(tokenOrPrecision)
       : { precision: tokenOrPrecision }
+
   return amount.times(new BigNumber(10).pow(precision))
 }
 
 export function amountFromWei(amount: BigNumber, token: TokenOrPrecision): BigNumber {
   const { precision } = typeof token === 'string' ? getToken(token) : { precision: token }
+
   return amount.div(new BigNumber(10).pow(precision))
 }
 
@@ -55,6 +57,7 @@ export function amountFromPrecision(amount: BigNumber, precision: BigNumber): Bi
 
 export function amountToWeiRoundDown(amount: BigNumber, token: string): BigNumber {
   const { precision } = getToken(token)
+
   return amount.times(new BigNumber(10).pow(precision)).decimalPlaces(0, BigNumber.ROUND_DOWN)
 }
 

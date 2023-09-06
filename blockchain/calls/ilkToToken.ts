@@ -11,6 +11,7 @@ import { call, CallDef } from './callsHelpers'
 export const ilkTokenAddress: CallDef<string, string> = {
   call: (ilk, { contract, chainId }) => {
     const join = getNetworkContracts(NetworkIds.MAINNET, chainId).joins[ilk]
+
     return contract<McdGemJoin>(contractDesc(mcdGemJoinAbi, join)).methods.gem
   },
   prepareArgs: (_ilk: string) => [],

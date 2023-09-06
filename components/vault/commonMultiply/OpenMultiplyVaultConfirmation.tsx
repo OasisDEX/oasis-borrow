@@ -57,5 +57,6 @@ export function OpenMultiplyVaultStatus({
       />
     )
   }
+
   return null
 }

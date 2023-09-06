@@ -99,6 +99,7 @@ export function createOnEveryBlock$(
     switchMap(([{ web3 }]) => bindNodeCallback(web3.eth.getBlockNumber)()),
     catchError((error, source) => {
       console.log(error)
+
       return concat(every5Seconds$.pipe(skip(1), first()), source)
     }),
     distinctUntilChanged(),

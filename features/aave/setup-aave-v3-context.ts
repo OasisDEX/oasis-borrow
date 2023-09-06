@@ -52,6 +52,7 @@ export function setupAaveV3Context(
   network: NetworkNames,
 ): AaveContext {
   const networkId = networksByName[network].id
+
   ensureIsSupportedAaveV3NetworkId(networkId)
 
   const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
@@ -86,6 +87,7 @@ export function setupAaveV3Context(
       return of(undefined).pipe(
         switchMap(async () => {
           const dpm = await userDpms(positionId.vaultId!, networkId)
+
           return {
             dsProxy: undefined,
             dpmProxy: dpm,

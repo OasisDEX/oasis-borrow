@@ -73,6 +73,7 @@ export class BatchManager {
 
     // 3. Make the call to infura
     let batchResponse: Array<{ data: unknown; error?: Error }> = []
+
     if (batchRequests.length > 0) {
       batchResponse = await this._fetchJson(this._connection, JSON.stringify(batchRequests)).then(
         (responses) => {
@@ -80,11 +81,13 @@ export class BatchManager {
             (response: { result?: string; error: Error } | null, index: number) => {
               if (response?.result) {
                 this._cache.set(this._createHash(batchRequests[index] as Request), response.result)
+
                 return { data: response?.result }
               }
               if (response?.error) {
                 return { error: new Error(response?.error.message) }
               }
+
               return null
             },
           )

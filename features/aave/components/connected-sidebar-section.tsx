@@ -4,6 +4,7 @@ import React from 'react'
 
 export function ConnectedSidebarSection(props: SidebarSectionProps & { context: BaseAaveContext }) {
   const strategy = props.context.strategyConfig
+
   return (
     <SidebarSection
       {...props}

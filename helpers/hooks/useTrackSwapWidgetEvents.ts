@@ -29,6 +29,7 @@ export const useTrackSwapWidgetEvents = () => {
       WidgetEvent.RouteExecutionFailed,
       swapWidgetEventHandler(SwapWidgetEvents.ExecutionFailed),
     )
+
     return () => widgetEvents.all.clear()
   }, [widgetEvents])
 

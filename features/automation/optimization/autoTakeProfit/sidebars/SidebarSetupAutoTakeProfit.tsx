@@ -304,5 +304,6 @@ export function SidebarSetupAutoTakeProfit({
 
     return <SidebarSection {...sidebarSectionProps} />
   }
+
   return null
 }

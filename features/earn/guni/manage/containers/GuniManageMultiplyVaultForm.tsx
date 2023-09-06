@@ -43,6 +43,7 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       (!accountIsController &&
         stage !== 'adjustPosition' &&
         (otherAction === 'depositCollateral' || otherAction === 'paybackDai')))
+
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <GuniManageMultiplyVaultFormHeader {...props} />

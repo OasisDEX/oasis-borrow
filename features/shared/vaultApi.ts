@@ -76,6 +76,7 @@ export function checkMultipleVaultsFromApi$(
       if (err.xhr.status === 404) {
         return of({})
       }
+
       throw err
     }),
   )
@@ -104,12 +105,15 @@ export async function getApiVaults({
     return []
   }
   const vaultsQuery = vaultIds.map((id) => `id=${id}`).join('&')
+
   try {
     const response = await fetch(`/api/vaults/${chainId}/${protocol}?${vaultsQuery}`)
+
     if (response.status === 404) {
       return []
     }
     const vaults = await response.json()
+
     return vaults.vaults.map((vault: Vault) => {
       return {
         vaultId: vault.vault_id,
@@ -121,6 +125,7 @@ export async function getApiVaults({
     })
   } catch (error) {
     console.warn(`Can't obtain vaults from API`, error)
+
     return []
   }
 }
@@ -158,12 +163,15 @@ export function getVaultFromApi$(
 ): Observable<ApiVault> {
   if (chainId === 0 || chainId < 1) {
     console.error('Invalid chainId')
+
     return EMPTY
   }
   if (vaultId === 0 || vaultId < 1) {
     console.error('Invalid vaultId')
+
     return EMPTY
   }
+
   return ajax({
     url: `${basePath}/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
@@ -179,6 +187,7 @@ export function getVaultFromApi$(
         protocol: LendingProtocol
         ownerAddress: string
       }
+
       return { vaultId, type, chainId, ownerAddress, protocol }
     }),
   )

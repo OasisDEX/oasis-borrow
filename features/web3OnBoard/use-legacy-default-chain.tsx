@@ -3,6 +3,7 @@ import { getStorageValue, useLocalStorage } from 'helpers/useLocalStorage'
 import { Dispatch, SetStateAction } from 'react'
 
 const localStorageKeyForDefaultChain = 'legacy-default-chain'
+
 export const getLegacyDefaultChain = (): NetworkIds => {
   return getStorageValue(localStorageKeyForDefaultChain, NetworkIds.MAINNET, isValidNetworkId)
 }
@@ -21,6 +22,7 @@ export function useLegacyDefaultChain(): [NetworkIds, Dispatch<SetStateAction<Ne
 
   const setter: Dispatch<SetStateAction<NetworkIds>> = (action) => {
     const valueToSet = typeof action === 'function' ? action(state) : action
+
     if (valueToSet === NetworkIds.MAINNET || valueToSet === NetworkIds.GOERLI) {
       return setState(valueToSet)
     }

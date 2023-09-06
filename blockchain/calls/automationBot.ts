@@ -51,6 +51,7 @@ function getAddAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, chainId } = context
+
   return contract<AutomationBot>(
     getNetworkContracts(NetworkIds.MAINNET, chainId).automationBot,
   ).methods.addTrigger(

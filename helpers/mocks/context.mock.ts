@@ -18,6 +18,7 @@ import {
 
 export function mockContext$(props: MockWeb3ContextProps) {
   const web3Context$ = mockWeb3Context$(props)
+
   return createContext$(createWeb3ContextConnected$(web3Context$))
 }
 

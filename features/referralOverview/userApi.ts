@@ -24,6 +24,7 @@ export function getUserFromApi$(address: string, trigger$: Subject<void>): Obser
           if (err.xhr.status === 404) {
             return of(undefined)
           }
+
           throw err
         }),
       ),
@@ -43,6 +44,7 @@ export function getUserFromApi$(address: string, trigger$: Subject<void>): Obser
           if (err.xhr.status === 404) {
             return of(undefined)
           }
+
           throw err
         }),
       )
@@ -64,6 +66,7 @@ export function getReferralsFromApi$(address: string): Observable<User[] | null>
       if (err.xhr.status === 404) {
         return of(null)
       }
+
       throw err
     }),
   )
@@ -83,6 +86,7 @@ export function getTopEarnersFromApi$(): Observable<User[] | null> {
       if (err.xhr.status === 404) {
         return of(null)
       }
+
       throw err
     }),
   )
@@ -107,6 +111,7 @@ export function getReferralRewardsFromApi$(
           if (err.xhr.status === 404) {
             return of(null)
           }
+
           throw err
         }),
       ),
@@ -126,6 +131,7 @@ export function getReferralRewardsFromApi$(
           if (err.xhr.status === 404) {
             return of(null)
           }
+
           throw err
         }),
       )

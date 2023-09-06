@@ -35,6 +35,7 @@ export function shouldSendChangeNetworkOnConnected(
   const desiredNetworkConfig = networkSetByHexId[desiredNetworkHexId]
 
   const possibleNetworkHexIds = [desiredNetworkConfig.mainnetHexId]
+
   if (couldBeConnectedToTestNet) {
     possibleNetworkHexIds.push(desiredNetworkConfig.testnetHexId)
   }

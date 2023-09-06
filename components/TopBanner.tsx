@@ -8,6 +8,7 @@ import { rollDownTopBannerAnimation } from 'theme/animations'
 
 export const TopBanner = ({ name, children }: { name: string } & WithChildren) => {
   const [topBannerClosed, setTopBannerClosed] = useLocalStorage(`TopBanner_${name}_closed`, false)
+
   return topBannerClosed ? null : (
     <>
       <Box

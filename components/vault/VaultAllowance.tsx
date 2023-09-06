@@ -125,5 +125,6 @@ export function VaultAllowanceStatus({
       />
     )
   }
+
   return null
 }

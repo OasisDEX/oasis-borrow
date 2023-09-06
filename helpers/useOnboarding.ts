@@ -9,6 +9,7 @@ export function useOnboarding(feature: Onboardable): [boolean, Function] {
   )
 
   const isOnboarded = !!allOnboarded[feature]
+
   function setAsOnboarded() {
     setAllOnboarded({ ...allOnboarded, [feature]: true })
   }

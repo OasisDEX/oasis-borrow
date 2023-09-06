@@ -111,6 +111,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 ): S {
   if (change.kind === 'allowance') {
     const { allowanceAmount } = change
+
     return {
       ...state,
       allowanceAmount,
@@ -119,6 +120,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceAsDepositAmount') {
     const { depositAmount } = state
+
     return {
       ...state,
       selectedAllowanceRadio: 'depositAmount',
@@ -151,6 +153,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceInProgress') {
     const { allowanceTxHash } = change
+
     return {
       ...state,
       allowanceTxHash,
@@ -160,6 +163,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'allowanceFailure',
@@ -169,6 +173,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceSuccess') {
     const { allowance } = change
+
     return {
       ...state,
       stage: 'allowanceSuccess',
@@ -256,6 +261,7 @@ export function applyAllowanceConditions<
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
 
   const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
+
   return {
     ...state,
     customAllowanceAmountEmpty,

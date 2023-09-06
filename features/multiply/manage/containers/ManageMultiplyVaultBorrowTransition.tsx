@@ -7,6 +7,7 @@ import { Box, Grid } from 'theme-ui'
 
 export function ManageMultiplyVaultBorrowTransition({ stage }: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
   return stage === 'borrowTransitionEditing' ? (
     <Grid mt={-3} mb={3}>
       <Grid variant="text.paragraph3" sx={{ color: 'neutral80' }}>

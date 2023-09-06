@@ -99,6 +99,7 @@ function InternalProvider({ children }: WithChildren) {
 
   useEffect(() => {
     networkConnector.on(ConnectorEvent.Update, handleChainChanged)
+
     return () => {
       networkConnector.off(ConnectorEvent.Update, handleChainChanged)
     }

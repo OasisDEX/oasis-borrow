@@ -104,8 +104,10 @@ function ProxyRunningView(props: { steps: [number, number] }) {
       label: t('creating-proxy'),
     },
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
+
 export function ProxyView({ proxyMachine, steps }: ProxyViewProps) {
   const [state, send] = useActor(proxyMachine)
 

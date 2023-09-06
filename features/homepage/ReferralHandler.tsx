@@ -19,6 +19,7 @@ export function ReferralHandler() {
   const referralsEnabled = useFeatureToggle('Referrals')
   const [landedWithRef, setLandedWithRef] = useState(false)
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
+
   useEffect(() => {
     if (!localReferral && referralsEnabled) {
       const linkReferral = query.ref as string

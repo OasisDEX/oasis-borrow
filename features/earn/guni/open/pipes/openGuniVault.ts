@@ -90,6 +90,7 @@ function applyOpenGuniVaultInjectedOverride(state: OpenGuniVaultState, change: O
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -302,6 +303,7 @@ export function createOpenGuniVault$(
             }
 
             const account = context.account
+
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(tokenInfo.token0, account),
@@ -441,6 +443,7 @@ export function createOpenGuniVault$(
                                 }
 
                                 const token1Amount = swap.collateralAmount
+
                                 return getGuniMintAmount$({
                                   token,
                                   amountOMax: token0Amount,
@@ -510,6 +513,7 @@ export function createOpenGuniVault$(
                           ...data,
                         }
                       }
+
                       return state
                     }
 

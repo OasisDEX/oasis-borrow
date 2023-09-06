@@ -40,6 +40,7 @@ export function PriceImpact({
 
   const { swapAddress, sourceTokenAddress, targetTokenAddress, networkId } = useMemo(() => {
     const contracts = getNetworkContracts(strategyConfig.networkId)
+
     ensurePropertiesExist(strategyConfig.networkId, contracts, ['swapAddress'])
     ensureGivenTokensExist(strategyConfig.networkId, contracts, [
       sourceToken.symbol,
@@ -69,6 +70,7 @@ export function PriceImpact({
       const to = amountFromWei(response.toTokenAmount, targetToken.precision)
 
       const price = sourceToken.symbol === tokens.collateral ? to.div(from) : from.div(to)
+
       setMarketPrice(price)
     })
   }, [

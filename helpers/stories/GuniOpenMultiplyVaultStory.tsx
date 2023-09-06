@@ -52,8 +52,10 @@ export function guniOpenMultiplyVaultStory({
               depositAmount,
             }),
           }
+
           injectStateOverride(newState || {})
         })
+
         return subscription.unsubscribe()
       }, [])
 

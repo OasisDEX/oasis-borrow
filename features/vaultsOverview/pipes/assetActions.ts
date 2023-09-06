@@ -99,6 +99,7 @@ export function createAssetActions$(
           acc[ilk].push(productCategory as ProductCategory) // Object entries/reduce etc map to `string` for keys
         }
       })
+
       return acc
     },
     {},
@@ -124,11 +125,13 @@ export function createAssetActions$(
           of(productCategories),
         )
       })
+
       return obsArray.length > 0 ? combineLatest(obsArray) : of([])
     }),
 
     map((tokenToProductCategories) => {
       const relevantMappings = tokenToProductCategories.filter(([t]) => t === token)
+
       return relevantMappings
         .reduce<Array<ProductCategory>>((acc, [_token, productCategories]) => {
           return [...new Set([...acc, ...productCategories])] // dedupe
@@ -162,6 +165,7 @@ export function createAssetActions$(
             },
           ]
         : []
+
       return [...swapAction, ...assetActions]
     }),
   )

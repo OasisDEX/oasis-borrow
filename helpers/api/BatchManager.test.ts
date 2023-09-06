@@ -18,6 +18,7 @@ describe('BatchManager', () => {
     const mockFetchJson = jest.fn(() => Promise.resolve([]))
 
     const batchManager = createBatchManager(mockFetchJson)
+
     await batchManager.batchCall(mockBatch)
 
     expect(mockFetchJson).toHaveBeenCalledTimes(1)
@@ -55,6 +56,7 @@ describe('BatchManager', () => {
     // First call
     await batchManager.batchCall(mockBatch)
     const defaultCacheTtlPlus100ms = 15100
+
     jest.advanceTimersByTime(defaultCacheTtlPlus100ms)
 
     // Second call

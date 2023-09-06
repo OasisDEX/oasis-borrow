@@ -58,8 +58,10 @@ export function openMultiplyVaultStory({
                 depositAmountUSD: depositAmount.times(currentCollateralPrice),
               }),
             }
+
             injectStateOverride(newState || {})
           })
+
         return subscription.unsubscribe()
       }, [])
 

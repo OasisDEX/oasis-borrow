@@ -26,6 +26,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
+
   return (
     <ProductContextHandler>
       <WithFeatureToggleRedirect feature="DaiSavingsRate">

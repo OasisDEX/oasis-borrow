@@ -28,6 +28,7 @@ export function getChainlinkOraclePrice(
   }
 
   const address = getNetworkContracts(networkId).chainlinkPriceOracle[contractName].address
+
   warnIfAddressIsZero(address, networkId, 'chainlinkPriceOracle', contractName)
   const contract = factory.connect(address, getRpcProvider(networkId))
 

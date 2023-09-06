@@ -24,6 +24,7 @@ export function useObservable<O extends Observable<any>>(o$: O): [Unpack<O> | un
         raiseObservableErrorInSentry(e)
       },
     )
+
     return () => subscription.unsubscribe()
   }, [o$])
 

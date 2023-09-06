@@ -34,6 +34,7 @@ export function applyOpenMultiplyVaultTransaction(
 
   if (change.kind === 'txInProgress') {
     const { openTxHash } = change
+
     return {
       ...state,
       openTxHash,
@@ -43,6 +44,7 @@ export function applyOpenMultiplyVaultTransaction(
 
   if (change.kind === 'openVaultConfirming') {
     const { openVaultConfirmations } = change
+
     return {
       ...state,
       openVaultConfirmations,
@@ -51,6 +53,7 @@ export function applyOpenMultiplyVaultTransaction(
 
   if (change.kind === 'txFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'txFailure',
@@ -120,6 +123,7 @@ export function multiplyVault(
   }: OpenMultiplyVaultState,
 ) {
   const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
   return getQuote$(
     getTokenMetaData('DAI', tokensMainnet),
     getTokenMetaData(token, tokensMainnet),
@@ -165,6 +169,7 @@ export function multiplyVault(
               )
 
               const jwtToken = jwtAuthGetToken(account)
+
               if (id && jwtToken) {
                 saveVaultUsingApi$(
                   id,

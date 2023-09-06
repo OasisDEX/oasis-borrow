@@ -66,6 +66,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
 
     if (userReferral && connectedAccount) {
       const jwtToken = jwtAuthGetToken(connectedAccount)
+
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,

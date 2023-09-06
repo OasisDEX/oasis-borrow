@@ -6,6 +6,7 @@ export function applyDsrAllowanceChanges<
 >(state: S, change: AllowanceChanges): S {
   if (change.kind === 'allowance') {
     const { allowanceAmount } = change
+
     return {
       ...state,
       allowanceAmount,
@@ -14,6 +15,7 @@ export function applyDsrAllowanceChanges<
 
   if (change.kind === 'allowanceAsDepositAmount') {
     const { depositAmount } = state
+
     return {
       ...state,
       selectedAllowanceRadio: 'depositAmount',
@@ -46,6 +48,7 @@ export function applyDsrAllowanceChanges<
 
   if (change.kind === 'allowanceInProgress') {
     const { allowanceTxHash } = change
+
     return {
       ...state,
       allowanceTxHash,
@@ -55,6 +58,7 @@ export function applyDsrAllowanceChanges<
 
   if (change.kind === 'allowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'allowanceFailure',

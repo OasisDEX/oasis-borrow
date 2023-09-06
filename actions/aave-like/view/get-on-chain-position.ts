@@ -27,6 +27,7 @@ export async function getOnChainPosition({
   switch (protocol) {
     case LendingProtocol.AaveV2:
       const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+
       return await views.aave.v2(
         {
           proxy: proxyAddress,
@@ -37,6 +38,7 @@ export async function getOnChainPosition({
       )
     case LendingProtocol.AaveV3:
       const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+
       return await views.aave.v3(
         {
           proxy: proxyAddress,
@@ -47,6 +49,7 @@ export async function getOnChainPosition({
       )
     case LendingProtocol.SparkV3:
       const addressesSpark = getAddresses(networkId, LendingProtocol.SparkV3)
+
       return await views.spark(
         {
           proxy: proxyAddress,

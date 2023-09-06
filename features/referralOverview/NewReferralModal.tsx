@@ -29,6 +29,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
 
     if (userReferral && account) {
       const jwtToken = jwtAuthGetToken(account)
+
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,

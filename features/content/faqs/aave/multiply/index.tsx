@@ -6,5 +6,6 @@ import en from './en.mdx'
 
 export const AaveMultiplyFaq = () => {
   useScrollToTop()
+
   return <TranslatedContent content={{ en /* es, pt */ }} />
 }

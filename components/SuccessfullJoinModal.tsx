@@ -18,6 +18,7 @@ interface NewReferralProps {
 export function SuccessfulJoinModal({ account, userReferral, heading }: NewReferralProps) {
   const { t } = useTranslation()
   const { replace } = useRedirect()
+
   return (
     <>
       {userReferral && (

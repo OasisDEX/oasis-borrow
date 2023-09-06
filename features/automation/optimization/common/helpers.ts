@@ -36,6 +36,7 @@ export function getActiveOptimizationFeature({
         currentOptimizationFeature === AutomationFeatures.AUTO_TAKE_PROFIT,
     }
   }
+
   return section === 'details'
     ? {
         isAutoBuyActive: isAutoBuyOn || currentOptimizationFeature === AutomationFeatures.AUTO_BUY,

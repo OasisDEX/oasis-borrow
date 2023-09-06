@@ -21,6 +21,7 @@ import { ManageVaultEditing } from './ManageVaultEditing'
 
 function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
+
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
       <Grid variant="text.paragraph3" sx={{ color: 'neutral80' }}>

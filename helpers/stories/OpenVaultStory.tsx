@@ -57,8 +57,10 @@ export function openVaultStory({
                 showGenerateOption: !generateAmount.isZero(),
               }),
             }
+
             injectStateOverride(newState || {})
           })
+
         return subscription.unsubscribe()
       }, [])
 

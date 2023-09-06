@@ -29,6 +29,7 @@ export function applyStopLossOpenFlowTransaction<S>(state: S, change: AddStopLos
 
   if (change.kind === 'stopLossTxInProgress') {
     const { stopLossTxHash } = change
+
     return {
       ...state,
       stopLossTxHash,
@@ -38,6 +39,7 @@ export function applyStopLossOpenFlowTransaction<S>(state: S, change: AddStopLos
 
   if (change.kind === 'stopLossTxFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'stopLossTxFailure',
@@ -63,6 +65,7 @@ export function addStopLossTrigger<C extends AddStopLossChange>(
   },
 ) {
   const { id, stopLossCloseType, stopLossLevel, proxyAddress } = state
+
   sendWithGasEstimation(
     addAutomationBotTrigger,
     prepareAddStopLossTriggerData({

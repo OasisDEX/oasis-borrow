@@ -15,6 +15,7 @@ export interface TeamMember {
 export function parseMemberInfo(fileName: string): TeamMember {
   const nameWithoutExt = fileName.split('.').slice(0, -1).join('.')
   const memberNameAndTitle = nameWithoutExt.split('_')
+
   if (memberNameAndTitle.length > 2) {
     throw new Error(`Team pic file name has more than one underscore: ${fileName}`)
   }
@@ -25,6 +26,7 @@ export function parseMemberInfo(fileName: string): TeamMember {
   }
   const [memberName, title] = memberNameAndTitle.map((str) => str.trim())
   const memberNameNoDigits = memberName.replace(/[0-9]/g, '')
+
   return {
     name: memberNameNoDigits,
     order: memberName,

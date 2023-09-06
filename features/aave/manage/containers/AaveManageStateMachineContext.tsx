@@ -42,6 +42,7 @@ function setupManageAaveStateContext({
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()
+
   return {
     stateMachine,
   }
@@ -55,9 +56,11 @@ const manageAaveStateContext = React.createContext<ManageAaveStateMachineContext
 
 export function useManageAaveStateMachineContext(): ManageAaveStateMachineContext {
   const ac = React.useContext(manageAaveStateContext)
+
   if (!ac) {
     throw new Error('ManageAaveStateMachineContext not available!')
   }
+
   return ac
 }
 
@@ -79,6 +82,7 @@ export function ManageAaveStateMachineContextProvider({
     positionId,
     updateStrategyConfig,
   })
+
   return (
     <manageAaveStateContext.Provider value={context}>{children}</manageAaveStateContext.Provider>
   )

@@ -671,12 +671,14 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
 
   const effectiveStage = uiState?.currentStage || stage
+
   useEffect(() => {
     if (effectiveStage === 'closeVault') {
       props.toggle?.('otherActions')
       props.setOtherAction?.('closeVault')
     }
   }, [effectiveStage])
+
   return (
     <Grid gap={4}>
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}

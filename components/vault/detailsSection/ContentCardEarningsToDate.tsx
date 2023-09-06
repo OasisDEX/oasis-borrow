@@ -13,6 +13,7 @@ interface ContentCardEarningsToDateProps {
 
 function ContentCardEarningsToDateModal() {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('manage-earn-vault.earnings-to-date')}</Heading>

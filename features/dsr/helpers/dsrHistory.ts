@@ -64,6 +64,7 @@ async function getBlockTimestamp({ chainId }: Context, blockNumber: number): Pro
   const block = await apiClient.request(historicalBlockNumbers, {
     blockNumber,
   })
+
   return new Date(block.allHistoricBlocks.nodes[0].timestamp).getTime() / 1000
 }
 
@@ -100,10 +101,12 @@ function createEventTypeHistory$(
           return e.transactionHash === event.transactionHash
         }),
       )
+
       return combineLatest(of(event), adapterFiltered$)
     }),
     map((result: LogEvent[]) => {
       const [potEvent, joinEvent] = result
+
       return {
         kind,
         block: potEvent.blockNumber,
@@ -146,6 +149,7 @@ export function createDsrHistory$(context: Context, proxyAddress: string): Obser
       return list.sort((a: LogEvent, b: LogEvent) => {
         if (a.block > b.block) return -1
         if (a.block < b.block) return 1
+
         return 0
       })
     }),

@@ -20,6 +20,7 @@ export function VaultHeadlineDetails({
   labelTooltip,
 }: HeadlineDetailsProp) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
+
   return (
     <Box
       onMouseEnter={!isTouchDevice ? () => setTooltipOpen(true) : undefined}

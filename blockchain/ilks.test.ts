@@ -21,6 +21,7 @@ describe('ilkData$', () => {
 
     expect(state().ilkDebt).toEqual(defaultIlkDebt)
     const expectedIlkDebtAvailable = defaultIlkDebt.times(2.5).minus(defaultIlkDebt)
+
     expect(state().ilkDebtAvailable).toEqual(expectedIlkDebtAvailable)
 
     debtScalingFactor$.next(RANDOM_DEBT_SCALING_FACTOR)

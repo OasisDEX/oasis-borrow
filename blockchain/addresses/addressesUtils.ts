@@ -7,6 +7,7 @@ export function getOsms(addresses: Dictionary<string>, ilks: readonly string[]) 
   const keysLegalPostfixes = ilks.map((x) =>
     x.substring(0, x.indexOf('-') > 0 ? x.indexOf('-') : x.length),
   )
+
   return Object.entries(addresses)
     .filter(([key]) => /PIP_.*/.test(key))
     .filter(
@@ -20,6 +21,7 @@ export function getCollaterals(addresses: Dictionary<string>, ilks: readonly str
   const keysLegalPostfixes = ilks.map((x) =>
     x.substring(0, x.indexOf('-') > 0 ? x.indexOf('-') : x.length),
   )
+
   return Object.entries(addresses)
     .filter(([key]) => /PIP_.*/.test(key))
     .filter(([key]) => key !== 'ETH')

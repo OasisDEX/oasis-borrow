@@ -28,6 +28,7 @@ export function applyOpenVaultTransaction(
 
   if (change.kind === 'allowanceInProgress') {
     const { allowanceTxHash } = change
+
     return {
       ...state,
       allowanceTxHash,
@@ -37,6 +38,7 @@ export function applyOpenVaultTransaction(
 
   if (change.kind === 'allowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'allowanceFailure',
@@ -46,6 +48,7 @@ export function applyOpenVaultTransaction(
 
   if (change.kind === 'allowanceSuccess') {
     const { allowance } = change
+
     return { ...state, stage: 'allowanceSuccess', allowance }
   }
 
@@ -58,6 +61,7 @@ export function applyOpenVaultTransaction(
 
   if (change.kind === 'txInProgress') {
     const { openTxHash } = change
+
     return {
       ...state,
       openTxHash,
@@ -67,6 +71,7 @@ export function applyOpenVaultTransaction(
 
   if (change.kind === 'openVaultConfirming') {
     const { openVaultConfirmations } = change
+
     return {
       ...state,
       openVaultConfirmations,
@@ -75,6 +80,7 @@ export function applyOpenVaultTransaction(
 
   if (change.kind === 'txFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'txFailure',
@@ -131,6 +137,7 @@ export function openVault(
 
           // assume that user went through ToS flow and can interact with application
           const jwtToken = jwtAuthGetToken(account)
+
           if (id && jwtToken) {
             saveVaultUsingApi$(
               id,

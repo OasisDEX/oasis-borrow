@@ -82,6 +82,7 @@ export function getAavePositionOfType(positions: AaveLikePosition[]) {
       if (position.type === 'earn') v.earn.push(position)
       else if (position.type === 'multiply') v.multiply.push(position)
       else if (position.type === 'borrow') v.borrow.push(position)
+
       return v
     },
     { multiply: [], earn: [], borrow: [] },

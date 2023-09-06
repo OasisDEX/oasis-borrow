@@ -64,6 +64,7 @@ function fetchTickersWithRetry(
   if (!retries) {
     return Promise.reject(err)
   }
+
   return fetchTicker().catch((err) => {
     return fetchTickersWithRetry(retries - 1, err)
   })

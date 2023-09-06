@@ -7,5 +7,6 @@ export function useScrollToTop() {
   useEffect(() => {
     document.querySelectorAll('body')[0]?.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+
   return null // takes nothing, returns nothing
 }

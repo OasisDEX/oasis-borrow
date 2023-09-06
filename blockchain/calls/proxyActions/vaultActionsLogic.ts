@@ -104,12 +104,14 @@ export function getWithdrawAndPaybackCallData(
       if (shouldPaybackAll) {
         return proxyActionsSmartContractAdapter.wipeAllAndFreeETH(context, data)
       }
+
       return proxyActionsSmartContractAdapter.wipeAndFreeETH(context, data)
     }
 
     if (shouldPaybackAll) {
       return proxyActionsSmartContractAdapter.wipeAllAndFreeGem(context, data)
     }
+
     return proxyActionsSmartContractAdapter.wipeAndFreeGem(context, data)
   }
 
@@ -117,6 +119,7 @@ export function getWithdrawAndPaybackCallData(
     if (token === 'ETH') {
       return proxyActionsSmartContractAdapter.freeETH(context, data)
     }
+
     return proxyActionsSmartContractAdapter.freeGem(context, data)
   }
 
@@ -124,6 +127,7 @@ export function getWithdrawAndPaybackCallData(
     if (shouldPaybackAll) {
       return proxyActionsSmartContractAdapter.wipeAll(context, data)
     }
+
     return proxyActionsSmartContractAdapter.wipe(context, data)
   }
 
@@ -168,7 +172,9 @@ function getOpenCallData(
     if (token === 'ETH') {
       return proxyActionAdapter.openLockETHAndDraw(context, data)
     }
+
     return proxyActionAdapter.openLockGemAndDraw(context, data)
   }
+
   return proxyActionAdapter.open(context, data)
 }

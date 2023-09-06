@@ -122,11 +122,13 @@ export const automationContext = React.createContext<AutomationContext | undefin
 
 export function useAutomationContext(): AutomationContext {
   const ac = useContext(automationContext)
+
   if (!ac) {
     throw new Error(
       "AutomationContext not available! useAutomationContext can't be used serverside",
     )
   }
+
   return ac
 }
 
@@ -284,6 +286,7 @@ export function AutomationContextProvider({
         ),
       },
     }
+
     setAutoContext((prev) => ({
       ...prev,
       ...update,

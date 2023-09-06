@@ -63,6 +63,7 @@ describe('AaveContextProvider', () => {
       () => useAaveContext(LendingProtocol.AaveV2, NetworkNames.ethereumMainnet),
       { wrapper },
     )
+
     rerender()
     rerender()
     expect(spy).toBeCalledTimes(1)

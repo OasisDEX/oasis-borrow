@@ -22,6 +22,7 @@ interface ContentCardTriggerColPriceModalProps {
 
 function ContentCardTriggerColPriceModal({ token }: ContentCardTriggerColPriceModalProps) {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('auto-take-profit.trigger-col-price', { token })}</Heading>

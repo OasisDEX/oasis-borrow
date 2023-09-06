@@ -155,6 +155,7 @@ export function VaultOwnershipBanner({
   const { t } = useTranslation()
 
   if (!controller) return null
+
   return (
     <VaultNotice
       status={
@@ -188,6 +189,7 @@ function PositionOwnershipBanner({
   connectedWalletAddress?: string
 }) {
   const { t } = useTranslation()
+
   return (
     <VaultNotice
       status={
@@ -468,6 +470,7 @@ export function VaultNoticesView({ id }: { id: BigNumber }) {
 
 export function AavePositionAlreadyOpenedNotice() {
   const { t } = useTranslation()
+
   return (
     <Box sx={{ mb: 4 }}>
       <VaultNotice
@@ -531,7 +534,9 @@ function getProtocolServices(
     return protocols[strategyConfig.protocol]
   }
   const networkId = networksByName[strategyConfig.network].id
+
   ensureIsSupportedAaveV3NetworkId(networkId)
+
   return protocols[strategyConfig.protocol as LendingProtocol.AaveV3][networkId] // this isnt a thing on Spark V3
 }
 

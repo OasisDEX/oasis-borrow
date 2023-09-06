@@ -75,6 +75,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
           transports: ['websocket'],
           upgrade: false,
         })
+
         // initialize state
         uiChanges.publish(NOTIFICATION_CHANGE, {
           type: 'initialize-state',

@@ -54,6 +54,7 @@ async function getMakerData(
 
   const ilksListWithHexValues = makerProductHubProducts.reduce((acc, product) => {
     const ilk = getIlk(product.label)
+
     return {
       ...acc,
       [ilk]: Web3.utils.padRight(Web3.utils.stringToHex(ilk), 64),
@@ -62,6 +63,7 @@ async function getMakerData(
 
   const vatIlkPromises = Object.keys(ilksListWithHexValues).map(async (ilk) => {
     const vatIlkData = await VatContract.ilks(ilksListWithHexValues[ilk])
+
     return {
       [ilk]: {
         liquidityAvailable: BigNumber.max(
@@ -81,8 +83,10 @@ async function getMakerData(
   const jugIlkPromises = Object.keys(ilksListWithHexValues).map(async (ilk) => {
     const jugIlkData = await JugContract.ilks(ilksListWithHexValues[ilk])
     const fee = new BigNumber(bigNumberify(jugIlkData[0])).dividedBy(RAY)
+
     BigNumber.config({ POW_PRECISION: 100 })
     const stabilityFee = fee.pow(SECONDS_PER_YEAR).minus(1)
+
     return {
       [ilk]: {
         fee: stabilityFee,
@@ -93,6 +97,7 @@ async function getMakerData(
   const spotIlkPromises = Object.keys(ilksListWithHexValues).map(async (ilk) => {
     const spotIlkData = await SpotContract.ilks(ilksListWithHexValues[ilk])
     const maxMultiple = one.plus(one.div(amountFromRay(bigNumberify(spotIlkData.mat)).minus(one)))
+
     return {
       [ilk]: {
         maxMultiple,

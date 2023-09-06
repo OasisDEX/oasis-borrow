@@ -16,6 +16,7 @@ describe('checkOasisPositionType', () => {
         { id: new BigNumber(1), protocol: LendingProtocol.Maker },
       ),
     )
+
     expect(state()).toBe(VaultType.Multiply)
   })
   it('returns insti type vault if hardcoded as a charter ilk', () => {
@@ -27,6 +28,7 @@ describe('checkOasisPositionType', () => {
         { id: new BigNumber(1), protocol: LendingProtocol.Maker },
       ),
     )
+
     expect(state()).toBe(VaultType.Insti)
   })
 })

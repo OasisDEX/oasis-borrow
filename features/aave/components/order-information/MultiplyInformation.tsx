@@ -18,6 +18,7 @@ export function MultiplyInformation({
   currentPosition,
 }: MultiplyInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.multiply')}

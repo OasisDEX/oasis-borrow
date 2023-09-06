@@ -26,6 +26,7 @@ export const dummyParent = createMachine({
 export function setupDpmContext(machine: DPMAccountStateMachine) {
   const parentService = useInterpret(dummyParent).start()
   const service = useInterpret(machine, { parent: parentService }).start()
+
   return {
     stateMachine: service,
   }
@@ -42,6 +43,7 @@ export function setupAllowanceContext(machine: AllowanceStateMachine) {
       networkId: NetworkIds.MAINNET,
     },
   }).start()
+
   return {
     stateMachine: service,
   }

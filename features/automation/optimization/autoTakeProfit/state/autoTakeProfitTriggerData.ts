@@ -100,6 +100,7 @@ export function prepareAddAutoTakeProfitTriggerData({
     maxBaseFeeInGwei,
     isCloseToCollateral,
   })
+
   return {
     ...baseTriggerData,
     replacedTriggerId,

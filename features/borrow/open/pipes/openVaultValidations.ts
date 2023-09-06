@@ -103,6 +103,7 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
       }),
     )
   }
+
   return { ...state, warningMessages }
 }
 

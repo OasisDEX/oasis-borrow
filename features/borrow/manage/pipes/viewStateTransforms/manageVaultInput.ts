@@ -167,6 +167,7 @@ export function applyManageVaultInput<VaultState extends ManageStandardBorrowVau
         }),
       ...paybackAndWithdrawDefaults,
     }
+
     return thing
   }
 
@@ -239,6 +240,7 @@ export function applyManageVaultInput<VaultState extends ManageStandardBorrowVau
 
   if (change.kind === 'payback' && canPayback) {
     const { paybackAmount } = change
+
     return {
       ...state,
       paybackAmount,

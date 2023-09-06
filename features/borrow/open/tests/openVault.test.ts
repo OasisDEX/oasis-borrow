@@ -21,10 +21,12 @@ describe('openVault', () => {
   describe('parseVaultIdFromReceiptLogs', () => {
     it('should return vaultId', () => {
       const vaultId = parseVaultIdFromReceiptLogs(newCDPTxReceipt)
+
       expect(vaultId!).toEqual(new BigNumber('3281'))
     })
     it('should return undefined if NewCdp log is not found', () => {
       const vaultId = parseVaultIdFromReceiptLogs({ logs: [] })
+
       expect(vaultId).toBeUndefined()
     })
   })
@@ -38,6 +40,7 @@ describe('openVault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       expect(state()).toBeUndefined()
       _ilks$.next(['WBTC-A'])
       expect(state().ilk).toEqual('WBTC-A')
@@ -51,11 +54,13 @@ describe('openVault', () => {
           ilk: 'ETH-Z',
         }),
       )
+
       expect(state).toThrow(`Ilk ETH-Z does not exist`)
     })
 
     it('should start by default at the editing stage', () => {
       const state = getStateUnpacker(mockOpenVault$())
+
       expect(state().stage).toEqual('editing')
       expect(state().totalSteps).toEqual(3)
     })
@@ -63,6 +68,7 @@ describe('openVault', () => {
     it('should update depositAmount', () => {
       const depositAmount = new BigNumber('5')
       const state = getStateUnpacker(mockOpenVault$())
+
       state().updateDeposit!(depositAmount)
       expect(state().depositAmount).toEqual(depositAmount)
     })
@@ -71,6 +77,7 @@ describe('openVault', () => {
       const depositAmount = new BigNumber('5')
       const collateralPrice = new BigNumber('100')
       const state = getStateUnpacker(mockOpenVault$({ priceInfo: { collateralPrice } }))
+
       state().updateDeposit!(depositAmount)
       expect(state().depositAmount!).toEqual(depositAmount)
       expect(state().depositAmountUSD!).toEqual(depositAmount.times(collateralPrice))
@@ -80,6 +87,7 @@ describe('openVault', () => {
       const depositAmount = new BigNumber('5')
       const generateAmount = new BigNumber('2000')
       const state = getStateUnpacker(mockOpenVault$())
+
       state().updateGenerate!(generateAmount)
       expect(state().generateAmount).toBeUndefined()
       state().updateDeposit!(depositAmount)
@@ -116,6 +124,7 @@ describe('openVault', () => {
           },
         }),
       )
+
       state().updateDepositMax!()
       expect(state().depositAmount!).toEqual(collateralBalance)
     })
@@ -123,6 +132,7 @@ describe('openVault', () => {
     it('should update depositAmountUSD', () => {
       const depositAmountUSD = new BigNumber('5')
       const state = getStateUnpacker(mockOpenVault$())
+
       state().updateDepositUSD!(depositAmountUSD)
       expect(state().depositAmountUSD!).toEqual(depositAmountUSD)
     })
@@ -131,6 +141,7 @@ describe('openVault', () => {
       const depositAmountUSD = new BigNumber('5')
       const collateralPrice = new BigNumber('100')
       const state = getStateUnpacker(mockOpenVault$({ priceInfo: { collateralPrice } }))
+
       state().updateDepositUSD!(depositAmountUSD)
       expect(state().depositAmount!).toEqual(depositAmountUSD.div(collateralPrice))
       expect(state().depositAmountUSD!).toEqual(depositAmountUSD)
@@ -140,6 +151,7 @@ describe('openVault', () => {
       const closeVaultType = 'collateral'
       const defaultCloseVaultType = 'dai'
       const state = getStateUnpacker(mockOpenVault$())
+
       expect(state().stopLossCloseType!).toBe(defaultCloseVaultType)
       state().setStopLossCloseType(closeVaultType)
       expect(state().stopLossCloseType).toBe(closeVaultType)
@@ -149,6 +161,7 @@ describe('openVault', () => {
       const stopLossLevel = new BigNumber(200)
       const defaultStopLossLevel = new BigNumber(160)
       const state = getStateUnpacker(mockOpenVault$())
+
       expect(state().stopLossLevel!).toEqual(defaultStopLossLevel)
       state().setStopLossLevel(stopLossLevel)
       expect(state().stopLossLevel).toEqual(stopLossLevel)
@@ -159,6 +172,7 @@ describe('openVault', () => {
       const generateAmount = new BigNumber('20000')
 
       const state = getStateUnpacker(mockOpenVault$())
+
       state().updateDeposit!(depositAmount)
       state().updateGenerate!(generateAmount)
 
@@ -206,6 +220,7 @@ describe('openVault', () => {
           }),
         }),
       )
+
       _proxyAddress$.next()
       state().progress!()
       state().progress!()
@@ -226,6 +241,7 @@ describe('openVault', () => {
           ilk: 'ETH-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().updateGenerate!(generateAmount)
       state().progress!()
@@ -244,6 +260,7 @@ describe('openVault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().updateGenerate!(generateAmount)
       state().progress!()
@@ -435,6 +452,7 @@ describe('openVault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().toggleGenerateOption!()
       state().updateGenerate!(generateAmount)
@@ -462,6 +480,7 @@ describe('openVault', () => {
               if (meta.kind === 'open') {
                 return mockTxState(meta, TxStatus.Success, newCDPTxReceipt)
               }
+
               return mockTxState(meta, TxStatus.Failure)
             },
           }),
@@ -502,6 +521,7 @@ describe('openVault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().updateGenerate!(generateAmount)
       state().progress!()
@@ -526,6 +546,7 @@ describe('openVault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().progress!()
       state().progress!()
       expect(state().stage).toEqual('txFailure')
@@ -616,6 +637,7 @@ describe('openVault', () => {
           balanceInfo: { ethBalance: new BigNumber(0.001) },
         }),
       )
+
       _proxyAddress$.next()
       state().progress!()
       state().progress!()

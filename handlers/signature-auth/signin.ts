@@ -58,6 +58,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     const message = recreateSignedMessage(challenge)
 
     let isArgentWallet = false
+
     try {
       isArgentWallet = await checkIfArgentWallet(web3, challenge.address)
     } catch {
@@ -89,6 +90,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       }
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, signature: body.signature })
+
       if (signedAddress.toLowerCase() !== challenge.address) {
         const isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
 
@@ -136,6 +138,7 @@ async function getMessageHash(web3: Web3, message: string, safe: string) {
 
   const contract = new web3.eth.Contract(GnosisSafeABI as any, safe)
   const domainSeparator = await contract.methods.domainSeparator().call()
+
   return utils.solidityKeccak256(
     ['bytes1', 'bytes1', 'bytes32', 'bytes32'],
     [0x19, 0x01, domainSeparator, safeMessageHash],

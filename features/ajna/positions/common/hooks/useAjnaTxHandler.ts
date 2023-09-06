@@ -103,6 +103,7 @@ export function useAjnaTxHandler(): () => void {
             state,
           }),
         )
+
         setCancelablePromise(promise)
 
         promise

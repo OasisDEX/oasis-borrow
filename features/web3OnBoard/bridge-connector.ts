@@ -43,6 +43,7 @@ export class BridgeConnector extends AbstractConnector {
     private disconnect: (wallet: DisconnectOptions) => Promise<WalletState[]>,
   ) {
     const chainsIds = chains.map((chain) => parseInt(chain.id, 16))
+
     super({ supportedChainIds: chainsIds })
     this._connectorInformation = this.createConnectorInformation()
   }

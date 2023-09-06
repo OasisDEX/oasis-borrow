@@ -11,6 +11,7 @@ import React from 'react'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
   const paths = supportedEarnIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
+
   return {
     paths,
     fallback: true,

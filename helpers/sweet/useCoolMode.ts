@@ -38,6 +38,7 @@ const getContainer = () => {
   }
 
   const container = document.createElement('div')
+
   container.setAttribute('id', id)
   container.setAttribute(
     'style',
@@ -126,6 +127,7 @@ function makeElementCool(element: HTMLElement): () => void {
     const direction = Math.random() <= 0.5 ? -1 : 1
 
     const particle = document.createElement('div')
+
     particle.innerHTML = `<img src="${
       images[random(0, images.length - 1)]
     }" width="${size}" height="${size}" style="border-radius: 25%">`
@@ -235,12 +237,14 @@ function makeElementCool(element: HTMLElement): () => void {
 
   // audio
   const audioPlayer = document.createElement('audio')
+
   audioPlayer.setAttribute('src', assetRoot + 'HAARHEEH.m4a')
   audioPlayer.volume = 0.1
   getContainer().appendChild(audioPlayer)
 
   // button
   const buttonElement = document.createElement('button')
+
   buttonElement.innerHTML = 'Disable'
   buttonElement.setAttribute(
     'style',
@@ -251,12 +255,14 @@ function makeElementCool(element: HTMLElement): () => void {
     left: 0,
     element: buttonElement,
   }
+
   buttonElement.addEventListener('click', () => {
     if (enabled) {
       enabled = false
       let count = 10
       const countdown = setInterval(() => {
         const emojies = `😊 Enabling in ${count} `
+
         buttonElement.innerHTML = emojies
         count--
         if (count === -1) {

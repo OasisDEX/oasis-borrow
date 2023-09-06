@@ -1,4 +1,5 @@
 type Store = any
+
 export class LocalStorage {
   store: Store
   constructor() {

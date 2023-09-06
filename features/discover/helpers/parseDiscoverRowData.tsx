@@ -91,6 +91,7 @@ function ParseDiscoverCellData({ kind, label, lang, row }: ParseDiscoverCellData
       )
     case 'activity':
       const activity = row.activity as DiscoverTableActivityRowData
+
       return (
         <AssetsTableDataCellPill color={getActivityPillColor(activity)}>
           <Trans

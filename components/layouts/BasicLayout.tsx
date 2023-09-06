@@ -13,6 +13,7 @@ export interface BasicLayoutProps extends WithChildren {
 
 export function BasicLayout({ header, footer, children, sx, variant, bg }: BasicLayoutProps) {
   const ref = useCoolMode()
+
   return (
     <Flex
       sx={{

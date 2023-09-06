@@ -9,5 +9,6 @@ export function useFollowInitialization({ isLimitReached }: { isLimitReached: bo
       isLimitReached,
     })
   }, [isLimitReached])
+
   return isLimitReached
 }

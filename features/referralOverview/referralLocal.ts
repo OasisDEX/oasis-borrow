@@ -18,12 +18,14 @@ export function checkReferralLocalStorage$(trigger$: Subject<void>): Observable<
     startWith(localStorage.getItem(`referral`)),
     switchMap(() => {
       const referrer = localStorage.getItem(`referral`)
+
       if (referrer && isAddress(referrer.slice(1, -1))) {
         return of(referrer)
       } else if (referrer === 'null') {
         return of(null)
       } else {
         localStorage.removeItem(`referral`)
+
         return of(null)
       }
     }),

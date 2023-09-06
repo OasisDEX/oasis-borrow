@@ -9,4 +9,5 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
       return res.status(405).end()
   }
 }
+
 export default handler

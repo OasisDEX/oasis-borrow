@@ -52,6 +52,7 @@ export const join: TransactionDef<DsrJoinData> = {
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return [
       dssProxyActionsDsr.address,
       contract<DssProxyActionsDsr>(dssProxyActionsDsr)
@@ -76,10 +77,12 @@ export const savingsDaiDeposit: TransactionDef<SavingDaiData> = {
     const {
       tokens: { SDAI },
     } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
     return contract<SavingsDai>(SDAI).methods.deposit
   },
   prepareArgs: (data) => {
     const { amount, walletAddress } = data
+
     return [amountToWei(amount, getToken('SDAI').precision).toFixed(0), walletAddress]
   },
 }
@@ -89,10 +92,12 @@ export const savingsDaiConvert: TransactionDef<SavingDaiData> = {
     const {
       tokens: { SDAI },
     } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
     return contract<SavingsDai>(SDAI).methods.redeem
   },
   prepareArgs: (data) => {
     const { amount, walletAddress } = data
+
     return [
       amountToWei(amount, getToken('SDAI').precision).toFixed(0),
       walletAddress,
@@ -117,6 +122,7 @@ export const exit: TransactionDef<DsrExitData> = {
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return [
       dssProxyActionsDsr.address,
       contract<DssProxyActionsDsr>(dssProxyActionsDsr)
@@ -144,6 +150,7 @@ export const exitAll: TransactionDef<DsrExitAllData> = {
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return [
       dssProxyActionsDsr.address,
       contract<DssProxyActionsDsr>(dssProxyActionsDsr)

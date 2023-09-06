@@ -68,16 +68,19 @@ describe('termsAcceptance', () => {
         web3Context$: of({ status: 'connecting', connectionKind: 'injected' }),
       }),
     )
+
     expect(state().stage).toEqual('walletConnectionInProgress')
   })
 
   it('Wallet connection: wallet connected', () => {
     const state = getStateUnpacker(createState$())
+
     expect(state().stage).toEqual('jwtAuthWaiting4Acceptance')
   })
 
   it('Terms of Service: accepting ', () => {
     const state = getStateUnpacker(createState$())
+
     ;(state() as any).acceptJwtAuth()
     expect(state().stage).toEqual('jwtAuthInProgress')
   })
@@ -85,6 +88,7 @@ describe('termsAcceptance', () => {
   it('Acceptance lookup: when signature exists locally, checks db', () => {
     localStorage.setItem('token-b/0x123', 'xxx')
     const state = getStateUnpacker(createState$({}))
+
     expect(state().stage).toEqual('acceptanceCheckInProgress')
   })
 
@@ -96,6 +100,7 @@ describe('termsAcceptance', () => {
         saveAcceptance$: () => new Observable<void>(),
       }),
     )
+
     expect(state().stage).toEqual('acceptanceAccepted')
   })
 
@@ -108,6 +113,7 @@ describe('termsAcceptance', () => {
         jwtAuthSetupToken$: () => of('xxx'),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
     expect(state().stage).toEqual('acceptanceWaiting4TOSAcceptance')
     expect(state().updated).toBeUndefined()
@@ -122,12 +128,14 @@ describe('termsAcceptance', () => {
         jwtAuthSetupToken$: () => of('xxx'),
       }),
     )
+
     expect(state().stage).toEqual('acceptanceWaiting4TOSAcceptance')
     expect(state().updated).toEqual(true)
   })
 
   it('Acceptance authentication: rejecting signature wallet and try again', () => {
     const state = getStateUnpacker(createState$())
+
     ;(state() as any).rejectJwtAuth()
     expect(state().stage).toEqual('jwtAuthRejected')
     ;(state() as any).tryAgain()
@@ -136,6 +144,7 @@ describe('termsAcceptance', () => {
 
   it('Acceptance authentication: accepting triggers signature procedure', () => {
     const state = getStateUnpacker(createState$())
+
     ;(state() as any).acceptJwtAuth()
     expect(state().stage).toEqual('jwtAuthInProgress')
   })
@@ -146,6 +155,7 @@ describe('termsAcceptance', () => {
         jwtAuthSetupToken$: () => of('xxx'),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
     expect(state().stage).toEqual('acceptanceCheckInProgress')
   })
@@ -156,6 +166,7 @@ describe('termsAcceptance', () => {
         jwtAuthSetupToken$: () => throwError('error'),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
     expect(state().stage).toEqual('jwtAuthFailed')
   })
@@ -167,6 +178,7 @@ describe('termsAcceptance', () => {
         checkAcceptance$: () => throwError('error'),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
     expect(state().stage).toEqual('acceptanceCheckFailed')
   })
@@ -190,6 +202,7 @@ describe('termsAcceptance', () => {
         saveAcceptance$: () => throwError('error'),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
     ;(state() as any).acceptTOS()
 
@@ -203,6 +216,7 @@ describe('termsAcceptance', () => {
         checkAcceptance$: () => of({ acceptance: false }),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
     ;(state() as any).acceptTOS()
 
@@ -216,6 +230,7 @@ describe('termsAcceptance', () => {
         checkAcceptance$: () => of({ acceptance: true }),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
 
     expect(state().stage).toEqual('acceptanceAccepted')
@@ -229,6 +244,7 @@ describe('termsAcceptance', () => {
         saveAcceptance$: () => of(undefined),
       }),
     )
+
     ;(state() as any).acceptJwtAuth()
     ;(state() as any).acceptTOS()
 

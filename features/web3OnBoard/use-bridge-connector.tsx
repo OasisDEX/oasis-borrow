@@ -25,6 +25,7 @@ export function useBridgeConnector(): BridgeConnectorState {
     ) {
       return new BridgeConnector(wallet, chains, disconnect)
     }
+
     return undefined
   }, [wallet, chains, disconnect, connectedChain])
 
@@ -34,6 +35,7 @@ export function useBridgeConnector(): BridgeConnectorState {
     }
     const currentWallet = await connect()
     const isWalletConnected = currentWallet && currentWallet.length > 0
+
     return isWalletConnected
   }, [wallet, connect, connecting, connector])
 

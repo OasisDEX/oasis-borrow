@@ -10,6 +10,7 @@ import { NetworkIds } from './networks'
 
 function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {
   const supportedIlks = Object.keys(joins)
+
   return ilks.filter((ilk) => supportedIlks.includes(ilk))
 }
 

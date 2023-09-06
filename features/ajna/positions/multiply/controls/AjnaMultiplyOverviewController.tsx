@@ -44,6 +44,7 @@ export function AjnaMultiplyOverviewController() {
   const changeVariant = 'positive'
 
   let pnl = zero
+
   if (cumulatives) {
     pnl = position.pnl(
       cumulatives.cumulativeDeposit,

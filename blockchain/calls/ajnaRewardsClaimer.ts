@@ -19,6 +19,7 @@ export const claimAjnaRewards: TransactionDef<ClaimAjnaRewardsTxData> = {
   },
   prepareArgs: (data) => {
     const { nftIds } = data
+
     return [nftIds]
   },
 }

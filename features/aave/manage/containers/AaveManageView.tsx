@@ -83,6 +83,7 @@ export function AaveManagePositionView({
       debtToken: strategyConfig.tokens.debt,
     }),
   )
+
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>
       <WithLoadingIndicator

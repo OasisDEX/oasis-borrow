@@ -15,7 +15,9 @@ export function cacheObject<R>(
 
   function cacheFreshData(data: R) {
     const response = { data, time: Date.now() }
+
     cache.set('data', JSON.stringify(response))
+
     return JSON.stringify(response)
   }
 
@@ -31,6 +33,7 @@ export function cacheObject<R>(
     }
 
     let data: Awaited<R> | undefined = undefined
+
     try {
       data = await fetchFunction()
     } catch (e) {
@@ -38,15 +41,19 @@ export function cacheObject<R>(
     }
     if (data === undefined) {
       const hasFallback = fallbackCache.has('fallback')
+
       if (hasFallback) {
         return JSON.parse(fallbackCache.get('fallback') as string)
       } else {
         console.error(`${cacheId}: Can't obtain fallback data. Using empty data`)
+
         return undefined
       }
     } else {
       const cached = cacheFreshData(data)
+
       cacheFallbackData(cached)
+
       return JSON.parse(cached)
     }
   }

@@ -60,6 +60,7 @@ export function PositionsTable({
             ownersPositionsList.makerPositions.length +
             ownersPositionsList.aaveLikePositions.length +
             ownersPositionsList.ajnaPositions.length
+
           if (getDsrValue(ownersPositionsList.dsrPosition).gt(zero)) amountOfPositions++
 
           return amountOfPositions ? (

@@ -12,6 +12,7 @@ function respond(
   switch (req.method) {
     case 'POST':
       res.setHeader('Cache-Control', 'public, s-maxage=90, stale-while-revalidate=119')
+
       return res.status(200).json(response)
     default:
       return res.status(405).end()

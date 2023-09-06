@@ -12,8 +12,10 @@ export interface CreateDPMAccount extends TxMeta {
 export const createAccount: TransactionDef<CreateDPMAccount> = {
   call: (_, { contract, chainId }) => {
     const contracts = getNetworkContracts(chainId)
+
     ensureContractsExist(chainId, contracts, ['accountFactory'])
     const { accountFactory } = contracts
+
     return contract<AccountFactory>(accountFactory).methods['createAccount()']
   },
   prepareArgs: () => [],

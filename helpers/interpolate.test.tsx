@@ -64,6 +64,7 @@ describe('Interpolate', () => {
   it('should handle undefined components', () => {
     const result = interpolate('<0> in </0>', {})
     const { container } = render(<div>{result}</div>)
+
     expect(container).toHaveTextContent('in')
   })
 })

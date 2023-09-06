@@ -22,6 +22,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 function VaultsSummary({ address }: { address: string }) {
   const { t } = useTranslation()
+
   return address ? (
     <ProductContextHandler>
       <WithConnection>

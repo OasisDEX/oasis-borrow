@@ -247,5 +247,6 @@ export function SidebarSetupAutoSell({
 
     return <SidebarSection {...sidebarSectionProps} />
   }
+
   return null
 }

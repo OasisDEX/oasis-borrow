@@ -22,6 +22,7 @@ export function getStopLossTransactionStateMachine(
     addTriggerDef: AutomationAddTriggerTxDef,
   ) {
     const service = startTransactionService<AutomationTxData>(txHelpers$, context$)
+
     return createTransactionStateMachine(
       addTriggerDef as TransactionDef<AutomationTxData>,
       txData as AutomationTxData,

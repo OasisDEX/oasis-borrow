@@ -33,6 +33,7 @@ describe('asset actions', () => {
       throw new Error('unimplemented')
     },
   }
+
   it('shows borrow action for borrow token', () => {
     function ilkToToken$() {
       return of('ETH')
@@ -56,6 +57,7 @@ describe('asset actions', () => {
     expect(state().length).toBe(2)
 
     const borrowAction = state()[1]
+
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).toBe('Borrow')
     expect(borrowAction.icon).toBe('collateral')
@@ -85,12 +87,14 @@ describe('asset actions', () => {
     expect(state().length).toBe(3)
 
     const borrowAction = state()[1]
+
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).toBe('Borrow')
     expect(borrowAction.icon).toBe('collateral')
     expect(borrowAction.path).toBe('/borrow')
 
     const multiplyAction = state()[2]
+
     assertAssetAction(isUrlAction(multiplyAction), 'borrow action is not url asset action')
     expect(multiplyAction.text).toBe('Multiply')
     expect(multiplyAction.icon).toBe('copy')
@@ -117,6 +121,7 @@ describe('asset actions', () => {
 
     const state = getStateUnpacker(assetActions$)
     const swapAction = state()[0]
+
     assertAssetAction(isOnClickAction(swapAction), 'swap action is not onclick asset action')
     expect(swapAction.text).toBe('Swap')
     expect(swapAction.icon).toBe('exchange')

@@ -24,14 +24,17 @@ export function toShorthandNumber(amount: BigNumber, suffix: string = '', precis
       .split('.')
       .map((part, index) => {
         if (index === 0) return part
+
         return part.substr(0, precision)
       })
       .filter((el) => el)
       .join('.'),
   )
+
   if (precision) {
     return sh.toFixed(precision).concat(suffix)
   }
+
   return sh.toFixed().concat(suffix)
 }
 
@@ -45,6 +48,7 @@ export function formatAsShorthandNumbers(amount: BigNumber, precision?: number):
   if (amount.absoluteValue().gte(thousand)) {
     return toShorthandNumber(amount.dividedBy(thousand), 'K', precision)
   }
+
   return toShorthandNumber(amount, '', precision)
 }
 
@@ -81,6 +85,7 @@ export function formatFiatBalance(amount: BigNumber): string {
 
 export function formatAmount(amount: BigNumber, token: string): string {
   const digits = token === 'USD' ? 2 : getTokenGuarded(token)?.digits || DEFAULT_TOKEN_DIGITS
+
   return amount.toFormat(digits, BigNumber.ROUND_DOWN)
 }
 

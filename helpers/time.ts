@@ -5,8 +5,10 @@ export function useTime(refreshCycle = 1000) {
 
   useEffect(() => {
     const intervalId = setInterval(() => setTime(new Date().getTime()), refreshCycle)
+
     return () => clearInterval(intervalId)
   }) //[refreshCycle, setInterval, clearInterval, setNow]
+
   return time
 }
 
@@ -17,6 +19,8 @@ export const lastHour = new Date(now.setHours(now.getHours() - 1, 0, 0, 0))
 
 export function moreMinutes(additonalMinutes: number) {
   const date = new Date()
+
   date.setMinutes(date.getMinutes() + additonalMinutes)
+
   return date
 }

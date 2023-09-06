@@ -36,6 +36,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const product = params?.networkOrProduct as ProductHubProductType
   const token = params?.token
+
   return {
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),

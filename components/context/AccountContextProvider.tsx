@@ -68,9 +68,11 @@ export function isAccountContextAvailable(): boolean {
 
 export function useAccountContext(): AccountContext {
   const ac = useContext(accountContext)
+
   if (!ac) {
     throw new Error("AccountContext not available! useAccountContext can't be used serverside")
   }
+
   return ac
 }
 

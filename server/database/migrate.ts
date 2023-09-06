@@ -13,6 +13,7 @@ async function main() {
     connectionString: process.env.DATABASE_URL,
   }
   const client = new pg.Client(dbConfig)
+
   await client.connect()
   console.log('Running migrations')
   await migrate({ client }, join(__dirname, '../database/migrations'))

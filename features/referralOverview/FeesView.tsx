@@ -20,6 +20,7 @@ interface Props {
   context: Context
   userReferral: UserReferralState
 }
+
 export interface UpsertUser {
   hasAccepted: boolean
   isReferred: boolean
@@ -40,6 +41,7 @@ export function FeesView({ userReferral }: Props) {
 
     if (userReferral.user) {
       const jwtToken = jwtAuthGetToken(userReferral.user.address)
+
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,

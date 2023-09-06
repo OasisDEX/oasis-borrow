@@ -8,6 +8,7 @@ export function checkUserSettingsLocalStorage$(): Observable<{ slippage: string 
 
   if (settingsSerialized) {
     const { slippage }: { slippage: string | null } = JSON.parse(settingsSerialized)
+
     return of({ slippage })
   } else {
     return of({ slippage: null })
@@ -19,5 +20,6 @@ export function saveUserSettingsLocalStorage$(slippage: BigNumber): Observable<b
     USER_SETTINGS_LOCAL_STORAGE,
     JSON.stringify({ slippage: slippage.toFixed() }),
   )
+
   return of(true)
 }

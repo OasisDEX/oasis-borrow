@@ -34,6 +34,7 @@ function applyFilter(state: IlksFilterState, change: Changes): IlksFilterState {
   switch (change.kind) {
     case 'sortBy':
       const [sortBy, direction] = toggleSort(state.sortBy, state.direction, change.sortBy)
+
       return {
         ...state,
         sortBy,
@@ -54,6 +55,7 @@ function filterByTag(ilks: IlkWithBalance[], tag: TagFilter) {
       .sort((ilk1, ilk2) => compareBigNumber(ilk2.ilkDebt, ilk1.ilkDebt))
       .slice(0, 12)
   }
+
   return ilks.filter((ilk) => {
     const tokenMeta = getToken(ilk.token)
 
@@ -70,6 +72,7 @@ export function popularIlksWithFilter$(
   ilks$: Observable<IlkWithBalance[]>,
 ): Observable<PopularIlksWithFilters> {
   const change$ = new Subject<Changes>()
+
   function change(ch: Changes) {
     change$.next(ch)
   }

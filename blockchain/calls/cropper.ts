@@ -15,6 +15,7 @@ export const cropperUrnProxy: CallDef<string, string> = {
 
 function createContract(web3: Web3, joins: { [p: string]: string }, ilk: string) {
   const join = joins[ilk]
+
   return new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
 }
 
@@ -25,6 +26,7 @@ export const cropperCrops: CallDef<{ ilk: string; usr: string }, BigNumber> = {
       getNetworkContracts(NetworkIds.MAINNET, chainId).joins,
       ilk,
     )
+
     return contract.methods.crops
   },
   prepareArgs: ({ usr }) => [usr],
@@ -40,6 +42,7 @@ export const cropperStake: CallDef<{ ilk: string; usr: string }, BigNumber> = {
       getNetworkContracts(NetworkIds.MAINNET, chainId).joins,
       ilk,
     )
+
     return contract.methods.stake
   },
   prepareArgs: ({ usr }) => [usr],
@@ -55,6 +58,7 @@ export const cropperShare: CallDef<{ ilk: string }, BigNumber> = {
       getNetworkContracts(NetworkIds.MAINNET, chainId).joins,
       ilk,
     )
+
     return contract.methods.share
   },
   prepareArgs: () => [],
@@ -70,6 +74,7 @@ export const cropperBonusTokenAddress: CallDef<{ ilk: string }, string> = {
       getNetworkContracts(NetworkIds.MAINNET, chainId).joins,
       ilk,
     )
+
     return contract.methods.bonus
   },
   prepareArgs: () => [],
@@ -82,6 +87,7 @@ export const cropperStock: CallDef<{ ilk: string }, BigNumber> = {
       getNetworkContracts(NetworkIds.MAINNET, chainId).joins,
       ilk,
     )
+
     return contract.methods.stock
   },
   prepareArgs: () => [],
@@ -97,6 +103,7 @@ export const cropperTotal: CallDef<{ ilk: string }, BigNumber> = {
       getNetworkContracts(NetworkIds.MAINNET, chainId).joins,
       ilk,
     )
+
     return contract.methods.total
   },
   prepareArgs: () => [],

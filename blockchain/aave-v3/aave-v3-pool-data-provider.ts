@@ -82,6 +82,7 @@ export function getAaveV3UserReserveData({
   const { contract, tokenMappings } = networkMappings[networkId]()
 
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
       currentATokenBalance: amountFromWei(
@@ -111,7 +112,9 @@ export function getAaveV3ReserveData({
 }: AaveV3ReserveDataParameters): Promise<AaveV3ReserveDataReply> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   warnIfAddressIsZero(tokenAddress, networkId, 'aaveV3PoolDataProvider', 'getReserveData')
+
   return contract.getReserveData(tokenAddress).then((result) => {
     const totalAToken = amountFromWei(new BigNumber(result.totalAToken.toString()), token)
     const totalStableDebt = amountFromWei(new BigNumber(result.totalStableDebt.toString()), token)
@@ -119,6 +122,7 @@ export function getAaveV3ReserveData({
       new BigNumber(result.totalVariableDebt.toString()),
       token,
     )
+
     return {
       availableLiquidity: totalAToken.minus(totalStableDebt).minus(totalVariableDebt),
       unbacked: new BigNumber(result.unbacked.toString()),
@@ -144,6 +148,7 @@ export function getAaveV3ReserveConfigurationData({
   token,
 }: AaveV3ReserveConfigurationParameters): Promise<AaveV3ReserveConfigurationData> {
   const { contract, tokenMappings } = networkMappings[networkId]()
+
   warnIfAddressIsZero(
     tokenMappings[token].address,
     networkId,
@@ -151,6 +156,7 @@ export function getAaveV3ReserveConfigurationData({
     'getAaveV3ReserveConfigurationData',
   )
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   return contract.getReserveConfigurationData(tokenAddress).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
@@ -170,12 +176,14 @@ export function getAaveV3EModeCategoryForAsset({
 }: AaveV3EModeForAssetParameters): Promise<BigNumber> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const address = wethToEthAddress(tokenMappings, token)
+
   warnIfAddressIsZero(
     address,
     networkId,
     'aaveV3PoolDataProvider',
     'getAaveV3EModeCategoryForAsset',
   )
+
   return contract.getReserveEModeCategory(address).then((result) => {
     return new BigNumber(result.toString())
   })

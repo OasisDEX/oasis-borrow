@@ -222,6 +222,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
   const invalidSlippage = slippage.gt(GUNI_MAX_SLIPPAGE)
 
   const customSlippageOverridden = !customSlippage.eq(GUNI_SLIPPAGE)
+
   state.slippage = GUNI_SLIPPAGE
 
   const potentialGenerateAmountLessThanDebtFloor =

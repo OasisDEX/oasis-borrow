@@ -43,5 +43,6 @@ export async function selectVaultByIdAndChainId({
   const result = await prisma.vault.findUnique({
     where: { vault_vault_id_chain_id_unique_constraint: { vault_id, chain_id, protocol } },
   })
+
   return result
 }

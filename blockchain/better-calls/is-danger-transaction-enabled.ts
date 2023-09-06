@@ -22,6 +22,7 @@ export function isDangerTransactionEnabled(): DangerTransactionConfig {
         return false
       }
       const elementAsObject = element as Record<string, unknown>
+
       return (
         elementAsObject.hasOwnProperty('enabled') &&
         elementAsObject.hasOwnProperty('gasLimit') &&

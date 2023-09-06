@@ -17,9 +17,11 @@ export function recursiveLog(thing: any, name: string, depth: number = 0, tag: s
 
 function spaces(depth: number) {
   let ret = ''
+
   for (let i = 0; i < depth; i++) {
     ret += ' '
   }
+
   return ret
 }
 

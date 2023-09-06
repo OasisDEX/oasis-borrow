@@ -196,7 +196,9 @@ export function withdrawDsr(
     if (zeroDsr) {
       return dsrExit(txHelpers$, change, proxyAddress, state.daiDeposit.plus(WEI))
     }
+
     return dsrExitAll(txHelpers$, change, proxyAddress)
   }
+
   return dsrExit(txHelpers$, change, proxyAddress, amount)
 }

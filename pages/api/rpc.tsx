@@ -27,6 +27,7 @@ function getRpcNode(network: NetworkNames): string | undefined {
       return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
       console.warn(`Network: ${network} does not have defined a rpc node. Returning BadRequest`)
+
       return undefined
   }
 }
@@ -38,6 +39,7 @@ function getSpotAddress(network: NetworkNames): string | undefined {
       return `0xACe2A9106ec175bd56ec05C9E38FE1FDa8a1d758`
     default:
       console.warn(`Network: ${network} does not have a spot contract`)
+
       return undefined
   }
 }
@@ -54,6 +56,7 @@ function getMulticall(network: NetworkNames): string | undefined {
       return '0xcA11bde05977b3631167028862bE2a173976CA11' //https://github.com/mds1/multicall
     default:
       console.warn(`Network: ${network} does not have a multicall contract`)
+
       return undefined
   }
 }
@@ -131,6 +134,7 @@ async function makeCall(rpcEndpoint: string, calls: RpcCall[]) {
 
     const response = await fetch(request)
     const json = await response.json()
+
     return [json]
   } else {
     const request = new Request(rpcEndpoint, {
@@ -143,6 +147,7 @@ async function makeCall(rpcEndpoint: string, calls: RpcCall[]) {
     })
 
     const response = await fetch(request)
+
     return await response.json()
   }
 }
@@ -177,6 +182,7 @@ async function makeMulticall(
 
   if (multicallResponse[0].error) {
     console.warn(`Multicall error. Switch to single calls. Error`, multicallResponse[0].error)
+
     return undefined
   }
 
@@ -191,6 +197,7 @@ async function makeMulticall(
   )
 
   let data: any[]
+
   if (multicallFailedCalls.length !== 0) {
     const failedMultiCallsResponse = await makeCall(
       rpcEndpoint,
@@ -211,6 +218,7 @@ async function makeMulticall(
       }),
     )
     let z = 0
+
     data = dataFromMulticall.map((x: [boolean, string]) => {
       if (!x[0]) {
         return failedMultiCallsResponse[z++].result
@@ -263,6 +271,7 @@ function isValidBody<T extends Record<string, unknown>>(body: any, fields: (keyo
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.status(405).send({ message: 'Only POST requests allowed' })
+
     return
   }
 
@@ -286,6 +295,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   if (calls.length === 0) {
     res.status(400).send({ error: 'Invalid request body' })
+
     return
   }
 
@@ -293,14 +303,17 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   if (!networkQuery) {
     res.status(400).send({ error: 'Missing network query' })
+
     return
   }
 
   const network = networkQuery.toString() as NetworkNames
 
   const rpcEndpoint = getRpcNode(network)
+
   if (!rpcEndpoint) {
     res.status(400).json({ error: `Invalid network: ${networkQuery.toString}` })
+
     return
   }
 
@@ -333,8 +346,10 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         rpcEndpoint,
         network,
       )
+
       if (result === undefined) {
         const response = await makeCall(rpcEndpoint, requestBody)
+
         return res.status(200).send(response)
       }
       const mappedResult: CallWithHashAndResponse[] = callsWithHash.map((call, index) => {
@@ -362,6 +377,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).send(response)
   } catch (error) {
     console.error(`RPC call failed for network and body: ${rpcEndpoint}`, requestBody, error)
+
     return res.status(500).send({ error: `RPC call failed.` })
   }
 }

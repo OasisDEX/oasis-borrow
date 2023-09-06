@@ -166,6 +166,7 @@ export const InstitutionalBorrowManageAdapter: BorrowManageAdapterInterface<
     const s9 = applyManageVaultStageCategorisation<ManageInstiVaultState>(s8)
     const s10 = applyManageVaultConditions(s9)
     const s11 = applyMinActiveColRatioConditions(s10)
+
     return applyManageVaultSummary(s11)
   },
 
@@ -198,6 +199,7 @@ export const InstitutionalBorrowManageAdapter: BorrowManageAdapterInterface<
       ...StandardBorrowManageAdapter.createInitialViewState(args),
       vault: args.vault,
     }
+
     return {
       ...manageStandardVaultViewState,
       vault: args.vault,

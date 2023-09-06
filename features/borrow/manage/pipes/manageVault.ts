@@ -388,6 +388,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
+
       return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {
@@ -401,6 +402,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
             first(),
             switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, proxyActionsAdapter]) => {
               const vaultActions = vaultActionsLogic(proxyActionsAdapter)
+
               vault.chainId = context.chainId
               const collateralAllowance$ =
                 account && proxyAddress

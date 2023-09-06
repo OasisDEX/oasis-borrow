@@ -34,6 +34,7 @@ export const NetworkButton = ({
   }, [swapWidgetChange?.isOpen])
 
   const isCurrentNetwork = network.name === currentNetworkName
+
   return (
     <Box
       sx={{

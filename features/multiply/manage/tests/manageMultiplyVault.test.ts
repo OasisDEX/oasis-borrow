@@ -23,6 +23,7 @@ describe.skip('manageMultiplyVault', () => {
     describe('adjust position', () => {
       it('should start by default in an adjust position stage', () => {
         const state = getStateUnpacker(mockManageMultiplyVault$())
+
         expect(state().stage).toBe('adjustPosition')
         expect(state().vault.lockedCollateral).toEqual(defaultCollateral)
         expect(state().vault.debt).toEqual(defaultDebt)
@@ -38,6 +39,7 @@ describe.skip('manageMultiplyVault', () => {
             },
           }),
         )
+
         expect(state().stage).toBe('otherActions')
         expect(state().otherAction).toBe('depositCollateral')
         expect(state().vault.lockedCollateral).toEqual(zero)
@@ -471,6 +473,7 @@ describe.skip('manageMultiplyVault', () => {
             },
           }),
         )
+
         state().updateRequiredCollRatio!(new BigNumber('2'))
         state().progress!()
         expect(state().stage).toEqual('proxyWaitingForConfirmation')
@@ -634,6 +637,7 @@ describe.skip('manageMultiplyVault', () => {
             proxyAddress: DEFAULT_PROXY_ADDRESS,
           }),
         )
+
         state().updateRequiredCollRatio!(new BigNumber('2'))
         state().progress!()
         expect(state().stage).toEqual('manageWaitingForConfirmation')
@@ -658,6 +662,7 @@ describe.skip('manageMultiplyVault', () => {
             proxyAddress: DEFAULT_PROXY_ADDRESS,
           }),
         )
+
         state().updateRequiredCollRatio!(new BigNumber('2'))
         state().progress!()
         expect(state().stage).toEqual('manageWaitingForConfirmation')
@@ -753,6 +758,7 @@ describe.skip('manageMultiplyVault', () => {
 
       it('should handle previously selected editing stage when going back and forth from borrow transition stages', () => {
         const state = getStateUnpacker(mockManageMultiplyVault$())
+
         expect(state().stage).toBe('adjustPosition')
 
         state().toggle!('borrowTransitionEditing')

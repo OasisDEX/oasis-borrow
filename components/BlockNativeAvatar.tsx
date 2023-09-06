@@ -13,6 +13,7 @@ export function BlockNativeAvatar({ sx }: BlockNativeAvatarProps) {
     box: '32px',
     icon: '20px',
   }
+
   return (
     <Box
       sx={{

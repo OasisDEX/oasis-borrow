@@ -29,8 +29,10 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
   },
   prepareArgs: (data, context) => {
     const contracts = getNetworkContracts(context.chainId)
+
     ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
     const { operationExecutor } = contracts
+
     return [operationExecutor.address, getCallData(data, context)]
   },
   options: ({ token, amount = zero }) =>
@@ -44,8 +46,10 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
   },
   prepareArgs: (data, context) => {
     const contracts = getNetworkContracts(context.chainId)
+
     ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
     const { operationExecutor } = contracts
+
     return [operationExecutor.address, getCallData(data, context)]
   },
   options: ({ token, amount = zero }) =>
@@ -54,8 +58,10 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
   const contracts = getNetworkContracts(context.chainId)
+
   ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
   const { operationExecutor } = contracts
+
   return context
     .contract<OperationExecutor>(operationExecutor)
     .methods.executeOp(data.calls, data.operationName)

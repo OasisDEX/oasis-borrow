@@ -9,6 +9,7 @@ const initGasData = assign<ProxyContext, ProxyEvent>(() => ({
 
 const assignGasCostData = assign<ProxyContext, ProxyEvent>((_, event) => {
   if (event.type !== 'GAS_COST_ESTIMATION') return {}
+
   return {
     gasData: event.gasData,
   }
@@ -16,6 +17,7 @@ const assignGasCostData = assign<ProxyContext, ProxyEvent>((_, event) => {
 
 const assignContextConnected = assign<ProxyContext, ProxyEvent>((_, event) => {
   if (event.type !== 'CONNECTED_CONTEXT_CHANGED') return {}
+
   return {
     contextConnected: event.contextConnected,
   }
@@ -23,6 +25,7 @@ const assignContextConnected = assign<ProxyContext, ProxyEvent>((_, event) => {
 
 const assignTxHelper = assign<ProxyContext, ProxyEvent>((_, event) => {
   if (event.type !== 'TX_HELPERS_CHANGED') return {}
+
   return {
     txHelpers: event.txHelpers,
   }
@@ -30,6 +33,7 @@ const assignTxHelper = assign<ProxyContext, ProxyEvent>((_, event) => {
 
 const assignTxHash = assign<ProxyContext, ProxyEvent>((_, event) => {
   if (event.type !== 'IN_PROGRESS') return {}
+
   return {
     txHash: event.proxyTxHash,
   }
@@ -37,6 +41,7 @@ const assignTxHash = assign<ProxyContext, ProxyEvent>((_, event) => {
 
 const assignProxyAddress = assign<ProxyContext, ProxyEvent>((_, event) => {
   if (event.type !== 'SUCCESS') return {}
+
   return {
     proxyAddress: event.proxyAddress,
   }
@@ -44,6 +49,7 @@ const assignProxyAddress = assign<ProxyContext, ProxyEvent>((_, event) => {
 
 const assignTxError = assign<ProxyContext, ProxyEvent>((_, event) => {
   if (event.type !== 'FAILURE') return {}
+
   return {
     txError: event.txError,
   }

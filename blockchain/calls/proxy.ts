@@ -45,6 +45,7 @@ export function createProxyAddress$(
             if (proxyAddress === nullAddress) {
               return of(undefined)
             }
+
             return call(
               context,
               owner,

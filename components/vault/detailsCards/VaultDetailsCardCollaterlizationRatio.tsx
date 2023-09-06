@@ -23,6 +23,7 @@ export function VaultDetailsCardCollaterlizationRatioModal({
   close,
 }: ModalProps<CollaterlizationRatioProps>) {
   const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>

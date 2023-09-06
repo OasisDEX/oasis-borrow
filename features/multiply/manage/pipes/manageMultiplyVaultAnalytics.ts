@@ -199,6 +199,7 @@ export function createManageMultiplyVaultAnalytics$(
           switch (event.kind) {
             case 'adjustPositionConfirm':
               tracker.multiply.adjustPositionConfirm(event.value.ilk, event.value.multiply)
+
               break
             case 'adjustPositionConfirmTransaction':
               tracker.multiply.adjustPositionConfirmTransaction(
@@ -209,6 +210,7 @@ export function createManageMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             case 'otherActionsConfirm':
               tracker.multiply.otherActionsConfirm(
@@ -216,6 +218,7 @@ export function createManageMultiplyVaultAnalytics$(
                 event.value.collateralAmount.toString(),
                 event.value.daiAmount.toString(),
               )
+
               break
             case 'otherActionsConfirmTransaction':
               tracker.multiply.otherActionsConfirmTransaction(
@@ -227,6 +230,7 @@ export function createManageMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             case 'closeVaultConfirm':
               tracker.multiply.closeVaultConfirm(
@@ -234,6 +238,7 @@ export function createManageMultiplyVaultAnalytics$(
                 event.value.debt,
                 event.value.closeTo,
               )
+
               break
             case 'closeVaultConfirmTransaction':
               tracker.multiply.closeVaultConfirmTransaction(
@@ -245,6 +250,7 @@ export function createManageMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             default:
               throw new Error('Unhandled Scenario')

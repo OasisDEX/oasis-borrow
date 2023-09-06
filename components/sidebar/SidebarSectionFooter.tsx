@@ -72,6 +72,7 @@ function useResolvePrimaryButton({
   const connectButton = useConnectWalletPrimaryButton()
   const changeChainButton = useChangeChainButton({ requiredChainHexId })
   const { wallet } = useWalletManagement()
+
   if (requireConnection && !wallet) {
     return {
       resolvedPrimaryButton: connectButton,
@@ -89,6 +90,7 @@ function useResolvePrimaryButton({
       blockOthers: true,
     }
   }
+
   return {
     resolvedPrimaryButton: primaryButton,
     blockOthers: false,

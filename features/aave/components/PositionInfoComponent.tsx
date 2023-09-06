@@ -28,6 +28,7 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
   if (ratio.isLessThanOrEqualTo(critical)) {
     return 'critical10'
   }
+
   return ratio.isLessThanOrEqualTo(warning) ? 'warning10' : 'success10'
 }
 

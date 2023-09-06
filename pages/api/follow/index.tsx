@@ -13,4 +13,5 @@ const handler: NextApiHandler = async (req, res) => {
       return res.status(405).end()
   }
 }
+
 export default apply(userJwt, handler)

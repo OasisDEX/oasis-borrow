@@ -31,6 +31,7 @@ export async function getPositionCreatedEventForProxyAddress(
   const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
 
   const contracts = getNetworkContracts(chainId)
+
   ensureContractsExist(chainId, contracts, ['accountGuard'])
   const { accountGuard } = contracts
 
@@ -111,6 +112,7 @@ export function getLastCreatedPositionForProxy$(
     }),
     catchError((error) => {
       console.error(`Error while fetching last created position for proxy ${proxyAddress}`, error)
+
       return EMPTY
     }),
   )
@@ -123,6 +125,7 @@ export async function getLastCreatedPositionForProxy(
   const events = await getPositionCreatedEventForProxyAddress({ chainId }, proxyAddress)
 
   const lastEvent = events.pop()
+
   if (lastEvent === undefined) {
     return undefined
   }

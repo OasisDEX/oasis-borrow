@@ -18,6 +18,7 @@ export function VaultDetailsCardCurrentPriceModal({
   nextPriceWithChange,
 }: ModalProps<{ currentPrice: ReactNode; nextPriceWithChange: ReactNode }>) {
   const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>

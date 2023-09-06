@@ -22,10 +22,12 @@ export function regressTrackingEvent({ props, firstCDP }: TrackingEventOpenVault
   switch (stage) {
     case 'allowanceFailure':
       trackingEvents.confirmVaultEdit(firstCDP)
+
       break
     case 'daiAllowanceFailure':
     case 'collateralAllowanceFailure':
       trackingEvents.manageVaultConfirmVaultEdit()
+
       break
   }
 }
@@ -51,26 +53,33 @@ export function progressTrackingEvent({ props, firstCDP }: TrackingEventOpenVaul
         )
       else if (insufficientAllowance) trackingEvents.setTokenAllowance(firstCDP)
       else trackingEvents.createVaultConfirm(firstCDP)
+
       break
     case 'daiEditing':
       if (generateAmount?.gt(zero)) trackingEvents.manageDaiGenerateConfirm()
       else if (paybackAmount?.gt(zero)) trackingEvents.manageDaiPaybackConfirm()
+
       break
     case 'collateralEditing':
       if (depositAmount?.gt(zero)) trackingEvents.manageCollateralDepositConfirm()
       else if (withdrawAmount?.gt(zero)) trackingEvents.manageCollateralWithdrawConfirm()
+
       break
     case 'proxyWaitingForConfirmation':
       trackingEvents.createProxy(firstCDP)
+
       break
     case 'allowanceWaitingForConfirmation':
       trackingEvents.approveAllowance(firstCDP)
+
       break
     case 'collateralAllowanceWaitingForConfirmation':
       trackingEvents.manageCollateralApproveAllowance()
+
       break
     case 'daiAllowanceWaitingForConfirmation':
       trackingEvents.manageDaiApproveAllowance()
+
       break
   }
 }

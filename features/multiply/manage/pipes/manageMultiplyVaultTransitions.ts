@@ -85,6 +85,7 @@ export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
 
   if (change.kind === 'backToEditing') {
     const { originalEditingStage } = state
+
     return {
       ...state,
       stage: originalEditingStage,
@@ -123,6 +124,7 @@ export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
 
   if (change.kind === 'resetToEditing') {
     const { originalEditingStage } = state
+
     return {
       ...state,
       ...manageVaultFormDefaults,
@@ -172,6 +174,7 @@ export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
       if (!hasDaiAllowance) {
         return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
       }
+
       return { ...state, stage: 'manageWaitingForConfirmation' }
     }
   }
@@ -201,6 +204,7 @@ export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
     if (!hasDaiAllowance) {
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
+
     return { ...state, stage: originalEditingStage }
   }
   if (change.kind === 'progressCollateralAllowance') {
@@ -214,9 +218,11 @@ export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
     const paybackAmountLessThanDaiAllowance =
       daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
     if (!hasDaiAllowance) {
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
+
     return { ...state, stage: originalEditingStage }
   }
 

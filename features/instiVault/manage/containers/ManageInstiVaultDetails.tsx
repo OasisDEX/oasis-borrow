@@ -31,6 +31,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
     afterPillColors: getAfterPillColors(afterCollRatioColor),
     showAfterPill: !inputAmountsEmpty && stage !== 'manageSuccess',
   }
+
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">

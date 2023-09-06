@@ -16,6 +16,7 @@ export function prepareSparkAvailableLiquidityInUSDC$(
   return combineLatest(getSparkReserveData$(reserveDataToken), getWETHPrice$).pipe(
     map(([reserveData, USD_in_WETH_price]: PrepareSparkAvailableLiquidityProps) => {
       const availableLiquidityInETH = reserveData.availableLiquidity
+
       return availableLiquidityInETH.times(USD_in_WETH_price)
     }),
     catchError((error) => {
@@ -23,6 +24,7 @@ export function prepareSparkAvailableLiquidityInUSDC$(
         `Can't get Spark V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
         error,
       )
+
       return of(zero)
     }),
   )

@@ -44,6 +44,7 @@ export const getToken1Balance: CallDef<{ token: string; leveragedAmount: BigNumb
   prepareArgs: ({ token, leveragedAmount }, { chainId }) => {
     const { tokens, guniResolver } = getNetworkContracts(NetworkIds.MAINNET, chainId)
     const guniToken = tokens[token]
+
     return [guniToken.address, guniResolver, amountToWei(leveragedAmount, 'DAI').toFixed(0), 6] // TODO: remove fixed precision
   },
   postprocess: (token2Amount: any) => new BigNumber(token2Amount).div(new BigNumber(10).pow(18)),
@@ -55,6 +56,7 @@ export const getGuniMintAmount: CallDef<
 > = {
   call: ({ token }, { contract, chainId }) => {
     const guniToken = getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]
+
     return contract<GuniToken>(guniToken).methods.getMintAmounts
   },
   prepareArgs: ({ amountOMax, amount1Max }) => {
@@ -146,6 +148,7 @@ export function openGuniVault<S extends TxStateDependencies>(
           )
 
           const jwtToken = jwtAuthGetToken(account)
+
           if (id && jwtToken) {
             saveVaultUsingApi$(
               id,

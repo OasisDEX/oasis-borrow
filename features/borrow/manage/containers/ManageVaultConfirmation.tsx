@@ -11,6 +11,7 @@ export function ManageVaultConfirmation(
   props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },
 ) {
   const [vaultChange, setVaultChanges] = useState<ManageStandardBorrowVaultState>(props)
+
   useEffect(() => {
     if (props.stage !== 'manageSuccess') {
       setVaultChanges(props)
@@ -53,5 +54,6 @@ export function ManageVaultConfirmationStatus({
       />
     )
   }
+
   return null
 }

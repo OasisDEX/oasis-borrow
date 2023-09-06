@@ -13,6 +13,7 @@ import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
 import { zero } from './zero'
 
 type UseFlowStateReturnType = ReturnType<typeof useFlowState>
+
 export type UseFlowStateCBParamsType = {
   availableProxies: UseFlowStateReturnType['availableProxies']
   walletAddress: UseFlowStateReturnType['walletAddress']
@@ -88,6 +89,7 @@ export function useFlowState({
       setWalletAddress(status === 'connected' && account ? account : undefined)
       setChainId(chainId)
     })
+
     if (existingProxy) {
       return () => {
         walletConnectionSubscription.unsubscribe()
@@ -109,6 +111,7 @@ export function useFlowState({
         setAvailableProxies([...(availableProxies || []), context.result.proxy])
       }
     })
+
     return () => {
       walletConnectionSubscription.unsubscribe()
       proxyMachineSubscription.unsubscribe()
@@ -121,6 +124,7 @@ export function useFlowState({
     const userDpmProxies = userDpmProxies$(walletAddress).subscribe((userProxyList) => {
       setUserProxyList(userProxyList)
     })
+
     return () => {
       userDpmProxies.unsubscribe()
     }
@@ -149,6 +153,7 @@ export function useFlowState({
           .map(({ proxyAddress }) => proxyAddress),
       )
     })
+
     return () => {
       proxyListAvailabilityMap.unsubscribe()
     }
@@ -169,6 +174,7 @@ export function useFlowState({
     if (token === 'ETH') {
       setLoading(false)
       setAllowanceReady(true)
+
       return
     }
     const allowanceSubscription = allowanceForAccount$(token!, spender).subscribe(
@@ -220,6 +226,7 @@ export function useFlowState({
         })
       }
     })
+
     return () => {
       allowanceMachineSubscription.unsubscribe()
       allowanceSubscription.unsubscribe()

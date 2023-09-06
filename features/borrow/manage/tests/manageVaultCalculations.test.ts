@@ -46,6 +46,7 @@ describe('manageVaultCalculations', () => {
         collateralPrice: new BigNumber('100'),
       },
     })
+
     function realFreeCollateral() {
       return state().vault.lockedCollateral.minus(
         state()
@@ -81,6 +82,7 @@ describe('manageVaultCalculations', () => {
     expect(state().daiYieldFromTotalCollateral).toEqual(new BigNumber('5000'))
     const selectedMaxGenerateAmount = state().maxGenerateAmount
     const originalDebtOffset = state().vault.debtOffset
+
     expect(selectedMaxGenerateAmount.lt(state().daiYieldFromTotalCollateral)).toBe(true)
     expect(state().daiYieldFromTotalCollateral.minus(selectedMaxGenerateAmount)).toEqual(
       originalDebtOffset,

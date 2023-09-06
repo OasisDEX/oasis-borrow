@@ -149,6 +149,7 @@ export function getUnreadNotificationCount(notifications: Notification[]) {
     if (!curr.isRead) {
       return acc + 1
     }
+
     return acc
   }, 0)
 }

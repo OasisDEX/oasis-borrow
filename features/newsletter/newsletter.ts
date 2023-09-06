@@ -83,6 +83,7 @@ function validate(state: NewsletterState): NewsletterState {
 
 export function createNewsletter$(): Observable<NewsletterState> {
   const change$ = new Subject<NewsletterChange>()
+
   function change(ch: NewsletterChange) {
     change$.next(ch)
   }

@@ -112,6 +112,7 @@ export function createPositions$(
   const _aaveV2Positions$ = aaveV2MainnetPositions$(address)
   const _aaveV3Positions$ = aaveV3MainnetPositions$(address)
   const _optimismPositions$ = optimismPositions$(address)
+
   return combineLatest(
     _makerPositions$,
     _aaveV2Positions$,
@@ -443,6 +444,7 @@ export function createAaveV2Position$(
 ): Observable<AaveLikePosition[]> {
   const { context$, tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } =
     environment
+
   return context$.pipe(
     switchMap((context) => {
       return context.chainId !== NetworkIds.GOERLI
@@ -469,6 +471,7 @@ export function createAaveV2Position$(
                     },
                   ),
                 ]
+
                 return readPositionCreatedEvents$(walletAddress).pipe(
                   map((positionCreatedEvents) => {
                     return [
@@ -484,6 +487,7 @@ export function createAaveV2Position$(
                           const userProxy = userProxiesData.find(
                             (userProxy) => userProxy.proxy === pce.proxyAddress,
                           )
+
                           if (!userProxy) {
                             throw new Error('nope')
                           }
@@ -553,10 +557,12 @@ const createAaveV3LikeDpmPosition = memoize(
           const subjects$ = positionCreatedEvents
             .map((pce) => {
               const network = getNetworkById(networkId)
+
               if (!network) {
                 console.warn(
                   `Given network is not supported right now. Can't display Aaave V3 Position on network ${networkId}`,
                 )
+
                 return null
               }
 
@@ -567,6 +573,7 @@ const createAaveV3LikeDpmPosition = memoize(
                 : undefined
 
               let strategyConfig: IStrategyConfig | null = null
+
               try {
                 strategyConfig = loadStrategyFromTokens(
                   pce.collateralTokenSymbol,
@@ -616,6 +623,7 @@ const createAaveV3LikeDpmPosition = memoize(
                 }),
               )
             })
+
           return combineLatest(subjects$)
         }),
         startWith([] as AaveLikePosition[]),

@@ -14,6 +14,7 @@ export function NavigationNetworkSwitcherIcon() {
   useEffect(() => {
     if (networkConnectorNetworkId) {
       const networkConfig = networkSetById[networkConnectorNetworkId]
+
       if (networkConfig && networkConfig.icon !== icon) {
         setIcon(networkConfig.icon)
       }

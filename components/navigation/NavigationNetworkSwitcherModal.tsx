@@ -28,6 +28,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
     }
   const removeForkNetwork = (networkName: NetworkNames) => () => {
     const { [networkName]: _, ...rest } = forkSettings
+
     setForkSettings(rest as CustomForkParameterType)
   }
   const saveAndReset = () => {
@@ -36,6 +37,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
   const closeProxy = () => {
     saveAndReset()
   }
+
   return (
     <Modal close={closeProxy} sx={{ maxWidth: '570px', margin: '0 auto' }}>
       <Box sx={{ p: 3 }}>

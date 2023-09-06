@@ -142,6 +142,7 @@ export function usePoolCreatorData({
             identifiedTokens$([collateralAddress, quoteAddress]).pipe(first()).toPromise(),
           ]),
         )
+
         setCancelablePromise(promise)
 
         promise

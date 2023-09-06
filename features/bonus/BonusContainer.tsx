@@ -22,6 +22,7 @@ export function BonusContainer(props: BonusContainerProps) {
     const { bonus, claimAll, claimTxnState } = bonusViewModel
 
     let bonusInstructionSnippet: string
+
     if (bonus.amountToClaim.eq(0)) {
       bonusInstructionSnippet = 'claim-rewards.instructions.nothing-to-claim'
     } else if (claimTxnState === ClaimTxnState.SUCCEEDED) {
@@ -63,5 +64,6 @@ export function BonusContainer(props: BonusContainerProps) {
       />
     )
   }
+
   return null
 }

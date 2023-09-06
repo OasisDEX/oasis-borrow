@@ -43,6 +43,7 @@ export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnV
               value: `$${formatFiatBalance(_totalValueLocked.value || zero)}`,
             },
           ]
+
           return (
             <EarnVaultHeadline
               header={ilk}
@@ -88,5 +89,6 @@ function getSubColor(number: BigNumber) {
   if (number.lt(zero)) {
     return 'critical100'
   }
+
   return 'success100'
 }

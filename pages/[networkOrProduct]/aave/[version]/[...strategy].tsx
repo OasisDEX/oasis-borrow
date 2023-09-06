@@ -22,6 +22,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const protocol = `aave${version.toLowerCase()}`
 
   const [supported] = isSupportedStrategy(networkOrProduct, protocol, product, strategy)
+
   if (supported) {
     return {
       props: {
@@ -56,6 +57,7 @@ function OpenPosition({
   const { replace } = useRouter()
 
   const [supported, definedStrategy] = isSupportedStrategy(network, protocol, product, strategy)
+
   if (!supported) {
     return void replace(INTERNAL_LINKS.notFound)
   }
@@ -78,4 +80,5 @@ function OpenPosition({
 }
 
 OpenPosition.layout = AppLayout
+
 export default OpenPosition

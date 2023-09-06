@@ -115,7 +115,9 @@ const LangSelectComponents: Partial<
 export function TemporaryFooter() {
   const commit = buildHash.substring(0, 10)
   const date = dayjs(buildDate).format('DD.MM.YYYY HH:MM')
+
   console.debug(`Build commit: ${commit} Build date: ${date}`)
+
   return (
     showBuildInfo && (
       <Container sx={{ maxWidth: '898px' }}>

@@ -18,5 +18,6 @@ export function createFollowButton(positionId: PositionId, protocol: Protocol) {
           protocol: protocol,
         }
       : undefined
+
   return followButton
 }

@@ -149,9 +149,11 @@ export function createOpenVaultAnalytics$(
           switch (event.kind) {
             case 'depositAmountChange':
               tracker.createVaultDeposit(firstCDP, event.value.toString())
+
               break
             case 'generateAmountChange':
               tracker.createVaultGenerate(firstCDP, event.value.toString())
+
               break
             case 'allowanceChange':
               tracker.pickAllowance(
@@ -159,6 +161,7 @@ export function createOpenVaultAnalytics$(
                 event.value.type.toString(),
                 event.value.amount.toString(),
               )
+
               break
             case 'openVaultConfirm':
               tracker.confirmVaultConfirm(
@@ -167,6 +170,7 @@ export function createOpenVaultAnalytics$(
                 event.value.daiAmount.toString(),
                 firstCDP,
               )
+
               break
             case 'openVaultConfirmTransaction':
               const network = networkSetById[context.id].name
@@ -181,6 +185,7 @@ export function createOpenVaultAnalytics$(
                 network,
                 walletType,
               )
+
               break
             default:
               throw new Error('Unhandled Scenario')

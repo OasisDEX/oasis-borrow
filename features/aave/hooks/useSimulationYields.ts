@@ -42,5 +42,6 @@ export function useSimulationYields({
       })
     }
   }, [fees, amount, token, yields])
+
   return simulations
 }

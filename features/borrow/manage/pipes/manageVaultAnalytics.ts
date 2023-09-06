@@ -238,6 +238,7 @@ export function createManageVaultAnalytics$(
         ).pipe(
           tap((event) => {
             const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
+
             switch (event.kind) {
               case 'depositAmountChange':
                 tracker.manageVaultDepositAmount(
@@ -245,6 +246,7 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'generateAmountChange':
                 tracker.manageVaultGenerateAmount(
@@ -252,6 +254,7 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'paybackAmountChange':
                 tracker.manageVaultPaybackAmount(
@@ -259,6 +262,7 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'withdrawAmountChange':
                 tracker.manageVaultWithdrawAmount(
@@ -266,18 +270,21 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'collateralAllowanceChange':
                 tracker.manageCollateralPickAllowance(
                   event.value.type.toString(),
                   event.value.amount.toString(),
                 )
+
                 break
               case 'daiAllowanceChange':
                 tracker.manageDaiPickAllowance(
                   event.value.type.toString(),
                   event.value.amount.toString(),
                 )
+
                 break
               case 'manageVaultConfirm':
                 tracker.manageVaultConfirm(
@@ -286,6 +293,7 @@ export function createManageVaultAnalytics$(
                   event.value.collateralAmount.toString(),
                   event.value.daiAmount.toString(),
                 )
+
                 break
               case 'manageVaultConfirmTransaction':
                 const network = networkSetById[context.id].name
@@ -300,6 +308,7 @@ export function createManageVaultAnalytics$(
                   network,
                   walletType,
                 )
+
                 break
               default:
                 throw new Error('Unhandled Scenario')

@@ -18,6 +18,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 export default function ReferralsPage({ address }: { address: string }) {
   const referralsEnabled = useFeatureToggle('Referrals')
+
   return address ? (
     <FunctionalContextHandler>
       <WithConnection>

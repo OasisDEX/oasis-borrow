@@ -71,6 +71,7 @@ async function openPosition(
         addresses: aavev2Addresses,
         getSwapData: swapCall(aavev2Addresses, networkId),
       }
+
       return await strategies.aave.multiply.v2.open(args, dependenciesAaveV2)
     case LendingProtocol.AaveV3:
       const aavev3Addresses = getAddresses(networkId, LendingProtocol.AaveV3)
@@ -79,6 +80,7 @@ async function openPosition(
         addresses: aavev3Addresses,
         getSwapData: swapCall(aavev3Addresses, networkId),
       }
+
       return await strategies.aave.multiply.v3.open(args, dependenciesAaveV3)
     case LendingProtocol.SparkV3:
       const sparkV3Addresses = getAddresses(networkId, LendingProtocol.SparkV3)
@@ -87,6 +89,7 @@ async function openPosition(
         addresses: sparkV3Addresses,
         getSwapData: swapCall(sparkV3Addresses, networkId),
       }
+
       return await strategies.spark.multiply.open(args, dependenciesSparkV3)
     default:
       throw new Error('Unsupported protocol')
@@ -139,6 +142,7 @@ export async function getOpenPositionParameters({
   } else {
     throw new Error('Token is neither collateral nor debt')
   }
+
   return openPosition(
     slippage,
     riskRatio,

@@ -17,6 +17,7 @@ type ContentCardNetAPYModalProps = {
 
 function ContentCardNetAPYModal({ token }: ContentCardNetAPYModalProps) {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('manage-earn-vault.net-apy')}</Heading>

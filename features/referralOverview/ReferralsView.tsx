@@ -19,6 +19,7 @@ function ReferralLink({ address }: Props) {
 
   function copyToClipboard() {
     const clipboardContent = clipboardAddressContentRef.current
+
     if (clipboardContent) {
       clipboardContent.select()
       document.execCommand('copy')
@@ -28,6 +29,7 @@ function ReferralLink({ address }: Props) {
       }, 2000)
     }
   }
+
   return (
     <Flex
       sx={{
@@ -81,6 +83,7 @@ function ReferralLink({ address }: Props) {
 export function ReferralsView({ address }: Props) {
   const { t } = useTranslation()
   const [ensName] = useMainnetEnsName(address)
+
   return (
     <Box
       sx={{

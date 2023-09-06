@@ -12,6 +12,7 @@ export function resolveENSName$(context$: Observable<Context>, address: string) 
       const provider = new ethers.providers.JsonRpcBatchProvider(
         getNetworkRpcEndpoint(context.chainId),
       )
+
       return provider
         .lookupAddress(address)
         .catch((err: Error) =>
@@ -26,8 +27,10 @@ export async function addressToEnsNameMainnet(address: string) {
   const provider = new ethers.providers.JsonRpcBatchProvider(
     getNetworkRpcEndpoint(NetworkIds.MAINNET),
   )
+
   return provider.lookupAddress(address).catch((err: Error) => {
     console.warn(`Error looking up ENS name for address: ${address}/${err.message}`)
+
     return null
   })
 }
@@ -37,8 +40,10 @@ export async function ensNameToAddressMainnet(ensName: string) {
   const provider = new ethers.providers.JsonRpcBatchProvider(
     getNetworkRpcEndpoint(NetworkIds.MAINNET),
   )
+
   return provider.resolveName(ensName).catch((err: Error) => {
     console.warn(`Error looking up ENS name for address: ${err.message}`)
+
     return null
   })
 }
@@ -50,6 +55,7 @@ export async function ensNameToAddressMainnet(ensName: string) {
  */
 export const useMainnetEnsName = (address?: string | null) => {
   const [ensName, setEnsName] = useState<string | null | undefined>(undefined)
+
   useMemo(() => {
     if (!address) return
     addressToEnsNameMainnet(address)
@@ -67,6 +73,7 @@ export const useMainnetEnsName = (address?: string | null) => {
 
 export const useMainnetEnsNames = (addresses?: string[]) => {
   const initialAddressesList: { [key: string]: string } = {}
+
   addresses?.forEach((address) => {
     initialAddressesList[address] = address
   })
@@ -77,6 +84,7 @@ export const useMainnetEnsNames = (addresses?: string[]) => {
     Promise.all(addresses.map((address) => addressToEnsNameMainnet(address)))
       .then((names) => {
         const newEnsNames: { [key: string]: string } = {}
+
         names.forEach((name, index) => {
           if (name !== null) {
             newEnsNames[addresses[index]] = name

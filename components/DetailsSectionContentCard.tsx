@@ -197,6 +197,7 @@ export function DetailsSectionContentCard({
     onClick: modalHandler,
   }
   let cardBackgroundColor = modal && isHighlighted ? 'neutral30' : 'neutral10'
+
   if (customBackground) {
     cardBackgroundColor = customBackground
   }

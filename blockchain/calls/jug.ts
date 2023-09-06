@@ -17,9 +17,11 @@ export const jugIlk: CallDef<string, JugIlk> = {
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
   postprocess: ({ 0: rawFee, 1: rawLastLevied }: any) => {
     const v = new BigNumber(rawFee).dividedBy(RAY)
+
     BigNumber.config({ POW_PRECISION: 100 })
     const stabilityFee = v.pow(SECONDS_PER_YEAR).minus(1)
     const feeLastLevied = new Date(rawLastLevied * 1000)
+
     return { stabilityFee, feeLastLevied }
   },
 }

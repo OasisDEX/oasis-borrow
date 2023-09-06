@@ -87,6 +87,7 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
       }),
     )
   }
+
   return { ...state, warningMessages }
 }
 

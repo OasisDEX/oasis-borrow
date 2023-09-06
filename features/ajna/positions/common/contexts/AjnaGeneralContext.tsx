@@ -97,6 +97,7 @@ export function useAjnaGeneralContext(): AjnaGeneralContext {
   const context = useContext(ajnaGeneralContext)
 
   if (!context) throw new Error('AjnaGeneralContext not available!')
+
   return context
 }
 

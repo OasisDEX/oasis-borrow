@@ -167,11 +167,13 @@ export function vaultsWithHistory$(
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
+
   return timer(0, refreshInterval).pipe(
     switchMap(() => combineLatest(context$, vaults$(address))),
     distinctUntilChanged(isEqual),
     switchMap(([{ chainId }, vaults]: [Context, VaultWithValue<VaultWithType>[]]) => {
       const apiClient = makeClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
+
       return from(
         getDataFromCache(
           apiClient,

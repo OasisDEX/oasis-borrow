@@ -67,6 +67,7 @@ function SecurityPage() {
       links: [{ url: INTERNAL_LINKS.privacy, label: t('security.category.shield.link-privacy') }],
     },
   ]
+
   return (
     <Box sx={{ width: '100%', mt: [4, 5], pb: [4, 6] }}>
       <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>

@@ -16,6 +16,7 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
     e.stopPropagation()
     setShowResults(!showResults)
   }
+
   return (
     <Modal close={close} sx={{ maxWidth: '450px', margin: '0px auto' }}>
       <Flex

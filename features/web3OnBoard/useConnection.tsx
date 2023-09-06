@@ -40,6 +40,7 @@ export interface WalletManagementState {
 }
 export function useWalletManagement(): WalletManagementState {
   const { state, disconnect } = useWeb3OnBoardConnectorContext()
+
   return {
     disconnect,
     connecting: state.status === 'connecting',

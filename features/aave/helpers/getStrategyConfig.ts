@@ -24,6 +24,7 @@ export function getStrategyConfig$(
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {
       const effectiveProxyAddress = dsProxy || dpmProxy?.proxy
+
       return combineLatest(
         iif(
           () => effectiveProxyAddress !== undefined,
@@ -37,6 +38,7 @@ export function getStrategyConfig$(
     }),
     map(([aaveUserConfigurations, lastCreatedPosition]) => {
       const vaultTypeIsUnknown = vaultType === VaultType.Unknown
+
       // event has a higher priority than assets
       if (lastCreatedPosition !== undefined) {
         const _vaultType = vaultTypeIsUnknown
@@ -111,6 +113,7 @@ export async function getAaveV3StrategyConfig(
   }
 
   const dmpProxy = await getUserDpmProxy(vaultId, networkId)
+
   if (!dmpProxy) {
     throw new Error(`Can't load strategy config for position without dmpProxy. VaultId: ${vaultId}`)
   }

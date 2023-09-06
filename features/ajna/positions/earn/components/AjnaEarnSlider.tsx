@@ -64,6 +64,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
 
   function handleChange(v: BigNumber) {
     const newValue = snapToPredefinedValues(v)
+
     updateState('price', newValue)
   }
 

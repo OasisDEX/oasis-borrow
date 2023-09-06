@@ -52,6 +52,7 @@ export type DsrDepositStage =
 type DsrDepositMessage = {
   kind: 'amountIsEmpty' | 'amountBiggerThanBalance' | 'amountBiggerThanDeposit'
 }
+
 export interface DsrDepositState extends HasGasEstimation {
   stage: DsrDepositStage
   proxyAddress: string
@@ -225,6 +226,7 @@ function addTransitions(
       isMintingSDai: state.isMintingSDai,
       operation: state.operation,
     })
+
     return {
       ...state,
       reset,
@@ -292,13 +294,16 @@ function addTransitions(
         }
       }
     }
+
     return { ...state, change, reset }
   }
+
   return state
 }
 
 function validate(state: DsrDepositState): DsrDepositState {
   const messages: DsrDepositMessage[] = []
+
   if (!state.amount || state.amount.eq(zero)) {
     messages[messages.length] = { kind: 'amountIsEmpty' }
   }
@@ -318,6 +323,7 @@ function validate(state: DsrDepositState): DsrDepositState {
   ) {
     messages[messages.length] = { kind: 'amountBiggerThanDeposit' }
   }
+
   return { ...state, messages }
 }
 
@@ -345,6 +351,7 @@ function constructEstimateGas(
         amount: amount.gt(state.sDaiBalance) ? state.sDaiBalance : amount,
         walletAddress,
       }
+
       return estimateGas(
         savingsDaiConvert as any,
         { ...convertArgs, kind: TxMetaKind.savingsDaiConvert } as any,
@@ -353,6 +360,7 @@ function constructEstimateGas(
 
     if (isMintingSDai) {
       const sDaiArgs = { amount, walletAddress }
+
       return estimateGas(
         savingsDaiDeposit as any,
         { ...sDaiArgs, kind: TxMetaKind.savingsDaiDeposit } as any,
@@ -390,6 +398,7 @@ export function createDsrDeposit$(
       const {
         tokens: { SDAI },
       } = getNetworkContracts(NetworkIds.MAINNET)
+
       return combineLatest(
         proxyAddress && context.status === 'connected' && context.account
           ? [
@@ -401,6 +410,7 @@ export function createDsrDeposit$(
         first(),
         switchMap(([daiProxyAllowance, daiWalletAllowance]) => {
           const change$ = new Subject<DsrCreationChange>()
+
           function change(ch: DsrCreationChange) {
             change$.next(ch)
           }

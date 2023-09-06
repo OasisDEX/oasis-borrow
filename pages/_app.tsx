@@ -50,9 +50,11 @@ import Web3 from 'web3'
 if (process.env.NODE_ENV !== 'production') {
   if (typeof window !== 'undefined') {
     const { applyClientHMR } = require('i18next-hmr/client')
+
     applyClientHMR(() => i18n)
   } else {
     const { applyServerHMR } = require('i18next-hmr/server')
+
     applyServerHMR(() => i18n)
   }
 }
@@ -60,6 +62,7 @@ if (process.env.NODE_ENV !== 'production') {
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
   const chainIdPromise = connector!.getChainId()
   const readOnlyEnhancedProvider = readOnlyEnhanceProvider(provider, chainIdPromise)
+
   return new Web3(readOnlyEnhancedProvider)
 }
 
@@ -168,6 +171,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     router.events.on('routeChangeComplete', handleRouteChange)
 
     loadFeatureToggles()
+
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }

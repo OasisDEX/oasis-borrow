@@ -18,6 +18,7 @@ export function SwapWidget() {
   const [isOnboarded] = useOnboarding('SwapWidget')
   const activeOnboardWallets = useWallets()
   const liFiWalletManagement = useMemo(() => new LiFiWalletManagement(), [])
+
   useTrackSwapWidgetEvents()
 
   const web3Provider =
@@ -28,6 +29,7 @@ export function SwapWidget() {
       const activeWallets = supportedWallets.filter((wallet) =>
         activeOnboardWallets.some((activeWallet) => activeWallet.label === wallet.name),
       )
+
       if (!activeWallets.length) {
         return
       }

@@ -231,6 +231,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               value: parameters!.token === 'ETH' ? parameters!.amount! : zero,
               networkId: networkId,
             }
+
             return fromPromise(estimateGasOnDpm(dpmParams)).pipe(
               map((estimatedGas) => ({
                 type: 'ETHERS_GAS_ESTIMATION_CHANGED',
@@ -259,6 +260,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             if (!estimatedGas && !gasEstimationResult?.estimatedGas) {
               throw new Error('Error estimating gas price: no gas amount.')
             }
+
             return gasEstimation$(estimatedGas || Number(gasEstimationResult!.estimatedGas)).pipe(
               distinctUntilChanged<HasGasEstimation>(isEqual),
               map((gasPriceEstimation) => ({
@@ -283,6 +285,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
                 .div(10 ** 18)
 
               const gasInUsd = gasInEth.div(transactionFee.ethUsdPrice)
+
               return {
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',
                 estimatedGasPrice: {

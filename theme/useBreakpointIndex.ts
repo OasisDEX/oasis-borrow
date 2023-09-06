@@ -13,6 +13,7 @@ export function useBreakpointIndex() {
 
     function onResize() {
       const newValue = getIndex()
+
       if (value !== newValue) {
         setValue(newValue)
       }
@@ -20,6 +21,7 @@ export function useBreakpointIndex() {
 
     onResize()
     window.addEventListener('resize', onResize)
+
     return () => window.removeEventListener('resize', onResize)
   }, [breakpoints, value])
 

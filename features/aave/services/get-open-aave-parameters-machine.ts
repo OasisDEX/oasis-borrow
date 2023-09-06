@@ -23,9 +23,11 @@ export function getOpenAaveParametersMachine(
       try {
         if (parameters.positionType === 'Borrow')
           return await getOpenDepositBorrowPositionParameters(parameters)
+
         return await getOpenPositionParameters(parameters)
       } catch (e) {
         console.error(e)
+
         throw e
       }
     },

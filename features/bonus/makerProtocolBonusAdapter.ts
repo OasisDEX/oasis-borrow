@@ -40,6 +40,7 @@ function calculateUnclaimedBonusAmount({
   const potentialCurr = amountFromRay(stake.times(potentialShare))
   const potentialBonusBonusPrecision = potentialCurr.minus(crops) // bonus precision
   const unclaimedBonus = amountFromPrecision(potentialBonusBonusPrecision, bonusDecimals)
+
   return unclaimedBonus.lt(zero) ? zero : unclaimedBonus
 }
 

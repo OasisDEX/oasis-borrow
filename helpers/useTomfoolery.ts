@@ -9,6 +9,7 @@ export function useTomfoolery(): [boolean, () => void] {
   const sillinessToggleEnabled = useFeatureToggle('Sillyness')
   const foolishnessDateEnabled = dayjs().isSame(foolishnessDate, 'day')
   const [mischiefEnabled, setMischief] = useLocalStorage('MischiefEnabled', true)
+
   return [
     mischiefEnabled ? sillinessToggleEnabled || foolishnessDateEnabled : false,
     () => setMischief(false),

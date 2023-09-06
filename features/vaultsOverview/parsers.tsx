@@ -81,6 +81,7 @@ export interface PositionTableEarnRow extends PositionTableRow {
 
 const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: NetworkNames) => {
   const aaveProtection = useFeatureToggle('AaveV3Protection')
+
   return {
     [LendingProtocol.Maker]: network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
@@ -418,6 +419,7 @@ export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTab
     protocol === LendingProtocol.AaveV3
       ? isSupportedAaveAutomationTokenPair(collateralToken, debtToken)
       : true // if its not AaveV3, then we skip this check
+
   return rows.map(
     ({
       asset,

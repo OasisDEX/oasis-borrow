@@ -126,6 +126,7 @@ function manageVaultSecondaryButtonText(state: ManageStandardBorrowVaultState): 
       return t('edit-vault-details')
   }
 }
+
 export function ManageVaultButton(props: ManageStandardBorrowVaultState) {
   const {
     progress,

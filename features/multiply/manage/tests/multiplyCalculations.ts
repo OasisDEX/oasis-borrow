@@ -23,6 +23,7 @@ describe('Multiply calculations', () => {
     )
 
     const pnl = calculatePNL(mockedMultiplyEvents, state().netValueUSD)
+
     expect(pnl.decimalPlaces(20)).toEqual(new BigNumber('0.27552238805970149253'))
   })
 })

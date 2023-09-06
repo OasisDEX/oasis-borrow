@@ -56,6 +56,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
     const s8 = applyManageVaultCalculations(s7, zero, s7.ilkData.liquidationRatio)
     const s9 = applyManageVaultStageCategorisation(s8)
     const s10 = applyManageVaultConditions(s9)
+
     return applyManageVaultSummary(s10)
   },
 
@@ -108,6 +109,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       constantMultipleData: undefined,
       injectStateOverride,
     }
+
     return initialState
   },
 }

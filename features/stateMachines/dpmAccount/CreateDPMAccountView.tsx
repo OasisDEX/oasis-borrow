@@ -141,6 +141,7 @@ function InProgressView({ state }: InternalViewsProps) {
       },
     ],
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 
@@ -184,6 +185,7 @@ function SuccessStateView({ send, state }: InternalViewsProps) {
       },
     ],
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 

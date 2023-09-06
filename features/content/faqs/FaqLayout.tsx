@@ -28,10 +28,13 @@ export function FaqLayout({
 
   // Divide markdown into sections delimited by headings
   const sections: Record<string, React.ReactNode[]> = {}
+
   for (let i = 0; i < childrenArray.length; i++) {
     const comp = childrenArray[i]
+
     if (isHeading(comp)) {
       const id = getHeadingId((comp as ReactElement).props.children)
+
       sections[id] = []
       do {
         sections[id].push(childrenArray[i])
@@ -46,6 +49,7 @@ export function FaqLayout({
     obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
       borderColor: color,
     }
+
     return obj
   }, {})
 

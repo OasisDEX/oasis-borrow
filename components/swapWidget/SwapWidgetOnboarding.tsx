@@ -9,6 +9,7 @@ import { Box, Button, Flex, Image, Text } from 'theme-ui'
 export const SwapWidgetOnboarding = () => {
   const [, setAsOnboarded] = useOnboarding('SwapWidget')
   const { t } = useTranslation()
+
   return (
     <Flex
       sx={{

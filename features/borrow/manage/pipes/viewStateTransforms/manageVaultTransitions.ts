@@ -84,6 +84,7 @@ export function applyManageVaultTransition<VaultState extends ManageStandardBorr
 
   if (change.kind === 'backToEditing') {
     const { originalEditingStage } = state
+
     return {
       ...state,
       stage: originalEditingStage,
@@ -122,6 +123,7 @@ export function applyManageVaultTransition<VaultState extends ManageStandardBorr
 
   if (change.kind === 'resetToEditing') {
     const { originalEditingStage } = state
+
     return {
       ...state,
       ...manageVaultFormDefaults,
@@ -166,6 +168,7 @@ export function applyManageVaultTransition<VaultState extends ManageStandardBorr
       if (!hasDaiAllowance) {
         return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
       }
+
       return { ...state, stage: 'manageWaitingForConfirmation' }
     }
   }
@@ -196,6 +199,7 @@ export function applyManageVaultTransition<VaultState extends ManageStandardBorr
     if (!hasDaiAllowance) {
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
+
     return { ...state, stage: originalEditingStage }
   }
 
@@ -214,6 +218,7 @@ export function applyManageVaultTransition<VaultState extends ManageStandardBorr
     if (!hasDaiAllowance) {
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
+
     return { ...state, stage: originalEditingStage }
   }
 

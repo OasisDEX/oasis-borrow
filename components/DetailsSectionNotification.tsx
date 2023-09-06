@@ -55,6 +55,7 @@ export function DetailsSectionNotification({
 }: DetailsSectionNotificationProps) {
   const [closedNotifications, setClosedNotifications] = useState<number[]>([])
   const { t } = useTranslation()
+
   notifications.forEach(({ title }, i) => {
     if (
       sessionStorage.getItem(getSessionStorageKey(title.translationKey)) === 'true' &&

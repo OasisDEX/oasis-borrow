@@ -69,6 +69,7 @@ export function GeneralManageTabBar({
     const subscription = uiChanges$.subscribe((value) => {
       setMode(() => value.currentMode as VaultViewMode)
     })
+
     return () => {
       subscription.unsubscribe()
     }

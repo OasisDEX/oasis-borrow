@@ -49,6 +49,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getSparkV3ReserveData({ token, networkId })
     const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers))
+
     return {
       [token]: {
         liquidity: reserveData.totalSpToken
@@ -63,6 +64,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
   // reserveData -> max multiple
   const tokensReserveConfigurationDataPromises = primaryTokensList.map(async (token) => {
     const reserveConfigurationData = await getSparkV3ReserveConfigurationData({ token, networkId })
+
     return {
       [token]: {
         maxLtv: reserveConfigurationData.ltv,
@@ -74,6 +76,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
     Promise.all(tokensReserveDataPromises),
     Promise.all(tokensReserveConfigurationDataPromises),
   ])
+
   return {
     [networkName]: {
       tokensReserveData,
@@ -129,15 +132,18 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           ),
         )[product.primaryToken].riskRatio
     const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
+
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }
   })
+
   return Promise.all([
     Promise.all(getSparkV3TokensDataPromises),
     Promise.all(earnProductsPromises),
   ]).then(([sparkV3TokensDataList, earnProductsYields]) => {
     const sparkV3TokensData = sparkV3TokensDataList[0] // only one (ethereum) now
+
     return {
       table: sparkV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =

@@ -117,6 +117,7 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
   const { token, amount } = getTxTokenAndAmount(context)
+
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transition!.transaction.calls as any,

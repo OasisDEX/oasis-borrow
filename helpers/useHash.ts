@@ -9,6 +9,7 @@ export function useHash<T extends string>(): [string, (newHash: T) => void] {
 
   useEffect(() => {
     window.addEventListener('hashchange', hashChange)
+
     return () => {
       window.removeEventListener('hashchange', hashChange)
     }

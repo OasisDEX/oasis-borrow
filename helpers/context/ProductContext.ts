@@ -442,6 +442,7 @@ export function setupProductContext(
       combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
         switchMap(([context, proxyAddress]) => {
           if (!proxyAddress) return of(zero)
+
           return everyBlock$(
             defer(() => call(context, pie)(proxyAddress)),
             equals,

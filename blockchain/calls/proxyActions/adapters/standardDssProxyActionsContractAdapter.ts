@@ -28,6 +28,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       context.chainId,
     )
     const { generateAmount, ilk } = data
+
     return contract<DssProxyActions>(dssProxyActions).methods.openLockETHAndDraw(
       dssCdpManager.address,
       mcdJug.address,
@@ -48,6 +49,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       context.chainId,
     )
     const { depositAmount, generateAmount, token, ilk } = data
+
     return contract<DssProxyActions>(dssProxyActions).methods.openLockGemAndDraw(
       dssCdpManager.address,
       mcdJug.address,
@@ -67,6 +69,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       context.chainId,
     )
     const { ilk, proxyAddress } = data
+
     return contract<DssProxyActions>(dssProxyActions).methods.open(
       dssCdpManager.address,
       Web3.utils.utf8ToHex(ilk),
@@ -76,6 +79,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
 
   resolveContractAddress(context: ContextConnected): string {
     const { dssProxyActions } = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+
     return dssProxyActions.address
   },
 
@@ -84,6 +88,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.draw(
@@ -103,6 +108,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.freeETH(
@@ -121,6 +127,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.freeGem(
@@ -136,6 +143,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.lockETH(dssCdpManager.address, joins[data.ilk], data.id.toString())
@@ -149,6 +157,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.lockETHAndDraw(
@@ -169,6 +178,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.lockGem(
@@ -188,6 +198,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.lockGemAndDraw(
@@ -207,6 +218,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.wipe(
@@ -225,6 +237,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.wipeAll(dssCdpManager.address, mcdJoinDai.address, data.id.toString())
@@ -238,6 +251,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.wipeAllAndFreeETH(
@@ -257,6 +271,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.wipeAllAndFreeGem(
@@ -276,6 +291,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.wipeAndFreeETH(
@@ -296,6 +312,7 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     return context
       .contract<DssProxyActions>(dssProxyActions)
       .methods.wipeAndFreeGem(

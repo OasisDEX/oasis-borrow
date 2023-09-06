@@ -87,6 +87,7 @@ function applyOpenVaultInjectedOverride(state: OpenVaultState, change: OpenVault
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -357,6 +358,7 @@ export function createOpenVault$(
         ).pipe(
           switchMap(([context, txHelpers, token, proxyActionsAdapter]) => {
             const account = context.account
+
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),

@@ -115,6 +115,7 @@ export function buildPosition({
   const underCollateralizedAtNextPrice =
     !collateralizationRatioAtNextPrice.isZero() &&
     collateralizationRatioAtNextPrice.lt(liquidationRatio)
+
   return {
     lockedCollateralUSD,
     lockedCollateralUSDAtNextPrice,

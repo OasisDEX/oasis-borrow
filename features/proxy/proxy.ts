@@ -90,6 +90,7 @@ export function applyProxyChanges<S extends ProxyState & Dependencies>(
 
   if (change.kind === 'proxyInProgress') {
     const { proxyTxHash } = change
+
     return {
       ...state,
       stage: 'proxyInProgress',
@@ -99,11 +100,13 @@ export function applyProxyChanges<S extends ProxyState & Dependencies>(
 
   if (change.kind === 'proxyFailure') {
     const { txError } = change
+
     return { ...state, stage: 'proxyFailure', txError }
   }
 
   if (change.kind === 'proxyConfirming') {
     const { proxyConfirmations } = change
+
     return {
       ...state,
       proxyConfirmations,
@@ -112,6 +115,7 @@ export function applyProxyChanges<S extends ProxyState & Dependencies>(
 
   if (change.kind === 'proxySuccess') {
     const { proxyAddress } = change
+
     return {
       ...state,
       proxyAddress,

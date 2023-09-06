@@ -11,6 +11,7 @@ const openVaultAnimationOptions = {
     preserveAspectRatio: 'xMidYMid slice',
   },
 }
+
 export default function OpenVaultAnimationStatic() {
   return (
     <Box mb={2}>

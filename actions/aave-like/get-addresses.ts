@@ -38,6 +38,7 @@ export function getAddresses(
           'aaveV2ProtocolDataProvider',
           'aaveV3Oracle',
         ]
+
   ensureContractsExist(networkId, contracts, contractProperties)
   ensureTokensExist(networkId, contracts)
   ensureChainlinkTokenPairsExist(networkId, contracts, ['ETHUSD'])

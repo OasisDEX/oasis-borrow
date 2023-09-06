@@ -170,6 +170,7 @@ export function createDPMAccountStateMachine(
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
           }
+
           return undefined
         }),
         sendResultToParent: sendParent((context) => {
@@ -193,6 +194,7 @@ export function getDPMAccountStateMachineServices(
   return {
     runTransaction: (context) => async (sendBack, _onReceive) => {
       const contracts = getNetworkContracts(context.networkId!)
+
       ensureEtherscanExist(context.networkId!, contracts)
 
       const { etherscan } = contracts
@@ -243,6 +245,7 @@ export function getDPMAccountStateMachineServices(
             if (context.networkId === NetworkIds.MAINNET) {
               return gasEstimation$(Number(gas.estimatedGas))
             }
+
             return fromPromise(getOptimismTransactionFee(gas)).pipe(
               map((transactionFee) => {
                 if (!transactionFee) {
@@ -255,6 +258,7 @@ export function getDPMAccountStateMachineServices(
                   .div(10 ** 18)
 
                 const gasInUsd = gasInEth.div(transactionFee.ethUsdPrice)
+
                 return {
                   gasEstimationStatus: GasEstimationStatus.calculated,
                   gasEstimationEth: gasInEth,
@@ -271,6 +275,7 @@ export function getDPMAccountStateMachineServices(
           distinctUntilChanged(isEqual),
         )
       }
+
       return txHelpers$.pipe(
         switchMap((txHelpers) =>
           txHelpers.estimateGas(createAccount, { kind: TxMetaKind.createAccount }),

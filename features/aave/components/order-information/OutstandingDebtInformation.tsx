@@ -17,6 +17,7 @@ interface DebtCollateralInformation {
 
 function formatDebtAmount(pos: IPosition) {
   const amount = pos.debt.amount.lt(zero) ? zero : pos.debt.amount
+
   return `${formatAmount(amountFromWei(amount, pos.debt.symbol), pos.debt.symbol)} ${
     pos.debt.symbol
   }`

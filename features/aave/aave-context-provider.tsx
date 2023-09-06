@@ -25,6 +25,7 @@ export function useAaveContext(
   network: NetworkNames = NetworkNames.ethereumMainnet,
 ): AaveContext {
   const ac = useContext(aaveContext)
+
   if (!ac) {
     throw new Error('AaveContext not available!')
   }
@@ -32,6 +33,7 @@ export function useAaveContext(
     throw new Error(`AaveContext for network ${network} is not available!`)
   }
   const aaveContextsForNetwork = ac[network]!
+
   if (!aaveContextsForNetwork[protocol]) {
     throw new Error(
       `AaveContext for network ${network} and protocol ${protocol} is not available!}`,

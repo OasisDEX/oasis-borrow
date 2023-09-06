@@ -65,6 +65,7 @@ export function getTokenMetaData(
   tokens: Dictionary<ContractDesc, string>,
 ): TokenMetadata {
   const details = getToken(symbol)
+
   return {
     address: tokens[symbol].address,
     decimals: details.precision,

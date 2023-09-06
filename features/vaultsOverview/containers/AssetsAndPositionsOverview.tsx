@@ -156,6 +156,7 @@ function LinkedRow(props: PositionView) {
       <Box
         onClick={(event) => {
           const rect = event.currentTarget.getBoundingClientRect()
+
           setMenuPosition({
             right: `${window.innerWidth - rect.right - 20}px`,
             top: `${window.scrollY + rect.top}px`,
@@ -220,6 +221,7 @@ function Menu(props: {
   assetActions: Array<AssetAction>
 }) {
   const componentRef = useOutsideElementClickHandler(props.close)
+
   return (
     <Card
       ref={componentRef}
@@ -245,6 +247,7 @@ function Menu(props: {
 
 function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
   const { t } = useTranslation()
+
   return (
     <Box sx={{ mr: [0, '96px'] }}>
       <Text

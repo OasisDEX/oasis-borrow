@@ -138,6 +138,7 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
       }),
     )
   }
+
   return { ...state, warningMessages }
 }
 

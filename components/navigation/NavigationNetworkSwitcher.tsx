@@ -95,6 +95,7 @@ export function NavigationNetworkSwitcherOrb() {
                         if (isTestnetNetworkHexId(NetworkIdToNetworkHexIds(chainId))) {
                           return 'Change to main net 🏠'
                         }
+
                         return 'Change to test net 🌲'
                       })()}
                     </Box>

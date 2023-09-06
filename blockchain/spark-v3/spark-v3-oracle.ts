@@ -25,6 +25,7 @@ export function getSparkV3AssetsPrices({
 }: SparkV3AssetsPricesParameters): Promise<BigNumber[]> {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]()
   const tokenAddresses = tokens.map((token) => wethToEthAddress(tokenMappings, token))
+
   return contract.getAssetsPrices(tokenAddresses).then((result) => {
     return result.map((tokenPriceInBaseCurrency) =>
       new BigNumber(tokenPriceInBaseCurrency.toString()).div(baseCurrencyUnit),
@@ -39,6 +40,7 @@ export function getSparkV3OracleAssetPrice({
 }: SparkV3OracleAssetPriceDataParameters) {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   return contract.getAssetPrice(tokenAddress).then((result) => {
     return new BigNumber(result.toString()).times(amount).div(baseCurrencyUnit)
   })

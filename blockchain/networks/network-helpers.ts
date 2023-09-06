@@ -9,6 +9,7 @@ export const isTestnetEnabled = () => {
   const isDev = env.NODE_ENV !== 'production'
   const showTestnetsParam =
     window && new URLSearchParams(window.location.search).get('testnets') !== null
+
   return isDev || showTestnetsParam
 }
 
@@ -16,6 +17,7 @@ export const isTestnet = (connectedChain: NetworkConfigHexId | undefined) => {
   if (!connectedChain) {
     return false
   }
+
   return networks
     .filter((network) => network.testnet)
     .map((network) => network.hexId)
@@ -38,6 +40,7 @@ export const isTestnetNetworkHexId = (networkHexId: NetworkConfigHexId) => {
 
 export const isForkSetForNetworkId = (networkId: NetworkIds) => {
   const networkName = networksById[networkId]?.name
+
   return forkSettings[networkName] !== undefined
 }
 
@@ -46,8 +49,10 @@ const networksWithForksAtTheBeginning: NetworkConfig[] = [...forkNetworks, ...ne
 const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
   if (acc.some((n) => n.hexId === network.hexId)) {
     console.log('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
+
     return acc
   }
+
   return [...acc, network]
 }, [] as NetworkConfig[])
 
@@ -57,8 +62,10 @@ export const networkSetById = keyBy(enableNetworksSet, 'id')
 
 export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: NetworkConfigHexId) => {
   const networkConfig = networkSetByHexId[currentConnectedChainHexId]
+
   if (!networkConfig)
     console.log('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
+
   return (
     (networkConfig &&
       (networkConfig.testnet ? networkConfig.mainnetHexId : networkConfig.testnetHexId)) ||
@@ -110,6 +117,7 @@ export const getContractNetworkByWalletNetwork = (
   // doesnt matter if we're even connected
   if (!isTestnetNetworkId(walletChainId) && isForkSetForNetworkId(contractChainId)) {
     const networkName = networksById[contractChainId].name
+
     return Number(forkSettings[networkName]!.id) as NetworkIds
   }
 
@@ -135,31 +143,38 @@ export const filterNetworksAccordingToSavedNetwork =
 
 export function getNetworkRpcEndpoint(networkId: NetworkIds) {
   const isForkSet = isForkSetForNetworkId(networkId)
+
   if (!networksById[networkId]) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
   if (isForkSet) {
     const networkName = networksById[networkId].name
+
     return forkSettings[networkName]!.url
   }
+
   return networksById[networkId].rpcUrl
 }
 
 export function getNetworkById(networkId: NetworkIds) {
   const base = networkSetById[networkId]
+
   if (!base) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
 
   const parent = base.getParentNetwork()
+
   if (parent && base.isCustomFork) {
     return parent
   }
+
   return base
 }
 
 export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): NetworkConfigHexId[] {
   const base = networkSetByHexId[networkHexId]
+
   if (!base) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
@@ -172,6 +187,7 @@ export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): Netw
   const baseHexs = [mainnet, testnet, base.hexId, parent?.hexId].filter(
     (id): id is NetworkConfigHexId => id !== undefined,
   )
+
   return Array.from(new Set(baseHexs))
 }
 

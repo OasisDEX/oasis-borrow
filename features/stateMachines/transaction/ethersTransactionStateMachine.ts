@@ -98,6 +98,7 @@ export function createEthersTransactionStateMachine<TParameters, TResult = unkno
 
           try {
             const result = await context.transaction(context.transactionParameters)
+
             sendBack({
               type: 'WAITING_FOR_CONFIRMATIONS',
               confirmations: result.confirmations,
@@ -105,6 +106,7 @@ export function createEthersTransactionStateMachine<TParameters, TResult = unkno
 
             const receipt = await result.wait()
             const extractedResult = context.extract ? context.extract(receipt) : undefined
+
             sendBack({
               type: 'CONFIRMED',
               confirmations: receipt.confirmations,

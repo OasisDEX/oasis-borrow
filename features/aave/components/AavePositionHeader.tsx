@@ -77,6 +77,7 @@ function AavePositionHeader({
   )
 
   const headlineDetails = []
+
   if (minYields && maxYields) {
     const formatYield = (yieldVal: BigNumber) =>
       formatPercent(yieldVal, {
@@ -105,6 +106,7 @@ function AavePositionHeader({
     const yield90DaysDiff = maxYields.annualisedYield90daysOffset!.minus(
       maxYields.annualisedYield90days,
     )
+
     headlineDetails.push({
       label: t('open-earn.aave.product-header.90-day-avg-yield'),
       value: formatPercent(maxYields.annualisedYield90days, {
@@ -182,6 +184,7 @@ export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: Mana
     positionId,
     protocol.toLowerCase() as Protocol,
   )
+
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}

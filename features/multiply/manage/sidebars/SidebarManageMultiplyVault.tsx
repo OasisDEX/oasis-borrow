@@ -74,14 +74,17 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     switch (stage) {
       case 'adjustPosition':
         setForcePanel('adjust')
+
         break
       case 'otherActions':
         if (otherActionsCollateralPanel.includes(otherAction)) setForcePanel('collateral')
         else if (otherActionsDaiPanel.includes(otherAction)) setForcePanel('dai')
         else if (otherAction === 'closeVault') setForcePanel('close')
+
         break
       case 'borrowTransitionEditing':
         setForcePanel('transition')
+
         break
     }
   }, [stage, otherAction])

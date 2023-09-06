@@ -12,6 +12,7 @@ export function WithErrorHandler({
   children: React.ReactNode
 }) {
   const openModal = useModal()
+
   useEffect(() => {
     if (isArrayOfErrorsWithoutUndefinedElements(error)) {
       if (env.NODE_ENV !== 'production') {

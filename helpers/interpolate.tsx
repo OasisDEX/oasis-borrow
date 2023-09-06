@@ -25,6 +25,7 @@ export function interpolate(
           match.groups?.comp && Components[match.groups?.comp]
             ? Components[match.groups?.comp]
             : 'span'
+
         return (
           <React.Fragment key={idx}>
             {match.groups?.before}

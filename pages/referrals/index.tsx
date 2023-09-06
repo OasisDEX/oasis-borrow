@@ -34,4 +34,5 @@ ReferralsPage.seoTags = (
     url="/referrals"
   />
 )
+
 export default ReferralsPage

@@ -53,6 +53,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
         // Get teh current batch and clear it, so new requests
         // go into the next batch
         const batch = this._pendingBatch
+
         if (batch === null) {
           return Promise.resolve()
         }
@@ -73,6 +74,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               request: deepCopy(request),
               provider: this,
             })
+
             return fetchJson(this.connection, JSON.stringify(request)).then(
               (result) => {
                 this.emit('debug', {
@@ -86,6 +88,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
                 // on whether it was a success or error
                 batch[method].forEach((inflightRequest, index) => {
                   const payload = result[index]
+
                   if (payload.error) {
                     console.error(
                       `[jsonRpcBatchProvider: ${
@@ -97,6 +100,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
                       inflightRequest.request,
                     )
                     const error = new Error(payload.error.message)
+
                     ;(<any>error).code = payload.error.code
                     ;(<any>error).data = payload.error.data
                     inflightRequest.reject(error)

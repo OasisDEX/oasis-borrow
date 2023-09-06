@@ -16,6 +16,7 @@ interface ReferralModaProps {
 
 export function ReferralModal({ heading, topButton, bottomButton }: ReferralModaProps) {
   const { t } = useTranslation()
+
   return (
     <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={close}>
       <Grid p={4} sx={{ py: '24px' }}>

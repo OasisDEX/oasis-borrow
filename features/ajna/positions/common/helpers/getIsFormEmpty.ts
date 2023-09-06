@@ -75,6 +75,7 @@ export function getIsFormEmpty({
           if (action === 'close-multiply') {
             return false
           }
+
           return (
             !loanToValue && !withdrawAmount && !depositAmount && !generateAmount && !paybackAmount
           )

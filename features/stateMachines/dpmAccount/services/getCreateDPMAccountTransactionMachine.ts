@@ -26,6 +26,7 @@ export function getCreateDPMAccountTransactionMachine(
     context$,
     extractDpmProxyFromTxnReceipt,
   )
+
   return createTransactionStateMachine<CreateDPMAccount, UserDpmAccount>(createAccount, {
     kind: TxMetaKind.createAccount,
   }).withConfig({

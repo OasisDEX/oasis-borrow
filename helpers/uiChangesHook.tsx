@@ -11,6 +11,7 @@ export function useUIChanges<T extends SupportedUIChangeType>(topic: string): T[
     const subscription = uiChanges$.subscribe((value) => {
       lastUIStateSetter(value)
     })
+
     return () => {
       subscription.unsubscribe()
     }

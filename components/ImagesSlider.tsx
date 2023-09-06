@@ -21,6 +21,7 @@ export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSl
     const interval = setInterval(() => {
       setActiveItemIndex((prev) => (prev + 1) % items.length)
     }, 5000)
+
     return () => clearInterval(interval)
   }, [items])
 

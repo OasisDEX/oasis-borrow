@@ -19,6 +19,7 @@ export const forkSettings = getFeatureToggle('UseNetworkSwitcherForks')
 export const forkNetworks: NetworkConfig[] = Object.entries(forkSettings).map(
   ([networkName, forkNetwork]) => {
     const originalNetworkConfig = networksByName[networkName]
+
     return {
       ...originalNetworkConfig,
       id: forkNetwork.id as unknown as NetworkIds,

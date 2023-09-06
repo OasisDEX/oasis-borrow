@@ -243,5 +243,6 @@ export function SidebarSetupAutoBuy({
 
     return <SidebarSection {...sidebarSectionProps} />
   }
+
   return null
 }

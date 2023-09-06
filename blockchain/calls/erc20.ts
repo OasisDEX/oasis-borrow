@@ -49,6 +49,7 @@ export interface TokenBalanceRawForJoinArgs {
 export const tokenBalanceRawForJoin: CallDef<TokenBalanceRawForJoinArgs, BigNumber> = {
   call: ({ tokenAddress }, { contract }) => {
     const cd = contractDesc(erc20, tokenAddress)
+
     return contract<Erc20>(cd).methods.balanceOf
   },
   prepareArgs: ({ ilk }, { chainId }) => [

@@ -155,6 +155,7 @@ export async function getAaveWstEthYield(
     include1Year: fields.length ? fields.includes('1Year') : true,
     includeInception: fields.length ? fields.includes('Inception') : true,
   })
+
   return {
     annualisedYield7days:
       response.yield7days?.yield && new BigNumber(response.yield7days.yield.netAnnualisedYield),

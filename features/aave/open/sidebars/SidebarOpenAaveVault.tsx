@@ -323,6 +323,7 @@ function EditingStateViewSidebarPrimaryButton({
     if (isSettingStopLoss) {
       return t('setup-stop-loss')
     }
+
     return t(state.context.strategyConfig.viewComponents.sidebarButton)
   }
 

@@ -24,6 +24,7 @@ export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActions
   ): NonPayableTransactionObject<void> {
     const { contract, chainId } = context
     const { gemJoinAddress, cdpId } = data
+
     return contract<DssProxyActionsCropjoin>(
       getNetworkContracts(NetworkIds.MAINNET, chainId).dssProxyActionsCropjoin,
     ).methods.crop(gemJoinAddress, cdpId.toString())

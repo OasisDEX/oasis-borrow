@@ -726,6 +726,7 @@ export function createManageAaveStateMachine(
             context,
           ): TransactionParametersStateMachineEvent<ManageAaveParameters | CloseAaveParameters> => {
             const { token, amount } = getTxTokenAndAmount(context)
+
             return {
               type: 'VARIABLES_RECEIVED',
               parameters: {
@@ -760,6 +761,7 @@ export function createManageAaveStateMachine(
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
           }
+
           return undefined
         }),
         updateStrategyConfigType: assign((context, event) => {
@@ -771,6 +773,7 @@ export function createManageAaveStateMachine(
             currentStrategy.protocol,
             productToVaultType(event.productType),
           )
+
           return {
             ...context,
             strategyConfig: newStrategy,
@@ -783,6 +786,7 @@ export function createManageAaveStateMachine(
           if (context.updateStrategyConfig && updatedVaultType) {
             context.updateStrategyConfig(updatedVaultType)
           }
+
           return undefined
         }),
         spawnDepositBorrowMachine: assign((context) => ({
@@ -823,6 +827,7 @@ export function createManageAaveStateMachine(
           if (context.refParametersMachine && context.refParametersMachine.stop) {
             context.refParametersMachine.stop()
           }
+
           return undefined
         }),
         updateContext: assign((_, event) => ({
@@ -832,6 +837,7 @@ export function createManageAaveStateMachine(
           if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
             context.refAllowanceStateMachine.stop()
           }
+
           return undefined
         }),
         spawnAllowanceMachine: assign((context) => ({
@@ -866,6 +872,7 @@ export function createManageAaveStateMachine(
               tokenBalance: undefined,
             }
           }
+
           return {
             tokenBalance: event.balance.deposit.balance,
             tokenPrice: event.balance.deposit.price,
@@ -873,6 +880,7 @@ export function createManageAaveStateMachine(
         }),
         updateAllowance: assign((context, event) => {
           const result = Object.entries(context.tokens).find(([_, token]) => event.token === token)
+
           if (result === undefined) {
             return {}
           }
@@ -889,6 +897,7 @@ export function createManageAaveStateMachine(
               },
             }
           }
+
           return {
             allowance: {
               ...context.allowance,

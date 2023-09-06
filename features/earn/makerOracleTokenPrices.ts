@@ -49,6 +49,7 @@ export function createMakerOracleTokenPrices$(
     first(),
     switchMap(({ chainId }) => {
       const apiClient = new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
+
       return apiClient.request(makerOraclePrice, {
         token,
         date: timestamp.toISOString(),
@@ -56,6 +57,7 @@ export function createMakerOracleTokenPrices$(
     }),
     map((apiResponse) => {
       const respRaw = apiResponse.makerOracleTokenPrices.tokenPrice
+
       return {
         token: respRaw.token,
         price: new BigNumber(respRaw.price),
@@ -75,6 +77,7 @@ export function createMakerOracleTokenPricesForDates$(
     first(),
     switchMap(({ chainId }) => {
       const apiClient = new GraphQLClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
+
       return apiClient.request(makerOraclePriceInMultipleDates, {
         token,
         dates: timestamps.map((t) => t.toISOString()),

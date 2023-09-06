@@ -38,6 +38,7 @@ type ExchangeSwapFailureChange = {
 type ExchangeQuoteResetChange = {
   kind: 'quoteReset'
 }
+
 export type ExchangeQuoteChanges =
   | ExchangeQuoteSuccessChange
   | ExchangeQuoteFailureChange
@@ -74,6 +75,7 @@ export function applyExchange<VS extends ManageMultiplyVaultState>(
 
   if (change.kind === 'quoteReset') {
     const { quote: _quote, ...rest } = state
+
     return rest
   }
 
@@ -165,6 +167,7 @@ export function createExchangeChange$(
               'defaultExchange',
             )
           }
+
           return EMPTY
         }),
         retry(3),

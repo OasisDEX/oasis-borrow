@@ -292,6 +292,7 @@ function calculateAfterFreeCollateral({
   backingCollateral: BigNumber
 }) {
   const amount = lockedCollateral.minus(backingCollateral)
+
   return amount.gte(zero) ? amount : zero
 }
 
@@ -336,6 +337,7 @@ function calculateAfterIlkDebtAvailable({ ilkDebtAvailable }: Pick<IlkData, 'ilk
   if (ilkDebtAvailable.gt(zero)) {
     return ilkDebtAvailable.gte(zero) ? ilkDebtAvailable : zero
   }
+
   return zero
 }
 
@@ -412,6 +414,7 @@ export function calculateMultiply({
   if (lockedCollateralUSD.eq(zero)) {
     return zero
   }
+
   return lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
 }
 

@@ -27,6 +27,7 @@ export function createBalance$(
           shareReplay(1),
         )
       }
+
       return tokenBalance$({ token, account: address })
     }),
   )
@@ -52,6 +53,7 @@ export function createBalanceFromAddress$(
           shareReplay(1),
         )
       }
+
       return tokenBalanceFromAddress$({ ...token, account: address })
     }),
   )
@@ -117,6 +119,7 @@ export function createAllowance$(
   return context$.pipe(
     switchMap(() => {
       if (token === 'ETH') return of(maxUint256)
+
       return tokenAllowance$({ token, owner, spender })
     }),
   )

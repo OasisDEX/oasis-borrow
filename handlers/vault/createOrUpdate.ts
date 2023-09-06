@@ -40,6 +40,7 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     } else {
       await prisma.$executeRawUnsafe(updateQuery)
     }
+
     return res.status(200).send('OK')
   } else {
     return res.status(401).send('Unauthorized')

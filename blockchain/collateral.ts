@@ -26,6 +26,7 @@ export function getCollateralLocked$(
   return combineLatest(context$, ilkToToken$(ilk)).pipe(
     switchMap(([context, token]) => {
       const address = getNetworkContracts(NetworkIds.MAINNET, context.chainId).joins[ilk]
+
       return balance$(token, address).pipe(map((balance) => ({ ilk, token, collateral: balance })))
     }),
   )
@@ -39,10 +40,12 @@ export function getTotalValueLocked$(
   return getCollateralLocked$(ilk).pipe(
     switchMap((collateralLocked) => {
       const token = collateralLocked.token
+
       return oraclePriceData$({ token, requestedData: ['currentPrice'] }).pipe(
         map((oraclePriceData) => {
           const { currentPrice } = oraclePriceData
           const { collateral } = collateralLocked
+
           return { value: collateral.times(currentPrice) }
         }),
       )

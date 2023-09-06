@@ -18,6 +18,7 @@ interface ContentCardTriggerColRatioProps {
 
 function ContentCardTriggerColRatioModal() {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('auto-take-profit.trigger-col-ratio')}</Heading>

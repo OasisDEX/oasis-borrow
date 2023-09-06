@@ -1,4 +1,5 @@
 import { mapValues } from 'lodash'
+
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
 type ConfiguredFeatures = Record<Feature, boolean>
@@ -112,6 +113,7 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
     }
 
     const featureFlagsInLocalStorage = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
+
     if (!featureFlagsInLocalStorage) {
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(featuresSourcedFromCode))
     } else {
@@ -119,6 +121,7 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
         featureFlagsInLocalStorage,
       ) as ConfiguredFeatures
       const merged = { ...featuresSourcedFromCode, ...userSelectedFeatures }
+
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
     }
   }
@@ -130,6 +133,7 @@ export function getFeatureToggle(feature: Feature): boolean {
 
     return JSON.parse(userEnabledFeatures || '{}')[feature] || configuredFeatures[feature]
   }
+
   return false
 }
 

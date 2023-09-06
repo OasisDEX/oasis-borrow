@@ -39,6 +39,7 @@ export function createPrimaryButtonLabel({
     getIsAllowanceStage(stage)
   )
     return 'Set Allowance'
+
   return 'Deposit'
 }
 
@@ -101,5 +102,6 @@ export function isDsrButtonDisabled({
   if (getIsAllowanceStage(stage)) {
     return !selectedAllowanceRadio
   }
+
   return false
 }

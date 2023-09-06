@@ -23,6 +23,7 @@ describe('allDefined', () => {
 
   describe('chaining + objects', () => {
     let fixture: any
+
     beforeEach(() => {
       fixture = {
         nestedObject: {

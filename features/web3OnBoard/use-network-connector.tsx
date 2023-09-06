@@ -11,13 +11,16 @@ export type NetworkConnectorState = {
 
 export function useNetworkConnector(): NetworkConnectorState {
   const [defaultChain] = useLegacyDefaultChain()
+
   return useMemo(() => {
     const networkConfigs: Partial<Record<NetworkIds, NetworkConfig>> = {}
     const urls: { [chainId: number]: string } = {}
+
     enableNetworksSet.forEach((network) => {
       networkConfigs[network.id] = network
       urls[network.id] = network.rpcUrl
     })
+
     return {
       networkConnector: new NetworkConnector({
         urls,

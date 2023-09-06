@@ -39,12 +39,16 @@ export function getRpcProvidersForLogs(networkId: NetworkIds): {
   const givenNetworkProvider = network?.getReadProvider()
 
   const parentNetwork = network.getParentNetwork()
+
   if (!parentNetwork) {
     ensureRpcProvider(givenNetworkProvider, networkId)
+
     return { mainProvider: givenNetworkProvider }
   }
 
   const parentNetworkProvider = parentNetwork?.getReadProvider()
+
   ensureRpcProvider(parentNetworkProvider, parentNetwork.id)
+
   return { mainProvider: parentNetworkProvider, forkProvider: givenNetworkProvider }
 }

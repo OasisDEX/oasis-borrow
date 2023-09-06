@@ -56,6 +56,7 @@ export async function getAdjustPositionParameters({
     switch (protocol) {
       case LendingProtocol.AaveV2:
         const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+
         return await strategies.aave.multiply.v2.adjust(args, {
           ...stratDeps,
           addresses: addressesV2,
@@ -63,6 +64,7 @@ export async function getAdjustPositionParameters({
         })
       case LendingProtocol.AaveV3:
         const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+
         return await strategies.aave.multiply.v3.adjust(args, {
           ...stratDeps,
           addresses: addressesV3,
@@ -70,6 +72,7 @@ export async function getAdjustPositionParameters({
         })
       case LendingProtocol.SparkV3:
         const addressesSparkV3 = getAddresses(networkId, LendingProtocol.SparkV3)
+
         return await strategies.spark.multiply.adjust(args, {
           ...stratDeps,
           addresses: addressesSparkV3,
@@ -80,6 +83,7 @@ export async function getAdjustPositionParameters({
     }
   } catch (e) {
     console.error(e)
+
     throw e
   }
 }

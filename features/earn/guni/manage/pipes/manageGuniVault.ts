@@ -63,6 +63,7 @@ function applyManageVaultInjectedOverride(
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -86,6 +87,7 @@ function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state:
       ...data,
     }
   }
+
   return state
 }
 
@@ -122,6 +124,7 @@ function apply(
   const s10 = applyManageVaultStageCategorisation(s9)
   const s11 = applyManageVaultConditions(s10)
   const s12 = applyGuniManageVaultConditions(s11)
+
   return applyManageVaultSummary(s12)
 }
 
@@ -214,6 +217,7 @@ export function createManageGuniVault$(
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
+
       return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {

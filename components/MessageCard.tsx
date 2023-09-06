@@ -32,6 +32,7 @@ export function MessageCard({ messages, type, withBullet = true, handleClick }: 
   const cardStyle = cardStyles[type]
 
   if (!messages.length) return null
+
   return (
     <Card
       variant={cardStyle.cardVariant}

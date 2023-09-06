@@ -136,6 +136,7 @@ export function createOpenMultiplyVaultAnalytics$(
           switch (event.kind) {
             case 'depositAmountChange':
               tracker.createVaultDeposit(firstCDP, event.value.toString())
+
               break
             case 'allowanceChange':
               tracker.pickAllowance(
@@ -143,6 +144,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.type.toString(),
                 event.value.amount.toString(),
               )
+
               break
             case 'openMultiplyVaultConfirm':
               tracker.multiply.confirmOpenMultiplyConfirm(
@@ -151,6 +153,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.collateralAmount.toString(),
                 event.value.multiply.toString(),
               )
+
               break
             case 'openMultiplyVaultConfirmTransaction':
               const network = networkSetById[context.chainId].name
@@ -166,6 +169,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             default:
               throw new Error('Unhandled Scenario')

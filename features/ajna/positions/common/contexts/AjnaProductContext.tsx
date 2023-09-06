@@ -158,6 +158,7 @@ export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickPr
       `AjnaGeneralContext and AjnaProductContext products doesn't match: ${environment.product}/${product}`,
     )
   if (!context) throw new Error('AjnaProductContext not available!')
+
   return context as PickProductType<T>
 }
 
@@ -208,6 +209,7 @@ export function AjnaProductContextProvider({
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
+
   if (isAjnaPosition(simulation?.position) && isAjnaPosition(position) && simulation) {
     isIncreasingPositionRisk = simulation.position.riskRatio.loanToValue.gte(
       position.riskRatio.loanToValue,

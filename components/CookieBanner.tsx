@@ -32,6 +32,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
 
   function toggleCookie(cookieName: CookieName) {
     const isEnabled = selectedCookies[cookieName]
+
     setSelectedCookies({
       ...selectedCookies,
       [cookieName]: !isEnabled,

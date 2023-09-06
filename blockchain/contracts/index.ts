@@ -43,6 +43,7 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
 
   if (!contracts && networkConfig.isCustomFork) {
     const parentConfig = networkConfig.getParentNetwork()
+
     if (!parentConfig) {
       throw new Error(
         `Can't find parent network for ${correctNetworkId} chain  even though it's a custom fork`,
@@ -151,6 +152,7 @@ export function ensureGivenTokensExist(
 ): asserts contracts is { tokens: { [K in (typeof tokens)[number]]: ContractDesc } } {
   ensureTokensExist(chainId, contracts)
   const notFoundTokens = tokens.filter((p) => !contracts.tokens.hasOwnProperty(p))
+
   if (notFoundTokens.length > 0) {
     throw new Error(
       `Can't find tokens definitions: ${JSON.stringify(

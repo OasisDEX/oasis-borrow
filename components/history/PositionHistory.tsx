@@ -30,8 +30,10 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
   const { t } = useTranslation()
 
   const contracts = getNetworkContracts(networkId)
+
   ensureEtherscanExist(networkId, contracts)
   const { etherscan, ethtx } = contracts
+
   return (
     <DetailsSection
       title={t('position-history.header')}

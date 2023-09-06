@@ -103,6 +103,7 @@ function applyManageVaultInjectedOverride(
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -128,6 +129,7 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
   const s8 = applyManageVaultCalculations(s7)
   const s9 = applyManageVaultStageCategorisation(s8)
   const s10 = applyManageVaultConditions(s9)
+
   return applyManageVaultSummary(s10)
 }
 
@@ -509,6 +511,7 @@ export function createManageMultiplyVault$(
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
+
       return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {

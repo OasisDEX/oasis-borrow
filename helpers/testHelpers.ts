@@ -14,6 +14,7 @@ export function getStateUnpacker<D>(o$: Observable<D>): () => D {
 
   return () => {
     if (r instanceof Error) throw r
+
     return r
   }
 }

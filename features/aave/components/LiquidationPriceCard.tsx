@@ -46,6 +46,7 @@ export function LiquidationPriceCard(props: {
     : undefined
 
   const { t } = useTranslation()
+
   return (
     <DetailsSectionContentCard
       title={t('system.liquidation-price')}

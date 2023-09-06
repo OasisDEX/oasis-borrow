@@ -13,9 +13,11 @@ export function isProductContextAvailable(): boolean {
 
 export function useProductContext(): ProductContext {
   const ac = useContext(productContext)
+
   if (!ac) {
     throw new Error("ProductContext not available! useProductContext can't be used serverside")
   }
+
   return ac
 }
 

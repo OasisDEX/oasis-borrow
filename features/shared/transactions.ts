@@ -84,11 +84,13 @@ interface Receipt {
 
 export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | undefined {
   const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
+
   return logs
     .filter((log) => {
       if (log.topics) {
         return log.topics[0] === newCdpEventTopic
       }
+
       return false
     })
     .map(({ topics }) => {

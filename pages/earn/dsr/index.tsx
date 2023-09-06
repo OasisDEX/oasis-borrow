@@ -19,6 +19,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function DsrProxyPage({ walletAddress }: { walletAddress: string }) {
   const { walletAddress: walletContextAddress } = useAccount()
   const { replace } = useRouter()
+
   if (!walletAddress && walletContextAddress) {
     void replace(`/earn/dsr/${walletContextAddress}`)
   }

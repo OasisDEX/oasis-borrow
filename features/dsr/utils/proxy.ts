@@ -18,6 +18,7 @@ export function createProxyAddress$(
         if (dsProxyAddress === nullAddress) {
           return of(undefined)
         }
+
         return call(
           context,
           owner,

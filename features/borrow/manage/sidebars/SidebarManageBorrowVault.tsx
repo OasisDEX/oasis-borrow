@@ -76,12 +76,15 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     switch (stage) {
       case 'collateralEditing':
         setForcePanel('collateral')
+
         break
       case 'daiEditing':
         setForcePanel('dai')
+
         break
       case 'multiplyTransitionEditing':
         setForcePanel('transition')
+
         break
     }
   }, [stage])

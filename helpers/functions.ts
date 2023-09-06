@@ -15,6 +15,7 @@ export function getShowHeaderSettings(
   props: ContextAccountDetails,
 ): props is ConnectedAccountDetails {
   const { context, accountData } = props
+
   return context !== undefined && context.status === 'connected' && accountData !== undefined
 }
 

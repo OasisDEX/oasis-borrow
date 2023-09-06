@@ -84,12 +84,14 @@ function WithAaveStrategy({
       strategyConfigError,
     )
     void push(INTERNAL_LINKS.notFound)
+
     return <></>
   }
 
   const _updateStrategyConfig = updateStrategyConfig
     ? updateStrategyConfig(positionId, network)
     : undefined
+
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
@@ -136,6 +138,7 @@ function safeGetAddress(address: string | undefined) {
       return undefined
     }
   }
+
   return undefined
 }
 

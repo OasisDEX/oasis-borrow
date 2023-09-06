@@ -29,6 +29,7 @@ export async function followVaultUsingApi(
       if (err.status === 404) {
         return [] as UsersWhoFollowVaults[]
       }
+
       throw err
     })
 }
@@ -50,6 +51,7 @@ export function getFollowFromApi(address: string): Promise<UsersWhoFollowVaults[
       if (err.status === 422 || err.status === 418) {
         return err.json()
       }
+
       throw err
     })
 }
@@ -79,6 +81,7 @@ export async function unfollowVaultUsingApi(
       if (err.status === 404) {
         return []
       }
+
       throw err
     })
 }

@@ -580,6 +580,7 @@ export function createOpenAaveStateMachine(
             totalStepsMap.proxySteps(proxy) +
             totalStepsMap.allowanceSteps(allowance) +
             optionalStopLoss
+
           return {
             totalSteps: totalSteps,
           }
@@ -639,6 +640,7 @@ export function createOpenAaveStateMachine(
           if (context.refProxyMachine && context.refProxyMachine.stop) {
             context.refProxyMachine.stop()
           }
+
           return undefined
         }),
         spawnDpmProxyMachine: assign((context) => ({
@@ -656,6 +658,7 @@ export function createOpenAaveStateMachine(
           if (context.refDpmAccountMachine && context.refDpmAccountMachine.stop) {
             context.refDpmAccountMachine.stop()
           }
+
           return undefined
         }),
         spawnParametersMachine: assign((context) => {
@@ -689,12 +692,14 @@ export function createOpenAaveStateMachine(
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
           }
+
           return undefined
         }),
         killStopLossStateMachine: pure((context) => {
           if (context.refStopLossMachine && context.refStopLossMachine.stop) {
             context.refStopLossMachine.stop()
           }
+
           return undefined
         }),
         requestParameters: send(
@@ -718,6 +723,7 @@ export function createOpenAaveStateMachine(
               networkId: context.strategyConfig.networkId,
               token: context.tokens.deposit,
             }
+
             if (context.strategyConfig.type === 'Borrow') {
               return {
                 type: 'VARIABLES_RECEIVED',
@@ -748,6 +754,7 @@ export function createOpenAaveStateMachine(
           if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
             context.refAllowanceStateMachine.stop()
           }
+
           return undefined
         }),
         spawnAllowanceMachine: assign((context) => ({
@@ -806,6 +813,7 @@ export function createOpenAaveStateMachine(
               tokenBalance: undefined,
             }
           }
+
           return {
             tokenBalance: event.balance.deposit.balance,
             tokenPrice: event.balance.deposit.price,
@@ -815,18 +823,22 @@ export function createOpenAaveStateMachine(
           // fallback if we don't have the tokenPrice - happens if no
           // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
           let fallbackPrice: BigNumber
+
           switch (true) {
             case context.tokens.deposit === context.tokens.collateral:
               fallbackPrice = event.collateralPrice
+
               break
             case context.tokens.deposit === context.tokens.debt:
               fallbackPrice = event.debtPrice
+
               break
             default:
               throw new Error(
                 `could not set fallback price for deposit token ${context.tokens.deposit}`,
               )
           }
+
           return {
             tokenPrice: context.tokenPrice ? context.tokenPrice : fallbackPrice,
           }
@@ -838,6 +850,7 @@ export function createOpenAaveStateMachine(
               tokenPrice: undefined,
             }
           }
+
           return {}
         }),
         disableChangingAddresses: assign((_) => {
@@ -847,6 +860,7 @@ export function createOpenAaveStateMachine(
         }),
         updateAllowance: assign((context, event) => {
           const result = Object.entries(context.tokens).find(([_, token]) => event.token === token)
+
           if (result === undefined) {
             return {}
           }
@@ -863,6 +877,7 @@ export function createOpenAaveStateMachine(
               },
             }
           }
+
           return {
             allowance: {
               ...context.allowance,

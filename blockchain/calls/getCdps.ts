@@ -17,6 +17,7 @@ export interface GetCdpsResult {
 export const getCdps: CallDef<GetCdpsArgs, GetCdpsResult> = {
   call: ({ descending }, { contract, chainId }) => {
     const getCdps = getNetworkContracts(NetworkIds.MAINNET, chainId).getCdps
+
     return descending
       ? contract<GetCdps>(getCdps).methods.getCdpsDesc
       : contract<GetCdps>(getCdps).methods.getCdpsAsc

@@ -130,6 +130,7 @@ describe('autoTakeProfit Form Change tests', () => {
       } as AutoTakeProfitResetData
 
       const result = prepareAutoTakeProfitResetData(autoTakeProfitState, triggerData)
+
       expect(result).toEqual(expectedResult)
 
       done()

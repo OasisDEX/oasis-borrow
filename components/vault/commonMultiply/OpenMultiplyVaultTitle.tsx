@@ -29,6 +29,7 @@ export function OpenMultiplyVaultTitle({
   subTitle,
 }: OpenMultiplyVaultTitleProps) {
   const { t } = useTranslation()
+
   return (
     <Box>
       <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>

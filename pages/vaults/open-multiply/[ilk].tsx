@@ -16,6 +16,7 @@ import React from 'react'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
   const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
+
   return {
     paths,
     fallback: true,
@@ -33,6 +34,7 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
+
   return (
     <ProductContextHandler>
       <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>

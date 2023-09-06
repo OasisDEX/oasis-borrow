@@ -61,6 +61,7 @@ export function isLoading(state: ManageAaveStateMachineState) {
 
 export function isLocked(state: ManageAaveStateMachineState) {
   const { ownerAddress, web3Context } = state.context
+
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 
@@ -69,6 +70,7 @@ export function textButtonReturningToAdjust({
   send,
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'textButton'> {
   const { t } = useTranslation()
+
   if (state.can('BACK_TO_EDITING')) {
     return {
       textButton: {
@@ -77,6 +79,7 @@ export function textButtonReturningToAdjust({
       },
     }
   }
+
   return {}
 }
 
@@ -188,6 +191,7 @@ export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
     const position = context.currentPosition
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
+
     return collateral
       .times(context.collateralPrice || zero)
       .times(position.category.maxLoanToValue)
@@ -213,11 +217,13 @@ export function calculateMaxCollateralAmount(context: ManageAaveContext): BigNum
       context.currentPosition?.collateral.symbol || '',
     )
   }
+
   return context.balance?.collateral.balance || zero
 }
 
 export function ManageAaveSaveSwitchFailureStateView({ state, send }: ManageAaveStateProps) {
   const productType = state.context.strategyConfig.type
+
   useEffect(() => {
     if (productType === 'Borrow') {
       send({ type: 'RETRY_BORROW_SWITCH' })
@@ -452,6 +458,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     forcePanel: (state.value as Record<string, string>).frontend,
     items: strategyAvailableActions,
   }
+
   return dropdownConfig
 }
 

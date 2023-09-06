@@ -398,6 +398,7 @@ export function applyManageVaultInput(
       token: token,
       usdPrice: currentCollateralPrice,
     })
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
@@ -480,6 +481,7 @@ export function applyManageVaultInput(
 
   if (change.kind === 'withdrawAmount') {
     const { priceInfo } = state
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
@@ -491,6 +493,7 @@ export function applyManageVaultInput(
 
   if (change.kind === 'withdrawAmountUSD') {
     const { priceInfo } = state
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
@@ -523,6 +526,7 @@ export function applyManageVaultInput(
 
   if (change.kind === 'generateAmountMax') {
     const { maxGenerateAmount } = state
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,

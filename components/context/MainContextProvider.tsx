@@ -10,9 +10,11 @@ export function isMainContextAvailable(): boolean {
 
 export function useMainContext(): MainContext {
   const ac = useContext(mainContext)
+
   if (!ac) {
     throw new Error("MainContext not available! useMainContext can't be used serverside")
   }
+
   return ac
 }
 

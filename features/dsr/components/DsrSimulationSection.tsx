@@ -17,6 +17,7 @@ import React from 'react'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
+
   return [
     `${formatCryptoBalance(simulation.earningAfterFees)} DAI`,
     `${formatCryptoBalance(simulation.netValue)} DAI`,

@@ -50,6 +50,7 @@ export function createStandardCdps$(
       if (proxyAddress === undefined) {
         return of([])
       }
+
       return getCdps$({ proxyAddress, descending: true }).pipe(
         map(({ ids }) => ids.map((id) => new BigNumber(id))),
       )
@@ -62,6 +63,7 @@ export function createStandardCdps$(
 interface CdpIdsResolver {
   (address: string): Observable<BigNumber[]>
 }
+
 export function createVaults$(
   refreshInterval: Observable<number>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
@@ -135,6 +137,7 @@ export function decorateVaultsWithValue$<V extends VaultWithType>(
   return combineLatest(vaults$(address), userSettings$).pipe(
     switchMap(([vaults, userSettings]: [Array<VaultWithType>, UserSettingsState]) => {
       if (vaults.length === 0) return of([])
+
       return combineLatest(
         vaults.map((vault) => {
           if (vault.type === 'borrow') {
@@ -154,6 +157,7 @@ export function decorateVaultsWithValue$<V extends VaultWithType>(
                   quote.status === 'SUCCESS'
                     ? vault.lockedCollateral.times(quote.tokenPrice)
                     : vault.lockedCollateralUSD
+
                 return { ...vault, value: collateralValue.minus(vault.debt) }
               }),
             )

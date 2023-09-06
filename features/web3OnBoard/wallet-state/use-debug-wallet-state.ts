@@ -12,6 +12,7 @@ export function useDebugWalletState({ state }: IDebugWalletState) {
 
   const stringValue = (state: WalletManagementState | undefined) => {
     if (state === undefined) return ''
+
     return JSON.stringify(
       {
         walletNetwork: state.walletNetworkHexId,
@@ -22,6 +23,7 @@ export function useDebugWalletState({ state }: IDebugWalletState) {
       2,
     )
   }
+
   useEffect(() => {
     console.log(
       `Current State: ${state.status}. (${stringValue(state)}) Transition from state: ${

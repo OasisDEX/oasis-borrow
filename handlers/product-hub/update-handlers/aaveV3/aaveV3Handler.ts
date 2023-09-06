@@ -56,6 +56,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getAaveV3ReserveData({ token, networkId })
     const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers))
+
     return {
       [token]: {
         liquidity: reserveData.totalAToken
@@ -70,6 +71,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   // reserveData -> max multiple
   const tokensReserveConfigurationDataPromises = primaryTokensList.map(async (token) => {
     const reserveConfigurationData = await getAaveV3ReserveConfigurationData({ token, networkId })
+
     return {
       [token]: {
         maxLtv: reserveConfigurationData.ltv,
@@ -81,6 +83,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
     Promise.all(tokensReserveDataPromises),
     Promise.all(tokensReserveConfigurationDataPromises),
   ])
+
   return {
     [networkName]: {
       tokensReserveData,
@@ -131,10 +134,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
             ].tokensReserveConfigurationData.find((data) => data[product.primaryToken]),
           )[product.primaryToken].riskRatio
     const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
+
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }
   })
+
   return Promise.all([
     Promise.all(getAaveV3TokensDataPromises),
     Promise.all(earnProductsPromises),
@@ -142,6 +147,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     const aaveV3TokensData = aaveV3TokensDataList.reduce((acc, curr) => {
       return { ...acc, ...curr }
     }, {})
+
     return {
       table: aaveV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =

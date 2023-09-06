@@ -24,6 +24,7 @@ function createMockPayableTransactionObject<T>(name: string): PayableTransaction
       const call = {
         method: name,
       }
+
       return JSON.stringify(call)
     },
     estimateGas: (_?: PayableTx) => {

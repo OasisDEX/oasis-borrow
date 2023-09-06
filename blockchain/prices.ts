@@ -35,11 +35,13 @@ export function createGasPrice$(
   }).pipe(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
+
       return response
     }),
     map(({ response }) => {
       const maxFeePerGas = new BigNumber(response.maxFeePerGas)
       const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
+
       return {
         maxFeePerGas,
         maxPriorityFeePerGas,
@@ -78,6 +80,7 @@ export function createGasPrice$(
           blockNative.maxPriorityFeePerGas,
         )
       }
+
       return gasFees
     }),
     distinctUntilChanged(isEqual),
@@ -101,6 +104,7 @@ export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
 
 function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
   const errorsArray = []
+
   for (const label of tickerServiceLabels) {
     if (label && tickers[label]) {
       return tickers[label]
@@ -182,12 +186,15 @@ function transformOraclePrice({
   const rawPrice = new BigNumber(oraclePrice[0])
     .shiftedBy(-18)
     .toFixed(precision, BigNumber.ROUND_DOWN)
+
   return new BigNumber(rawPrice)
 }
 
 export function calculatePricePercentageChange(current: BigNumber, next: BigNumber): BigNumber {
   const rawPriceChange = current.div(next)
+
   if (rawPriceChange.isZero()) return zero
+
   return current.minus(next).div(current).times(-1)
 }
 

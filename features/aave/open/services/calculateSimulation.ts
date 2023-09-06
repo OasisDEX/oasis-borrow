@@ -36,6 +36,7 @@ export function calculateSimulation({
   const earningsPerDay =
     yields.annualisedYield7days &&
     amount.times(yields.annualisedYield7days.div(100).plus(one)).minus(amount).div(365)
+
   return {
     apy: yields.annualisedYield7days,
     breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
@@ -96,6 +97,7 @@ function getSimulation({
 }): Simulation {
   const earningsPerDay = amount.times(annualizedYield.div(100).plus(one)).minus(amount).div(365)
   const earnings = earningsPerDay.times(days)
+
   return {
     earningAfterFees: earnings,
     netValue: earnings.plus(amount),

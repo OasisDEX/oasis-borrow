@@ -116,6 +116,7 @@ describe('createOraclePriceData$', () => {
       zzz$: () => Observable<BigNumber>
       hop$: () => Observable<BigNumber>
     }
+
     beforeEach(() => {
       pipes = {
         peek$: jest.fn(() => of(['1000', true])),

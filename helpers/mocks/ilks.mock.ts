@@ -41,16 +41,19 @@ export function calcDebtScalingFactor(stabilityFee: BigNumber, seconds: number) 
   )
 
   const r_zero = DEFAULT_DEBT_SCALING_FACTOR
+
   return r_zero.times(duty.pow(seconds)).dp(27, BigNumber.ROUND_DOWN)
 }
 
 const defaultDebtFloor = new BigNumber('2000')
+
 export const defaultIlkDebt = new BigNumber('8000000')
 export const defaultLiquidationRatio = new BigNumber('1.5')
 const defaultCollateralPrice = new BigNumber('1000')
 const defaultIlk = 'WBTC-A'
 
 const defaultStabilityFee = new BigNumber('0.045')
+
 export const DEFAULT_DEBT_SCALING_FACTOR = one
 
 export const RANDOM_DEBT_SCALING_FACTOR = calcDebtScalingFactor(defaultStabilityFee.plus(one), 15)
@@ -89,6 +92,7 @@ export function mockIlkData$({
   const _debtScalingFactor$ = stabilityFee
     ? of(calcDebtScalingFactor(stabilityFee, 1))
     : debtScalingFactor$
+
   function vatIlks$() {
     return (
       _vatIlk$ ||

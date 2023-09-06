@@ -15,6 +15,7 @@ interface LtvInformationProps {
 
 export function LtvInformation({ transactionParameters, currentPosition }: LtvInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.ltv')}

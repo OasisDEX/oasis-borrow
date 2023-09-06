@@ -11,12 +11,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { address } = req.query as paramsSchema
 
   const user = await selectUserByAddress(address)
+
   if (user === undefined) {
     return res.status(404).json({ error: 'NOK' })
   } else {
     return res.status(200).json(user)
   }
 }
+
 export async function selectUserByAddress(address: string): Promise<User | null> {
   return prisma.user.findUnique({
     where: { address: address },

@@ -90,6 +90,7 @@ export async function getManagePositionParameters(
 
       if (protocol === LendingProtocol.AaveV2) {
         const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+
         return await strategies.aave.borrow.v2.paybackWithdraw(paybackWithdrawStratArgs, {
           ...paybackWithdrawStratDeps,
           addresses: addressesV2,
@@ -98,6 +99,7 @@ export async function getManagePositionParameters(
 
       if (protocol === LendingProtocol.AaveV3) {
         const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+
         return await strategies.aave.borrow.v3.paybackWithdraw(paybackWithdrawStratArgs, {
           ...paybackWithdrawStratDeps,
           addresses: addressesV3,
@@ -106,6 +108,7 @@ export async function getManagePositionParameters(
 
       if (protocol === LendingProtocol.SparkV3) {
         const addressesV3 = getAddresses(networkId, LendingProtocol.SparkV3)
+
         return await strategies.spark.borrow.paybackWithdraw(paybackWithdrawStratArgs, {
           ...paybackWithdrawStratDeps,
           addresses: addressesV3,
@@ -141,8 +144,10 @@ export async function getManagePositionParameters(
         user: userAddress,
         network: networkIdToLibraryNetwork(networkId),
       }
+
       if (protocol === LendingProtocol.AaveV2) {
         const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+
         return await strategies.aave.borrow.v2.depositBorrow(borrowDepositStratArgs, {
           ...borrowDepositStratDeps,
           addresses: addressesV2,
@@ -150,6 +155,7 @@ export async function getManagePositionParameters(
       }
       if (protocol === LendingProtocol.AaveV3) {
         const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+
         return await strategies.aave.borrow.v3.depositBorrow(borrowDepositStratArgs, {
           ...borrowDepositStratDeps,
           addresses: addressesV3,
@@ -158,6 +164,7 @@ export async function getManagePositionParameters(
 
       if (protocol === LendingProtocol.SparkV3) {
         const addressesV3 = getAddresses(networkId, LendingProtocol.SparkV3)
+
         return await strategies.spark.borrow.depositBorrow(borrowDepositStratArgs, {
           ...borrowDepositStratDeps,
           addresses: addressesV3,

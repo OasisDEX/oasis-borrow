@@ -9,6 +9,7 @@ export function ManageMultiplyVaultConfirmation(
   props: ManageMultiplyVaultState & { children: (props: ManageMultiplyVaultState) => ReactNode },
 ) {
   const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
+
   useEffect(() => {
     if (props.stage !== 'manageSuccess') {
       setVaultChanges(props)
@@ -56,5 +57,6 @@ export function ManageMultiplyVaultConfirmationStatus({
       />
     )
   }
+
   return null
 }

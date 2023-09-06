@@ -99,6 +99,7 @@ function applyOpenVaultInjectedOverride(
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -362,6 +363,7 @@ export function createOpenMultiplyVault$(
           switchMap(([context, txHelpers, ilkData, { slippage }]) => {
             const { token } = ilkData
             const account = context.account
+
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),

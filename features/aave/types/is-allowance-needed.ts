@@ -22,6 +22,7 @@ function allowanceForToken(
 
 export function isAllowanceNeeded(context: BaseAaveContext): boolean {
   const token = context.transactionToken || context.tokens.deposit
+
   if (token === 'ETH') {
     return false
   }

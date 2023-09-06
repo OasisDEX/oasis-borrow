@@ -7,10 +7,12 @@ import enV3 from './en_v3.mdx'
 
 export const AaveEarnFaqV2 = () => {
   useScrollToTop()
+
   return <TranslatedContent content={{ en: enV2 /* es, pt */ }} />
 }
 
 export const AaveEarnFaqV3 = () => {
   useScrollToTop()
+
   return <TranslatedContent content={{ en: enV3 /* es, pt */ }} />
 }

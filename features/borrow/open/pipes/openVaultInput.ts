@@ -88,6 +88,7 @@ export function applyOpenVaultInput(
 
   if (change.kind === 'generate' && state.showGenerateOption) {
     const { generateAmount } = change
+
     return {
       ...state,
       generateAmount,

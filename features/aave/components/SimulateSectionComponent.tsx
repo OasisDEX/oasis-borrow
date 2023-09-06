@@ -23,6 +23,7 @@ import { Box } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
+
   return [
     `${formatCryptoBalance(simulation.earningAfterFees)} ${simulation.token}`,
     `${formatCryptoBalance(simulation.netValue)} ${simulation.token}`,
@@ -61,6 +62,7 @@ function SimulationSection({
   const fees = useMemo(() => {
     const swapFee = (transitionHasSwap(transition) && transition.simulation.swap.tokenFee) || zero
     const gasFee = gasPrice?.gasEstimationEth || zero
+
     return swapFee.plus(gasFee)
   }, [transition, gasPrice])
 

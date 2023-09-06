@@ -12,6 +12,7 @@ import { Grid, Heading, Text } from 'theme-ui'
 
 function MinActiveColRatioModal({ close }: ModalProps<{}>) {
   const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
@@ -42,6 +43,7 @@ export function MinActiveColRatioCard(props: MinActiveColRatioProps) {
   const openModal = useModal()
   const { afterPill, activeCollRatioPriceUSD, afterActiveCollRatioPriceUSD, activeCollRatio } =
     props
+
   return (
     <VaultDetailsCard
       title={t('manage-insti-vault.card.min-active-coll-ratio.price')}

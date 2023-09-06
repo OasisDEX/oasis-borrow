@@ -339,6 +339,7 @@ export function splitEvents(
       },
     ]
   }
+
   return event
 }
 
@@ -532,6 +533,7 @@ function parseBigNumbersFields(
     'oraclePrice',
     'ethPrice',
   ]
+
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
       bigNumberFields.includes(key) && value != null
@@ -546,6 +548,7 @@ async function getVaultMultiplyHistory(
   urn: string,
 ): Promise<ReturnedEvent[]> {
   const data = await client.request(query, { urn })
+
   return data.allVaultMultiplyHistories.nodes
 }
 
@@ -554,6 +557,7 @@ async function getVaultAutomationHistory(
   id: BigNumber,
 ): Promise<ReturnedAutomationEvent[]> {
   const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
+
   return triggersData.allTriggerEvents.nodes
 }
 
@@ -564,6 +568,7 @@ async function getVaultAutomationV2History(
   const triggersData = await client.request(triggerEventsQueryUsingProxy, {
     proxyAddress: proxyAddress.toLowerCase(),
   })
+
   return triggersData.allTriggerEvents.nodes
 }
 
@@ -617,9 +622,11 @@ export function createVaultHistory$(
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
+
   return combineLatest(context$, vault$(vaultId)).pipe(
     switchMap(([{ chainId }, { token, address, id }]) => {
       const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
@@ -647,12 +654,15 @@ export function createAaveHistory$(
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
+
   return combineLatest(context$).pipe(
     switchMap(([{ chainId }]) => {
       const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
+
           return combineLatest(of([]), getVaultAutomationV2History(apiClient, proxyAddress))
         }),
         mapEventsToVaultEvents,

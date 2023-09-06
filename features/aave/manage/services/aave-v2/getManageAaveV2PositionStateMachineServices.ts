@@ -42,10 +42,12 @@ export function getManageAaveV2PositionStateMachineServices(
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
+
   return {
     runEthersTransaction: (context) => async (sendBack, _onReceive) => {
       const networkId = context.strategyConfig.networkId
       const contracts = getNetworkContracts(networkId)
+
       ensureEtherscanExist(networkId, contracts)
 
       const { etherscan } = contracts
@@ -93,6 +95,7 @@ export function getManageAaveV2PositionStateMachineServices(
               debt: balances[context.tokens.debt],
               deposit: balances[context.tokens.deposit],
             }
+
             return strategyBalance
           }
         }),

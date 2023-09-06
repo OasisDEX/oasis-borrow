@@ -70,6 +70,7 @@ const BlockHeading = ({
 function BrandAssetsPage() {
   useScrollToTop()
   const { t } = useTranslation()
+
   return (
     <Box sx={{ width: '100%', mt: 5, pb: 7 }}>
       <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>

@@ -50,9 +50,11 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
     switch (stage) {
       case 'adjustPosition':
         setForcePanel('overview')
+
         break
       case 'otherActions':
         setForcePanel('close')
+
         break
     }
   }, [stage])

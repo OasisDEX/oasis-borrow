@@ -31,6 +31,7 @@ export function SwapWidgetShowHide() {
   useEffect(() => {
     if (swapWidgetChange?.isOpen && clickawayRef?.current) {
       const clientRect = clickawayRef.current.getBoundingClientRect()
+
       if (clientRect.bottom > window.innerHeight || clientRect.top < 0) {
         clickawayRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }

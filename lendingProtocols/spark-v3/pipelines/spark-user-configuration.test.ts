@@ -41,6 +41,7 @@ describe('SparkUserConfiguration', () => {
     }
 
     const results = createSparkUserConfiguration([userConfig], reservesList, dictionary)
+
     // console.log(results)
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as debt', 'B', false, true, results)
@@ -66,6 +67,7 @@ describe('SparkUserConfiguration', () => {
     }
 
     const results = createSparkUserConfiguration([userConfig], reservesList, dictionary)
+
     // console.log(results)
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as debt', 'B', false, true, results)

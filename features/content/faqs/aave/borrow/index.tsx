@@ -6,5 +6,6 @@ import en from './en.mdx'
 
 export const AaveBorrowFaq = () => {
   useScrollToTop()
+
   return <TranslatedContent content={{ en /* es, pt */ }} />
 }

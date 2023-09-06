@@ -15,6 +15,7 @@ describe('getTotalValueLocked$', () => {
           collateral: new BigNumber(3),
         })
       }
+
       return throwError(new Error('Not found'))
     }
     function mockOraclePriceData$({ token }: OraclePriceDataArgs): Observable<OraclePriceData> {
@@ -23,6 +24,7 @@ describe('getTotalValueLocked$', () => {
           currentPrice: new BigNumber(2),
         } as OraclePriceData)
       }
+
       return throwError(new Error('Not found'))
     }
 

@@ -50,10 +50,12 @@ export function getManageAaveV3PositionStateMachineServices(
   getHistoryEvents: (proxyAccount: string, networkId: NetworkIds) => Promise<AaveHistoryEvent[]>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
+
   return {
     runEthersTransaction: (context) => async (sendBack, _onReceive) => {
       const networkId = context.strategyConfig.networkId
       const contracts = getNetworkContracts(networkId)
+
       ensureEtherscanExist(networkId, contracts)
 
       const { etherscan } = contracts
@@ -101,6 +103,7 @@ export function getManageAaveV3PositionStateMachineServices(
               debt: balances[context.tokens.debt],
               deposit: balances[context.tokens.deposit],
             }
+
             return strategyBalance
           }
         }),
@@ -206,6 +209,7 @@ export function getManageAaveV3PositionStateMachineServices(
 
       const user = context.ownerAddress
       const proxy = context.proxyAddress
+
       if (!proxy) {
         return throwError(new Error('No proxy available - save position unsuccessful'))
       }
@@ -223,6 +227,7 @@ export function getManageAaveV3PositionStateMachineServices(
           if (!token) {
             return throwError(new Error('No token available - save position unsuccessful'))
           }
+
           return saveVaultUsingApi$(
             new BigNumber(positionId),
             token,
@@ -234,6 +239,7 @@ export function getManageAaveV3PositionStateMachineServices(
         map(() => ({ type: 'SWITCH_SUCCESS', productType: updatedVaultType })),
         catchError((error) => {
           console.error('Error saving to the DB:', error)
+
           return throwError(error)
         }),
       )
@@ -244,12 +250,14 @@ export function getManageAaveV3PositionStateMachineServices(
       ): event is { type: 'PROXY_RECEIVED'; proxyAddress: string } => {
         return event.type === 'PROXY_RECEIVED'
       }
+
       _onReceive(async (event) => {
         if (isProxyReceiveEvent(event)) {
           const events = await getHistoryEvents(
             event.proxyAddress,
             context.strategyConfig.networkId,
           )
+
           callback({ type: 'HISTORY_UPDATED', historyEvents: events })
         }
       })

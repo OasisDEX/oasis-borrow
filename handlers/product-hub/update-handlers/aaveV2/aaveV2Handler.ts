@@ -48,6 +48,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // reserveData -> liq available and variable fee
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getAaveV2ReserveData({ token })
+
     return {
       [token]: {
         liquidity: reserveData.availableLiquidity.times(usdcPrice),
@@ -59,6 +60,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // reserveData -> max multiple
   const tokensReserveConfigurationDataPromises = primaryTokensList.map(async (token) => {
     const reserveConfigurationData = await getAaveV2ReserveConfigurationData({ token })
+
     return {
       [token]: {
         maxLtv: reserveConfigurationData.ltv,
@@ -77,6 +79,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
       product.primaryToken
     ]
     const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
+
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }

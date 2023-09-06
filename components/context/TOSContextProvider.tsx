@@ -25,9 +25,11 @@ export function isTOSContextAvailable(): boolean {
 
 export function useTOSContext(): TOSContext {
   const ac = useContext(tosContext)
+
   if (!ac) {
     throw new Error("TOSContext not available! useTOSContext can't be used serverside")
   }
+
   return ac
 }
 

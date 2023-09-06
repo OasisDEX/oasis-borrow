@@ -71,6 +71,7 @@ export function createInstiVault$(
               ]) => {
                 const debt = normalizedDebt.times(debtScalingFactor)
                 const ilkDebtAvailable = charteredDebtCeiling.minus(debt)
+
                 return of({
                   id,
                   makerType,

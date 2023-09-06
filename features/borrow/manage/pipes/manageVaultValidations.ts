@@ -132,6 +132,7 @@ export function validateWarnings(
       }),
     )
   }
+
   return { ...state, warningMessages }
 }
 

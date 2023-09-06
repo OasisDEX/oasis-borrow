@@ -32,6 +32,7 @@ describe('bonusPipe', () => {
   describe('claiming the rewards', () => {
     it('calls claim interface and updates state when claiming', () => {
       const claimAllStub = jest.fn(() => of(ClaimTxnState.PENDING))
+
       function bonusAdapterStub() {
         return {
           bonus$: of({

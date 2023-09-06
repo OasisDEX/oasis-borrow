@@ -11,6 +11,7 @@ export interface TxStatusCardProgressProps {
 
 export function TxStatusCardProgress({ text, txHash, etherscan }: TxStatusCardProgressProps) {
   const { t } = useTranslation()
+
   return (
     <Card sx={{ backgroundColor: 'warning10', border: 'none', p: 2, px: 3, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
@@ -40,6 +41,7 @@ export function TxStatusCardSuccess({
   etherscan: string
 }) {
   const { t } = useTranslation()
+
   return (
     <Card sx={{ backgroundColor: 'success10', border: 'none', p: 2, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>

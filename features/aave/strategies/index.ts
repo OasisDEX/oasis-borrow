@@ -47,9 +47,11 @@ export function loadStrategyFromUrl(
       s.type.toUpperCase() === positionType.toUpperCase() &&
       s.protocol.toUpperCase() === protocol.toUpperCase(),
   )
+
   if (!strategy) {
     throw new Error(`Strategy not found for slug: ${slug}`)
   }
+
   return strategy
 }
 
@@ -71,6 +73,7 @@ export function loadStrategyFromTokens(
       vaultType === undefined ||
       vaultType === VaultType.Unknown ||
       vaultType === productToVaultType(s.type)
+
     return (
       s.tokens.collateral === actualCollateralToken &&
       s.tokens.debt === actualDebtToken &&
@@ -85,6 +88,7 @@ export function loadStrategyFromTokens(
       `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken}) for protocol: ${protocol} on network: ${networkName}`,
     )
   }
+
   return strategy
 }
 
@@ -117,6 +121,7 @@ export function isSupportedStrategy(
         s.urlSlug.toLowerCase() === strategy.toLowerCase() &&
         s.type.toLowerCase() === product.toLowerCase(),
     )
+
     if (definedStrategy) {
       return [true, definedStrategy]
     } else {

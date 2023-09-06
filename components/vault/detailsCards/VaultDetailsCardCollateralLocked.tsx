@@ -25,6 +25,7 @@ function VaultDetailsCardCollateralLockedModal({
   close,
 }: ModalProps<CollateralLockedProps>) {
   const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>

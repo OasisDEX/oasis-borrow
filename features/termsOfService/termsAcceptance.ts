@@ -35,6 +35,7 @@ export interface TermsAcceptanceState {
 
 function withClose(state: TermsAcceptanceState): Observable<TermsAcceptanceState> {
   const close$ = new Subject<void>()
+
   return close$.pipe(
     map(() => ({ stage: 'acceptanceProcessClosed' })),
     startWith({
@@ -73,6 +74,7 @@ function verifyAcceptance$(
         }
 
         const accept$ = new Subject<void>()
+
         return accept$.pipe(
           switchMap(() => {
             return saveAcceptance$(token, version, email).pipe(
@@ -110,8 +112,10 @@ function verifyAcceptance$(
       }
 
       const jwtAuth$ = new Subject<boolean>()
+
       if (updated) {
         token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
+
         return jwtAuthSetupToken$(web3, chainId, account, isGnosisSafe).pipe(
           switchMap((token) => {
             return checkAcceptance(token, version, magicLinkEmail)
@@ -124,12 +128,14 @@ function verifyAcceptance$(
           }),
         )
       }
+
       return jwtAuth$.pipe(
         switchMap((jwtAuthAccepted) => {
           if (!jwtAuthAccepted) {
             return withClose({ stage: 'jwtAuthRejected' })
           }
           token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
+
           return jwtAuthSetupToken$(web3, chainId, account, isGnosisSafe).pipe(
             switchMap((token) => {
               return checkAcceptance(token, version, magicLinkEmail)

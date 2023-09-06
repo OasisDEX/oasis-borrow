@@ -193,9 +193,11 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableBorrow, ...additionalAction]
       },
       executeTransactionWith: 'ethers' as const,
@@ -240,9 +242,11 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',
@@ -288,9 +292,11 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',

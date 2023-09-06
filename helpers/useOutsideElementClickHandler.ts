@@ -10,6 +10,7 @@ export function useOutsideElementClickHandler(cb: Function) {
       }
     }
     document.addEventListener('mousedown', handleClick)
+
     return () => {
       document.removeEventListener('mousedown', handleClick)
     }

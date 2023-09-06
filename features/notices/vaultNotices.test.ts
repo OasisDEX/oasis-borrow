@@ -21,6 +21,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('ownership')
   })
 
@@ -46,6 +47,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('liquidatingNextPrice')
   })
 
@@ -64,6 +66,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('liquidating')
   })
 
@@ -91,6 +94,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('liquidated')
   })
 
@@ -119,6 +123,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('liquidated')
   })
 
@@ -146,6 +151,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('ownership')
   })
 
@@ -178,6 +184,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('liquidating')
   })
 
@@ -217,6 +224,7 @@ describe('createVaultNotices$', () => {
         one,
       ),
     )
+
     expect(state().banner).toBe('liquidatingNextPrice')
   })
 })

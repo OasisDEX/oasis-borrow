@@ -7,6 +7,7 @@ import { Grid, Heading, Text } from 'theme-ui'
 
 function ContentCardOperatingCostModal() {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('constant-multiple.operating-cost')}</Heading>
