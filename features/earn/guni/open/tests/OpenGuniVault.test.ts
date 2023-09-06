@@ -74,7 +74,7 @@ describe('OpenGuniVault', () => {
 
     const state = getStateUnpacker(openGuniVault$)
 
-    console.log(state)
+    console.info(state)
   })
 
   it('uses default GUNI slippage', () => {

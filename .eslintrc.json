@@ -197,7 +197,7 @@
     "deprecation/deprecation": "warn", // or "error" to have stricter rule
     "react-hooks/rules-of-hooks": "warn",
     "react-hooks/exhaustive-deps": "warn",
-    "no-console": ["error", { "allow": ["warn", "error", "info"] }]
+    "no-console": ["error", { "allow": ["warn", "error", "info", "debug"] }]
   },
   "overrides": [
     {

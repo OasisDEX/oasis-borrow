@@ -37,7 +37,7 @@ export function TOSContextProvider({ children }: WithChildren) {
 
   useEffect(() => {
     setContext(() => {
-      console.log('Terms of service context setup')
+      console.info('Terms of service context setup')
       const termsAcceptance$ = createTermsAcceptance$(
         web3Context$,
         currentContent.tos.version,
