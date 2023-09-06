@@ -59,7 +59,7 @@ export function mockOpenVault$({
   ilk = 'WBTC-A',
   gasEstimationUsd,
 }: MockOpenVaultProps = {}) {
-  const token = ilk.split('-')[0]
+  const [token] = ilk.split('-')
 
   const context$ =
     _context$ ||

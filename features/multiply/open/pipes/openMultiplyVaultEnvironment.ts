@@ -1,5 +1,8 @@
 import { IlkDataChange } from 'blockchain/ilks'
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import {
+  OpenMultiplyVaultChange,
+  OpenMultiplyVaultState,
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { SlippageChange } from 'features/userSettings/userSettings'

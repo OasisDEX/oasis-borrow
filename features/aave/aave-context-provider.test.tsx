@@ -10,7 +10,11 @@ import {
   productContext,
 } from 'components/context'
 import { AaveContext } from 'features/aave/aave-context'
-import { aaveContext, AaveContextProvider, useAaveContext } from 'features/aave/aave-context-provider'
+import {
+  aaveContext,
+  AaveContextProvider,
+  useAaveContext,
+} from 'features/aave/aave-context-provider'
 import * as setupAaveV2ContextModule from 'features/aave/setup-aave-v2-context'
 import { ProductContext } from 'helpers/context/ProductContext'
 import { WithChildren } from 'helpers/types'

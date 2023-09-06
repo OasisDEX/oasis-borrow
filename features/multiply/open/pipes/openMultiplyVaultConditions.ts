@@ -11,7 +11,10 @@ import {
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
   vaultWillBeAtRiskLevelWarningValidator,
 } from 'features/form/commonValidators'
-import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import {
+  OpenMultiplyVaultStage,
+  OpenMultiplyVaultState,
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { isNullish } from 'helpers/functions'
 import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'

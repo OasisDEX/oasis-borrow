@@ -150,7 +150,12 @@ import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { refreshInterval } from 'helpers/context/constants'
 import { MainContext } from 'helpers/context/MainContext'
-import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from 'helpers/context/types'
+import {
+  DepreciatedServices,
+  HasGasEstimation,
+  ProtocolsServices,
+  TxHelpers,
+} from 'helpers/context/types'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
 import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'

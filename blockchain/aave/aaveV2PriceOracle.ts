@@ -16,7 +16,7 @@ export type AaveV2GetAssetPriceParameters = {
 
 const factory = AaveV2PriceOracle__factory
 const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
-const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2PriceOracle.address
+const { address } = getNetworkContracts(NetworkIds.MAINNET).aaveV2PriceOracle
 const contract = factory.connect(address, rpcProvider)
 const tokenMappings = getNetworkContracts(NetworkIds.MAINNET).tokens
 

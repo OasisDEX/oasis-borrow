@@ -8,7 +8,10 @@ import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
 } from 'features/aave/manage/services'
-import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from 'features/aave/open/services'
+import {
+  getOpenAaveStateMachine,
+  getOpenAaveV2PositionStateMachineServices,
+} from 'features/aave/open/services'
 import {
   getAaveSupportedTokenBalances$,
   getAdjustAaveParametersMachine,

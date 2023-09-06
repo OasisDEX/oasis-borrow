@@ -48,8 +48,14 @@ import {
   applyManageVaultEnvironment,
   ManageVaultEnvironmentChange,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultEnvironment'
-import { applyManageVaultForm, ManageVaultFormChange } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
-import { applyManageVaultInput, ManageVaultInputChange } from 'features/multiply/manage/pipes/manageMultiplyVaultInput'
+import {
+  applyManageVaultForm,
+  ManageVaultFormChange,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
+import {
+  applyManageVaultInput,
+  ManageVaultInputChange,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultInput'
 import {
   applyManageVaultSummary,
   defaultManageVaultSummary,
@@ -68,7 +74,11 @@ import {
   ManageVaultTransitionChange,
   progressAdjust,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultTransitions'
-import { finalValidation, validateErrors, validateWarnings } from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'

@@ -9,7 +9,7 @@ export default function DiscoverPage() {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const network = context.query.network ? `?network=${context.query.network}` : ''
-  const defaultDiscoverPage = discoverPagesMeta[0] // 0 => HIGH_RISK_POSITIONS
+  const [defaultDiscoverPage] = discoverPagesMeta // 0 => HIGH_RISK_POSITIONS
 
   return {
     redirect: {

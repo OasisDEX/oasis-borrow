@@ -314,7 +314,7 @@ export function createExchangeQuote$(
   return context$.pipe(
     switchMap((context) => {
       const contracts = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
-      const tokensMainnet = contracts.tokensMainnet
+      const { tokensMainnet } = contracts
       const exchange = contracts[exchangeType]
 
       const quote = getTokenMetaData(quoteToken || 'DAI', tokensMainnet)

@@ -46,7 +46,10 @@ import {
   applyOpenVaultEnvironment,
   OpenVaultEnvironmentChange,
 } from 'features/multiply/open/pipes/openMultiplyVaultEnvironment'
-import { applyOpenVaultInput, OpenVaultInputChange } from 'features/multiply/open/pipes/openMultiplyVaultInput'
+import {
+  applyOpenVaultInput,
+  OpenVaultInputChange,
+} from 'features/multiply/open/pipes/openMultiplyVaultInput'
 import {
   applyOpenVaultSummary,
   defaultOpenVaultSummary,
@@ -58,7 +61,11 @@ import {
   multiplyVault,
   setAllowance,
 } from 'features/multiply/open/pipes/openMultiplyVaultTransactions'
-import { finalValidation, validateErrors, validateWarnings } from 'features/multiply/open/pipes/openMultiplyVaultValidations'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/multiply/open/pipes/openMultiplyVaultValidations'
 import { createProxy } from 'features/proxy/createProxy'
 import { applyProxyChanges, ProxyChanges } from 'features/proxy/proxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
@@ -361,7 +368,7 @@ export function createOpenMultiplyVault$(
           first(),
           switchMap(([context, txHelpers, ilkData, { slippage }]) => {
             const { token } = ilkData
-            const account = context.account
+            const { account } = context
 
             return combineLatest(
               priceInfo$(token),

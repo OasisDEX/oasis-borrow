@@ -43,7 +43,7 @@ describe('vaultActionsLogic', () => {
         mockContextConnected,
       )
 
-      const proxyActionAddress = proxyActionCall[0]
+      const [proxyActionAddress] = proxyActionCall
 
       const methodCalled = proxyActionCall[1] as string
       const actualMethodName = JSON.parse(methodCalled).method
@@ -192,7 +192,7 @@ describe('vaultActionsLogic', () => {
         mockContextConnected,
       )
 
-      const proxyActionAddress = proxyActionCall[0]
+      const [proxyActionAddress] = proxyActionCall
 
       const methodCalled = proxyActionCall[1] as string
       const actualMethodName = JSON.parse(methodCalled).method
@@ -289,7 +289,7 @@ describe('vaultActionsLogic', () => {
         mockContextConnected,
       )
 
-      const proxyActionAddress = proxyActionCall[0]
+      const [proxyActionAddress] = proxyActionCall
 
       const methodCalled = proxyActionCall[1] as string
       const actualMethodName = JSON.parse(methodCalled).method

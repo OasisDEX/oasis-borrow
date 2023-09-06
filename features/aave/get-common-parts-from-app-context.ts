@@ -8,7 +8,10 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AccountContext } from 'components/context'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers'
-import { getAvailableDPMProxy$, getOperationExecutorTransactionMachine } from 'features/aave/services'
+import {
+  getAvailableDPMProxy$,
+  getOperationExecutorTransactionMachine,
+} from 'features/aave/services'
 import { PositionId } from 'features/aave/types'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'

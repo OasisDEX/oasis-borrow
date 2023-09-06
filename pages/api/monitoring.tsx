@@ -17,7 +17,7 @@ const SENTRY_HOST = SENTRY_URL.hostname
 
 async function tunnel(req: NextApiRequest, res: NextApiResponse) {
   const envelope = req.body
-  const piece = envelope.split('\n')[0]
+  const [piece] = envelope.split('\n')
   const header = JSON.parse(piece)
   const dsn = new URL(header.dsn)
   const projectId = dsn.pathname.replace('/', '')

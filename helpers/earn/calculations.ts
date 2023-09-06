@@ -139,7 +139,7 @@ function calculateChange(current?: YieldValue, previous?: YieldValue): YieldChan
   }
   const yieldValue = current.value
   const change = yieldValue.minus(previous.value)
-  const days = current.days
+  const { days } = current
 
   return { change, yieldValue, days }
 }

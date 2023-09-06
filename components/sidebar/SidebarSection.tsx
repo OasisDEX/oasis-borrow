@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { MobileSidePanel } from 'components/Modal'
-import { SidebarSectionContent, SidebarSectionContentProps } from 'components/sidebar/SidebarSectionContent'
-import { SidebarSectionFooter, SidebarSectionFooterProps } from 'components/sidebar/SidebarSectionFooter'
-import { SidebarSectionHeader, SidebarSectionHeaderProps } from 'components/sidebar/SidebarSectionHeader'
+import {
+  SidebarSectionContent,
+  SidebarSectionContentProps,
+} from 'components/sidebar/SidebarSectionContent'
+import {
+  SidebarSectionFooter,
+  SidebarSectionFooterProps,
+} from 'components/sidebar/SidebarSectionFooter'
+import {
+  SidebarSectionHeader,
+  SidebarSectionHeaderProps,
+} from 'components/sidebar/SidebarSectionHeader'
 import { Card } from 'theme-ui'
 
 export interface SidebarSectionProps

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { theme } from 'theme'
 
 export function useBreakpointIndex() {
-  const breakpoints = theme.breakpoints
+  const { breakpoints } = theme
   const [value, setValue] = useState(1)
 
   useEffect(() => {

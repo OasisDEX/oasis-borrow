@@ -15,7 +15,11 @@ import {
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
-import { applyEnvironment, EnvironmentChange, EnvironmentState } from 'features/earn/guni/open/pipes/enviroment'
+import {
+  applyEnvironment,
+  EnvironmentChange,
+  EnvironmentState,
+} from 'features/earn/guni/open/pipes/enviroment'
 import {
   addFormTransitions,
   applyFormChange,
@@ -26,7 +30,10 @@ import {
   FormFunctions,
   FormState,
 } from 'features/earn/guni/open/pipes/guniForm'
-import { validateGuniErrors, validateGuniWarnings } from 'features/earn/guni/open/pipes/guniOpenMultiplyVaultValidations'
+import {
+  validateGuniErrors,
+  validateGuniWarnings,
+} from 'features/earn/guni/open/pipes/guniOpenMultiplyVaultValidations'
 import { applyGuniEstimateGas } from 'features/earn/guni/open/pipes/openGuniMultiplyVaultTransactions'
 import {
   applyGuniOpenVaultConditions,
@@ -301,7 +308,7 @@ export function createOpenGuniVault$(
               throw new Error('Missing tokens in configuration')
             }
 
-            const account = context.account
+            const { account } = context
 
             return combineLatest(
               priceInfo$(token),

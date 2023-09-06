@@ -1,6 +1,9 @@
 import { isNetworkHexIdSupported, NetworkConfigHexId, networkSetByHexId } from 'blockchain/networks'
 import { ensureCorrectState } from 'features/web3OnBoard/wallet-state/ensure-correct-state'
-import { WalletManagementState, WalletManagementStateStatus } from 'features/web3OnBoard/wallet-state/wallet-management-state'
+import {
+  WalletManagementState,
+  WalletManagementStateStatus,
+} from 'features/web3OnBoard/wallet-state/wallet-management-state'
 
 export function canTransitWithNetworkHexId(
   hexId: NetworkConfigHexId | undefined,

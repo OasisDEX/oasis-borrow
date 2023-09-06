@@ -38,7 +38,7 @@ export function getTotalValueLocked$(
 ): Observable<TotalValueLocked> {
   return getCollateralLocked$(ilk).pipe(
     switchMap((collateralLocked) => {
-      const token = collateralLocked.token
+      const { token } = collateralLocked
 
       return oraclePriceData$({ token, requestedData: ['currentPrice'] }).pipe(
         map((oraclePriceData) => {

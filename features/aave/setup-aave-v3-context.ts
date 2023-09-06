@@ -11,7 +11,10 @@ import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
 } from 'features/aave/manage/services'
-import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from 'features/aave/open/services'
+import {
+  getOpenAaveStateMachine,
+  getOpenAaveV3PositionStateMachineServices,
+} from 'features/aave/open/services'
 import {
   getAaveHistoryEvents,
   getAaveSupportedTokenBalances$,

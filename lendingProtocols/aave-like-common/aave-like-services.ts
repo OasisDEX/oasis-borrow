@@ -5,7 +5,10 @@ import {
   AaveLikeReserveConfigurationDataParams,
 } from 'lendingProtocols/aave-like-common/aave-like-reserve-configuration-data'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common/aave-like-reserve-data'
-import { AaveLikeUserAccountData, AaveLikeUserAccountDataArgs } from 'lendingProtocols/aave-like-common/aave-like-user-account-data'
+import {
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
+} from 'lendingProtocols/aave-like-common/aave-like-user-account-data'
 import { AaveLikeUserConfigurationResults } from 'lendingProtocols/aave-like-common/aave-like-user-configuration'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { Observable } from 'rxjs'

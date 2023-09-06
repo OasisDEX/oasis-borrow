@@ -3,7 +3,11 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { isMainContextAvailable } from 'components/context'
 import { AppLink } from 'components/Links'
-import { createNewsletter$, NewsletterMessage, NewsletterState } from 'features/newsletter/newsletter'
+import {
+  createNewsletter$,
+  NewsletterMessage,
+  NewsletterState,
+} from 'features/newsletter/newsletter'
 import { NewsletterResponseMessage } from 'features/newsletter/newsletterApi'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'

@@ -1,7 +1,10 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { isProductContextAvailable, useProductContext } from 'components/context/ProductContextProvider'
+import {
+  isProductContextAvailable,
+  useProductContext,
+} from 'components/context/ProductContextProvider'
 import { GasEstimationStatus, HasGasEstimation, TxData } from 'helpers/context/types'
 import { TX_DATA_CHANGE, TxPayloadChange } from 'helpers/gasEstimate'
 import { useObservable } from 'helpers/observableHook'

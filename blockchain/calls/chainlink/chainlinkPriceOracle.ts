@@ -27,7 +27,7 @@ export function getChainlinkOraclePrice(
     throw new Error(`ChainlinkPriceOracle ${contractName} not found`)
   }
 
-  const address = getNetworkContracts(networkId).chainlinkPriceOracle[contractName].address
+  const { address } = getNetworkContracts(networkId).chainlinkPriceOracle[contractName]
 
   warnIfAddressIsZero(address, networkId, 'chainlinkPriceOracle', contractName)
   const contract = factory.connect(address, getRpcProvider(networkId))

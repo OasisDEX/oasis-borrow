@@ -1,6 +1,11 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { maxUint256, tokenAllowance, tokenBalance, tokenBalanceFromAddress } from 'blockchain/calls/erc20'
+import {
+  maxUint256,
+  tokenAllowance,
+  tokenBalance,
+  tokenBalanceFromAddress,
+} from 'blockchain/calls/erc20'
 import { CallObservable } from 'blockchain/calls/observe'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'

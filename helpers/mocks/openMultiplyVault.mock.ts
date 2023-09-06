@@ -62,7 +62,7 @@ export function mockOpenMultiplyVault({
   exchangeQuote,
   gasEstimationUsd,
 }: MockOpenMultiplyVaultProps = {}) {
-  const token = ilk.split('-')[0]
+  const [token] = ilk.split('-')
 
   const ilks$ = _ilks$ || (ilks && ilks.length ? of(ilks!) : of([ilk]))
 

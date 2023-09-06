@@ -21,7 +21,7 @@ const handler = async function (_req: NextApiRequest, res: NextApiResponse) {
         const responseFromBlocknative: any = response.data
         const estimatedPricesForNextBlock: any =
           responseFromBlocknative?.blockPrices[0].estimatedPrices
-        const estimatedPriceFor95PercentConfidence = estimatedPricesForNextBlock[1]
+        const [, estimatedPriceFor95PercentConfidence] = estimatedPricesForNextBlock
 
         cache.set('time', new Date().getTime())
         cache.set('estimatedPriceFor95PercentConfidence', estimatedPriceFor95PercentConfidence)

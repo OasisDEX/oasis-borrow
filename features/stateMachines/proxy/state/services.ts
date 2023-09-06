@@ -5,7 +5,11 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { ProxyContext, ProxyEvent, ProxyObservableService } from 'features/stateMachines/proxy/state/types'
+import {
+  ProxyContext,
+  ProxyEvent,
+  ProxyObservableService,
+} from 'features/stateMachines/proxy/state/types'
 import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { isEqual } from 'lodash'
@@ -18,11 +22,8 @@ const createProxy: ProxyObservableService = (
 ) => {
   const { proxyAddress$ } = dependencies
 
-  const safeConfirmations = getNetworkContracts(
-    NetworkIds.MAINNET,
-    contextConnected!.chainId,
-  ).safeConfirmations
-  const sendWithGasEstimation = txHelpers!.sendWithGasEstimation
+  const { safeConfirmations } = getNetworkContracts(NetworkIds.MAINNET, contextConnected!.chainId)
+  const { sendWithGasEstimation } = txHelpers!
 
   return sendWithGasEstimation(createDsProxy, {
     kind: TxMetaKind.createDsProxy,

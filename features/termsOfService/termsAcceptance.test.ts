@@ -1,4 +1,7 @@
-import { createTermsAcceptance$, TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
+import {
+  createTermsAcceptance$,
+  TermsAcceptanceState,
+} from 'features/termsOfService/termsAcceptance'
 import { Web3Context } from 'features/web3Context'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { mapValues } from 'lodash'

@@ -50,7 +50,7 @@ export const ALLOWANCE_STAGES = [
   'allowanceSuccess',
 ] as const
 
-export type AllowanceStages = (typeof ALLOWANCE_STAGES)[number]
+export type AllowanceStages = typeof ALLOWANCE_STAGES[number]
 
 export function getIsAllowanceStage(stage: string): stage is AllowanceStages {
   return ALLOWANCE_STAGES.includes(stage as any)

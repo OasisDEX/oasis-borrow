@@ -141,7 +141,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     Promise.all(getSparkV3TokensDataPromises),
     Promise.all(earnProductsPromises),
   ]).then(([sparkV3TokensDataList, earnProductsYields]) => {
-    const sparkV3TokensData = sparkV3TokensDataList[0] // only one (ethereum) now
+    const [sparkV3TokensData] = sparkV3TokensDataList // only one (ethereum) now
 
     return {
       table: sparkV3ProductHubProducts.map((product) => {

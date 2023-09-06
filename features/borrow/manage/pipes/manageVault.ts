@@ -19,7 +19,11 @@ import { AutoTakeProfitTriggerData } from 'features/automation/optimization/auto
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { BorrowManageAdapterInterface } from 'features/borrow/manage/pipes/adapters/borrowManageAdapterInterface'
-import { finalValidation, validateErrors, validateWarnings } from 'features/borrow/manage/pipes/manageVaultValidations'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/borrow/manage/pipes/manageVaultValidations'
 import { ManageVaultAllowanceChange } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
 import { ManageVaultCalculations } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultCalculations'
 import { ManageVaultConditions } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultConditions'

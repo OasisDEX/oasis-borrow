@@ -181,7 +181,7 @@ function transformOraclePrice({
   token: string
   oraclePrice: [string, boolean]
 }): BigNumber {
-  const precision = getToken(token).precision
+  const { precision } = getToken(token)
   const rawPrice = new BigNumber(oraclePrice[0])
     .shiftedBy(-18)
     .toFixed(precision, BigNumber.ROUND_DOWN)

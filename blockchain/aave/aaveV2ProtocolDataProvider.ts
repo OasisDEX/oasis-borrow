@@ -47,7 +47,7 @@ export type AaveV2ReserveConfigurationData = {
 
 const factory = AaveV2ProtocolDataProvider__factory
 const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
-const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2ProtocolDataProvider.address
+const { address } = getNetworkContracts(NetworkIds.MAINNET).aaveV2ProtocolDataProvider
 const tokenMappings = getNetworkContracts(NetworkIds.MAINNET).tokens
 const contract = factory.connect(address, rpcProvider)
 

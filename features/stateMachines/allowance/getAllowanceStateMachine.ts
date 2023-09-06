@@ -1,6 +1,9 @@
 import { approve } from 'blockchain/calls/erc20'
 import { ContextConnected } from 'blockchain/network'
-import { AllowanceTxMeta, createAllowanceStateMachine } from 'features/stateMachines/allowance/state/createAllowanceStateMachine'
+import {
+  AllowanceTxMeta,
+  createAllowanceStateMachine,
+} from 'features/stateMachines/allowance/state/createAllowanceStateMachine'
 import {
   CommonTransactionServices,
   createTransactionStateMachine,

@@ -907,7 +907,7 @@ export function createManageAaveStateMachine(
         }),
         setInitialState: send(
           (context) => {
-            const firstAction = context.strategyConfig.availableActions()[0]
+            const [firstAction] = context.strategyConfig.availableActions()
 
             switch (firstAction) {
               case 'adjust':

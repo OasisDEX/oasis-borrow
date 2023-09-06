@@ -10,7 +10,10 @@ import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageVaultButton } from 'features/borrow/manage/containers/ManageVaultButton'
-import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from 'features/borrow/manage/containers/ManageVaultConfirmation'
+import {
+  ManageVaultConfirmation,
+  ManageVaultConfirmationStatus,
+} from 'features/borrow/manage/containers/ManageVaultConfirmation'
 import { ManageVaultEditing } from 'features/borrow/manage/containers/ManageVaultEditing'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'

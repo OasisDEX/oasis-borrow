@@ -7,7 +7,11 @@ import { useBridgeConnector } from 'features/web3OnBoard/use-bridge-connector'
 import { useChainSetter } from 'features/web3OnBoard/use-chain-setter'
 import { useNetworkConnector } from 'features/web3OnBoard/use-network-connector'
 import { useSafetyReload } from 'features/web3OnBoard/use-safety-reload'
-import { WalletManagementState, WalletStateEvent, walletStateReducer } from 'features/web3OnBoard/wallet-state'
+import {
+  WalletManagementState,
+  WalletStateEvent,
+  walletStateReducer,
+} from 'features/web3OnBoard/wallet-state'
 import {
   areThePageNetworksTheSame,
   WalletManagementStateStatus,

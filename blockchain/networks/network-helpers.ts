@@ -1,6 +1,11 @@
 import { forkNetworks, forkSettings } from 'blockchain/networks/forks-config'
 import { NetworkIds } from 'blockchain/networks/network-ids'
-import { NetworkConfig, NetworkConfigHexId, networks, networksById } from 'blockchain/networks/networks-config'
+import {
+  NetworkConfig,
+  NetworkConfigHexId,
+  networks,
+  networksById,
+} from 'blockchain/networks/networks-config'
 import { keyBy } from 'lodash'
 import { env } from 'process'
 

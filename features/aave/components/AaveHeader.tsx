@@ -37,8 +37,7 @@ function AaveHeader({
     if (!positionTokenPrices) {
       return []
     }
-    const collateralTokenPrice = positionTokenPrices[0]
-    const debtTokenPrice = positionTokenPrices[1]
+    const [collateralTokenPrice, debtTokenPrice] = positionTokenPrices
     const positionPrice =
       strategyConfig.strategyType === StrategyType.Long
         ? collateralTokenPrice.div(debtTokenPrice)

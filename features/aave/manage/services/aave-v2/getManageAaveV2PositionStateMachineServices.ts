@@ -45,7 +45,7 @@ export function getManageAaveV2PositionStateMachineServices(
 
   return {
     runEthersTransaction: (context) => async (sendBack, _onReceive) => {
-      const networkId = context.strategyConfig.networkId
+      const { networkId } = context.strategyConfig
       const contracts = getNetworkContracts(networkId)
 
       ensureEtherscanExist(networkId, contracts)

@@ -4,7 +4,10 @@ import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
 import { AccountDetails } from 'features/account/AccountData'
 import { formatOazoFee } from 'features/multiply/manage/utils'
-import { MutableOpenMultiplyVaultState, OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import {
+  MutableOpenMultiplyVaultState,
+  OpenMultiplyVaultState,
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'

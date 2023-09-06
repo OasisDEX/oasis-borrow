@@ -8,7 +8,11 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from 'features/stateMachines/proxy/state'
+import {
+  ProxyEvent,
+  ProxyStateMachine,
+  ProxyStateMachineState,
+} from 'features/stateMachines/proxy/state'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'

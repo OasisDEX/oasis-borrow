@@ -179,8 +179,7 @@ function buildAaveViewModel(
         const { position } = protocolData
         const isDebtZero = position.debt.amount.isZero()
 
-        const oracleCollateralTokenPriceInEth = assetPrices[0]
-        const oracleDebtTokenPriceInEth = assetPrices[1]
+        const [oracleCollateralTokenPriceInEth, oracleDebtTokenPriceInEth] = assetPrices
 
         const collateralToken = positionCreatedEvent.collateralTokenSymbol
         const debtToken = positionCreatedEvent.debtTokenSymbol
@@ -202,7 +201,7 @@ function buildAaveViewModel(
           ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
           : zero
 
-        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+        const { variableBorrowRate } = preparedAaveReserve
 
         const fundingCost = !isDebtZero
           ? debtNotWei
@@ -302,8 +301,7 @@ function buildAaveLikeV3OnlyViewModel(
         const { position } = protocolData
         const isDebtZero = position.debt.amount.isZero()
 
-        const oracleCollateralTokenPriceInEth = assetPrices[0]
-        const oracleDebtTokenPriceInEth = assetPrices[1]
+        const [oracleCollateralTokenPriceInEth, oracleDebtTokenPriceInEth] = assetPrices
 
         const collateralToken = positionCreatedEvent.collateralTokenSymbol
         const debtToken = positionCreatedEvent.debtTokenSymbol
@@ -325,7 +323,7 @@ function buildAaveLikeV3OnlyViewModel(
           ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
           : zero
 
-        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+        const { variableBorrowRate } = preparedAaveReserve
 
         const fundingCost = !isDebtZero
           ? debtNotWei

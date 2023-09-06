@@ -79,7 +79,7 @@ export function useFlowState({
     error: undefined,
   }
 
-  const spender = availableProxies[0] // probably needs further thoguht
+  const [spender] = availableProxies // probably needs further thoguht
 
   // wallet connection + DPM proxy machine
   useEffect(() => {

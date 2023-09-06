@@ -13,7 +13,11 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { fetchWithOperationId, flatEvents } from 'features/vaultHistory/vaultHistory'
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
+import {
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from 'features/vaultHistory/vaultHistoryEvents'
 import { gql, GraphQLClient } from 'graphql-request'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, from, Observable, timer } from 'rxjs'

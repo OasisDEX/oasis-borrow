@@ -129,7 +129,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const mount = useRef(false)
   const Layout = Component.layout || AppLayout
 
-  const layoutProps = Component.layoutProps
+  const { layoutProps } = Component
   const router = useRouter()
   const { t } = useTranslation()
 

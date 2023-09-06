@@ -1,5 +1,9 @@
 import { AssertionError } from 'assert'
-import { createAssetActions$, isOnClickAction, isUrlAction } from 'features/vaultsOverview/pipes/assetActions'
+import {
+  createAssetActions$,
+  isOnClickAction,
+  isUrlAction,
+} from 'features/vaultsOverview/pipes/assetActions'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { UIChanges } from 'helpers/uiChanges'
@@ -55,7 +59,7 @@ describe('asset actions', () => {
 
     expect(state().length).toBe(2)
 
-    const borrowAction = state()[1]
+    const [, borrowAction] = state()
 
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).toBe('Borrow')
@@ -85,14 +89,12 @@ describe('asset actions', () => {
 
     expect(state().length).toBe(3)
 
-    const borrowAction = state()[1]
+    const [, borrowAction, multiplyAction] = state()
 
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).toBe('Borrow')
     expect(borrowAction.icon).toBe('collateral')
     expect(borrowAction.path).toBe('/borrow')
-
-    const multiplyAction = state()[2]
 
     assertAssetAction(isUrlAction(multiplyAction), 'borrow action is not url asset action')
     expect(multiplyAction.text).toBe('Multiply')
@@ -119,7 +121,7 @@ describe('asset actions', () => {
     )
 
     const state = getStateUnpacker(assetActions$)
-    const swapAction = state()[0]
+    const [swapAction] = state()
 
     assertAssetAction(isOnClickAction(swapAction), 'swap action is not onclick asset action')
     expect(swapAction.text).toBe('Swap')

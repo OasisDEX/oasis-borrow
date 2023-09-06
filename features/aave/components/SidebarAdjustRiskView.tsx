@@ -74,14 +74,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     stopLossError,
   }: SecondaryInputProps) {
     const { t } = useTranslation()
-    const transition = state.context.transition
+    const { transition } = state.context
     const positionTransitionHasMinConfigurableRisk =
       transitionHasMinConfigurableRiskRatio(transition)
 
     const simulation = transition?.simulation
     const targetPosition = simulation?.position
 
-    const strategyInfo = state.context.strategyInfo
+    const { strategyInfo } = state.context
 
     const maxRisk =
       targetPosition?.category.maxLoanToValue || onChainPosition?.category.maxLoanToValue || zero

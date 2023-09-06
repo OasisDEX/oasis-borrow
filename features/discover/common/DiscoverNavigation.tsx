@@ -26,7 +26,7 @@ export function DiscoverNavigation({ kind, userContext }: DiscoverNavigationProp
     value: `${INTERNAL_LINKS.discover}/${item.kind}`,
     kind: item.kind,
   }))
-  const selectedLink = mobileLinks.filter((item) => item.kind === kind)[0]
+  const [selectedLink] = mobileLinks.filter((item) => item.kind === kind)
 
   return (
     <>

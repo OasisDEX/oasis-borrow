@@ -58,7 +58,7 @@ export async function getAjnaParameters({
   state,
 }: AjnaTxHandlerInput): Promise<AjnaStrategy<AjnaGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
-  const chainId = context.chainId
+  const { chainId } = context
   const walletAddress = context.account
 
   const { action, dpmAddress } = state

@@ -54,7 +54,7 @@ function calculateEntryFees(
 export function GuniOpenMultiplyVaultDetails(
   props: OpenGuniVaultState & GasPriceParams & { ETH: BigNumber; DAI: BigNumber } & Yield,
 ) {
-  const setHash = useHash()[1]
+  const [, setHash] = useHash()
   const { t } = useTranslation()
   const { token, yields } = props
 

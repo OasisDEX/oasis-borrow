@@ -9,7 +9,10 @@ import {
 import { defaultManageVaultCalculations } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultCalculations'
 import { defaultManageVaultConditions } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultConditions'
 import { manageVaultFormDefaults } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultForm'
-import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
+import {
+  depositAndGenerateDefaults,
+  paybackAndWithdrawDefaults,
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
 import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,

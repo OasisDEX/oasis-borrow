@@ -4,7 +4,10 @@ import {
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault'
 import { allowanceDefaults } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
-import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
+import {
+  depositAndGenerateDefaults,
+  paybackAndWithdrawDefaults,
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
 
 export const manageVaultFormDefaults: Partial<ManageStandardBorrowVaultState> = {
   ...allowanceDefaults,

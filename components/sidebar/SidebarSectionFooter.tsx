@@ -4,7 +4,10 @@ import {
   SidebarSectionFooterButton,
   SidebarSectionFooterButtonProps,
 } from 'components/sidebar/SidebarSectionFooterButton'
-import { SidebarSectionStatus, SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import {
+  SidebarSectionStatus,
+  SidebarSectionStatusProps,
+} from 'components/sidebar/SidebarSectionStatus'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { useTranslation } from 'next-i18next'
 import { Grid } from 'theme-ui'

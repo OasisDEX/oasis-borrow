@@ -8,7 +8,10 @@ import {
 } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { defaultManageMultiplyVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { defaultManageMultiplyVaultConditions } from 'features/multiply/manage/pipes/manageMultiplyVaultConditions'
-import { manageMultiplyInputsDefaults, manageVaultFormDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
+import {
+  manageMultiplyInputsDefaults,
+  manageVaultFormDefaults,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
 import {
   adjustPosition,
   closeVault,

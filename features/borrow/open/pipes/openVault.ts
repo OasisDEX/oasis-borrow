@@ -38,16 +38,30 @@ import {
   defaultOpenVaultConditions,
   OpenVaultConditions,
 } from 'features/borrow/open/pipes/openVaultConditions'
-import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from 'features/borrow/open/pipes/openVaultEnvironment'
+import {
+  applyOpenVaultEnvironment,
+  OpenVaultEnvironmentChange,
+} from 'features/borrow/open/pipes/openVaultEnvironment'
 import { applyOpenVaultForm, OpenVaultFormChange } from 'features/borrow/open/pipes/openVaultForm'
-import { applyOpenVaultInput, OpenVaultInputChange } from 'features/borrow/open/pipes/openVaultInput'
+import {
+  applyOpenVaultInput,
+  OpenVaultInputChange,
+} from 'features/borrow/open/pipes/openVaultInput'
 import {
   applyOpenVaultSummary,
   defaultOpenVaultSummary,
   OpenVaultSummary,
 } from 'features/borrow/open/pipes/openVaultSummary'
-import { applyEstimateGas, applyOpenVaultTransaction, openVault } from 'features/borrow/open/pipes/openVaultTransactions'
-import { finalValidation, validateErrors, validateWarnings } from 'features/borrow/open/pipes/openVaultValidations'
+import {
+  applyEstimateGas,
+  applyOpenVaultTransaction,
+  openVault,
+} from 'features/borrow/open/pipes/openVaultTransactions'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/borrow/open/pipes/openVaultValidations'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -356,7 +370,7 @@ export function createOpenVault$(
           proxyActionsAdapterResolver$({ ilk }),
         ).pipe(
           switchMap(([context, txHelpers, token, proxyActionsAdapter]) => {
-            const account = context.account
+            const { account } = context
 
             return combineLatest(
               priceInfo$(token),

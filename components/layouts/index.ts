@@ -4,7 +4,10 @@ import { BasicLayout, BasicLayoutProps } from 'components/layouts/BasicLayout'
 import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
 import { MarketingLayout, MarketingLayoutProps } from 'components/layouts/MarketingLayout'
 import { ProductPagesLayout } from 'components/layouts/ProductPagesLayout'
-import { WithAnnouncementLandingLayout, WithAnnouncementLayout } from 'components/layouts/WithAnnouncementLayout'
+import {
+  WithAnnouncementLandingLayout,
+  WithAnnouncementLayout,
+} from 'components/layouts/WithAnnouncementLayout'
 
 export {
   AppLayout,

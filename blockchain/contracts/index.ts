@@ -93,7 +93,7 @@ export function ensureContractsExist(
   contracts: ReturnType<typeof getNetworkContracts>,
   properties: ReadonlyArray<string>,
 ): asserts contracts is {
-  [K in (typeof properties)[number]]: ContractDesc & { genesisBlock: number }
+  [K in typeof properties[number]]: ContractDesc & { genesisBlock: number }
 } {
   if (properties.some((p) => !contracts.hasOwnProperty(p))) {
     throw new Error(
@@ -107,7 +107,7 @@ export function ensurePropertiesExist(
   contracts: ReturnType<typeof getNetworkContracts>,
   properties: ReadonlyArray<string>,
 ): asserts contracts is {
-  [K in (typeof properties)[number]]: string
+  [K in typeof properties[number]]: string
 } {
   if (properties.some((p) => !contracts.hasOwnProperty(p))) {
     throw new Error(`Can't find properties: ${JSON.stringify(properties)} on ${chainId} chain`)
@@ -148,7 +148,7 @@ export function ensureGivenTokensExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
   tokens: ReadonlyArray<string>,
-): asserts contracts is { tokens: { [K in (typeof tokens)[number]]: ContractDesc } } {
+): asserts contracts is { tokens: { [K in typeof tokens[number]]: ContractDesc } } {
   ensureTokensExist(chainId, contracts)
   const notFoundTokens = tokens.filter((p) => !contracts.tokens.hasOwnProperty(p))
 
@@ -167,14 +167,14 @@ export function ensureChainlinkTokenPairsExist(
   tokenPairs: ReadonlyArray<string>,
 ): asserts contracts is {
   chainlinkPriceOracle: {
-    [K in (typeof tokenPairs)[number]]: ContractDesc
+    [K in typeof tokenPairs[number]]: ContractDesc
   }
 } {
   if (!contracts.hasOwnProperty('chainlinkPriceOracle')) {
     throw new Error(`Can't find chainlinkTokenPairs definition on ${chainId} chain`)
   }
 
-  const chainlinkPriceOracle = (contracts as { chainlinkPriceOracle: unknown }).chainlinkPriceOracle
+  const { chainlinkPriceOracle } = contracts as { chainlinkPriceOracle: unknown }
 
   if (typeof chainlinkPriceOracle !== 'object' || chainlinkPriceOracle === null) {
     throw new Error(`chainlinkPriceOracle definition on ${chainId} chain is not an object`)

@@ -6,7 +6,10 @@ import {
   WalletManagementState,
   WalletManagementStateStatus,
 } from 'features/web3OnBoard/wallet-state/wallet-management-state'
-import { WalletStateEvent, WalletStateEventType } from 'features/web3OnBoard/wallet-state/wallet-state-event'
+import {
+  WalletStateEvent,
+  WalletStateEventType,
+} from 'features/web3OnBoard/wallet-state/wallet-state-event'
 import {
   canTransitWithNetworkHexId,
   shouldSendChangeNetworkOnConnected,

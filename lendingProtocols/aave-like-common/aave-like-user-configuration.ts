@@ -6,7 +6,7 @@ export type AaveLikeUserConfigurationResult = {
   collateral: boolean
   borrowed: boolean
   asset: string
-  assetName: (typeof mainnet.common)[keyof typeof mainnet.common]
+  assetName: typeof mainnet.common[keyof typeof mainnet.common]
 }
 
 export type AaveLikeUserConfigurationResults = AaveLikeUserConfigurationResult[] & {

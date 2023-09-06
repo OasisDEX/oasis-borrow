@@ -1,8 +1,15 @@
 /* eslint-disable func-style */
 
 import BigNumber from 'bignumber.js'
-import { createUserSettings$, SaveUserSettingsFunction, SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
-import { checkUserSettingsLocalStorage$, saveUserSettingsLocalStorage$ } from 'features/userSettings/userSettingsLocal'
+import {
+  createUserSettings$,
+  SaveUserSettingsFunction,
+  SLIPPAGE_DEFAULT,
+} from 'features/userSettings/userSettings'
+import {
+  checkUserSettingsLocalStorage$,
+  saveUserSettingsLocalStorage$,
+} from 'features/userSettings/userSettingsLocal'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of, throwError } from 'rxjs'
 

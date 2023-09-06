@@ -1,7 +1,11 @@
 import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import { NetworkIds } from 'blockchain/networks/network-ids'
 import { NetworkLabelType, NetworkNames } from 'blockchain/networks/network-names'
-import { NetworkConfig, NetworkConfigHexId, networksByName } from 'blockchain/networks/networks-config'
+import {
+  NetworkConfig,
+  NetworkConfigHexId,
+  networksByName,
+} from 'blockchain/networks/networks-config'
 import {
   CustomForkParameterType,
   CustomForkStorageKey,

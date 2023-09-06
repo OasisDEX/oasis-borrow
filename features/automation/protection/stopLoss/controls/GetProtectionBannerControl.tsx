@@ -27,7 +27,7 @@ export function GetProtectionBannerControl({
   debt,
 }: GetProtectionBannerProps) {
   const { t } = useTranslation()
-  const setHash = useHash()[1]
+  const [, setHash] = useHash()
   const {
     triggerData: { stopLossTriggerData },
     environmentData: { chainId },

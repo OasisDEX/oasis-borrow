@@ -5,7 +5,10 @@ import { disconnectedWalletStateReducer } from 'features/web3OnBoard/wallet-stat
 import { disconnectingWalletStateReducer } from 'features/web3OnBoard/wallet-state/disconnecting-wallet-state-reducer'
 import { settingChainWalletStateReducer } from 'features/web3OnBoard/wallet-state/setting-chain-wallet-state-reducer'
 import { unsupportedNetworkWalletStateReducer } from 'features/web3OnBoard/wallet-state/unsupported-network-wallet-state-reducer'
-import { WalletManagementState, WalletManagementStateStatus } from 'features/web3OnBoard/wallet-state/wallet-management-state'
+import {
+  WalletManagementState,
+  WalletManagementStateStatus,
+} from 'features/web3OnBoard/wallet-state/wallet-management-state'
 import { WalletStateEvent } from 'features/web3OnBoard/wallet-state/wallet-state-event'
 import { match } from 'ts-pattern'
 

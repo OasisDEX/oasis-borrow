@@ -119,7 +119,7 @@ export function applyManageVaultInput<VaultState extends ManageStandardBorrowVau
   if (change.kind === 'depositUSD' && canDeposit) {
     const { depositAmountUSD } = change
     const { priceInfo, vault } = state
-    const currentCollateralPrice = priceInfo.currentCollateralPrice
+    const { currentCollateralPrice } = priceInfo
     const currencyDigits = calculateTokenPrecisionByValue({
       token: vault.token,
       usdPrice: currentCollateralPrice,

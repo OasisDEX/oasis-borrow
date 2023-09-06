@@ -22,7 +22,7 @@ export function createWalletAssociatedRisk$(
           }
 
           const jwtToken = jwtAuthGetToken(web3Context.account)
-          const chainId = web3Context.chainId
+          const { chainId } = web3Context
 
           return getWalletRisk$(jwtToken!, chainId).pipe(map((riskData) => riskData))
         }),

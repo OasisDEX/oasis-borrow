@@ -85,7 +85,7 @@ export class BridgeConnector extends AbstractConnector {
     const account = isAddress(this.wallet.accounts[0].address)
       ? getAddress(this.wallet.accounts[0].address)
       : ''
-    const provider = this.wallet.provider
+    const { provider } = this.wallet
 
     return { chainId, account, provider, hexChainId, networkName }
   }
