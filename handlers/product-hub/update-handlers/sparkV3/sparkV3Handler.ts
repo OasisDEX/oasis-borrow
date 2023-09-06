@@ -12,6 +12,7 @@ import {
 import { wstethRiskRatio } from 'features/aave/constants'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
 import { ProductHubProductType } from 'features/productHub/types'
+import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -55,7 +56,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
           .minus(reserveData.totalStableDebt)
           .minus(reserveData.totalVariableDebt)
           .times(debtTokenPrice),
-        fee: reserveData.variableBorrowRate,
+        fee: aaveLikeAprToApy(reserveData.variableBorrowRate),
       },
     }
   })
