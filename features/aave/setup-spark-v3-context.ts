@@ -97,6 +97,8 @@ export function setupSparkV3Context(
     (positionId) => JSON.stringify(positionId),
   )
 
+  const protocolData = protocols[LendingProtocol.SparkV3][networkId]
+
   const {
     aaveLikeUserAccountData$,
     aaveLikeProtocolData$,
@@ -104,7 +106,7 @@ export function setupSparkV3Context(
     aaveLikeOracleAssetPriceData$,
     getAaveLikeReserveData$,
     getAaveLikeAssetsPrices$,
-  } = protocols[LendingProtocol.SparkV3][networkId]
+  } = protocolData
 
   const aaveEarnYieldsQuery = memoize(
     curry(getAaveWstEthYield)(disconnectedGraphQLClient$, dayjs()),
@@ -244,7 +246,7 @@ export function setupSparkV3Context(
   }
 
   return {
-    ...protocols[LendingProtocol.SparkV3][networkId],
+    ...protocolData,
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,
