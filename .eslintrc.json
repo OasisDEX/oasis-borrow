@@ -9,7 +9,16 @@
     "sourceType": "module",
     "project": ["./tsconfig.json"]
   },
-  "ignorePatterns": ["*.json", "*.d.ts", "/types", "coverage", "node_modules", "ts_modules"],
+  "ignorePatterns": [
+    "*.d.ts",
+    "*.js",
+    "*.json",
+    "*.jsx",
+    "/types",
+    "coverage",
+    "node_modules",
+    "ts_modules"
+  ],
   "plugins": [
     "deprecation",
     "no-only-tests",
