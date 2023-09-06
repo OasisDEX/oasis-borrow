@@ -9,8 +9,9 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
-import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
-import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
+import { SparkBorrowFaq } from 'features/content/faqs/spark/borrow'
+import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
+import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -167,7 +168,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
         vaultDetailsView: AaveBorrowManageComponent,
         secondaryInput: DebtInput,
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-        positionInfo: AaveBorrowFaq,
+        positionInfo: SparkBorrowFaq,
         sidebarTitle: 'open-borrow.sidebar.title',
         sidebarButton: 'open-borrow.sidebar.open-btn',
       },
@@ -215,7 +216,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
         vaultDetailsView: AaveMultiplyManageComponent,
         secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-        positionInfo: AaveMultiplyFaq,
+        positionInfo: SparkMultiplyFaq,
         sidebarTitle: 'open-multiply.sidebar.title',
         sidebarButton: 'open-multiply.sidebar.open-btn',
       },
@@ -263,7 +264,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
         vaultDetailsView: AaveMultiplyManageComponent,
         secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-        positionInfo: AaveMultiplyFaq,
+        positionInfo: SparkEarnFaqV3,
         sidebarTitle: 'open-multiply.sidebar.title',
         sidebarButton: 'open-multiply.sidebar.open-btn',
       },
