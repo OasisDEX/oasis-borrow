@@ -1,6 +1,6 @@
 import { NetworkIds } from 'blockchain/networks'
 
-export const aaveHistorySupport: Record<number, boolean> = {
+export const aaveHistorySupport: { [key: number]: boolean } = {
   // Mainnets
   [NetworkIds.MAINNET]: true,
   [NetworkIds.OPTIMISMMAINNET]: false,

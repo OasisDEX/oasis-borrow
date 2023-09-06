@@ -27,7 +27,7 @@ export function FaqLayout({
   const [sectionId, setSectionId] = useState<string>(anchors[0].id)
 
   // Divide markdown into sections delimited by headings
-  const sections: Record<string, React.ReactNode[]> = {}
+  const sections: { [key: string]: React.ReactNode[] } = {}
 
   for (let i = 0; i < childrenArray.length; i++) {
     const comp = childrenArray[i]
@@ -45,7 +45,7 @@ export function FaqLayout({
   }
 
   const quoteColors = ['success100', 'interactive100', 'primary60']
-  const quoteColorsSx = quoteColors.reduce((obj: Record<string, SxStyleProp>, color, index) => {
+  const quoteColorsSx = quoteColors.reduce((obj: { [key: string]: SxStyleProp }, color, index) => {
     obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
       borderColor: color,
     }

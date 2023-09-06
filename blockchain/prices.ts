@@ -101,7 +101,7 @@ export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
   shareReplay(1),
 )
 
-function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
+function getPrice(tickers: Tickers, tickerServiceLabels: (string | undefined)[]) {
   const errorsArray = []
 
   for (const label of tickerServiceLabels) {
@@ -135,7 +135,7 @@ export function getTokenPrice(token: string, tickers: Tickers) {
 export function createTokenPriceInUSD$(
   every10Seconds$: Observable<any>,
   tokenTicker$: Observable<Tickers>,
-  tokens: Array<string>,
+  tokens: string[],
 ): Observable<Tickers> {
   return combineLatest(every10Seconds$, tokenTicker$).pipe(
     switchMap(([_, tickers]) =>
@@ -199,7 +199,7 @@ export function calculatePricePercentageChange(current: BigNumber, next: BigNumb
 
 export type OraclePriceDataArgs = {
   token: string
-  requestedData: Array<keyof OraclePriceData>
+  requestedData: (keyof OraclePriceData)[]
 }
 
 export function createOraclePriceData$(

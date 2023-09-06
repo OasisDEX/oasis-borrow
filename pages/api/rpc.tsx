@@ -264,7 +264,10 @@ interface CallWithHashAndResponse extends CallWithHash {
   response: RpcResponse
 }
 
-function isValidBody<T extends Record<string, unknown>>(body: any, fields: (keyof T)[]): body is T {
+function isValidBody<T extends { [key: string]: unknown }>(
+  body: any,
+  fields: (keyof T)[],
+): body is T {
   return Object.keys(body).every((key) => fields.includes(key))
 }
 

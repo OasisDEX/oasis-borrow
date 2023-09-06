@@ -104,10 +104,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     getNetworkContracts(NetworkIds.MAINNET, NetworkIds.MAINNET).cacheApi,
   )
 
-  const yieldsPromisesMap: Record<
-    string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
-  > = {
+  const yieldsPromisesMap: {
+    [key: string]: (
+      risk: RiskRatio,
+      fields: FilterYieldFieldsType[],
+    ) => Promise<AaveLikeYieldsResponse>
+  } = {
     // a crude map, but it works for now since we only have one earn product
     'WSTETH/ETH': curry(getAaveWstEthYield)(graphQlProvider, dayjs()),
     'CBETH/ETH': emptyYields,

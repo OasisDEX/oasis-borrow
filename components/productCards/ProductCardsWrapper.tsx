@@ -5,7 +5,7 @@ import { fadeInAnimationDelay, slideInAnimation } from 'theme/animations'
 import { Box, Flex, Grid, SxStyleProp } from 'theme-ui'
 
 interface ProductCardWrapperProps {
-  children: Array<ReactNode>
+  children: ReactNode[]
   desktopWidthOfCard?: number
   gap?: number
   sx?: SxStyleProp

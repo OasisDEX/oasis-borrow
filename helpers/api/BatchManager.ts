@@ -47,14 +47,14 @@ export class BatchManager {
     return hash
   }
 
-  async batchCall(batchCallData: Array<Request>) {
+  async batchCall(batchCallData: Request[]) {
     // 1. Extract cache hits
-    const batchResults: Array<{
+    const batchResults: {
       requestIdx: number
       data: unknown
       callData: Request
       fromCache: boolean
-    }> = batchCallData.map((callData, index) => {
+    }[] = batchCallData.map((callData, index) => {
       const hash = this._createHash(callData)
       const cachedResult = this._cache.get(hash)
 
@@ -67,12 +67,12 @@ export class BatchManager {
     })
 
     // 2. Extract cache miss requests
-    const batchRequests: Array<Request> = batchResults
+    const batchRequests: Request[] = batchResults
       .filter((call) => !call.fromCache)
       .map((call) => call.callData)
 
     // 3. Make the call to infura
-    let batchResponse: Array<{ data: unknown; error?: Error }> = []
+    let batchResponse: { data: unknown; error?: Error }[] = []
 
     if (batchRequests.length > 0) {
       batchResponse = await this._fetchJson(this._connection, JSON.stringify(batchRequests)).then(

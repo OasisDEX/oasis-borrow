@@ -48,10 +48,9 @@ const tokenPairList = {
       tokenList: ['SPARK', 'RETH', 'ETH'],
     },
   },
-} as Record<
-  AaveLikeLendingProtocol,
-  Record<string, { translationKey: string; tokenList: string[] }>
->
+} as {
+  [key: AaveLikeLendingProtocol]: { [key: string]: { translationKey: string; tokenList: string[] } }
+}
 
 function AavePositionHeader({
   maxRisk,

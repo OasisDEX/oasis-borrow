@@ -3,9 +3,9 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 
 export type CustomForkParameterFieldsType = 'url' | 'id' | 'isAddedToWallet'
-export type CustomForkParameterType = Partial<
-  Record<NetworkNames, Record<CustomForkParameterFieldsType, string>>
->
+export type CustomForkParameterType = Partial<{
+  [key: NetworkNames]: { [key: CustomForkParameterFieldsType]: string }
+}>
 
 export const CustomForkStorageKey = 'ForkNetwork'
 

@@ -219,10 +219,9 @@ type MissingTransactionServices = Exclude<
   'startTransaction'
 >
 
-export type CommonTransactionServices = Record<
-  MissingTransactionServices,
-  (
+export type CommonTransactionServices = {
+  [key: MissingTransactionServices]: (
     context: BaseTransactionStateMachineContext,
     event: AnyEventObject,
   ) => Observable<TransactionStateMachineCommonEvents>
->
+}

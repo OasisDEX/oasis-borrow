@@ -54,7 +54,7 @@ describe('vaultActionsLogic', () => {
       })
     }
 
-    const tests: Array<TestData> = [
+    const tests: TestData[] = [
       {
         testName:
           'should call wipeAllAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is true',
@@ -300,7 +300,7 @@ describe('vaultActionsLogic', () => {
       })
     }
 
-    const tests: Array<TestData> = [
+    const tests: TestData[] = [
       {
         testName:
           'should call openLockETHAndDraw() when depositAmount > zero, generateAmount > zero and token is ETH',

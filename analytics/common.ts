@@ -10,7 +10,7 @@ interface Switch {
   disable: Function
 }
 
-export const manageCookie: Record<CookieName, Switch> = {
+export const manageCookie: { [key: CookieName]: Switch } = {
   marketing: {
     enable: () => {},
     disable: () => {}, // no needed since adding adRoll instance to app is 0/1 like

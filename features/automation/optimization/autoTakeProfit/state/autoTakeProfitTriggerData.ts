@@ -111,7 +111,7 @@ export function prepareAddAutoTakeProfitTriggerData({
 export function pickTriggerWithLowestExecutionPrice(
   autoTakeProfitTriggersData: {
     triggerId: number
-    result: Record<string, string | number | BigNumber>
+    result: { [key: string]: string | number | BigNumber }
   }[],
 ): AutoTakeProfitTriggerData {
   const mappedAutoTakeProfitTriggers = autoTakeProfitTriggersData.map((trigger) => {

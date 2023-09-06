@@ -7,7 +7,7 @@ import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
+export const optimismAaveV3Strategies: IStrategyConfig[] = [
   {
     network: NetworkNames.optimismMainnet,
     networkId: NetworkIds.OPTIMISMMAINNET,

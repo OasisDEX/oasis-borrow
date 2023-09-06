@@ -6,7 +6,7 @@ import React from 'react'
 // </0>
 export function interpolate(
   str: string,
-  Components: Record<string, React.ComponentType>,
+  Components: { [key: string]: React.ComponentType },
 ): React.ReactNode {
   const splitRegex = /(?<before>.+?)?<(?<comp>\d+)>(?<content>.+?)<\/\k<comp>>/g
   const matches = [...str.matchAll(splitRegex)]

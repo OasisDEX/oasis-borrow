@@ -31,7 +31,7 @@ const inputSchema = z.object({
   isGnosisSafe: z.boolean(),
 })
 
-const networkMap: Record<number, string> = {
+const networkMap: { [key: number]: string } = {
   1: 'mainnet',
   5: 'goerli',
 }

@@ -36,7 +36,7 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
     : contractChainId
 
   const networkConfig = networkSetById[correctNetworkId]
-  let contracts: Record<string, unknown> = allNetworksContracts[correctNetworkId]
+  let contracts: { [key: string]: unknown } = allNetworksContracts[correctNetworkId]
 
   let finalNetworkId = correctNetworkId
 
@@ -60,7 +60,7 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   ensureTokensExist(finalNetworkId, contractsForWithToknes)
 
   // ETH needs to be first because we use the `WETH` address in that configuration. To ensure that ETH is placed before WETH, we put it at the top of the list.
-  const tokens: Record<string, ContractDesc> =
+  const tokens: { [key: string]: ContractDesc } =
     finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
       ? {
           ETH: contractsForWithToknes.tokens.ETH,
@@ -91,7 +91,7 @@ export function extendTokensContracts(tokens: Tokens[]): void {
 export function ensureContractsExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  properties: ReadonlyArray<string>,
+  properties: readonly string[],
 ): asserts contracts is {
   [K in typeof properties[number]]: ContractDesc & { genesisBlock: number }
 } {
@@ -105,7 +105,7 @@ export function ensureContractsExist(
 export function ensurePropertiesExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  properties: ReadonlyArray<string>,
+  properties: readonly string[],
 ): asserts contracts is {
   [K in typeof properties[number]]: string
 } {
@@ -138,7 +138,7 @@ export function ensureEtherscanExist(
 export function ensureTokensExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-): asserts contracts is { tokens: Record<string, ContractDesc> } {
+): asserts contracts is { tokens: { [key: string]: ContractDesc } } {
   if (!contracts.hasOwnProperty('tokens')) {
     throw new Error(`Can't find tokens definition on ${chainId} chain`)
   }
@@ -147,7 +147,7 @@ export function ensureTokensExist(
 export function ensureGivenTokensExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  tokens: ReadonlyArray<string>,
+  tokens: readonly string[],
 ): asserts contracts is { tokens: { [K in typeof tokens[number]]: ContractDesc } } {
   ensureTokensExist(chainId, contracts)
   const notFoundTokens = tokens.filter((p) => !contracts.tokens.hasOwnProperty(p))
@@ -164,7 +164,7 @@ export function ensureGivenTokensExist(
 export function ensureChainlinkTokenPairsExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  tokenPairs: ReadonlyArray<string>,
+  tokenPairs: readonly string[],
 ): asserts contracts is {
   chainlinkPriceOracle: {
     [K in typeof tokenPairs[number]]: ContractDesc

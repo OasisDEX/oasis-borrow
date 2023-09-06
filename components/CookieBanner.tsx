@@ -7,7 +7,7 @@ import { currentContent } from 'features/content'
 import { Trans, useTranslation } from 'next-i18next'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
 
-type SelectedCookies = Record<CookieName, boolean>
+type SelectedCookies = { [key: CookieName]: boolean }
 
 export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies; version: string }
 export function initSelectedCookies(defaultValue: boolean): SelectedCookies {

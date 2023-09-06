@@ -117,7 +117,7 @@ export function setupSparkV3Context(
 
   const earnCollateralsReserveData = {
     WSTETH: aaveLikeReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
-  } as Record<string, Observable<AaveLikeReserveConfigurationData>>
+  } as { [key: string]: Observable<AaveLikeReserveConfigurationData> }
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(

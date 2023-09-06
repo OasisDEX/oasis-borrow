@@ -81,7 +81,7 @@ export function createAaveCollateralTokens$(context$: Observable<Context>): Obse
   )
 }
 
-export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
+export type TokenBalances = { [key: string]: { balance: BigNumber; price: BigNumber } }
 
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,

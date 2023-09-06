@@ -30,7 +30,7 @@ export type ProductLandingPagesFilter = {
   name: ProductLandingPagesFiltersKeys
   icon: ProductLandingPagesFiltersIcons
   urlFragment: string
-  tokens: Readonly<Array<string>>
+  tokens: Readonly<string[]>
 }
 
 export const supportedBorrowIlks = [

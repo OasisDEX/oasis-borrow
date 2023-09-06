@@ -128,8 +128,8 @@ describe('createOraclePriceData$', () => {
     type TestCase = {
       requestedValue: keyof OraclePriceData
       runAssertion: (result: Partial<OraclePriceData>) => void
-      streamsNotCalled: Array<keyof typeof pipes>
-      streamsCalled: Array<keyof typeof pipes>
+      streamsNotCalled: (keyof typeof pipes)[]
+      streamsCalled: (keyof typeof pipes)[]
     }
 
     function runTest({ requestedValue, runAssertion, streamsCalled, streamsNotCalled }: TestCase) {

@@ -5,14 +5,14 @@ import { useLegacyDefaultChain } from 'features/web3OnBoard/use-legacy-default-c
 
 export type NetworkConnectorState = {
   networkConnector: NetworkConnector
-  networkConfigs: Partial<Record<NetworkIds, NetworkConfig>>
+  networkConfigs: Partial<{ [key: NetworkIds]: NetworkConfig }>
 }
 
 export function useNetworkConnector(): NetworkConnectorState {
   const [defaultChain] = useLegacyDefaultChain()
 
   return useMemo(() => {
-    const networkConfigs: Partial<Record<NetworkIds, NetworkConfig>> = {}
+    const networkConfigs: Partial<{ [key: NetworkIds]: NetworkConfig }> = {}
     const urls: { [chainId: number]: string } = {}
 
     enableNetworksSet.forEach((network) => {

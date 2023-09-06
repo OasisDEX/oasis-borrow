@@ -53,7 +53,7 @@ function CardWrapper({
 type InfoCardProps = {
   title: string
   subtitle: string
-  links: Array<{ href: string; text: string }>
+  links: { href: string; text: string }[]
   backgroundImage: string
   backgroundGradient: string
   sx?: SxStyleProp

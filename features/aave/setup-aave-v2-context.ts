@@ -80,7 +80,7 @@ export function setupAaveV2Context(
 
   const earnCollateralsReserveData = {
     STETH: aaveLikeReserveConfigurationData$({ collateralToken: 'STETH', debtToken: 'ETH' }),
-  } as Record<string, ReturnType<typeof aaveLikeReserveConfigurationData$>>
+  } as { [key: string]: ReturnType<typeof aaveLikeReserveConfigurationData$> }
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(

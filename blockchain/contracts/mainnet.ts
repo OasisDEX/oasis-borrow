@@ -127,7 +127,7 @@ export const mainnetContracts = {
   ),
   aaveTokens: {
     STETH: mainnet.common.STETH,
-  } as Record<string, string>,
+  } as { [key: string]: string },
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
     mainnet.aave.v2.PoolDataProvider,

@@ -7,7 +7,7 @@ import { BytesLike } from 'ethers'
 import { MerkleRedeemer } from 'types/web3-v1-contracts'
 
 export interface CanClaimArgs {
-  proof: Array<BytesLike>
+  proof: BytesLike[]
   week: BigNumber
   amount: BigNumber
 }

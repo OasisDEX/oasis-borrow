@@ -26,7 +26,7 @@ export function groupHistoryEventsByHash(events: VaultHistoryEvent[]) {
       ...acc,
       [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
     }
-  }, {} as Record<string, VaultHistoryEvent[]>)
+  }, {} as { [key: string]: VaultHistoryEvent[] })
 }
 
 export function getAddConstantMultipleHistoryEventIndex(events: VaultEvent[]) {
@@ -300,7 +300,7 @@ export function mapAutomationEvents(events: VaultHistoryEvent[]) {
     }
 
     return { ...acc, [key]: groupedByHash[key] }
-  }, {} as Record<string, VaultHistoryEvent[]>)
+  }, {} as { [key: string]: VaultHistoryEvent[] })
 
   return flatten(Object.values(wrappedByHash))
 }

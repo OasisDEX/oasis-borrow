@@ -14,7 +14,7 @@ export type PositionView = {
   url?: string
   proportion?: BigNumber
   missingPriceData: boolean
-  actions?: Array<AssetAction>
+  actions?: AssetAction[]
 }
 
 function isPosition(thing: Position | WalletAssets): thing is Position {
@@ -36,27 +36,27 @@ type WalletAssets = {
   balanceUsd: BigNumber
   missingPriceData: boolean
   token: string
-  assetActions: Array<AssetAction>
+  assetActions: AssetAction[]
 }
 
 export type TopAssetsAndPositionsViewModal = {
-  assetsAndPositions: Array<PositionView>
+  assetsAndPositions: PositionView[]
   percentageOther: BigNumber
   totalValueUsd: BigNumber
 }
 
-const tokensWeCareAbout: Array<string> = uniq(tokenList.tokens.map((t) => t.symbol.toUpperCase()))
+const tokensWeCareAbout: string[] = uniq(tokenList.tokens.map((t) => t.symbol.toUpperCase()))
 
 tokensWeCareAbout.push('ETH')
 
 export function createPositionsOverviewSummary$(
   walletBalance$: (token: string, address: string) => Observable<BigNumber>,
-  createTokenPriceInUSD$: (tokens: Array<string>) => Observable<Tickers>,
+  createTokenPriceInUSD$: (tokens: string[]) => Observable<Tickers>,
   createPositions$: (address: string) => Observable<Position[]>,
-  createAssetActions$: (token: string) => Observable<Array<AssetAction>>,
+  createAssetActions$: (token: string) => Observable<AssetAction[]>,
   address: string,
 ): Observable<TopAssetsAndPositionsViewModal> {
-  const tokenBalances$: Observable<Array<WalletAssets>> = combineLatest(
+  const tokenBalances$: Observable<WalletAssets[]> = combineLatest(
     tokensWeCareAbout.map((t) =>
       combineLatest(
         walletBalance$(t, address),
@@ -112,7 +112,7 @@ export function createPositionsOverviewSummary$(
   )
 
   // consolidate to view model
-  const assetsAndPositions$: Observable<Array<PositionView>> = flattenedTokensAndPositions$.pipe(
+  const assetsAndPositions$: Observable<PositionView[]> = flattenedTokensAndPositions$.pipe(
     map((flattenedTokenBalances) =>
       flattenedTokenBalances.map((assetOrPosition) => {
         if (isPosition(assetOrPosition)) {

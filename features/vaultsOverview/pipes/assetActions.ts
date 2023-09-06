@@ -36,7 +36,7 @@ export function isOnClickAction(aa: AssetAction): aa is OnClickAssetAction {
 }
 
 type ProductCategoryIlks = {
-  [category in ProductCategory]: Array<string> // Array<ilks>
+  [category in ProductCategory]: string[] // Array<ilks>
 }
 
 function productCategoryToAssetAction(
@@ -81,13 +81,13 @@ export function createAssetActions$(
   productCategoryIlks: ProductCategoryIlks,
   uiChanges: UIChanges,
   token: string,
-): Observable<Array<AssetAction>> {
+): Observable<AssetAction[]> {
   const contextConnected$ = context$.pipe(startWith<ContextConnected | undefined>(undefined))
 
   const ilkToProductCategory = reduce<
     ProductCategoryIlks,
     {
-      [ilk: string]: Array<ProductCategory>
+      [ilk: string]: ProductCategory[]
     }
   >(
     productCategoryIlks,
@@ -133,7 +133,7 @@ export function createAssetActions$(
       const relevantMappings = tokenToProductCategories.filter(([t]) => t === token)
 
       return relevantMappings
-        .reduce<Array<ProductCategory>>((acc, [_token, productCategories]) => {
+        .reduce<ProductCategory[]>((acc, [_token, productCategories]) => {
           return [...new Set([...acc, ...productCategories])] // dedupe
         }, [])
         .map((productCategory) => productCategoryToAssetAction(productCategory, token))

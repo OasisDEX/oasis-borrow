@@ -41,7 +41,7 @@ export function ManageMultiplyVaultContainer({
   useEffect(() => {
     const { token } = manageVault.vault
 
-    const manageVaultMap: Record<string, Observable<ManageMultiplyVaultState>> = {
+    const manageVaultMap: { [key: string]: Observable<ManageMultiplyVaultState> } = {
       GUNIV3DAIUSDC1: manageGuniVault$(id),
       GUNIV3DAIUSDC2: manageGuniVault$(id),
     }

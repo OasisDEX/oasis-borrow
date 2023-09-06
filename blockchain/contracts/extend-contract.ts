@@ -11,7 +11,7 @@ interface FilterableContract extends BaseContract {
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined,
-  ): Promise<Array<TEvent>>
+  ): Promise<TEvent[]>
 }
 
 export async function extendContract<TContract extends FilterableContract>(

@@ -3,20 +3,19 @@ import { fetchJson } from '@ethersproject/web'
 import { ethers } from 'ethers'
 
 // Experimental
-type PendingBatch = Record<
-  string,
-  Array<{
-    request: { method: string; params: Array<any>; id: number; jsonrpc: '2.0' }
+type PendingBatch = {
+  [key: string]: {
+    request: { method: string; params: any[]; id: number; jsonrpc: '2.0' }
     resolve: (result: any) => void
     reject: (error: Error) => void
-  }>
->
+  }[]
+}
 
 export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
   _pendingBatchAggregator: NodeJS.Timeout | null = null
   _pendingBatch: PendingBatch | null = null
 
-  send(method: string, params: Array<any>): Promise<any> {
+  send(method: string, params: any[]): Promise<any> {
     const request = {
       method,
       params,

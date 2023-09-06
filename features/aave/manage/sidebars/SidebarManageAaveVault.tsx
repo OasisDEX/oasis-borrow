@@ -368,7 +368,7 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
 
 function getDropdownConfig({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
-  const itemPerAction: Record<ManagePositionAvailableActions, SidebarSectionHeaderSelectItem> = {
+  const itemPerAction: { [key: ManagePositionAvailableActions]: SidebarSectionHeaderSelectItem } = {
     adjust: {
       label: t('adjust'),
       icon: 'circle_slider',
@@ -454,7 +454,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
 
   const dropdownConfig: SidebarSectionHeaderDropdown = {
     disabled: false,
-    forcePanel: (state.value as Record<string, string>).frontend,
+    forcePanel: (state.value as { [key: string]: string }).frontend,
     items: strategyAvailableActions,
   }
 

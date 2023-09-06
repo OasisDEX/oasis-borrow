@@ -118,7 +118,7 @@ export const ETH_TOKENS = tokens
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
-const ALLOWED_AUTOMATION_ILKS: Partial<Record<NetworkIds, string[]>> = {
+const ALLOWED_AUTOMATION_ILKS: Partial<{ [key: NetworkIds]: string[] }> = {
   [NetworkIds.MAINNET]: [
     'ETH-A',
     'ETH-B',

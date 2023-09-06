@@ -215,11 +215,7 @@ function MenuRow(props: AssetAction & { close: () => void }) {
   }
 }
 
-function Menu(props: {
-  close: () => void
-  sx?: SystemStyleObject
-  assetActions: Array<AssetAction>
-}) {
+function Menu(props: { close: () => void; sx?: SystemStyleObject; assetActions: AssetAction[] }) {
   const componentRef = useOutsideElementClickHandler(props.close)
 
   return (

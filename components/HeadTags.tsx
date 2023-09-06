@@ -24,7 +24,7 @@ interface SEOTagsType {
   url?: string
   ogImage?: string
   twitterImage?: string
-  titleParams?: Record<string, string>
+  titleParams?: { [key: string]: string }
 }
 
 export function PageSEONoFollow() {

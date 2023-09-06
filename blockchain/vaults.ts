@@ -134,7 +134,7 @@ export function decorateVaultsWithValue$<V extends VaultWithType>(
   address: string,
 ): Observable<VaultWithValue<V>[]> {
   return combineLatest(vaults$(address), userSettings$).pipe(
-    switchMap(([vaults, userSettings]: [Array<VaultWithType>, UserSettingsState]) => {
+    switchMap(([vaults, userSettings]: [VaultWithType[], UserSettingsState]) => {
       if (vaults.length === 0) return of([])
 
       return combineLatest(

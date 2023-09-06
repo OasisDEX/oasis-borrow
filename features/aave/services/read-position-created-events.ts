@@ -62,7 +62,7 @@ export async function getPositionCreatedEventForProxyAddress(
 function mapEvent(
   positionCreatedEvents: CreatePositionEvent[][],
   chainId: NetworkIds,
-): Array<PositionCreated> {
+): PositionCreated[] {
   return positionCreatedEvents
     .flatMap((events) => events)
     .map((e) => {
@@ -146,7 +146,7 @@ export function createReadPositionCreatedEvents$(
   context$: Observable<Pick<Context, 'chainId'>>,
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
   walletAddress: string,
-): Observable<Array<PositionCreated>> {
+): Observable<PositionCreated[]> {
   return combineLatest(context$, userDpmProxies$(walletAddress)).pipe(
     switchMap(([context, dpmProxies]) =>
       combineLatest(

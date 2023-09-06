@@ -8,9 +8,9 @@ import { setupSparkV3Context } from 'features/aave/setup-spark-v3-context'
 import { WithChildren } from 'helpers/types'
 import { AaveLendingProtocol, LendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 
-type AaveContexts = Partial<
-  Record<NetworkNames, Partial<Record<AaveLendingProtocol | SparkLendingProtocol, AaveContext>>>
->
+type AaveContexts = Partial<{
+  [key: NetworkNames]: Partial<{ [key: AaveLendingProtocol | SparkLendingProtocol]: AaveContext }>
+}>
 
 export const aaveContext = React.createContext<AaveContexts | undefined>(undefined)
 

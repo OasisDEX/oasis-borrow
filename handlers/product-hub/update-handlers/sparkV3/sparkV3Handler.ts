@@ -95,10 +95,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     memoizedTokensData(networkName as SparkV3Networks, tickers),
   )
 
-  const yieldsPromisesMap: Record<
-    string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
-  > = {
+  const yieldsPromisesMap: {
+    [key: string]: (
+      risk: RiskRatio,
+      fields: FilterYieldFieldsType[],
+    ) => Promise<AaveLikeYieldsResponse>
+  } = {
     'WSTETH/ETH': emptyYields,
     'RETH/ETH': emptyYields,
   }

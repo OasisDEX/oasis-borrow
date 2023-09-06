@@ -7,7 +7,7 @@ import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {
+function filterSupportedIlksOnNetwork(joins: { [key: string]: string }, ilks: string[]): string[] {
   const supportedIlks = Object.keys(joins)
 
   return ilks.filter((ilk) => supportedIlks.includes(ilk))

@@ -18,7 +18,7 @@ import { AaveEarnFaqV2 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
+export const ethereumAaveV2Strategies: IStrategyConfig[] = [
   {
     network: NetworkNames.ethereumMainnet,
     networkId: NetworkIds.MAINNET,

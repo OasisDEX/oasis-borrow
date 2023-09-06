@@ -18,7 +18,7 @@ export type ContractForNetwork<Contract> = {
   readonly address: string
   readonly contract: Contract
   readonly contractGenesis: number
-  readonly tokenMappings: Record<string, { address: string }>
+  readonly tokenMappings: { [key: string]: { address: string } }
   readonly baseCurrencyUnit: BigNumber
 }
 

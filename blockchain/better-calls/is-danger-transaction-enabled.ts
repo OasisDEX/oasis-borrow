@@ -21,7 +21,7 @@ export function isDangerTransactionEnabled(): DangerTransactionConfig {
       if (typeof element !== 'object') {
         return false
       }
-      const elementAsObject = element as Record<string, unknown>
+      const elementAsObject = element as { [key: string]: unknown }
 
       return (
         elementAsObject.hasOwnProperty('enabled') &&
